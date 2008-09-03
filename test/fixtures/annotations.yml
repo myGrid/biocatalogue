@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  annotatable_type: MyString
+  annotatable_id: 1
+  key: MyString
+  value: MyText
+  source_type: MyString
+  source_id: 1
+
+two:
+  annotatable_type: MyString
+  annotatable_id: 1
+  key: MyString
+  value: MyText
+  source_type: MyString
+  source_id: 1
