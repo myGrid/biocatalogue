@@ -1,0 +1,20 @@
+<h1>Editing web_service</h1>
+
+<% form_for(@web_service) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :service_type %><br />
+    <%= f.text_field :service_type %>
+  </p>
+  <p>
+    <%= f.label :unique_code %><br />
+    <%= f.text_field :unique_code %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @web_service %> |
+<%= link_to 'Back', web_services_path %>

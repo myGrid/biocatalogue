@@ -1,0 +1,13 @@
+<p>
+  <b>Service type:</b>
+  <%=h @web_service.service_type %>
+</p>
+
+<p>
+  <b>Unique code:</b>
+  <%=h @web_service.unique_code %>
+</p>
+
+
+<%= link_to 'Edit', edit_web_service_path(@web_service) %> |
+<%= link_to 'Back', web_services_path %>

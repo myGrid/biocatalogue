@@ -1,0 +1,34 @@
+<h1>New web_service</h1>
+
+<% form_for(@web_service) do |f| %>
+  <%= f.error_messages %>
+ <!--
+  <p>
+    <%= f.label :service_type %><br />
+    <%= f.text_field :service_type %>
+  </p>
+  <p>
+    <%= f.label :unique_code %><br />
+    <%= f.text_field :unique_code %>
+  </p>
+  
+  
+   -->
+   
+   <select id="web_service_service_type" name="web_service[service_type]" onchange="<%=remote_function(:url => {:action => 'update_service_registration_form'},
+                                      :update => 'service_type_container',
+                                      :with => "'service_type=' + getMenuValue('web_service_service_type')") %>">
+   	
+	<%= options_from_collection_for_select(@service_types, :name, :name) %> 
+   </select>
+									
+  <p>
+  <div id="service_type_container"></div>
+  </p>
+  
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', web_services_path %>
