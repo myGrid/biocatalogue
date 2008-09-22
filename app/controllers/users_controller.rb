@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  before_filter :login_required, :except => [:index, :new, :show]
+  before_filter :login_required, :except => [:index, :new, :create, :show, :activate_account]
   
   # GET /users
   # GET /users.xml
@@ -79,7 +79,12 @@ class UsersController < ApplicationController
   # DELETE /users/1.xml
   def destroy
     @user = User.find(params[:id])
-    @user.destroy
+    if @user != @current_user
+      @user.destroy
+    else
+      flash[:notice] = "You cannot delete this user as long as you are logged in under his username."
+    end
+    
 
     respond_to do |format|
       format.html { redirect_to(users_url) }
