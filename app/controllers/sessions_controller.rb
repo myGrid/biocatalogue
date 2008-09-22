@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
       flash[:notice] = "Welcome #{user.email} !"
       #redirect_to session[:original_uri]
       # Redirect user to the URI of origin, or to homepage if no URI
-      session[:original_uri] ? (redirect_to session[:original_uri]) : (redirect_to "http://www.rubyonrails.org")
+      session[:original_uri] ? (redirect_to session[:original_uri]) : (redirect_to :users)
 
     else
       flash[:error] = "Invalid email/password combination !"
