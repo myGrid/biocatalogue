@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+	map.resources :soap_services
+
+  map.resources :web_services
+
   map.resources :soap_services
 
   map.resources :web_services
@@ -38,7 +42,7 @@ ActionController::Routing::Routes.draw do |map|
   # map.root :controller => "welcome"
 
   # See how all your routes lay out with "rake routes"
-  map.resources :web_services, :has_many => :soap_services
+
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
