@@ -1,0 +1,29 @@
+<p>
+  <b>Email:</b>
+  <%=h @user.email %>
+</p>
+
+<p>
+  <b>Activated at:</b>
+  <%=h @user.activated_at %>
+</p>
+
+<p>
+  <b>Display Name:</b>
+  <%=h @user.display_name %>
+</p>
+
+<p>
+  <b>Affiliation:</b>
+  <%=h @user.affiliation %>
+</p>
+
+<p>
+  <b>Country:</b>
+  <%=h @user.country %>
+</p>
+
+<% if mine?(@user) -%>
+	<%= link_to 'Edit', edit_user_path(@user) %> |
+<% end -%>
+<%= link_to 'Back', users_path %>
