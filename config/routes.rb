@@ -1,11 +1,13 @@
 ActionController::Routing::Routes.draw do |map|
 	map.resources :soap_services
+  map.resources :web_services, :has_many => :soap_services
+  map.resources :users, :collection => { :activate_account => :get}
+  map.resource :session
 
-  map.resources :web_services
-
-  map.resources :soap_services
-
-  map.resources :web_services
+  map.register '/register', :controller => 'users', :action => 'new'
+  map.login '/login', :controller => 'sessions', :action => 'new'
+  map.logout '/logout', :controller => 'sessions', :action => 'destroy'
+  map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil
 
   # The priority is based upon order of creation: first created -> highest priority.
 
