@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
       session[:original_uri] ? (redirect_to session[:original_uri]) : (redirect_to :users)
 
     else
-      flash[:error] = "Invalid email/password combination !"
+      flash[:notice] = "Invalid email/password combination !"
       params[:password] = nil
       render :action => :new
     end
