@@ -80,12 +80,8 @@ class UsersController < ApplicationController
   # DELETE /users/1.xml
   def destroy
     @user = User.find(params[:id])
-#    if @user != @current_user
-    if mine?(@user)
-      @user.destroy
-    else
-      flash[:notice] = "You cannot delete this user as long as you are logged in under his username."
-    end
+    @user.destroy
+    session.delete
     respond_to do |format|
       format.html { redirect_to(users_url) }
       format.xml  { head :ok }
