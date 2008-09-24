@@ -1,11 +1,11 @@
 <% form_tag session_path do -%>
 <fieldset>
 	<p>
-		<label for="login" class="required">Login</label>
+		<label for="login" class="required">Login</label> <br/>
 		<%= text_field_tag :login, params[:login] %>
 	</p>
 	<p>
-		<label for="password" class="required">Password</label>
+		<label for="password" class="required">Password</label> <br/>
 		<%= password_field_tag :password, params[:password] %>
 	</p>
 	<p>
