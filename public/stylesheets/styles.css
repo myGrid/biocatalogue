@@ -1,0 +1,64 @@
+/* 
+   Main stylesheet.
+   
+   This stylesheet relies on base stylesheets from the
+   Yahoo UI library (http://developer.yahoo.com/yui/),
+   licensed under the BSD License.
+   
+   IMPORTANT: for font-size, only use %ages according to: 
+   http://developer.yahoo.com/yui/fonts/#fontsize
+*/
+
+
+/* BEGIN temporary styles for test */
+
+div {
+	border: 1px solid #CCCCCC;
+}
+
+/* END temporary styles for test */
+
+
+body {
+	/* Only need to define one font here because the 
+	   YUI Fonts CSS provides a degradation path
+	   (see: http://developer.yahoo.com/yui/fonts/) */
+	font-family: arial;
+	background-color: #8e8e8e;
+}
+
+#doc4 {
+	background-color: #FFFFFF;
+}
+
+#header_top {
+	margin: 1em 0.5em 0 0.5em;
+}
+
+#header_top .logo {
+	width: 301px;
+}
+
+#header_top .links {
+	
+}
+
+#main_content {
+	padding-right: 1em;
+	padding-left: 0.5em;
+	margin-top: 1em;
+	margin-bottom: 3em;
+}
+
+#error_flash {
+	
+}
+
+#notice_flash {
+	
+}
+
+#ft {
+	
+}
+
