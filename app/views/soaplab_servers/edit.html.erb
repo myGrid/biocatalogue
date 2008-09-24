@@ -1,0 +1,12 @@
+<h1>Editing soaplab_server</h1>
+
+<% form_for(@soaplab_server) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @soaplab_server %> |
+<%= link_to 'Back', soaplab_servers_path %>

@@ -14,7 +14,7 @@ class WebServicesController < ApplicationController
   # GET /web_services/1.xml
   def show
     @web_service = WebService.find(params[:id])
-
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @web_service }
@@ -26,9 +26,7 @@ class WebServicesController < ApplicationController
   def new
     @service_types = ServiceType.find(:all)
     @web_service = WebService.new
-    #@soap_service = SoapService.new
-    #@soap_service = service_maker("SOAP").new
-    #@soap_service = service_maker(params[:service_type]).new
+    
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @web_service }
@@ -44,20 +42,11 @@ class WebServicesController < ApplicationController
   # POST /web_services.xml
   def create
     @web_service      = WebService.new(params[:web_service])
-    @service_instance = service_maker(params[:web_service][:service_type]).new(params[:service])
-    @operations       = @service_instance.get_operations(params[:service][:wsdl_location])
-    @service_instance.get_outputs(@operations)
-    
-    #these saves should be transactional!!
     respond_to do |format|
       if @web_service.save
-        @service_instance.web_service_id = @web_service.id
-        if @service_instance.save 
-          @service_instance.save_operations(@operations,@service_instance)
-        end
         flash[:notice] = 'WebService was successfully created.'
-        #format.html { redirect_to(@web_service) }
-        format.html { redirect_to(@service_instance) }
+        format.html { redirect_to(@web_service) }
+        #format.html { redirect_to(@service_instance) }
         format.xml  { render :xml => @web_service, :status => :created, :location => @web_service }
       else
         format.html { render :action => "new" }
@@ -98,10 +87,10 @@ class WebServicesController < ApplicationController
   #render service registration depending on service
   #type selected by user
   def update_service_registration_form
-    @service = service_maker('SOAP').new 
+    #@service = service_maker('SOAP').new 
     #change when REST/DAS services are available
     service_type = params[:service_type]
-    #@service = service_maker(service_type).new
+    @service = service_maker(service_type).new
     
     if service_type == 'SOAP'
       render :partial=> 'soap'
@@ -109,19 +98,29 @@ class WebServicesController < ApplicationController
       render :partial=> 'rest'
     elsif service_type == 'DAS'
       render :partial=> 'das'
+    elsif service_type == 'SOAPLAB-SERVER'
+      render :partial=> 'soaplab_server'
+      #redirect_to :controller =>'soaplab_servers',  :action => 'new'
     else
       render :partial => 'unknown_service_type'
     end
       
   end
   
+  
   private 
   def service_maker(service_type)
-    @services = {'SOAP' => SoapService}
-                 #'REST' => RestService,
+    @services = {'SOAP' => SoapService,
+                 'REST' => RestService,
+                 'SOAPLAB-SERVER' => SoapService}
                  #'DAS'  => DasService}
-    @services[service_type]
+    if @services.keys.include?(service_type)
+      return @services[service_type]
+    end
+    return nil
   end
+  
+  
   
   
 end

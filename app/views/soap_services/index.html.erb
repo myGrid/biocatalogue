@@ -1,0 +1,21 @@
+<h1>Listing soap_services</h1>
+
+<table>
+	<tr>
+  		<th>Service Name</th>
+  		<th>Service Description</th>
+	</tr>
+<% for soap_service in @soap_services %>
+  <tr>
+  	<td><%=h soap_service.name %></td>
+    <td><%=h soap_service.description %></td>
+    <td><%= link_to 'Show', soap_service %></td>
+    <td><%= link_to 'Edit', edit_soap_service_path(soap_service) %></td>
+    <td><%= link_to 'Destroy', soap_service, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New soap_service', new_soap_service_path %>

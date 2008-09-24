@@ -1,21 +1,11 @@
 <p>
-  <b>Service type:</b>
-  <%=h @web_service.service_type %>
-</p>
-<!--
-<p>
-  <b>Unique code:</b>
-  <%=h @web_service.unique_code %>
-</p>
--->
-<p>
   <b>Service Name:</b>
-  <%=h @service_instance.name %> 
+  <%=h @soap_service.name %> 
   <br />
-  <%=link_to 'wsdl', @service_instance.wsdl_location %>
+  <%=link_to 'Find wsdl here', @soap_service.wsdl_location %>
 </p>
 <strong>Operations</strong> <p />
-<%for operation in @service_instance.soap_operations %>
+<%for operation in @soap_service.soap_operations %>
 	name: 
 	<%= link_to operation.name, operation %> <br/>
 	inputs:
@@ -34,6 +24,5 @@
 	<br/>
 	<p />
 <%end%>
-
-<%= link_to 'Edit', edit_web_service_path(@web_service) %> |
-<%= link_to 'Back', web_services_path %>
+<%= link_to 'Edit', edit_soap_service_path(@soap_service) %> |
+<%= link_to 'Back', soap_services_path %>

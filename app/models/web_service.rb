@@ -1,3 +1,6 @@
 class WebService < ActiveRecord::Base
-  has_many :soap_services
+  has_many :soap_services, :dependent => :destroy
+  has_many :annotations, :as => :annotatable
+  
+  belongs_to :provider
 end

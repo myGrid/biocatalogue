@@ -1,0 +1,12 @@
+<h1>Editing soap_service</h1>
+
+<% form_for(@soap_service) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @soap_service %> |
+<%= link_to 'Back', soap_services_path %>

@@ -1,0 +1,22 @@
+<h1>Listing soaplab_servers</h1>
+
+<table>
+  <tr>
+  	<th>Name</th>
+    <th>Location</th>
+  </tr>
+
+<% for soaplab_server in @soaplab_servers %>
+  <tr>
+  	<td><%=h soaplab_server.name %></td>
+    <td><%=h soaplab_server.location %></td>
+    <td><%= link_to 'Show', soaplab_servers_path %></td>
+    <td><%= link_to 'Edit', edit_soaplab_servers_path(soaplab_server) %></td>
+    <td><%= link_to 'Destroy', soaplab_server, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New soaplab_server', new_soaplab_servers_path %>
