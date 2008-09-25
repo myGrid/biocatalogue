@@ -53,6 +53,7 @@ class UsersController < ApplicationController
         format.html { redirect_to(@user) }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
+        flash[:error] = 'Could not create new user.'
         format.html { render :action => "new" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
@@ -70,6 +71,7 @@ class UsersController < ApplicationController
         format.html { redirect_to(@user) }
         format.xml  { head :ok }
       else
+        flash[:error] = 'Could not mofify user.'
         format.html { render :action => "edit" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
@@ -102,7 +104,7 @@ class UsersController < ApplicationController
         end
       end
     end
-    flash[:notice] = "Wrong activation code. Please contact the Administrator."
+    flash[:error] = "Wrong activation code. Please contact the Administrator."
   end
   
   private
@@ -111,7 +113,7 @@ class UsersController < ApplicationController
     user = User.find(params[:id])
     unless mine?(user)
       respond_to do |format|
-        flash[:notice] = "You don't have the rights to perform this action."
+        flash[:error] = "You don't have the rights to perform this action."
         format.html { redirect_to :users }
         format.xml  { redirect_to :users => @user.errors, :status => :unprocessable_entity }
       end
