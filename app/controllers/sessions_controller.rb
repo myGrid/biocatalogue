@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
       session[:original_uri] ? (redirect_to session[:original_uri]) : (redirect_to :users)
 
     else
-      flash[:notice] = "Invalid email/password combination !"
+      flash[:error] = "Invalid email/password combination !"
       params[:password] = nil
       render :action => :new
     end
@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
   
   def destroy
     reset_session
-    flash[:notice] = "you've been logged out."
+    flash[:notice] = "You've been logged out."
     redirect_to new_session_url
   end
 
