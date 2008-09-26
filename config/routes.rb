@@ -1,6 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
 	map.resources :soap_services
-  map.resources :web_services, :has_many => :soap_services
+  map.resources :services
   map.resources :users, :collection => { :activate_account => :get}
   map.resource :session
   
