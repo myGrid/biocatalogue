@@ -1,85 +1,85 @@
-class WebServicesController < ApplicationController
-  # GET /web_services
-  # GET /web_services.xml
+class ServicesController < ApplicationController
+  # GET /services
+  # GET /services.xml
   def index
-    @web_services = WebService.find(:all)
+    @services = Service.find(:all)
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @web_services }
+      format.xml  { render :xml => @services }
     end
   end
 
-  # GET /web_services/1
-  # GET /web_services/1.xml
+  # GET /services/1
+  # GET /services/1.xml
   def show
-    @web_service = WebService.find(params[:id])
+    @service = Service.find(params[:id])
     
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @web_service }
+      format.xml  { render :xml => @service }
     end
   end
 
-  # GET /web_services/new
-  # GET /web_services/new.xml
+  # GET /services/new
+  # GET /services/new.xml
   def new
     @service_types = ServiceType.find(:all)
-    @web_service = WebService.new
+    @service = Service.new
     
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @web_service }
+      format.xml  { render :xml => @service }
     end
   end
 
-  # GET /web_services/1/edit
+  # GET /services/1/edit
   def edit
-    @web_service = WebService.find(params[:id])
+    @service = Service.find(params[:id])
   end
 
-  # POST /web_services
-  # POST /web_services.xml
+  # POST /services
+  # POST /services.xml
   def create
-    @web_service      = WebService.new(params[:web_service])
+    @service      = Service.new(params[:service])
     respond_to do |format|
-      if @web_service.save
-        flash[:notice] = 'WebService was successfully created.'
-        format.html { redirect_to(@web_service) }
+      if @service.save
+        flash[:notice] = 'Service was successfully created.'
+        format.html { redirect_to(@service) }
         #format.html { redirect_to(@service_instance) }
-        format.xml  { render :xml => @web_service, :status => :created, :location => @web_service }
+        format.xml  { render :xml => @service, :status => :created, :location => @service }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @web_service.errors, :status => :unprocessable_entity }
+        format.xml  { render :xml => @service.errors, :status => :unprocessable_entity }
       end
     end
   end
 
-  # PUT /web_services/1
-  # PUT /web_services/1.xml
+  # PUT /services/1
+  # PUT /services/1.xml
   def update
-    @web_service = WebService.find(params[:id])
+    @service = Service.find(params[:id])
 
     respond_to do |format|
-      if @web_service.update_attributes(params[:web_service])
-        flash[:notice] = 'WebService was successfully updated.'
-        format.html { redirect_to(@web_service) }
+      if @service.update_attributes(params[:service])
+        flash[:notice] = 'Service was successfully updated.'
+        format.html { redirect_to(@service) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @web_service.errors, :status => :unprocessable_entity }
+        format.xml  { render :xml => @service.errors, :status => :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /web_services/1
-  # DELETE /web_services/1.xml
+  # DELETE /services/1
+  # DELETE /services/1.xml
   def destroy
-    @web_service = WebService.find(params[:id])
-    @web_service.destroy
+    @service = Service.find(params[:id])
+    @service.destroy
 
     respond_to do |format|
-      format.html { redirect_to(web_services_url) }
+      format.html { redirect_to(services_url) }
       format.xml  { head :ok }
     end
   end
