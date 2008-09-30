@@ -19,37 +19,55 @@
 	</head>
 	<body>
 		<div id="doc4" class="yui-t5">
-			<div id="hd">
-  			<div id="header_top">
-  				<div class="logo">
+			<div id="hd"><!-- header -->
+  				<div id="header_top">
+  					<div class="logo">
 						<%= link_to image_tag("logo.png"), "/" %>
 					</div>
-					<div class="links">
-						<p>
-							<% if logged_in? -%>
-								<%= link_to 'Logout', session_path, :method => :delete -%>
-							<% else -%>
-								<%= link_to 'Login', new_session_path -%>
-							<% end -%>
-						</p>
+					<div id="login_box" style="visibility: hidden;">
+						<a href="#" onclick="closeLoginBox('login_box', 'login_link');"><img src="/images/close.gif" alt="Close" title="Close" /></a>				
+						<% form_tag session_path do %>
+					      <span>
+					        <%= text_field_tag :login, params[:login], { :size => 15, :class => 'small_login' } %>
+					        <label for="login">Email:</label>
+					      </span>
+						  <br />			
+					      <span>
+					        <%= password_field_tag :password, params[:password], { :size => 15, :class => 'small_login' } %>
+					        <label for="password">Password:</label>
+					      </span>
+					      <%= submit_tag "Login", { :class => 'small_submit_button' } %>
+						  <br />
+						  <a id="forgot_pwd" href="#">Forgot your<br />password ?</a>
+					    <% end %>
 					</div>
+				</div>
+				<div id="login_links">
+					<p>
+						<% if logged_in? -%>
+							Welcome <%= link_to current_user.display_name, current_user, :id => "user_profile_link", :class => "" -%>&nbsp;|&nbsp;
+							<%= link_to 'Logout', logout_url, :id => "logout_link", :class => "red_arrow", :method => :delete -%>
+						<% else -%>
+							<%= link_to 'Login', "#", :id => "login_link", :class => "green_arrow", :onclick => "showLoginBox(this, 'login_box');" -%>
+						<% end -%>
+					</p>
 				</div>
 			</div>
 			
-			<div id="bd">
+			<div id="bd" style="clear: both;"><!-- body -->
 				<div id="yui-main"> 
   				<div class="yui-b">
   					<div id="main_content">
-							<% if flash[:error] %>
-								<div id="error_flash">
-									<%= white_list flash[:error] %>
-								</div>
-							<% end %>
+						<% if flash[:error] %>
+							<div id="error_flash">
+								<%= white_list flash[:error] %>
+							</div>
+						<% end %>
 	    				<% if flash[:notice] %>
-								<div id="notice_flash">
-									<%= white_list flash[:notice] %>
-								</div>
-							<% end %>
+							<div id="notice_flash">
+								<%= white_list flash[:notice] %>
+							</div>
+						<% end %>
 							
 							<%= yield -%>
 						</div>
@@ -60,7 +78,7 @@
 				</div>
 			</div>
 			
-			<div id="ft">
+			<div id="ft"><!-- footer -->
 				<%= render :partial => "layouts/footer" %>
 			</div>
 		</div>
