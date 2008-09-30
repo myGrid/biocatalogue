@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
     user = User.authenticate(params[:login], params[:password])
     if user
       session[:user_id] = user.id
-      flash[:notice] = "Welcome #{user.email} !"
+      flash[:notice] = "Welcome #{user.display_name} !"
       #redirect_to session[:original_uri]
       # Redirect user to the URI of origin, or to homepage if no URI
       session[:original_uri] ? (redirect_to session[:original_uri]) : (redirect_to :users)
