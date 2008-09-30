@@ -6,6 +6,8 @@ include REXML
   
 
 class SoapService < ActiveRecord::Base
+  before_create :check_duplicates
+  
   belongs_to :web_service
   has_many :soap_operations, :dependent => :destroy
   has_many :annotations, :as => :annotatable
@@ -13,6 +15,7 @@ class SoapService < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :description
   validates_presence_of :wsdl_location
+  #validates_uniqueness_of :wsdl_location
   
   #---------------------------------------------------------
   # this is using the 'virtual attribute' technique  
@@ -40,7 +43,7 @@ class SoapService < ActiveRecord::Base
   #
   
   def get_service_attributes(wsdl_url)
-    wsdl_file = open(wsdl_url).read
+    wsdl_file = open(wsdl_url.strip()).read
     doc       = Document.new(wsdl_file)
     root      = doc.root
     operation_attributes = get_operation_attributes(root)
@@ -52,12 +55,12 @@ class SoapService < ActiveRecord::Base
   
   #-----------------------------------------------------------------------
   # these wsdl parsing functions should be done
-  # through standard wsdl api. 
+  # through standard wsdl api
   #
 
   # This method extracts the service operations from a
-  # wsdl document. The 'operation' tags in the document are
-  # expected to be child tags of the 'portType' tag. Attributes
+  # wsdl document- The 'operation' tags in the document are
+  # expected to be child tags of the 'portType' tag- Attributes
   # of an operation, its inputs and outputs are extracted into
   # an array of hashes
   # Example :
@@ -113,10 +116,10 @@ class SoapService < ActiveRecord::Base
     
     the_operations.each do |operation|
       operation["inputs"] = get_message(the_messages,
-                                  operation["inputs"]["name"])["the_parts"]
+                                  operation["inputs"]["message"].split(':')[1])["the_parts"]
       operation["inputs"] = modify_type_field_name("input", operation["inputs"])                           
       operation["outputs"] = get_message(the_messages,
-                                  operation["outputs"]["name"])["the_parts"]
+                                  operation["outputs"]["message"].split(':')[1])["the_parts"]
       operation["outputs"] = modify_type_field_name("output", operation["outputs"])                            
     end
     return the_operations
@@ -137,6 +140,10 @@ class SoapService < ActiveRecord::Base
        val = d["type"]
        d[param_type+"_type"] = val
        d.delete("type")
+     elsif d.has_key?("element")
+       val = d["element"]
+       d[param_type+"_type"] = val
+       d.delete("element")
      end
      }
      return data
@@ -149,6 +156,18 @@ class SoapService < ActiveRecord::Base
   end
   
   #------------------------------------------------------------------------
+  
+  protected
+  
+  def check_duplicates
+    wsdls =[] 
+    SoapService.find(:all).each{|s| wsdls << s.wsdl_location}
+    if wsdls.include?(self.wsdl_location)
+      errors.add_to_base("A duplicate for this service exists ")
+      return false
+    end
+    true
+  end
   
   
 end
