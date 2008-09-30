@@ -8,6 +8,8 @@
 <%for operation in @soap_service.soap_operations %>
 	name: 
 	<%= link_to operation.name, operation %> <br/>
+	description:
+	<%= operation.description %> <br/>
 	inputs:
 	<%for input in operation.soap_inputs%> 
 		<%if input.input_type != nil %>
