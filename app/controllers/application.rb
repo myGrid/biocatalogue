@@ -47,6 +47,7 @@ class ApplicationController < ActionController::Base
   def current_user
     @current_user ||= (session[:user_id] && User.find(session[:user_id])) || nil
   end
+  helper_method :current_user
   
   # Check if an object belongs to the user logged in
   def mine?(thing)
