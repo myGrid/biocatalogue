@@ -9,11 +9,16 @@
    http://developer.yahoo.com/yui/fonts/#fontsize
 */
 
+/* Colours used in the pages
+light green: #cdeb8b
+dark green: #29af63
+orange: #ff7400
+*/
 
 /* BEGIN temporary styles for test */
 
 div {
-	border: 1px solid #CCCCCC;
+	/*border: 1px solid #CCCCCC;*/
 }
 
 /* END temporary styles for test */
@@ -23,7 +28,7 @@ body {
 	/* Only need to define one font here because the 
 	   YUI Fonts CSS provides a degradation path
 	   (see: http://developer.yahoo.com/yui/fonts/) */
-	font-family: arial;
+	font-family: "Trebuchet MS";
 	background-color: #8e8e8e;
 }
 
@@ -31,12 +36,20 @@ body {
 	background-color: #FFFFFF;
 }
 
+#hd {
+	/*border: 1px solid #ff0000 ;*/
+	background: url(../images/header_gradient_125px.gif) repeat-x #ffffff;
+	height: 125px;
+}
+
 #header_top {
-	margin: 1em 0.5em 0 0.5em;
+	/*margin: 1em 0.5em 0 0.5em;*/
+	padding: 1em 0.5em 0 0.5em;
 }
 
 #header_top .logo {
 	width: 301px;
+	float: left;
 }
 
 #header_top .links {
@@ -59,6 +72,106 @@ body {
 }
 
 #ft {
-	
+	border: 1px solid #CCCCCC;
 }
 
+/* BEGIN link styles */
+
+a {
+	color: #000000;
+}
+
+a:link.green_arrow, a:visited.green_arrow {
+	padding-left: 2px;
+	padding-right: 18px;
+	background: url(../images/green_arrow.gif) right no-repeat;
+	white-space: nowrap;
+}
+
+a:link.red_arrow, a:visited.red_arrow {
+	padding-left: 2px;
+	padding-right: 18px;
+	background: url(../images/red_arrow.gif) right no-repeat;
+	white-space: nowrap;
+}
+
+a:hover.green_arrow {
+	background: url(../images/green_arrow_hover.gif) right no-repeat;
+	text-decoration: underline;
+}
+
+a:hover.red_arrow {
+	background: url(../images/red_arrow_hover.gif) right no-repeat;
+	text-decoration: underline;
+}
+/* END link styles */
+
+/* BEGIN Login box styles */
+
+#login_links {
+	clear: both;
+	float: right;
+	padding-right: 0.5em;
+}
+
+#login_box {
+	position: relative;
+	border: 1px solid #cccccc;
+	width: 215px;
+	height: 90px;
+	font-size: 0.9em;
+	margin: 0 0 auto auto;
+	float: right;
+}
+
+#login_box_content {
+	width: 215px;
+	height: 90px;
+}
+
+#login_box a img {
+	float: right;
+	width: 15px;
+	height: 15px;
+}
+
+#login_box form {
+	clear: both;
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+#login_box span label {
+	float: left;
+	font-weight: bold;
+}
+
+#login_box span input.small_login {
+	clear: both;
+	float: right;
+	height:12px;
+	font-size: 0.9em;
+	background-color: #feffcf;
+}
+
+#login_box input.small_submit_button {
+	clear: both;
+	float: right;
+	position: relative;
+	top: 10px;
+}
+
+#login_box #forgot_pwd {
+	clear: both;
+	float: left;
+	position: relative;
+	top: -12px;
+	font-size: 0.9em;
+	font-weight: bold;
+	white-space: nowrap;
+	text-decoration: underline;
+}
+
+#login_box #forgot_pwd:hover { background-color: #feffcf; }
+
+/* END Login box styles */
