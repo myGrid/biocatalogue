@@ -4,6 +4,6 @@ class ModifySoapInputs < ActiveRecord::Migration
   end
 
   def self.down
-    drop_column :soap_inputs, :input_type
+    remove_column :soap_inputs, :input_type
   end
 end

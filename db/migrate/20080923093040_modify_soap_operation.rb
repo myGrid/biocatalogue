@@ -4,6 +4,6 @@ class ModifySoapOperation < ActiveRecord::Migration
   end
 
   def self.down
-    drop_column :soap_operations, :parameterOrder
+    remove_column :soap_operations, :parameterOrder
   end
 end
