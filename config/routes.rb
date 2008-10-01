@@ -1,7 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
-	map.resources :soap_services
-  map.resources :services
-  map.resources :users, :collection => { :activate_account => :get}
+	
+  map.resources :users, :collection => { :activate_account => :get }
   map.resource :session
   
   map.register '/register', :controller => 'users', :action => 'new'
@@ -9,11 +8,16 @@ ActionController::Routing::Routes.draw do |map|
   map.logout '/logout', :controller => 'sessions', :action => 'destroy'
   map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil  
 
+  map.resources :soap_services
   map.resources :soap_operations
   map.resources :soap_inputs
   map.resources :soap_outputs
+  
   map.resources :soaplab_servers
   
+  map.resources :services
+  
+  # Root of website
   map.root :controller => 'users', :action => 'new'
   
   # The priority is based upon order of creation: first created -> highest priority.
