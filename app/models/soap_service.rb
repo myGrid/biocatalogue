@@ -6,9 +6,11 @@ include REXML
   
 
 class SoapService < ActiveRecord::Base
+  
+  acts_as_service_versionified
+  
   before_create :check_duplicates
   
-  belongs_to :web_service
   has_many :soap_operations, :dependent => :destroy
   has_many :annotations, :as => :annotatable
   

@@ -1,0 +1,12 @@
+<h1>Editing service_deployment</h1>
+
+<% form_for(@service_deployment) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @service_deployment %> |
+<%= link_to 'Back', service_deployments_path %>

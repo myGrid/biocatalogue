@@ -1,0 +1,12 @@
+<h1>Editing service_version</h1>
+
+<% form_for(@service_version) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @service_version %> |
+<%= link_to 'Back', service_versions_path %>

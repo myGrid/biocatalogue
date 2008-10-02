@@ -1,6 +1,13 @@
 class Service < ActiveRecord::Base
-  has_many :soap_services, :dependent => :destroy
-  has_many :annotations, :as => :annotatable
+  has_many :service_versions, 
+           :dependent => :destroy
   
-  belongs_to :provider
+  has_many :service_deployments, 
+           :dependent => :destroy
+  
+  has_many :annotations, 
+           :as => :annotatable, 
+           :dependent => :destroy
+  
+  
 end
