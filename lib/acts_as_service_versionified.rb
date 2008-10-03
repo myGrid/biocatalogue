@@ -10,11 +10,13 @@ module BioCatalogue
           has_one :service_version, 
                   :as => :service_versionified,
                   :dependent => :destroy
-                  
+          
+          # This assumes the presence of a 'service' association
+          # in the ServiceVersion model.
           has_one :service,
                   :through => :service_version
           
-          # This assumes the presence of a service_deployments association
+          # This assumes the presence of a 'service_deployments' association
           # in the ServiceVersion model.
           has_many :service_deployments,
                    :through => :service_version
