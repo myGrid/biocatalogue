@@ -94,8 +94,10 @@ class ServicesController < ApplicationController
     
     if service_type == 'SOAP'
       render :partial=> 'soap'
+      #redirect_to :controller =>'soap_services',  :action => 'new'
     elsif service_type == 'REST'
       render :partial=> 'rest'
+      #redirect_to :controller =>'rest_services',  :action => 'new'
     elsif service_type == 'DAS'
       render :partial=> 'das'
     elsif service_type == 'SOAPLAB-SERVER'

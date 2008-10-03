@@ -1,0 +1,18 @@
+xml.instruct!
+
+xml.rss "version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
+ xml.channel do
+   xml.title("BioCatalogue Pilot, All Soap Services")
+   xml.link(url_for(:only_path=>false, :controller=>'soap_services'))
+   xml.description("All BioCatalogue Soap Services ")
+   @soap_services.each do |service|
+     xml.item do
+       xml.title(service.name)
+       xml.link(url_for(:only_path=>false, :controller=>'soap_services',:action=>'show', :id=>service.id)) 
+       xml.description(service.description)
+       xml.guid(url_for(:only_path=>false, :controller=>'soap_services')) 
+     end
+   end
+
+ end
+end

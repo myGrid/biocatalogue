@@ -1,12 +1,19 @@
 class SoapServicesController < ApplicationController
+  before_filter :login_required, :only => [:new, :create, :update, :destroy]
+  
   # GET /soap_services
   # GET /soap_services.xml
   def index
-    @soap_services = SoapService.find(:all)
+    @soap_services = SoapService.find(:all, :order => "id DESC")
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @soap_services }
+      
+      format.rss do
+        #response.headers['Content-Type'] = 'application/rss+xml'
+        render :action => 'rss', :layout => false
+      end
     end
   end
 
@@ -41,9 +48,9 @@ class SoapServicesController < ApplicationController
   # POST /soap_services.xml
   def create
     @soap_service = SoapService.new(params[:soap_service])
-    params[:soap_service]['new_service_attributes'] = @soap_service.get_service_attributes(
-                                                              params[:soap_service][:wsdl_location])
-    @soap_service = SoapService.new(params[:soap_service])
+    #params[:soap_service]['new_service_attributes'] = @soap_service.get_service_attributes(
+    #                                                          params[:soap_service][:wsdl_location])
+    #@soap_service = SoapService.new(params[:soap_service])
     respond_to do |format|
       if @soap_service.save
         flash[:notice] = 'SoapService was successfully created.'
@@ -84,4 +91,5 @@ class SoapServicesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
 end
