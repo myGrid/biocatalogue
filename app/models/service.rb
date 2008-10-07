@@ -8,6 +8,11 @@ class Service < ActiveRecord::Base
   has_many :annotations, 
            :as => :annotatable, 
            :dependent => :destroy
+           
+  belongs_to :submitter,
+             :class_name => "User",
+             :foreign_key => "submitter_id"
   
-  
+  validates_presence_of :name
+  validates_presence_of :unique_code
 end
