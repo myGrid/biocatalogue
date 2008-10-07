@@ -2,7 +2,7 @@ class SoaplabServersController < ApplicationController
   # GET /soaplab_servers
   # GET /soaplab_servers.xml
   def index
-    @soaplab_servers = SoaplabServer.find(:all)
+    @soaplab_servers = SoaplabServer.find(:all, :order => 'id DESC')
 
     respond_to do |format|
       format.html # index.html.erb
@@ -44,7 +44,7 @@ class SoaplabServersController < ApplicationController
 
     respond_to do |format|
       if @soaplab_server.save
-        @soaplab_server.save_services
+        #@soaplab_server.save_services
         flash[:notice] = 'SoaplabServer was successfully created.'
         format.html { redirect_to(@soaplab_server) }
         format.xml  { render :xml => @soaplab_server, :status => :created, :location => @soaplab_server }
