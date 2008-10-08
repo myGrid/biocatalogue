@@ -13,6 +13,11 @@ class Service < ActiveRecord::Base
              :class_name => "User",
              :foreign_key => "submitter_id"
   
-  validates_presence_of :name
-  validates_presence_of :unique_code
+  validates_presence_of :name, :unique_code
+  
+  validates_associated :service_versions
+  
+  validates_associated :service_deployments
+  
+  validates_existence_of :submitter   # User must exist in the db beforehand.
 end

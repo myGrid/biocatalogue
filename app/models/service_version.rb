@@ -5,4 +5,6 @@ class ServiceVersion < ActiveRecord::Base
              :polymorphic => true
   
   has_many :service_deployments
+  
+  validates_presence_of :version
 end
