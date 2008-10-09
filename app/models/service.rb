@@ -8,7 +8,7 @@ class Service < ActiveRecord::Base
            :dependent => :destroy
   
   has_many :annotations, 
-           :as => :annotatable, 
+           :as => :annotatable,
            :dependent => :destroy
            
   belongs_to :submitter,
