@@ -1,6 +1,8 @@
 require 'open-uri'
 
 class SoaplabServer < ActiveRecord::Base
+  acts_as_trashable
+  
   before_create :save_services
    
   def save_services

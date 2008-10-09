@@ -1,4 +1,6 @@
 class Service < ActiveRecord::Base
+  acts_as_trashable
+  
   has_many :service_versions, 
            :dependent => :destroy
   
@@ -12,6 +14,8 @@ class Service < ActiveRecord::Base
   belongs_to :submitter,
              :class_name => "User",
              :foreign_key => "submitter_id"
+             
+  attr_protected :unique_code 
   
   validates_presence_of :name, :unique_code
   

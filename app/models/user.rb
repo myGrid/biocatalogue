@@ -1,6 +1,7 @@
 require 'digest/sha1'
 
 class User < ActiveRecord::Base
+  acts_as_trashable
   
   validates_presence_of       :email
   validates_presence_of       :password, :if => :password_required?

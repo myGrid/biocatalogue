@@ -7,6 +7,9 @@ require 'lib/acts_as_service_versionified'
 
 class SoapService < ActiveRecord::Base
   include BiocatWSDL
+  
+  acts_as_trashable
+  
   before_create :check_duplicates, :get_service_attributes
   
   acts_as_service_versionified
