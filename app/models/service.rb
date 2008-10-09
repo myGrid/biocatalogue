@@ -15,7 +15,7 @@ class Service < ActiveRecord::Base
              :class_name => "User",
              :foreign_key => "submitter_id"
              
-  attr_protected :unique_code 
+  attr_protected :unique_code
   
   validates_presence_of :name, :unique_code
   
