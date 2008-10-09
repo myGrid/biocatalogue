@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
         if user
           @current_user = user
         else
-          request_http_basic_authetication
+          request_http_basic_authentication
         end
       end
     end
