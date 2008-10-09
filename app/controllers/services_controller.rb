@@ -24,7 +24,6 @@ class ServicesController < ApplicationController
   # GET /services/new
   # GET /services/new.xml
   def new
-    @service_types = ServiceType.find(:all)
     @service = Service.new
     
     respond_to do |format|
@@ -41,17 +40,11 @@ class ServicesController < ApplicationController
   # POST /services
   # POST /services.xml
   def create
-    @service      = Service.new(params[:service])
+    # Creation of a Service resource is not allowed. Must be created as part of the creation of a specific service type resource.
+    flash[:error] = 'Select the type of service you would like to submit'
     respond_to do |format|
-      if @service.save
-        flash[:notice] = 'Service was successfully created.'
-        format.html { redirect_to(@service) }
-        #format.html { redirect_to(@service_instance) }
-        format.xml  { render :xml => @service, :status => :created, :location => @service }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @service.errors, :status => :unprocessable_entity }
-      end
+      format.html { redirect_to(new_service_url) }
+      format.xml  { render :xml => '', :status => 406 }
     end
   end
 
