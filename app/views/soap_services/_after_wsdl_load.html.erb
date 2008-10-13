@@ -1,0 +1,7 @@
+<div>
+	<% if !@error_message.blank? -%>
+		<p class="error_text"><%= h @error_message -%></p>
+	<% else %>
+		<%= render :partial => "form" %>		
+	<% end -%>
+</div>

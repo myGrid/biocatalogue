@@ -1,5 +1,5 @@
 class SoapServicesController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :update, :destroy]
+  before_filter :login_required, :except => [:index, :show]
   
   # GET /soap_services
   # GET /soap_services.xml
@@ -31,6 +31,7 @@ class SoapServicesController < ApplicationController
   # GET /soap_services/new.xml
   def new
     @soap_service = SoapService.new
+    @error_message = "Enter a WSDL URL to load up first"
 
     respond_to do |format|
       format.html # new.html.erb
@@ -88,6 +89,18 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(soap_services_url) }
       format.xml  { head :ok }
+    end
+  end
+  
+  def load_wsdl
+    if params[:wsdl_url].blank?
+      @error_message = "Please provide a valid WSDL URL"
+    else
+      
+    end
+    respond_to do |format|
+      format.html { render :partial => "after_wsdl_load" }
+      format.xml  { render :xml => '', :status => 406 }
     end
   end
   

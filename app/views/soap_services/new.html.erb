@@ -1,22 +1,27 @@
-<h1>New soap_service</h1>
+<% t "New SOAP Service" -%>
 
-<% form_for(@soap_service) do |f| %>
-  <%= f.error_messages %>
-	<p>Name: <br/>
-    <%= f.text_field :name %>
-  </p>
-  
-  <p>location: <br/>
-    <%= f.text_field :wsdl_location %>
-  </p>
-  
-  <p>Description: <br/>
-    <%= f.text_area :description %>
-  </p>
-  
-  <p>
-    <%= f.submit "submit new service" %>
-  </p>
-<% end %>
+<h1>New SOAP Service</h1>
 
-<%= link_to 'Back', soap_services_path %>
+<%= error_messages_for :soap_service %>
+
+<% form_remote_tag(:url => load_wsdl_soap_services_url, 
+								   :update => 'soap_service_form', 
+							 		 :success => "new Effect.Highlight('soap_service_form', { duration: 1.5 });",
+							     :loading => "Element.show('spinner')",
+                   :complete => "Element.hide('spinner')") do -%>
+
+	<p class="step_text">1. Specify the URL to the WSDL of the service, then load...</p>
+	
+	<div class="box_form">
+		<p style="text-align: center;">
+			<%= image_tag "spinner.gif", :id => "spinner", :style => "display: none; float: right; vertical-align: top;" -%>
+			<%= text_field_tag "wsdl_url", params[:wsdl_url], :size => 100, :style => "vertical-align: middle;" -%>
+			<%= submit_tag "Load", :style => "vertical-align: middle;" -%>
+		</p>
+	</div>
+
+<% end -%>
+
+<div id="soap_service_form">
+	<%= render :partial => "after_wsdl_load" %>
+</div>

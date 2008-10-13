@@ -1,34 +1,15 @@
-<h1>New Service</h1>
+<% t "Submit a New Service" -%>
 
-<% form_for(@service) do |f| %>
-  <%= f.error_messages %>
- <!--
-  <p>
-    <%= f.label :service_type %><br />
-    <%= f.text_field :service_type %>
-  </p>
-  <p>
-    <%= f.label :unique_code %><br />
-    <%= f.text_field :unique_code %>
-  </p>
-  
-  
-   -->
-   
-   <select id="service_service_type" name="service[service_type]" onchange="<%=remote_function(:url => {:action => 'update_service_registration_form'},
-                                      :update => 'service_type_container',
-                                      :with => "'service_type=' + getMenuValue('service_service_type')") %>">
-   	
-	<%= options_from_collection_for_select(@service_types, :name, :name) %> 
-   </select>
-									
-  <p>
-  <div id="service_type_container"></div>
-  </p>
-    
-  <p>
-    <%= f.submit "Create" %>
-  </p>
-<% end %>
+<h1>Submit a New Service</h1>
 
-<%= link_to 'Back', services_path %>
+<p>
+	Click on the type of service you would like to submit...
+</p>
+
+<ul>
+	<% SERVICE_TYPES.each do |name, klass| -%>
+		<li>
+			<%= link_to(name, eval("new_#{klass.to_s.underscore}_url")) -%>
+		</li>
+	<% end %>
+</ul>

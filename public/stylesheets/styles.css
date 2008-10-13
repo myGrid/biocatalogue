@@ -30,6 +30,15 @@ body {
 	   (see: http://developer.yahoo.com/yui/fonts/) */
 	font-family: "Trebuchet MS";
 	background-color: #8e8e8e;
+	
+	line-height: 1.0;
+}
+
+p {
+	padding: 0.3em 0;
+	line-height: 1.4;
+	text-align: left;
+	margin-bottom: 0em;
 }
 
 #doc4 {
@@ -175,3 +184,19 @@ a:hover.red_arrow {
 #login_box #forgot_pwd:hover { background-color: #feffcf; }
 
 /* END Login box styles */
+
+ .error_text {
+ 	color: red;
+	font-weight: bold;
+ }
+ 
+.box_form {
+	background-color: #EEEEEE;
+	border: 1px dotted #999999;
+	padding: 0.8em 1.4em;
+}
+
+#soap_service_form {
+	margin: 1.5em 0;
+	border: 1px dotted #999999;
+}
