@@ -60,29 +60,6 @@ class SoapServicesController < ApplicationController
         format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
       end
     end
-    
-    
-    def bulk_new
-      @soap_service = SoapService.new
-
-      respond_to do |format|
-        format.html # new.html.erb
-        format.xml  { render :xml => @soap_service }
-      end
-    end
-    
-    def bulk_create
-      @soap_service = SoapService.new(params[:soap_service])
-      @urls = []
-      params[:bulk_submit].each { |line|
-      urls << line.strip if line =~ /http:/}
-      @urls.each do |url|
-        params[:soap_service][:wsdl_location] = url
-        create
-      end
-      
-      
-    end
   end
 
   # PUT /soap_services/1
