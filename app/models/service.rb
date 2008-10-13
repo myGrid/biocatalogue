@@ -19,6 +19,8 @@ class Service < ActiveRecord::Base
   
   validates_presence_of :name, :unique_code
   
+  validates_uniqueness_of :unique_code
+  
   validates_associated :service_versions
   
   validates_associated :service_deployments
