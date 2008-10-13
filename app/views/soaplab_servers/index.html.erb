@@ -1,5 +1,6 @@
 <h1>Listing soaplab_servers</h1>
-
+<%= link_to 'soap services', '/soap_services' %>
+<p/>
 <table>
   <tr>
   	<th>Name</th>
@@ -11,7 +12,7 @@
   	<td><%=h soaplab_server.name %></td>
     <td><%=h soaplab_server.location %></td>
     <td><%= link_to 'Show', soaplab_servers_path %></td>
-    <td><%= link_to 'Edit', edit_soaplab_servers_path(soaplab_server) %></td>
+    
     <td><%= link_to 'Destroy', soaplab_server, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
@@ -19,4 +20,4 @@
 
 <br />
 
-<%= link_to 'New soaplab_server', new_soaplab_servers_path %>
+

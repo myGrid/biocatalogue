@@ -4,16 +4,14 @@ class SoapServicesController < ApplicationController
   # GET /soap_services
   # GET /soap_services.xml
   def index
-    @soap_services = SoapService.find(:all, :order => "id DESC")
-
+    #@soap_services = SoapService.find(:all, :order => "id DESC")
+    @soap_services = SoapService.paginate :all, :page => params[:page], 
+                                                :order => "created_at DESC", 
+                                                :per_page => 10
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @soap_services }
-      
-      format.rss do
-        #response.headers['Content-Type'] = 'application/rss+xml'
-        render :action => 'rss', :layout => false
-      end
+      format.rss  { render :rss => @soap_services, :layout => false}
     end
   end
 
@@ -25,6 +23,7 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @soap_service }
+      format.rss  { render :rss => @soap_service, :layout => false}
     end
   end
 
@@ -60,6 +59,29 @@ class SoapServicesController < ApplicationController
         format.html { render :action => "new" }
         format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
       end
+    end
+    
+    
+    def bulk_new
+      @soap_service = SoapService.new
+
+      respond_to do |format|
+        format.html # new.html.erb
+        format.xml  { render :xml => @soap_service }
+      end
+    end
+    
+    def bulk_create
+      @soap_service = SoapService.new(params[:soap_service])
+      @urls = []
+      params[:bulk_submit].each { |line|
+      urls << line.strip if line =~ /http:/}
+      @urls.each do |url|
+        params[:soap_service][:wsdl_location] = url
+        create
+      end
+      
+      
     end
   end
 

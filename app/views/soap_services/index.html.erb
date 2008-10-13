@@ -1,10 +1,14 @@
 <%= link_to 'New soap_service', new_soap_service_path %>
 <p/>
+<%= link_to image_tag("rss.PNG", :size => "25x25") , formatted_soap_services_url(:rss)%>
+<p/>
 <table>
 	<tr>
   		<th>Service Name</th>
   		<th>Service Description</th>
 	</tr>
+<%= will_paginate @soap_services%>
+<p/>
 <% for soap_service in @soap_services %>
   <tr>
   	<td><%=h soap_service.name %></td>
