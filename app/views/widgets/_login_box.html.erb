@@ -1,7 +1,5 @@
-<div id="login_box" style="visibility: hidden;">
-	<a href="#" onclick="closeLoginBox('login_box', 'login_link');">
-		<%= image_tag "close.gif", :alt => "Close", :title => "Close" -%>
-	</a>				
+<div id="login_box">
+	<%= link_to image_tag("close.gif", :alt => "Close login box"), "#", :onclick => "closeLoginBox('login_box', 'login_link');" %>				
 	<% form_tag session_path do %>
       <span>
         <%= text_field_tag :login, params[:login], { :size => 15, :class => 'small_login' } %>
