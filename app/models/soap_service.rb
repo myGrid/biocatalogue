@@ -1,8 +1,8 @@
 
 require 'open-uri'
 require 'rexml/document'
-require 'lib/biocat_wsdl_parser'
-require 'lib/acts_as_service_versionified'
+require 'biocat_wsdl_parser'
+require 'acts_as_service_versionified'
 
 
 class SoapService < ActiveRecord::Base
@@ -47,7 +47,6 @@ class SoapService < ActiveRecord::Base
   #
   # data structure :
   #
-  protected
   #------------------------------------------------
   # get the service attributes from a wsdl url
   # supplied in the web form
@@ -84,6 +83,8 @@ class SoapService < ActiveRecord::Base
     end
     return the_operations
   end
+  
+protected
   
   def check_duplicates
     wsdls =[] 

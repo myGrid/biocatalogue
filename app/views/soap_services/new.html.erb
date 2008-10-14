@@ -4,23 +4,26 @@
 
 <%= error_messages_for :soap_service %>
 
+<p class="step_text">1. Specify the URL to the WSDL of the service, then preview...</p>
+
 <% form_remote_tag(:url => load_wsdl_soap_services_url, 
 								   :update => 'soap_service_form', 
 							 		 :success => "new Effect.Highlight('soap_service_form', { duration: 1.5 });",
 							     :loading => "Element.show('spinner')",
                    :complete => "Element.hide('spinner')") do -%>
-
-	<p class="step_text">1. Specify the URL to the WSDL of the service, then load...</p>
 	
-	<div class="box_form">
-		<p style="text-align: center;">
-			<%= image_tag "spinner.gif", :id => "spinner", :style => "display: none; float: right; vertical-align: top;" -%>
-			<%= text_field_tag "wsdl_url", params[:wsdl_url], :size => 100, :style => "vertical-align: middle;" -%>
-			<%= submit_tag "Load", :style => "vertical-align: middle;" -%>
+	<div>
+		<p style=" margin-top: 0;">
+			<%= text_field_tag "wsdl_url", params[:wsdl_url], :size => 60, :style => "vertical-align: middle;" -%>
+			<%= submit_tag "Preview", :style => "vertical-align: middle;" -%>
+			<%= image_tag "spinner.gif", :id => "spinner", :style => "display: none; vertical-align: middle;" -%>
 		</p>
 	</div>
 
 <% end -%>
+
+<p class="step_text">2. Check the details, then submit... </p>
+<p style="color: #666666;">After submission you will be able to provide more information</p>
 
 <div id="soap_service_form">
 	<%= render :partial => "after_wsdl_load" %>

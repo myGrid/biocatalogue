@@ -2,7 +2,7 @@
 module ApplicationHelper
   
   def controller_visible_name(controller_name)
-    controller_name.humanize
+    controller_name.humanize.titleize
   end
   
 end

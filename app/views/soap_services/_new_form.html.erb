@@ -1,0 +1,100 @@
+<% form_for(@soap_service) do |f| %>
+	<%= f.error_messages %>
+	
+	<table style="width: 100%;">
+		<tr>
+			<td style="width: 49%; border-right: 1px dotted #999999; padding-right: 2em; ">
+
+				<!-- Name -->
+				<%= f.hidden_field :name -%>
+				<div>
+					Name: <br/>
+					<% unless @soap_service.name.blank? %>
+						<p class="field"><%= h @soap_service.name -%></p>
+					<% else %>
+						<p class="none_text">Not available</p>
+					<% end %>
+			  </div>
+				
+				<!-- WSDL Location -->
+				<%= f.hidden_field :wsdl_location -%>
+				<div>
+					WSDL Location: <br/>
+					<% unless @soap_service.wsdl_location.blank? %>
+						<p class="field"><%= h @soap_service.wsdl_location -%></p>
+					<% else %>
+						<p class="none_text">Not available</p>
+					<% end %>
+			  </div>
+				
+				<!-- Description -->
+				<%= f.hidden_field :description -%>
+				<div>
+					Description: <br/>
+					<% unless @soap_service.description.blank? %>
+						<p class="field"><%= h @soap_service.description -%></p>
+					<% else %>
+						<p class="none_text">Not available</p>
+					<% end %>
+			  </div>
+				
+				<!-- Documentation URL -->
+				<%= f.hidden_field :documentation_url -%>
+				<div>
+					Documentation URL: <br/>
+					<% unless @soap_service.documentation_url.blank? %>
+						<p class="field"><%= h @soap_service.documentation_url -%></p>
+					<% else %>
+						<p class="none_text">Not available</p>
+					<% end %>
+			  </div>
+				
+				<br/>
+				
+				<!-- Operations -->
+				<% unless @wsdl_info.blank? %>
+					<div>
+						<p><b>This service has the following operations:</b></p>
+						
+						<div class="field">
+							<ul>
+								<% @wsdl_info.each do |item| -%>
+									<li><%= "#{h item['operation']['name']} (#{item['inputs'].length} inputs, #{item['outputs'].length} outputs)" -%></li>
+								<% end -%>
+							</ul>
+						</div>
+					</div>
+				<% end -%>
+			</td>
+			<td style="width: 49%; padding-left: 2em;">
+				<!-- Add new name alias -->
+				<p>
+					<%= link_to_function "Add new name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
+				</p>
+				<div id="new_name_box" style="display: none;">
+					<p><%= text_field_tag :new_name, params[:new_name], :size => 60 %></p>
+				</div>
+				
+				<!-- Add new description -->
+				<p>
+					<%= link_to_function "Add new description...", visual_effect(:toggle_blind, "new_description_box", :duration => 0.3) %>
+				</p>
+				<div id="new_description_box" style="display: none;">
+					<p><%= text_area_tag :new_description, params[:new_description], :cols => 60, :rows => 6 %></p>
+				</div>
+				
+				<!-- Add new documentation URL -->
+				<p>
+					<%= link_to_function "Add new documentation URL...", visual_effect(:toggle_blind, "new_doc_url_box", :duration => 0.3) %>
+				</p>
+				<div id="new_doc_url_box" style="display: none;">
+					<p><%= text_field_tag :new_documentation_url, params[:new_documentation_url], :size => 60 %></p>
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+  <p style="text-align: center; margin-top: 1.5em;">
+    <%= f.submit "Submit" %>
+  </p>
+<% end %>

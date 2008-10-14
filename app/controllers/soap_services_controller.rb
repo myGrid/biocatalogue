@@ -31,7 +31,6 @@ class SoapServicesController < ApplicationController
   # GET /soap_services/new.xml
   def new
     @soap_service = SoapService.new
-    @error_message = "Enter a WSDL URL to load up first"
 
     respond_to do |format|
       format.html # new.html.erb
@@ -96,7 +95,16 @@ class SoapServicesController < ApplicationController
     if params[:wsdl_url].blank?
       @error_message = "Please provide a valid WSDL URL"
     else
+      @soap_service = SoapService.new(:wsdl_location => params[:wsdl_url].strip)
       
+      begin
+        @wsdl_info = @soap_service.get_service_attributes
+        @error_message = nil
+      rescue Exception => ex
+        @error_message = "Failed to load the WSDL location provided."
+        logger.info("ERROR: failed to load WSDL from location - #{params[:wsdl_url]}. Exception:")
+        logger.info(ex)
+      end
     end
     respond_to do |format|
       format.html { render :partial => "after_wsdl_load" }
