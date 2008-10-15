@@ -18,7 +18,6 @@ class SoapService < ActiveRecord::Base
   has_many :annotations, :as => :annotatable
   
   validates_presence_of :name
-  validates_presence_of :description
   validates_presence_of :wsdl_location
   #validates_uniqueness_of :wsdl_location
   validates_associated :soap_operations
@@ -72,7 +71,7 @@ class SoapService < ActiveRecord::Base
                                                         message_attributes)
     name_and_desc        = get_name_and_description(root)
     self.name            = name_and_desc['name']
-    self.description     = name_and_desc['description'] || "No description in wsdl"
+    self.description     = name_and_desc['description']
     self.new_service_attributes = service_attributes
     
     #return service_attributes
