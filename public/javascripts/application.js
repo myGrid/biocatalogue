@@ -41,36 +41,7 @@ function getY(elt)
 function showCoordinates(elt) {
   alert("X="+getX(elt)+" Y="+getY(elt));
 }
-/*
-function showLoginBox(openLinkID, boxID) {
-	var x = getX(openLinkID);
-	var y = getY(openLinkID);
-	var box = document.getElementById(boxID);
-	if (box) {
-		//x += 10;
-		//y -= 150;
-    	//box.style.left = x + "px";
-    	//box.style.top = y + "px";
-    	//box.style.display = 'block';
-		openLinkID.style.visibility = 'hidden';
-		box.style.visibility = 'visible';
-		//$(boxID).appear({ duration: 1.0 });
-		//openLinkID.style.display = 'none';
-	}
-}
 
-function closeLoginBox(boxID, openLinkID) {
-	var box = document.getElementById(boxID);
-	var link = document.getElementById(openLinkID);
-	if (box && link) {
-		//box.style.display = 'none';
-		link.style.visibility = 'visible';
-		box.style.visibility = 'hidden';
-		//$(boxID).fade({ duration: 1.0 });
-		//$(openLinkID).appear({ duration: 1.0 });
-	}
-}
-*/
 function showLoginBox(openLinkID, boxID) {
 	var x = getX(openLinkID);
 	var y = getY(openLinkID);
@@ -80,10 +51,11 @@ function showLoginBox(openLinkID, boxID) {
 		//y += 20;
     	//box.style.left = x + "px";
     	//box.style.top = y + "px";
-    	box.style.display = 'block';
+    	//box.style.display = 'block';
 		//openLinkID.style.visibility = 'hidden';
 		//box.style.visibility = 'visible';
 		//$(boxID).appear({ duration: 1.0 });
+		$(boxID).blindDown({ duration: 1.0 });
 		//openLinkID.style.display = 'none';
 	}
 }
@@ -92,10 +64,11 @@ function closeLoginBox(boxID, openLinkID) {
 	var box = document.getElementById(boxID);
 	var link = document.getElementById(openLinkID);
 	if (box && link) {
-		box.style.display = 'none';
+		//box.style.display = 'none';
 		//link.style.visibility = 'visible';
 		//box.style.visibility = 'hidden';
 		//$(boxID).fade({ duration: 1.0 });
+		$(boxID).blindUp({ duration: 1.0 });
 		//$(openLinkID).appear({ duration: 1.0 });
 	}
 }

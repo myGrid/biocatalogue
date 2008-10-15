@@ -557,7 +557,7 @@ span.clear {
 	position: absolute;
 	top: 9em;
 	right: 2em;
-	display: none;
+	/*display: none;*/
 	/*background: url(../images/orange_dot_bkgd.gif);*/
 	background-color: #e9f7cc;
 	border: 1px solid #cccccc;
