@@ -53,20 +53,32 @@ class SoapService < ActiveRecord::Base
   #
   def get_service_attributes
     wsdl_url = self.wsdl_location  #set at instantiation
-    wsdl_file = open(wsdl_url.strip()).read
-    doc       = Document.new(wsdl_file)
-    root      = doc.root
+    begin
+      wsdl_file = open(wsdl_url.strip()).read
+      doc       = Document.new(wsdl_file)
+      root      = doc.root
+      if root == nil 
+        raise 
+      end
+    rescue
+      errors.add_to_base("there was a problem reading the wsdl file")
+      return false
+    end
+    
+    
     operation_attributes = get_operation_attributes(root)
     message_attributes   = get_message_attributes(root)
     service_attributes   = format_service_attributes(operation_attributes,
                                                         message_attributes)
     name_and_desc        = get_name_and_description(root)
     self.name            = name_and_desc['name']
-    self.description     = name_and_desc['description']
+    self.description     = name_and_desc['description'] || "No description in wsdl"
     self.new_service_attributes = service_attributes
+    
     #return service_attributes
   end
   
+  #protected
   #--------------------------------------------------------------------
   # helper functions to structure the data so that
   # it can be transactionally saved to the database
@@ -81,6 +93,7 @@ class SoapService < ActiveRecord::Base
                                   operation["outputs"]["message"].split(':')[1])["the_parts"]
       operation["outputs"] = modify_type_field_name("output", operation["outputs"])                            
     end
+    errors.add_to_base("service should have at least one operation, got none!") if the_operations.empty?
     return the_operations
   end
   

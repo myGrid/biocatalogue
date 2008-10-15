@@ -112,4 +112,38 @@ class SoapServicesController < ApplicationController
     end
   end
   
+    def bulk_new
+      @soap_service = SoapService.new
+
+      respond_to do |format|
+        format.html # new.html.erb
+        format.xml  { render :xml => @soap_service }
+      end
+    end
+    
+    def bulk_create
+      @soap_service = SoapService.new #(params[:soap_service])
+      
+      urls = []
+      params[:soap_service][:description].each { |line|
+      urls << line.strip if line =~ /http:/}
+      if urls.empty?
+        @soap_service.errors.add_to_base('No service urls were found!')
+        render :action =>'bulk_new'
+      else
+      urls.each do |url|
+        @soap_service.wsdl_location = url
+        @soap_service.get_service_attributes
+        if @soap_service.save
+          flash[:notice] = 'SoapService was successfully created.'
+        else
+          @soap_service.errors.add_to_base("service with url, #{url}, was not saved")
+          render(:action => 'new') and return
+        end
+      end 
+      
+      end
+      
+    end
+  
 end

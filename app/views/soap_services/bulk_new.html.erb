@@ -1,0 +1,17 @@
+<h1>Submit services</h1>
+
+<% form_for @soap_service, :url =>{:controller => 'soap_services',:action => "bulk_create"}  do |f| %>
+  <%= f.error_messages %>
+  <p> List the URLs for the services you want to submit in the box below. <br />
+      Each URL should be should be on a separate line
+  </p>
+    <%= f.text_area :description %>
+  </p>
+  
+  <p>
+    <%= submit_tag 'create all',  :url => { :action => 'bulk_create' } %>
+
+  </p>
+<% end %>
+
+<%= link_to 'Back', soap_services_path %>

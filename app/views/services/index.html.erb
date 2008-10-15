@@ -2,13 +2,11 @@
 
 <table>
   <tr>
-    <th>Service type</th>
     <th>Unique code</th>
   </tr>
 
 <% for service in @services %>
   <tr>
-    <td><%=h service.service_type %></td>
     <td><%=h service.unique_code %></td>
     <td><%= link_to 'Show', service %></td>
     <td><%= link_to 'Edit', edit_service_path(service) %></td>
