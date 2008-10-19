@@ -185,27 +185,6 @@ td {
   height: 0.75em;
   /*background: #e9f7cc url(images/bg-navigation.png) repeat-x 50% 100%;*/
 }
-/*
-#header-region .block {
-  display: block;
-  margin: 0 1em;
-}
-
-#header-region .block-region {
-  display: block;
-  margin: 0 0.5em 1em;
-  padding: 0.5em;
-  position: relative;
-  top: 0.5em;
-}
-
-#header-region * {
-  display: inline;
-  line-height: 1.5em;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-*/
 
 #wrapper {
   background: #e9f7cc url(../images/central_part_3.gif) repeat-x top center;
@@ -226,31 +205,10 @@ td {
   position: absolute;
   padding-top: 5px;
 }
-/*
-#wrapper #container #header h1, #wrapper #container #header h1 a:link, #wrapper #container #header h1 a:visited {
-  line-height: 120px;
-  position: relative;
-  z-index: 2;
-  white-space: nowrap;
-}
 
-#wrapper #container #header h1 span {
-  font-weight: bold;
-}
-
-#wrapper #container #header h1 img {
-  padding-top: 16px;
-  padding-right: 20px;
-  float: left;
-}
-*/
-/* With 3 columns, require a minimum width of 1000px to ensure there is enough horizontal space. */
-body.sidebars {
-  min-width: 980px;
-}
 /* With 2 columns, require a minimum width of 800px. */
-body.sidebar-left, body.sidebar-right {
-  min-width: 780px;
+body.sidebar-right {
+  min-width: 850px;
 }
 
 /* We must define 100% width to avoid the body being too narrow for near-empty pages */
@@ -260,25 +218,13 @@ body.sidebar-left, body.sidebar-right {
 }
 
 /* So we move the #center container over the sidebars to compensate */
-body.sidebar-left #center {
-  margin-left: -210px;
-}
 body.sidebar-right #center {
   margin-right: -210px;
 }
-body.sidebars #center {
-  margin: 0 -210px;
-}
 
-/* And add blanks left and right for the sidebars to fill */
-body.sidebar-left #squeeze {
-  margin-left: 210px;
-}
+/* And add blanks right for the sidebars to fill */
 body.sidebar-right #squeeze {
   margin-right: 210px;
-}
-body.sidebars #squeeze {
-  margin: 0 210px;
 }
 
 /* We ensure the sidebars are still clickable using z-index */
@@ -289,25 +235,17 @@ body.sidebars #squeeze {
   z-index: 2;
   position: relative;
 }
-
-#wrapper #container .sidebar .block {
+/*
+#wrapper #container .sidebar .sidebar_box {
   margin: 0 0 1.5em 0;
 }
 
-#sidebar-left .block {
-  padding: 0 15px 0 0px;
-}
-
-#sidebar-right .block {
-  padding: 0 0px 0 15px;
+#sidebar-right .sidebar_box {
+  padding: 0 5px 0 15px;
 }
 
 .block .content {
   margin: 0.5em 0;
-}
-
-#sidebar-left .block-region {
-  margin: 0 15px 0 0px;
 }
 
 #sidebar-right .block-region {
@@ -321,11 +259,13 @@ body.sidebars #squeeze {
   text-align: center;
   font-size: 1.3em;
 }
+*/
 
 /* Now we add the backgrounds for the main content shading */
 #wrapper #container #center #squeeze {
   background: #fff url(../images/central_bar_big.png) repeat-x 50% 0;
   position: relative;
+  min-width: 600px;
 }
 
 #wrapper #container #center .right-corner {
@@ -334,6 +274,7 @@ body.sidebars #squeeze {
   /*left: 10px;*/
   left: 5px;
   /*border: 1px #ff0000 solid;*/
+  min-width: 600px;
 }
 
 #wrapper #container #center .right-corner .left-corner {
@@ -387,17 +328,10 @@ body.sidebars #squeeze {
 	vertical-align: middle;
 }
 
-body.sidebar-left  #footer {
-  margin-left: -210px;
-}
-
 body.sidebar-right #footer {
   margin-right: -210px;
 }
 
-body.sidebars #footer {
-  margin: 0 -210px;
-}
 
 /**
  * Primary navigation
@@ -542,21 +476,22 @@ span.clear {
 	clear: both;
 	float: right;
 	padding: 3.75em 0.5em 0 0;
-	margin: auto auto 0 auto;
-	
+	/*margin: auto auto 0 auto;*/
+	margin-bottom: 0;
 	position: relative;
 	z-index: 4;
 }
 
-#wrapper #container #header #login_links a {
-	/*border: 1px solid #00ff00;*/
+body.sidebar-right #wrapper #container #header #login_links {
+  	margin-right: 210px;
 }
 
 #login_box {
-	/*position: relative;*/
 	position: absolute;
-	top: 9em;
-	right: 2em;
+	/*top: 9em;
+	right: 2em;*/
+	top: 0.5em;
+	right: 0.5em;
 	/*display: none;*/
 	/*background: url(../images/orange_dot_bkgd.gif);*/
 	background-color: #e9f7cc;
@@ -564,8 +499,14 @@ span.clear {
 	width: 215px;
 	height: 110px;
 	font-size: 1em;
-	margin: 0 0 auto auto;	
+	margin: 0 0 auto auto;
 	z-index: 4;
+}
+
+body.sidebar-right #login_box {
+	margin-right: 210px;
+	top: 0.5em;
+	right: -15.6em;
 }
 
 #login_box a img {
@@ -616,6 +557,51 @@ span.clear {
 #login_box #forgot_pwd:hover { background-color: #feffcf; }
 
 /* END Login box styles */
+
+/* BEGIN sidebar box styles */
+.sidebar_box {
+	border: solid 1px #cccccc;
+	width: 200px;
+	height: 270px;
+	margin-left: 1em;
+}
+
+.sidebar_box .box_title {
+	text-align: center;	
+	font-weight: bold;
+	font-size: 1.2em;
+	height: 30px;
+	line-height: 28px;
+	background: url(../images/box_title_bkgd_green_12.png) repeat-x;
+	/*color: #ff7400;*/
+	/*color: #ffffff;*/
+}
+
+.sidebar_box .box_body {
+	background-color: #ffffff;
+	height: 240px;
+	/*background: url(../images/green_body_bkgd2.gif) repeat-x;*/
+}
+
+.sidebar_box .box_body .box_text {
+	padding: 1em 1em 1em 1em;	
+}
+
+.sidebar_box .box_body .separator {
+	border-bottom: 1px solid #cccccc;
+	height: 1px;
+	margin: 0 1em 0 1em;
+}
+
+.sidebar_box .box_body .box_subtitle {
+	text-align: center;	
+	font-weight: bold;
+	font-size: 1.1em;
+	position: relative;
+}
+
+/* END sidebar box styles */
+
 
 .step_text {
 	font-weight: bold;
