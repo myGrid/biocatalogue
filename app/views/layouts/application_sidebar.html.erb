@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+		
+		<%= t :site => "biocatalogue.org &#45; #{controller_visible_name(controller.controller_name)}", :separator => "&#45;" %>
+		
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+		
+		<%= stylesheet_link_tag 'styles_2' %>
+		
+		<%= javascript_include_tag :defaults %>
+		
+		<%= render :partial => "layouts/feed_link_tags" %>	
+	</head>
+	<body class="sidebar-right">
+		<!-- Layout -->
+  		<div id="header-region" class="clear-block"></div>
+
+    	<div id="wrapper">
+    		<div id="container" class="clear-block">
+
+      			<div id="header">
+			    	<div id="logo-floater">
+			            <%= link_to image_tag("logo.png", :alt => "www.biocatalogue.org"), "/" %>
+			        </div>
+			
+		        	<ul class="primary-links"><li><a href="#">Home</a></li>
+						<li class="separator"><a href="#">Support</a></li>
+						<li class="separator"><a href="#">About us</a></li>
+					</ul>
+					
+					<%= render :partial => "widgets/login_links" -%>
+			    </div> <!-- /header -->			
+			      
+			    <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
+			    	<%= render :partial => "widgets/login_box" -%>
+			    	<div id="action_bar">
+			        	Search:&nbsp;<input type="text" />&nbsp;<%= link_to image_tag("go_button.png", :alt => "Search for a Service"), "/" %><span id="action_links"><%= link_to 'Browse', services_path %><%= link_to 'Register a Service', new_service_path %></span>
+			        </div>
+                    
+					<% if flash[:error] %>
+						<div id="error_flash">
+							<%= white_list flash[:error] %>
+						</div>
+					<% end %>
+    				<% if flash[:notice] %>
+						<div id="notice_flash">
+							<%= white_list flash[:notice] %>
+						</div>
+					<% end %>
+						
+					<%= yield -%>          
+          
+                    <span class="clear"></span>
+
+                    <div id="footer">
+						<%= render :partial => "layouts/footer" -%>
+					</div><!-- /footer -->
+				</div></div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
+				<!-- Sidebar box example
+				<div id="sidebar-right" class="sidebar">
+					<div class="sidebar_box">
+					<div class="box_title" href="#">Box title</div>
+					<div class="box_body">
+						<div class="box_text">
+							Text
+						</div>
+						<div class="separator"></div>
+						<div class="box_subtitle">Box sub-title</div>
+						<div class="box_text">
+							Text
+						</div>
+					</div>
+				</div> <!-- /sidebar box example -->
+				-->
+      			</div> <!-- /sidebar-right -->
+			</div> <!-- /container -->
+		</div> <!-- /wrapper -->
+		<!-- /layout -->
+	</body>
+</html>
