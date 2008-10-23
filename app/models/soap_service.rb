@@ -13,6 +13,7 @@ class SoapService < ActiveRecord::Base
   before_create :check_duplicates, :get_service_attributes
   
   acts_as_service_versionified
+  acts_as_annotatable
   
   has_many :soap_operations, :dependent => :destroy
   has_many :annotations, :as => :annotatable
@@ -21,6 +22,10 @@ class SoapService < ActiveRecord::Base
   validates_presence_of :wsdl_location
   #validates_uniqueness_of :wsdl_location
   validates_associated :soap_operations
+  
+  validates_url_format_of :wsdl_location,
+                          :allow_nil => true,
+                          :message => 'is not valid'
   
   #---------------------------------------------------------
   # this is using the 'virtual attribute' technique  

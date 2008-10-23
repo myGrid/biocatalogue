@@ -27,5 +27,9 @@
 	<br/>
 	<p />
 <%end%>
+
 <%= link_to 'Edit', edit_soap_service_path(@soap_service) %> |
 <%= link_to 'Back', soap_services_path %>
+
+<p>Annotations</p>
+<%= render :partial => 'shared/annotations',:locals => {:annotations => @soap_service}%>
