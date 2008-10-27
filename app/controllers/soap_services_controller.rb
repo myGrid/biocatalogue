@@ -31,6 +31,7 @@ class SoapServicesController < ApplicationController
   # GET /soap_services/new.xml
   def new
     @soap_service = SoapService.new
+    @first_load = true
 
     respond_to do |format|
       format.html # new.html.erb
@@ -100,6 +101,8 @@ class SoapServicesController < ApplicationController
       begin
         @wsdl_info = @soap_service.get_service_attributes
         @error_message = nil
+        
+        @first_load = false
       rescue Exception => ex
         @error_message = "Failed to load the WSDL location provided."
         logger.info("ERROR: failed to load WSDL from location - #{params[:wsdl_url]}. Exception:")
@@ -112,38 +115,36 @@ class SoapServicesController < ApplicationController
     end
   end
   
-    def bulk_new
-      @soap_service = SoapService.new
+  def bulk_new
+    @soap_service = SoapService.new
 
-      respond_to do |format|
-        format.html # new.html.erb
-        format.xml  { render :xml => @soap_service }
-      end
+    respond_to do |format|
+      format.html # bulk_new.html.erb
+      format.xml  { render :xml => @soap_service }
     end
+  end
     
-    def bulk_create
-      @soap_service = SoapService.new #(params[:soap_service])
-      
-      urls = []
-      params[:soap_service][:description].each { |line|
-      urls << line.strip if line =~ /http:/}
-      if urls.empty?
-        @soap_service.errors.add_to_base('No service urls were found!')
-        render :action =>'bulk_new'
-      else
+  def bulk_create
+    @soap_service = SoapService.new #(params[:soap_service])
+    
+    urls = []
+    params[:soap_service][:description].each { |line|
+    urls << line.strip if line =~ /http:/ or line =~ /https:/}
+    if urls.empty?
+      @soap_service.errors.add_to_base('No service urls were found!')
+      render :action =>'bulk_new'
+    else
       urls.each do |url|
         @soap_service.wsdl_location = url
         @soap_service.get_service_attributes
         if @soap_service.save
           flash[:notice] = 'SoapService was successfully created.'
         else
-          @soap_service.errors.add_to_base("service with url, #{url}, was not saved")
+          @soap_service.errors.add_to_base("Service with url, #{url}, was not saved")
           render(:action => 'new') and return
         end
-      end 
-      
       end
-      
     end
+  end
   
 end

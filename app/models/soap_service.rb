@@ -10,38 +10,35 @@ class SoapService < ActiveRecord::Base
   
   acts_as_trashable
   
-  before_create :check_duplicates, :get_service_attributes
-  
   acts_as_service_versionified
+  
   acts_as_annotatable
   
-  has_many :soap_operations, :dependent => :destroy
-  has_many :annotations, :as => :annotatable
+  belongs_to :wsdl_file,
+             :foreign_key => "wsdl_file_id",
+             :class_name => "ContentBlob",
+             :validate => true,
+             :readonly => true,
+             :dependent => :destroy
+  
+  has_many :soap_operations, 
+           :dependent => :destroy
+  
+  attr_protected :name, 
+                 :description, 
+                 :wsdl_file, 
+                 :documentation_url
   
   validates_presence_of :name
-  validates_presence_of :wsdl_location
-  #validates_uniqueness_of :wsdl_location
+
   validates_associated :soap_operations
   
   validates_url_format_of :wsdl_location,
-                          :allow_nil => true,
+                          :allow_nil => false,
                           :message => 'is not valid'
-  
-  #---------------------------------------------------------
-  # this is using the 'virtual attribute' technique  
-  # to transactionally save the service and its related
-  # operations, inputs and outputs
-  def new_service_attributes=(service_attributes)
-    service_attributes.each do |attributes|
-      op = soap_operations.build(attributes["operation"])
-      attributes["inputs"].each do |input_attributes|
-        op.soap_inputs.build(input_attributes)
-      end
-      attributes["outputs"].each do |output_attributes|
-        op.soap_outputs.build(output_attributes)
-      end
-    end
-  end
+                          
+  before_create :check_duplicates, 
+                :get_service_attributes
   
   # This function return a fairly complex data structure,
   # which is a list of hashes with nested hashes and lists!!!!
@@ -65,7 +62,7 @@ class SoapService < ActiveRecord::Base
         raise 
       end
     rescue
-      errors.add_to_base("there was a problem reading the wsdl file")
+      errors.add_to_base("There was a problem reading the WSDL file.")
       return false
     end
     
@@ -82,26 +79,23 @@ class SoapService < ActiveRecord::Base
     #return service_attributes
   end
   
-  #protected
-  #--------------------------------------------------------------------
-  # helper functions to structure the data so that
-  # it can be transactionally saved to the database
-  
-  def format_service_attributes(the_operations, the_messages)
-    
-    the_operations.each do |operation|
-      operation["inputs"] = get_message(the_messages,
-                                  operation["inputs"]["message"].split(':')[1])["the_parts"]
-      operation["inputs"] = modify_type_field_name("input", operation["inputs"])                           
-      operation["outputs"] = get_message(the_messages,
-                                  operation["outputs"]["message"].split(':')[1])["the_parts"]
-      operation["outputs"] = modify_type_field_name("output", operation["outputs"])                            
-    end
-    errors.add_to_base("service should have at least one operation, got none!") if the_operations.empty?
-    return the_operations
-  end
-  
 protected
+
+  #---------------------------------------------------------
+  # this is using the 'virtual attribute' technique  
+  # to transactionally save the service and its related
+  # operations, inputs and outputs
+  def new_service_attributes=(service_attributes)
+    service_attributes.each do |attributes|
+      op = soap_operations.build(attributes["operation"])
+      attributes["inputs"].each do |input_attributes|
+        op.soap_inputs.build(input_attributes)
+      end
+      attributes["outputs"].each do |output_attributes|
+        op.soap_outputs.build(output_attributes)
+      end
+    end
+  end
   
   def check_duplicates
     wsdls =[] 

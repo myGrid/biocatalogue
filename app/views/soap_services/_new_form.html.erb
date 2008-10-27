@@ -62,7 +62,7 @@
 							<div class="field">
 								<ul>
 									<% @wsdl_info.each do |item| -%>
-										<li><%= "#{h item['operation']['name']} (#{item['inputs'].length} inputs, #{item['outputs'].length} outputs)" -%></li>
+										<li><%= "#{h item['operation']['name']} (#{pluralize(item['inputs'].length, 'input')}, #{pluralize(item['outputs'].length, 'output')})" -%></li>
 									<% end -%>
 								</ul>
 							</div>
@@ -104,6 +104,6 @@
 	</table>
 	
   <p style="text-align: center; margin-top: 1.5em;">
-    <%= f.submit "Submit" %>
+    <%= f.submit "Submit", :disable_with => "Submitting...", :disabled => @first_load || false %>
   </p>
 <% end %>
