@@ -13,7 +13,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,
-                                 :bulk_new => :get}
+                                 :bulk_new => :get }
   
   map.resources :soap_operations
   map.resources :soap_inputs
