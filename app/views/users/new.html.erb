@@ -19,16 +19,12 @@
     <%= f.password_field :password_confirmation %>
   </p>
   <p>
-    <%= f.label :display_name %><br />
-    <%= f.text_field :display_name %>
-  </p>
-  <p>
-    <%= f.label :affiliation %><br />
+    <%= f.label :affiliation, "Affiliation (e.g. institute, company)" %><br />
     <%= f.text_field :affiliation %>
   </p>
   <p>
     <%= f.label :country %><br />
-    <%= f.text_field :country %>
+    <%= f.country_select :country %>
   </p>
   <p>
     <%= f.submit "Create" %>
