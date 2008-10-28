@@ -45,13 +45,13 @@ module BioCatalogue
     #         ] 
     #   }
     #
-    def parse(wsdl_url)
+    def WsdlParser.parse(wsdl_url)
       service_info = { }
       error_messages =  [ ]
       wsdl_file_contents = nil
       
       begin
-        wsdl_file_contents  = OpenURI::OpenRead.open(wsdl_url.strip()).read
+        wsdl_file_contents  = open(wsdl_url.strip()).read
         doc                 = Document.new(wsdl_file_contents)
         root                = doc.root
         
@@ -69,19 +69,30 @@ module BioCatalogue
         service_info["name"]        = root_metadata["name"]
         service_info["description"] = root_metadata["description"]
         
-        service_info["operations"]  = get_operations(root, error_messages)
+        service_info["operations"]  = [ ]
         
         operation_attributes = get_operation_attributes(root)
         message_attributes   = get_message_attributes(root)
         service_attributes   = format_service_attributes(operation_attributes, message_attributes)
+        
+        service_attributes.each do |op|
+          op_hash = { }
+          
+          op_hash["name"]         = op["operation"]["name"]
+          op_hash["description"]  = op["operation"]["description"]
+          op_hash["inputs"]       = op["inputs"]
+          op_hash["outputs"]      = op["outputs"]
+          
+          service_info["operations"] << op_hash
+        end
       end
       
-      return [ service_info, error_messages, wsdl_file ]
+      return [ service_info, error_messages, wsdl_file_contents ]
     end
     
     protected
     
-    def get_root_metadata(root)
+    def WsdlParser.get_root_metadata(root)
      
       prefix = ""
       prefix="wsdl:" if root.elements["wsdl:message"]
@@ -103,38 +114,35 @@ module BioCatalogue
     end
     
     # This method extracts the service operations from a
-    # wsdl document - the 'operation' tags handles are those within the portType tags.
+    # wsdl document- The 'operation' tags  handles are those within the portType tags
     #
-    # An operation, its inputs and outputs are extracted into the structure described above.
+    # An operation, its inputs and outputs are extracted into
+    # an array of hashes
+    # Example :
     #
-    def get_operations(root, error_messages)
-      operations = [ ]
-      
+    def WsdlParser.get_operation_attributes(root)
       prefix = ""
-      prefix = "wsdl:" if root.elements["wsdl:message"]
+      prefix="wsdl:" if root.elements["wsdl:message"]
+      my_operation_attributes = []
       
-      root.each_element("//#{prefix}portType/#{prefix}operation") { |operation| 
-        begin
-          details = {}
-          details["operation"] = get_hash(operation.attributes)
-          if operation.elements["#{prefix}input"]
-            details['inputs'] = get_hash(operation.elements["#{prefix}input"].attributes)
-          end
-          if operation.elements["#{prefix}output"]
-            details['outputs'] = get_hash(operation.elements["#{prefix}output"].attributes)
-          end
-          if operation.elements["#{prefix}documentation"]
-            details['operation']["description"] = operation.elements["#{prefix}documentation"].text
-          end
-          my_operation_attributes << details
-        rescue Exception => ex
-          error_messages << "Failed to parse information about an operation "
-        end
+      root.each_element("//#{prefix}portType/#{prefix}operation"){|operation| 
+      details = {}
+      details["operation"] = get_hash(operation.attributes)
+      if operation.elements["#{prefix}input"]
+        details['inputs'] = get_hash(operation.elements["#{prefix}input"].attributes)
+      end
+      if operation.elements["#{prefix}output"]
+        details['outputs'] = get_hash(operation.elements["#{prefix}output"].attributes)
+      end
+      if operation.elements["#{prefix}documentation"]
+        details['operation']["description"] = operation.elements["#{prefix}documentation"].text
+      end
+      my_operation_attributes << details
       }
-      return operations
+      return my_operation_attributes
     end
     
-    def get_message_attributes(root)
+    def WsdlParser.get_message_attributes(root)
       prefix = ""
       prefix="wsdl:" if root.elements["wsdl:message"]
       my_message_attributes = [] 
@@ -159,7 +167,7 @@ module BioCatalogue
     # helper functions to structure the data so that
     # it can be transactionally saved to the database
     
-    def format_service_attributes(the_operations, the_messages)
+    def WsdlParser.format_service_attributes(the_operations, the_messages)
       
       the_operations.each do |operation|
         operation["inputs"] = get_message(the_messages,
@@ -173,7 +181,7 @@ module BioCatalogue
       return the_operations
     end
     
-    def get_message(the_messages, name)
+    def WsdlParser.get_message(the_messages, name)
       the_messages.each{ |m|
          if m["the_message"]["name"] == name
             return m
@@ -182,7 +190,7 @@ module BioCatalogue
       return {}
     end
     
-    def modify_type_field_name(param_type, data)
+    def WsdlParser.modify_type_field_name(param_type, data)
       data.each{ |d| 
        if d.has_key?("type")
          val = d["type"]
@@ -197,7 +205,7 @@ module BioCatalogue
        return data
     end
     
-    def get_hash(attr)
+    def WsdlParser.get_hash(attr)
       h = {}
       attr.each{|k, v| h[ActiveSupport::Inflector.underscore(k)]=v}
       return h

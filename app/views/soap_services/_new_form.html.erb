@@ -9,11 +9,10 @@
 					<legend>Information from WSDL</legend>
 					
 					<!-- Name -->
-					<%= f.hidden_field :name -%>
 					<div>
 						Name: <br/>
-						<% unless @soap_service.name.blank? %>
-							<p class="field"><%= h @soap_service.name -%></p>
+						<% if @wsdl_info and !@wsdl_info["name"].blank? %>
+							<p class="field"><%= h @wsdl_info["name"] -%></p>
 						<% else %>
 							<p class="none_text">Not available</p>
 						<% end %>
@@ -31,16 +30,16 @@
 				  </div>
 					
 					<!-- Description -->
-					<%= f.hidden_field :description -%>
 					<div>
 						Description: <br/>
-						<% unless @soap_service.description.blank? %>
-							<p class="field"><%= h @soap_service.description -%></p>
+						<% if @wsdl_info and !@wsdl_info["description"].blank? %>
+							<p class="field"><%= h @wsdl_info["description"] -%></p>
 						<% else %>
 							<p class="none_text">Not available</p>
 						<% end %>
 				  </div>
 					
+					<% if false %>
 					<!-- Documentation URL -->
 					<%= f.hidden_field :documentation_url -%>
 					<div>
@@ -51,18 +50,19 @@
 							<p class="none_text">Not available</p>
 						<% end %>
 				  </div>
+					<% end %>
 					
 					<br/>
 					
 					<!-- Operations -->
-					<% unless @wsdl_info.blank? %>
+					<% if @wsdl_info %>
 						<div>
 							<p><b>This service has the following operations:</b></p>
 							
 							<div class="field">
 								<ul>
-									<% @wsdl_info.each do |item| -%>
-										<li><%= "#{h item['operation']['name']} (#{pluralize(item['inputs'].length, 'input')}, #{pluralize(item['outputs'].length, 'output')})" -%></li>
+									<% @wsdl_info["operations"].each do |op| -%>
+										<li><%= "#{h op['name']} (#{pluralize(op['inputs'].length, 'input')}, #{pluralize(op['outputs'].length, 'output')})" -%></li>
 									<% end -%>
 								</ul>
 							</div>
@@ -91,12 +91,12 @@
 						<p><%= text_area_tag :new_description, params[:new_description], :cols => 55, :rows => 6 %></p>
 					</div>
 					
-					<!-- Add new documentation URL -->
+					<!-- Add documentation URL -->
 					<p>
-						<%= link_to_function "Add new documentation URL...", visual_effect(:toggle_blind, "new_doc_url_box", :duration => 0.3) %>
+						<%= link_to_function "Add documentation URL...", visual_effect(:toggle_blind, "doc_url_box", :duration => 0.3) %>
 					</p>
-					<div id="new_doc_url_box" style="display: none;">
-						<p><%= text_field_tag :new_documentation_url, params[:new_documentation_url], :size => 60 %></p>
+					<div id="doc_url_box" style="display: none;">
+						<p><%= text_field_tag :documentation_url, params[:documentation_url], :size => 60 %></p>
 					</div>
 				</fieldset>
 			</td>
@@ -104,6 +104,6 @@
 	</table>
 	
   <p style="text-align: center; margin-top: 1.5em;">
-    <%= f.submit "Submit", :disable_with => "Submitting...", :disabled => @first_load || false %>
+    <%= f.submit "Submit", :disable_with => "Submitting...", :disabled => @wsdl_info.nil? %>
   </p>
 <% end %>

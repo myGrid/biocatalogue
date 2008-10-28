@@ -1,3 +1,5 @@
+require 'wsdl_parser'
+
 class SoapServicesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
   
@@ -31,7 +33,6 @@ class SoapServicesController < ApplicationController
   # GET /soap_services/new.xml
   def new
     @soap_service = SoapService.new
-    @first_load = true
 
     respond_to do |format|
       format.html # new.html.erb
@@ -99,10 +100,15 @@ class SoapServicesController < ApplicationController
       @soap_service = SoapService.new(:wsdl_location => params[:wsdl_url].strip)
       
       begin
-        @wsdl_info = @soap_service.get_service_attributes
-        @error_message = nil
+        #@wsdl_info = @soap_service.get_service_attributes
+        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
         
-        @first_load = false
+        if err_msgs.empty?
+          @error_message = nil
+        else
+          @error_message = "Error messages: #{err_msgs.to_sentence}."
+        end
+        
       rescue Exception => ex
         @error_message = "Failed to load the WSDL location provided."
         logger.info("ERROR: failed to load WSDL from location - #{params[:wsdl_url]}. Exception:")
