@@ -1,13 +1,9 @@
 
 require 'open-uri'
 require 'rexml/document'
-require 'biocat_wsdl_parser'
 require 'acts_as_service_versionified'
 
-
 class SoapService < ActiveRecord::Base
-  include BiocatWSDL
-  
   acts_as_trashable
   
   acts_as_service_versionified
