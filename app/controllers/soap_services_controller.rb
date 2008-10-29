@@ -36,6 +36,8 @@ class SoapServicesController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
+      
+      # TODO: the xml template returned should only really have one field here - wsdl_location 
       format.xml  { render :xml => @soap_service }
     end
   end
@@ -53,8 +55,12 @@ class SoapServicesController < ApplicationController
     
     respond_to do |format|
       if @soap_service.save
+        # TODO: store the extra information provided in the form, as Annotations.
+        
         flash[:notice] = 'SoapService was successfully created.'
-        format.html { redirect_to(@soap_service) }
+        format.html { redirect_to(@soap_service.service) }
+        
+        # TODO: should this return the top level Service resource or SoapService? 
         format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
       else
         format.html { render :action => "new" }
@@ -93,25 +99,33 @@ class SoapServicesController < ApplicationController
   end
   
   def load_wsdl
-    if params[:wsdl_url].blank?
+    wsdl_url = params[:wsdl_url]
+    wsdl_url = wsdl_url.strip unless wsdl_url.blank?
+    
+    if wsdl_url.blank?
       @error_message = "Please provide a valid WSDL URL"
     else
-      @soap_service = SoapService.new(:wsdl_location => params[:wsdl_url].strip)
+      # Check for a duplicate
+      @existing_soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", wsdl_url])
       
-      begin
-        #@wsdl_info = @soap_service.get_service_attributes
-        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
+      # Only continue if no duplicate was found
+      if @existing_soap_service.nil?
+        @soap_service = SoapService.new(:wsdl_location => wsdl_url)
         
-        if err_msgs.empty?
-          @error_message = nil
-        else
-          @error_message = "Error messages: #{err_msgs.to_sentence}."
+        begin
+          #@wsdl_info = @soap_service.get_service_attributes
+          @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
+          
+          if err_msgs.empty?
+            @error_message = nil
+          else
+            @error_message = "Error messages: #{err_msgs.to_sentence}."
+          end
+        rescue Exception => ex
+          @error_message = "Failed to load the WSDL location provided."
+          logger.info("ERROR: failed to load WSDL from location - #{wsdl_url}. Exception:")
+          logger.info(ex)
         end
-        
-      rescue Exception => ex
-        @error_message = "Failed to load the WSDL location provided."
-        logger.info("ERROR: failed to load WSDL from location - #{params[:wsdl_url]}. Exception:")
-        logger.info(ex)
       end
     end
     respond_to do |format|

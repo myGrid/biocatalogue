@@ -1,6 +1,19 @@
 <div>
 	<% if !@error_message.blank? -%>
-		<p class="error_text"><%= h @error_message -%></p>
+		<p class="error_text">
+			<%= h @error_message -%>
+		</p>
+	<% elsif !@existing_soap_service.nil? %>
+		<p class="error_text">
+			This service has already been submitted:
+		</p>
+		<p>
+			<% if @existing_soap_service.service.nil? %>
+				<%= link_to h(@existing_soap_service.name), soap_service_url(@existing_soap_service) -%>
+			<% else %>
+				<%= link_to h(@existing_soap_service.service.name), service_url(@existing_soap_service.service) -%>
+			<% end %>
+		</p>
 	<% else %>
 		<%= render :partial => "new_form" %>		
 	<% end -%>

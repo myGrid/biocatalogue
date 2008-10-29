@@ -34,8 +34,6 @@ class SoapService < ActiveRecord::Base
                           :allow_nil => false,
                           :message => 'is not valid'
                           
-  #before_create :check_duplicates
-  
   def populate
     if self.wsdl_location.blank?
       errors.add_to_base("No WSDL Location set for this Soap Service.")
@@ -80,16 +78,6 @@ protected
       end
       
     end
-  end
-  
-  def check_duplicates
-    wsdls =[] 
-    SoapService.find(:all).each{|s| wsdls << s.wsdl_location}
-    if wsdls.include?(self.wsdl_location)
-      errors.add_to_base("A duplicate for this service exists ")
-      return false
-    end
-    true
   end
   
 end
