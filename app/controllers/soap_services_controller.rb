@@ -49,9 +49,8 @@ class SoapServicesController < ApplicationController
   # POST /soap_services.xml
   def create
     @soap_service = SoapService.new(params[:soap_service])
-    #params[:soap_service]['new_service_attributes'] = @soap_service.get_service_attributes(
-    #                                                          params[:soap_service][:wsdl_location])
-    #@soap_service = SoapService.new(params[:soap_service])
+    @soap_service.populate
+    
     respond_to do |format|
       if @soap_service.save
         flash[:notice] = 'SoapService was successfully created.'

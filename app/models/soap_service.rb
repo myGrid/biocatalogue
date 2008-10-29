@@ -2,6 +2,7 @@
 require 'open-uri'
 require 'rexml/document'
 require 'acts_as_service_versionified'
+require 'wsdl_parser'
 
 class SoapService < ActiveRecord::Base
   acts_as_trashable
@@ -33,63 +34,51 @@ class SoapService < ActiveRecord::Base
                           :allow_nil => false,
                           :message => 'is not valid'
                           
-  before_create :check_duplicates, 
-                :get_service_attributes
+  #before_create :check_duplicates
   
-  # This function return a fairly complex data structure,
-  # which is a list of hashes with nested hashes and lists!!!!
-  # The contents of this data structure are the attributes of a 
-  # service i.e, the operations, their inputs/outputs and types
-  # and embedded documentation on the operations
-  #
-  # data structure :
-  #
-  #------------------------------------------------
-  # get the service attributes from a wsdl url
-  # supplied in the web form
-  #
-  def get_service_attributes
-    wsdl_url = self.wsdl_location  #set at instantiation
-    begin
-      wsdl_file = open(wsdl_url.strip()).read
-      doc       = Document.new(wsdl_file)
-      root      = doc.root
-      if root == nil 
-        raise 
-      end
-    rescue
-      errors.add_to_base("There was a problem reading the WSDL file.")
+  def populate
+    if self.wsdl_location.blank?
+      errors.add_to_base("No WSDL Location set for this Soap Service.")
       return false
     end
     
+    service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
     
-    operation_attributes = get_operation_attributes(root)
-    message_attributes   = get_message_attributes(root)
-    service_attributes   = format_service_attributes(operation_attributes,
-                                                        message_attributes)
-    name_and_desc        = get_name_and_description(root)
-    self.name            = name_and_desc['name']
-    self.description     = name_and_desc['description']
-    self.new_service_attributes = service_attributes
+    unless err_msgs.empty?
+      errors.add_to_base("Error occurred whilst processing the WSDL file. Error(s): #{err_msgs.to_sentence}.")
+      return false
+    end
     
-    #return service_attributes
+    self.wsdl_file = ContentBlob.new(:data => wsdl_file_contents)
+    
+    self.name         = service_info['name']
+    self.description  = service_info['description']
+    
+    self.build_soap_objects(service_info)
   end
   
 protected
 
-  #---------------------------------------------------------
-  # this is using the 'virtual attribute' technique  
-  # to transactionally save the service and its related
-  # operations, inputs and outputs
-  def new_service_attributes=(service_attributes)
-    service_attributes.each do |attributes|
-      op = soap_operations.build(attributes["operation"])
-      attributes["inputs"].each do |input_attributes|
-        op.soap_inputs.build(input_attributes)
+  # This builds the parts of the SOAP service 
+  # (ie: it's operations and their inputs and outputs).
+  # This can then be saved transactionally.
+  def build_soap_objects(service_info)
+    service_info["operations"].each do |op|
+      op_attributes = { :name => op["name"],
+                        :description => op["description"] }
+      inputs = op["inputs"]
+      outputs = op["outputs"]
+      
+      soap_operation = soap_operations.build(op_attributes)
+      
+      inputs.each do |input_attributes|
+        soap_operation.soap_inputs.build(input_attributes)
       end
-      attributes["outputs"].each do |output_attributes|
-        op.soap_outputs.build(output_attributes)
+      
+      outputs.each do |output_attributes|
+        soap_operation.soap_outputs.build(output_attributes)
       end
+      
     end
   end
   

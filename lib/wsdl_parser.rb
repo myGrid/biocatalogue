@@ -191,18 +191,20 @@ module BioCatalogue
     end
     
     def WsdlParser.modify_type_field_name(param_type, data)
-      data.each{ |d| 
-       if d.has_key?("type")
-         val = d["type"]
-         d[param_type+"_type"] = val
-         d.delete("type")
-       elsif d.has_key?("element")
-         val = d["element"]
-         d[param_type+"_type"] = val
-         d.delete("element")
-       end
-       }
-       return data
+      if ["input", "output"].include?(param_type.downcase)
+        data.each{ |d| 
+          if d.has_key?("type")
+            val = d["type"]
+            d["computational_type"] = val
+            d.delete("type")
+          elsif d.has_key?("element")
+            val = d["element"]
+            d["computational_type"] = val
+            d.delete("element")
+          end
+        }
+      end
+      return data
     end
     
     def WsdlParser.get_hash(attr)
