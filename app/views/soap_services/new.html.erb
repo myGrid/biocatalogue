@@ -7,7 +7,7 @@
 <p class="step_text">1. Specify the URL to the WSDL of the service, then preview...</p>
 
 <% form_remote_tag(:url => load_wsdl_soap_services_url, 
-								   :update => 'soap_service_form', 
+								   :update => 'soap_service_after_wsdl_load', 
 							 		 :success => "new Effect.Highlight('soap_service_form', { duration: 1.5 });",
 							     :loading => "Element.show('spinner')",
                    :complete => "Element.hide('spinner')") do -%>
@@ -22,9 +22,6 @@
 
 <% end -%>
 
-<p class="step_text">2. Check the details, then submit... </p>
-<p style="color: #666666;">After submission you will be able to provide more information</p>
-
-<div id="soap_service_form">
+<div id="soap_service_after_wsdl_load">
 	<%= render :partial => "after_wsdl_load" %>
 </div>

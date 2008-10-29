@@ -1,9 +1,11 @@
-<div>
-	<% if !@error_message.blank? -%>
+<% if !@error_message.blank? -%>
+	<div class="soap_service_form">
 		<p class="error_text">
 			<%= h @error_message -%>
 		</p>
-	<% elsif !@existing_soap_service.nil? %>
+	</div>
+<% elsif !@existing_soap_service.nil? %>
+	<div class="soap_service_form">
 		<p class="error_text">
 			This service has already been submitted:
 		</p>
@@ -14,7 +16,11 @@
 				<%= link_to h(@existing_soap_service.service.name), service_url(@existing_soap_service.service) -%>
 			<% end %>
 		</p>
-	<% else %>
-		<%= render :partial => "new_form" %>		
-	<% end -%>
-</div>
+	</div>
+<% else %>
+	<p class="step_text">2. Check the details, then submit... </p>
+	<p style="color: #666666;">After submission you will be able to provide more information</p>
+	<div class="soap_service_form">
+		<%= render :partial => "new_form" %>
+	</div>
+<% end -%>

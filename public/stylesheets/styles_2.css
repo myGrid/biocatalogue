@@ -633,7 +633,7 @@ body.sidebar-right #login_box {
 	font-weight: bold;
 }
 
-#soap_service_form {
+.soap_service_form {
 	margin: 1.5em 0;
 	border: 1px dotted #999999;
 	padding: 0.8em 1.3em;
