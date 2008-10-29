@@ -50,23 +50,34 @@ class SoapServicesController < ApplicationController
   # POST /soap_services
   # POST /soap_services.xml
   def create
-    @soap_service = SoapService.new(params[:soap_service])
-    @soap_service.populate
+    # Check for a duplicate
+    @existing_soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", wsdl_url])
     
-    respond_to do |format|
-      if @soap_service.save
-        # TODO: store the extra information provided in the form, as Annotations.
-        
-        flash[:notice] = 'SoapService was successfully created.'
-        format.html { redirect_to(@soap_service.service) }
-        
-        # TODO: should this return the top level Service resource or SoapService? 
-        format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
-      else
+    if !@existing_soap_service.nil?
+      respond_to do |format|
         format.html { render :action => "new" }
-        format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
+        format.xml  { render :xml => '', :status => 406 }
+      end
+    else
+      @soap_service = SoapService.new(params[:soap_service])
+      @soap_service.populate
+      
+      respond_to do |format|
+        if @soap_service.save
+          # TODO: store the extra information provided in the form, as Annotations.
+          
+          flash[:notice] = 'SoapService was successfully created.'
+          format.html { redirect_to(@soap_service.service) }
+          
+          # TODO: should this return the top level Service resource or SoapService? 
+          format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
+        else
+          format.html { render :action => "new" }
+          format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
+        end
       end
     end
+    
   end
 
   # PUT /soap_services/1
