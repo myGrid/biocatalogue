@@ -78,10 +78,11 @@ module BioCatalogue
         service_attributes.each do |op|
           op_hash = { }
           
-          op_hash["name"]         = op["operation"]["name"]
-          op_hash["description"]  = op["operation"]["description"]
-          op_hash["inputs"]       = op["inputs"]
-          op_hash["outputs"]      = op["outputs"]
+          op_hash["name"]           = op["operation"]["name"]
+          op_hash["description"]    = op["operation"]["description"]
+          op_hash["parameter_order"]= op["operation"]["parameter_order"]
+          op_hash["inputs"]         = op["inputs"]
+          op_hash["outputs"]        = op["outputs"]
           
           service_info["operations"] << op_hash
         end
@@ -148,15 +149,18 @@ module BioCatalogue
       my_message_attributes = [] 
       
       root.each_element("//#{prefix}message"){|message| 
-        my_message = {}
+        my_message = {"description" => ""}
         my_parts =[]
     
         my_message["the_message"] = get_hash(message.attributes) 
         if message.elements["#{prefix}part"]
-          message.elements.each{ |part|
+          message.elements.each("#{prefix}part"){ |part|
           my_parts << get_hash(part.attributes) 
-        }
+           }
         end
+       if message.elements["#{prefix}documentation"]
+         my_message["description"] = message.elements["#{prefix}documentation"].text
+       end
         my_message["the_parts"]= my_parts
         my_message_attributes << my_message
         }
