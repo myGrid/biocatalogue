@@ -1,6 +1,4 @@
 
-require 'open-uri'
-require 'rexml/document'
 require 'acts_as_service_versionified'
 require 'wsdl_parser'
 
@@ -33,7 +31,12 @@ class SoapService < ActiveRecord::Base
   validates_url_format_of :wsdl_location,
                           :allow_nil => false,
                           :message => 'is not valid'
-                          
+   
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :name, :description, :documentation_url ],
+                 :include => [ :soap_operations ])
+  end                        
+
   def populate
     if self.wsdl_location.blank?
       errors.add_to_base("No WSDL Location set for this Soap Service.")
@@ -53,6 +56,7 @@ class SoapService < ActiveRecord::Base
     self.description  = service_info['description']
     
     self.build_soap_objects(service_info)
+    return true
   end
   
 protected
@@ -61,9 +65,13 @@ protected
   # (ie: it's operations and their inputs and outputs).
   # This can then be saved transactionally.
   def build_soap_objects(service_info)
+    soap_ops_built = [ ]
+    
     service_info["operations"].each do |op|
+      
       op_attributes = { :name => op["name"],
-                        :description => op["description"] }
+                        :description => op["description"],
+                        :parameter_order => op["parameter_order"] }
       inputs = op["inputs"]
       outputs = op["outputs"]
       
@@ -77,7 +85,11 @@ protected
         soap_operation.soap_outputs.build(output_attributes)
       end
       
+      soap_ops_built << soap_operation
+      
     end
+    
+    return soap_ops_built
   end
   
 end

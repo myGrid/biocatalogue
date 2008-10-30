@@ -7,10 +7,6 @@ class Service < ActiveRecord::Base
   has_many :service_deployments, 
            :dependent => :destroy
   
-  has_many :annotations, 
-           :as => :annotatable,
-           :dependent => :destroy
-           
   belongs_to :submitter,
              :class_name => "User",
              :foreign_key => "submitter_id"
@@ -26,4 +22,17 @@ class Service < ActiveRecord::Base
   validates_associated :service_deployments
   
   validates_existence_of :submitter   # User must exist in the db beforehand.
+  
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :name, :unique_code, :submitter_name ],
+                 :include => [ :service_versions, :service_deployments ])
+  end
+  
+  def submitter_name
+    if self.submitter
+      return submitter.display_name
+    else 
+      return ''
+    end
+  end
 end

@@ -15,6 +15,11 @@ class ServiceDeployment < ActiveRecord::Base
   
   before_save :check_service_id
   
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :service_url, :city, :country ],
+                 :include => [ :provider ])
+  end
+  
 protected
 
   def check_service_id

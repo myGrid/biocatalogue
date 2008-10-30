@@ -1,0 +1,5 @@
+# Private settings that apply to individual deployments.
+
+# This setting determines whether search indexing is enabled or not. 
+ENABLE_SEARCH = false
+

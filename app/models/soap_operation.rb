@@ -5,5 +5,9 @@ class SoapOperation < ActiveRecord::Base
   
   has_many :soap_inputs, :dependent => :destroy
   has_many :soap_outputs, :dependent => :destroy
-  has_many :annotations, :as => :annotatable
+  
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :name, :description, :endpoint ],
+                 :include => [ :soap_inputs, :soap_outputs ])
+  end
 end

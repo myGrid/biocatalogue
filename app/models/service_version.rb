@@ -8,5 +8,10 @@ class ServiceVersion < ActiveRecord::Base
   
   has_many :service_deployments
   
-  validates_presence_of :version
+  validates_presence_of :version, :version_display_text
+  
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ ],
+                 :include => [ :service_versionified ])
+  end
 end
