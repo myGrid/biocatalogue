@@ -616,6 +616,44 @@ body.sidebar-right #login_box {
 
 /* END sidebar box styles */
 
+/* begin css tooltips/boxovers */
+
+.boxoverTooltipHeader {
+	display: none;
+	border: 0;
+	height: 0;
+}
+
+.boxoverTooltipBody {
+	border: solid 1px Gray;
+	color: #000000;
+	background-color: #FFFF66;
+	font-size: 0.9em;
+	font-weight: normal;
+	padding: 0.2em 0.6em;
+	max-width: 500px;
+	text-align: left;
+	line-height: 1.4em;
+}
+
+.boxoverInfoHeader {
+	display: none;
+	border: 0;
+	height: 0;
+}
+
+.boxoverInfoBody {
+	border: solid 1px Gray;
+	color: #333333;
+	padding: 0.4em;
+	background-color: #ebf3ff;
+	font-size: 0.9em;
+	text-align: left;
+	max-width: 400px;
+	line-height: 1.4em;
+}
+
+/* end css tooltips/boxovers */
 
 .step_text {
 	font-weight: bold;
