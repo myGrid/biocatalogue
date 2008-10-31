@@ -10,7 +10,9 @@ class Service < ActiveRecord::Base
   belongs_to :submitter,
              :class_name => "User",
              :foreign_key => "submitter_id"
-             
+  
+  before_validation_on_create :generate_unique_code
+  
   attr_protected :unique_code
   
   validates_presence_of :name, :unique_code
@@ -35,4 +37,24 @@ class Service < ActiveRecord::Base
       return ''
     end
   end
+  
+protected
+  
+  def generate_unique_code
+    salt = rand 1000000
+    
+    if self.name.blank?
+      errors.add_to_base("Failed to generate the unique code for the Service. The name of the service has not been set yet.")
+      return false
+    else
+      code = "#{self.name.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
+      
+      if Service.exists?(:unique_code => code)
+        generate_unique_code
+      else
+        self.unique_code = code
+      end
+    end
+  end
+  
 end

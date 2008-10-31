@@ -1,4 +1,3 @@
-
 require 'acts_as_service_versionified'
 require 'wsdl_parser'
 
@@ -35,7 +34,7 @@ class SoapService < ActiveRecord::Base
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :description, :documentation_url ],
                  :include => [ :soap_operations ])
-  end                        
+  end
 
   def populate
     if self.wsdl_location.blank?

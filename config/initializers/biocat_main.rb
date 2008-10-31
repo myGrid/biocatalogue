@@ -4,3 +4,9 @@ SERVICE_TYPES = {
   #"REST Web Service"  => RestService,
   "Soaplab Server"    => SoaplabServer
 }
+
+# Initialise the country codes
+CountryCodes
+
+# Require the util library 
+require 'util'

@@ -39,7 +39,13 @@ module BioCatalogue
         # This is to update things like the updated_at time
         def save_service_version_record
           if service_version
-            service_version.save
+            service_version.updated_at = Time.now
+            service_version.save    # This should only do a partial update (ie: save the updated_at field only).
+          end
+          
+          if service
+            service.updated_at = Time.now
+            service.save            # This should only do a partial update (ie: save the updated_at field only).
           end
         end
         

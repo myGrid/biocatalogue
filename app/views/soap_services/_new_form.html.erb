@@ -54,6 +54,18 @@
 					
 					<br/>
 					
+					<!-- Location -->
+					<div>
+						Location: <br/>
+						<% if @wsdl_geo_location %>
+							<p class="field"><%= geo_loc_to_text(@wsdl_geo_location) -%></p>
+						<% else %>
+							<p class="none_text">Not available</p>
+						<% end %>
+				  </div>
+					
+					<br/>
+					
 					<!-- Operations -->
 					<% if @wsdl_info %>
 						<div>
@@ -68,6 +80,7 @@
 							</div>
 						</div>
 					<% end -%>
+					
 				</fieldset>
 				
 			</td>

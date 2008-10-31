@@ -1,4 +1,5 @@
 require 'wsdl_parser'
+require 'addressable/uri'
 
 class SoapServicesController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
@@ -50,30 +51,49 @@ class SoapServicesController < ApplicationController
   # POST /soap_services
   # POST /soap_services.xml
   def create
-    # Check for a duplicate
-    @existing_soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", wsdl_url])
+    wsdl_location = params[:soap_service][:wsdl_location] || ""
+    wsdl_location = Addressable::URI.parse(wsdl_location).normalize.to_s unless wsdl_location.blank?
     
-    if !@existing_soap_service.nil?
+    if wsdl_location.blank?
+      @error_message = "Please provide a valid WSDL URL"
       respond_to do |format|
         format.html { render :action => "new" }
         format.xml  { render :xml => '', :status => 406 }
       end
     else
-      @soap_service = SoapService.new(params[:soap_service])
-      @soap_service.populate
+      # Check for a duplicate
+      @existing_soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", wsdl_location])
       
-      respond_to do |format|
-        if @soap_service.save
-          # TODO: store the extra information provided in the form, as Annotations.
-          
-          flash[:notice] = 'SoapService was successfully created.'
-          format.html { redirect_to(@soap_service.service) }
-          
-          # TODO: should this return the top level Service resource or SoapService? 
-          format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
-        else
+      if !@existing_soap_service.nil?
+        respond_to do |format|
           format.html { render :action => "new" }
-          format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
+          format.xml  { render :xml => '', :status => 406 }
+        end
+      else
+        @soap_service = SoapService.new(:wsdl_location => wsdl_location)
+        @soap_service.populate
+        
+        # TODO: store the extra information provided in the form, as Annotations.
+        
+        respond_to do |format|
+          if @soap_service.save
+            success = post_create(@soap_service)
+            
+            if success
+              flash[:notice] = 'Service was successfully created.'
+              format.html { redirect_to(@soap_service.service(true)) }
+              
+              # TODO: should this return the top level Service resource or SoapService? 
+              format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
+            else
+              flash[:error] = 'An error has occurred with the submission. Please contact us to report this. Thank you.'
+              format.html { render :action => "new" }
+              format.xml  { render :xml => '', :status => 500 }
+            end
+          else
+            format.html { render :action => "new" }
+            format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
+          end
         end
       end
     end
@@ -110,32 +130,34 @@ class SoapServicesController < ApplicationController
   end
   
   def load_wsdl
-    wsdl_url = params[:wsdl_url]
-    wsdl_url = wsdl_url.strip unless wsdl_url.blank?
+    wsdl_location = params[:wsdl_url] || ''
+    wsdl_location = Addressable::URI.parse(wsdl_location).normalize.to_s unless wsdl_location.blank?
     
-    if wsdl_url.blank?
+    if wsdl_location.blank?
       @error_message = "Please provide a valid WSDL URL"
     else
       # Check for a duplicate
-      @existing_soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", wsdl_url])
+      @existing_soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", wsdl_location])
       
       # Only continue if no duplicate was found
       if @existing_soap_service.nil?
-        @soap_service = SoapService.new(:wsdl_location => wsdl_url)
+        @soap_service = SoapService.new(:wsdl_location => wsdl_location)
         
         begin
-          #@wsdl_info = @soap_service.get_service_attributes
           @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
           
           if err_msgs.empty?
             @error_message = nil
+            
+            # Try and find location of the service from the url of the WSDL.
+            @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@soap_service.wsdl_location)
           else
             @error_message = "Error messages: #{err_msgs.to_sentence}."
           end
         rescue Exception => ex
           @error_message = "Failed to load the WSDL location provided."
-          logger.info("ERROR: failed to load WSDL from location - #{wsdl_url}. Exception:")
-          logger.info(ex)
+          logger.error("ERROR: failed to load WSDL from location - #{wsdl_location}. Exception:")
+          logger.error(ex)
         end
       end
     end
@@ -174,6 +196,42 @@ class SoapServicesController < ApplicationController
           render(:action => 'new') and return
         end
       end
+    end
+  end
+  
+protected
+
+  def post_create(soap_service)
+    # Try and find location of the service from the url of the WSDL.
+    wsdl_geo_location = BioCatalogue::Util.url_location_lookup(soap_service.wsdl_location)
+    city = (wsdl_geo_location.nil? || wsdl_geo_location.city.blank? || wsdl_geo_location.city == "(Unknown City)") ? nil : wsdl_geo_location.city
+    country = (wsdl_geo_location.nil? || wsdl_geo_location.country_code.blank?) ? nil : CountryCodes.country(wsdl_geo_location.country_code)
+    
+    # Create the associated service, service_version and service_deployment objects.
+    # We can assume here that this is the submission of a completely new service in BioCatalogue.
+    
+    new_service = Service.new(:name => soap_service.name)
+    
+    new_service.submitter = current_user
+                              
+    new_service_version = new_service.service_versions.build(:version => "1", 
+                                                             :version_display_text => "1")
+    
+    new_service_version.service_versionified = soap_service
+    
+    new_service_deployment = new_service_version.service_deployments.build(:service_url => soap_service.wsdl_location,
+                                                                           :city => city,
+                                                                           :country => country)
+    
+    new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(soap_service.wsdl_location).host)
+    new_service_deployment.service = new_service
+                                                  
+    if new_service.save
+      return true
+    else
+      logger.error("ERROR: post_create method for SoapServicesController failed!")
+      logger.error("Error messages: #{new_service.errors.full_messages.to_sentence}")
+      return false
     end
   end
   

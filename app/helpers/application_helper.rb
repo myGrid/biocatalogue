@@ -5,7 +5,7 @@ module ApplicationHelper
     controller_name.humanize.titleize
   end
   
-  def flag_icon(country, text=country, style='')
+  def flag_icon_from_country(country, text=country, style='')
     return '' if country.blank?
     
     code = ''
@@ -23,11 +23,49 @@ module ApplicationHelper
     #puts "code = " + code
     
     unless code.blank?
-      return image_tag("flags/#{code.downcase}.png",
-              :title => "header=[] body=[<b>Location: </b>#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[200]",
-              :style => "vertical-align:middle; #{style}")
+      return flag_icon_from_country_code(code, text, style)
     else
       return ''
     end
+  end
+  
+  def flag_icon_from_country_code(code, text=nil, style='')
+    code = "GB" if code.upcase == "UK"
+    text = CountryCodes.country(code.upcase) if text.nil?
+    return image_tag("flags/#{code.downcase}.png",
+              :title => tooltip_title_attrib(text),
+              :style => "vertical-align:middle; #{style}")
+  end
+  
+  def tooltip_title_attrib(text, delay=200)
+    return "header=[] body=[#{text}] cssheader=[boxoverTooltipHeader] cssbody=[boxoverTooltipBody] delay=[#{delay}]"
+  end
+  
+  def geo_loc_to_text(geo_loc, style='', flag=true, flag_pos='right')
+    return '' if geo_loc.nil?
+    return '' if geo_loc.country_code.nil?
+    
+    text = ''
+    
+    country_code = h(geo_loc.country_code)
+    
+    unless geo_loc.city.blank? or geo_loc.city == "(Unknown City)"
+      text = text + "#{h(geo_loc.city)}, "
+    end
+    
+    text = text + CountryCodes.country(country_code)
+    
+    if flag
+      case flag_pos.downcase
+        when 'right'
+          text = text + flag_icon_from_country_code(country_code, nil, "margin-left: 0.8em;")
+        when 'left'
+          text = flag_icon_from_country_code(country_code, nil, "margin-right: 0.8em;") + text
+        else
+          text = text + flag_icon_from_country_code(country_code, nil, "margin-left: 0.8em;")
+      end  
+    end
+    
+    return text
   end
 end

@@ -5,7 +5,7 @@ class ServiceDeployment < ActiveRecord::Base
   
   belongs_to :provider, 
              :class_name => "ServiceProvider",
-             :foreign_key => "provider_id"
+             :foreign_key => "service_provider_id"
   
   belongs_to :service_version
   
