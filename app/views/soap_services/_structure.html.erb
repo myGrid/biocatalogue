@@ -1,0 +1,20 @@
+<strong>Operations</strong> <p />
+<%for operation in service_versionified.soap_operations %>
+	name: 
+	<%= link_to operation.name, operation %> <br/>
+	inputs:
+	<%for input in operation.soap_inputs%> 
+		<%if input.computational_type != nil %>
+	     	<%= link_to input.name << '='<< input.computational_type.split(":")[1]  , input %> 
+		<%end%>
+	<%end%>
+	<br/>
+	outputs: 
+	<%for output in operation.soap_outputs%>
+		<%if output.computational_type != nil %>
+	   		 <%= link_to output.name << '='<< output.computational_type.split(":")[1] , output %> 
+		<%end%>
+	<%end%>
+	<br/>
+	<p />
+<%end%>

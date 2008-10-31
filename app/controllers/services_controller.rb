@@ -15,6 +15,12 @@ class ServicesController < ApplicationController
   def show
     @service = Service.find(params[:id])
     
+    @latest_version = @service.service_versions.last
+    @latest_version_instance = @latest_version.service_versionified
+    
+    @all_service_versionified_instances = @service.service_versions.collect { |sv| sv.service_versionified }
+    @all_service_types = (@all_service_versionified_instances.collect { |sv| sv.class.to_s.underscore.titleize }).uniq
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @service }

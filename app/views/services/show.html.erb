@@ -1,39 +1,19 @@
 <p>
-  <b>Service type:</b>
-  <%=h @service.service_type %>
+  <b>Service types:</b>
+  <%= @all_service_types.to_sentence %>
 </p>
-<!--
+
 <p>
   <b>Unique code:</b>
   <%=h @service.unique_code %>
 </p>
--->
+
 <p>
   <b>Service Name:</b>
-  <%=h @service_instance.name %> 
-  <br />
-  <%=link_to 'wsdl', @service_instance.wsdl_location %>
+  <%=h @service.name %> 
 </p>
-<strong>Operations</strong> <p />
-<%for operation in @service_instance.soap_operations %>
-	name: 
-	<%= link_to operation.name, operation %> <br/>
-	inputs:
-	<%for input in operation.soap_inputs%> 
-		<%if input.input_type != nil %>
-	     	<%= link_to input.name << '='<< input.input_type.split(":")[1]  , input %> 
-		<%end%>
-	<%end%>
-	<br/>
-	outputs: 
-	<%for output in operation.soap_outputs%>
-		<%if output.output_type != nil %>
-	   		 <%= link_to output.name << '='<< output.output_type.split(":")[1] , output %> 
-		<%end%>
-	<%end%>
-	<br/>
-	<p />
-<%end%>
+
+<% render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/structure", :locals => { :service_versionified =>  @latest_version_instance } %>
 
 <%= link_to 'Edit', edit_service_path(@service) %> |
-<%= link_to 'Back', web_services_path %>
+<%= link_to 'Back', services_path %>

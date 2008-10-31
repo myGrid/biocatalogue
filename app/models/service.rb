@@ -2,7 +2,8 @@ class Service < ActiveRecord::Base
   acts_as_trashable
   
   has_many :service_versions, 
-           :dependent => :destroy
+           :dependent => :destroy,
+           :order => "version ASC"
   
   has_many :service_deployments, 
            :dependent => :destroy
