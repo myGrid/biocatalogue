@@ -1,8 +1,0 @@
-<fieldset>
-  	<legend>Details</legend>
-	<%= error_messages_for :service%>
-	<% fields_for :service do |s| %>
-	   	<p>Server Name : <br />  <%= s.text_field :name %> <br /> </p>
-		<p>Server Location : <br />  <%= s.text_field :wsdl_location %> <br /></p>
-	<%end%>
-  </fieldset>

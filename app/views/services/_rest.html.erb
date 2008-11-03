@@ -1,8 +1,0 @@
-<fieldset>
-  	<legend>Details</legend>
-	<%= error_messages_for :service%>
-	<% fields_for :service do |s| %>
-		<p> Name : <br />  <%= s.text_field :name %> <br /></p>
-		Description : <br />  <%= s.text_area :description %>
-	<%end%>
-  </fieldset>
