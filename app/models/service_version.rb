@@ -8,6 +8,10 @@ class ServiceVersion < ActiveRecord::Base
   
   has_many :service_deployments
   
+  belongs_to :submitter,
+             :class_name => "User",
+             :foreign_key => "submitter_id"
+  
   validates_presence_of :version, :version_display_text
   
   if ENABLE_SEARCH

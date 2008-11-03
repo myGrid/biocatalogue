@@ -218,6 +218,7 @@ protected
                                                              :version_display_text => "1")
     
     new_service_version.service_versionified = soap_service
+    new_service_version.submitter = current_user
     
     new_service_deployment = new_service_version.service_deployments.build(:service_url => soap_service.wsdl_location,
                                                                            :city => city,
@@ -225,6 +226,7 @@ protected
     
     new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(soap_service.wsdl_location).host)
     new_service_deployment.service = new_service
+    new_service_deployment.submitter = current_user
                                                   
     if new_service.save
       return true
