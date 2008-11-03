@@ -6,6 +6,10 @@ class User < ActiveRecord::Base
   has_many :services,
            :foreign_key => 'submitter_id'
   
+  if USE_EVENT_LOG
+    acts_as_activity_logged
+  end
+  
   validates_presence_of       :email
   validates_presence_of       :password, :if => :password_required?
   validates_presence_of       :password_confirmation, :if => :password_required?

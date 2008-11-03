@@ -92,13 +92,17 @@ class UsersController < ApplicationController
   
   def activate_account
     unless params[:security_token] == nil
+      # TODO: use User.find_by_security_token for performance reasons!
       users = User.find(:all)
       users.each do |user|
         token = user.security_token
         if token == params[:security_token]
+            # TODO: refactor this into the User model, ie: into a user.activate! method instead of doing it in the controller.
+            # TODO: DON'T use the update_attribute method as it bypasses AR validations.
             if user.update_attribute(:activated_at, Time.now)
               user.update_attribute(:security_token, nil)
               flash[:notice] = "Account activated. You can log into your account now."
+              ActivityLog.create(:action => "activate", :activity_loggable => user)
               return
             end
         end

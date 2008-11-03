@@ -31,6 +31,10 @@ class Service < ActiveRecord::Base
                  :include => [ :service_versions, :service_deployments ])
   end
   
+  if USE_EVENT_LOG
+    acts_as_activity_logged(:models => { :culprit => { :model => :submitter } })
+  end
+  
   def submitter_name
     if self.submitter
       return submitter.display_name
