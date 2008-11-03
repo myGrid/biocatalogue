@@ -43,6 +43,10 @@ class Service < ActiveRecord::Base
     end
   end
   
+  def to_param
+    "#{self.id}-#{self.unique_code}"
+  end
+  
 protected
   
   def generate_unique_code
