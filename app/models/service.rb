@@ -52,7 +52,7 @@ protected
       errors.add_to_base("Failed to generate the unique code for the Service. The name of the service has not been set yet.")
       return false
     else
-      code = "#{self.name.gsub(/[^\w\.\-]/,'_').downcase}_#{salt}"
+      code = "#{Slugalizer.slugalize(self.name)}_#{salt}"
       
       if Service.exists?(:unique_code => code)
         generate_unique_code
