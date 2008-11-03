@@ -1,6 +1,6 @@
 <p>
-  <b>Service types:</b>
-  <%= @all_service_types.to_sentence %>
+  <b>Service Name:</b>
+  <%=h @service.name %> 
 </p>
 
 <p>
@@ -8,9 +8,10 @@
   <%=h @service.unique_code %>
 </p>
 
+
 <p>
-  <b>Service Name:</b>
-  <%=h @service.name %> 
+  <b>Service types:</b>
+  <%= @all_service_types.to_sentence %>
 </p>
 
 <% render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/structure", :locals => { :service_versionified =>  @latest_version_instance } %>
