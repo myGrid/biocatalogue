@@ -3,3 +3,5 @@
 # This setting determines whether search indexing is enabled or not. 
 ENABLE_SEARCH = false
 
+# Show the debug box at the end of the page or not.
+SHOW_DEBUG = false

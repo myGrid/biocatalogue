@@ -45,13 +45,15 @@
 						
 					<%= yield -%>          
           
-                    <span class="clear"></span>
+          <span class="clear"></span>
 
-                    <div id="footer">
+          <div id="footer">
 						<%= render :partial => "layouts/footer" -%>
 					</div><!-- /footer -->
+					
+					<%= render :partial => "layouts/debug" if SHOW_DEBUG %>
+					
 				</div></div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
-
       
 			</div> <!-- /container -->
 		</div> <!-- /wrapper -->
