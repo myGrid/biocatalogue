@@ -1,8 +1,6 @@
 require 'open-uri'
-require 'rexml/document'
 require 'active_support/inflector'
-
-include REXML
+require 'pp'
 
 module BioCatalogue
   module WsdlParser
@@ -16,7 +14,7 @@ module BioCatalogue
     # - wsdl_file_contents: the contents of the actual WSDL file. This is nil if the WSDL could not be fetched.
     #
     # service_info structure:
-    #   { 
+    #   { n
     #     :name         => "service_name",
     #     :description  => "service_description",
     #     :operations   => 
@@ -45,17 +43,18 @@ module BioCatalogue
     #         ] 
     #   }
     #
-    def WsdlParser.parse(wsdl_url)
-      service_info = { }
-      error_messages =  [ ]
+   
+    def WsdlParser.parse(wsdl_url="")
+      
+      service_info       = { }
+      error_messages     = [ ]
       wsdl_file_contents = nil
+      wsdl_hash          = nil
       
       begin
-        wsdl_file_contents  = open(wsdl_url.strip()).read
-        doc                 = Document.new(wsdl_file_contents)
-        root                = doc.root
-        
-        if root.nil?
+        wsdl_hash, wsdl_file_contents = get_wsdl_hash_and_file_contents(wsdl_url)
+
+        if wsdl_hash.nil?
           error_messages << "The WSDL file could not be parsed. It may be invalid."
         end
         
@@ -64,157 +63,201 @@ module BioCatalogue
       end
       
       if error_messages.empty?
-        root_metadata = get_root_metadata(root)
-        
-        service_info["name"]        = root_metadata["name"]
-        service_info["description"] = root_metadata["description"]
-        
-        service_info["operations"]  = [ ]
-        
-        operation_attributes = get_operation_attributes(root)
-        message_attributes   = get_message_attributes(root)
-        service_attributes   = format_service_attributes(operation_attributes, message_attributes)
-        
-        service_attributes.each do |op|
-          op_hash = { }
-          
-          op_hash["name"]           = op["operation"]["name"]
-          op_hash["description"]    = op["operation"]["description"]
-          op_hash["parameter_order"]= op["operation"]["parameter_order"]
-          op_hash["inputs"]         = op["inputs"]
-          op_hash["outputs"]        = op["outputs"]
-          
-          service_info["operations"] << op_hash
-        end
+        service_info  = get_service_info(wsdl_hash)
       end
-      
       return [ service_info, error_messages, wsdl_file_contents ]
     end
     
-    protected
+    # This method takes a wsdl url and returns a hash of its contents
+    # The structure of the wsdl_hash look like
+    # {
+    #  "definitions" => {
+    #                     "message"  => [...], # messages sent to/receive from service
+    #                     "service"  => {}, # service attributes like name
+    #                     "PortType" => [...], # contains operations defined by service
+    #                     "types"    => [...], # types defined by service
+    #                     "binding"  => [...], #operation and service bindings
+    #                     "documentation" => "service documentation"
+    #                    }
+    # }
+    #
+    def WsdlParser.get_wsdl_hash_and_file_contents(wsdl_url)
+      wsdl_file_contents  = open(wsdl_url.strip()).read
+      wsdl_hash = Hash.from_xml(wsdl_file_contents)
+      return [wsdl_hash, wsdl_file_contents]
+    end
+
     
-    def WsdlParser.get_root_metadata(root)
-     
-      prefix = ""
-      prefix="wsdl:" if root.elements["wsdl:message"]
+    protected    
+    def WsdlParser.get_service_info(wsdl_hash)
+      service_info = {}
+      service_info["name"]        = wsdl_hash["definitions"]["service"]["name"]
+      service_info["description"] = wsdl_hash["definitions"]["documentation"]
+      #service_info["operations"] = wsdl_hash["definitions"]["portType"]["operation"]
       
-      my_service_attributes = {}
-     
-      root.each_element("//#{prefix}service"){|service|
-      my_service_attributes = get_hash(service.attributes)
-      if service.elements["#{prefix}documentation"]
-        my_service_attributes["description"] = service.elements["#{prefix}documentation"].text
-      end
-      }
-      if root.elements["#{prefix}documentation"]
-        my_service_attributes["description"] = root.elements["#{prefix}documentation"].text
-      end
-      
-      return my_service_attributes
-     
+      operations_ = map_messages_and_operations(wsdl_hash)
+      service_info["operations"] = format_operations(operations_) 
+      service_info
     end
     
-    # This method extracts the service operations from a
-    # wsdl document- The 'operation' tags  handles are those within the portType tags
-    #
-    # An operation, its inputs and outputs are extracted into
-    # an array of hashes
-    # Example :
-    #
-    def WsdlParser.get_operation_attributes(root)
-      prefix = ""
-      prefix="wsdl:" if root.elements["wsdl:message"]
-      my_operation_attributes = []
-      
-      root.each_element("//#{prefix}portType/#{prefix}operation"){|operation| 
-      details = {}
-      details["operation"] = get_hash(operation.attributes)
-      if operation.elements["#{prefix}input"]
-        details['inputs'] = get_hash(operation.elements["#{prefix}input"].attributes)
+    def WsdlParser.map_messages_and_operations(wsdl_hash)
+      messages   = wsdl_hash["definitions"]["message"]
+      operations = wsdl_hash["definitions"]["portType"]["operation"]
+      unless  wsdl_hash["definitions"]["types"] == nil
+        elements   = wsdl_hash["definitions"]["types"]["schema"]["element"] || nil
       end
-      if operation.elements["#{prefix}output"]
-        details['outputs'] = get_hash(operation.elements["#{prefix}output"].attributes)
+      unless operations.class.to_s == "Array"
+        operations =[operations]
       end
-      if operation.elements["#{prefix}documentation"]
-        details['operation']["description"] = operation.elements["#{prefix}documentation"].text
-      end
-      my_operation_attributes << details
-      }
-      return my_operation_attributes
-    end
-    
-    def WsdlParser.get_message_attributes(root)
-      prefix = ""
-      prefix="wsdl:" if root.elements["wsdl:message"]
-      my_message_attributes = [] 
-      
-      root.each_element("//#{prefix}message"){|message| 
-        my_message = {"description" => ""}
-        my_parts =[]
-    
-        my_message["the_message"] = get_hash(message.attributes) 
-        if message.elements["#{prefix}part"]
-          message.elements.each("#{prefix}part"){ |part|
-          my_parts << get_hash(part.attributes) 
-           }
+      operations.each do |operation|
+        
+        operation["description"] = operation["documentation"]
+        operation.delete("documentation")
+        
+        #input/output msg for this operation
+        in_msg  = operation["input"]["message"]
+        out_msg = operation["output"]["message"]
+        
+        #get message name without namespace prefix
+        if in_msg.split(":").length > 1
+          in_msg = in_msg.split(":")[1]
         end
-       if message.elements["#{prefix}documentation"]
-         my_message["description"] = message.elements["#{prefix}documentation"].text
-       end
-        my_message["the_parts"]= my_parts
-        my_message_attributes << my_message
-        }
-      return my_message_attributes
-    end
-    
-    #--------------------------------------------------------------------
-    # helper functions to structure the data so that
-    # it can be transactionally saved to the database
-    
-    def WsdlParser.format_service_attributes(the_operations, the_messages)
-      
-      the_operations.each do |operation|
-        operation["inputs"] = get_message(the_messages,
-                                    operation["inputs"]["message"].split(':')[1])["the_parts"]
-        operation["inputs"] = modify_type_field_name("input", operation["inputs"])                           
-        operation["outputs"] = get_message(the_messages,
-                                    operation["outputs"]["message"].split(':')[1])["the_parts"]
-        operation["outputs"] = modify_type_field_name("output", operation["outputs"])                            
-      end
-      errors.add_to_base("Service should have at least one operation, got none!") if the_operations.empty?
-      return the_operations
-    end
-    
-    def WsdlParser.get_message(the_messages, name)
-      the_messages.each{ |m|
-         if m["the_message"]["name"] == name
-            return m
+        #get message name without namespace prefix
+        if out_msg.split(":").length > 1
+          out_msg = out_msg.split(":")[1]
+        end
+        
+        messages.each{ |message|
+         if message["name"] == in_msg
+           operation["input"]["message"]= expand_message_element(message, elements)
          end
-      }
-      return {}
-    end
-    
-    def WsdlParser.modify_type_field_name(param_type, data)
-      if ["input", "output"].include?(param_type.downcase)
-        data.each{ |d| 
-          if d.has_key?("type")
-            val = d["type"]
-            d["computational_type"] = val
-            d.delete("type")
-          elsif d.has_key?("element")
-            val = d["element"]
-            d["computational_type"] = val
-            d.delete("element")
-          end
+         
+         if message["name"] == out_msg
+           operation["output"]["message"]= expand_message_element(message, elements)
+         end
         }
       end
-      return data
+
+      operations
     end
     
-    def WsdlParser.get_hash(attr)
+    def WsdlParser.expand_message_element(message, elements)
+      if message["part"].class.to_s == "Hash"
+        if message["part"].has_key?("element")
+          elm = message["part"]["element"]
+          if elm.split(":").length > 1
+            elm = elm.split(":")[1]
+          end
+
+          elements.each{ |element|
+           if element["name"] == elm
+             message["part"]["element"] = element
+           end
+          }
+        end
+      end
+      message
+    end
+    
+    def WsdlParser.format_operations(operations)
+      f_operations = []
+      operations.each{ |operation| 
+        operation.each{|k, v| operation[ActiveSupport::Inflector.underscore(k)]=v}
+        
+        in_parts  = operation["input"]["message"]["part"]
+        out_parts = operation["output"]["message"]["part"]
+        
+        if in_parts.class.to_s =="Hash"
+          operation["inputs"]= [in_parts]
+           unless in_parts["element"]== nil
+             if in_parts["element"]["complexType"]== nil
+                operation["inputs"] = [in_parts["element"]]
+             else
+               elm = in_parts["element"]["complexType"]["sequence"]["element"]
+               operation["inputs"]= elm
+               
+               unless elm.class.to_s =="Array"
+                 operation["inputs"] =[elm]
+               end
+               #operation["inputs"]= in_parts["element"]["complexType"]["sequence"]["element"]
+             end
+          end
+       else
+          operation["inputs"] = in_parts
+       end 
+       
+       if out_parts.class.to_s =="Hash"
+         operation["outputs"]= [out_parts]
+           unless out_parts["element"]== nil
+             if out_parts["element"]["complexType"]==nil
+                operation["outputs"] = [out_parts["element"]]
+             else
+                elm = out_parts["element"]["complexType"]["sequence"]["element"]
+               operation["outputs"]= elm
+               
+               unless elm.class.to_s =="Array"
+                 operation["outputs"] =[elm]
+               end
+             end
+         end
+       else 
+         operation["outputs"]= out_parts
+       end
+       
+       operation.delete("input")
+       operation.delete("output")
+       type_to_computational_type(operation["inputs"])
+       type_to_computational_type(operation["outputs"])
+       }
+       
+      f_operations = camel_case_to_underscore(operations)
+      return f_operations
+    end
+    
+    def WsdlParser.camel_case_to_underscore(list)
+      new_list =[]
+      list.each{ |item|
       h = {}
-      attr.each{|k, v| h[ActiveSupport::Inflector.underscore(k)]=v}
-      return h
+      item.each{|k, v| h[ActiveSupport::Inflector.underscore(k)]=v}
+      new_list << h
+      }
+      return new_list
+    end
+    
+    
+    def WsdlParser.type_to_computational_type(list)
+      list.each {|item|
+      remove_complex_types_and_min_max_occurs(item)
+      
+      if item.has_key?("type")
+        item["computational_type"] = item["type"]
+        item.delete("type")
+      end
+      }
+    end
+    
+    def WsdlParser.remove_complex_types_and_min_max_occurs(item)
+      if item.has_key?("maxOccurs")
+        item.delete("maxOccurs")
+      end
+      if item.has_key?("minOccurs")
+        item.delete("minOccurs")
+      end
+      if item.has_key?("complexType")
+        item.delete("complexType")
+      end
+    end
+    
+    def WsdlParser.test(num=0)
+      wsdls= ["http://ws.chss.homeport.info/ChssAdvWS.asmx?WSDL",
+      "http://gbio-pbil.ibcp.fr/ws/ClustalwWS.wsdl",
+      "http://togows.dbcls.jp/soap/wsdl/ddbj_blastdemo.wsdl",
+      "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSFasta.wsdl",
+      "http://biomoby.org/services/wsdl/biomoby.renci.org/Blast",
+      "http://togows.dbcls.jp/soap/wsdl/ddbj_sps.wsdl",]
+      wh = get_wsdl_hash_and_file_contents(wsdls[num])[0]
+      pp wh
+      return wh
     end
     
   end
