@@ -14,7 +14,7 @@ module BioCatalogue
     # - wsdl_file_contents: the contents of the actual WSDL file. This is nil if the WSDL could not be fetched.
     #
     # service_info structure:
-    #   { n
+    #   { 
     #     :name         => "service_name",
     #     :description  => "service_description",
     #     :operations   => 
