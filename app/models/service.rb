@@ -11,7 +11,7 @@ class Service < ActiveRecord::Base
   belongs_to :submitter,
              :class_name => "User",
              :foreign_key => "submitter_id"
-  
+             
   before_validation_on_create :generate_unique_code
   
   attr_protected :unique_code
@@ -35,6 +35,15 @@ class Service < ActiveRecord::Base
     acts_as_activity_logged(:models => { :culprit => { :model => :submitter } })
   end
   
+  # For pagination
+  def self.per_page
+    1
+  end
+  
+  def to_param
+    "#{self.id}-#{self.unique_code}"
+  end
+  
   def submitter_name
     if self.submitter
       return submitter.display_name
@@ -43,8 +52,26 @@ class Service < ActiveRecord::Base
     end
   end
   
-  def to_param
-    "#{self.id}-#{self.unique_code}"
+  def latest_version
+    self.service_versions.last
+  end
+  
+  def all_service_version_instances
+    self.service_versions.collect{|sv| sv.service_versionified}    
+  end
+  
+  # Gets an array of all the service types that this service has (as part of it's versions).
+  def all_service_types
+    self.service_versions.collect{|sv| sv.service_versionified_type.underscore.titleize}.uniq
+  end
+  
+  def description
+    self.latest_version.service_versionified.description
+  end
+  
+  # Gets an array of all the ServiceProviders
+  def providers
+    self.service_deployments.collect{|sd| sd.provider}.uniq
   end
   
 protected

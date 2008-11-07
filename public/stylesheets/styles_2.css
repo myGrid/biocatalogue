@@ -46,7 +46,7 @@ body {
   padding: 0;
   background: #e9f7cc;
   /*font: 12px/170% "Trebuchet MS";*/
-  font:13px/1.231 "Trebuchet MS";
+  font:13px/1.231 "Trebuchet MS", Arial, sans-serif;
   color: #333333;
   min-width: 700px;
 }
@@ -736,6 +736,118 @@ body.sidebar-right #login_box {
 	border: 1px dotted #DDDDDD;
 	background-color: #FFFFCC;
 	padding: 0.2em 0.5em;
+}
+
+/* BEGIN pagination styles */
+
+.pagination {
+	background: white;
+	/* self-clearing method: */ 
+ }
+ 
+.pagination a, 
+.pagination span {
+	padding: .2em .5em;
+	display: block;
+	float: left;
+	margin-right: 1px; 
+}
+
+.pagination span.disabled {
+	color: #999;
+	border: 1px solid #DDD; 
+}
+
+.pagination span.current {
+	font-weight: bold;
+	background: #E9F7CC;
+	color: #333333;
+	border: 1px solid #CDEB8B; 
+}
+
+.pagination a {
+	text-decoration: none;
+	color: #333333;
+	border: 1px solid #CDEB8B; 
+}
+
+.pagination a:hover, 
+.pagination a:focus {
+	background: #E9F7CC;
+}
+
+.pagination .page_info {
+	background: #E9F7CC;
+	color: #333333;
+	padding: .4em .6em;
+	width: 22em;
+	margin-bottom: .3em;
+	text-align: center; 
+}
+
+.pagination .page_info b {
+	color: #003;
+	padding: .1em .25em; 
+}
+
+.pagination:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden; 
+}
+
+* html .pagination {
+	height: 1%; 
+}
+
+*:first-child+html .pagination {
+	overflow: hidden; 
+}
+
+/* END pagination styles
+
+/* BEGIN listing styles */
+
+.listings {
+	padding: 1em 0;
+	margin: 1.5em 0;
+	border-top: 1px dotted #CCCCCC;
+	border-bottom: 1px dotted #CCCCCC;
+}
+
+.listing_item { 
+	margin-bottom: 2em;
+}
+
+.listing_item p {
+	margin: 0.3em 0;
+	line-height: 1.3;
+}
+
+.listing_item .name {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-bottom: 0.6em;
+}
+
+.listing_item .desc {
+	color: #333333;
+}
+
+.listing_item .detail {
+	color: #333333;
+	font-size: 0.85em;
+}
+
+/* END listing styles */
+
+.service_type_badge {
+	font-size: 0.8em;
+	font-weight: bold;
+	background-color: #FFBB7F;
+	padding: 0.2em 0.4em;
 }
 
 #home_content {

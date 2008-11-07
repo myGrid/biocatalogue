@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :service_providers
+
   map.resources :service_deployments
   map.resources :annotations, :collection => {:add_annotation => :post}
   map.resources :service_versions

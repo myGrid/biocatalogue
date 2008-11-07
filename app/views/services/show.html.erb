@@ -14,7 +14,5 @@
   <%= @all_service_types.to_sentence %>
 </p>
 
-<% render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/structure", :locals => { :service_versionified =>  @latest_version_instance } %>
+<% render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/structure", :locals => { :service_version_instance =>  @latest_version_instance } %>
 
-<%= link_to 'Edit', edit_service_path(@service) %> |
-<%= link_to 'Back', services_path %>

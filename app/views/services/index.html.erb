@@ -1,4 +1,29 @@
-<h1>Listing Services</h1>
+<% t "Browse Web Service" -%>
+
+<span style="float: right;">
+	<%= link_to 'New Service', new_service_path -%>
+</span>
+
+<h1>Browse Web Services</h1>
+
+<br/>
+<br/>
+
+<div class="pagination">
+	<div class="page_info">
+		<%= page_entries_info @services %>
+	</div>
+	<%= will_paginate @services -%>
+</div>
+
+<div id="latest_services">
+	<%= render :partial => "listing", :locals => { :services => @services } %>
+</div>
+
+<%= will_paginate @services -%>
+
+
+<% if false %>
 
 <table>
   <tr>
@@ -17,4 +42,4 @@
 
 <br />
 
-<%= link_to 'New Service', new_service_path %>
+<% end %>
