@@ -37,7 +37,7 @@ class Service < ActiveRecord::Base
   
   # For pagination
   def self.per_page
-    1
+    30
   end
   
   def to_param
