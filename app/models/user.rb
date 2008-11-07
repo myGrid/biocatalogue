@@ -21,7 +21,8 @@ class User < ActiveRecord::Base
   attr_protected  :id, :salt, :crypted_password, :activated_at, :security_token, :role_id
   attr_accessor   :password
   before_save     :encrypt_password
-  before_create   :generate_activation_code, :generate_default_display_name #before_save messes up with users:activate_account
+  before_create   :generate_activation_code, 
+                  :generate_default_display_name
   
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
@@ -75,6 +76,6 @@ class User < ActiveRecord::Base
   
   # Generate a default display name when creating a user for the 1st time
   def generate_default_display_name
-    self.display_name = email.split("@")[0]
+    self.display_name = self.email.split("@")[0] if self.display_name.blank?
   end
 end
