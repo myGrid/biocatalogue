@@ -26,7 +26,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :services
   
   # Root of website
-  map.root :controller => 'services', :action => 'index'
+  map.root :controller => 'home', :action => 'index'
   
   # The priority is based upon order of creation: first created -> highest priority.
 
