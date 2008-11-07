@@ -1,0 +1,72 @@
+<div style="width: 600px; margin: auto;">
+<h2>BioCatalogue: providing a curated catalogue of Life Science Web Services.</h2>
+
+<ul id="key_points">
+	<li>BioCatalogue provides a <em>single registration point</em> for Web Service providers
+and a <em>single search site</em> for scientists and developers.</li>
+	<li>Expert curators will provide oversight, monitor the catalogue and provide
+<em>high quality annotations</em> for services.</li>
+	<li>BioCatalogue is a place where the <em>community</em> can find contacts and meet
+the experts and maintainers of these services.</li>
+</ul>
+</div>
+<div id="home_content">
+<p>
+<div class="liquid-round" style="width: 600px;">
+  <div class="top"><span></span></div>
+  <div class="center-content">
+      <!-- CONTENT BEGIN -->
+	  <img class="round_box_title" src="images/search_title.gif" alt="Search for Web Services" />
+	  <p>
+	  	The easiest way to <em>find the Web Service</em> you are looking for is to use the BioCatalogue 
+search functionality below (also available in the action bar at the top of every pages).
+	  </p>
+	  <p>
+	  	<div class="search_widget"><b>Search:</b>&nbsp;<input type="text" />&nbsp;<%= link_to image_tag("go_button.png", :alt => "Search for a Service"), "/" %></div>
+	  </p>
+      <!-- CONTENT END -->
+  </div>
+  <div class="bottom"><span></span></div>
+</div>
+</p>
+
+<p>
+<div class="liquid-round" style="width: 280px; float: left;">
+  <div class="top"><span></span></div>
+  <div class="center-content" style="height: 170px;">
+      <!-- CONTENT BEGIN -->
+	  <img class="round_box_title" src="images/browse_title.gif" alt="Browse all Web Services" />
+	  <p>
+	  	You can have an overview of the content of the BioCatalogue by <em>browsing our registry</em> and 
+sorting or filtering down the list of Web Services registered.
+	  </p>
+	  <div class="center" style="height: 70px;">
+	  	<%= link_to image_tag("browse_web_services_button.png", :alt => "Browse Web Services"), "/" %>
+	  </div>
+      <!-- CONTENT END -->
+  </div>
+  <div class="bottom"><span></span></div>
+</div>
+
+<div class="liquid-round" style="width: 280px; float: right;">
+  <div class="top"><span></span></div>
+  <div class="center-content" style="height: 170px;">
+      <!-- CONTENT BEGIN -->
+	  <img class="round_box_title" src="images/register_title.gif" alt="Register a Web Services" />
+	  <p>
+	  	You can easily <em>register Web Services</em> in the BioCatalogue, making them instantly available
+		to the scientific community as well as the tool developers.
+	  </p>
+	  <div class="center">
+	  	<%= link_to image_tag("register_web_services_button.png", :alt => "Register Web Services", :class => "test"), "/" %>
+	  </div>
+	  <br />
+	  <span style="font-size: 0.85em;">
+		To register a Web Service you will need to<br /><%= link_to 'sign in', "/login", :id => "login_link", :class => "login" -%> first.
+	  </span>
+      <!-- CONTENT END -->
+  </div>
+  <div class="bottom"><span></span></div>
+</div>
+</p>
+</div>
