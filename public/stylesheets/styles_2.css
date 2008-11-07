@@ -66,6 +66,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0;
   font-weight: normal;
   font-family: "Trebuchet MS", Arial, sans-serif;
+  line-height: 1.5;
 }
 
 h1 {
@@ -74,7 +75,6 @@ h1 {
 
 h2 {
   font-size: 160%;
-  line-height: 130%;
 }
 
 h3 {
@@ -114,6 +114,7 @@ legend {
 p {
   margin: 0.6em 0 1.2em;
   padding: 0;
+  line-height: 1.3;
 }
 
 a:link, a:visited {
@@ -691,8 +692,9 @@ body.sidebar-right #login_box {
 }
 
 .liquid-round .center-content p {
-	margin-top: -5px;
-	text-align: justify;	
+	margin-top: 0px;
+	text-align: justify;
+	*line-height: 1.5;	
 }
 
 .liquid-round .bottom {
@@ -823,7 +825,6 @@ body.sidebar-right #login_box {
 
 .listing_item p {
 	margin: 0.3em 0;
-	line-height: 1.3;
 }
 
 .listing_item .name {
@@ -834,6 +835,7 @@ body.sidebar-right #login_box {
 
 .listing_item .desc {
 	color: #333333;
+	margin-bottom: 0.3em;
 }
 
 .listing_item .detail {
@@ -850,10 +852,19 @@ body.sidebar-right #login_box {
 	padding: 0.2em 0.4em;
 }
 
+.home_heading {
+	text-weight: bold;
+	font-size: 160%;
+	line-height: 1.5;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+}
+
 #home_content {
 	width: 600px;
-	padding-top: 10px;
-	margin: 20px auto auto auto;
+	padding-top: 1em;
+	margin: 1em auto auto auto;
 }
 
 #home_content em {
@@ -863,7 +874,7 @@ body.sidebar-right #login_box {
 
 #key_points {
 	clear:both;
-	margin-top: 15px;
+	margin: 1.5em 0 1em 0;
 }
 
 #key_points li {
@@ -873,6 +884,7 @@ body.sidebar-right #login_box {
 	/*list-style-type: circle;
 	list-style-image: url("../images/bullet_green2.gif");*/
 	font-size: 1.1em;
+	line-height: 1.5;
 }
 
 #key_points em {
