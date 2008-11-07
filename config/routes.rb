@@ -9,6 +9,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :session
   
   map.register '/register', :controller => 'users', :action => 'new'
+  map.register '/signup', :controller => 'users', :action => 'new'
   map.login '/login', :controller => 'sessions', :action => 'new'
   map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
   map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil  
