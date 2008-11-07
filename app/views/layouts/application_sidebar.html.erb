@@ -17,19 +17,14 @@
 			            <%= link_to image_tag("logo.png", :alt => "www.biocatalogue.org"), "/" %>
 			        </div>
 			
-		        	<ul class="primary-links"><li><a href="#">Home</a></li>
-						<li class="separator"><a href="#">Support</a></li>
-						<li class="separator"><a href="#">About us</a></li>
-					</ul>
+		        	<%= render :partial => "widgets/primary_links" -%>
 					
 					<%= render :partial => "widgets/login_links" -%>
 			    </div> <!-- /header -->			
 			      
 			    <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
 			    	<%= render :partial => "widgets/login_box" -%>
-			    	<div id="action_bar">
-			        	Search:&nbsp;<input type="text" />&nbsp;<%= link_to image_tag("go_button.png", :alt => "Search for a Service"), "/" %><span id="action_links"><%= link_to 'Browse', services_path %><%= link_to 'Register a Service', new_service_path %></span>
-			        </div>
+					<%= render :partial => "widgets/action_bar" -%>
                     
 					<% if flash[:error] %>
 						<div id="error_flash">
@@ -53,8 +48,8 @@
 					<%= render :partial => "layouts/debug" if SHOW_DEBUG %>
 					
 				</div></div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
-				<!-- Sidebar box example
 				<div id="sidebar-right" class="sidebar">
+				<!-- Sidebar box example
 					<div class="sidebar_box">
 					<div class="box_title" href="#">Box title</div>
 					<div class="box_body">
@@ -67,8 +62,7 @@
 							Text
 						</div>
 					</div>
-				</div> <!-- /sidebar box example -->
-				-->
+				</div> --><!-- /sidebar box example -->
       			</div> <!-- /sidebar-right -->
 			</div> <!-- /container -->
 		</div> <!-- /wrapper -->
