@@ -10,8 +10,9 @@
         <%= password_field_tag :password, params[:password], { :size => 15, :class => 'small_login' } %>
         <label for="password">Password:</label>
       </span>
-      <%= submit_tag "Login", { :class => 'small_submit_button' } %>
+      <%= submit_tag "Sign in", { :class => 'small_submit_button' } %>
 	  <br />
 	  <a id="forgot_pwd" href="#">Forgot your<br />password ?</a>
+	  <div id="sign_up">Don't have an account ? <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></div>
     <% end %>
 </div>
