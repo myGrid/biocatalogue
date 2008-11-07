@@ -139,6 +139,13 @@ a:link.login, a:visited.login {
 	white-space: nowrap;
 }
 
+a:link.signup, a:visited.signup {
+	padding-left: 2px;
+	padding-right: 20px;
+	background: url(../images/pencil.gif) right no-repeat;
+	white-space: nowrap;
+}
+
 a:link.green_arrow, a:visited.green_arrow {
 	padding-left: 2px;
 	padding-right: 18px;
@@ -157,6 +164,12 @@ a:hover.login {
 	background: url(../images/login_hover.gif) right no-repeat;
 	text-decoration: underline;
 }
+
+a:hover.signup {
+	background: url(../images/pencil_hover.gif) right no-repeat;
+	text-decoration: underline;
+}
+
 a:hover.green_arrow {
 	background: url(../images/green_arrow_hover.gif) right no-repeat;
 	text-decoration: underline;
@@ -195,6 +208,30 @@ td {
 
 .center {
 	text-align: center;
+}
+
+.green_box {
+	border: 1px dotted #999999;
+	background-color: #e9f7cc;
+	padding: 5px;
+}
+
+#error_flash {	
+	border: 1px dotted #ff0000;
+	background-color: #ffaaaa;
+	padding: 5px;
+	margin: auto;
+	text-align: center;
+	max-width: 30em;
+}
+
+#notice_flash {	
+	border: 1px dotted #999999;
+	background-color: #e9f7cc;
+	padding: 5px;
+	margin: auto;
+	text-align: center;
+	max-width: 30em;
 }
 
 /**
@@ -515,8 +552,8 @@ body.sidebar-right #wrapper #container #header #login_links {
 	/*background: url(../images/orange_dot_bkgd.gif);*/
 	background-color: #e9f7cc;
 	border: 1px solid #cccccc;
-	width: 215px;
-	height: 110px;
+	width: 225px;
+	height: 130px;
 	font-size: 1em;
 	margin: 0 0 auto auto;
 	z-index: 4;
@@ -574,6 +611,10 @@ body.sidebar-right #login_box {
 }
 
 #login_box #forgot_pwd:hover { background-color: #feffcf; }
+
+#sign_up {
+	clear: both;
+}
 
 /* END Login box styles */
 
@@ -853,7 +894,7 @@ body.sidebar-right #login_box {
 }
 
 .home_heading {
-	text-weight: bold;
+	font-weight: bold;
 	font-size: 160%;
 	line-height: 1.5;
 	text-align: center;
