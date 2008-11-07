@@ -69,7 +69,7 @@ module BioCatalogue
     end
     
     # This method takes a wsdl url and returns a hash of its contents
-    # The structure of the wsdl_hash look like
+    # The structure of the wsdl_hash looks like
     # {
     #  "definitions" => {
     #                     "message"  => [...], # messages sent to/receive from service
@@ -92,7 +92,7 @@ module BioCatalogue
     def WsdlParser.get_service_info(wsdl_hash)
       service_info = {}
       service_info["name"]        = wsdl_hash["definitions"]["service"]["name"]
-      service_info["description"] = wsdl_hash["definitions"]["documentation"]
+      service_info["description"] = wsdl_hash["definitions"]["documentation"] || wsdl_hash["definitions"]["service"]["documentation"]
       #service_info["operations"] = wsdl_hash["definitions"]["portType"]["operation"]
       
       operations_ = map_messages_and_operations(wsdl_hash)
@@ -102,13 +102,33 @@ module BioCatalogue
     
     def WsdlParser.map_messages_and_operations(wsdl_hash)
       messages   = wsdl_hash["definitions"]["message"]
-      operations = wsdl_hash["definitions"]["portType"]["operation"]
+      port_type  = wsdl_hash["definitions"]["portType"]
+      operations = []
+      if port_type.class.to_s =="Array"
+        port_type.each{ |a_pt|
+      
+          pt_op = a_pt["operation"] 
+          if pt_op.class.to_s =="Array"
+            pt_op.each{|op| op["parent_port_type"]=a_pt["name"]}
+            operations.concat(pt_op)
+          else
+            pt_op["parent_port_type"] =a_pt["name"]
+            operations << pt_op
+          end
+    
+        }
+      else
+        operations = wsdl_hash["definitions"]["portType"]["operation"]
+        operations.each{ |op| op["parent_port_type"] = port_type["name"]}
+      end
+      
       unless  wsdl_hash["definitions"]["types"] == nil
-        elements   = wsdl_hash["definitions"]["types"]["schema"]["element"] || nil
+         elements   = wsdl_hash["definitions"]["types"]["schema"]["element"] || nil  
       end
       unless operations.class.to_s == "Array"
         operations =[operations]
       end
+      pp operations
       operations.each do |operation|
         
         operation["description"] = operation["documentation"]
@@ -148,7 +168,7 @@ module BioCatalogue
           if elm.split(":").length > 1
             elm = elm.split(":")[1]
           end
-
+          
           elements.each{ |element|
            if element["name"] == elm
              message["part"]["element"] = element
@@ -206,8 +226,8 @@ module BioCatalogue
        
        operation.delete("input")
        operation.delete("output")
-       type_to_computational_type(operation["inputs"])
-       type_to_computational_type(operation["outputs"])
+       format_input_output(operation["inputs"])
+       format_input_output(operation["outputs"])
        }
        
       f_operations = camel_case_to_underscore(operations)
@@ -225,31 +245,45 @@ module BioCatalogue
     end
     
     
-    def WsdlParser.type_to_computational_type(list)
+    #def WsdlParser.type_to_computational_type(list)
+    def WsdlParser.format_input_output(list)
       list.each {|item|
-      remove_complex_types_and_min_max_occurs(item)
-      
-      if item.has_key?("type")
-        item["computational_type"] = item["type"]
-        item.delete("type")
-      end
+      cleanup_input_output_params(item) 
       }
     end
     
-    def WsdlParser.remove_complex_types_and_min_max_occurs(item)
+    def WsdlParser.cleanup_input_output_params(item)
+      db_fields = ["name","description","computational_type",
+                    "min_occurs", "max_occurs"]
+                    
+      if item.has_key?("type")
+        item["computational_type"] = item["type"]
+        item.delete("type")
+      end                         
       if item.has_key?("maxOccurs")
+        item["max_occurs"] = item["maxOccurs"]
         item.delete("maxOccurs")
       end
       if item.has_key?("minOccurs")
+        item["min_occurs"] = item["minOccurs"]
         item.delete("minOccurs")
       end
       if item.has_key?("complexType")
         item.delete("complexType")
       end
+      
+      item.keys.each{ |key| 
+        if !db_fields.include?(key)
+          item.delete(key)
+          #logger.warning("#{key} => #{item[key]} was removed")
+        end
+        }
+      return item
     end
     
     def WsdlParser.test(num=0)
-      wsdls= ["http://ws.chss.homeport.info/ChssAdvWS.asmx?WSDL",
+      wsdls= [#"http://www.webservicex.com/globalweather.asmx?WSDL",
+      "http://ws.chss.homeport.info/ChssAdvWS.asmx?WSDL",
       "http://gbio-pbil.ibcp.fr/ws/ClustalwWS.wsdl",
       "http://togows.dbcls.jp/soap/wsdl/ddbj_blastdemo.wsdl",
       "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSFasta.wsdl",
