@@ -3,11 +3,7 @@
 		<div class="listing_item">
 			<p class="name">
 				<%= link_to(h(service.name), service_path(service)) -%>
-				<% service.all_service_types.each do |s_type| %>
-					<span class="service_type_badge" style="margin-left: 0.8em;">
-						<%= s_type -%>
-					</span>
-				<% end %>
+				<%= service_type_badges(service.service_types) -%>
 			</p>
 			
 			<p class="desc">

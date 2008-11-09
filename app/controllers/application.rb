@@ -66,4 +66,8 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :mine?
+  
+  def set_sidebar_layout
+    self.class.layout "application_sidebar"
+  end
 end

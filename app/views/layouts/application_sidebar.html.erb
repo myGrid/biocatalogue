@@ -49,6 +49,10 @@
 					
 				</div></div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
 				<div id="sidebar-right" class="sidebar">
+					
+					<!-- This will look for a _sidebar.html.erb partial in the corresponding view directory for the controller being called -->
+					<%= render :partial => "sidebar" -%>
+					
 				<!-- Sidebar box example
 					<div class="sidebar_box">
 					<div class="box_title" href="#">Box title</div>

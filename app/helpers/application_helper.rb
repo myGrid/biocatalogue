@@ -68,4 +68,17 @@ module ApplicationHelper
     
     return text
   end
+  
+  def service_type_badges(service_types)
+    html = ''
+    
+    unless service_types.blank?
+      service_types.each do |s_type|
+        html = html + content_tag(:span, s_type, :class => "service_type_badge", :style => "margin-left: 0.8em;")
+      end
+    end
+    
+    return html
+  end
+  
 end

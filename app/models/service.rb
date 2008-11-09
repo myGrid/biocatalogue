@@ -56,12 +56,12 @@ class Service < ActiveRecord::Base
     self.service_versions.last
   end
   
-  def all_service_version_instances
+  def service_version_instances
     self.service_versions.collect{|sv| sv.service_versionified}    
   end
   
   # Gets an array of all the service types that this service has (as part of it's versions).
-  def all_service_types
+  def service_types
     self.service_versions.collect{|sv| sv.service_versionified.service_type_name}.uniq
   end
   

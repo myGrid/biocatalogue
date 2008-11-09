@@ -1,4 +1,9 @@
 class ServicesController < ApplicationController
+  
+  # Set the sidebar layout for certain actions.
+  # Note: the set_sidebar_layout method resides in the ApplicationController.
+  #before_filter :set_sidebar_layout, :only => [ :show ]
+  
   # GET /services
   # GET /services.xml
   def index
@@ -18,8 +23,8 @@ class ServicesController < ApplicationController
     @latest_version = @service.latest_version
     @latest_version_instance = @latest_version.service_versionified
     
-    @all_service_version_instances = @service.all_service_version_instances
-    @all_service_types = @service.all_service_types
+    @all_service_version_instances = @service.service_version_instances
+    @all_service_types = @service.service_types
     
     respond_to do |format|
       format.html # show.html.erb

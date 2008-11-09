@@ -67,10 +67,13 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
   font-family: "Trebuchet MS", Arial, sans-serif;
   line-height: 1.5;
+  color: #333333;
 }
 
 h1 {
   font-size: 170%;
+  color: #000033;
+  margin: 0.5em 0;
 }
 
 h2 {
