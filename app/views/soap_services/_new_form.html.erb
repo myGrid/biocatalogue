@@ -88,12 +88,14 @@
 				<fieldset>
 					<legend>Extra Information (optional)</legend>
 					
+					<p class="error_text">Coming soon</p>
+					
 					<!-- Add new name alias -->
 					<p>
 						<%= link_to_function "Add new name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
 					</p>
 					<div id="new_name_box" style="display: none;">
-						<p><%= text_field_tag :new_name, params[:new_name], :size => 60 %></p>
+						<p><%= text_field_tag :new_name, params[:new_name], :disabled => true, :size => 60 %></p>
 					</div>
 					
 					<!-- Add new description -->
@@ -101,7 +103,7 @@
 						<%= link_to_function "Add new description...", visual_effect(:toggle_blind, "new_description_box", :duration => 0.3) %>
 					</p>
 					<div id="new_description_box" style="display: none;">
-						<p><%= text_area_tag :new_description, params[:new_description], :cols => 55, :rows => 6 %></p>
+						<p><%= text_area_tag :new_description, params[:new_description], :disabled => true, :cols => 55, :rows => 6 %></p>
 					</div>
 					
 					<!-- Add documentation URL -->
@@ -109,7 +111,7 @@
 						<%= link_to_function "Add documentation URL...", visual_effect(:toggle_blind, "doc_url_box", :duration => 0.3) %>
 					</p>
 					<div id="doc_url_box" style="display: none;">
-						<p><%= text_field_tag :documentation_url, params[:documentation_url], :size => 60 %></p>
+						<p><%= text_field_tag :documentation_url, params[:documentation_url], :disabled => true, :size => 60 %></p>
 					</div>
 				</fieldset>
 			</td>
