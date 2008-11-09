@@ -1,19 +1,48 @@
-<p><b>Operations</b></p>
-<%for operation in service_version_instance.soap_operations %>
-	name: 
-	<%= link_to operation.name, operation %> <br/>
-	inputs:
-	<%for input in operation.soap_inputs%> 
-		<%if input.computational_type != nil %>
-	     	<%= link_to input.name << '='<< input.computational_type.split(":")[1]  , input %> 
-		<%end%>
-	<%end%>
-	<br/>
-	outputs: 
-	<%for output in operation.soap_outputs%>
-		<%if output.computational_type != nil %>
-	   		 <%= link_to output.name << '='<< output.computational_type.split(":")[1] , output %> 
-		<%end%>
-	<%end%>
-	<br/>
-<%end%>
+<h2><b>Operations:</b></h2>
+<% service_version_instance.soap_operations. each do |operation| %>
+	<div style="margin: 1em 0; padding: 0.6em 1em; border: 1px dotted #CCC; line-height: 1.5;">
+		<b>Name:</b> 
+		<%= h operation.name -%>
+		<p style="padding: 0.3em 0.6em; margin: 0.5em 0 1em 0; background-color: #EEE; border: 1px dotted #DDD;">
+			<% unless (desc = operation.description).blank? %>
+				<%= h desc -%>
+			<% else %>
+				<span class="none_text">No description</span>
+			<% end %>
+		</p>
+		
+		<b>Inputs:</b>
+		<div style="margin: 0.7em 0; margin-left: 2em;">
+			<ul>
+				<% operation.soap_inputs.each do |input| %>
+					<li>
+						<%= h input.name -%>
+						<% unless input.computational_type.blank? %>
+					  	(<%= h input.computational_type -%>) 
+						<% end %>
+						<% unless input.description.blank? %>
+					  	<%= image_tag('info.png', 
+														:alt => "description",
+														:style => 'margin-left: 0.5em;', 
+														:title => tooltip_title_attrib("<b>Description: </b>#{h(input.description)}")) -%>
+						<% end %>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+		
+		<b>Outputs:</b>
+		<div style="margin: 0.7em 0; margin-left: 2em;">
+			<ul>
+				<% operation.soap_outputs.each do |output| %>
+					<li>
+						<%= h output.name -%>
+						<% unless output.computational_type.blank? %>
+					  	(<%= h output.computational_type -%>) 
+						<% end %>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+	</div>
+<% end %>

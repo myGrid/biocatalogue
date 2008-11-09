@@ -16,7 +16,8 @@ class SoapService < ActiveRecord::Base
              :dependent => :destroy
   
   has_many :soap_operations, 
-           :dependent => :destroy
+           :dependent => :destroy,
+           :include => [ :soap_inputs, :soap_outputs ]
   
   attr_protected :name, 
                  :description, 

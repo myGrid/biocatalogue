@@ -1,4 +1,4 @@
-<% t "#{h @service.name} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.to_sentence)}]" -%>
+<% t "#{h @service.name} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.map{|p| p.name}.to_sentence)}]" -%>
 
 <span style="float: right;"><%= link_to("permalink", service_url(@service)) -%></span>
 
@@ -8,15 +8,46 @@
 </h1>
 
 <p>
+	<b>Submitted by:</b>
+	<%= link_to(h(@service.submitter.display_name), user_path(@service.submitter)) %>
+	(<%= distance_of_time_in_words_to_now(@service.created_at) -%> ago)
+</p>
+
+<p>
   <b>Unique code:</b>
   <%=h @service.unique_code %>
 </p>
 
-
-<p>
-  <b>Service types:</b>
-  <%= @all_service_types.to_sentence %>
+<p style="padding: 0.9em 1.3em; margin: 1em 0; background-color: #EEE; border: 1px dotted #DDD;">
+	<% unless (desc = @service.description).blank? %>
+		<%= h desc -%>
+	<% else %>
+		<span class="none_text">No description</span>
+	<% end %>
 </p>
 
-<% render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/structure", :locals => { :service_version_instance =>  @latest_version_instance } %>
+<p>
+	<b>Location(s):</b>
+	<br/>
+	<% @service.service_deployments.each do |s_d| %>
+		<% unless (loc = s_d.location).blank? -%>
+			<%= h s_d.location -%>
+			<%= flag_icon_from_country(s_d.country, loc, 'margin-left: 0.4em;') -%>
+			<br/>
+		<% end %>
+	<% end %>
+</p>
 
+<p>
+	<b>Provider(s):</b>
+	<br/>
+	<% @service.providers.each do |provider| %>
+		<%= link_to(h(provider.name), service_provider_path(provider)) %>
+		<br/>
+	<% end %>
+</p>
+
+<div style="border: 1px dotted #AAA; margin: 1.5em 0; padding: 0.3em 1.3em;">
+	<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/structure", 
+						:locals => { :service_version_instance =>  @latest_version_instance } %>
+</div>

@@ -24,6 +24,17 @@ class ServiceDeployment < ActiveRecord::Base
                  :include => [ :provider ])
   end
   
+  def location
+    if self.city.blank? and self.country.blank?
+      return nil
+    elsif self.city.blank? or self.country.blank?
+      return self.city unless self.city.blank?
+      return self.country unless self.country.blank?
+    else
+      return "#{self.city}, #{self.country}"
+    end
+  end
+  
 protected
 
   def check_service_id
