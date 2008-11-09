@@ -32,7 +32,7 @@ class SoapService < ActiveRecord::Base
                           :message => 'is not valid'
    
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :documentation_url ],
+    acts_as_solr(:fields => [ :name, :description, :documentation_url, :service_type_name ],
                  :include => [ :soap_operations ])
   end
 
@@ -56,6 +56,10 @@ class SoapService < ActiveRecord::Base
     
     self.build_soap_objects(service_info)
     return true
+  end
+  
+  def service_type_name
+    "SOAP"
   end
   
 protected

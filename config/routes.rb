@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.search '/search', :controller => 'search', :action => 'show'
+  
   map.resources :service_providers
 
   map.resources :service_deployments

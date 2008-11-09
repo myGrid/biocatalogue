@@ -17,7 +17,7 @@
 </div>
 
 <div id="latest_services">
-	<%= render :partial => "listing", :locals => { :services => @services } %>
+	<%= render :partial => "listing", :locals => { :items => @services } %>
 </div>
 
 <%= will_paginate @services -%>

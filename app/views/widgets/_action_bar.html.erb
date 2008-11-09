@@ -1,3 +1,11 @@
 <div id="action_bar">
-	Search:&nbsp;<input type="text" />&nbsp;<%= link_to image_tag("go_button.png", :alt => "Search for a Service"), "/" %><span id="action_links"><%= link_to 'Browse', services_path %><%= link_to 'Register a Service', new_service_path %></span>
+	<% form_tag search_url, :method => :get, :style => "display: inline;" do %>
+	  Search:
+		<%= text_field_tag :query, nil, :size => 40 -%> 
+	  <%= submit_tag '', :class => "search_button" -%>
+	<% end %>
+	
+	<span id="action_links">
+		<%= link_to 'Browse', services_path %><%= link_to 'Register a Service', new_service_path %>
+	</span>
 </div>

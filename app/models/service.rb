@@ -62,7 +62,7 @@ class Service < ActiveRecord::Base
   
   # Gets an array of all the service types that this service has (as part of it's versions).
   def all_service_types
-    self.service_versions.collect{|sv| sv.service_versionified_type.underscore.titleize}.uniq
+    self.service_versions.collect{|sv| sv.service_versionified.service_type_name}.uniq
   end
   
   def description

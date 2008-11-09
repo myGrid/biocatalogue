@@ -22,7 +22,13 @@ the experts and maintainers of these services.</li>
 search functionality below (also available in the action bar at the top of every pages).
 	  </p>
 	  <p>
-	  	<div class="search_widget"><b>Search:</b>&nbsp;<input type="text" />&nbsp;<%= link_to image_tag("go_button.png", :alt => "Search for a Service"), "/" %></div>
+	  	<div class="search_widget">
+	  		<% form_tag search_url, :method => :get do %>
+				  <b>Search:</b>
+					<%= text_field_tag :query, nil, :size => 40 -%> 
+				  <%= submit_tag '', :class => "search_button" -%>
+				<% end %>
+			</div>
 	  </p>
       <!-- CONTENT END -->
   </div>
@@ -61,9 +67,9 @@ sorting or filtering down the list of Web Services registered.
 	  	<%= link_to image_tag("register_web_services_button.png", :alt => "Register Web Services"), new_service_path %>
 	  </div>
 	  <br />
-	  <span style="font-size: 0.85em;">
+	  <p style="font-size: 0.85em; text-align: center;">
 		To register a Web Service you will need to<br /><%= link_to 'sign in', "/login", :id => "login_link", :class => "login" -%> first.
-	  </span>
+	  </p>
       <!-- CONTENT END -->
   </div>
   <div class="bottom"><span></span></div>

@@ -10,6 +10,10 @@ class User < ActiveRecord::Base
     acts_as_activity_logged
   end
   
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :display_name, :affiliation, :country ])
+  end
+  
   validates_presence_of       :email
   validates_presence_of       :password, :if => :password_required?
   validates_presence_of       :password_confirmation, :if => :password_required?
