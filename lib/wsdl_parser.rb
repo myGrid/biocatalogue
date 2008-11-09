@@ -123,7 +123,22 @@ module BioCatalogue
       end
       
       unless  wsdl_hash["definitions"]["types"] == nil
-         elements   = wsdl_hash["definitions"]["types"]["schema"]["element"] || nil  
+        unless wsdl_hash["definitions"]["types"]["schema"] == nil
+          if wsdl_hash["definitions"]["types"]["schema"].class.to_s == "Array"
+            elements =[]
+            wsdl_hash["definitions"]["types"]["schema"].each{ |schema|
+            unless schema["element"]== nil
+              if schema["element"].class.to_s =="Array"
+                elements.concat(schema["element"])
+              else
+                elements << schema["element"]
+              end
+            end
+            }
+          else
+            elements   = wsdl_hash["definitions"]["types"]["schema"]["element"] || nil  
+          end
+        end
       end
       unless operations.class.to_s == "Array"
         operations =[operations]
@@ -168,12 +183,15 @@ module BioCatalogue
           if elm.split(":").length > 1
             elm = elm.split(":")[1]
           end
-          
+          if elements == nil
+            message["part"]["element"] = {"name" => elm}
+          else
           elements.each{ |element|
-           if element["name"] == elm
-             message["part"]["element"] = element
-           end
-          }
+            if element["name"] == elm
+              message["part"]["element"] = element
+            end
+            }
+          end
         end
       end
       message
@@ -247,9 +265,11 @@ module BioCatalogue
     
     #def WsdlParser.type_to_computational_type(list)
     def WsdlParser.format_input_output(list)
-      list.each {|item|
-      cleanup_input_output_params(item) 
-      }
+      unless list== nil
+        list.each {|item|
+          cleanup_input_output_params(item) 
+        }
+      end
     end
     
     def WsdlParser.cleanup_input_output_params(item)
@@ -268,9 +288,9 @@ module BioCatalogue
         item["min_occurs"] = item["minOccurs"]
         item.delete("minOccurs")
       end
-      if item.has_key?("complexType")
-        item.delete("complexType")
-      end
+      #if item.has_key?("complexType")
+      #  item.delete("complexType")
+      #end
       
       item.keys.each{ |key| 
         if !db_fields.include?(key)
@@ -282,13 +302,18 @@ module BioCatalogue
     end
     
     def WsdlParser.test(num=0)
-      wsdls= [#"http://www.webservicex.com/globalweather.asmx?WSDL",
+      wsdls= [
+      "http://www.ebi.ac.uk/intact/binary-search-ws/binarysearch?wsdl",
+      "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSCensor.wsdl",
+      "http://www.ebi.ac.uk/ebisearch/service.ebi?wsdl",
+      "http://www.webservicex.com/globalweather.asmx?WSDL",
       "http://ws.chss.homeport.info/ChssAdvWS.asmx?WSDL",
       "http://gbio-pbil.ibcp.fr/ws/ClustalwWS.wsdl",
       "http://togows.dbcls.jp/soap/wsdl/ddbj_blastdemo.wsdl",
       "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSFasta.wsdl",
       "http://biomoby.org/services/wsdl/biomoby.renci.org/Blast",
-      "http://togows.dbcls.jp/soap/wsdl/ddbj_sps.wsdl",]
+      "http://togows.dbcls.jp/soap/wsdl/ddbj_sps.wsdl"
+      ]
       wh = get_wsdl_hash_and_file_contents(wsdls[num])[0]
       pp wh
       return wh
