@@ -18,4 +18,9 @@ class ServiceVersion < ActiveRecord::Base
     acts_as_solr(:fields => [ ],
                  :include => [ :service_versionified ])
   end
+  
+  if USE_EVENT_LOG
+    acts_as_activity_logged(:models => { :culprit => { :model => :submitter },
+                                         :referenced => { :model => :service } })
+  end
 end

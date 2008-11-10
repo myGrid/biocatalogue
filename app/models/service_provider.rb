@@ -8,4 +8,8 @@ class ServiceProvider < ActiveRecord::Base
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name ])
   end
+  
+  if USE_EVENT_LOG
+    acts_as_activity_logged
+  end
 end

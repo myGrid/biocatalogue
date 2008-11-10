@@ -36,6 +36,10 @@ class SoapService < ActiveRecord::Base
     acts_as_solr(:fields => [ :name, :description, :documentation_url, :service_type_name ],
                  :include => [ :soap_operations ])
   end
+  
+  if USE_EVENT_LOG
+    acts_as_activity_logged(:models => { :referenced => { :model => :service_version } })
+  end
 
   def populate
     if self.wsdl_location.blank?

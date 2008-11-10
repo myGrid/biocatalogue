@@ -10,4 +10,8 @@ class SoapOperation < ActiveRecord::Base
     acts_as_solr(:fields => [ :name, :description, :endpoint ],
                  :include => [ :soap_inputs, :soap_outputs ])
   end
+  
+  if USE_EVENT_LOG
+    acts_as_activity_logged(:models => { :referenced => { :model => :soap_service } })
+  end
 end

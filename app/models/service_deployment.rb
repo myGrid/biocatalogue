@@ -24,6 +24,11 @@ class ServiceDeployment < ActiveRecord::Base
                  :include => [ :provider ])
   end
   
+  if USE_EVENT_LOG
+    acts_as_activity_logged(:models => { :culprit => { :model => :submitter },
+                                         :referenced => { :model => :service } })
+  end
+  
   def location
     if self.city.blank? and self.country.blank?
       return nil
