@@ -93,7 +93,7 @@ module BioCatalogue
       service_info = {}
       service_info["name"]        = wsdl_hash["definitions"]["service"]["name"]
       service_info["description"] = wsdl_hash["definitions"]["documentation"] || wsdl_hash["definitions"]["service"]["documentation"]
-      service_info["end_point"] = wsdl_hash["definitions"]["service"]["port"]["address"]["location"]
+      service_info["end_point"]   = get_service_end_point(wsdl_hash) 
       
       operations_ = map_messages_and_operations(wsdl_hash)
       service_info["operations"] = format_operations(operations_) 
@@ -299,6 +299,20 @@ module BioCatalogue
         end
         }
       return item
+    end
+    
+    def WsdlParser.get_service_end_point(wsdl_hash)
+      ports = wsdl_hash["definitions"]["service"]["port"]
+      end_point = nil
+      # assumes only one port
+      if ports.class.to_s =="Hash"
+        end_point = ports["address"]["location"]
+      end
+      # assumes only multiple ports
+      if ports.class.to_s =="Array"
+        end_point = ports[0]["address"]["location"] #get endpoint from first port
+      end
+      end_point
     end
     
     def WsdlParser.test(num=0)
