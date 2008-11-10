@@ -41,26 +41,41 @@ class SoapService < ActiveRecord::Base
     acts_as_activity_logged(:models => { :referenced => { :model => :service_version } })
   end
 
+  # Populates (but does not save) this soap service with all the relevant data and child soap objects
+  # based on the data from the WSDL file.
+  #
+  # Returns an array with:
+  # - 
   def populate
+    success = true
+    data = { }
+    
     if self.wsdl_location.blank?
       errors.add_to_base("No WSDL Location set for this Soap Service.")
-      return false
+      success = false
     end
     
-    service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
-    
-    unless err_msgs.empty?
-      errors.add_to_base("Error occurred whilst processing the WSDL file. Error(s): #{err_msgs.to_sentence}.")
-      return false
+    if success
+      service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
+      
+      unless err_msgs.empty?
+        errors.add_to_base("Error occurred whilst processing the WSDL file. Error(s): #{err_msgs.to_sentence}.")
+        success = false
+      end
+      
+      if success
+        self.wsdl_file = ContentBlob.new(:data => wsdl_file_contents)
+        
+        self.name         = service_info['name']
+        self.description  = service_info['description']
+        
+        self.build_soap_objects(service_info)
+        
+        data["endpoint"] = service_info["end_point"]
+      end
     end
     
-    self.wsdl_file = ContentBlob.new(:data => wsdl_file_contents)
-    
-    self.name         = service_info['name']
-    self.description  = service_info['description']
-    
-    self.build_soap_objects(service_info)
-    return true
+    return [ success, data ]
   end
   
   def service_type_name

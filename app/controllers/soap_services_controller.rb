@@ -71,13 +71,13 @@ class SoapServicesController < ApplicationController
         end
       else
         @soap_service = SoapService.new(:wsdl_location => wsdl_location)
-        @soap_service.populate
+        success, data = @soap_service.populate
         
         # TODO: store the extra information provided in the form, as Annotations.
         
         respond_to do |format|
-          if @soap_service.save
-            success = post_create(@soap_service)
+          if success and @soap_service.save
+            success = post_create(@soap_service, data["endpoint"])
             
             if success
               flash[:notice] = 'Service was successfully created.'
@@ -201,7 +201,7 @@ class SoapServicesController < ApplicationController
   
 protected
 
-  def post_create(soap_service)
+  def post_create(soap_service, endpoint)
     # Try and find location of the service from the url of the WSDL.
     wsdl_geo_location = BioCatalogue::Util.url_location_lookup(soap_service.wsdl_location)
     city = (wsdl_geo_location.nil? || wsdl_geo_location.city.blank? || wsdl_geo_location.city == "(Unknown City)") ? nil : wsdl_geo_location.city
@@ -220,7 +220,7 @@ protected
     new_service_version.service_versionified = soap_service
     new_service_version.submitter = current_user
     
-    new_service_deployment = new_service_version.service_deployments.build(:endpoint => soap_service.wsdl_location,
+    new_service_deployment = new_service_version.service_deployments.build(:endpoint => endpoint,
                                                                            :city => city,
                                                                            :country => country)
     
