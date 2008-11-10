@@ -79,7 +79,8 @@ protected
       
       op_attributes = { :name => op["name"],
                         :description => op["description"],
-                        :parameter_order => op["parameter_order"] }
+                        :parameter_order => op["parameter_order"],
+                        :parent_port_type => op["parent_port_type"]}
       inputs = op["inputs"]
       outputs = op["outputs"]
       
