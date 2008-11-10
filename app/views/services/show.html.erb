@@ -30,7 +30,7 @@
 	<b>Latest Version Endpoint(s):</b>
 	<br/>
 	<% @service.latest_version.service_deployments.each do |s_d| -%>
-		<%= link_to(s_d.endpoint, s_d.endpoint) -%>
+		<%= link_to(s_d.endpoint, s_d.endpoint, :popup => true) -%>
 	<% end %>
 </p>
 

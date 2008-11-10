@@ -1,6 +1,6 @@
 <p>
 	<b>WSDL Location:</b>
-	<%= h(service_version_instance.wsdl_location) -%>
+	<%= link_to(h(service_version_instance.wsdl_location), service_version_instance.wsdl_location, :popup => true) -%>
 </p>
 
 <h2>
