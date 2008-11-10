@@ -35,6 +35,9 @@ class SearchController < ApplicationController
       return false
     end
     
+    # Log this search
+    ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type })
+    
     # Now either peform an all search or redirect to the appropriate type's search action
     if any_types_synonyms.include?(@type)
       models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
