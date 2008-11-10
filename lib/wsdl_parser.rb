@@ -93,7 +93,7 @@ module BioCatalogue
       service_info = {}
       service_info["name"]        = wsdl_hash["definitions"]["service"]["name"]
       service_info["description"] = wsdl_hash["definitions"]["documentation"] || wsdl_hash["definitions"]["service"]["documentation"]
-      #service_info["operations"] = wsdl_hash["definitions"]["portType"]["operation"]
+      service_info["end_point"] = wsdl_hash["definitions"]["service"]["port"]["address"]["location"]
       
       operations_ = map_messages_and_operations(wsdl_hash)
       service_info["operations"] = format_operations(operations_) 
