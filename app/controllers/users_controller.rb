@@ -49,11 +49,11 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         UserMailer.deliver_registration_notification(@user)
-        flash[:notice] = 'User was successfully created.'
+        flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
         format.html { redirect_to(@user) }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
-        flash[:error] = 'Could not create new user.'
+        flash[:error] = 'Could not create new account.'
         format.html { render :action => "new" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
@@ -67,11 +67,11 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        flash[:notice] = 'User was successfully updated.'
+        flash[:notice] = 'Account was successfully updated.'
         format.html { redirect_to(@user) }
         format.xml  { head :ok }
       else
-        flash[:error] = 'Could not mofify user.'
+        flash[:error] = 'Could not mofify the account.'
         format.html { render :action => "edit" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
@@ -101,7 +101,7 @@ class UsersController < ApplicationController
             # TODO: DON'T use the update_attribute method as it bypasses AR validations.
             if user.update_attribute(:activated_at, Time.now)
               user.update_attribute(:security_token, nil)
-              flash[:notice] = "Account activated. You can log into your account now."
+              flash[:notice] = "Account activated.<br />You can log into your account now."
               ActivityLog.create(:action => "activate", :activity_loggable => user)
               return
             end
