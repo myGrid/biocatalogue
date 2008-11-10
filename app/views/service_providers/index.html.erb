@@ -1,18 +1,14 @@
-<h1>Listing service_providers</h1>
+<% t "Browse Service Providers" -%>
 
-<table>
-  <tr>
-  </tr>
+<h1>Browse Service Providers</h1>
 
-<% for service_provider in @service_providers %>
-  <tr>
-    <td><%= link_to 'Show', service_provider %></td>
-    <td><%= link_to 'Edit', edit_service_provider_path(service_provider) %></td>
-    <td><%= link_to 'Destroy', service_provider, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<br/>
+<br/>
 
-<br />
+<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_providers } %>
 
-<%= link_to 'New service_provider', new_service_provider_path %>
+<div id="latest_providers">
+	<%= render :partial => "listing", :locals => { :items => @service_providers } %>
+</div>
+
+<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @service_providers } %>

@@ -2,7 +2,7 @@ class ServiceProvidersController < ApplicationController
   # GET /service_providers
   # GET /service_providers.xml
   def index
-    @service_providers = ServiceProvider.find(:all)
+    @service_providers = ServiceProvider.paginate(:page => params[:page], :order => 'created_at DESC')
 
     respond_to do |format|
       format.html # index.html.erb

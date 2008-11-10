@@ -9,37 +9,10 @@
 <br/>
 <br/>
 
-<div class="pagination">
-	<div class="page_info">
-		<%= page_entries_info @services %>
-	</div>
-	<%= will_paginate @services -%>
-</div>
+<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
 
 <div id="latest_services">
 	<%= render :partial => "listing", :locals => { :items => @services } %>
 </div>
 
-<%= will_paginate @services -%>
-
-
-<% if false %>
-
-<table>
-  <tr>
-    <th>Unique code</th>
-  </tr>
-
-<% for service in @services %>
-  <tr>
-    <td><%=h service.unique_code %></td>
-    <td><%= link_to 'Show', service %></td>
-    <td><%= link_to 'Edit', edit_service_path(service) %></td>
-    <td><%= link_to 'Destroy', service, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<% end %>
+<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @services } %>
