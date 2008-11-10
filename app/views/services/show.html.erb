@@ -20,7 +20,7 @@
 
 <p style="padding: 0.9em 1.3em; margin: 1em 0; background-color: #EEE; border: 1px dotted #DDD;">
 	<% unless (desc = @service.description).blank? %>
-		<%= h desc -%>
+		<%= auto_link(h(desc), :all, :target => '_blank') -%>
 	<% else %>
 		<span class="none_text">No description</span>
 	<% end %>
