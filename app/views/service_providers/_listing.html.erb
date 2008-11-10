@@ -1,0 +1,9 @@
+<div class="listings">
+	<% items.each do |provider| %>
+		<div class="listing_item">
+			<p class="name">
+				<%= link_to(h(provider.name), service_provider_path(provider)) -%>
+			</p>
+		</div>
+	<% end %>
+</div>

@@ -37,7 +37,7 @@ class SearchController < ApplicationController
     
     # Now either peform an all search or redirect to the appropriate type's search action
     if any_types_synonyms.include?(@type)
-      models = VALID_SEARCH_TYPES.map{|t| t.singularize.capitalize.constantize}
+      models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
       all_search_results = Service.multi_solr_search(@query, :limit => 100, :models => models).results
       
       @count = all_search_results.length

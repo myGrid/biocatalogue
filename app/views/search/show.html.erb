@@ -20,7 +20,7 @@
 			  <div class="tabbertab">
 			    <h3><%= "#{type} (#{results.length})" -%></h3>
 			    
-					<%= render :partial => "#{type.downcase}/listing", :locals => { :items => results } %>
+					<%= render :partial => "#{type.gsub(' ', '').underscore}/listing", :locals => { :items => results } %>
 			  </div>
 			<% end %>
 		<% end %>
