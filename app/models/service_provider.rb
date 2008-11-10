@@ -1,7 +1,11 @@
 class ServiceProvider < ActiveRecord::Base
   acts_as_trashable
   
-  has_many :services
+  has_many :service_deployments
+  
+  has_many :services,
+           :through => :service_deployments,
+           :uniq => true
   
   validates_presence_of :name
   

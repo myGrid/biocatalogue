@@ -1,3 +1,15 @@
+<% t "#{h @service_provider.name}" -%>
 
-<%= link_to 'Edit', edit_service_provider_path(@service_provider) %> |
-<%= link_to 'Back', service_providers_path %>
+<h1>Service Provider: <%= h(@service_provider.name) -%></h1>
+
+<div class="tabber">
+	
+	<% services = @service_provider.services %>
+  <div class="tabbertab">
+    <h3><%= "Services (#{services.length})" -%></h3>
+    
+		<%= render :partial => "services/listing", :locals => { :items => services } %>
+  </div>
+
+</div>
+
