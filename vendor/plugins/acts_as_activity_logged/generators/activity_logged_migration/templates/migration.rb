@@ -3,7 +3,7 @@ class <%= class_name %> < ActiveRecord::Migration
   # work with Rails 1.2.6 as well
   
   def self.up
-    create_table :activity_logs, :options => "DEFAULT CHARSET = utf8" do |t|
+    create_table :activity_logs do |t|
       t.column :action, :string
       t.column :activity_loggable_type, :string
       t.column :activity_loggable_id, :integer
@@ -13,6 +13,7 @@ class <%= class_name %> < ActiveRecord::Migration
       t.column :referenced_id, :integer
       t.column :created_at, :datetime
       t.column :updated_at, :datetime
+      t.column :data, :binary, :limit => 1048576 # in bytes; = 1MB
     end
   end
 
