@@ -1059,3 +1059,56 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .search_button:hover { }
+
+/* BEGIN tables styles */
+.biocat_table {
+	border: 1px solid #cccccc;
+}
+
+.biocat_table th {
+	font-weight: bold;
+	white-space: nowrap;
+	vertical-align: middle;
+	color: #333333;
+	height: 1.8em;
+	background: url(../images/box_title_bkgd_green_14.gif) repeat-x;
+	background-position: bottom;
+	padding-left: 6px;
+	padding-right: 6px;
+	border-right: 1px solid #cccccc;
+}
+
+.biocat_table th.center {
+	text-align: center;
+}
+
+.biocat_table .small_center {
+	text-align: center;
+	width: 40px;
+}
+
+.biocat_table tr.odd {
+	background-color: #f2fbe1;
+}
+
+.biocat_table td {
+	white-space: nowrap;
+	padding: 3px 6px 3px 6px;
+	border-left: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+}
+
+.biocat_table td.center {
+	text-align: center;
+}
+
+.biocat_table td.action_links a:link, .biocat_table td.action_links a:visited {
+	text-align: center;
+	text-decoration: underline;
+	font-size: 0.9em
+}
+
+.biocat_table td.action_links a:hover {
+	background-color: #feffcf;
+}
+/* END tables styles */
