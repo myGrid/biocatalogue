@@ -15,12 +15,12 @@ class ServiceDeployment < ActiveRecord::Base
   
   validates_existence_of :provider    # Service Provider must exist in the db beforehand.
   
-  validates_presence_of :service_url
+  validates_presence_of :endpoint
   
   before_save :check_service_id
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :service_url, :city, :country ],
+    acts_as_solr(:fields => [ :endpoint, :city, :country ],
                  :include => [ :provider ])
   end
   

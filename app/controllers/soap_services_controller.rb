@@ -220,7 +220,7 @@ protected
     new_service_version.service_versionified = soap_service
     new_service_version.submitter = current_user
     
-    new_service_deployment = new_service_version.service_deployments.build(:service_url => soap_service.wsdl_location,
+    new_service_deployment = new_service_version.service_deployments.build(:endpoint => soap_service.wsdl_location,
                                                                            :city => city,
                                                                            :country => country)
     
