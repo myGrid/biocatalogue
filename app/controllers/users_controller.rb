@@ -6,7 +6,9 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
-    @users = User.find(:all)
+    @users = User.paginate(:page => params[:page], 
+                           :conditions => "activated_at IS NOT NULL", 
+                           :order => 'activated_at DESC')
 
     respond_to do |format|
       format.html # index.html.erb

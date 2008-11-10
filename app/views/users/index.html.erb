@@ -1,29 +1,18 @@
-<h1>BioCatalogue registered users</h1>
+<% t "Registered Users" -%>
 
-<table class="biocat_table">
-  <tr>
-    <th>User</th>
-    <th>Affiliation</th>
-    <th>Country</th>
-	<th></th>
-  </tr>
+<h1>Registered Users on BioCatalogue</h1>
 
-<% for user in @users %>
-  <tr class="<%= cycle("even", "odd") %>">
-    <td><%=h user.display_name %></td>
-    <td><%=h user.affiliation %></td>
-    <td><%=h user.country %></td>
-    <td><%= link_to 'Show', user %>
-	<% if mine?(user) -%>
-		 | <%= link_to 'Edit', edit_user_path(user) %>
-		 | <%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
-	<% end -%>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<p style="padding-top: 10px;">
+<p style="margin: 1.6em 0 2.4em 0;">
 	<span class="green_box">Don't have an account yet : <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>
 </p>
+
+<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users } %>
+
+<div id="latest_users">
+	<%= render :partial => "listing", :locals => { :items => @users } %>
+</div>
+
+<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users } %>
+
+
+

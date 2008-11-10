@@ -5,6 +5,15 @@
 				<%= link_to(h(user.display_name), user_path(user)) -%>
 				<%= flag_icon_from_country(user.country) -%>
 			</p>
+			
+			<p class="details">
+				<b>Affiliation:</b>
+				<% unless user.affiliation.blank? %>
+					<%= h(user.affiliation) -%>
+				<% else %>
+					<span class="none_text">none</span>
+				<% end %>
+			</p>
 		</div>
 	<% end %>
 </div>
