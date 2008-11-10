@@ -27,7 +27,15 @@
 </p>
 
 <p>
-	<b>Location(s):</b>
+	<b>Latest Version Endpoint(s):</b>
+	<br/>
+	<% @service.latest_version.service_deployments.each do |s_d| -%>
+		<%= link_to(s_d.service_url, s_d.service_url) -%>
+	<% end %>
+</p>
+
+<p>
+	<b>All Location(s):</b>
 	<br/>
 	<% @service.service_deployments.each do |s_d| %>
 		<% unless (loc = s_d.location).blank? -%>
@@ -39,7 +47,7 @@
 </p>
 
 <p>
-	<b>Provider(s):</b>
+	<b>All Provider(s):</b>
 	<br/>
 	<% @service.providers.each do |provider| %>
 		<%= link_to(h(provider.name), service_provider_path(provider)) %>
