@@ -44,6 +44,19 @@ class ApplicationController < ActionController::Base
     return session[:user_id] ? true : false
   end
   helper_method :logged_in?
+
+  # Check that the user is an Administrator before allowing
+  # the action to be performed.
+  # To make a user an Administrator, edit manually the user
+  # in the datatbase: assign 'role_id' to 1
+  def is_admin?
+    unless logged_in? && !current_user.nil? && current_user.role_id == 1
+      session[:original_uri] = request.request_uri
+      flash[:error] = "<b>Action denied.</b><p>This action is restricted to Administrators.</p>"
+      redirect_to new_session_url
+    end
+  end
+  helper_method :is_admin?
   
   # Accesses the current user from the session.
   def current_user
