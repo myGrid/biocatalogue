@@ -1,28 +1,29 @@
-<h1>Listing users</h1>
+<h1>BioCatalogue registered users</h1>
 
-<table>
+<table class="biocat_table">
   <tr>
-    <th>Email</th>
-    <th>Activated at</th>
-    <th>Display Name</th>
+    <th>User</th>
     <th>Affiliation</th>
     <th>Country</th>
+	<th></th>
   </tr>
 
 <% for user in @users %>
-  <tr>
-    <td><%=h user.email %></td>
-    <td><%=h user.activated_at %></td>
+  <tr class="<%= cycle("even", "odd") %>">
     <td><%=h user.display_name %></td>
     <td><%=h user.affiliation %></td>
     <td><%=h user.country %></td>
-    <td><%= link_to 'Show', user %></td>
-    <td><%= link_to 'Edit', edit_user_path(user) %></td>
-    <td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', user %>
+	<% if mine?(user) -%>
+		 | <%= link_to 'Edit', edit_user_path(user) %>
+		 | <%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
+	<% end -%>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New user', new_user_path %>
+<p style="padding-top: 10px;">
+	<span class="green_box">Don't have an account yet : <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>
+</p>
