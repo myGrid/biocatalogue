@@ -8,8 +8,7 @@ module BioCatalogue
       module ClassMethods
         def acts_as_service_versionified
           has_one :service_version, 
-                  :as => :service_versionified,
-                  :dependent => :destroy
+                  :as => :service_versionified
           
           # This assumes the presence of a 'service' association
           # in the ServiceVersion model.
