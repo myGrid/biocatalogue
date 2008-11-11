@@ -248,6 +248,7 @@ module BioCatalogue
            operation["outputs"]= out_parts
          end
          
+         operation.delete("fault") if operation.has_key?("fault") # handle this post pilot
          operation.delete("input")
          operation.delete("output")
          format_input_output(operation["inputs"])
