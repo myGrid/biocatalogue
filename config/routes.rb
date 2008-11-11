@@ -9,11 +9,11 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :service_providers
 
-  map.resources :service_deployments
+  #map.resources :service_deployments
   
   #map.resources :annotations, :collection => {:add_annotation => :post}
   
-  map.resources :service_versions
+  #map.resources :service_versions
   
   map.resources :users, :collection => { :activate_account => :get }
   map.resource :session
@@ -28,9 +28,9 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { :load_wsdl => :post,
                                  :bulk_new => :get }
   
-  map.resources :soap_operations
-  map.resources :soap_inputs
-  map.resources :soap_outputs
+  #map.resources :soap_operations
+  #map.resources :soap_inputs
+  #map.resources :soap_outputs
   
   #map.resources :soaplab_servers
   
