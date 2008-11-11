@@ -28,7 +28,7 @@
   <%=h @service.unique_code %>
 </p>
 
-<p style="padding: 0.9em 1.3em; margin: 1em 0; background-color: #EEE; border: 1px dotted #DDD;">
+<p class="box_description">
 	<% unless (desc = @service.description).blank? %>
 		<%= auto_link(h(desc), :all, :target => '_blank') -%>
 	<% else %>

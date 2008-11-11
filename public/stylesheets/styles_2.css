@@ -863,12 +863,12 @@ body.sidebar-right #login_box {
 .listings {
 	padding: 1em 0;
 	margin: 1.5em 0;
-	border-top: 1px dotted #CCCCCC;
-	border-bottom: 1px dotted #CCCCCC;
 }
 
 .listing_item { 
-	margin-bottom: 2em;
+	margin-bottom: 1.5em;
+	padding: 1em;
+	border: 1px dotted #DDD;
 }
 
 .listing_item p {
@@ -883,7 +883,10 @@ body.sidebar-right #login_box {
 
 .listing_item .desc {
 	color: #333333;
-	margin-bottom: 0.3em;
+	padding: 0.6em 1em; 
+	margin: 1em 0; 
+	background-color: #EEEFFF; 
+	border: 1px dotted #DDD;
 }
 
 .listing_item .detail {
@@ -1120,3 +1123,10 @@ ul.tabbernav li.tabberactive a:hover
 	background-color: #feffcf;
 }
 /* END tables styles */
+
+.box_description {
+	padding: 0.9em 1.3em; 
+	margin: 1em 0; 
+	background-color: #EEEFFF; 
+	border: 1px dotted #DDD;
+}

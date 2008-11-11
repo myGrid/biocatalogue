@@ -22,7 +22,7 @@
 	<div style="margin: 1em 0; padding: 0.6em 1em; border: 1px dotted #CCC; line-height: 1.5;">
 		<b>Name:</b> 
 		<%= h operation.name -%>
-		<p style="padding: 0.3em 0.6em; margin: 0.5em 0 1em 0; background-color: #EEE; border: 1px dotted #DDD;">
+		<p class="box_description" style="padding: 0.3em 0.6em; margin: 0.5em 0 1em 0;">
 			<% unless (desc = operation.description).blank? %>
 				<%= auto_link(h(desc), :all, :target => '_blank') -%>
 			<% else %>
