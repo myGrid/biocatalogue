@@ -102,4 +102,12 @@ class ApplicationController < ActionController::Base
   def set_sidebar_layout
     self.class.layout "application_sidebar"
   end
+  
+  def disable_action
+    respond_to do |format|
+      flash[:error] = 'The page requested is unavailable.'
+      format.html { redirect_to(root_url) }
+    end
+    return false
+  end
 end

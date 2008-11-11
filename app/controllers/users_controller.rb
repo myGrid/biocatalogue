@@ -5,6 +5,8 @@
 # See license.txt for details.
 
 class UsersController < ApplicationController
+  
+  before_filter :disable_action, :only => [ :destroy ]
 
   before_filter :login_required, :except => [:index, :new, :create, :show, :activate_account]
   before_filter :check_user_rights, :only => [:edit, :update, :destroy]

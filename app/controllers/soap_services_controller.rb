@@ -8,33 +8,36 @@ require 'wsdl_parser'
 require 'addressable/uri'
 
 class SoapServicesController < ApplicationController
-  before_filter :login_required, :except => [:index, :show]
+  
+  before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy, :bulk_new, :bulk_create ]
+  
+  before_filter :login_required, :except => [ :index, :show ]
   
   # GET /soap_services
   # GET /soap_services.xml
-#  def index
-#    #@soap_services = SoapService.find(:all, :order => "id DESC")
-#    @soap_services = SoapService.paginate :all, :page => params[:page], 
-#                                                :order => "created_at DESC", 
-#                                                :per_page => 10
-#    respond_to do |format|
-#      format.html # index.html.erb
-#      format.xml  { render :xml => @soap_services }
-#      format.rss  { render :rss => @soap_services, :layout => false}
-#    end
-#  end
+  def index
+    #@soap_services = SoapService.find(:all, :order => "id DESC")
+    @soap_services = SoapService.paginate :all, :page => params[:page], 
+                                                :order => "created_at DESC", 
+                                                :per_page => 10
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @soap_services }
+      format.rss  { render :rss => @soap_services, :layout => false}
+    end
+  end
 
   # GET /soap_services/1
   # GET /soap_services/1.xml
-#  def show
-#    @soap_service = SoapService.find(params[:id])
-#
-#    respond_to do |format|
-#      format.html # show.html.erb
-#      format.xml  { render :xml => @soap_service }
-#      format.rss  { render :rss => @soap_service, :layout => false}
-#    end
-#  end
+  def show
+    @soap_service = SoapService.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @soap_service }
+      format.rss  { render :rss => @soap_service, :layout => false}
+    end
+  end
 
   # GET /soap_services/new
   # GET /soap_services/new.xml
@@ -50,9 +53,9 @@ class SoapServicesController < ApplicationController
   end
 
   # GET /soap_services/1/edit
-#  def edit
-#    @soap_service = SoapService.find(params[:id])
-#  end
+  def edit
+    @soap_service = SoapService.find(params[:id])
+  end
 
   # POST /soap_services
   # POST /soap_services.xml
@@ -108,32 +111,32 @@ class SoapServicesController < ApplicationController
 
   # PUT /soap_services/1
   # PUT /soap_services/1.xml
-#  def update
-#    @soap_service = SoapService.find(params[:id])
-#
-#    respond_to do |format|
-#      if @soap_service.update_attributes(params[:soap_service])
-#        flash[:notice] = 'SoapService was successfully updated.'
-#        format.html { redirect_to(@soap_service) }
-#        format.xml  { head :ok }
-#      else
-#        format.html { render :action => "edit" }
-#        format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
-#      end
-#    end
-#  end
+  def update
+    @soap_service = SoapService.find(params[:id])
+
+    respond_to do |format|
+      if @soap_service.update_attributes(params[:soap_service])
+        flash[:notice] = 'SoapService was successfully updated.'
+        format.html { redirect_to(@soap_service) }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
 
   # DELETE /soap_services/1
   # DELETE /soap_services/1.xml
-#  def destroy
-#    @soap_service = SoapService.find(params[:id])
-#    @soap_service.destroy
-#
-#    respond_to do |format|
-#      format.html { redirect_to(soap_services_url) }
-#      format.xml  { head :ok }
-#    end
-#  end
+  def destroy
+    @soap_service = SoapService.find(params[:id])
+    @soap_service.destroy
+
+    respond_to do |format|
+      format.html { redirect_to(soap_services_url) }
+      format.xml  { head :ok }
+    end
+  end
   
   def load_wsdl
     wsdl_location = params[:wsdl_url] || ''
@@ -173,37 +176,37 @@ class SoapServicesController < ApplicationController
     end
   end
   
-#  def bulk_new
-#    @soap_service = SoapService.new
-#
-#    respond_to do |format|
-#      format.html # bulk_new.html.erb
-#      format.xml  { render :xml => @soap_service }
-#    end
-#  end
+  def bulk_new
+    @soap_service = SoapService.new
+
+    respond_to do |format|
+      format.html # bulk_new.html.erb
+      format.xml  { render :xml => @soap_service }
+    end
+  end
     
-#  def bulk_create
-#    @soap_service = SoapService.new #(params[:soap_service])
-#    
-#    urls = []
-#    params[:soap_service][:description].each { |line|
-#    urls << line.strip if line =~ /http:/ or line =~ /https:/}
-#    if urls.empty?
-#      @soap_service.errors.add_to_base('No service urls were found!')
-#      render :action =>'bulk_new'
-#    else
-#      urls.each do |url|
-#        @soap_service.wsdl_location = url
-#        @soap_service.get_service_attributes
-#        if @soap_service.save
-#          flash[:notice] = 'SoapService was successfully created.'
-#        else
-#          @soap_service.errors.add_to_base("Service with url, #{url}, was not saved")
-#          render(:action => 'new') and return
-#        end
-#      end
-#    end
-#  end
+  def bulk_create
+    @soap_service = SoapService.new #(params[:soap_service])
+    
+    urls = []
+    params[:soap_service][:description].each { |line|
+    urls << line.strip if line =~ /http:/ or line =~ /https:/}
+    if urls.empty?
+      @soap_service.errors.add_to_base('No service urls were found!')
+      render :action =>'bulk_new'
+    else
+      urls.each do |url|
+        @soap_service.wsdl_location = url
+        @soap_service.get_service_attributes
+        if @soap_service.save
+          flash[:notice] = 'SoapService was successfully created.'
+        else
+          @soap_service.errors.add_to_base("Service with url, #{url}, was not saved")
+          render(:action => 'new') and return
+        end
+      end
+    end
+  end
   
 protected
 
