@@ -31,16 +31,16 @@ module BioCatalogue
     #           :inputs       => 
     #               [
     #               { 
-    #                 :name         => "input_name",
-    #                 :input_type   => "input_type" 
+    #                 :name                 => "input_name",
+    #                 :computational_type   => "computational_type" 
     #               },
     #               { ... } 
     #               ]
     #           :outputs      => 
     #               [
     #               { 
-    #                 :name         => "output_name",
-    #                 :output_type  => "output_type" 
+    #                 :name                => "output_name",
+    #                 :computational_type  => "computational_type" 
     #               },
     #               { ... }
     #               ] 
@@ -226,32 +226,36 @@ module BioCatalogue
                #operation["inputs"]= in_parts["element"]["complexType"]["sequence"]["element"]
              end
           end
-       else
-          operation["inputs"] = in_parts
-       end 
-       
-       if out_parts.class.to_s =="Hash"
-         operation["outputs"]= [out_parts]
-           unless out_parts["element"]== nil
-             if out_parts["element"]["complexType"]==nil
-                operation["outputs"] = [out_parts["element"]]
-             else
-                elm = out_parts["element"]["complexType"]["sequence"]["element"]
-               operation["outputs"]= elm
-               
-               unless elm.class.to_s =="Array"
-                 operation["outputs"] =[elm]
+         else
+            operation["inputs"] = in_parts
+         end 
+         
+         if out_parts.class.to_s =="Hash"
+           operation["outputs"]= [out_parts]
+             unless out_parts["element"]== nil
+               if out_parts["element"]["complexType"]==nil
+                  operation["outputs"] = [out_parts["element"]]
+               else
+                  elm = out_parts["element"]["complexType"]["sequence"]["element"]
+                 operation["outputs"]= elm
+                 
+                 unless elm.class.to_s =="Array"
+                   operation["outputs"] =[elm]
+                 end
                end
-             end
+           end
+         else 
+           operation["outputs"]= out_parts
          end
-       else 
-         operation["outputs"]= out_parts
-       end
+         
+         operation.delete("input")
+         operation.delete("output")
+         format_input_output(operation["inputs"])
+         format_input_output(operation["outputs"])
+         
+         operation["inputs"] = [ ] if operation["inputs"].nil?
+         operation["outputs"] = [ ] if operation["outputs"].nil?
        
-       operation.delete("input")
-       operation.delete("output")
-       format_input_output(operation["inputs"])
-       format_input_output(operation["outputs"])
        }
        
       f_operations = camel_case_to_underscore(operations)
