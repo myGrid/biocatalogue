@@ -171,6 +171,13 @@ a:link.red_arrow, a:visited.red_arrow {
 	white-space: nowrap;
 }
 
+a:link.write_email, a:visited.write_email {
+	padding-left: 2px;
+	padding-right: 22px;
+	background: url(../images/write_email.gif) right no-repeat;
+	white-space: nowrap;
+}
+
 a:hover.login {
 	background: url(../images/login_hover.gif) right no-repeat;
 	text-decoration: underline;
@@ -188,6 +195,11 @@ a:hover.green_arrow {
 
 a:hover.red_arrow {
 	background: url(../images/red_arrow_hover.gif) right no-repeat;
+	text-decoration: underline;
+}
+
+a:hover.write_email {
+	background: url(../images/write_email_hover.gif) right no-repeat;
 	text-decoration: underline;
 }
 
