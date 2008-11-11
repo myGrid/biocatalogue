@@ -11,7 +11,7 @@
 <% form_for(@soap_service) do |f| %>
 	<%= f.error_messages %>
 	
-	<table style="width: 100%;">
+	<table style="width: 100%; line-height: 1.5;">
 		<tr>
 			<td style="width: 49%; padding-right: 1em; ">
 
@@ -84,7 +84,7 @@
 							<div class="field">
 								<ul>
 									<% @wsdl_info["operations"].each do |op| -%>
-										<li><%= "#{h op['name']} (#{pluralize(op['inputs'].length, 'input')}, #{pluralize(op['outputs'].length, 'output')})" -%></li>
+										<li><%= "#{h op['name']} (#{pluralize((op['inputs'].blank? ? 0 : op['inputs'].length), 'input')}, #{pluralize((op['outputs'].blank? ? 0 : op['outputs'].length), 'output')})" -%></li>
 									<% end -%>
 								</ul>
 							</div>
