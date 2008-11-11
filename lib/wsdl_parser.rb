@@ -189,7 +189,7 @@ module BioCatalogue
           if elm.split(":").length > 1
             elm = elm.split(":")[1]
           end
-          if elements == nil
+          if elements == nil || []
             message["part"]["element"] = {"name" => elm}
           else
           elements.each{ |element|
@@ -327,6 +327,7 @@ module BioCatalogue
     
     def WsdlParser.test(num=0)
       wsdls= [
+      "http://wsembnet.vital-it.ch/soaplab2/services/embnet.blastp?wsdl",
       "http://www.ebi.ac.uk/intact/binary-search-ws/binarysearch?wsdl",
       "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSCensor.wsdl",
       "http://www.ebi.ac.uk/ebisearch/service.ebi?wsdl",
