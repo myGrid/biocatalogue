@@ -861,14 +861,14 @@ body.sidebar-right #login_box {
 /* BEGIN listing styles */
 
 .listings {
-	padding: 1em 0;
-	margin: 1.5em 0;
+	padding: 0;
+	margin: 0;
 }
 
 .listing_item { 
-	margin-bottom: 1.5em;
-	padding: 1em;
-	border: 1px dotted #DDD;
+	margin-bottom: 1em;
+	padding: 0.4em 1em;
+	border: 1px dotted #AAA;
 }
 
 .listing_item p {
@@ -885,7 +885,7 @@ body.sidebar-right #login_box {
 	color: #333333;
 	padding: 0.6em 1em; 
 	margin: 1em 0; 
-	background-color: #EEEFFF; 
+	background-color: #F3F3F3; 
 	border: 1px dotted #DDD;
 }
 
@@ -976,7 +976,7 @@ ul.tabbernav
 {
 	margin: 0;
 	padding: 3px 0;
-	border-bottom: 1px solid #778;
+	border-bottom: 1px solid #CCC;
 	font-weight: bold;
 	font-size: 1.2em;
 }
@@ -992,20 +992,19 @@ ul.tabbernav li a
 {
 	padding: 3px 0.5em;
 	margin-left: 3px;
-	border: 1px solid #778;
+	border: 1px solid #CCC;
 	border-bottom: none;
 	background: #E9F7CC;
 	text-decoration: none;
 }
 
-ul.tabbernav li a:link { color: #448; }
-ul.tabbernav li a:visited { color: #667; }
+ul.tabbernav li a:link { color: #333; }
 
 ul.tabbernav li a:hover
 {
 	color: #000;
-	background: #AAE;
-	border-color: #227;
+	background: #BFE76F;
+	border-color: #CCC;
 }
 
 ul.tabbernav li.tabberactive a
@@ -1027,7 +1026,7 @@ ul.tabbernav li.tabberactive a:hover
   --------------------------------------------------*/
 .tabberlive .tabbertab {
 	padding: 1em;
-	border: 1px solid #aaa;
+	border: 1px solid #CCC;
 	border-top: 0;
 
  /* If you don't want the tab size changing whenever a tab is changed
@@ -1127,6 +1126,6 @@ ul.tabbernav li.tabberactive a:hover
 .box_description {
 	padding: 0.9em 1.3em; 
 	margin: 1em 0; 
-	background-color: #EEEFFF; 
+	background-color: #F3F3F3; 
 	border: 1px dotted #DDD;
 }

@@ -12,12 +12,9 @@
 
 <h1>Browse Service Providers</h1>
 
-<br/>
-<br/>
-
 <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_providers } %>
 
-<div id="latest_providers">
+<div id="latest_providers" style="margin: 1em 0;">
 	<%= render :partial => "listing", :locals => { :items => @service_providers } %>
 </div>
 

@@ -12,13 +12,13 @@
 
 <h1>Registered Users on BioCatalogue</h1>
 
-<p style="margin: 1.6em 0 2.4em 0;">
+<p style="margin: 1.5em 0;">
 	<span class="green_box">Don't have an account yet : <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>
 </p>
 
 <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users } %>
 
-<div id="latest_users">
+<div id="latest_users" style="margin: 1em 0;">
 	<%= render :partial => "listing", :locals => { :items => @users } %>
 </div>
 
