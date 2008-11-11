@@ -4,7 +4,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :service_providers
 
   map.resources :service_deployments
+  
   map.resources :annotations, :collection => {:add_annotation => :post}
+  
   map.resources :service_versions
   
   map.resources :users, :collection => { :activate_account => :get }
@@ -24,7 +26,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :soap_inputs
   map.resources :soap_outputs
   
-  map.resources :soaplab_servers
+  #map.resources :soaplab_servers
   
   map.resources :services
   
@@ -69,5 +71,5 @@ ActionController::Routing::Routes.draw do |map|
 
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
+  #map.connect ':controller/:action/:id.:format'
 end
