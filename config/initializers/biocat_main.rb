@@ -1,3 +1,9 @@
+# BioCatalogue: app/config/initializers/biocat_main.rb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
 # Mappings for service types supported, to corresponding model classes.
 SERVICE_TYPES = {
   "SOAP Web Service"  => SoapService,

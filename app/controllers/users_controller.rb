@@ -1,3 +1,9 @@
+# BioCatalogue: app/controllers/users_controller.rb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details.
+
 class UsersController < ApplicationController
 
   before_filter :login_required, :except => [:index, :new, :create, :show, :activate_account]

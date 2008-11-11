@@ -1,3 +1,13 @@
+<%
+
+# BioCatalogue: app/views/widgets/_login_links.html.erb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
 <div id="login_links">
 	<% if logged_in? -%>
 		Welcome <%= link_to h(current_user.display_name), current_user, :id => "user_profile_link", :class => "" -%>&nbsp;|&nbsp;

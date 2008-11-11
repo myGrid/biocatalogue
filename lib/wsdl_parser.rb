@@ -1,3 +1,9 @@
+# BioCatalogue: app/lib/wsdl_parser.rb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
 require 'open-uri'
 require 'active_support/inflector'
 require 'pp'

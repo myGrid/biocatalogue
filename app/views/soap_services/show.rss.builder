@@ -1,3 +1,9 @@
+# BioCatalogue: app/views/soap_services/show.rss.builder
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
 xml.instruct!
 
 xml.rss "version" => "2.0" do

@@ -1,3 +1,13 @@
+<%
+
+# BioCatalogue: app/views/services/show.html.erb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
 <% t "#{h @service.name} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.map{|p| p.name}.to_sentence)}]" -%>
 
 <span style="float: right;"><%= link_to("permalink", service_url(@service)) -%></span>

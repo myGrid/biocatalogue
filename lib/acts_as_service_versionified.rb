@@ -1,3 +1,9 @@
+# BioCatalogue: app/lib/acts_as_service_versionified.rb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
 module BioCatalogue
   module Acts #:nodoc:
     module ServiceVersionified #:nodoc:
