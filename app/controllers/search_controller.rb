@@ -41,8 +41,10 @@ class SearchController < ApplicationController
       return false
     end
     
-    # Log this search
-    ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type })
+    # Log this search, if allowed.
+    if USE_EVENT_LOG
+      ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type })
+    end
     
     # Now either peform an all search or redirect to the appropriate type's search action
     if any_types_synonyms.include?(@type)
