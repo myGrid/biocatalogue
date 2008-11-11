@@ -4,7 +4,7 @@
  * Copyright (c) 2008, University of Manchester, The European Bioinformatics 
  * Institute (EMBL-EBI) and the University of Southampton.
  * See license.txt for details
-*/
+ */
 
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
