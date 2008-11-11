@@ -79,7 +79,7 @@ class UsersController < ApplicationController
         format.html { redirect_to(@user) }
         format.xml  { head :ok }
       else
-        flash[:error] = 'Could not mofify the account.'
+        flash[:error] = 'Could not modify the account.'
         format.html { render :action => "edit" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
@@ -88,15 +88,15 @@ class UsersController < ApplicationController
 
   # DELETE /users/1
   # DELETE /users/1.xml
-  def destroy
-    @user = User.find(params[:id])
-    @user.destroy
-    session.delete
-    respond_to do |format|
-      format.html { redirect_to(users_url) }
-      format.xml  { head :ok }
-    end
-  end
+#  def destroy
+#    @user = User.find(params[:id])
+#    @user.destroy
+#    session.delete
+#    respond_to do |format|
+#      format.html { redirect_to(users_url) }
+#      format.xml  { head :ok }
+#    end
+#  end
   
   def activate_account
     unless params[:security_token] == nil
