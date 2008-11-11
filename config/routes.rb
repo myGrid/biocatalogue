@@ -23,6 +23,7 @@ ActionController::Routing::Routes.draw do |map|
   map.login '/login', :controller => 'sessions', :action => 'new'
   map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
   map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil  
+  map.contact '/contact', :controller => 'contact', :action => 'index'
   
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,
