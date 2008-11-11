@@ -61,6 +61,7 @@ class ApplicationController < ActionController::Base
       return true
     end
   end
+  helper_method :is_admin?
 
   # Check that the user is an Administrator before allowing
   # the action to be performed and send it to the login page
@@ -74,7 +75,7 @@ class ApplicationController < ActionController::Base
       redirect_to new_session_url
     end
   end
-  helper_method :is_admin?
+  helper_method :check_admin?
   
   # Accesses the current user from the session.
   def current_user
