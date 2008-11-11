@@ -59,7 +59,9 @@ module ApplicationHelper
       text = text + "#{h(geo_loc.city)}, "
     end
     
-    text = text + CountryCodes.country(country_code)
+    country = CountryCodes.country(country_code)
+    
+    text = text + country unless country.blank?
     
     if flag
       case flag_pos.downcase

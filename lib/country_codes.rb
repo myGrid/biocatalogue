@@ -14,7 +14,7 @@ module CountryCodes
   #puts "countries = " + @@codes.to_s
   
   def self.country(code)
-    code = "GB" if code.upcase == "UK" 
+    code = "GB" if code.upcase == "UK"
     @@codes[code]
   end
   
