@@ -86,7 +86,7 @@ class SoapServicesController < ApplicationController
         
         respond_to do |format|
           if success and @soap_service.save
-            success = post_create(@soap_service, data["endpoint"])
+            success = @soap_service.post_create(@soap_service, data["endpoint"], current_user)
             
             if success
               flash[:notice] = 'Service was successfully created.'
@@ -184,7 +184,7 @@ class SoapServicesController < ApplicationController
       format.xml  { render :xml => @soap_service }
     end
   end
-    
+
   def bulk_create
     @soap_service = SoapService.new #(params[:soap_service])
     
@@ -208,42 +208,19 @@ class SoapServicesController < ApplicationController
     end
   end
   
-protected
-
-  def post_create(soap_service, endpoint)
-    # Try and find location of the service from the url of the WSDL.
-    wsdl_geo_location = BioCatalogue::Util.url_location_lookup(soap_service.wsdl_location)
-    city = (wsdl_geo_location.nil? || wsdl_geo_location.city.blank? || wsdl_geo_location.city == "(Unknown City)") ? nil : wsdl_geo_location.city
-    country = (wsdl_geo_location.nil? || wsdl_geo_location.country_code.blank?) ? nil : CountryCodes.country(wsdl_geo_location.country_code)
-    
-    # Create the associated service, service_version and service_deployment objects.
-    # We can assume here that this is the submission of a completely new service in BioCatalogue.
-    
-    new_service = Service.new(:name => soap_service.name)
-    
-    new_service.submitter = current_user
-                              
-    new_service_version = new_service.service_versions.build(:version => "1", 
-                                                             :version_display_text => "1")
-    
-    new_service_version.service_versionified = soap_service
-    new_service_version.submitter = current_user
-    
-    new_service_deployment = new_service_version.service_deployments.build(:endpoint => endpoint,
-                                                                           :city => city,
-                                                                           :country => country)
-    
-    new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(soap_service.wsdl_location).host)
-    new_service_deployment.service = new_service
-    new_service_deployment.submitter = current_user
-                                                  
-    if new_service.save
-      return true
-    else
-      logger.error("ERROR: post_create method for SoapServicesController failed!")
-      logger.error("Error messages: #{new_service.errors.full_messages.to_sentence}")
-      return false
-    end
-  end
+#
+#  
+#  private
+#  def new_existing_urls(urls=[])
+#    all_urls     = []
+#    service_urls = {}
+#    SoapService.find(:all).each{ |s| all_urls << s.wsdl_location }
+#    new_urls = urls - all_urls
+#    service_urls['new']      = new_urls
+#    service_urls['existing'] = urls - new_urls
+#    
+#    service_urls
+#  end
+#  
   
 end
