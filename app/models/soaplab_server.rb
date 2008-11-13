@@ -12,14 +12,14 @@ class SoaplabServer < ActiveRecord::Base
   validates_uniqueness_of :location, :message => "already exists in BioCatalogue"
   validates_url_format_of :location,
                           :allow_nil => false
-  before_create :save_services
+  #before_create :save_services
   before_update :save_services
   #@service_urls = {}
   attr_accessor :wsdl_urls
   
   @wsdl_urls = []
    
-  def save_services
+  def save_services(current_user)
     
     @wsdl_urls = get_wsdl_from_server(self.location)
     
@@ -30,8 +30,11 @@ class SoaplabServer < ActiveRecord::Base
       transaction do
         soap_service = SoapService.new
         soap_service.wsdl_location = url
-        soap_service.populate
+        success, data = soap_service.populate
         soap_service.save!
+        if soap_service.save
+          soap_service.post_create(soap_service, data["endpoint"], current_user)
+        end
      
         end
       }
@@ -64,5 +67,5 @@ class SoaplabServer < ActiveRecord::Base
     
     @service_urls
   end
- 
+  
 end
