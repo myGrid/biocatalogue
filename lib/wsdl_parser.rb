@@ -125,6 +125,9 @@ module BioCatalogue
         }
       else
         operations = wsdl_hash["definitions"]["portType"]["operation"]
+        unless operations.class.to_s == "Array"
+          operations =[operations]
+        end
         operations.each{ |op| op["parent_port_type"] = port_type["name"]}
       end
       
@@ -328,6 +331,7 @@ module BioCatalogue
     
     def WsdlParser.test(num=0)
       wsdls= [
+      "http://biomoby.org/services/wsdl/biomoby.renci.org/Water",
       "http://wsembnet.vital-it.ch/soaplab2/services/embnet.blastp?wsdl",
       "http://www.ebi.ac.uk/intact/binary-search-ws/binarysearch?wsdl",
       "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSCensor.wsdl",
