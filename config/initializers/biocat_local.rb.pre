@@ -15,3 +15,14 @@ SHOW_DEBUG = false
 # Switch event logging on or off.
 USE_EVENT_LOG = false
 
+# Set a proxy for open-uri calls
+#If :proxy option is specified, the value should be String, 
+#URI, boolean or nil. When String or URI is given, 
+#it is treated as proxy URI. 
+#When true is given or the option itself is not specified, 
+#environment variable `scheme_proxy’ is examined. `scheme’ 
+#is replaced by `http’, `https’ or `ftp’. 
+#When false or nil is given, the environment variables 
+#are ignored and connection will be made to a server directly. 
+HTTP_PROXY = true
+
