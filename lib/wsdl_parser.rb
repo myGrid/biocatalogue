@@ -88,7 +88,7 @@ module BioCatalogue
     # }
     #
     def WsdlParser.get_wsdl_hash_and_file_contents(wsdl_url)
-      wsdl_file_contents  = open(wsdl_url.strip()).read
+      wsdl_file_contents  = open(wsdl_url.strip(), :proxy => HTTP_PROXY).read
       wsdl_hash = Hash.from_xml(wsdl_file_contents)
       return [wsdl_hash, wsdl_file_contents]
     end
