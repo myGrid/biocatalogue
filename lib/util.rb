@@ -12,6 +12,8 @@ module BioCatalogue
   module Util
     include GeoKit::Geocoders
     
+    @@logger = RAILS_DEFAULT_LOGGER
+    
     # Attempts to lookup the geographical location of the URL provided.
     # This uses the GeoKit plugin to do the geocoding.
     # Returns a Gecode::GeoLoc object if successful, otherwise returnes nil.
@@ -22,8 +24,8 @@ module BioCatalogue
         location = IpGeocoder.geocode(Dnsruby::Resolv.getaddress(Addressable::URI.parse(url).host))
         return (location.success ? (location.country_code == "XX" ? nil : location) : nil)
       rescue Exception => ex
-        logger.info("Method BioCatalogue::Util.url_location_lookup errored. Exception:")
-        logger.info(ex)
+        @@logger.info("Method BioCatalogue::Util.url_location_lookup errored. Exception:")
+        @@logger.info(ex)
         return nil
       end
     end
