@@ -88,30 +88,30 @@ class SoapService < ActiveRecord::Base
     "SOAP"
   end
   
-  def post_create(soap_service, endpoint, current_user)
+  def post_create(endpoint, current_user)
     # Try and find location of the service from the url of the WSDL.
-    wsdl_geo_location = BioCatalogue::Util.url_location_lookup(soap_service.wsdl_location)
+    wsdl_geo_location = BioCatalogue::Util.url_location_lookup(self.wsdl_location)
     city = (wsdl_geo_location.nil? || wsdl_geo_location.city.blank? || wsdl_geo_location.city == "(Unknown City)") ? nil : wsdl_geo_location.city
     country = (wsdl_geo_location.nil? || wsdl_geo_location.country_code.blank?) ? nil : CountryCodes.country(wsdl_geo_location.country_code)
     
     # Create the associated service, service_version and service_deployment objects.
     # We can assume here that this is the submission of a completely new service in BioCatalogue.
     
-    new_service = Service.new(:name => soap_service.name)
+    new_service = Service.new(:name => self.name)
     
     new_service.submitter = current_user
                               
     new_service_version = new_service.service_versions.build(:version => "1", 
                                                              :version_display_text => "1")
     
-    new_service_version.service_versionified = soap_service
+    new_service_version.service_versionified = self
     new_service_version.submitter = current_user
     
     new_service_deployment = new_service_version.service_deployments.build(:endpoint => endpoint,
                                                                            :city => city,
                                                                            :country => country)
     
-    new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(soap_service.wsdl_location).host)
+    new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(self.wsdl_location).host)
     new_service_deployment.service = new_service
     new_service_deployment.submitter = current_user
                                                   
@@ -123,7 +123,6 @@ class SoapService < ActiveRecord::Base
       return false
     end
   end
- 
   
 protected
 
