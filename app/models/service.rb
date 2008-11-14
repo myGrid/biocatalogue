@@ -9,7 +9,7 @@ class Service < ActiveRecord::Base
   
   has_many :service_versions, 
            :dependent => :destroy,
-           :order => "version ASC"
+           :order => "created_at ASC"
   
   has_many :service_deployments, 
            :dependent => :destroy
