@@ -11,17 +11,22 @@
 <h1>Submit services</h1>
 
 <% form_for @soap_service, :url =>{:controller => 'soap_services',:action => "bulk_create"}  do |f| %>
-  <%= f.error_messages %>
-  <p> List the URLs for the services you want to submit in the box below. <br />
-      Each URL should be should be on a separate line
+  <%= f.error_messages -%>
+  <p> List the wsdl URLs for the services you want to submit in the box below. <br />
+      Each wsdl URL should on a separate line
+	 
   </p>
-    <%= f.text_area :description %>
+  <p>
+    <%= text_area_tag 'url_list', "list of description documents goes here.",:size => "85x10" -%>
   </p>
   
   <p>
-    <%= submit_tag 'create all',  :url => { :action => 'bulk_create' } %>
+    <%= submit_tag 'submit',  :url => { :action => 'bulk_create' } -%>
 
   </p>
 <% end %>
 
-<%= link_to 'Back', soap_services_path %>
+<%= link_to 'Back', services_path %>
+
+
+
