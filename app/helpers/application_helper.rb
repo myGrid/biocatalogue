@@ -11,7 +11,7 @@ module ApplicationHelper
     controller_name.humanize.titleize
   end
   
-  def flag_icon_from_country(country, text=country, style='')
+  def flag_icon_from_country(country, text=country, style="margin-left: 0.5em;")
     return '' if country.blank?
     
     code = ''
@@ -35,7 +35,7 @@ module ApplicationHelper
     end
   end
   
-  def flag_icon_from_country_code(code, text=nil, style='margin-left: 0.8em;')
+  def flag_icon_from_country_code(code, text=nil, style="margin-left: 0.5em;")
     code = "GB" if code.upcase == "UK"
     text = CountryCodes.country(code.upcase) if text.nil?
     return image_tag("flags/#{code.downcase}.png",
@@ -66,11 +66,11 @@ module ApplicationHelper
     if flag
       case flag_pos.downcase
         when 'right'
-          text = text + flag_icon_from_country_code(country_code, nil, "margin-left: 0.8em;")
+          text = text + flag_icon_from_country_code(country_code)
         when 'left'
-          text = flag_icon_from_country_code(country_code, nil, "margin-right: 0.8em;") + text
+          text = flag_icon_from_country_code(country_code) + text
         else
-          text = text + flag_icon_from_country_code(country_code, nil, "margin-left: 0.8em;")
+          text = text + flag_icon_from_country_code(country_code)
       end  
     end
     
