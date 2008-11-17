@@ -13,8 +13,9 @@
 <h1>Search Results</h1>
 
 <p>
-	<b>Search query: </b>
-	"<%= h @query -%>"
+	Search query:
+	"<b><%= h @query -%></b>"
+	returned <%= pluralize(@count, "item") -%>
 </p>
 
 <% if @count == 0 %>
@@ -25,12 +26,12 @@
 
 	<div class="tabber">
 
-		<% @results.each do |type, results| %>
-			<% unless results.empty? %>
+		<% @results.each do |type, res| %>
+			<% unless res.empty? %>
 			  <div class="tabbertab">
-			    <h3><%= "#{type} (#{results.length})" -%></h3>
+			    <h3><%= "#{type} (#{res.length})" -%></h3>
 			    
-					<%= render :partial => "#{type.gsub(' ', '').underscore}/listing", :locals => { :items => results } %>
+					<%= render :partial => "#{type.gsub(' ', '').underscore}/listing", :locals => { :items => res } %>
 			  </div>
 			<% end %>
 		<% end %>

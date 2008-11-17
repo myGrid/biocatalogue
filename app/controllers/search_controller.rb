@@ -49,13 +49,17 @@ class SearchController < ApplicationController
     # Now either peform an all search or redirect to the appropriate type's search action
     if any_types_synonyms.include?(@type)
       models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
-      all_search_results = Service.multi_solr_search(@query, :limit => 100, :models => models).results
       
-      @count = all_search_results.length
+      # The following line seems to be returning the wrong model types.
+      #all_search_results = User.multi_solr_search(@query, :limit => 100, :models => models).results
+      
+      @count = 0
       @results = { }
   
       models.each do |m|
-        @results[m.to_s.titleize.pluralize] = all_search_results.select{|r| r.instance_of?(m)}
+        res = m.find_by_solr(@query, :limit => 100).results.uniq
+        @count = @count + res.length
+        @results[m.to_s.titleize.pluralize] = res
       end
       
       respond_to do |format|
