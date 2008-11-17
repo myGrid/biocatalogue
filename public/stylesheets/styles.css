@@ -243,19 +243,21 @@ td {
 #error_flash {	
 	border: 1px dotted #ff0000;
 	background-color: #ffaaaa;
-	padding: 5px;
+	padding: 0.4em 1em;
 	margin: auto;
 	text-align: center;
-	max-width: 30em;
+	max-width: 750px;
+	line-height: 1.3;
 }
 
 #notice_flash {	
 	border: 1px dotted #999999;
 	background-color: #e9f7cc;
-	padding: 5px;
+	padding: 0.4em 1em;
 	margin: auto;
 	text-align: center;
-	max-width: 30em;
+	max-width: 750px;
+	line-height: 1.3;
 }
 
 /**

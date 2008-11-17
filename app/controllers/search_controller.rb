@@ -25,6 +25,13 @@ class SearchController < ApplicationController
       return
     end
     
+    # Check if the query is '*' in which case give the user an appropriate message.
+    if @query == '*'
+      flash[:error] = "It looks like you were trying to search for everything in BioCatalogue! If you would like to browse all services then <a href='#{services_path}'>click here</a>."
+      redirect_to :back
+      return
+    end
+    
     @type = params[:type]
     
     if @type.blank?
