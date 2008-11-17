@@ -59,10 +59,26 @@ module BioCatalogue
         geoloc.lat = yaml['Latitude'] 
         geoloc.lng = yaml['Longitude']
         geoloc.country_code.chop!
-        geoloc.success = true unless geoloc.city == "(Private Address)" or geoloc.country_code == "XX"
+        geoloc.success = true unless geoloc.country_code == "XX"
       end
       
       return geoloc
+    end
+    
+    def Util.city_and_country_from_geoloc(geoloc)
+      return [ ] unless geoloc.is_a?(GeoKit::GeoLoc)
+      return [ ] if geoloc.nil? or !geoloc.success
+      
+      city = nil
+      country = nil
+      
+      unless geoloc.city == "(Private Address)" or geoloc.city == "(Unknown City)"
+        city = geoloc.city
+      end
+      
+      country = CountryCodes.country(geoloc.country_code)
+      
+      return [ city, country ]
     end
   end
 end

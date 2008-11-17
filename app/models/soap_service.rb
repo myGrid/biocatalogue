@@ -90,9 +90,8 @@ class SoapService < ActiveRecord::Base
   
   def post_create(endpoint, current_user)
     # Try and find location of the service from the url of the WSDL.
-    wsdl_geo_location = BioCatalogue::Util.url_location_lookup(self.wsdl_location)
-    city = (wsdl_geo_location.nil? || wsdl_geo_location.city.blank? || wsdl_geo_location.city == "(Unknown City)") ? nil : wsdl_geo_location.city
-    country = (wsdl_geo_location.nil? || wsdl_geo_location.country_code.blank?) ? nil : CountryCodes.country(wsdl_geo_location.country_code)
+    wsdl_geoloc = BioCatalogue::Util.url_location_lookup(self.wsdl_location)
+    city, country = BioCatalogue::Util.city_and_country_from_geoloc(wsdl_geoloc)
     
     # Create the associated service, service_version and service_deployment objects.
     # We can assume here that this is the submission of a completely new service in BioCatalogue.

@@ -53,15 +53,15 @@ module ApplicationHelper
     
     text = ''
     
-    country_code = h(geo_loc.country_code)
+    city, country = BioCatalogue::Util.city_and_country_from_geoloc(geo_loc)
     
-    unless geo_loc.city.blank? or geo_loc.city == "(Unknown City)"
-      text = text + "#{h(geo_loc.city)}, "
+    unless city.blank? 
+      text = text + "#{h(city)}, "
     end
     
-    country = CountryCodes.country(country_code)
+    text = text + h(country) unless country.blank?
     
-    text = text + country unless country.blank?
+    country_code = h(geo_loc.country_code)
     
     if flag
       case flag_pos.downcase
