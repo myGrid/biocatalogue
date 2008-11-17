@@ -35,7 +35,7 @@ module ApplicationHelper
     end
   end
   
-  def flag_icon_from_country_code(code, text=nil, style='')
+  def flag_icon_from_country_code(code, text=nil, style='margin-left: 0.8em;')
     code = "GB" if code.upcase == "UK"
     text = CountryCodes.country(code.upcase) if text.nil?
     return image_tag("flags/#{code.downcase}.png",

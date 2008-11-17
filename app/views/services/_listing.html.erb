@@ -14,6 +14,12 @@
 			<p class="name">
 				<%= link_to(h(service.name), service_path(service)) -%>
 				<%= service_type_badges(service.service_types) -%>
+				
+				<% service.service_deployments.each do |s_d| %>
+					<% unless s_d.country.blank? -%>
+						<%= flag_icon_from_country(s_d.country, s_d.location) -%>
+					<% end %>
+				<% end %>
 			</p>
 			
 			<p class="desc">

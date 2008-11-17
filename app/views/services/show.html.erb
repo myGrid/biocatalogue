@@ -50,7 +50,7 @@
 	<% @service.service_deployments.each do |s_d| %>
 		<% unless (loc = s_d.location).blank? -%>
 			<%= h s_d.location -%>
-			<%= flag_icon_from_country(s_d.country, loc, 'margin-left: 0.4em;') -%>
+			<%= flag_icon_from_country(s_d.country, loc, 'margin-left: 0.5em;') -%>
 			<br/>
 		<% end %>
 	<% end %>
