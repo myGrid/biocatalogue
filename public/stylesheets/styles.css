@@ -62,6 +62,7 @@ body {
 input {
   font: 12px/100% "Trebuchet MS";
   color: #333333;
+  vertical-align: middle;
 }
 
 textarea, select {
@@ -389,6 +390,10 @@ body.sidebar-right #squeeze {
   font-size: 135%;
 }
 
+#wrapper #container #action_bar * {
+	vertical-align: middle;
+}
+
 #wrapper #container #action_bar #action_links {
 	padding-left: 15px;
 }
@@ -397,6 +402,7 @@ body.sidebar-right #squeeze {
 	padding-left: 15px;
 	padding-right: 15px;
 	background: transparent url(../images/green_separator.gif) no-repeat left;
+	vertical-align: middle;
 }
 
 #wrapper #container #action_bar img {
@@ -957,6 +963,10 @@ body.sidebar-right #login_box {
 
 div.search_widget {
 	text-align: center;
+}
+
+div.search_widget * {
+	vertical-align: middle;
 }
 
 /* BEGIN Tabber tab styles */
