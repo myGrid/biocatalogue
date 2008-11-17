@@ -9,7 +9,7 @@ require 'addressable/uri'
 
 class SoapServicesController < ApplicationController
   
-  #before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy, :bulk_new, :bulk_create ]
+  before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy, :bulk_new, :bulk_create ]
   
   before_filter :login_required, :except => [ :index, :show ]
   
