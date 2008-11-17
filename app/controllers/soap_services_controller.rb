@@ -9,14 +9,13 @@ require 'addressable/uri'
 
 class SoapServicesController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy, :bulk_new, :bulk_create ]
+  #before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy, :bulk_new, :bulk_create ]
   
   before_filter :login_required, :except => [ :index, :show ]
   
   # GET /soap_services
   # GET /soap_services.xml
   def index
-    #@soap_services = SoapService.find(:all, :order => "id DESC")
     @soap_services = SoapService.paginate :all, :page => params[:page], 
                                                 :order => "created_at DESC", 
                                                 :per_page => 10
@@ -186,41 +185,44 @@ class SoapServicesController < ApplicationController
   end
 
   def bulk_create
-    @soap_service = SoapService.new #(params[:soap_service])
+    @soap_service           = SoapService.new #(params[:soap_service])
+    @new_services      = []
+    @existing_services = []
+    urls                    = []
     
-    urls = []
-    params[:soap_service][:description].each { |line|
+    params[:url_list].each { |line|
     urls << line.strip if line =~ /http:/ or line =~ /https:/}
     if urls.empty?
       @soap_service.errors.add_to_base('No service urls were found!')
       render :action =>'bulk_new'
     else
       urls.each do |url|
-        @soap_service.wsdl_location = url
-        @soap_service.get_service_attributes
-        if @soap_service.save
-          flash[:notice] = 'SoapService was successfully created.'
+        if SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
+          @soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
+          @existing_services << @soap_service.service(true)
         else
-          @soap_service.errors.add_to_base("Service with url, #{url}, was not saved")
-          render(:action => 'new') and return
+          #urls.each do |url|
+          @soap_service = SoapService.new #(params[:soap_service]) 
+          @soap_service.wsdl_location = url
+          success, data = @soap_service.populate
+          if @soap_service.save
+            succes = @soap_service.post_create(@soap_service, data['endpoint'], current_user)
+            if success 
+              @new_services << @soap_service.service(true)
+              flash[:notice] = 'SoapService was successfully created.'
+            end
+            
+          else
+            @soap_service.errors.add_to_base("Service with url, #{url}, was not saved")
+            render(:action => 'new') and return
+          end
         end
       end
     end
+     @services = @new_services.paginate({:page => params[:page], 
+                                                :order => "created_at DESC", 
+                                                :per_page => 10})   
   end
-  
-#
-#  
-#  private
-#  def new_existing_urls(urls=[])
-#    all_urls     = []
-#    service_urls = {}
-#    SoapService.find(:all).each{ |s| all_urls << s.wsdl_location }
-#    new_urls = urls - all_urls
-#    service_urls['new']      = new_urls
-#    service_urls['existing'] = urls - new_urls
-#    
-#    service_urls
-#  end
-#  
+   
   
 end
