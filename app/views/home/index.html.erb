@@ -8,7 +8,16 @@
 
 %>
 
-<div style="width: 600px; margin: auto; margin-top: 1.5em;">
+<div style="width: 600px; margin: auto; margin-top: 0.5em;">
+
+<center>
+	<div class="box_info">
+		BioCatalogue currently has
+		<%= link_to pluralize(Service.count, "service"), services_path -%> and
+		<%= link_to pluralize(User.count, "user"), users_path -%>
+	</div>
+</center>
+
 <p class="home_heading">BioCatalogue: providing a curated catalogue of<br />Life Science Web Services.</p>
 
 <ul id="key_points">

@@ -1218,6 +1218,15 @@ ul.tabbernav li.tabberactive a:hover
 	border: 1px dotted #DDD;
 }
 
+.box_info {
+	background: #E9F7CC;
+	color: #333333;
+	padding: 0.6em 1em;
+	margin: 0;
+	margin-bottom: 1em;
+	text-align: center; 
+}
+
 /* BEGIN terms of use page styles */
 #terms_of_use ul, #terms_of_use ol {
 	padding-left: 3em;
