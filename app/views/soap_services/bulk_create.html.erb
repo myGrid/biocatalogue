@@ -8,13 +8,13 @@
 
 %>
 
-<% t "Browse Services" -%>
+<% t "Bulk Registered Services" -%>
 
 <span style="float: right;">
 	<%= link_to 'New Service', new_service_path -%>
 </span>
 
-<h1>Newly Registered Services</h1>
+<h1>Bulk Registered Services</h1>
 
 <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
 
