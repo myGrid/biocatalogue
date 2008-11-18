@@ -50,14 +50,11 @@
 					<%= yield -%>          
           
                     <span class="clear"></span>
-
-                    <div id="footer">
-						<%= render :partial => "layouts/footer" -%>
-					</div><!-- /footer -->
 					
 					<%= render :partial => "layouts/debug" if SHOW_DEBUG %>
 					
 				</div></div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
+
 				<div id="sidebar-right" class="sidebar">
 					
 					<!-- This will look for a _sidebar.html.erb partial in the corresponding view directory for the controller being called -->
@@ -79,6 +76,7 @@
 				</div> --><!-- /sidebar box example -->
       			</div> <!-- /sidebar-right -->
 			</div> <!-- /container -->
+			<%= render :partial => "layouts/footer" -%>
 		</div> <!-- /wrapper -->
 		<!-- /layout -->
 	</body>
