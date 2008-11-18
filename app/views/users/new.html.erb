@@ -13,6 +13,7 @@
 <% form_for(@user) do |f| %>
   <%= f.error_messages %>
 <fieldset>
+  <legend>Email</legend>
   <p>
     <%= f.label :email %><br />
     <%= f.text_field :email %>
@@ -20,6 +21,9 @@
     <%= f.label :email_confirmation %><br />
     <%= f.text_field :email_confirmation %>
   </p>
+</fieldset>
+<fieldset>
+  <legend>Password</legend>
   <p>
     <%= f.label :password %><br />
     <%= f.password_field :password %>
@@ -28,6 +32,9 @@
     <%= f.label :password_confirmation %><br />
     <%= f.password_field :password_confirmation %>
   </p>
+</fieldset>
+<fieldset>
+  <legend>Some information about you</legend>
   <p>
     <%= f.label :affiliation, "Affiliation (e.g. institute, company)" %><br />
     <%= f.text_field :affiliation, :size => 45 %>
