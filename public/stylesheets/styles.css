@@ -1,3 +1,4 @@
+@charset "utf-8";
 /**
  * BioCatalogue: app/public/stylesheets/styles_2.css
  *
@@ -6,7 +7,6 @@
  * See license.txt for details
  */
 
-@charset "utf-8";
 /* CSS Document */
 
 /*
@@ -317,31 +317,6 @@ body.sidebar-right #squeeze {
   z-index: 2;
   position: relative;
 }
-/*
-#wrapper #container .sidebar .sidebar_box {
-  margin: 0 0 1.5em 0;
-}
-
-#sidebar-right .sidebar_box {
-  padding: 0 5px 0 15px;
-}
-
-.block .content {
-  margin: 0.5em 0;
-}
-
-#sidebar-right .block-region {
-  margin: 0 0px 0 15px;
-}
-
-.block-region {
-  padding: 1em;
-  background: transparent;
-  border: 2px dashed #b4d7f0;
-  text-align: center;
-  font-size: 1.3em;
-}
-*/
 
 /* Now we add the backgrounds for the main content shading */
 #wrapper #container #center #squeeze {
@@ -368,12 +343,54 @@ body.sidebar-right #squeeze {
   min-height: 400px;
 }
 
-#wrapper #container #footer {
+#footer {
   float: none;
   clear: both;
   text-align: center;
-  margin: 4em 0 -3em;
-  color: #898989;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  /*margin: 4em 0 -3em;*/
+  /*color: #898989;*/
+}
+
+body.sidebar-right #footer {
+  width: 75%;
+}
+
+#footer_links {
+  float:left;
+  position:relative;
+  left:50%;
+  text-align:left;
+}
+
+#footer_links ul {
+  list-style:none;
+  position:relative;
+  left:-50%;
+}
+
+#footer_links ul li {
+  list-style-type: none;
+  list-style-image: none;
+  margin: 0;
+  padding: 0;
+  float: left;
+  position:relative;
+}
+
+#footer_links ul li.separator {
+	border-left: 1px solid #333333;
+}
+
+#footer_links ul li a, #footer_links ul li a:link, #footer_links ul li a:visited {
+  display: block;
+  margin: 0 1em;
+  color: #333333;
+}
+
+#footer_links ul li a:hover, #footer_links ul li a.active {
+  color: #ff7400;
 }
 
 /*
@@ -414,7 +431,6 @@ body.sidebar-right #squeeze {
 body.sidebar-right #footer {
   margin-right: -210px;
 }
-
 
 /**
  * Primary navigation
@@ -1196,3 +1212,19 @@ ul.tabbernav li.tabberactive a:hover
 	background-color: #F3F3F3; 
 	border: 1px dotted #DDD;
 }
+
+/* BEGIN terms of use page styles */
+#terms_of_use ul, #terms_of_use ol {
+	padding-left: 3em;
+}
+
+#terms_of_use ul li  {
+	padding-top: 1em;
+	list-style: square;
+}
+
+#terms_of_use ol li {
+	padding-top: 1em;
+	list-style: decimal;
+}
+/* END terms of use page styles */
