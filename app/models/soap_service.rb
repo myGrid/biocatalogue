@@ -110,7 +110,7 @@ class SoapService < ActiveRecord::Base
                                                                            :city => city,
                                                                            :country => country)
     
-    new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(self.wsdl_location).host)
+    new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(endpoint).host)
     new_service_deployment.service = new_service
     new_service_deployment.submitter = current_user
                                                   
