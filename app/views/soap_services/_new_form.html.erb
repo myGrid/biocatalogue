@@ -98,8 +98,9 @@
 				<fieldset>
 					<legend>Extra Information (optional)</legend>
 					
-					<p class="error_text">Coming soon</p>
-					
+					<!--<p class="error_text">Coming soon</p>-->
+					<fieldset style="border: 1px solid #ff0000;">
+					<legend style="color: #ff0000;">Coming soon...</legend>
 					<!-- Add new name alias -->
 					<p>
 						<%= link_to_function "Add new name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
@@ -123,6 +124,7 @@
 					<div id="doc_url_box" style="display: none;">
 						<p><%= text_field_tag :documentation_url, params[:documentation_url], :disabled => true, :size => 60 %></p>
 					</div>
+					</fieldset>
 				</fieldset>
 			</td>
 		</tr>
