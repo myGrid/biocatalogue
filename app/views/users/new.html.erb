@@ -30,14 +30,14 @@
   </p>
   <p>
     <%= f.label :affiliation, "Affiliation (e.g. institute, company)" %><br />
-    <%= f.text_field :affiliation %>
+    <%= f.text_field :affiliation, :size => 45 %>
   </p>
   <p>
     <%= f.label :country %><br />
-    <%= f.country_select :country %>
+    <%= f.country_select :country, ["United Kingdom"], { :prompt => "- Please select a country -" } %>
   </p>
   <p>
-    <%= f.submit "Create" %>
+    <%= f.submit "Register", :disable_with => "Registering..." %>
   </p>
 </fieldset>
 <% end %>
