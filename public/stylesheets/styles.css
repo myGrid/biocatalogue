@@ -110,14 +110,15 @@ ul, quote, code, fieldset {
 }
 
 fieldset {
-	border: 1px solid #CCCCCC;
+	/*border: 1px solid #cccccc;*/
+	border: 1px solid #cdeb8b;
 	padding: 0.8em 1.3em;
 }
 
 legend {
 	padding: 0.3em 0.6em;
-  	border: 1px solid #CCCCCC;
-  	text-align: right;
+  	/*border: 1px solid #CCCCCC;*/
+  	text-align: left;
 	font-weight: bold;
 	margin: 0;
 	margin-bottom: 0.8em;
@@ -818,6 +819,10 @@ body.sidebar-right #login_box {
 	background-color: #F5F5F5;
 }
 
+.soap_service_form fieldset {
+	border: 1px solid #cccccc;
+}
+
 .field {
 	border: 1px dotted #DDDDDD;
 	background-color: #FFFFCC;
@@ -1174,7 +1179,7 @@ ul.tabbernav li.tabberactive a:hover
 #errorExplanation {
 	width: 400px;
 	border: 2px solid #c00;
-	padding: 0.5empx;
+	padding: 0.5em;
 	margin-bottom: 1.5em;
 	background-color: #F5F5F5;
 }
