@@ -64,9 +64,15 @@ class SearchController < ApplicationController
       @results = { }
   
       models.each do |m|
-        res = m.find_by_solr(@query, :limit => 100).results.uniq
-        @count = @count + res.length
-        @results[m.to_s.titleize.pluralize] = res
+        m_name = m.to_s.titleize.pluralize
+        @results[m_name] = [ ]
+        res = m.multi_solr_search(@query, :models => [ m ], :limit => 100).results.uniq
+        res.each do |r|
+          if r.is_a?(m)
+            @count = @count + 1
+            @results[m_name] << r
+          end
+        end
       end
       
       respond_to do |format|
