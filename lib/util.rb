@@ -80,5 +80,45 @@ module BioCatalogue
       
       return [ city, country ]
     end
+    
+    # Given a varied collection of ActiveRecord model items, 
+    # this method attempts to select and return a list of items 
+    # of the class 'model' (specified), based on relationships from 
+    # each individual item. Note: 'model' must be a Class representing
+    # the ActiveRecord model in question.
+    #
+    # E.g: if the model specified is Service and the items contains a 
+    # ServiceVersion, then the .service association of that ServiceVersion 
+    # will be added into the collection returned back.
+    #
+    # Currently only supports Service for the 'model' parameter, for
+    # deep relationship finding. But other models can still be used,
+    # they will just match themselves in items.
+    def Util.discover_model_objects_from_collection(model, items)
+      model_items = [ ]
+      
+      items.each do |r|
+        if r.is_a?(ActiveRecord::Base)
+          if r.is_a?(model)
+            model_items << r
+          else
+            case model.to_s
+              when "Service"
+                puts "BioCatalogue::Util.discover_model_objects_from_collection - model=Service"
+                case r
+                  when ServiceVersion, ServiceDeployment, SoapService
+                    model_items << r.service
+                  when SoapOperation  
+                    model_items << r.soap_service.service
+                  when SoapInput, SoapOutput  
+                    model_items << r.soap_operation.soap_service.service
+                end
+            end
+          end
+        end
+      end
+      
+      return model_items.uniq
+    end
   end
 end

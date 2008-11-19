@@ -53,28 +53,10 @@ class SearchController < ApplicationController
       ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type })
     end
     
-    # Now either peform an all search or redirect to the appropriate type's search action
+    # Now either peform an 'all' search or redirect to the appropriate type's search action
     if any_types_synonyms.include?(@type)
-      models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
-      
-      # The following line seems to be returning the wrong model types.
-      #all_search_results = User.multi_solr_search(@query, :limit => 100, :models => models).results
-      
-      @count = 0
-      @results = { }
-  
-      models.each do |m|
-        m_name = m.to_s.titleize.pluralize
-        @results[m_name] = [ ]
-        res = m.multi_solr_search(@query, :models => [ m ]).results.uniq
-        res.each do |r|
-          if r.is_a?(m)
-            @count = @count + 1
-            @results[m_name] << r
-          end
-        end
-      end
-      
+      @count, @results = get_all_results(@query)
+
       respond_to do |format|
         format.html # show.html.erb
       end
@@ -88,6 +70,23 @@ protected
 
   def search_available?
     return ENABLE_SEARCH
+  end
+  
+  def get_all_results(query)
+    total_count = 0
+    grouped_results = { }
+    
+    models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
+    
+    models.each do |m|
+      m_name = m.to_s.titleize.pluralize
+      res = m.multi_solr_search(query, :limit => 200).results
+      grouped_results[m_name] = BioCatalogue::Util.discover_model_objects_from_collection(m, res)
+      total_count = total_count + grouped_results[m_name].length
+    end
+    
+    return [ total_count, grouped_results ]
+
   end
 
   def error(type)
