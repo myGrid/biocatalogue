@@ -8,6 +8,12 @@
 
 %>
 
+<% if mine?(@user) -%>
+	<span style="float: right;">
+		<%= link_to 'Edit', edit_user_path(@user) %>
+	</span>
+<% end -%>
+
 <h1>User Profile</h1>
 <p>
   <b>Display Name:</b>
@@ -31,6 +37,15 @@
   <%=h @user.country %>
 </p>
 
-<% if mine?(@user) -%>
-	<%= link_to 'Edit', edit_user_path(@user) %>
-<% end -%>
+<br/>
+
+<div class="tabber">
+	
+	<% services = @user.services %>
+  <div class="tabbertab">
+    <h3><%= "Services submitted (#{services.length})" -%></h3>
+    
+		<%= render :partial => "services/listing", :locals => { :items => services } %>
+  </div>
+
+</div>
