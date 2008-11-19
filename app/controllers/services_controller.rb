@@ -16,7 +16,6 @@ class ServicesController < ApplicationController
   # GET /services.xml
   def index
     @services = Service.paginate(:page => params[:page],
-                                 :per_page => 10,
                                  :order => 'created_at DESC',
                                  :include => [ :service_versions, :service_deployments ])
 

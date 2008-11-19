@@ -41,11 +41,6 @@ class Service < ActiveRecord::Base
     acts_as_activity_logged(:models => { :culprit => { :model => :submitter } })
   end
   
-  # For pagination
-  def self.per_page
-    30
-  end
-  
   def to_param
     "#{self.id}-#{self.unique_code}"
   end

@@ -14,7 +14,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
-    @users = User.paginate(:page => params[:page], 
+    @users = User.paginate(:page => params[:page],
                            :conditions => "activated_at IS NOT NULL", 
                            :order => 'activated_at DESC')
 
@@ -28,6 +28,8 @@ class UsersController < ApplicationController
   # GET /users/1.xml
   def show
     @user = User.find(params[:id])
+    @users_services = @user.services.paginate(:page => params[:page], 
+                                              :order => "created_at DESC")
 
     respond_to do |format|
       format.html # show.html.erb

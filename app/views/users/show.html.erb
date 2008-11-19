@@ -41,11 +41,16 @@
 
 <div class="tabber">
 	
-	<% services = @user.services %>
   <div class="tabbertab">
-    <h3><%= "Services submitted (#{services.length})" -%></h3>
+    <h3><%= "Services submitted (#{@users_services.length})" -%></h3>
     
-		<%= render :partial => "services/listing", :locals => { :items => services } %>
+		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_services } %>
+		
+		<div id="users_services" style="margin: 1em 0;">
+			<%= render :partial => "services/listing", :locals => { :items => @users_services } %>
+		</div>
+		
+		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users_services } %>
   </div>
 
 </div>

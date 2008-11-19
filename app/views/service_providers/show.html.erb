@@ -14,11 +14,16 @@
 
 <div class="tabber">
 	
-	<% services = @service_provider.services %>
   <div class="tabbertab">
-    <h3><%= "Services (#{services.length})" -%></h3>
+    <h3><%= "Services (#{@provider_services.length})" -%></h3>
     
-		<%= render :partial => "services/listing", :locals => { :items => services } %>
+		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @provider_services } %>
+		
+		<div id="provider_services" style="margin: 1em 0;">
+			<%= render :partial => "services/listing", :locals => { :items => @provider_services } %>
+		</div>
+		
+		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @provider_services } %>
   </div>
 
 </div>

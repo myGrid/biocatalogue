@@ -26,3 +26,9 @@ if "irb" == $0
   ActiveRecord::Base.logger = Logger.new(STDOUT)
   ActionController::Base.logger = Logger.new(STDOUT)
 end
+
+# Set global pagination per_page parameter in all models.
+class ActiveRecord::Base
+  cattr_reader :per_page
+  @@per_page = 10
+end
