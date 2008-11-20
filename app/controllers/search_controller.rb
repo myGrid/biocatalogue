@@ -61,7 +61,7 @@ class SearchController < ApplicationController
       begin
         @count, @results = get_all_results(@query)
       rescue Exception => ex
-        flash.now[:error] = "Invalid search term!"
+        flash.now[:error] = "Search failed. Possible bad search term."
         logger.error("ERROR: search failed for query'#{@query}'. Exception:")
         logger.error(ex)
       end
