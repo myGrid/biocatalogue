@@ -185,10 +185,11 @@ class SoapServicesController < ApplicationController
   end
 
   def bulk_create
-    @soap_service           = SoapService.new #(params[:soap_service])
+    @soap_service      = SoapService.new #(params[:soap_service])
     @new_services      = []
     @existing_services = []
-    urls                    = []
+    @error_urls        = []
+    urls               = []
     
     params[:url_list].each { |line|
     urls << line.strip if line =~ /http:/ or line =~ /https:/}
@@ -196,27 +197,34 @@ class SoapServicesController < ApplicationController
       @soap_service.errors.add_to_base('No service urls were found!')
       render :action =>'bulk_new'
     else
-      urls.each do |url|
-        if SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
-          @soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
-          @existing_services << @soap_service.service(true)
-        else
-          #urls.each do |url|
-          @soap_service = SoapService.new #(params[:soap_service]) 
-          @soap_service.wsdl_location = url
-          success, data = @soap_service.populate
-          if @soap_service.save
-            succes = @soap_service.post_create(@soap_service, data['endpoint'], current_user)
-            if success 
-              @new_services << @soap_service.service(true)
-              flash[:notice] = 'SoapService was successfully created.'
+      
+        urls.each do |url|
+          begin
+            if SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
+              @soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
+              @existing_services << @soap_service.service(true) if @soap_service != nil
+            else
+              @soap_service = SoapService.new({:wsdl_location => url})        
+              success, data = @soap_service.populate
+              if success and @soap_service.save
+                pc_success = @soap_service.post_create(data['endpoint'], current_user)
+                if pc_success 
+                  @new_services << @soap_service.service(true)
+                  flash[:notice] = 'SoapService was successfully created.'
+                else
+                  @soap_service.errors.add_to_base("Service with url, #{url}, was not saved. post_create failed!")
+                  @error_urls << url
+                end 
+              else
+                @soap_service.errors.add_to_base("Service with url, #{url}, was not saved")
+                render(:action => 'new') and return
+              end
             end
-            
-          else
-            @soap_service.errors.add_to_base("Service with url, #{url}, was not saved")
-            render(:action => 'new') and return
+          rescue Exception => ex
+            @error_urls << url
+            logger.error("ERROR: failed to register service - #{url}. Bulk registration Exception:")
+            logger.error(ex)
           end
-        end
       end
     end
      @services = @new_services.paginate({:page => params[:page], 
