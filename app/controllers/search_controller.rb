@@ -55,12 +55,20 @@ class SearchController < ApplicationController
     
     # Now either peform an 'all' search or redirect to the appropriate type's search action
     if any_types_synonyms.include?(@type)
-      @count, @results = get_all_results(@query)
-
+      @count = 0
+      @results = { }
+      
+      begin
+        @count, @results = get_all_results(@query)
+      rescue Exception => ex
+        flash.now[:error] = "Invalid search term!"
+        logger.error("ERROR: search failed for query'#{@query}'. Exception:")
+        logger.error(ex)
+      end
+      
       respond_to do |format|
         format.html # show.html.erb
       end
-      
     else
       redirect_to :controller => @type, :action => "search", :query => params[:query]
     end
