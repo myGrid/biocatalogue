@@ -1,0 +1,27 @@
+h_ch_1:
+  id: 1
+  chapter_number: 1
+  title: The Beginning
+  book_id: 1
+  
+h_ch_10:
+  id: 2
+  chapter_number: 10
+  title: The End
+  summary: Exciting and enthralling end to a exquisite experiment in ecology
+  book_id: 1
+  
+r_ch_2:
+  id: 3
+  chapter_number: 2
+  title: Hashing It Up
+  summary: Talking about Ruby Hashes
+  book_id: 2
+
+r_ch_202:
+  id: 4
+  chapter_number: 202
+  title: Sorry, Did I Say 2 Seconds? I Meant 2 Years!
+  book_id: 2
+  
+  
