@@ -14,7 +14,7 @@
 	<%= link_to 'New Service', new_service_path -%>
 </span>
 
-<h1>Bulk Registered Services</h1>
+<h1>Now Registered Service(s)</h1>
 
 <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
 
@@ -25,10 +25,19 @@
 <%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @services } %>
 
 <%unless @existing_services.empty? %>
- 	<h1>Found these services were already registered</h1>
+ 	<h1>Service(s) already registered</h1>
 	<ul>
 		<% @existing_services.each do |service| %>
 			<li><%= link_to service.name, service -%> </li>
+		<%end%>
+	</ul>
+<%end%>
+
+<%unless @error_urls.empty? %>
+ 	<h1>Problems registering service(s)</h1>
+	<ul>
+		<% @error_urls.each do |url| %>
+			<li><%= link_to url, url -%> </li>
 		<%end%>
 	</ul>
 <%end%>
