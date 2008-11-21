@@ -50,7 +50,7 @@ class SoaplabServersController < ApplicationController
 
     respond_to do |format|
       if @soaplab_server.save
-        @soaplab_server.save_services(current_user)
+        @new_services, @existing_services, @error_urls = @soaplab_server.save_services(current_user)
         flash[:notice] = 'SoaplabServer was successfully created.'
         format.html { redirect_to(@soaplab_server) }
         format.xml  { render :xml => @soaplab_server, :status => :created, :location => @soaplab_server }
