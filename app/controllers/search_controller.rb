@@ -16,7 +16,8 @@ class SearchController < ApplicationController
     end
     
     @query = params[:query] || ''
-    @query.strip!
+    @query = @query.downcase.strip
+    @query = @query + "~" unless @query.ends_with?('~')
     
     # Check query is present
     if @query.blank?
@@ -37,7 +38,7 @@ class SearchController < ApplicationController
     if @type.blank?
       @type = "all"
     else
-      @type = @type.strip!.downcase!.pluralize
+      @type = @type.strip.downcase.pluralize
     end
     
     any_types_synonyms = [ "all", "any" ]
