@@ -38,31 +38,32 @@
 
 <p>
 	<b>Latest Version Endpoint(s):</b>
-	<br/>
-	<% @service.latest_version.service_deployments.each do |s_d| -%>
-		<%= link_to(s_d.endpoint, s_d.endpoint, :popup => true) -%>
-	<% end %>
+	<ul class="simple_list">
+		<% @service.latest_version.service_deployments.each do |s_d| -%>
+			<li><%= link_to(s_d.endpoint, s_d.endpoint, :popup => true) -%></li>
+		<% end %>
+	</ul>
 </p>
 
 <p>
 	<b>All Location(s):</b>
-	<br/>
+	<ul class="simple_list">
 	<% @service.service_deployments.each do |s_d| %>
 		<% unless (loc = s_d.location).blank? -%>
-			<%= h s_d.location -%>
-			<%= flag_icon_from_country(s_d.country, loc, 'margin-left: 0.5em;') -%>
-			<br/>
+			<li><%= h s_d.location -%>
+			<%= flag_icon_from_country(s_d.country, loc, 'margin-left: 0.5em;') -%></li>
 		<% end %>
 	<% end %>
+	</ul>
 </p>
 
 <p>
 	<b>All Provider(s):</b>
-	<br/>
+	<ul class="simple_list">
 	<% @service.providers.each do |provider| %>
-		<%= link_to(h(provider.name), service_provider_path(provider)) %>
-		<br/>
+		<li><%= link_to(h(provider.name), service_provider_path(provider)) -%></li>
 	<% end %>
+	</ul>
 </p>
 
 <div style="border: 1px dotted #AAA; margin: 1.5em 0; padding: 0.3em 1.3em;">
