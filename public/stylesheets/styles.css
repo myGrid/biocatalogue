@@ -944,8 +944,9 @@ body.sidebar-right #login_box {
 	padding: 0.2em 0.4em;
 }
 
-.service_name {	
-	background-color: #e9f7cc;
+.operation_name {
+	background-color: #FFBB7F;
+	font-weight: bold;
 	padding: 0.1em 0.3em 0.1em 0.3em;
 }
 
