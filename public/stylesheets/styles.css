@@ -944,6 +944,21 @@ body.sidebar-right #login_box {
 	padding: 0.2em 0.4em;
 }
 
+.service_name {	
+	background-color: #e9f7cc;
+	padding: 0.1em 0.3em 0.1em 0.3em;
+}
+
+.simple_list {
+	padding: 0;
+	margin: 0;
+}
+
+.simple_list li {
+	padding: 0 0 1em 2em;
+	margin: -1em 0 0 0;
+}
+
 .home_heading {
 	font-weight: bold;
 	font-size: 160%;
