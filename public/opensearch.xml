@@ -4,7 +4,7 @@
     <ShortName>BioCatalogue</ShortName>
     <Description>The Catalogue of Life Science Web Services</Description>
 	<Contact>biocatalogue-support@rubyforge.org</Contact>
-    <Image height="16" width="16" type="image/x-icon">SERVER_BASE_URL/images/cog_transp_64.png</Image>
+    <Image height="16" width="16" type="image/x-icon">SERVER_BASE_URL/images/biocat_icon.png</Image>
     <Url type="text/html" method="GET" template="SERVER_BASE_URL/search/{searchTerms}"/>
 	<Attribution>
       biocatlogue.org 
