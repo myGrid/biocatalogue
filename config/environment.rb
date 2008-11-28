@@ -34,6 +34,9 @@ Rails::Initializer.run do |config|
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
+	# Rotate logs when they reach a size of 10M and keep no more than 10 of these
+  #config.logger = Logger.new(config.log_path, 10, (1024**2)*10)
+
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
   # config.log_level = :debug
