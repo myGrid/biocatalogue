@@ -84,9 +84,9 @@ class SoapServicesController < ApplicationController
         # TODO: store the extra information provided in the form, as Annotations.
         
         respond_to do |format|
-          if success and @soap_service.save
-            success = @soap_service.post_create(data["endpoint"], current_user)
-            
+          if success #and @soap_service.save
+            #success = @soap_service.post_create(data["endpoint"], current_user)
+            success = @soap_service.create_service(data["endpoint"], current_user)
             if success
               flash[:notice] = 'Service was successfully created.'
               format.html { redirect_to(@soap_service.service(true)) }
