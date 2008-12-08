@@ -88,6 +88,19 @@ class SoapService < ActiveRecord::Base
     "SOAP"
   end
   
+  def create_service(endpoint, current_user)
+    transaction do
+      self.save!
+      self.post_create(endpoint, current_user)    
+      return true
+    end
+    rescue Exception => ex
+      #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
+      logger.error("ERROR: failed to register service - #{self.wsdl_location}. Exception:")
+      logger.error(ex)
+      return false
+  end
+  
   def post_create(endpoint, current_user)
     # Try and find location of the service from the url of the WSDL.
     wsdl_geoloc = BioCatalogue::Util.url_location_lookup(self.wsdl_location)
@@ -114,7 +127,7 @@ class SoapService < ActiveRecord::Base
     new_service_deployment.service = new_service
     new_service_deployment.submitter = current_user
                                                   
-    if new_service.save
+    if new_service.save!
       return true
     else
       logger.error("ERROR: post_create method for SoapServicesController failed!")
