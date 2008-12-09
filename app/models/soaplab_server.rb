@@ -8,6 +8,9 @@ require 'open-uri'
 
 class SoaplabServer < ActiveRecord::Base
   acts_as_trashable
+  
+  acts_as_annotatable
+  
   validates_presence_of :name, :location
   #validates_uniqueness_of :location, :message => "already exists in BioCatalogue"
   validates_url_format_of :location,

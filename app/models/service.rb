@@ -7,6 +7,8 @@
 class Service < ActiveRecord::Base
   acts_as_trashable
   
+  acts_as_annotatable
+  
   has_many :service_versions, 
            :dependent => :destroy,
            :order => "created_at ASC"

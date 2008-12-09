@@ -1,0 +1,14 @@
+Annotations
+===========
+
+Allows for annotations to be added to multiple and different models.
+
+To run the tests for just this plugin:
+- ensure the gem 'plugin_test_helper' is installed.
+- ensure database 'annotations_plugin_test' exists.
+- run: rake test:plugins PLUGIN=annotations
+
+KNOWN ISSUES:
+=============
+
+- Will not work with sqlite and sqlite3 databases. Furthermore, not tested with Postgres.

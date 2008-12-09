@@ -1,0 +1,15 @@
+<%
+
+# BioCatalogue: app/views/soap_services/_show_service_overview_metadata.html.erb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<p>
+	<b>WSDL Location:</b>
+	<br/>
+	<%= link_to(h(service_version_instance.wsdl_location), service_version_instance.wsdl_location, :popup => true) -%>
+</p>

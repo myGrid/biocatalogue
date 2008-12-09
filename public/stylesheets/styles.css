@@ -125,9 +125,9 @@ legend {
 }
 
 p {
-  margin: 0.6em 0 1.2em;
+  margin: 1em 0;
   padding: 0;
-  line-height: 1.3;
+  line-height: 1.5;
 }
 
 a:link, a:visited {
@@ -229,6 +229,10 @@ img, a img {
 
 td {
 	vertical-align: top;
+}
+
+small {
+	color: #555555;
 }
 
 .center {
@@ -720,7 +724,7 @@ body.sidebar-right #login_box {
 	background-color: #FFFF66;
 	font-size: 0.9em;
 	font-weight: normal;
-	padding: 0.2em 0.6em;
+	padding: 0.3em 0.6em;
 	max-width: 500px;
 	text-align: left;
 	line-height: 1.4em;
@@ -735,11 +739,11 @@ body.sidebar-right #login_box {
 .boxoverInfoBody {
 	border: solid 1px Gray;
 	color: #333333;
-	padding: 0.4em;
+	padding: 0.3em 0.6em;
 	background-color: #ebf3ff;
 	font-size: 0.9em;
 	text-align: left;
-	max-width: 400px;
+	max-width: 500px;
 	line-height: 1.4em;
 }
 
@@ -909,7 +913,8 @@ body.sidebar-right #login_box {
 .listing_item { 
 	margin-bottom: 1em;
 	padding: 0.4em 1em;
-	border: 1px dotted #AAA;
+	border: 2px solid #CCC;
+	background-color: #F7F7F7;
 }
 
 .listing_item p {
@@ -1229,9 +1234,9 @@ ul.tabbernav li.tabberactive a:hover
 
 .box_description {
 	padding: 0.9em 1.3em; 
-	margin: 1em 0; 
-	background-color: #F3F3F3; 
+	background-color: #F7F7F7; 
 	border: 1px dotted #DDD;
+	line-height: 1.4;
 }
 
 .box_info {
@@ -1241,6 +1246,39 @@ ul.tabbernav li.tabberactive a:hover
 	margin: 0;
 	margin-bottom: 1em;
 	text-align: center; 
+}
+
+.box_info_standout {
+	color: #333333;
+	border: 1px dotted #DDDDDD; 
+	background: #FFFFCC; 
+	padding: 0.3em 0.6em; 
+	margin-bottom: 1em;
+	line-height: 1.5em;
+}
+
+.box_annotations {
+	padding: 0;
+	/*background-color: #EEEEEE; 
+	border: 1px dotted #DDD;*/
+	line-height: 1.4;
+}
+
+.box_annotations div {
+	border: 1px dotted #AAA;
+	padding: 0.2em 0.5em;
+	margin: 0.5em 0;
+}
+
+.box_annotation_provider {
+	/*background-color: #FFFFCC;*/
+	background-color: #FFF;
+}
+
+.box_annotation_user {
+	/*background-color: #EEF6FF;*/
+	background-color: #EEF0FF;
+	
 }
 
 /* BEGIN terms of use page styles */
@@ -1258,3 +1296,9 @@ ul.tabbernav li.tabberactive a:hover
 	list-style: decimal;
 }
 /* END terms of use page styles */
+
+.annotation_provenance_text {
+	color: #666;
+	font-size: 0.8em;
+	margin: 0.8em 0 0.4em 0;
+}

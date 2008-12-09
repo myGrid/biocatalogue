@@ -1,0 +1,58 @@
+<div class="redbox_contents" style="width:500px;">
+	<div class="head">
+		<%= link_to_close_redbox image_tag("close.gif"), :style => "float:right; margin-left:0.5em; vertical-align:middle;" -%>
+		<span style="vertical-align:middle;">
+			<% if @multiple %>
+				Add Multiple Annotations - <%=  h(@annotation.attribute_name.pluralize) -%> 
+			<% else %>
+				Add Annotation - <%=  h(@annotation.attribute_name) -%>
+			<% end %>
+		</span>
+	</div>
+	
+	<div class="body">
+		<% form_for :annotation, @annotation, :url => (@multiple ? create_multiple_annotations_url : annotations_url) do |f| %>
+		
+			<%= f.hidden_field :annotatable_type -%>
+			<%= f.hidden_field :annotatable_id -%>
+			
+			<div class="box_info_standout">
+				<%= annotation_add_info_text(@annotation.attribute_name, @annotatable) -%>				
+			</div>
+			
+			<% if @annotation.attribute_name.blank? %>
+				<p style="margin-top: 1.5em; margin-bottom: 0.4em;">
+					<b>Attribute:</b>
+					<br/>
+					<small>the class or type of annotation (examples: 'tag', 'description', 'dc:creator')</small>
+				</p>
+				<p style="margin-top: 0.3em;">
+					<%= f.text_field :attribute_name, :style => "width: 98%;" -%>
+				</p>
+			<% else %>
+				<%= f.hidden_field :attribute_name -%>
+			<% end %>
+			
+			<p style="margin-bottom: 0.4em;">
+				<b><%= annotation_add_value_label(@annotation.attribute_name, @multiple) -%></b>
+				<% if @multiple %>
+					<br/>
+					<small>separated by <%= separator_symbol_to_text(h(@separator), true) -%></small>
+				<% end %>
+			</p>
+			<p style="margin-top: 0.3em;">
+				<%= f.text_area :value, :size => "50x10", :style => "width: 98%;" -%>
+			</p>
+			
+			<% if @multiple -%>
+				<%= hidden_field_tag "separator", @separator -%>
+			<% end %>
+			
+		  <p style="text-align: center;">
+		    <%= f.submit "Submit", :disable_with => "Submitting..." -%>
+				<%= button_to_function "Close", "RedBox.close()" -%>
+		  </p>
+			
+		<% end %>
+	</div>
+</div>

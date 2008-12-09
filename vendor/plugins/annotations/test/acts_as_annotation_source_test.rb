@@ -1,0 +1,54 @@
+require File.dirname(__FILE__) + '/test_helper.rb'
+
+class ActsAsAnnotationSourceTest < Test::Unit::TestCase
+  def test_has_many_annotations_association
+    assert_equal 7, users(:john).annotations.length
+    assert_equal 6, users(:jane).annotations.length
+    assert_equal 3, groups(:sci_fi_geeks).annotations.length
+    assert_equal 4, groups(:classical_fans).annotations.length
+  end
+  
+  def test_annotations_by_class_method
+    assert_equal 7, User.annotations_by(users(:john).id).length
+    assert_equal 6, User.annotations_by(users(:jane).id).length
+    assert_equal 3, Group.annotations_by(groups(:sci_fi_geeks).id).length
+    assert_equal 4, Group.annotations_by(groups(:classical_fans).id).length
+  end
+  
+  def test_annotations_for_class_method
+    assert_equal 3, User.annotations_for("Book", books(:h).id).length
+    assert_equal 1, User.annotations_for("Chapter", chapters(:bh_c10).id).length
+    assert_equal 1, Group.annotations_for("Book", books(:r).id).length
+    assert_equal 1, Group.annotations_for("Chapter", chapters(:br_c2).id).length
+  end
+  
+  def test_latest_annotations_instance_method
+    assert_equal 6, users(:jane).latest_annotations.length
+    assert_equal 3, groups(:sci_fi_geeks).latest_annotations.length
+    
+    assert_equal 3, users(:john).latest_annotations(3).length
+  end
+  
+  def test_annotation_source_name_instance_method
+    assert_equal "john", users(:john).annotation_source_name
+    assert_equal "Classical Fans", groups(:classical_fans).annotation_source_name
+  end
+  
+  def test_adding_of_annotation
+    us = users(:jane)
+    assert_equal 6, us.annotations.length
+    ann1 = us.annotations << Annotation.new(:attribute_id => AnnotationAttribute.find_or_create_by_name("tag").id, 
+                                           :value => "test", 
+                                           :annotatable_type => "Book", 
+                                           :annotatable_id => 1)
+                                           
+    ann2 = us.annotations << Annotation.new(:attribute_name => "description", 
+                                           :value => "test2", 
+                                           :annotatable_type => "Book", 
+                                           :annotatable_id => 2)
+                                           
+    assert_not_nil(ann1)
+    assert_not_nil(ann2)
+    assert_equal 8, us.annotations(true).length
+  end
+end

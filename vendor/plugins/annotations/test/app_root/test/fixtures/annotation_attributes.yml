@@ -1,0 +1,39 @@
+aa_tag:
+  id: 1
+  name: Tag
+  
+aa_summary:
+  id: 2
+  name: Summary
+
+aa_length:
+  id: 3
+  name: length
+  
+aa_title:
+  id: 4
+  name: Title
+  
+aa_complexity:
+  id: 5
+  name: complexity
+  
+aa_endingtype:
+  id: 6
+  name: endingType
+  
+aa_note:
+  id: 7
+  name: Note
+  
+aa_author:
+  id: 8
+  name: Author
+  
+aa_rating:
+  id: 9
+  name: rating
+  
+aa_contextualtag:
+  id: 10
+  name: Contextual Tag

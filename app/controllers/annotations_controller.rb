@@ -4,26 +4,47 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
+#=====
+# This extends the Annotations controller defined in the Annotations plugin.
+#=====
+
+require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers/annotations_controller'
+
 class AnnotationsController < ApplicationController
-  before_filter :login_required
   
-  def add_annotation
-    annotatable_type = params[:annotation][:annotatable_type]
-    annotatable_id = params[:annotation][:annotatable_id]
+  # Disable some of the actions provided in the controller in the plugin.
+  # Note: the controller in the plugin has already disabled these actions
+  # BUT throws a 404, whereas we would like to use the specific disable_action 
+  # method we have set up in the main app.
+  before_filter :disable_action, :only => [ :edit, :update, :destroy ]
+  
+  before_filter :set_no_layout, :only => [ :new_popup ]
+  
+  def new_popup
+    # @annotatable is set in a before filter from the controller in the plugin. 
+    if @annotatable.nil?
+      flash[:error] = "Could not begin annotation (the thing you want to annotate is not specified or is invalid)."
+      respond_to do |format|
+        format.js {
+          render :update do |page|
+            page.redirect_to root_url
+          end
+        }
+      end
+    else
+      @annotation = Annotation.new
     
-    # Get the object that you want to annotate
-    annotatable = Annotation.find_annotatable(annotatable_type, annotatable_id)
-
-    # Create an an annotation with the user submitted content
-    annotation = Annotation.new(params[:annotation])
-    # Assign this comment to the logged in user
-    annotation.source_id = session[:user_id]
-
-    # Add the annotation
-    annotatable.annotations << annotation
-
-    #redirect_to :action => annotatable_type.downcase,
-    #  :id => annotatable_id
-    redirect_to annotatable
+      # Populate from query string values provided in the URL (if provided)
+      @annotation.annotatable_type = params[:annotatable_type]
+      @annotation.annotatable_id = params[:annotatable_id]
+      @annotation.attribute_name = params[:attribute_name]
+      
+      @multiple = !params[:multiple].nil? && (params[:multiple].downcase == "true")
+      @separator = params[:separator].nil? ? '' : params[:separator]
+  
+      respond_to do |format|
+        format.js # new_popup.html.erb
+      end
+    end
   end
 end

@@ -5,6 +5,10 @@
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
+  # Routes from the annotations plugin
+  Annotations.map_routes(map, 
+                         { :new_popup => :get })
+  
   map.search '/search', :controller => 'search', :action => 'show'
   map.connect '/search/:query', :controller => 'search', :action => 'show'
   
@@ -12,19 +16,18 @@ ActionController::Routing::Routes.draw do |map|
 
   #map.resources :service_deployments
   
-  #map.resources :annotations, :collection => {:add_annotation => :post}
-  
   #map.resources :service_versions
   
   map.resources :users, :collection => { :activate_account => :get }
   map.resource :session
   
   map.register '/register', :controller => 'users', :action => 'new'
-  map.register '/signup', :controller => 'users', :action => 'new'
+  map.signup '/signup', :controller => 'users', :action => 'new'
   map.login '/login', :controller => 'sessions', :action => 'new'
   map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
   map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil  
   map.contact '/contact', :controller => 'contact', :action => 'index'
+  map.home '/', :controller => 'home', :action => 'index'
   
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,

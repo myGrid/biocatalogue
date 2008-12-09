@@ -1,0 +1,245 @@
+<% 
+  def auto_increment 
+    @id ||= 0; @id += 1 
+  end 
+%>
+
+bh_summary_1:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 1
+  attribute_id: 2
+  value: Something interesting happens
+  value_type: String
+  source_type: User
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+
+bh_length_1:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 1
+  attribute_id: 3
+  value: 345
+  value_type: String
+  source_type: Group
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+bh_title_1:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 1
+  attribute_id: 4
+  value: Harry Potter and the Exploding Men's Locker Room
+  value_type: String
+  source_type: User
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+
+bh_rating_1:
+  id: <%= auto_increment %>
+  annotatable_type: Rating
+  annotatable_id: 1
+  attribute_id: 9
+  value: 4/5
+  value_type: String
+  source_type: User
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+
+bh_tag_1:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 1
+  attribute_id: 1
+  value: amusing rhetoric
+  value_type: String
+  source_type: Group
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+
+bh_tag_2:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 1
+  attribute_id: 1
+  value: wizadry
+  value_type: String
+  source_type: User
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+
+br_summary_1:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 2
+  attribute_id: 2
+  value: Covers the absolute basics of the Ruby programming language.
+  value_type: String
+  source_type: User
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_summary_2:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 2
+  attribute_id: 2
+  value: Difficult and rocky trek into the complex language that is Ruby, covering detailed logic and mind numbing syntax.
+  value_type: String
+  source_type: Group
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_author_1:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 2
+  attribute_id: 8
+  value: Too Little Time
+  value_type: String
+  source_type: User
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_tag_1:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 2
+  attribute_id: 1
+  value: programming
+  value_type: String
+  source_type: User
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_note_1:
+  id: <%= auto_increment %>
+  annotatable_type: Book
+  annotatable_id: 2
+  attribute_id: 7
+  value: Remember to buy milk!
+  value_type: String
+  source_type: User
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+
+bh_c10_endingtype_1:  
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 2
+  attribute_id: 6
+  value: Thriller+Suspense+Supernatural
+  value_type: String
+  source_type: Group
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+bh_c10_title_1:  
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 2
+  attribute_id: 4
+  value: And It All Falls Down
+  value_type: String
+  source_type: User
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_c2_title_1:
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 3
+  attribute_id: 4
+  value: Hashes and U
+  value_type: String
+  source_type: User
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_c2_tag_1:
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 3
+  attribute_id: 1
+  value: complex
+  value_type: String
+  source_type: Group
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_c2_tag_2:
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 3
+  attribute_id: 1
+  value: dynamic languages
+  value_type: String
+  source_type: User
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_c2_title_2:
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 3
+  attribute_id: 4
+  value: Ruby Hashes
+  value_type: String
+  source_type: User
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_c202_complexity_1:
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 4
+  attribute_id: 5
+  value: O(x^2)
+  value_type: String
+  source_type: Group
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+
+br_c202_title_1:
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 4
+  attribute_id: 4
+  value: Conclusion (finally!)
+  value_type: String
+  source_type: User
+  source_id: 1
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>
+  
+br_c202_tag_1:
+  id: <%= auto_increment %>
+  annotatable_type: Chapter
+  annotatable_id: 4
+  attribute_id: 1
+  value: long
+  value_type: String
+  source_type: Group
+  source_id: 2
+  created_at: <%= 1.minute.ago.to_s(:db) %>
+  updated_at: <%= 1.minute.ago.to_s(:db) %>

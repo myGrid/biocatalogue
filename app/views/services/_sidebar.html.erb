@@ -9,15 +9,28 @@
 %>
 
 <div class="sidebar_box">
-	<div class="box_title" href="#">Box title</div>
+	<div class="box_title" href="#">Tags</div>
 	<div class="box_body">
 		<div class="box_text">
-			Text
+			<% unless (tag_annotations = @service.annotations_with_attribute("tag")).empty? %>
+				<%= h(tag_annotations.map{|ann| ann.value}.to_sentence(:connector => '')) -%>
+			<% else %>
+				<span class="none_text">None</span>
+			<% end %>
 		</div>
 		<div class="separator"></div>
-		<div class="box_subtitle">Box sub-title</div>
-		<div class="box_text">
-			Text
+		<div class="box_text center">
+			<% if logged_in? %>
+				<%= annotation_add_by_popup_link "Tag",
+																				 @service,
+	 																			 "",
+																				 "",
+																				 "Add tags",
+																				 false,
+																				 true -%>
+		 <% else %>
+		 	<%= link_to "Log in", login_path -%> to add tags
+		 <% end %>
 		</div>
 	</div>
 </div>

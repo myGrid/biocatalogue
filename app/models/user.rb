@@ -9,6 +9,8 @@ require 'digest/sha1'
 class User < ActiveRecord::Base
   acts_as_trashable
   
+  acts_as_annotation_source
+  
   has_many :services,
            :foreign_key => 'submitter_id'
   
@@ -52,11 +54,16 @@ class User < ActiveRecord::Base
     self.activated_at != nil
   end
   
-   def password_required?
-     crypted_password.blank? || !password.blank?
-   end
+  def password_required?
+    crypted_password.blank? || !password.blank?
+  end
+   
+  def annotation_source_name
+    self.display_name
+  end
    
   private
+  
   # Encrypts password with the salt.
   def self.encrypt(password, salt)
     Digest::SHA1.hexdigest("--#{salt}--#{password}--")

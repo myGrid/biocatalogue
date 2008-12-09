@@ -7,6 +7,8 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
+require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers/application'
+
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
@@ -20,6 +22,8 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
 
   layout "application_wide"
+  
+  before_filter :set_original_uri
   
   def login_required
     respond_to do |format|
@@ -103,11 +107,18 @@ class ApplicationController < ActionController::Base
     self.class.layout "application_sidebar"
   end
   
+  def set_no_layout
+    self.class.layout nil
+  end
+  
   def disable_action
-    respond_to do |format|
-      flash[:error] = 'The page requested is unavailable.'
-      format.html { redirect_to(root_url) }
+    # This will cause a 404...
+    raise ActionController::UnknownAction.new
+  end
+  
+  def set_original_uri
+    unless controller_name.downcase == 'sessions'
+      session[:original_uri] = request.request_uri if not logged_in?
     end
-    return false
   end
 end

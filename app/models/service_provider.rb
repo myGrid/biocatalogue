@@ -7,6 +7,8 @@
 class ServiceProvider < ActiveRecord::Base
   acts_as_trashable
   
+  acts_as_annotatable
+  
   has_many :service_deployments
   
   has_many :services,

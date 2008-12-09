@@ -17,7 +17,7 @@ CountryCodes
 # Require the util library 
 require 'util'
 
-# List of all the valid search types available 
+# List of all the valid search types available, in the order they should be shown.
 # (must be in lowercase and in the plural form and MUST correspond to a resource type in the system)
 VALID_SEARCH_TYPES = [ "services", "users", "service_providers" ]
 

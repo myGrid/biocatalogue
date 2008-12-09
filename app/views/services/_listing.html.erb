@@ -11,39 +11,45 @@
 <div class="listings">
 	<% items.each do |service| %>
 		<% unless service.nil? %>
-		<div class="listing_item">
-			<p class="name">
-				<%= link_to(h(service.name), service_path(service)) -%>
-				<%= service_type_badges(service.service_types) -%>
+			<% service_version_instance = service.latest_version.service_versionified %>
+			<div class="listing_item">
+				<p class="name">
+					<%= link_to(h(service.name), service_path(service)) -%>
+					<%= service_type_badges(service.service_types) -%>
+					<%= service_location_flags(service) -%>
+				</p>
 				
-				<% service.service_deployments.each do |s_d| %>
-					<% unless s_d.country.blank? -%>
-						<%= flag_icon_from_country(s_d.country, s_d.location) -%>
+				<div class="box_annotations">
+					<% unless (desc = h(service.description)).blank? %>
+						<div class="box_annotation_provider">
+							<p class="annotation_provenance_text" style="float:right;margin-left:1em;">
+								from <b>service description document</b> (<%= distance_of_time_in_words_to_now(service_version_instance.created_at) -%> ago)
+							</p>
+							<%= truncate(desc, 150) -%>
+						</div>
 					<% end %>
-				<% end %>
-			</p>
-			
-			<p class="desc">
-				<% unless (desc = service.description).blank? %>
-					<%= truncate(h(desc), 150) -%>
-				<% else %>
-					<span class="none_text">No description</span>
-				<% end %>
-			</p>
-
-			<p class="detail">
-				<b>Provider(s):</b>
-				<% service.providers.each do |provider| %>
-					<%= link_to(h(provider.name), service_provider_path(provider)) %>
-				<% end %>
-			</p>
-			
-			<p class="detail">
-				<b>Submitted by:</b>
-				<%= link_to(h(service.submitter.display_name), user_path(service.submitter)) %>
-				(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
-			</p>
-		</div>
+					
+					<% service_version_instance.annotations_with_attribute("description").each do |ann| %>
+						<div class="<%= annotation_source_cssclass(ann) -%>">
+							<%= annotation_source_text(ann, "float:right;margin-left:1em;") -%>
+							<%= truncate(h(ann.value), 150) -%>
+						</div>
+					<% end %>
+				</div>
+				
+				<p class="detail">
+					<b>Provider(s):</b>
+					<% service.providers.each do |provider| %>
+						<%= link_to(h(provider.name), service_provider_path(provider)) %>
+					<% end %>
+				</p>
+				
+				<p class="detail">
+					<b>Submitted by:</b>
+					<%= link_to(h(service.submitter.display_name), user_path(service.submitter)) %>
+					(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
+				</p>
+			</div>
 		<% end %>
 	<% end %>
 </div>

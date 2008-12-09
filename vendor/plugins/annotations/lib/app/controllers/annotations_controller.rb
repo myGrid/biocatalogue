@@ -1,0 +1,125 @@
+class AnnotationsController < ApplicationController
+  before_filter :find_annotatable, :except => [ :show, :edit, :update, :destroy ]
+  
+  # GET /annotations
+  # GET /annotations.xml
+  def index
+    params[:num] ||= 50
+    
+    @latest_annotations =  
+    if @annotatable.nil?
+      Annotation.find(:all, :limit => params[:num])      
+    else
+      @annotatable.latest_annotations(params[:num])
+    end
+
+    respond_to do |format|
+      # HTML view over index of annotations is not allowed.
+      format.html # index.html.erb
+      format.xml  { render :xml => @latest_annotations }
+    end
+  end
+
+  # GET /annotations/1
+  # GET /annotations/1.xml
+  def show
+    @annotation = Annotation.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @annotation }
+    end
+  end
+
+  # GET /annotations/new
+  # GET /annotations/new.xml
+  def new
+    @annotation = Annotation.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @annotation }
+    end
+  end
+
+  # POST /annotations
+  # POST /annotations.xml
+  def create
+    if params[:annotation][:source_type].blank? and params[:annotation][:source_id].blank?
+      if logged_in?
+        params[:annotation][:source_type] = 'User'
+        params[:annotation][:source_id] = current_user.id
+      end
+    end
+    
+    @annotation = Annotation.new(params[:annotation])
+
+    respond_to do |format|
+      if @annotation.save
+        flash[:notice] = 'Annotation was successfully created.'
+        format.html { redirect_to :back }
+        format.xml  { render :xml => @annotation, :status => :created, :location => @annotation }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @annotation.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+  
+  # POST /annotations/create_multiple
+  # POST /annotations/create_multiple.xml
+  def create_multiple
+    if params[:annotation][:source_type].blank? and params[:annotation][:source_id].blank?
+      if logged_in?
+        params[:annotation][:source_type] = 'User'
+        params[:annotation][:source_id] = current_user.id
+      end
+    end
+    
+    success, annotations, errors = Annotation.create_multiple(params[:annotation], params[:separator])
+
+    respond_to do |format|
+      if success
+        flash[:notice] = 'Annotations were successfully created.'
+        format.html { redirect_to :back }
+        format.xml  { render :xml => annotations, :status => :created, :location => @annotatable }
+      else
+        flash[:error] = 'Some or all annotations failed to be created.'
+        format.html { redirect_to :back }
+        format.xml  { render :xml => annotations + errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+  
+  # GET /annotations/1/edit
+  def edit
+    raise ActionController::UnknownAction.new
+  end
+
+  # PUT /annotations/1
+  # PUT /annotations/1.xml
+  def update
+    raise ActionController::UnknownAction.new
+  end
+
+  # DELETE /annotations/1
+  # DELETE /annotations/1.xml
+  def destroy
+    raise ActionController::UnknownAction.new
+  end
+  
+  protected
+  
+  def find_annotatable
+    @annotatable = nil
+    
+    if params[:annotation]
+      @annotatable = Annotation.find_annotatable(params[:annotation][:annotatable_type], params[:annotation][:annotatable_id])
+    end
+    
+    # If still nil try again with alternative params
+    if @annotatable.nil?
+      @annotatable = Annotation.find_annotatable(params[:annotatable_type], params[:annotatable_id])
+    end
+  end
+end

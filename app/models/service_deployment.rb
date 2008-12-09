@@ -7,6 +7,8 @@
 class ServiceDeployment < ActiveRecord::Base
   acts_as_trashable
   
+  acts_as_annotatable
+  
   belongs_to :service
   
   belongs_to :provider, 

@@ -15,58 +15,91 @@
 <h1>
 	Service: <%= h @service.name -%>
 	<%= service_type_badges(@service.service_types) -%>
+	<%= service_location_flags(@service) -%>
 </h1>
 
-<p>
-	<b>Submitted by:</b>
-	<%= link_to(h(@service.submitter.display_name), user_path(@service.submitter)) %>
-	(<%= distance_of_time_in_words_to_now(@service.created_at) -%> ago)
-</p>
-
-<p>
-  <b>Unique code:</b>
-  <%=h @service.unique_code %>
-</p>
-
-<p class="box_description">
-	<% unless (desc = @service.description).blank? %>
-		<%= auto_link(h(desc), :all, :target => '_blank') -%>
-	<% else %>
-		<span class="none_text">No description</span>
-	<% end %>
-</p>
-
-<p>
-	<b>Latest Version Endpoint(s):</b>
-	<ul class="simple_list">
-		<% @service.latest_version.service_deployments.each do |s_d| -%>
-			<li><%= link_to(s_d.endpoint, s_d.endpoint, :popup => true) -%></li>
+<div class="tabber" style="margin-top:1.5em;">
+	
+  <div class="tabbertab">
+    <h3>Overview</h3>
+		
+		<% if false %>
+		<p>
+		  <b>Unique code:</b>
+		  <%=h @service.unique_code %>
+		</p>
 		<% end %>
-	</ul>
-</p>
+		
+		<p>
+			<b>Provider:</b>
+			<br/>
+			<% @service.providers.each do |provider| %>
+				<%= link_to(h(provider.name), service_provider_path(provider)) %>
+				<br/>
+			<% end %>
+		</p>
+	
+		<p>
+			<b>Location:</b>
+			<br/>
+			<% @service.service_deployments.each do |s_d| %>
+				<% unless (loc = s_d.location).blank? -%>
+					<%= h s_d.location -%>
+					<%= flag_icon_from_country(s_d.country, loc, 'margin-left: 0.5em;') -%>
+					<br/>
+				<% end %>
+			<% end %>
+		</p>
+		
+		<p>
+			<b>Submitted by:</b>
+			<br/>
+			<%= link_to(h(@service.submitter.display_name), user_path(@service.submitter)) %>
+			(<%= distance_of_time_in_words_to_now(@service.created_at) -%> ago)
+		</p>
+		
+		<p>
+			<b>Endpoint:</b>
+			<br/>
+			<% @latest_version.service_deployments.each do |s_d| -%>
+				<%= link_to(s_d.endpoint, s_d.endpoint, :popup => true) -%>
+			<% end %>
+		</p>
+		
+		<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_overview_metadata", 
+			 	 			 :locals => { :service_version_instance =>  @latest_version_instance } %>
+		
+		<div>
+			<%= annotation_add_by_popup_link "Description",
+																			 @latest_version_instance,
+ 																			 "Click to provide a new description",
+																			 "margin-left:1em; float:right;" -%>
+			<p>
+				<b>Description:</b>
+			</p>
+		</div>
+		
+		<div class="box_annotations">
+			<% unless (desc = h(@service.description)).blank? %>
+				<div class="box_annotation_provider">
+					<%= auto_link(desc, :all, :target => '_blank') -%>
+					<p class="annotation_provenance_text" style="text-align:right;">
+						from <b>service description document</b> (<%= distance_of_time_in_words_to_now(@latest_version_instance.created_at) -%> ago)
+					</p>
+				</div>
+			<% end %>
+			
+			<% @latest_version_instance.annotations_with_attribute("description").each do |ann| %>
+				<div class="<%= annotation_source_cssclass(ann) -%>">
+					<%= auto_link(h(ann.value), :all, :target => '_blank') -%>
+					<%= annotation_source_text(ann, "text-align:right;") -%>
+				</div>
+			<% end %>
+		</div>
+		
+  </div>
+	
+	<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_tabs", 
+					 	 :locals => { :service_version_instance =>  @latest_version_instance } %>
 
-<p>
-	<b>All Location(s):</b>
-	<ul class="simple_list">
-	<% @service.service_deployments.each do |s_d| %>
-		<% unless (loc = s_d.location).blank? -%>
-			<li><%= h s_d.location -%>
-			<%= flag_icon_from_country(s_d.country, loc, 'margin-left: 0.5em;') -%></li>
-		<% end %>
-	<% end %>
-	</ul>
-</p>
-
-<p>
-	<b>All Provider(s):</b>
-	<ul class="simple_list">
-	<% @service.providers.each do |provider| %>
-		<li><%= link_to(h(provider.name), service_provider_path(provider)) -%></li>
-	<% end %>
-	</ul>
-</p>
-
-<div style="border: 1px dotted #AAA; margin: 1.5em 0; padding: 0.3em 1.3em;">
-	<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/structure", 
-						:locals => { :service_version_instance =>  @latest_version_instance } %>
 </div>

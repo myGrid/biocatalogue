@@ -5,6 +5,9 @@
 # See license.txt for details.
 
 # Methods added to this helper will be available to all templates in the application.
+
+require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
+
 module ApplicationHelper
   
   def controller_visible_name(controller_name)
@@ -89,6 +92,108 @@ module ApplicationHelper
     return html
   end
   
+  def service_location_flags(service)
+    return '' if service.nil?
+    
+    html = ''
+    
+    service.service_deployments.each do |s_d|
+      unless s_d.country.blank?
+        html = html + flag_icon_from_country(s_d.country, s_d.location)
+      end
+    end
+    
+    return html
+  end
   
+  def help_icon_with_tooltip(help_text, delay=200)
+    return image_tag("help_icon.png",
+                     :title => tooltip_title_attrib(help_text, delay),
+                     :style => "vertical-align:middle;")
+  end
+  
+  def info_icon_with_tooltip(info_text, delay=200)
+    return image_tag("info.png",
+                     :title => tooltip_title_attrib(info_text, delay),
+                     :style => "vertical-align:middle;")
+  end
+  
+  def annotation_add_by_popup_link(attribute_name, annotatable, tooltip_text='Add annotation', style='', link_text='', show_icon=true, multiple=false, multiple_separator=',')
+    if logged_in?
+      link_html = ''
+      link_html = link_html + "<span style='vertical-align:middle'>#{link_text}</span>" unless link_text.blank?
+      link_html = image_tag('pencil_hover.gif', :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if show_icon
+      
+      return link_to_remote_redbox(link_html, 
+                                   { :url => new_popup_annotations_url(:annotatable_type => annotatable.class.name, 
+                                                                       :annotatable_id => annotatable.id, 
+                                                                       :attribute_name => attribute_name,
+                                                                       :multiple => multiple,
+                                                                       :separator => multiple_separator),
+                                     :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{attribute_name}_redbox",
+                                     :failure => "alert('HTTP Error: ' + request.status + '!'); RedBox.close();" }, 
+                                   { :style => style, 
+                                     :alt => tooltip_text, 
+                                     :title => tooltip_title_attrib(tooltip_text) })
+    else
+      return ''
+    end
+  end
+  
+  def annotation_add_info_text(attribute_name, annotatable)
+    return '' if annotatable.nil?
+    
+    if attribute_name.blank?
+      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
+    else
+      #return "You are adding a <b>#{attribute_name}</b> for the #{annotatable.class.name.titleize}: <b/>#{annotatable.annotatable_name}</b>"
+      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
+    end
+    
+  end
+  
+  def annotation_add_value_label(attribute_name, multiple)
+    label = ''
+    
+    if attribute_name.blank?
+      label = "Value"
+    else
+      label = h(attribute_name)
+    end
+    
+    # Pluralise if necessary...
+    label = label.pluralize if multiple 
+    
+    label = label + ":"
+    
+    return label
+  end
+  
+  def separator_symbol_to_text(symbol, pluralize_text=false, show_symbol_after=true)
+    text = case symbol.to_s
+      when ' ' then "space"
+      when ',' then "comma"
+      when ';' then "semi-colon"
+      else symbol
+    end
+    
+    text = text.pluralize if pluralize_text
+    
+    text = "#{text} ('#{symbol}')" if show_symbol_after
+    
+    return text
+  end
+  
+  def annotation_source_cssclass(annotation)
+    return "box_annotation_#{annotation.source_type.downcase}"
+  end
+  
+  def annotation_source_text(annotation, style='')
+    return '' if annotation.nil?
+    
+    return content_tag(:p, :class => "annotation_provenance_text", :style => style) do
+      "by #{annotation.source_type.titleize.downcase}: <b>#{link_to(annotation.source.annotation_source_name, annotation.source)}</b> (#{distance_of_time_in_words_to_now(annotation.created_at)} ago)"
+    end
+  end
   
 end

@@ -7,6 +7,8 @@
 class SoapInput < ActiveRecord::Base
   acts_as_trashable
   
+  acts_as_annotatable
+  
   belongs_to :soap_operation
   
   if ENABLE_SEARCH

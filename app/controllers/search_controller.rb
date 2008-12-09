@@ -88,7 +88,7 @@ protected
     models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
     
     models.each do |m|
-      m_name = m.to_s.titleize.pluralize
+      m_name = m.to_s
       res = m.multi_solr_search(query, :limit => 200).results
       grouped_results[m_name] = BioCatalogue::Util.discover_model_objects_from_collection(m, res)
       total_count = total_count + grouped_results[m_name].length

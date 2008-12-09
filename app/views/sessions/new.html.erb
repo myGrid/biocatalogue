@@ -8,21 +8,29 @@
 
 %>
 
-<% form_tag session_path do -%>
-<fieldset>
-	<p>
-		<label for="login" class="required">Email address:</label> <br/>
-		<%= text_field_tag :login, params[:login] %>
-	</p>
-	<p>
-		<label for="password" class="required">Password</label> <br/>
-		<%= password_field_tag :password, params[:password] %>
-	</p>
-	<p>
-		<%= submit_tag 'Log in' %>
-	</p>
-	<p style="padding-top: 10px;">
-		<span class="green_box">I don't have an account yet : <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>
-	</p>
-</fieldset>
-<% end -%>
+<% if logged_in? %>
+
+	<h1>You are already logged in...</h1>
+
+<% else %>
+
+	<% form_tag session_path do -%>
+	<fieldset>
+		<p>
+			<label for="login" class="required">Email address:</label> <br/>
+			<%= text_field_tag :login, params[:login] %>
+		</p>
+		<p>
+			<label for="password" class="required">Password</label> <br/>
+			<%= password_field_tag :password, params[:password] %>
+		</p>
+		<p>
+			<%= submit_tag 'Log in' %>
+		</p>
+		<p style="padding-top: 10px;">
+			<span class="green_box">I don't have an account yet : <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>
+		</p>
+	</fieldset>
+	<% end -%>
+
+<% end %>

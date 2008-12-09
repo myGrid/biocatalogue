@@ -7,6 +7,7 @@
 class SessionsController < ApplicationController
 
   def new
+    session[:original_uri] = request.env['HTTP_REFERER'] if not logged_in?
   end
   
   def create
@@ -14,10 +15,9 @@ class SessionsController < ApplicationController
     if user
       session[:user_id] = user.id
       flash[:notice] = "Welcome #{user.display_name} !"
-      #redirect_to session[:original_uri]
-      # Redirect user to the URI of origin, or to homepage if no URI
-      session[:original_uri] ? (redirect_to session[:original_uri]) : (redirect_to :users)
-
+      
+      session[:original_uri].blank? ? redirect_to(home_url) : redirect_to(session[:original_uri])
+      session[:original_uri] = nil
     else
       flash[:error] = "Invalid email/password combination !"
       params[:password] = nil
@@ -28,7 +28,7 @@ class SessionsController < ApplicationController
   def destroy
     reset_session
     flash[:notice] = "You've been logged out."
-    redirect_to new_session_url
+    redirect_to home_url
   end
 
 end

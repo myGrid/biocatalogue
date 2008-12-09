@@ -8,6 +8,8 @@ class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update, :destroy ]
   
+  before_filter :set_sidebar_layout, :only => [ :show ]
+  
   # Set the sidebar layout for certain actions.
   # Note: the set_sidebar_layout method resides in the ApplicationController.
   #before_filter :set_sidebar_layout, :only => [ :show ]
@@ -62,10 +64,10 @@ class ServicesController < ApplicationController
   # POST /services.xml
   def create
     # Creation of a Service resource is not allowed. Must be created as part of the creation of a specific service type resource.
-    flash[:error] = 'Select the type of service you would like to submit'
+    flash[:error] = 'Select the type of service you would like to submit first'
     respond_to do |format|
       format.html { redirect_to(new_service_url) }
-      format.xml  { render :xml => '', :status => 406 }
+      format.xml  { render :xml => '', :status => 404 }
     end
   end
 
