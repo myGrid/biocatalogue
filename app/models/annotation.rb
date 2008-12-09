@@ -14,4 +14,8 @@ class Annotation < ActiveRecord::Base
   if USE_EVENT_LOG
     acts_as_activity_logged
   end
+  
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :value ])
+  end
 end

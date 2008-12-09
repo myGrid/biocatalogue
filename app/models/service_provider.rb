@@ -7,7 +7,7 @@
 class ServiceProvider < ActiveRecord::Base
   acts_as_trashable
   
-  acts_as_annotatable
+  acts_as_annotation_source
   
   has_many :service_deployments
   
@@ -18,7 +18,8 @@ class ServiceProvider < ActiveRecord::Base
   validates_presence_of :name
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name ])
+    acts_as_solr(:fields => [ :name ],
+                 :include => [ :annotations ])
   end
   
   if USE_EVENT_LOG

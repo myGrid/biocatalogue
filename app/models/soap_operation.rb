@@ -16,7 +16,7 @@ class SoapOperation < ActiveRecord::Base
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :description, :endpoint ],
-                 :include => [ :soap_inputs, :soap_outputs ])
+                 :include => [ :soap_inputs, :soap_outputs, :annotations ])
   end
   
   if USE_EVENT_LOG

@@ -36,7 +36,7 @@ class Service < ActiveRecord::Base
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :unique_code, :submitter_name ],
-                 :include => [ :service_versions, :service_deployments ])
+                 :include => [ :service_versions, :service_deployments, :annotations ])
   end
   
   if USE_EVENT_LOG

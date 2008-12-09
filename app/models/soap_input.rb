@@ -12,7 +12,8 @@ class SoapInput < ActiveRecord::Base
   belongs_to :soap_operation
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :computational_type ])
+    acts_as_solr(:fields => [ :name, :description, :computational_type ],
+                 :include => [ :annotations ])
   end
   
   if USE_EVENT_LOG

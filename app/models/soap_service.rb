@@ -40,7 +40,7 @@ class SoapService < ActiveRecord::Base
    
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :description, :documentation_url, :service_type_name ],
-                 :include => [ :soap_operations ])
+                 :include => [ :soap_operations, :annotations ])
   end
   
   if USE_EVENT_LOG
