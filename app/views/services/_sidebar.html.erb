@@ -13,9 +13,12 @@
 	<div class="box_body">
 		<div class="box_text">
 			<% unless (tag_annotations = @service.annotations_with_attribute("tag")).empty? %>
-				<%= h(tag_annotations.map{|ann| ann.value}.to_sentence(:connector => '')) -%>
+				| 
+				<% tag_annotations.each do |ann| %>
+					<%= h(ann.value) -%> |
+				<% end %>
 			<% else %>
-				<span class="none_text">None</span>
+				<span class="none_text">none</span>
 			<% end %>
 		</div>
 		<div class="separator"></div>

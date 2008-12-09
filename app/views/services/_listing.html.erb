@@ -38,16 +38,26 @@
 				</div>
 				
 				<p class="detail">
-					<b>Provider(s):</b>
+					<b>Provider:</b>
 					<% service.providers.each do |provider| %>
 						<%= link_to(h(provider.name), service_provider_path(provider)) %>
 					<% end %>
-				</p>
-				
-				<p class="detail">
+					|
 					<b>Submitted by:</b>
 					<%= link_to(h(service.submitter.display_name), user_path(service.submitter)) %>
 					(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
+				</p>
+				
+				<p class="detail">
+					<b>Tags:</b>
+					<% unless (tag_annotations = service.annotations_with_attribute("tag")).empty? %>
+						| 
+						<% tag_annotations.each do |ann| %>
+							<%= h(ann.value) -%> |
+						<% end %>
+					<% else %>
+						<span class="none_text">none</span>
+					<% end %>
 				</p>
 			</div>
 		<% end %>
