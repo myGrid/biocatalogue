@@ -17,7 +17,7 @@ class SearchController < ApplicationController
     
     @query = params[:query] || ''
     @query = @query.downcase.strip
-    @query = @query + "~" unless @query.ends_with?('~')
+    #@query = @query + "~" unless @query.ends_with?('~')
     
     # Check query is present
     if @query.blank?
