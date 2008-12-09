@@ -25,14 +25,14 @@
 							<p class="annotation_provenance_text" style="float:right;margin-left:1em;">
 								from <b>service description document</b> (<%= distance_of_time_in_words_to_now(service_version_instance.created_at) -%> ago)
 							</p>
-							<%= truncate(desc, 150) -%>
+							<%= truncate(desc, :length => 150) -%>
 						</div>
 					<% end %>
 					
 					<% service_version_instance.annotations_with_attribute("description").each do |ann| %>
 						<div class="<%= annotation_source_cssclass(ann) -%>">
 							<%= annotation_source_text(ann, "float:right;margin-left:1em;") -%>
-							<%= truncate(h(ann.value), 150) -%>
+							<%= truncate(h(ann.value), :length => 150) -%>
 						</div>
 					<% end %>
 				</div>
