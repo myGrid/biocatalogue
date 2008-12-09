@@ -15,7 +15,7 @@ class SoapOperation < ActiveRecord::Base
   has_many :soap_outputs, :dependent => :destroy
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :endpoint ],
+    acts_as_solr(:fields => [ :name, :description, :parent_port_type ],
                  :include => [ :soap_inputs, :soap_outputs, :annotations ])
   end
   
