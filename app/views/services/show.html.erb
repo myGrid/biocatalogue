@@ -69,38 +69,8 @@
 		<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_overview_metadata", 
 			 	 			 :locals => { :service_version_instance =>  @latest_version_instance } %>
 		
-		<div>
-			<%= annotation_add_by_popup_link @latest_version_instance,
-																			 :attribute_name => "Description",
-					                             :tooltip_text => "Click to provide a new description",
-					                             :style => "margin-left:1em; float:right;",
-					                             :link_text => '',
-					                             :show_icon => true, 
-					                             :show_not_logged_in_text => true,
-					                             :multiple => false, 
-					                             :multiple_separator => ',' -%>
-			<p>
-				<b>Description:</b>
-			</p>
-		</div>
-		
-		<div class="box_annotations">
-			<% unless (desc = h(@service.description)).blank? %>
-				<div class="box_annotation_provider">
-					<%= auto_link(desc, :all, :target => '_blank') -%>
-					<p class="annotation_provenance_text" style="text-align:right;">
-						from <b>service description document</b> (<%= distance_of_time_in_words_to_now(@latest_version_instance.created_at) -%> ago)
-					</p>
-				</div>
-			<% end %>
-			
-			<% @latest_version_instance.annotations_with_attribute("description").each do |ann| %>
-				<div class="<%= annotation_source_cssclass(ann) -%>">
-					<%= auto_link(h(ann.value), :all, :target => '_blank') -%>
-					<%= annotation_source_text(ann, "text-align:right;") -%>
-				</div>
-			<% end %>
-		</div>
+		<%= render :partial => "annotations/descriptions",
+							 :locals => { :annotatable => @latest_version_instance } -%>
 		
   </div>
 	

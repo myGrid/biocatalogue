@@ -220,13 +220,13 @@ module ApplicationHelper
   end
   
   def annotation_source_cssclass(annotation)
-    return "box_annotation_#{annotation.source_type.downcase}"
+    return "annotation_source_#{annotation.source_type.downcase}"
   end
   
   def annotation_source_text(annotation, style='')
     return '' if annotation.nil?
     
-    return content_tag(:p, :class => "annotation_provenance_text", :style => style) do
+    return content_tag(:p, :class => "annotation_source_text #{annotation_source_cssclass(annotation)}", :style => style) do
       "by #{annotation.source_type.titleize.downcase}: <b>#{link_to(annotation.source.annotation_source_name, annotation.source)}</b> (#{distance_of_time_in_words_to_now(annotation.created_at)} ago)"
     end
   end

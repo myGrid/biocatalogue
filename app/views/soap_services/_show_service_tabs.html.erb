@@ -17,13 +17,9 @@
 		<div style="margin: 1em 0; padding: 0.6em 1em; border: 1px dotted #CCC; line-height: 1.5;">
 			<b>Name:</b> 
 			<span class="operation_name"><%= h operation.name -%></span>
-			<p class="box_description" style="padding: 0.3em 0.6em; margin: 0.5em 0 1em 0;">
-				<% unless (desc = operation.description).blank? %>
-					<%= auto_link(h(desc), :all, :target => '_blank') -%>
-				<% else %>
-					<span class="none_text">No description</span>
-				<% end %>
-			</p>
+			
+			<%= render :partial => "annotations/descriptions",
+							 	 :locals => { :annotatable => operation } -%>
 			
 			<b>Inputs:</b>
 			<div style="margin: 0.7em 0; margin-left: 2em;">

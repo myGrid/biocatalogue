@@ -1257,6 +1257,8 @@ ul.tabbernav li.tabberactive a:hover
 	line-height: 1.5em;
 }
 
+/* BEGIN annotations styles */
+
 .box_annotations {
 	padding: 0;
 	/*background-color: #EEEEEE; 
@@ -1268,18 +1270,31 @@ ul.tabbernav li.tabberactive a:hover
 	border: 1px dotted #AAA;
 	padding: 0.2em 0.5em;
 	margin: 0.5em 0;
-}
-
-.box_annotation_provider {
-	/*background-color: #FFFFCC;*/
-	background-color: #FFF;
-}
-
-.box_annotation_user {
-	/*background-color: #EEF6FF;*/
 	background-color: #EEF0FF;
+}
+
+.annotation_source_text {
+	float:right;
+	margin-left:1em;
+	color: #666;
+	background-color: #FFC;
+	font-size: 0.8em;
+	margin: 0;
+	margin-right: -0.3em;
+	padding: 0.1em 0.5em;
+	vertical-align: top;
+}
+
+.annotation_source_provider {
+	background-color: #FFDFDF;
+}
+
+.annotation_source_user {
+	background-color: #FFC;
 	
 }
+
+/* END annotations styles */
 
 /* BEGIN terms of use page styles */
 #terms_of_use ul, #terms_of_use ol {
@@ -1296,9 +1311,3 @@ ul.tabbernav li.tabberactive a:hover
 	list-style: decimal;
 }
 /* END terms of use page styles */
-
-.annotation_provenance_text {
-	color: #666;
-	font-size: 0.8em;
-	margin: 0.8em 0 0.4em 0;
-}
