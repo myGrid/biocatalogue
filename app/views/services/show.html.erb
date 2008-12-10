@@ -70,10 +70,15 @@
 			 	 			 :locals => { :service_version_instance =>  @latest_version_instance } %>
 		
 		<div>
-			<%= annotation_add_by_popup_link "Description",
-																			 @latest_version_instance,
- 																			 "Click to provide a new description",
-																			 "margin-left:1em; float:right;" -%>
+			<%= annotation_add_by_popup_link @latest_version_instance,
+																			 :attribute_name => "Description",
+					                             :tooltip_text => "Click to provide a new description",
+					                             :style => "margin-left:1em; float:right;",
+					                             :link_text => '',
+					                             :show_icon => true, 
+					                             :show_not_logged_in_text => true,
+					                             :multiple => false, 
+					                             :multiple_separator => ',' -%>
 			<p>
 				<b>Description:</b>
 			</p>

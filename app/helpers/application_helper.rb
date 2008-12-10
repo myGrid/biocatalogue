@@ -118,25 +118,60 @@ module ApplicationHelper
                      :style => "vertical-align:middle;")
   end
   
-  def annotation_add_by_popup_link(attribute_name, annotatable, tooltip_text='Add annotation', style='', link_text='', show_icon=true, multiple=false, multiple_separator=',')
+  # This method is used to generate an icon and/or link that will popup up an in page dialog box for the user to add an annotation (or mutliple annotations at once).
+  # 
+  # It takes in the annotatable object that needs to be annotated and some options (all optional):
+  #  :attribute_name - the attribute name for the annotation.
+  #    default: nil
+  #  :tooltip_text - text that will be displayed in a tooltip over the icon/text.
+  #    default: 'Add annotation'
+  #  :style - any CSS inline styles that need to be applied to the icon/text.
+  #    default: nil
+  #  :link_text - text to be displayed as part of the link.
+  #    default: ''
+  #  :show_icon - specifies whether to show the standard annotate icon or not.
+  #    default: true
+  #  :show_not_logged_in_text - specifies whether to display some text when a user is not logged in, in place of the annotate icon/text (will display something like: "log in to add description", where "log in" links to the login page).
+  #    default: true
+  #  :multiple - specified whether multiple annotations need to be created at once (eg: for tags).
+  #    default: false
+  #  :multiple_separator - the seperator character(s) that will be used to seperate out multiple annotations from one value text.
+  #    default: ','
+  def annotation_add_by_popup_link(annotatable, *args)
+     # Do options the Rails Way ;-)
+    options = args.extract_options!
+    options.reverse_merge!(:attribute_name => nil,
+                           :tooltip_text => 'Add annotation',
+                           :style => nil,
+                           :link_text => '',
+                           :show_icon => true, 
+                           :show_not_logged_in_text => true,
+                           :multiple => false, 
+                           :multiple_separator => ',')
+                           
     if logged_in?
       link_html = ''
-      link_html = link_html + "<span style='vertical-align:middle'>#{link_text}</span>" unless link_text.blank?
-      link_html = image_tag('pencil_hover.gif', :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if show_icon
+      link_html = link_html + "<span style='vertical-align:middle'>#{options[:link_text]}</span>" unless options[:link_text].blank?
+      link_html = image_tag('pencil_hover.gif', :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if options[:show_icon]
+      
+      url_options = { :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id }
+      url_options[:attribute_name] = options[:attribute_name] unless options[:attribute_name].nil?
+      url_options[:multiple] = options[:multiple] if options[:multiple]
+      url_options[:separator] = options[:multiple_separator] if options[:multiple]
       
       return link_to_remote_redbox(link_html, 
-                                   { :url => new_popup_annotations_url(:annotatable_type => annotatable.class.name, 
-                                                                       :annotatable_id => annotatable.id, 
-                                                                       :attribute_name => attribute_name,
-                                                                       :multiple => multiple,
-                                                                       :separator => multiple_separator),
-                                     :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{attribute_name}_redbox",
+                                   { :url => new_popup_annotations_url(url_options),
+                                     :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
                                      :failure => "alert('HTTP Error: ' + request.status + '!'); RedBox.close();" }, 
-                                   { :style => style, 
-                                     :alt => tooltip_text, 
-                                     :title => tooltip_title_attrib(tooltip_text) })
+                                   { :style => options[:style], 
+                                     :alt => options[:tooltip_text], 
+                                     :title => tooltip_title_attrib(options[:tooltip_text]) })
     else
-      return ''
+      if options[:show_not_logged_in_text] == true
+        return content_tag(:span, "#{link_to("Log in", login_path)} to add #{options[:attribute_name].downcase}", :style => options[:style])
+      else
+        return ''        
+      end
     end
   end
   

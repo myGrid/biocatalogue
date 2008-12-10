@@ -24,13 +24,13 @@
 		<div class="separator"></div>
 		<div class="box_text center">
 			<% if logged_in? %>
-				<%= annotation_add_by_popup_link "Tag",
-																				 @service,
-	 																			 "",
-																				 "",
-																				 "Add tags",
-																				 false,
-																				 true -%>
+				<%= annotation_add_by_popup_link @service,
+																			 	 :attribute_name => "Tag",
+					                             	 :tooltip_text => '',
+					                             	 :link_text => 'Add tags',
+					                             	 :show_icon => false, 
+					                             	 :show_not_logged_in_text => false,
+					                             	 :multiple => true -%>
 		 <% else %>
 		 	<%= link_to "Log in", login_path -%> to add tags
 		 <% end %>
