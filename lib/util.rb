@@ -104,7 +104,7 @@ module BioCatalogue
           else
             case model.to_s
               when "Service"
-                puts "BioCatalogue::Util.discover_model_objects_from_collection - model=Service"
+                @@logger.info "BioCatalogue::Util.discover_model_objects_from_collection - model=Service"
                 case r
                   when ServiceVersion, ServiceDeployment, SoapService
                     model_items << r.service
@@ -112,6 +112,8 @@ module BioCatalogue
                     model_items << r.soap_service.service
                   when SoapInput, SoapOutput  
                     model_items << r.soap_operation.soap_service.service
+                  else
+                    @@logger.info "BioCatalogue::Util.discover_model_objects_from_collection - model=Service - object_type=#{r.class.name}, failed to get a top level Service."
                 end
             end
           end
