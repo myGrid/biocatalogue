@@ -1,7 +1,9 @@
 class Annotation < ActiveRecord::Base
   before_validation_on_create :set_default_value_type
   
-  before_create :check_annotatable
+  before_save :check_annotatable
+  
+  before_save :process_value_adjustments
   
   belongs_to :annotatable, 
              :polymorphic => true
@@ -101,5 +103,10 @@ class Annotation < ActiveRecord::Base
     else
       return true
     end
+  end
+  
+  def process_value_adjustments
+    self.value.downcase! if Annotations::Config::attribute_names_for_values_to_be_downcased.include?(self.attribute_name.downcase)
+    self.value.upcase! if Annotations::Config::attribute_names_for_values_to_be_upcased.include?(self.attribute_name.downcase)
   end
 end

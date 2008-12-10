@@ -32,3 +32,6 @@ class ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = 10
 end
+
+# Configure the Annotations plugin...
+Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "tag" ])
