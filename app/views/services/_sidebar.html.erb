@@ -11,11 +11,11 @@
 <div class="sidebar_box">
 	<div class="box_title" href="#">Tags</div>
 	<div class="box_body">
-		<div class="box_text">
+		<div class="box_text" style="line-height:1.5;text-align:center;">
 			<% unless (tag_annotations = @service.annotations_with_attribute("tag")).empty? %>
 				| 
-				<% tag_annotations.each do |ann| %>
-					<%= h(ann.value) -%> |
+				<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
+					<b><%= h(val) -%> |</b>
 				<% end %>
 			<% else %>
 				<span class="none_text">none</span>

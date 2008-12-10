@@ -40,8 +40,8 @@
 					<b>Tags:</b>
 					<% unless (tag_annotations = service.annotations_with_attribute("tag")).empty? %>
 						| 
-						<% tag_annotations.each do |ann| %>
-							<%= h(ann.value) -%> |
+						<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
+							<%= h(val) -%> |
 						<% end %>
 					<% else %>
 						<span class="none_text">none</span>
