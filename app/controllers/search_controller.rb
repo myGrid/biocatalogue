@@ -63,7 +63,7 @@ class SearchController < ApplicationController
         @count, @results = get_all_results(@query)
       rescue Exception => ex
         flash.now[:error] = "Search failed. Possible bad search term."
-        logger.error("ERROR: search failed for query'#{@query}'. Exception:")
+        logger.error("ERROR: search failed for query: '#{@query}'. Exception:")
         logger.error(ex)
       end
       
@@ -89,7 +89,7 @@ protected
     
     models.each do |m|
       m_name = m.to_s
-      res = m.multi_solr_search(query, :limit => 200).results
+      res = m.multi_solr_search(query, :limit => 1000).results
       grouped_results[m_name] = BioCatalogue::Util.discover_model_objects_from_collection(m, res)
       total_count = total_count + grouped_results[m_name].length
     end
