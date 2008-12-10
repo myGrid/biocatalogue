@@ -1,7 +1,0 @@
-Acts As Annotatable
-===================
-
-Allows for annotations to be added to multiple and different models.
-
-To run the tests for just this plugin:
-rake test:plugins PLUGIN=acts_as_annotatable
