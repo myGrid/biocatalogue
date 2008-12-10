@@ -12,7 +12,8 @@ require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/models/anno
 
 class Annotation < ActiveRecord::Base
   if USE_EVENT_LOG
-    acts_as_activity_logged
+    acts_as_activity_logged :models => { :culprit => { :model => :source },
+                                         :referenced => { :model => :annotatable } }
   end
   
   if ENABLE_SEARCH
