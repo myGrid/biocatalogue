@@ -14,42 +14,52 @@
   <h3>Operations (<%= ops.length -%>)</h3>
 	
 	<% ops.each do |operation| %>
-		<div style="margin: 1em 0; padding: 0.6em 1em; border: 1px dotted #CCC; line-height: 1.5;">
+		<div style="margin: 1em 0; padding: 1.5em 1.2em 1em 1.2em; border: 2px solid #CCC; line-height: 1.5;">
 			<b>Name:</b> 
-			<span class="operation_name"><%= h operation.name -%></span>
+			<span class="operation_name" style="font-size: 1.2em;"><%= h operation.name -%></span>
 			
-			<%= render :partial => "annotations/descriptions",
-							 	 :locals => { :annotatable => operation } -%>
+			<div>
+				<%= render :partial => "annotations/tags_flat",
+								 	 :locals => { :annotatable => operation } -%>
+			</div>
+			
+			<div style="margin-bottom: 1em;">
+				<%= render :partial => "annotations/descriptions",
+								 	 :locals => { :annotatable => operation } -%>
+			 
+			</div>
 			
 			<b>Inputs:</b>
-			<div style="margin: 0.7em 0; margin-left: 2em;">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0; margin-left: 1em;">
 				<ul>
 					<% operation.soap_inputs.each do |input| %>
-						<li>
-							<%= h input.name -%>
+						<li class="port">
+							<span class="operation_name"><%= h input.name -%></span>
 							<% unless input.computational_type.blank? %>
 						  	(<%= h input.computational_type -%>) 
 							<% end %>
-							<% unless input.description.blank? %>
-						  	<%= image_tag('info.png', 
-															:alt => "description",
-															:style => 'margin-left: 0.5em;', 
-															:title => tooltip_title_attrib("<b>Description: </b>#{h(input.description)}")) -%>
-							<% end %>
+							<%= render :partial => "annotations/tags_flat",
+								 				 :locals => { :annotatable => input } -%>
+							<%= render :partial => "annotations/descriptions",
+							 	 				 :locals => { :annotatable => input } -%>
 						</li>
 					<% end %>
 				</ul>
 			</div>
 			
 			<b>Outputs:</b>
-			<div style="margin: 0.7em 0; margin-left: 2em;">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0; margin-left: 1em;">
 				<ul>
 					<% operation.soap_outputs.each do |output| %>
-						<li>
-							<%= h output.name -%>
+						<li class="port">
+							<span class="operation_name"><%= h output.name -%></span>
 							<% unless output.computational_type.blank? %>
 						  	(<%= h output.computational_type -%>) 
 							<% end %>
+							<%= render :partial => "annotations/tags_flat",
+								 	 			 :locals => { :annotatable => output } -%>
+							<%= render :partial => "annotations/descriptions",
+							 	 				 :locals => { :annotatable => output } -%>
 						</li>
 					<% end %>
 				</ul>

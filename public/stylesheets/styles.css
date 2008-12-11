@@ -952,7 +952,14 @@ body.sidebar-right #login_box {
 .operation_name {
 	background-color: #FFBB7F;
 	font-weight: bold;
-	padding: 0.1em 0.3em 0.1em 0.3em;
+	padding: 0.3em 0.5em
+}
+
+li.port {
+	margin-bottom: 1.5em; 
+	padding: 0.7em 0.7em 0.3em 0.7em; 
+	border: 1px dotted #CCC;
+	background-color: #F7F7F7;
 }
 
 .simple_list {
@@ -1255,6 +1262,13 @@ ul.tabbernav li.tabberactive a:hover
 	padding: 0.3em 0.6em; 
 	margin-bottom: 1em;
 	line-height: 1.5em;
+}
+
+.box_indented_with_bar {
+	border: 0;
+	border-left: 4px solid #DDD;
+	padding: 0;
+	padding-left: 1.5em;
 }
 
 /* BEGIN annotations styles */
