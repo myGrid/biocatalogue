@@ -27,4 +27,5 @@ if ENABLE_SEARCH
   SoapOutput.rebuild_solr_index
   User.rebuild_solr_index
   ServiceProvider.rebuild_solr_index
+  Annotation.rebuild_solr_index
 end

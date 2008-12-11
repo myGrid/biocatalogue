@@ -24,8 +24,7 @@ class ServiceVersion < ActiveRecord::Base
   validates_presence_of :version, :version_display_text
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ ],
-                 :include => [ :service_versionified, :annotations ])
+    acts_as_solr(:fields => [ :version_display_text ])
   end
   
   if USE_EVENT_LOG

@@ -82,6 +82,24 @@ protected
   end
   
   def get_all_results(query)
+    # First go through each model and fetch all search results.
+    
+    limit = 1000
+    all_results = [ ]
+    
+    all_results.concat(Service.find_by_solr(query, :limit => limit).results)
+    all_results.concat(ServiceVersion.find_by_solr(query, :limit => limit).results)
+    all_results.concat(ServiceDeployment.find_by_solr(query, :limit => limit).results)
+    all_results.concat(SoapService.find_by_solr(query, :limit => limit).results)
+    all_results.concat(SoapOperation.find_by_solr(query, :limit => limit).results)
+    all_results.concat(SoapInput.find_by_solr(query, :limit => limit).results)
+    all_results.concat(SoapOutput.find_by_solr(query, :limit => limit).results)
+    all_results.concat(User.find_by_solr(query, :limit => limit).results)
+    all_results.concat(ServiceProvider.find_by_solr(query, :limit => limit).results)
+    all_results.concat(Annotation.find_by_solr(query, :limit => limit).results)
+    
+    # Then collect together the appropriate results.
+    
     total_count = 0
     grouped_results = { }
     
@@ -89,8 +107,7 @@ protected
     
     models.each do |m|
       m_name = m.to_s
-      res = m.multi_solr_search(query, :limit => 1000).results
-      grouped_results[m_name] = BioCatalogue::Util.discover_model_objects_from_collection(m, res)
+      grouped_results[m_name] = BioCatalogue::Util.discover_model_objects_from_collection(m, all_results)
       total_count = total_count + grouped_results[m_name].length
     end
     

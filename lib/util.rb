@@ -97,23 +97,27 @@ module BioCatalogue
     def Util.discover_model_objects_from_collection(model, items)
       model_items = [ ]
       
-      items.each do |r|
-        if r.is_a?(ActiveRecord::Base)
-          if r.is_a?(model)
-            model_items << r
+      items.each do |item|
+        if item.is_a?(ActiveRecord::Base)
+          if item.is_a?(model)
+            model_items << item
           else
             case model.to_s
               when "Service"
-                @@logger.info "BioCatalogue::Util.discover_model_objects_from_collection - model=Service"
-                case r
+                @@logger.info "BioCatalogue::Util.discover_model_objects_from_collection - model required = Service;"
+                case item
                   when ServiceVersion, ServiceDeployment, SoapService
-                    model_items << r.service
+                    model_items << item.service
                   when SoapOperation  
-                    model_items << r.soap_service.service
+                    model_items << item.soap_service.service
                   when SoapInput, SoapOutput  
-                    model_items << r.soap_operation.soap_service.service
+                    model_items << item.soap_operation.soap_service.service
+                  when Annotation
+                    if ["Service", "ServiceVersion", "ServiceDeployment", "SoapService", "SoapOperation", "SoapInput", "SoapOutput"].include?(item.annotatable_type)
+                      model_items.concat(Util.discover_model_objects_from_collection(Service, [ item.annotatable ]))
+                    end
                   else
-                    @@logger.info "BioCatalogue::Util.discover_model_objects_from_collection - model=Service - object_type=#{r.class.name}, failed to get a top level Service."
+                    @@logger.info "BioCatalogue::Util.discover_model_objects_from_collection - model required = Service; item type = #{item.class.name}, no way to get a top level Service for the item."
                 end
             end
           end

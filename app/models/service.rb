@@ -35,8 +35,7 @@ class Service < ActiveRecord::Base
   validates_existence_of :submitter   # User must exist in the db beforehand.
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :unique_code, :submitter_name ],
-                 :include => [ :service_versions, :service_deployments, :annotations ])
+    acts_as_solr(:fields => [ :name, :unique_code, :submitter_name ])
   end
   
   if USE_EVENT_LOG
