@@ -109,9 +109,9 @@ module BioCatalogue
                   when ServiceVersion, ServiceDeployment, SoapService
                     model_items << item.service
                   when SoapOperation  
-                    model_items << item.soap_service.service
+                    model_items << item.soap_service.service unless item.soap_service.nil?
                   when SoapInput, SoapOutput  
-                    model_items << item.soap_operation.soap_service.service
+                    model_items << item.soap_operation.soap_service.service unless item.soap_operation.nil? or item.soap_operation.soap_service.nil?
                   when Annotation
                     if ["Service", "ServiceVersion", "ServiceDeployment", "SoapService", "SoapOperation", "SoapInput", "SoapOutput"].include?(item.annotatable_type)
                       model_items.concat(Util.discover_model_objects_from_collection(Service, [ item.annotatable ]))
