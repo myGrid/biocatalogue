@@ -87,18 +87,21 @@ class SoapService < ActiveRecord::Base
     "SOAP"
   end
   
-  def create_service(endpoint, current_user)
+  def create_service(endpoint, current_user, annotations)
     transaction do
       self.save!
-      self.post_create(endpoint, current_user)    
+      self.post_create(endpoint, current_user)
+      self.create_annotations(annotations, current_user)
       return true
     end
     rescue Exception => ex
       #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
-      logger.error("ERROR: failed to register service - #{self.wsdl_location}. Exception:")
+      logger.error("ERROR: failed to register SOAP service - #{self.wsdl_location}. Exception:")
       logger.error(ex)
       return false
   end
+  
+  protected
   
   def post_create(endpoint, current_user)
     # Try and find location of the service from the url of the WSDL.
@@ -135,8 +138,15 @@ class SoapService < ActiveRecord::Base
     end
   end
   
-protected
-
+  def create_annotations(annotations_data, source)
+    annotations_data.each do |attrib, val|
+      annotations << Annotation.new(:attribute_name => attrib.strip.downcase, 
+                                    :value => val, 
+                                    :source_type => source.class.name, 
+                                    :source_id => source.id)
+    end
+  end
+  
   # This builds the parts of the SOAP service 
   # (ie: it's operations and their inputs and outputs).
   # This can then be saved transactionally.

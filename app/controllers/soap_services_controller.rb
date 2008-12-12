@@ -42,6 +42,7 @@ class SoapServicesController < ApplicationController
   # GET /soap_services/new.xml
   def new
     @soap_service = SoapService.new
+    params[:annotations] = { }
 
     respond_to do |format|
       format.html # new.html.erb
@@ -81,12 +82,9 @@ class SoapServicesController < ApplicationController
         @soap_service = SoapService.new(:wsdl_location => wsdl_location)
         success, data = @soap_service.populate
         
-        # TODO: store the extra information provided in the form, as Annotations.
-        
         respond_to do |format|
-          if success #and @soap_service.save
-            #success = @soap_service.post_create(data["endpoint"], current_user)
-            success = @soap_service.create_service(data["endpoint"], current_user)
+          if success
+            success = @soap_service.create_service(data["endpoint"], current_user, params[:annotations])
             if success
               flash[:notice] = 'Service was successfully created.'
               format.html { redirect_to(@soap_service.service(true)) }
@@ -138,6 +136,8 @@ class SoapServicesController < ApplicationController
   end
   
   def load_wsdl
+    params[:annotations] = { }
+    
     wsdl_location = params[:wsdl_url] || ''
     wsdl_location = Addressable::URI.parse(wsdl_location).normalize.to_s unless wsdl_location.blank?
     

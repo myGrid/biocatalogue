@@ -162,7 +162,7 @@ module ApplicationHelper
       return link_to_remote_redbox(link_html, 
                                    { :url => new_popup_annotations_url(url_options),
                                      :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
-                                     :failure => "alert('HTTP Error: ' + request.status + '!'); RedBox.close();" }, 
+                                     :failure => "alert(Sorry, an error has occurred.); RedBox.close();" }, 
                                    { :style => options[:style], 
                                      :alt => options[:tooltip_text], 
                                      :title => tooltip_title_attrib(options[:tooltip_text]) })

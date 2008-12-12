@@ -96,35 +96,31 @@
 			</td>
 			<td style="width: 49%; padding-left: 1em;">
 				<fieldset>
-					<legend>Extra Information (optional)</legend>
+					<legend>Extra Information</legend>
 					
-					<!--<p class="error_text">Coming soon</p>-->
-					<fieldset style="border: 1px solid #ff0000;">
-					<legend style="color: #ff0000;">Coming soon...</legend>
 					<!-- Add new name alias -->
 					<p>
-						<%= link_to_function "Add new name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
+						<%= link_to_function "Add name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
 					</p>
-					<div id="new_name_box" style="display: none;">
-						<p><%= text_field_tag :new_name, params[:new_name], :disabled => true, :size => 60 %></p>
+					<div id="new_name_box" style="display: block;">
+						<p><%= text_field_tag "annotations[name]", params[:annotations][:name], :disabled => @wsdl_info.nil?, :style => "width: 98%;" %></p>
 					</div>
 					
 					<!-- Add new description -->
 					<p>
-						<%= link_to_function "Add new description...", visual_effect(:toggle_blind, "new_description_box", :duration => 0.3) %>
+						<%= link_to_function "Add description...", visual_effect(:toggle_blind, "new_description_box", :duration => 0.3) %>
 					</p>
-					<div id="new_description_box" style="display: none;">
-						<p><%= text_area_tag :new_description, params[:new_description], :disabled => true, :cols => 55, :rows => 6 %></p>
+					<div id="new_description_box" style="display: block;">
+						<p><%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => @wsdl_info.nil?, :size => "50x10", :style => "width: 98%;" %></p>
 					</div>
 					
 					<!-- Add documentation URL -->
 					<p>
 						<%= link_to_function "Add documentation URL...", visual_effect(:toggle_blind, "doc_url_box", :duration => 0.3) %>
 					</p>
-					<div id="doc_url_box" style="display: none;">
-						<p><%= text_field_tag :documentation_url, params[:documentation_url], :disabled => true, :size => 60 %></p>
+					<div id="doc_url_box" style="display: block;">
+						<p><%= text_field_tag "annotations[documentation_url]", params[:annotations][:documentation_url], :disabled => @wsdl_info.nil?, :style => "width: 98%;" %></p>
 					</div>
-					</fieldset>
 				</fieldset>
 			</td>
 		</tr>

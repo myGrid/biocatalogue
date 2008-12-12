@@ -19,8 +19,9 @@
 <% form_remote_tag(:url => load_wsdl_soap_services_url, 
 								   :update => 'soap_service_after_wsdl_load', 
 							 		 :success => "new Effect.Highlight('soap_service_form', { duration: 1.5 });",
+									 :failure => "alert('Sorry, an error has occurred.');",
 							     :loading => "Element.show('spinner')",
-                   :complete => "Element.hide('spinner')") do -%>
+                   :complete => "Element.hide('spinner')") do %>
 	
 	<div>
 		<p style=" margin-top: 0;">
