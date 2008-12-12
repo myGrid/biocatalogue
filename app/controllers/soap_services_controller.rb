@@ -70,18 +70,18 @@ class SoapServicesController < ApplicationController
         format.xml  { render :xml => '', :status => 406 }
       end
     else
-      # Check for a duplicate
-      @existing_soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", wsdl_location])
+      @soap_service = SoapService.new(:wsdl_location => wsdl_location)
+      success, data = @soap_service.populate
       
-      if !@existing_soap_service.nil?
+      # Check for a duplicate
+      @existing_service = SoapService.check_duplicate(wsdl_location, data["endpoint"])
+      
+      if !@existing_service.nil?
         respond_to do |format|
           format.html { render :action => "new" }
-          format.xml  { render :xml => '', :status => 406 }
+          format.xml  { render :xml => '', :status => :unprocessable_entity }
         end
       else
-        @soap_service = SoapService.new(:wsdl_location => wsdl_location)
-        success, data = @soap_service.populate
-        
         respond_to do |format|
           if success
             success = @soap_service.create_service(data["endpoint"], current_user, params[:annotations])
@@ -144,16 +144,16 @@ class SoapServicesController < ApplicationController
     if wsdl_location.blank?
       @error_message = "Please provide a valid WSDL URL"
     else
-      # Check for a duplicate
-      @existing_soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", wsdl_location])
+      @soap_service = SoapService.new(:wsdl_location => wsdl_location)
       
-      # Only continue if no duplicate was found
-      if @existing_soap_service.nil?
-        @soap_service = SoapService.new(:wsdl_location => wsdl_location)
+      begin
+        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
         
-        begin
-          @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
-          
+        # Check for a duplicate
+        @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["end_point"])
+        
+        # Only continue if no duplicate was found
+        if @existing_service.nil?
           if err_msgs.empty?
             @error_message = nil
             
@@ -162,11 +162,11 @@ class SoapServicesController < ApplicationController
           else
             @error_message = "Error messages: #{err_msgs.to_sentence}."
           end
-        rescue Exception => ex
-          @error_message = "Failed to load the WSDL location provided."
-          logger.error("ERROR: failed to load WSDL from location - #{wsdl_location}. Exception:")
-          logger.error(ex)
         end
+      rescue Exception => ex
+        @error_message = "Failed to load the WSDL location provided."
+        logger.error("ERROR: failed to load WSDL from location - #{wsdl_location}. Exception:")
+        logger.error(ex)
       end
     end
     respond_to do |format|

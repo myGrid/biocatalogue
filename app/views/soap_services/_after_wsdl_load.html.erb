@@ -14,17 +14,13 @@
 			<%= h @error_message -%>
 		</p>
 	</div>
-<% elsif !@existing_soap_service.nil? %>
+<% elsif !@existing_service.nil? %>
 	<div class="soap_service_form">
 		<p class="error_text">
 			This service has already been submitted:
 		</p>
 		<p>
-			<% if @existing_soap_service.service.nil? %>
-				<%= link_to h(@existing_soap_service.name), soap_service_url(@existing_soap_service) -%>
-			<% else %>
-				<%= link_to h(@existing_soap_service.service.name), service_url(@existing_soap_service.service) -%>
-			<% end %>
+			<%= link_to h(@existing_service.name), @existing_service -%>
 		</p>
 	</div>
 <% else %>

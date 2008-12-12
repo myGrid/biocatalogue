@@ -45,12 +45,20 @@ class SoapService < ActiveRecord::Base
   if USE_EVENT_LOG
     acts_as_activity_logged(:models => { :referenced => { :model => :service_version } })
   end
+  
+  def self.check_duplicate(wsdl_location, endpoint)
+    obj = SoapService.find(:first, :conditions => { :wsdl_location => wsdl_location }) || 
+          ServiceDeployment.find(:first, :conditions => { :endpoint => endpoint })
+          
+    return (obj.nil? ? nil : obj.service)
+  end
 
   # Populates (but does not save) this soap service with all the relevant data and child soap objects
   # based on the data from the WSDL file.
   #
   # Returns an array with:
-  # - 
+  # - success - whether the process of populating the soap service suceeded or not.
+  # - data - the hash structure representing the soap service and it's underlying metadat from the WSDL.
   def populate
     success = true
     data = { }
@@ -140,10 +148,12 @@ class SoapService < ActiveRecord::Base
   
   def create_annotations(annotations_data, source)
     annotations_data.each do |attrib, val|
-      annotations << Annotation.new(:attribute_name => attrib.strip.downcase, 
-                                    :value => val, 
-                                    :source_type => source.class.name, 
-                                    :source_id => source.id)
+      unless val.blank?
+        annotations << Annotation.new(:attribute_name => attrib.strip.downcase, 
+                                      :value => val, 
+                                      :source_type => source.class.name, 
+                                      :source_id => source.id)
+      end
     end
   end
   
