@@ -7,6 +7,7 @@
 require 'open-uri'
 require 'active_support/inflector'
 require 'pp'
+require 'addressable/uri'
 
 module BioCatalogue
   module WsdlParser
