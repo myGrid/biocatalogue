@@ -38,6 +38,18 @@ class AnnotationTest < Test::Unit::TestCase
     assert_equal annotation_attributes(:aa_tag), annotations(:br_tag_1).attribute
   end
   
+  def test_find_annotatables_with_attribute_name_and_value_class_method
+    ats1 = Annotation.find_annotatables_with_attribute_name_and_value("complexity", "O(x^2)")
+    assert_equal 1, ats1.length
+    assert ats1[0].class != Annotation
+    
+    ats2 = Annotation.find_annotatables_with_attribute_name_and_value("TAG", "PROGRAMMING")
+    assert_equal 1, ats2.length
+    assert ats2[0].class != Annotation
+    
+    assert_equal 0, Annotation.find_annotatables_with_attribute_name_and_value("asfrertewt", "JBuoGU IT I\tIPyI tRyyI tpIY T YFy fY f yF").length
+  end
+  
   def test_by_source_named_scope_finder
     assert_equal 7, Annotation.by_source('User', users(:john).id).length
     assert_equal 6, Annotation.by_source('User', users(:jane).id).length

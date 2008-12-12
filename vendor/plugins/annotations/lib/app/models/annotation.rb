@@ -23,6 +23,20 @@ class Annotation < ActiveRecord::Base
                         :value,
                         :value_type
   
+  # Returns all the annotatable objects that have a specified attribute name and value.
+  # Note: both the attribute name and the value will be treated case insensitively.
+  def self.find_annotatables_with_attribute_name_and_value(attribute_name, value)
+    return [ ] if attribute_name.blank? or value.nil?
+    
+    anns = Annotation.find(:all,
+                           :joins => "JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id",
+                           :conditions => [ "annotation_attributes.name = ? AND annotations.value = ?", 
+                                            attribute_name.strip.downcase,
+                                            value.strip.downcase ])
+                                                  
+    return anns.map{|a| a.annotatable}.uniq
+  end
+  
   # Finder to get all annotations by a given source.
   named_scope :by_source, lambda { |source_type, source_id| 
     { :conditions => { :source_type => source_type, 

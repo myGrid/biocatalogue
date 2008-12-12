@@ -21,10 +21,27 @@ module Annotations
       
       # Class methods added to the model that has been made acts_as_annotatable (the mixing annotatable type).
       module SingletonMethods
+        # Helper finder to get all objects of the mixin annotatable type that have the specified attribute name and value.
+        # Note: both the attribute name and the value will be treated case insensitively.
+        def with_annotations_with_attribute_name_and_value(attribute_name, value)
+          return [ ] if attribute_name.blank? or value.nil?
+          
+          obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
+          
+          anns = Annotation.find(:all,
+                                 :joins => "JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id",
+                                 :conditions => [ "annotations.annotatable_type = ? AND annotation_attributes.name = ? AND annotations.value = ?", 
+                                                  obj_type, 
+                                                  attribute_name.strip.downcase,
+                                                  value.strip.downcase ])
+                                                  
+          return anns.map{|a| a.annotatable}.uniq
+        end
+        
         # Helper finder to get all annotations for an object of the mixin annotatable type with the ID provided.
         # This is the same as object.annotations with the added benefit that the object doesnt have to be loaded.
         # E.g: Book.find_annotations_for(34) will give all annotations Book with ID 34.
-        def annotations_for(id)
+        def find_annotations_for(id)
           obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
           
           Annotation.find(:all,
@@ -35,7 +52,7 @@ module Annotations
         
         # Helper finder to get all annotations for all objects of the mixin annotatable type, by the source provided.
         # E.g: Book.find_annotations_by('User', 10) will give all annotations for all Books by User with ID 10. 
-        def annotations_by(source_type, source_id)
+        def find_annotations_by(source_type, source_id)
           obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
           
           Annotation.find(:all,
@@ -51,7 +68,7 @@ module Annotations
         # Helper method to get latest annotations
         def latest_annotations(limit=nil)
           Annotation.find(:all,
-                          :conditions => { :annotatable_type =>  self.class.name, 
+                          :conditions => { :annotatable_type =>  ActiveRecord::Base.send(:class_name_of_active_record_descendant, self.class).to_s, 
                                            :annotatable_id => id },
                           :order => "created_at DESC",
                           :limit => limit)
@@ -64,7 +81,7 @@ module Annotations
           Annotation.find(:all,
                           :joins => "JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id",
                           :conditions => [ "annotations.annotatable_type = ? AND annotations.annotatable_id = ? AND annotation_attributes.name = ?", 
-                                           self.class.name, 
+                                           ActiveRecord::Base.send(:class_name_of_active_record_descendant, self.class).to_s, 
                                            id,
                                            attrib.strip.downcase ],
                           :order => "created_at DESC")

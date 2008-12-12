@@ -8,18 +8,30 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     assert_equal 4, chapters(:br_c2).annotations.length
   end
   
-  def test_annotations_for_class_method
-    assert_equal 5, Book.annotations_for(books(:h).id).length
-    assert_equal 5, Book.annotations_for(books(:r).id).length
-    assert_equal 2, Chapter.annotations_for(chapters(:bh_c10).id).length
-    assert_equal 4, Chapter.annotations_for(chapters(:br_c2).id).length 
+  def test_with_annotations_with_attribute_name_and_value_class_method
+    bks = Book.with_annotations_with_attribute_name_and_value("Tag", "Amusing rhetoric")
+    assert_equal 1, bks.length
+    assert_kind_of Book, bks[0]
+    
+    crs = Chapter.with_annotations_with_attribute_name_and_value("title", "Ruby Hashes")
+    assert_equal 1, crs.length
+    assert_kind_of Chapter, crs[0]
+    
+    assert_equal 0, Book.with_annotations_with_attribute_name_and_value("xyz", "This does not exist!").length
   end
   
-  def test_annotations_by_class_method
-    assert_equal 3, Book.annotations_by("User", users(:jane)).length
-    assert_equal 1, Book.annotations_by("Group", groups(:sci_fi_geeks)).length
-    assert_equal 3, Chapter.annotations_by("User", users(:john)).length
-    assert_equal 2, Chapter.annotations_by("Group", groups(:classical_fans)).length
+  def test_find_annotations_for_class_method
+    assert_equal 5, Book.find_annotations_for(books(:h).id).length
+    assert_equal 5, Book.find_annotations_for(books(:r).id).length
+    assert_equal 2, Chapter.find_annotations_for(chapters(:bh_c10).id).length
+    assert_equal 4, Chapter.find_annotations_for(chapters(:br_c2).id).length 
+  end
+  
+  def test_find_annotations_by_class_method
+    assert_equal 3, Book.find_annotations_by("User", users(:jane)).length
+    assert_equal 1, Book.find_annotations_by("Group", groups(:sci_fi_geeks)).length
+    assert_equal 3, Chapter.find_annotations_by("User", users(:john)).length
+    assert_equal 2, Chapter.find_annotations_by("Group", groups(:classical_fans)).length
   end
   
   def test_latest_annotations_instance_method
