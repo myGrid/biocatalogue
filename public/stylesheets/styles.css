@@ -1280,7 +1280,7 @@ ul.tabbernav li.tabberactive a:hover
 	line-height: 1.4;
 }
 
-.box_annotations div {
+.box_annotations div.description {
 	border: 1px dotted #AAA;
 	padding: 0.2em 0.5em;
 	margin: 0.5em 0;

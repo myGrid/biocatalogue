@@ -27,24 +27,29 @@
 	<% end %>
 	
 	<div class="box_annotations">
-		<% unless (desc = h(annotatable.description)).blank? %>
-			<div class="box_annotation_provider">
+		<% unless (desc = annotatable.description).blank? %>
+			<div class="description">
 				<p class="annotation_source_text annotation_source_provider">
 					from <b>service description document</b> (<%= distance_of_time_in_words_to_now(annotatable.created_at) -%> ago)
 				</p>
-				<% desc = truncate(desc, :length => truncate_desc) unless truncate_desc == false %>
-				<% desc = auto_link(desc, :all, :target => '_blank') if auto_link_desc == true -%>
-				<%= desc -%>
+				<div>
+					<%= annotation_prepare_description(desc, 
+																						 (truncate_desc != false), 
+																						 (truncate_desc ==  false ? nil : truncate_desc), 
+																						 auto_link_desc) -%>
+				</div>
 			</div>
 		<% end %>
 		
 		<% annotatable.annotations_with_attribute("description").each do |ann| %>
-			<div>
+			<div class="description">
 				<%= annotation_source_text(ann) -%>
-				<% desc = h(ann.value) %>
-				<% desc = truncate(desc, :length => truncate_desc) unless truncate_desc == false %>
-				<% desc = auto_link(desc, :all, :target => '_blank') if auto_link_desc == true -%>
-				<%= desc -%>
+				<div>
+					<%= annotation_prepare_description(ann.value, 
+																						 (truncate_desc != false), 
+																						 (truncate_desc ==  false ? nil : truncate_desc), 
+																						 auto_link_desc) -%>
+				</div>
 			</div>
 		<% end %>
 	</div>

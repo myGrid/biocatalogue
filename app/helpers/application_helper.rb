@@ -231,4 +231,15 @@ module ApplicationHelper
     end
   end
   
+  def annotation_prepare_description(desc, do_strip_tags, truncate_length, do_auto_link)
+    return '' if desc.nil?
+    
+    desc = strip_tags(desc) if do_strip_tags
+    desc = truncate(desc, :length => truncate_length) unless truncate_length.nil?
+    desc = simple_format(desc) unless do_strip_tags
+    desc = auto_link(desc, :all, :target => '_blank') if do_auto_link
+    desc = white_list(desc)
+      
+    return desc
+  end
 end
