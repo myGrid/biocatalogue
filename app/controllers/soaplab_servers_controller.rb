@@ -6,7 +6,7 @@
 
 class SoaplabServersController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy ]
+  #before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy ]
   before_filter :login_required, :except => [ :index, :show ]
   
   # GET /soaplab_servers
@@ -24,7 +24,6 @@ class SoaplabServersController < ApplicationController
   # GET /soaplab_servers/1.xml
   def show
     @soaplab_server = SoaplabServer.find(params[:id])
-    @new_existing_urls = @soaplab_server.new_existing_urls(@soaplab_server.wsdl_urls)
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @soaplab_server }
