@@ -11,7 +11,10 @@ require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
-
+  
+  #do not log the plain text passwords
+  filter_parameter_logging "password"
+  
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery :secret => 'bc5fa0462513829e6a733e8947c24994'
