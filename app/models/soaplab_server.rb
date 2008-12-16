@@ -20,8 +20,9 @@ class SoaplabServer < ActiveRecord::Base
   #@service_urls = {}
   attr_accessor :wsdl_urls
   
-  @wsdl_urls = []
-   
+  
+  # save the soap services on this server in
+  # the database
   def save_services(current_user)
     @error_urls        = []
     @existing_services = []
@@ -29,19 +30,19 @@ class SoaplabServer < ActiveRecord::Base
     @wsdl_urls         = get_wsdl_from_server(self.location)
     
     unless @wsdl_urls.empty?  
-      @wsdl_urls.first(5).each { |url|
-      if SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
-         @soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
-         @existing_services << @soap_service.service(true) if @soap_service != nil
+      @wsdl_urls.each { |url|
+         soap_service  = SoapService.new({:wsdl_location => url})
+         success, data = soap_service.populate
+      if success and SoapService.check_duplicate(url, data["endpoint"]) != nil
+         @existing_services << soap_service.service(true)
+         logger.info("This service exists in the database")
       else
-        #new_wsdls.each { |url|
         transaction do
           begin
-            soap_service = SoapService.new({:wsdl_location => url})
-            success, data = soap_service.populate
-            if success and soap_service.save!
-              pc_success = soap_service.post_create(data["endpoint"], current_user) 
-              if pc_success
+            if success 
+              c_success = soap_service.create_service(data["endpoint"], current_user, annotation=nil) 
+              if c_success
+                @new_services << soap_service.service(true)
                 logger.info("INFO: registered service - #{url}. SUCCESS:")
               else
                 @error_urls << url
@@ -73,18 +74,5 @@ class SoaplabServer < ActiveRecord::Base
       wsdls
     end
   end
-  
-  def new_existing_urls(urls=[])
-    urls = urls || get_wsdl_from_server(self.location)
-    all_urls     = []
-    @service_urls = {}
-    
-    SoapService.find(:all).each{ |s| all_urls << s.wsdl_location }
-    new = urls - all_urls
-    @service_urls['new']      = new
-    @service_urls['existing'] = urls - new
-    
-    @service_urls
-  end
-  
+   
 end
