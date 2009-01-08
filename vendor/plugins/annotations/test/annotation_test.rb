@@ -77,13 +77,16 @@ class AnnotationTest < Test::Unit::TestCase
   end
   
   def test_annotation_create
+    source = users(:john)
     ann = Annotation.create(:attribute_name => "tag", 
                             :value => "hot", 
-                            :source_type => "User", 
-                            :source_id => 1,
+                            :source_type => source.class.name, 
+                            :source_id => source.id,
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
     assert_valid ann
+    
+    assert_equal "User", ann.source_type
   end
 end

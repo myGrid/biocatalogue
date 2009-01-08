@@ -47,7 +47,7 @@ class AnnotationsController < ApplicationController
   def create
     if params[:annotation][:source_type].blank? and params[:annotation][:source_id].blank?
       if logged_in?
-        params[:annotation][:source_type] = 'User'
+        params[:annotation][:source_type] = current_user.class.name
         params[:annotation][:source_id] = current_user.id
       end
     end
