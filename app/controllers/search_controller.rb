@@ -84,28 +84,32 @@ protected
   def get_all_results(query)
     # First go through each model and fetch all search results.
     
-    limit = 1000
+    limit = 5000
     all_results = [ ]
     
-    all_results.concat(Service.find_by_solr(query, :limit => limit).results)
-    all_results.concat(ServiceVersion.find_by_solr(query, :limit => limit).results)
-    all_results.concat(ServiceDeployment.find_by_solr(query, :limit => limit).results)
-    all_results.concat(SoapService.find_by_solr(query, :limit => limit).results)
-    all_results.concat(SoapOperation.find_by_solr(query, :limit => limit).results)
-    all_results.concat(SoapInput.find_by_solr(query, :limit => limit).results)
-    all_results.concat(SoapOutput.find_by_solr(query, :limit => limit).results)
-    all_results.concat(User.find_by_solr(query, :limit => limit).results)
-    all_results.concat(ServiceProvider.find_by_solr(query, :limit => limit).results)
-    all_results.concat(Annotation.find_by_solr(query, :limit => limit).results)
+    # ===========
+    # NOTE: do not use Service.find_by_solr as this will break due to a bad bug in acts_as_solr. 
+    # This bug essentially treates any model with the word "Service" in it as a Service object
+    # and therefore parses the results from solr wrongly!    
+    # ===========
+    
+    # As new models are indexed (and therefore need to be searched on) add them here.
+    models = [ Service, ServiceVersion, ServiceDeployment,
+               SoapService, SoapOperation, SoapInput, SoapOutput,
+               User, ServiceProvider,
+               Annotation ]
+    
+    
+    all_results = Service.multi_solr_search(query, :limit => limit, :models => models).results
     
     # Then collect together the appropriate results.
     
     total_count = 0
     grouped_results = { }
     
-    models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
+    search_type_models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
     
-    models.each do |m|
+    search_type_models.each do |m|
       m_name = m.to_s
       grouped_results[m_name] = BioCatalogue::Util.discover_model_objects_from_collection(m, all_results)
       total_count = total_count + grouped_results[m_name].length
