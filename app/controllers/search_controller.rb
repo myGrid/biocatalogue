@@ -33,6 +33,13 @@ class SearchController < ApplicationController
       return
     end
     
+    # Check if the query was for a URL, in which case wrap it in quotation marks in order to get through the solr query parser.
+    if @query.starts_with?("http://") or 
+       @query.starts_with?("https://")
+      @query = '"' + @query
+      @query = @query + '"'
+    end
+    
     @type = params[:type]
     
     if @type.blank?

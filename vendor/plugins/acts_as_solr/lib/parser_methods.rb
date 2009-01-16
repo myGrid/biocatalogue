@@ -37,10 +37,10 @@ module ActsAsSolr #:nodoc:
         end
         
         query_options[:field_list] = [field_list, 'score']
-        # Changed 11/12/08 by Jits - this was preventing URLs from being found.
-        # Note: this is a temporary hack!
-        #query = "(#{query.gsub(/ *: */,"_t:")}) #{models}"
-        query = "(#{query}) #{models}"
+        # UPDATED by Jits, for BioCatalogue (2009-01-16):
+        # The processing of field names to add an "_t" should only be done if the query doesn't start and end with double quotation marks.
+        # This is required to search for things like URLs, that have strings like "http:" in them.
+        query = "(#{query.gsub(/ *: */,"_t:")}) #{models}" unless query.starts_with?('"') and query.ends_with?('"')
         order = options[:order].split(/\s*,\s*/).collect{|e| e.gsub(/\s+/,'_t ').gsub(/\bscore_t\b/, 'score')  }.join(',') if options[:order] 
         query_options[:query] = replace_types([query])[0] # TODO adjust replace_types to work with String or Array  
 
