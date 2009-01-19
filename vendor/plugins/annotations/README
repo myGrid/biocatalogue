@@ -5,7 +5,7 @@ Allows for annotations to be added to multiple and different models.
 
 To run the tests for just this plugin:
 - ensure the gem 'plugin_test_helper' is installed (only tested with v0.2.0.0).
-- ensure database 'annotations_plugin_test' exists.
+- ensure database 'annotations_plugin_test' exists on a local mysql server installation (with default ports). 
 - run: rake test:plugins PLUGIN=annotations
 
 KNOWN ISSUES:
