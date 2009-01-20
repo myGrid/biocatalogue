@@ -23,6 +23,16 @@
   <div class="tabbertab">
     <h3>Overview</h3>
 		
+		<p>
+			<b>Aliases:</b>
+			<br/>
+			<% unless (aliases = @service.annotations_with_attribute("name")).empty? %>
+					<% aliases.each do |al| %>
+						<%= h(al.value) -%><br/>
+					<% end %>
+				<% end %>
+		</p>
+		
 		<% if false %>
 		<p>
 		  <b>Unique code:</b>

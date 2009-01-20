@@ -19,6 +19,15 @@
 					<%= service_location_flags(service) -%>
 				</p>
 				
+				<% unless (aliases = service.annotations_with_attribute("name")).empty? %>
+					<p class="aliases" style="margin-bottom: 1em;">
+						<% aliases.each do |al| %>
+							<span style="color: #666666;">aka</span>
+							<span style="font-weight: bold; margin-right: 1em;"><%= h(al.value) -%></span>
+						<% end %>
+					</p>
+				<% end %>
+				
 				<%= render :partial => "annotations/descriptions",
 							 		 :locals => { :annotatable => service_version_instance,
 																:show_header => false,
