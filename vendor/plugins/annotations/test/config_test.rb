@@ -58,7 +58,7 @@ class ConfigTest < Test::Unit::TestCase
     
     # Strip 'tag'
     
-    ann1 = Annotation.create(:attribute_name => "tag", 
+    ann1 = Annotation.create(:attribute_name => "Tag", 
                             :value => 'v,al"ue', 
                             :source_type => source.class.name, 
                             :source_id => source.id,

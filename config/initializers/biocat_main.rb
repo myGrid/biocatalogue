@@ -41,6 +41,6 @@ end
 
 Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "tag" ])
 
-Annotations::Config.strip_text_rules.merge({ "tag" => [ '"' ] })
+Annotations::Config.strip_text_rules.update({ "tag" => [ '"' ] })
 
 # ==========
