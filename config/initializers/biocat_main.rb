@@ -33,5 +33,14 @@ class ActiveRecord::Base
   @@per_page = 10
 end
 
+# ==========
 # Configure the Annotations plugin...
+# ----------
+
+# Remember that all attribute names specified MUST be in lowercase
+
 Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "tag" ])
+
+Annotations::Config.strip_text_rules.merge({ "tag" => [ '"' ] })
+
+# ==========

@@ -120,7 +120,20 @@ class Annotation < ActiveRecord::Base
   end
   
   def process_value_adjustments
+    # Make lowercase or uppercase if required
     self.value.downcase! if Annotations::Config::attribute_names_for_values_to_be_downcased.include?(self.attribute_name.downcase)
     self.value.upcase! if Annotations::Config::attribute_names_for_values_to_be_upcased.include?(self.attribute_name.downcase)
+    
+    Annotations::Config::strip_text_rules.each do |attr, strip_rules|
+      if self.attribute_name.downcase == attr.downcase
+        if strip_rules.is_a? Array
+          strip_rules.each do |s|
+            self.value = self.value.gsub(s, '')
+          end
+        elsif strip_rules.is_a? String or strip_rules.is_a? Regexp
+          self.value = self.value.gsub(strip_rules, '')
+        end
+      end
+    end
   end
 end
