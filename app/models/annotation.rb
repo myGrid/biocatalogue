@@ -13,6 +13,8 @@ require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/models/anno
 class Annotation < ActiveRecord::Base
   include WhiteListHelper
   
+  acts_as_trashable
+  
   before_save :sanitise_value
   
   if USE_EVENT_LOG
