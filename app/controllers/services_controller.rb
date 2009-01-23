@@ -8,8 +8,6 @@ class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update, :destroy ]
   
-  before_filter :set_sidebar_layout, :only => [ :show ]
-  
   # Set the sidebar layout for certain actions.
   # Note: the set_sidebar_layout method resides in the ApplicationController.
   #before_filter :set_sidebar_layout, :only => [ :show ]
