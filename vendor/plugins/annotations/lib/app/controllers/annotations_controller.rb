@@ -1,5 +1,8 @@
 class AnnotationsController < ApplicationController
+  
+  before_filter :find_annotation, :only => [ :show, :edit, :update, :destroy ]   
   before_filter :find_annotatable, :except => [ :show, :edit, :update, :destroy ]
+  before_filter :authorise, :only =>  [ :edit, :update, :destroy ]
   
   # GET /annotations
   # GET /annotations.xml
@@ -23,8 +26,6 @@ class AnnotationsController < ApplicationController
   # GET /annotations/1
   # GET /annotations/1.xml
   def show
-    @annotation = Annotation.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @annotation }
@@ -105,10 +106,20 @@ class AnnotationsController < ApplicationController
   # DELETE /annotations/1
   # DELETE /annotations/1.xml
   def destroy
-    raise ActionController::UnknownAction.new
+    @annotation.destroy
+
+    respond_to do |format|
+      flash[:notice] = 'Annotation successfully deleted.'
+      format.html { redirect_to :back }
+      format.xml  { head :ok }
+    end
   end
   
   protected
+  
+  def find_annotation
+    @annotation = Annotation.find(params[:id])
+  end
   
   def find_annotatable
     @annotatable = nil
@@ -121,5 +132,19 @@ class AnnotationsController < ApplicationController
     if @annotatable.nil?
       @annotatable = Annotation.find_annotatable(params[:annotatable_type], params[:annotatable_id])
     end
+  end
+  
+  # Currently only checks that the source of the annotation matches the current user
+  def authorise
+    unless logged_in? and @annotation.source == current_user
+      # TODO: return either a 401 or 403 depending on authentication
+      respond_to do |format|
+        flash[:error] = 'You are not allowed to perform this action.'
+        format.html { redirect_to :back }
+        format.xml  { head :forbidden }
+      end
+      return false
+    end
+    return true
   end
 end

@@ -100,6 +100,8 @@ class ApplicationController < ActionController::Base
     case thing.class.to_s
     when "User"
       return c_id == thing.id 
+    when "Annotation"
+      return thing.source == current_user
     else
       return false
     end

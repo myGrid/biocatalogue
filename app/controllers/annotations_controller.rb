@@ -16,7 +16,7 @@ class AnnotationsController < ApplicationController
   # Note: the controller in the plugin has already disabled these actions
   # BUT throws a 404, whereas we would like to use the specific disable_action 
   # method we have set up in the main app.
-  before_filter :disable_action, :only => [ :edit, :update, :destroy ]
+  before_filter :disable_action, :only => [ :edit ]
   
   before_filter :set_no_layout, :only => [ :new_popup ]
   

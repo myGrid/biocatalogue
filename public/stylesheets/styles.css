@@ -1292,16 +1292,20 @@ ul.tabbernav li.tabberactive a:hover
 	background-color: #EEF0FF;
 }
 
+.box_annotations .actions {
+	margin: 0.6em 0 0 0; 
+	font-size: 0.8em;
+	color: #666;
+	text-align: right;
+}
+
 .annotation_source_text {
-	float:right;
-	margin-left:1em;
+	float: right;
 	color: #666;
 	background-color: #FFC;
 	font-size: 0.8em;
-	margin: 0;
-	margin-right: -0.3em;
+	margin: -0.3em -0.6em 0 1em;
 	padding: 0.1em 0.5em;
-	vertical-align: top;
 }
 
 .annotation_source_provider {
@@ -1310,7 +1314,6 @@ ul.tabbernav li.tabberactive a:hover
 
 .annotation_source_user {
 	background-color: #FFC;
-	
 }
 
 /* END annotations styles */
