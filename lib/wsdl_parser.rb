@@ -99,7 +99,7 @@ module BioCatalogue
     def WsdlParser.get_service_info(wsdl_hash)
       service_info = {}
       service_info["name"]        = wsdl_hash["definitions"]["service"]["name"]
-      service_info["description"] = wsdl_hash["definitions"]["documentation"] || wsdl_hash["definitions"]["service"]["documentation"]
+      service_info["description"] = wsdl_hash["definitions"]["documentation"] || wsdl_hash["definitions"]["service"]["documentation"] || wsdl_hash["definitions"]["service"]['port']["documentation"]
       service_info["end_point"]   = Addressable::URI.parse(get_service_end_point(wsdl_hash)).normalize.to_s
       
       operations_ = map_messages_and_operations(wsdl_hash)
