@@ -9,7 +9,7 @@ class AnnotationsController < ApplicationController
   def index
     params[:num] ||= 50
     
-    @latest_annotations =  
+    @annotations =  
     if @annotatable.nil?
       Annotation.find(:all, :limit => params[:num])      
     else
@@ -17,9 +17,8 @@ class AnnotationsController < ApplicationController
     end
 
     respond_to do |format|
-      # HTML view over index of annotations is not allowed.
       format.html # index.html.erb
-      format.xml  { render :xml => @latest_annotations }
+      format.xml  { render :xml => @annotations }
     end
   end
 
