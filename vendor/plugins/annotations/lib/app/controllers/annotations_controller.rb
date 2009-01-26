@@ -1,8 +1,8 @@
 class AnnotationsController < ApplicationController
   
-  before_filter :find_annotation, :only => [ :show, :edit, :update, :destroy ]   
+  before_filter :find_annotation, :only => [ :show, :edit, :update, :destroy ] 
   before_filter :find_annotatable, :except => [ :show, :edit, :update, :destroy ]
-  before_filter :authorise, :only =>  [ :edit, :update, :destroy ]
+  before_filter :authorise_action, :only =>  [ :edit, :update, :destroy ]
   
   # GET /annotations
   # GET /annotations.xml
@@ -93,13 +93,22 @@ class AnnotationsController < ApplicationController
   
   # GET /annotations/1/edit
   def edit
-    raise ActionController::UnknownAction.new
   end
 
   # PUT /annotations/1
   # PUT /annotations/1.xml
   def update
-    raise ActionController::UnknownAction.new
+    @annotation.value = params[:annotation][:value]
+    respond_to do |format|
+      if @annotation.save
+        flash[:notice] = 'Annotation was successfully updated.'
+        format.html { redirect_to :back }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @annotation.errors, :status => :unprocessable_entity }
+      end
+    end
   end
 
   # DELETE /annotations/1
@@ -134,8 +143,8 @@ class AnnotationsController < ApplicationController
   end
   
   # Currently only checks that the source of the annotation matches the current user
-  def authorise
-    unless logged_in? and @annotation.source == current_user
+  def authorise_action
+    if !logged_in? or (@annotation.source != current_user)
       # TODO: return either a 401 or 403 depending on authentication
       respond_to do |format|
         flash[:error] = 'You are not allowed to perform this action.'

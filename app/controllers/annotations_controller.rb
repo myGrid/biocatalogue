@@ -16,14 +16,14 @@ class AnnotationsController < ApplicationController
   # Note: the controller in the plugin has already disabled these actions
   # BUT throws a 404, whereas we would like to use the specific disable_action 
   # method we have set up in the main app.
-  before_filter :disable_action, :only => [ :edit ]
+  before_filter :disable_action, :only => [ :index, :show, :edit ]
   
-  before_filter :set_no_layout, :only => [ :new_popup ]
+  before_filter :set_no_layout, :only => [ :new_popup, :edit_popup ]
   
   def new_popup
     # @annotatable is set in a before filter from the controller in the plugin. 
     if @annotatable.nil?
-      flash[:error] = "Could not begin annotation (the thing you want to annotate is not specified or is invalid)."
+      flash[:error] = "Could not begin annotation (the thing you want to annotate is not specified or is invalid). Please contact the BioCatalogue folks."
       respond_to do |format|
         format.js {
           render :update do |page|
@@ -45,6 +45,17 @@ class AnnotationsController < ApplicationController
       respond_to do |format|
         format.js # new_popup.html.erb
       end
+    end
+  end
+  
+  def edit_popup
+    # Call an available before filter method (in plugin's controller).
+    # If this fails, it will throw an exception that ActionController will catch,
+    # so we don't need to check the success of it.
+    find_annotation
+    
+    respond_to do |format|
+      format.js # edit_popup.html.erb
     end
   end
 end

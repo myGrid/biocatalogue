@@ -1,0 +1,30 @@
+<div class="redbox_contents" style="width:500px;">
+	<div class="head">
+		<%= link_to_close_redbox image_tag("close.gif"), :style => "float:right; margin-left:0.5em; vertical-align:middle;" -%>
+		<span style="vertical-align:middle;">
+			Edit Annotation - <%=  h(@annotation.attribute_name) -%>
+		</span>
+	</div>
+	
+	<div class="body">
+		<% form_for :annotation, @annotation, :url => annotation_url(@annotation), :html => { :method => :put } do |f| %>
+		
+			<div class="box_info_standout">
+				<%= "You are editing an annotation you previously made, for #{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name)}." -%>
+			</div>
+			
+			<p style="margin-bottom: 0.4em;">
+				<b><%=  h(@annotation.attribute_name) -%></b>
+			</p>
+			<p style="margin-top: 0.3em;">
+				<%= f.text_area :value, :size => "50x10", :style => "width: 98%;" -%>
+			</p>
+			
+		  <p style="text-align: center;">
+		    <%= f.submit "Update", :disable_with => "Updating..." -%>
+				<%= button_to_function "Close", "RedBox.close()" -%>
+		  </p>
+			
+		<% end %>
+	</div>
+</div>

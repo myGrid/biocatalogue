@@ -124,6 +124,7 @@ class Annotation < ActiveRecord::Base
     self.value.downcase! if Annotations::Config::attribute_names_for_values_to_be_downcased.include?(self.attribute_name.downcase)
     self.value.upcase! if Annotations::Config::attribute_names_for_values_to_be_upcased.include?(self.attribute_name.downcase)
     
+    # Apply strip text rules
     Annotations::Config::strip_text_rules.each do |attr, strip_rules|
       if self.attribute_name.downcase == attr.downcase
         if strip_rules.is_a? Array

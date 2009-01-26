@@ -131,6 +131,8 @@ module ApplicationHelper
   #    default: ''
   #  :show_icon - specifies whether to show the standard annotate icon or not.
   #    default: true
+  #  :icon_filename - the filename of the image in the /public/images directory.
+  #    default: 'note_add.png'
   #  :show_not_logged_in_text - specifies whether to display some text when a user is not logged in, in place of the annotate icon/text (will display something like: "log in to add description", where "log in" links to the login page).
   #    default: true
   #  :multiple - specified whether multiple annotations need to be created at once (eg: for tags).
@@ -140,11 +142,13 @@ module ApplicationHelper
   def annotation_add_by_popup_link(annotatable, *args)
      # Do options the Rails Way ;-)
     options = args.extract_options!
+    # defaults:
     options.reverse_merge!(:attribute_name => nil,
                            :tooltip_text => 'Add annotation',
                            :style => nil,
                            :link_text => '',
-                           :show_icon => true, 
+                           :show_icon => true,
+                           :icon_filename => 'note_add.png',
                            :show_not_logged_in_text => true,
                            :multiple => false, 
                            :multiple_separator => ',')
@@ -152,7 +156,7 @@ module ApplicationHelper
     if logged_in?
       link_html = ''
       link_html = link_html + "<span style='vertical-align:middle'>#{options[:link_text]}</span>" unless options[:link_text].blank?
-      link_html = image_tag('pencil_hover.gif', :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if options[:show_icon]
+      link_html = image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if options[:show_icon]
       
       url_options = { :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id }
       url_options[:attribute_name] = options[:attribute_name] unless options[:attribute_name].nil?
@@ -175,14 +179,51 @@ module ApplicationHelper
     end
   end
   
+  # This method is used to generate an icon and/or link that will popup up an in page dialog box for the user to edit an annotation.
+  # 
+  # It takes in the annotation object that needs to be edited and some options (all optional):
+  #  :tooltip_text - text that will be displayed in a tooltip over the icon/text.
+  #    default: 'Edit annotation'
+  #  :style - any CSS inline styles that need to be applied to the icon/text.
+  #    default: nil
+  #  :link_text - text to be displayed as part of the link.
+  #    default: 'edit'
+  #  :show_icon - specifies whether to show the standard edit annotation icon or not.
+  #    default: false
+  #  :icon_filename - the filename of the image in the /public/images directory.
+  #    default: 'note_edit.png'
+  def annotation_edit_by_popup_link(annotation, *args)
+    # Do options the Rails Way ;-)
+    options = args.extract_options!
+    # defaults:
+    options.reverse_merge!(:attribute_name => nil,
+                           :tooltip_text => 'Edit annotation',
+                           :style => nil,
+                           :link_text => 'edit',
+                           :show_icon => false,
+                           :icon_filename => 'note_edit.png')
+                           
+    link_html = ''
+    link_html = link_html + "<span style='vertical-align:middle'>#{options[:link_text]}</span>" unless options[:link_text].blank?
+    link_html = image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if options[:show_icon]
+    
+    return link_to_remote_redbox(link_html, 
+                                 { :url => edit_popup_annotation_url(annotation),
+                                   :id => "edit_ann_#{annotation.id}_redbox",
+                                   :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" }, 
+                                 { :style => options[:style], 
+                                   :alt => options[:tooltip_text], 
+                                   :title => tooltip_title_attrib(options[:tooltip_text]) })
+  end
+  
   def annotation_add_info_text(attribute_name, annotatable)
     return '' if annotatable.nil?
     
     if attribute_name.blank?
-      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
+      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>."
     else
       #return "You are adding a <b>#{attribute_name}</b> for the #{annotatable.class.name.titleize}: <b/>#{annotatable.annotatable_name}</b>"
-      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
+      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>."
     end
     
   end

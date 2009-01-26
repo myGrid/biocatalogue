@@ -7,7 +7,8 @@
 ActionController::Routing::Routes.draw do |map|
   # Routes from the annotations plugin
   Annotations.map_routes(map, 
-                         { :new_popup => :get })
+                         { :new_popup => :post }, 
+                         { :edit_popup => :post })
   
   map.search '/search', :controller => 'search', :action => 'show'
   map.connect '/search/:query', :controller => 'search', :action => 'show'
