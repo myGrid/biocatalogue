@@ -5,6 +5,8 @@
 # See license.txt for details
 
 require 'open-uri'
+require 'soap/wsdlDriver'
+require 'ftools'
 
 class SoaplabServer < ActiveRecord::Base
   acts_as_trashable
@@ -27,7 +29,7 @@ class SoaplabServer < ActiveRecord::Base
     @error_urls        = []
     @existing_services = []
     @new_services      = []
-    @wsdl_urls         = get_wsdl_from_server(self.location)
+    @wsdl_urls         = get_wsdls_from_server(self.location)
     
     unless @wsdl_urls.empty?  
       @wsdl_urls.each { |url|
@@ -40,7 +42,7 @@ class SoaplabServer < ActiveRecord::Base
         transaction do
           begin
             if success 
-              c_success = soap_service.create_service(data["endpoint"], current_user, annotation=nil) 
+              c_success = soap_service.create_service(data["endpoint"], current_user, {:tag => 'soaplab'}) 
               if c_success
                 @new_services << soap_service.service(true)
                 logger.info("INFO: registered service - #{url}. SUCCESS:")
@@ -61,18 +63,26 @@ class SoaplabServer < ActiveRecord::Base
     return [@new_services, @existing_services, @error_urls]
   end
     
-  # hack to get the wsdl documents from
-  # a soaplab server
-  def get_wsdl_from_server(server_url)
+  
+  #Get list of wsdls from server by using the soaplab server API
+  def get_wsdls_from_server(server_wsdl)
     begin
-      wsdls = []  
-      open(server_url.strip()).each { |line|
-        wsdls << line.split('"')[1] if line =~ /http:/ or line =~ /https:/}
-      wsdls 
+      wsdls = [] 
+      proxy = SOAP::WSDLDriverFactory.new(server_wsdl).create_rpc_driver
+      wsdls = get_wsdls(proxy)
     rescue
-      errors.add_to_base("there were problems accessing the soaplab server")
+      errors.add_to_base("there were problems getting wsdls from server ")  
       wsdls
     end
+  end
+  
+  def get_wsdls(proxy)
+    wsdls = []
+    base  = proxy.getServiceLocation("").return
+    tools = proxy.getAvailableAnalyses("").return
+    tools.each{ |t| wsdls << File.join(base, t+'?wsdl')}
+    
+    return wsdls
   end
    
 end
