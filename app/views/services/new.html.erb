@@ -16,19 +16,16 @@
 	Click on the type of service you would like to submit...
 </p>
 
-<ul>
-	<% SERVICE_TYPES.each do |name, klass| -%>
-		<li>
-			<%= link_to(name, eval("new_#{klass.to_s.underscore}_url")) -%>
-		</li>
-	<% end %>
+<ul class="buttons" style="text-align: left;">
+	<li class="first"><%= link_to("SOAP", new_soap_service_url) -%></li>
 </ul>
 
 <br/>
-<!--
+
+<p><b>Coming soon...</b></p>
 <ul>
-	<li>
-		<%= link_to("Batch SOAP Web Service submission", bulk_new_soap_services_url) -%>
-	</li>
+	<li>REST service registration</li>
+	<li>Soaplab server registration</li>
+	<li>Batch SOAP service registration</li>
+	<li>DAS service registration</li>
 </ul>
--->

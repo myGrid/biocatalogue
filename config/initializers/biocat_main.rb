@@ -4,11 +4,11 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-# Mappings for service types supported, to corresponding model classes.
+# Mappings for service types supported, to corresponding model class names.
 SERVICE_TYPES = {
-  "SOAP Web Service"  => SoapService,
-  #"REST Web Service"  => RestService,
-  #"Soaplab Server"    => SoaplabServer
+  "SOAP Web Service"  => "SoapService",
+  #"REST Web Service"  => "RestService",
+  #"Soaplab Server"    => "SoaplabServer"
 }
 
 # Initialise the country codes

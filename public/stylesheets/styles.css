@@ -1333,3 +1333,59 @@ ul.tabbernav li.tabberactive a:hover
 	list-style: decimal;
 }
 /* END terms of use page styles */
+
+/* BEGIN generic horizontal buttons classes */
+/* Should be used with <ul> elements */
+
+.buttons {
+	margin: 2em 0;
+	font-weight: bold;
+	text-align: center;
+}
+
+.buttons * {
+	vertical-align: middle;
+}
+
+.buttons li {
+	display: inline;
+	vertical-align: middle;
+	margin: 0;
+	margin-left: 8px;
+}
+
+.buttons li.first {
+	margin-left: 0;
+}
+
+.buttons li:first {
+	margin-left: 0;
+}
+
+.buttons li:hover {
+}
+
+.buttons li * {
+	vertical-align: middle;
+}
+
+.buttons li a {
+	width: 100%;
+	padding: 0.5em 0.5em;
+	*padding: 0.2em 0.5em;
+	line-height: 1.0;
+	text-decoration: none;
+	border: 1px solid #BBBBBB;
+	background-color: #EEF6FF;
+}
+
+.buttons li a:hover {
+	background-color: #0099FF;
+	color: #F5F5F5;
+}
+
+.buttons li a * {
+	vertical-align: middle;
+}
+
+/* END generic horizontal buttons classes */
