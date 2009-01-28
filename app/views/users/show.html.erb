@@ -42,7 +42,7 @@
 <div class="tabber">
 	
   <div class="tabbertab">
-    <h3><%= "Services submitted (#{@users_services.length})" -%></h3>
+    <h3><%= "Services submitted (#{@users_services.total_entries})" -%></h3>
     
 		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_services } %>
 		
