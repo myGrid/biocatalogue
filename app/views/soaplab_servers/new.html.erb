@@ -1,6 +1,6 @@
 <%
 
-# BioCatalogue: app/views/soaplab_servers/new.html.erb
+# BioCatalogue: app/views/soaplab_servers/biocat_style_new.html.erb
 #
 # Copyright (c) 2008, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -8,23 +8,31 @@
 
 %>
 
-<h1>New soaplab_server</h1>
+<% t "New Soaplab Server" -%>
 
-<% form_for(@soaplab_server) do |f| %>
-  <%= f.error_messages %>
+<h1>New Soaplab Server</h1>
+
+<%= error_messages_for :soaplab_server %>
+
+<p class="step_text">1. Specify the URL to the WSDL that lists all the tools in the soaplab server, then preview...</p>
+<i>e.g http://www.ebi.ac.uk/soaplab/typed/services/list?wsdl</i>
+<% form_remote_tag(:url => load_wsdl_soaplab_servers_url, 
+								   :update => 'soaplab_server_after_wsdl_load', 
+							 		 :success => "new Effect.Highlight('soap_service_form', { duration: 1.5 });",
+									 :failure => "alert('Sorry, an error has occurred.');",
+							     :loading => "Element.show('spinner')",
+                   :complete => "Element.hide('spinner')") do %>
 	
-	<p>
-   	Name <br />
-    <%= f.text_field :name %>
-  </p>
-   <p>
-   	Location <br />
-    <%= f.text_field :location %>
-  </p>
+	<div>
+		<p style=" margin-top: 0;">
+			<%= text_field_tag "wsdl_url", params[:wsdl_url], :size => 60 -%>
+			<%= submit_tag "Preview" -%>
+			<%= image_tag "spinner.gif", :id => "spinner", :style => "display: none; vertical-align: middle;" -%>
+		</p>
+	</div>
 
-  <p>
-    <%= f.submit "Create" %>
-  </p>
-<% end %>
+<% end -%>
 
-<%= link_to 'Back', soaplab_servers_path %>
+<div id="soaplab_server_after_wsdl_load">
+	<%= render :partial => "after_wsdl_load" %>
+</div>

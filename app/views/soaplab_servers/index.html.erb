@@ -13,17 +13,13 @@
 <p/>
 <table>
   <tr>
-  	<th>Name</th>
     <th>Location</th>
   </tr>
 
 <% for soaplab_server in @soaplab_servers %>
   <tr>
-  	<td><%=h soaplab_server.name %></td>
     <td><%=h soaplab_server.location %></td>
-    <td><%= link_to 'Show', soaplab_servers_path %></td>
-    
-    <td><%= link_to 'Destroy', soaplab_server, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show all Services', soaplab_server %></td>
   </tr>
 <% end %>
 </table>

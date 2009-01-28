@@ -1,0 +1,84 @@
+<%
+
+# BioCatalogue: app/views/soap_services/_new_form.html.erb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% form_for(@soaplab_server) do |f| %>
+	<%= f.error_messages %>
+	
+	<table style="width: 100%; line-height: 1.5;">
+		<tr>
+			<td style="width: 49%; padding-right: 1em; ">
+
+				<fieldset>
+					<legend>Information from Soaplab Server</legend>
+					
+					<!-- WSDL Location -->
+					<%= f.hidden_field :location -%>
+					
+					<!-- Location -->
+					<div>
+						Location: <br/>
+						<% if @wsdl_geo_location %>
+							<p class="field"><%= geo_loc_to_text(@wsdl_geo_location) -%></p>
+						<% else %>
+							<p class="none_text">Not available</p>
+						<% end %>
+				  </div>
+					
+					<br/>
+					
+					
+					<!-- services -->
+					<% if @wsdl_info %>
+						<div>
+							<p><b>This server has has the following services:</b></p>
+							
+							<div class="field">
+								<ul>
+									<% @wsdl_info["tools"].each do |service| -%>
+										<li><%= h service -%></li>
+									<% end -%>
+								</ul>
+							</div>
+						</div>
+					<% end -%>
+					
+				</fieldset>
+				
+			</td>
+			<td style="width: 49%; padding-left: 1em;">
+				<fieldset>
+					<legend>Extra Information</legend>
+					
+					<!-- Add new name alias -->
+					<p>
+						<%= link_to_function "Add name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
+					</p>
+					
+					
+					<!-- Add new description -->
+					<p>
+						<%= link_to_function "Add description...", visual_effect(:toggle_blind, "new_description_box", :duration => 0.3) %>
+					</p>
+					
+					
+					<!-- Add documentation URL -->
+					<p>
+						<%= link_to_function "Add documentation URL...", visual_effect(:toggle_blind, "doc_url_box", :duration => 0.3) %>
+					</p>
+					
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+	
+  <p style="text-align: center; margin-top: 1.5em;">
+    <%= f.submit "Submit", :disable_with => "Submitting...", :disabled => @wsdl_info.nil? %>
+  </p>
+<% end %>

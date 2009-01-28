@@ -8,4 +8,15 @@
 
 %>
 
+<% t "Soaplab Server Show Services" -%>
 
+
+<h1>Services in BioCatalogue from this Soaplab Server</h1>
+
+<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
+
+<div id="latest_services" style="margin: 1em 0;">
+	<%= render :partial => "services/listing", :locals => { :items => @services } %>
+</div>
+
+<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @services } %>
