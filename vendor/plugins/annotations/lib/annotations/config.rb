@@ -18,11 +18,15 @@ module Annotations
     # NOTE: The attribute names specified MUST all be in lowercase.    
     @@strip_text_rules = { }
     
+    # This allows you to specify a different model name for users in the system (if different from the default: "User").
+    @@user_model_name = "User"
+    
     # This makes the variables above available externally.
     # Shamelessly borrowed from GeoKit.
     [ :attribute_names_for_values_to_be_downcased,
       :attribute_names_for_values_to_be_upcased,
-      :strip_text_rules ].each do |sym|
+      :strip_text_rules,
+      :user_model_name ].each do |sym|
       class_eval <<-EOS, __FILE__, __LINE__
         def self.#{sym}
           if defined?(#{sym.to_s.upcase})

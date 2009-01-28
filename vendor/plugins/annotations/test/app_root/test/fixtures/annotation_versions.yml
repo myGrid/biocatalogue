@@ -1,4 +1,5 @@
-bh_summary_1:
+bh_summary_1_av1:
+  annotation: bh_summary_1
   annotatable_type: Book
   annotatable_id: 1
   attribute_id: 2
@@ -10,7 +11,8 @@ bh_summary_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
 
-bh_length_1:
+bh_length_1_av1:
+  annotation: bh_length_1
   annotatable_type: Book
   annotatable_id: 1
   attribute_id: 3
@@ -22,7 +24,8 @@ bh_length_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-bh_title_1:
+bh_title_1_av1:
+  annotation: bh_title_1
   annotatable_type: Book
   annotatable_id: 1
   attribute_id: 4
@@ -34,7 +37,8 @@ bh_title_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
 
-bh_rating_1:
+bh_rating_1_av1:
+  annotation: bh_rating_1
   annotatable_type: Rating
   annotatable_id: 1
   attribute_id: 9
@@ -46,7 +50,8 @@ bh_rating_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
 
-bh_tag_1:
+bh_tag_1_av1:
+  annotation: bh_tag_1
   annotatable_type: Book
   annotatable_id: 1
   attribute_id: 1
@@ -58,7 +63,8 @@ bh_tag_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
 
-bh_tag_2:
+bh_tag_2_av1:
+  annotation: bh_tag_2
   annotatable_type: Book
   annotatable_id: 1
   attribute_id: 1
@@ -70,7 +76,8 @@ bh_tag_2:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
 
-br_summary_1:
+br_summary_1_av1:
+  annotation: br_summary_1
   annotatable_type: Book
   annotatable_id: 2
   attribute_id: 2
@@ -82,7 +89,8 @@ br_summary_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_summary_2:
+br_summary_2_av1:
+  annotation: br_summary_2
   annotatable_type: Book
   annotatable_id: 2
   attribute_id: 2
@@ -94,7 +102,8 @@ br_summary_2:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_author_1:
+br_author_1_av1:
+  annotation: br_author_1
   annotatable_type: Book
   annotatable_id: 2
   attribute_id: 8
@@ -106,7 +115,8 @@ br_author_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_tag_1:
+br_tag_1_av1:
+  annotation: br_tag_1
   annotatable_type: Book
   annotatable_id: 2
   attribute_id: 1
@@ -118,7 +128,8 @@ br_tag_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_note_1:
+br_note_1_av1:
+  annotation: br_note_1
   annotatable_type: Book
   annotatable_id: 2
   attribute_id: 7
@@ -130,7 +141,8 @@ br_note_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
 
-bh_c10_endingtype_1:  
+bh_c10_endingtype_1_av1:
+  annotation: bh_c10_endingtype_1
   annotatable_type: Chapter
   annotatable_id: 2
   attribute_id: 6
@@ -142,7 +154,8 @@ bh_c10_endingtype_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-bh_c10_title_1:  
+bh_c10_title_1_av1:
+  annotation: bh_c10_title_1
   annotatable_type: Chapter
   annotatable_id: 2
   attribute_id: 4
@@ -154,7 +167,8 @@ bh_c10_title_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_c2_title_1:
+br_c2_title_1_av1:
+  annotation: br_c2_title_1
   annotatable_type: Chapter
   annotatable_id: 3
   attribute_id: 4
@@ -166,7 +180,8 @@ br_c2_title_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_c2_tag_1:
+br_c2_tag_1_av1:
+  annotation: br_c2_tag_1
   annotatable_type: Chapter
   annotatable_id: 3
   attribute_id: 1
@@ -178,7 +193,8 @@ br_c2_tag_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_c2_tag_2:
+br_c2_tag_2_av1:
+  annotation: br_c2_tag_2
   annotatable_type: Chapter
   annotatable_id: 3
   attribute_id: 1
@@ -190,7 +206,8 @@ br_c2_tag_2:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_c2_title_2:
+br_c2_title_2_av1:
+  annotation: br_c2_title_2
   annotatable_type: Chapter
   annotatable_id: 3
   attribute_id: 4
@@ -202,7 +219,8 @@ br_c2_title_2:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_c202_complexity_1:
+br_c202_complexity_1_av1:
+  annotation: br_c202_complexity_1
   annotatable_type: Chapter
   annotatable_id: 4
   attribute_id: 5
@@ -214,7 +232,8 @@ br_c202_complexity_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
 
-br_c202_title_1:
+br_c202_title_1_av1:
+  annotation: br_c202_title_1
   annotatable_type: Chapter
   annotatable_id: 4
   attribute_id: 4
@@ -226,7 +245,8 @@ br_c202_title_1:
   created_at: <%= 1.minute.ago.to_s(:db) %>
   updated_at: <%= 1.minute.ago.to_s(:db) %>
   
-br_c202_tag_1:
+br_c202_tag_1_av1:
+  annotation: br_c202_tag_1
   annotatable_type: Chapter
   annotatable_id: 4
   attribute_id: 1

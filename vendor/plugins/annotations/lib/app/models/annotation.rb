@@ -1,4 +1,6 @@
 class Annotation < ActiveRecord::Base
+  include AnnotationsVersionFu
+  
   before_validation_on_create :set_default_value_type
   
   before_save :check_annotatable
@@ -14,7 +16,10 @@ class Annotation < ActiveRecord::Base
   belongs_to :attribute,
              :class_name => "AnnotationAttribute",
              :foreign_key => "attribute_id"
-             
+
+  belongs_to :version_creator, 
+             :class_name => Annotations::Config.user_model_name
+  
   validates_presence_of :source_type,
                         :source_id,
                         :annotatable_type,
@@ -22,6 +27,35 @@ class Annotation < ActiveRecord::Base
                         :attribute_id,
                         :value,
                         :value_type
+  
+  # ========================
+  # Versioning configuration
+  # ------------------------
+  
+  annotations_version_fu do
+    belongs_to :annotatable, 
+               :polymorphic => true
+    
+    belongs_to :source, 
+               :polymorphic => true
+               
+    belongs_to :attribute,
+               :class_name => "AnnotationAttribute",
+               :foreign_key => "attribute_id"
+             
+    belongs_to :version_creator, 
+               :class_name => "::#{Annotations::Config.user_model_name}"
+    
+    validates_presence_of :source_type,
+                          :source_id,
+                          :annotatable_type,
+                          :annotatable_id,
+                          :attribute_id,
+                          :value,
+                          :value_type
+  end
+  
+  # ========================
   
   # Returns all the annotatable objects that have a specified attribute name and value.
   # Note: both the attribute name and the value will be treated case insensitively.

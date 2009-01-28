@@ -99,6 +99,7 @@ class AnnotationsController < ApplicationController
   # PUT /annotations/1.xml
   def update
     @annotation.value = params[:annotation][:value]
+    @annotation.version_creator_id = current_user.id
     respond_to do |format|
       if @annotation.save
         flash[:notice] = 'Annotation was successfully updated.'

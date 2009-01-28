@@ -20,6 +20,7 @@ Test::Unit::TestCase.class_eval do
                     :users => User,
                     :groups => Group,
                     :annotations => Annotation,
+                    :annotation_versions => Annotation::Version,
                     :annotation_attributes => AnnotationAttribute,
                     :annotation_value_seeds => AnnotationValueSeed
 
