@@ -93,6 +93,12 @@ module Annotations
           end
           return "#{self.class.name}_#{id}"
         end
+        
+        # Returns the number of annotations on this annotatable object by the source type specified.
+        # To get all annotations, use the annotations_count method instead.
+        def count_annotations_by(source_type_in)
+          self.annotations.count(:conditions => [ "source_type = ?", source_type_in ])
+        end
       end
       
     end

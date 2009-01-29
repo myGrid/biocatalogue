@@ -53,6 +53,13 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     assert_equal "Hashing It Up", chapters(:br_c2).annotatable_name
   end
   
+  def test_count_annotations_by_instance_method
+    assert_equal 5, books(:h).annotations.count
+    assert_equal 2, books(:h).count_annotations_by("Group")
+    assert_equal 4, chapters(:br_c2).annotations.count
+    assert_equal 3, chapters(:br_c2).count_annotations_by("User")
+  end
+  
   def test_adding_of_annotation
     ch = chapters(:bh_c10)
     assert_equal 2, ch.annotations.length
