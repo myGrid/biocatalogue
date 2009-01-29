@@ -49,17 +49,11 @@
 					(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
 				</p>
 				
-				<p class="detail">
-					<b>Tags:</b>
-					<% unless (tag_annotations = service.annotations_with_attribute("tag")).empty? %>
-						| 
-						<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
-							<%= h(val) -%> |
-						<% end %>
-					<% else %>
-						<span class="none_text">none</span>
-					<% end %>
-				</p>
+				<div class="detail">
+					<%= render :partial => "annotations/tags_flat",
+								 		 :locals => { :annotatable => service,
+																	:show_add_option => false } -%>
+				</div>
 			</div>
 		<% end %>
 	<% end %>
