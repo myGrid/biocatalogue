@@ -15,25 +15,31 @@
 	
 	<% ops.each do |operation| %>
 		<div style="margin: 1em 0; padding: 1.5em 1.2em 1em 1.2em; border: 2px solid #CCC; line-height: 1.5;">
-			<b>Name:</b> 
-			<span class="operation_name" style="font-size: 1.2em;"><%= h operation.name -%></span>
-			
 			<div>
-				<%= render :partial => "annotations/tags_flat",
-								 	 :locals => { :annotatable => operation } -%>
-			</div>
-			
-			<div style="margin-bottom: 1em;">
-				<%= render :partial => "annotations/descriptions",
-								 	 :locals => { :annotatable => operation } -%>
-			 
+				<div style="float: left; width: 73%;">
+					<b>Name:</b>
+					<span class="operation_name" style="font-size: 1.2em;"><%= h operation.name -%></span>
+					
+					<div style="margin-bottom: 1em;">
+						<%= render :partial => "annotations/descriptions",
+										 	 :locals => { :annotatable => operation } -%>
+					 
+					</div>
+				</div>
+				
+				<div style="float: right; width: 24%; font-size: 0.9em;">
+					<%= render :partial => "annotations/tags_box",
+						 				 :locals => { :annotatable => operation } -%>
+				</div>
+				
+				<span class="clear"></span>
 			</div>
 			
 			<b>Inputs:</b>
-			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1em;">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 2em;">
 				<% operation.soap_inputs.each do |input| %>
 					<div class="port">
-						<div style="float: left; width: 70%;">
+						<div style="float: left; width: 73%;">
 							<span class="operation_name"><%= h input.name -%></span>
 							<% unless input.computational_type.blank? %>
 						  	(<%= h input.computational_type -%>) 
@@ -41,7 +47,7 @@
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => input } -%>
 						</div>
-						<div style="float: right; width: 27%; font-size: 0.9em;">
+						<div style="float: right; width: 24%; font-size: 0.9em;">
 							<%= render :partial => "annotations/tags_box",
 								 				 :locals => { :annotatable => input } -%>
 						</div>
@@ -51,10 +57,10 @@
 			</div>
 					
 			<b>Outputs:</b>
-			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1em;">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 2em;">
 				<% operation.soap_outputs.each do |output| %>
 					<div class="port">
-						<div style="float: left; width: 70%;">
+						<div style="float: left; width: 73%;">
 							<span class="operation_name"><%= h output.name -%></span>
 							<% unless output.computational_type.blank? %>
 						  	(<%= h output.computational_type -%>) 
@@ -62,11 +68,11 @@
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => output } -%>
 						</div>
-						<div style="float: right; width: 27%; font-size: 0.9em;">
+						<div style="float: right; width: 24%; font-size: 0.9em;">
 							<%= render :partial => "annotations/tags_box",
 								 				 :locals => { :annotatable => output } -%>
 						</div>
-						<span class="clear"></span>	
+						<span class="clear"></span>
 					</div>
 				<% end %>
 			</div>
