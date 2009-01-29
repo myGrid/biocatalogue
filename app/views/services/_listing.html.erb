@@ -13,6 +13,9 @@
 		<% unless service.nil? %>
 			<% service_version_instance = service.latest_version.service_versionified %>
 			<div class="listing_item">
+				<span style="float: right; margin-bottom: 0.5em; font-weight: bold;">
+					<%= pluralize(total_number_of_annotations_for_service(service, "User"), "user annotation") -%>
+				</span>
 				<p class="name">
 					<%= link_to(h(service.name), service_path(service)) -%>
 					<%= service_type_badges(service.service_types) -%>

@@ -91,6 +91,10 @@
 		
 		<!-- Right column -->
 		<div style="float: right; width: 27%;">
+			<div class="box_info_standout" style="margin-bottom: 1em; font-weight: bold; text-align: center; font-size: 1.2em;">
+				<%= pluralize(total_number_of_annotations_for_service(@service, "User"), "user annotation") + " in total" -%>
+			</div>
+				
 			<% tag_annotations = @service.annotations_with_attribute("tag") %>
 			<div class="box_info_standout" style="padding: 0.8em 1em; line-height: 1.5;">
 				<p class="center" style="margin-top: 0; font-weight: bold;">

@@ -54,6 +54,11 @@ module BioCatalogue
           end
         end
         
+        # Method stub that models should reimplement
+        def total_annotations_count(source_type)
+          0
+        end
+        
       end
     end
   end

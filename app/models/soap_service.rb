@@ -109,6 +109,30 @@ class SoapService < ActiveRecord::Base
       return false
   end
   
+  # This method returns all the annotations for this SOAP Service.
+  # This takes into account annotations on all the child operations/inputs/outputs
+  def total_annotations_count(source_type)
+    # TODO: need take into account database fields that have metadata - these are essentially "provider" annotations.
+    
+    count = 0
+    
+    count += self.count_annotations_by(source_type)
+    
+    self.soap_operations.each do |op|
+      count += op.count_annotations_by(source_type)
+      
+      op.soap_inputs.each do |input|
+        count += input.count_annotations_by(source_type)
+      end
+      
+      op.soap_outputs.each do |output|
+        count += output.count_annotations_by(source_type)
+      end
+    end
+    
+    return count
+  end
+  
   protected
   
   def post_create(endpoint, current_user)
