@@ -54,9 +54,9 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
   end
   
   def test_count_annotations_by_instance_method
-    assert_equal 5, books(:h).annotations.count
+    assert_equal 5, books(:h).count_annotations_by("all")
     assert_equal 2, books(:h).count_annotations_by("Group")
-    assert_equal 4, chapters(:br_c2).annotations.count
+    assert_equal 4, chapters(:br_c2).count_annotations_by("All")
     assert_equal 3, chapters(:br_c2).count_annotations_by("User")
   end
   

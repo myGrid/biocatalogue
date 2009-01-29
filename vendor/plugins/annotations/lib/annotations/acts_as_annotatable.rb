@@ -95,9 +95,14 @@ module Annotations
         end
         
         # Returns the number of annotations on this annotatable object by the source type specified.
-        # To get all annotations, use the annotations_count method instead.
+        # "all" (no case sensitive) can be provided to get all annotations regardless of source type.
+        # E.g.: book.count_annotations_by("User") or book.count_annotations_by("All")
         def count_annotations_by(source_type_in)
-          self.annotations.count(:conditions => [ "source_type = ?", source_type_in ])
+          if source_type_in.downcase == "all"
+            return self.annotations.count
+          else
+            return self.annotations.count(:conditions => [ "source_type = ?", source_type_in ])  
+          end
         end
       end
       
