@@ -1,0 +1,42 @@
+<%
+
+# BioCatalogue: app/views/annotations/_tags_box.html.erb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% tag_annotations = annotatable.annotations_with_attribute("tag") %>
+	<div class="box_info_standout" style="padding: 0.8em 1em; line-height: 1.5;">
+		<p class="center" style="margin-top: 0; font-weight: bold;">
+			Tags
+			<span style="color: #999999;">(<%= tag_annotations.length -%>)</span>
+		</p>
+		
+		<div class="center">
+			<% unless tag_annotations.empty? %>
+				| 
+				<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
+					<b><%= h(val) -%> |</b>
+				<% end %>
+			<% else %>
+				<span class="none_text">none</span>
+			<% end %>
+		</div>
+		
+		<div class="center" style="margin-top: 1em; border-top: 1px dotted #666666; padding-top: 1em;">
+			<% if logged_in? %>
+				<%= annotation_add_by_popup_link annotatable,
+																			 	 :attribute_name => "Tag",
+					                             	 :tooltip_text => '',
+					                             	 :link_text => 'Add tags',
+					                             	 :show_icon => false, 
+					                             	 :show_not_logged_in_text => false,
+					                             	 :multiple => true -%>
+		 <% else %>
+		 	<%= link_to "Log in", login_path -%> to add tags
+		 <% end %>
+	 </div>
+	</div>

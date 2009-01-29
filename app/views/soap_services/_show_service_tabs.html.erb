@@ -30,40 +30,47 @@
 			</div>
 			
 			<b>Inputs:</b>
-			<div class="box_indented_with_bar" style="margin: 0.7em 0; margin-left: 1em;">
-				<ul>
-					<% operation.soap_inputs.each do |input| %>
-						<li class="port">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1em;">
+				<% operation.soap_inputs.each do |input| %>
+					<div class="port">
+						<div style="float: left; width: 70%;">
 							<span class="operation_name"><%= h input.name -%></span>
 							<% unless input.computational_type.blank? %>
 						  	(<%= h input.computational_type -%>) 
 							<% end %>
-							<%= render :partial => "annotations/tags_flat",
-								 				 :locals => { :annotatable => input } -%>
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => input } -%>
-						</li>
-					<% end %>
-				</ul>
+						</div>
+						<div style="float: right; width: 27%; font-size: 0.9em;">
+							<%= render :partial => "annotations/tags_box",
+								 				 :locals => { :annotatable => input } -%>
+						</div>
+						<span class="clear"></span>	
+					</div>
+				<% end %>
 			</div>
-			
+					
 			<b>Outputs:</b>
-			<div class="box_indented_with_bar" style="margin: 0.7em 0; margin-left: 1em;">
-				<ul>
-					<% operation.soap_outputs.each do |output| %>
-						<li class="port">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1em;">
+				<% operation.soap_outputs.each do |output| %>
+					<div class="port">
+						<div style="float: left; width: 70%;">
 							<span class="operation_name"><%= h output.name -%></span>
 							<% unless output.computational_type.blank? %>
 						  	(<%= h output.computational_type -%>) 
 							<% end %>
-							<%= render :partial => "annotations/tags_flat",
-								 	 			 :locals => { :annotatable => output } -%>
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => output } -%>
-						</li>
-					<% end %>
-				</ul>
+						</div>
+						<div style="float: right; width: 27%; font-size: 0.9em;">
+							<%= render :partial => "annotations/tags_box",
+								 				 :locals => { :annotatable => output } -%>
+						</div>
+						<span class="clear"></span>	
+					</div>
+				<% end %>
 			</div>
+			
 		</div>
 	<% end %>
   

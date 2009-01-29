@@ -95,38 +95,9 @@
 				<%= pluralize(total_number_of_annotations_for_service(@service, "User"), "user annotation") + " in total" -%>
 			</div>
 				
-			<% tag_annotations = @service.annotations_with_attribute("tag") %>
-			<div class="box_info_standout" style="padding: 0.8em 1em; line-height: 1.5;">
-				<p class="center" style="margin-top: 0; font-weight: bold;">
-					Tags
-					<span style="color: #999999;">(<%= tag_annotations.length -%>)</span>
-				</p>
-				
-				<div class="center">
-					<% unless tag_annotations.empty? %>
-						| 
-						<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
-							<b><%= h(val) -%> |</b>
-						<% end %>
-					<% else %>
-						<span class="none_text">none</span>
-					<% end %>
-				</div>
-				
-				<div class="center" style="margin-top: 1em; border-top: 1px dotted #666666; padding-top: 1em;">
-					<% if logged_in? %>
-						<%= annotation_add_by_popup_link @service,
-																					 	 :attribute_name => "Tag",
-							                             	 :tooltip_text => '',
-							                             	 :link_text => 'Add tags',
-							                             	 :show_icon => false, 
-							                             	 :show_not_logged_in_text => false,
-							                             	 :multiple => true -%>
-				 <% else %>
-				 	<%= link_to "Log in", login_path -%> to add tags
-				 <% end %>
-			 </div>
-			</div>
+			<%= render :partial => "annotations/tags_box",
+								 :locals => { :annotatable => @service } -%>
+			
 		</div>
 		
 		<span class="clear"></span>	
