@@ -24,6 +24,12 @@ class SoaplabServersController < ApplicationController
   # GET /soaplab_servers/1.xml
   def show
     @soaplab_server = SoaplabServer.find(params[:id])
+    @services = @soaplab_server.find_services_in_catalogue
+    @services = @services.paginate(:page => params[:page],
+                                   :per_page => 10,
+                                   :order => 'created_at DESC',
+                                   :include => [ :service_versions, :service_deployments ])
+
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @soaplab_server }
@@ -53,13 +59,14 @@ class SoaplabServersController < ApplicationController
 
     respond_to do |format|
       if @soaplab_server.save
-        @new_services, @existing_services, @error_urls = @soaplab_server.save_services(current_user)
+        @new_wsdl_urls, @existing_services, @error_urls = @soaplab_server.save_services(current_user)
+        @soaplab_server.create_groupings(@new_wsdl_urls)
         flash[:notice] = 'SoaplabServer was successfully created.'
         format.html { redirect_to(@soaplab_server) }
         format.xml  { render :xml => @soaplab_server, :status => :created, :location => @soaplab_server }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @soaplab_server.errors, :status => :unprocessable_entity }
+        #format.xml  { render :xml => @soaplab_server.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -92,4 +99,32 @@ class SoaplabServersController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  def load_wsdl
+    params[:annotations] = {'tag' =>'soaplab' }
+    
+    wsdl_location = params[:wsdl_url] || ''
+    wsdl_location = Addressable::URI.parse(wsdl_location).normalize.to_s unless wsdl_location.blank?
+    
+    if wsdl_location.blank?
+      @error_message = "Please provide a valid WSDL URL"
+    else
+      @soap_service = SoapService.new(:wsdl_location => wsdl_location)
+      @soaplab_server = SoaplabServer.new(:location =>wsdl_location)
+      begin
+        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
+        @wsdl_info["service_urls"], @wsdl_info["tools"] = @soaplab_server.get_info_from_server()
+        @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(wsdl_location)
+      rescue Exception => ex
+        @error_message = "Failed to load the WSDL location provided."
+        logger.error("ERROR: failed to load WSDL from location - #{wsdl_location}. Exception:")
+        logger.error(ex)
+      end
+    end
+    respond_to do |format|
+      format.html { render :partial => "after_wsdl_load" }
+      format.xml  { render :xml => '', :status => 406 }
+    end
+  end
+  
 end

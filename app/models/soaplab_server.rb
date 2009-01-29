@@ -15,7 +15,7 @@ class SoaplabServer < ActiveRecord::Base
   
   #validates_presence_of :name, :location
   validates_presence_of :location
-  #validates_uniqueness_of :location, :message => "already exists in BioCatalogue"
+  validates_uniqueness_of :location, :message => "already exists in BioCatalogue"
   validates_url_format_of :location,
                           :allow_nil => false
   #before_create :save_services
@@ -29,15 +29,17 @@ class SoaplabServer < ActiveRecord::Base
   def save_services(current_user)
     @error_urls        = []
     @existing_services = []
-    @new_services      = []
+    #@new_services      = []
+    @new_wsdls      = []
     @wsdl_urls         = get_info_from_server()[0]
     
     unless @wsdl_urls.empty?  
-      @wsdl_urls.each { |url|
+      @wsdl_urls.first(30).each { |url|
          soap_service  = SoapService.new({:wsdl_location => url})
          success, data = soap_service.populate
-      if success and SoapService.check_duplicate(url, data["endpoint"]) != nil
-         @existing_services << soap_service.service(true)
+         dup = SoapService.check_duplicate(url, data["endpoint"])
+      if success and dup != nil
+         @existing_services << dup
          logger.info("This service exists in the database")
       else
         transaction do
@@ -45,7 +47,9 @@ class SoaplabServer < ActiveRecord::Base
             if success 
               c_success = soap_service.create_service(data["endpoint"], current_user, {:tag => 'soaplab'}) 
               if c_success
-                @new_services << soap_service.service(true)
+                #@new_services << soap_service.service(true)
+                puts "checking the saving of this service...#{soap_service.service.class.to_s}"
+                @new_services << SoapService.check_duplicate(url, data["endpoint"])
                 logger.info("INFO: registered service - #{url}. SUCCESS:")
               else
                 @error_urls << url
@@ -61,7 +65,7 @@ class SoaplabServer < ActiveRecord::Base
       end
       }
     end
-    return [@new_services, @existing_services, @error_urls]
+    return [@new_wsdls, @existing_services, @error_urls]
   end
     
   
@@ -86,14 +90,27 @@ class SoaplabServer < ActiveRecord::Base
     return [wsdls, tools]
   end
   
-  def find_services_in_catalogue
-    wsdls    = get_info_from_server()[0]
+  def find_services_in_catalogue(wsdls =[])
+    wsdls    = get_info_from_server()[0] if wsdls.empty?
     services = []
     wsdls.each{ |url|
          obj = SoapService.find(:first, :conditions => { :wsdl_location => url })
          services << (obj.nil? ? nil : obj.service)     
      }
      return services.compact
-   end
+  end
+ 
+  def create_groupings(wsdls=[])
+    services = find_services_in_catalogue(wsdls)
+    services.each{ |service|
+    
+    grouping = Grouping.new(:subject_type => service.class.to_s,
+                            :subject_id =>service.id, 
+                            :predicate =>'BioCatalogue:memberOf', 
+                            :object_type => self.class.to_s,
+                            :object_id =>self.id)
+    grouping.save!
+    }
+  end
    
 end
