@@ -34,7 +34,7 @@ class SoaplabServer < ActiveRecord::Base
     @wsdl_urls         = get_info_from_server()[0]
     
     unless @wsdl_urls.empty?  
-      @wsdl_urls.first(30).each { |url|
+      @wsdl_urls.each { |url|
          soap_service  = SoapService.new({:wsdl_location => url})
          success, data = soap_service.populate
          dup = SoapService.check_duplicate(url, data["endpoint"])
