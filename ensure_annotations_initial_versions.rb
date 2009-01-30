@@ -16,6 +16,8 @@ RAILS_ENV = env
 # Load up the Rails app
 require File.dirname(__FILE__) + '/config/environment'
 
+Annotation::Version.record_timestamps = false
+
 count = 0
 
 Annotation.find(:all).each do |ann|
@@ -43,6 +45,8 @@ Annotation.find(:all).each do |ann|
     end
   end
 end
+
+Annotation::Version.record_timestamps = true
 
 puts ""
 puts "#{count} annotation objects sucessfully processed"
