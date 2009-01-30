@@ -104,12 +104,12 @@ class SoaplabServer < ActiveRecord::Base
     services = find_services_in_catalogue(wsdls)
     services.each{ |service|
     
-    grouping = Grouping.new(:subject_type => service.class.to_s,
-                            :subject_id =>service.id, 
-                            :predicate =>'BioCatalogue:memberOf', 
-                            :object_type => self.class.to_s,
-                            :object_id =>self.id)
-    grouping.save!
+    relationship = Relationship.new(:subject_type => service.class.to_s,
+                                    :subject_id =>service.id, 
+                                    :predicate =>'BioCatalogue:memberOf', 
+                                    :object_type => self.class.to_s,
+                                    :object_id =>self.id)
+    relationship.save!
     }
   end
    
