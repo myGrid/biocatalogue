@@ -37,7 +37,7 @@
 					<!-- services -->
 					<% if @wsdl_info %>
 						<div>
-							<p><b>This server has has the following services:</b></p>
+							<p><b>Services from this Server:</b></p>
 							
 							<div class="field">
 								<ul>
@@ -59,14 +59,13 @@
 					<!-- Add new name alias -->
 					<p>
 						<%= link_to_function "Add name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
-					</p>
 					
+					</p>
 					
 					<!-- Add new description -->
 					<p>
 						<%= link_to_function "Add description...", visual_effect(:toggle_blind, "new_description_box", :duration => 0.3) %>
-					</p>
-					
+					</p>	
 					
 					<!-- Add documentation URL -->
 					<p>
