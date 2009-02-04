@@ -8,7 +8,7 @@
 SERVICE_TYPES = {
   "SOAP Web Service"  => "SoapService",
   #"REST Web Service"  => "RestService",
-  #"Soaplab Server"    => "SoaplabServer"
+  "Soaplab Server"    => "SoaplabServer"
 }
 
 # Initialise the country codes

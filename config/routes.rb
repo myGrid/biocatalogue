@@ -38,7 +38,8 @@ ActionController::Routing::Routes.draw do |map|
   #map.resources :soap_inputs
   #map.resources :soap_outputs
   
-  #map.resources :soaplab_servers
+  map.resources :soaplab_servers,
+                 :collection => { :load_wsdl => :post}
   
   map.resources :services
   
