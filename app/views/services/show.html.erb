@@ -28,7 +28,7 @@
 			<p>
 				<b>Aliases:</b>
 				<br/>
-				<% unless (aliases = @service.annotations_with_attribute("name")).empty? %>
+				<% unless (aliases = all_name_annotations_for_service(@service)).empty? %>
 					<% aliases.each do |al| %>
 						<%= h(al.value) -%><br/>
 					<% end %>

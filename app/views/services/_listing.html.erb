@@ -22,7 +22,7 @@
 					<%= service_location_flags(service) -%>
 				</p>
 				
-				<% unless (aliases = service.annotations_with_attribute("name")).empty? %>
+				<% unless (aliases = all_name_annotations_for_service(service)).empty? %>
 					<p class="aliases" style="margin-bottom: 1em;">
 						<% aliases.each do |al| %>
 							<span style="color: #666666;">aka</span>

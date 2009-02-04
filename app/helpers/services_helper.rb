@@ -25,4 +25,21 @@ module ServicesHelper
     
     return count
   end
+  
+  def all_name_annotations_for_service(service)
+    annotations = [ ]
+    
+    annotations.concat(service.annotations_with_attribute("name"))
+    
+    service.service_deployments.each do |s_d|
+      annotations.concat(s_d.annotations_with_attribute("name"))
+    end
+    
+    service.service_versions.each do |s_v|
+      annotations.concat(s_v.annotations_with_attribute("name"))
+      annotations.concat(s_v.service_versionified.annotations_with_attribute("name"))
+    end
+    
+    return annotations
+  end
 end
