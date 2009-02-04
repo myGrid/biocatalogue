@@ -14,7 +14,7 @@
 
 <div class="tabber">
 	
-  <div class="tabbertab">
+  <div id="services" class="tabbertab">
     <h3><%= "Services (#{@provider_services.total_entries})" -%></h3>
     
 		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @provider_services } %>
