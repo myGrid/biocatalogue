@@ -268,7 +268,7 @@ module ApplicationHelper
     return '' if annotation.nil?
     
     return content_tag(:p, :class => "annotation_source_text #{annotation_source_cssclass(annotation)}", :style => style) do
-      "by #{annotation.source_type.titleize.downcase}: <b>#{link_to(annotation.source.annotation_source_name, annotation.source)}</b> (#{distance_of_time_in_words_to_now(annotation.created_at)} ago)"
+      "by #{annotation.source_type.titleize.downcase}: <b>#{link_to(h(annotation.source.annotation_source_name), annotation.source)}</b> (#{distance_of_time_in_words_to_now(annotation.created_at)} ago)"
     end
   end
   

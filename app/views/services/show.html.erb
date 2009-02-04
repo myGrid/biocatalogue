@@ -83,8 +83,20 @@
 			<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_overview_metadata", 
 				 	 			 :locals => { :service_version_instance =>  @latest_version_instance } %>
 			
-			<br/>
-			
+			<p>
+				<b>Documentation URL(s):</b>
+				<br/>
+				<% unless (doc_urls = @latest_version_instance.annotations_with_attribute("documentation_url")).empty? %>
+					<% doc_urls.each do |ann| %>
+						<%= auto_link(white_list(ann.value), :all, :target => '_blank') -%>
+						<span style="color: #666;">(added by <%= h(ann.source.annotation_source_name) -%>)</span>
+						<br/>
+					<% end %>
+				<% else %>
+					<span class="none_text">none</span>
+				<% end %>
+			</p>
+
 			<%= render :partial => "annotations/descriptions",
 								 :locals => { :annotatable => @latest_version_instance } -%>
 		</div>
