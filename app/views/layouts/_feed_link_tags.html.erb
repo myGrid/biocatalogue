@@ -11,4 +11,9 @@
 <% if controller.controller_name.to_s == "soap_services" and (controller.action_name.to_s == "all" or controller.action_name.to_s == "index") -%>
 	<link href="<%= soap_services_url %>.rss" rel="alternate" type="application/rss+xml" title="BioCatalogue.org - Soap Services" />
 <% end -%>
-
+<% if controller.controller_name.to_s == "services" and (controller.action_name.to_s == "all" or controller.action_name.to_s == "index") -%>
+	<link href="<%= services_url %>.rss" rel="alternate" type="application/rss+xml" title="BioCatalogue.org - Services" />
+<% end -%>
+<% if controller.controller_name.to_s == "home" and (controller.action_name.to_s == "all" or controller.action_name.to_s == "index") -%>
+	<link href="<%= services_url %>.rss" rel="alternate" type="application/rss+xml" title="BioCatalogue.org - Services" />
+<% end -%>
