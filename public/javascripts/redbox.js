@@ -80,18 +80,8 @@ var RedBox = {
 		var arrayPageSize = this.getPageSize();    
 		var arrayPageScroll = this.getPageScroll();
 		
-		var boxTop = arrayPageScroll[1] + (arrayPageSize[3] / 10);
-		var boxLeft = arrayPageScroll[0];
-		
-		/*
-		Element.setTop(window_id, boxTop);
-		Element.setLeft(window_id, boxLeft);
-		*/
-		
-		$(window_id).setStyle({
-			'Top': boxTop + "px",
-			'Left': boxLeft +"px"
-		});
+		var boxTop = arrayPageScroll[1] + arrayPageSize[3] / 4;
+		$(window_id).style.top = boxTop + "px";
   },
   
   //
