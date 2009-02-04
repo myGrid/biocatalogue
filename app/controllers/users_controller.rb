@@ -1,21 +1,21 @@
 # BioCatalogue: app/controllers/users_controller.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
 class UsersController < ApplicationController
-  
+
   before_filter :disable_action, :only => [ :destroy ]
 
   before_filter :login_required, :except => [:index, :new, :create, :show, :activate_account]
   before_filter :check_user_rights, :only => [:edit, :update, :destroy]
-  
+
   # GET /users
   # GET /users.xml
   def index
     @users = User.paginate(:page => params[:page],
-                           :conditions => "activated_at IS NOT NULL", 
+                           :conditions => "activated_at IS NOT NULL",
                            :order => 'activated_at DESC')
 
     respond_to do |format|
@@ -28,7 +28,7 @@ class UsersController < ApplicationController
   # GET /users/1.xml
   def show
     @user = User.find(params[:id])
-    @users_services = @user.services.paginate(:page => params[:page], 
+    @users_services = @user.services.paginate(:page => params[:page],
                                               :order => "created_at DESC")
 
     respond_to do |format|
@@ -101,7 +101,7 @@ class UsersController < ApplicationController
 #      format.xml  { head :ok }
 #    end
 #  end
-  
+
   def activate_account
     unless params[:security_token] == nil
       # TODO: use User.find_by_security_token for performance reasons!
@@ -113,6 +113,7 @@ class UsersController < ApplicationController
             # TODO: DON'T use the update_attribute method as it bypasses AR validations.
             if user.update_attribute(:activated_at, Time.now)
               user.update_attribute(:security_token, nil)
+              session[:original_uri] = "/users/#{user.id}"
               flash[:notice] = "Account activated.<br />You can log into your account now."
               ActivityLog.create(:action => "activate", :activity_loggable => user)
               return
@@ -122,9 +123,9 @@ class UsersController < ApplicationController
     end
     flash[:error] = "Wrong activation code. Please contact the Administrator."
   end
-  
+
   private
-  
+
   def check_user_rights
     user = User.find(params[:id])
     unless mine?(user)
@@ -135,5 +136,5 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
 end
