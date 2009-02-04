@@ -7,6 +7,7 @@
 class SoaplabServersController < ApplicationController
   
   #before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy ]
+  before_filter :disable_action, :only => [:index, :edit, :update, :destroy ]
   before_filter :login_required, :except => [ :index, :show ]
   
   # GET /soaplab_servers
@@ -24,10 +25,10 @@ class SoaplabServersController < ApplicationController
   # GET /soaplab_servers/1.xml
   def show
     @soaplab_server = SoaplabServer.find(params[:id])
-    @services = @soaplab_server.find_services_in_catalogue
+    @services = @soaplab_server.associated_services
     @services = @services.paginate(:page => params[:page],
                                    :per_page => 10,
-                                   :order => 'created_at DESC',
+                                   :order => 'name',
                                    :include => [ :service_versions, :service_deployments ])
 
     respond_to do |format|
@@ -59,8 +60,8 @@ class SoaplabServersController < ApplicationController
 
     respond_to do |format|
       if @soaplab_server.save
-        @new_wsdl_urls, @existing_services, @error_urls = @soaplab_server.save_services(current_user)
-        @soaplab_server.create_groupings(@new_wsdl_urls)
+        new_wsdl_urls, existing_services, error_urls = @soaplab_server.save_services(current_user)
+        @soaplab_server.create_relationships(new_wsdl_urls)
         flash[:notice] = 'SoaplabServer was successfully created.'
         format.html { redirect_to(@soaplab_server) }
         format.xml  { render :xml => @soaplab_server, :status => :created, :location => @soaplab_server }

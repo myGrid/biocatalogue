@@ -15,31 +15,27 @@ class SoaplabServer < ActiveRecord::Base
   
   #validates_presence_of :name, :location
   validates_presence_of :location
-  validates_uniqueness_of :location, :message => "already exists in BioCatalogue"
+  validates_uniqueness_of :location, :message => " for this server seems to exist in BioCatalogue"
   validates_url_format_of :location,
                           :allow_nil => false
-  #before_create :save_services
-  #before_update :save_services
-  #@service_urls = {}
-  attr_accessor :wsdl_urls
   
+  before_destroy :remove_relationships
   
   # save the soap services on this server in
   # the database
   def save_services(current_user)
-    @error_urls        = []
-    @existing_services = []
-    #@new_services      = []
-    @new_wsdls      = []
-    @wsdl_urls         = get_info_from_server()[0]
+    error_urls        = []
+    existing_services = []
+    new_wsdls         = []
+    wsdl_urls         = get_info_from_server()[0]
     
-    unless @wsdl_urls.empty?  
-      @wsdl_urls.each { |url|
+    unless wsdl_urls.empty?  
+      wsdl_urls.each { |url|
          soap_service  = SoapService.new({:wsdl_location => url})
          success, data = soap_service.populate
          dup = SoapService.check_duplicate(url, data["endpoint"])
       if success and dup != nil
-         @existing_services << dup
+         existing_services << dup
          logger.info("This service exists in the database")
       else
         transaction do
@@ -47,17 +43,15 @@ class SoaplabServer < ActiveRecord::Base
             if success 
               c_success = soap_service.create_service(data["endpoint"], current_user, {:tag => 'soaplab'}) 
               if c_success
-                #@new_services << soap_service.service(true)
-                puts "checking the saving of this service...#{soap_service.service.class.to_s}"
-                @new_services << SoapService.check_duplicate(url, data["endpoint"])
+                new_wsdls << url
                 logger.info("INFO: registered service - #{url}. SUCCESS:")
               else
-                @error_urls << url
+                error_urls << url
                 logger.error("ERROR: post_create failed for service - #{url}. ")
               end
             end
           rescue Exception => ex
-            @error_urls << url
+            error_urls << url
             logger.error("ERROR: failed to register service - #{url}. soaplab registration Exception:")
             logger.error(ex)
           end
@@ -65,7 +59,7 @@ class SoaplabServer < ActiveRecord::Base
       end
       }
     end
-    return [@new_wsdls, @existing_services, @error_urls]
+    return [new_wsdls, existing_services, error_urls]
   end
     
   
@@ -100,7 +94,8 @@ class SoaplabServer < ActiveRecord::Base
      return services.compact
   end
  
-  def create_groupings(wsdls=[])
+  # the relation table maps services to a soaplab instance 
+  def create_relationships(wsdls=[])
     services = find_services_in_catalogue(wsdls)
     services.each{ |service|
     
@@ -111,6 +106,18 @@ class SoaplabServer < ActiveRecord::Base
                                     :object_id =>self.id)
     relationship.save!
     }
+  end
+  
+  def remove_relationships
+    rels = Relationship.find(:all, :conditions =>{:object_id => self.id})
+    rels.each{ |r| r.destroy}
+  end
+  
+  def associated_services
+    services = []
+    rels = Relationship.find(:all, :conditions =>{:object_id => self.id})
+    rels.each{ |r| services << Service.find(:first, :conditions => {:id => r.subject_id})}
+    return services
   end
    
 end
