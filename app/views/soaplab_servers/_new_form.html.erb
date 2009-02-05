@@ -9,7 +9,6 @@
 %>
 
 <% form_for(@soaplab_server) do |f| %>
-	<%= f.error_messages %>
 	
 	<table style="width: 100%; line-height: 1.5;">
 		<tr>
@@ -54,8 +53,8 @@
 			</td>
 			<td style="width: 49%; padding-left: 1em;">
 				<fieldset>
-					<legend>Extra Information</legend>
-					
+					<legend><font color='red'>Coming soon!</font></legend>
+					You will be able to provide some more information about this soaplab server. For example:
 					<!-- Add new name alias -->
 					<p>
 						<%= link_to_function "Add name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
