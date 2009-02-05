@@ -97,7 +97,7 @@ protected
     # ===========
     # NOTE: do not use Service.find_by_solr as this will break due to a bad bug in acts_as_solr. 
     # This bug essentially treates any model with the word "Service" in it as a Service object
-    # and therefore parses the results from solr wrongly!    
+    # and therefore parses the results from solr incorrectly!    
     # ===========
     
     # As new models are indexed (and therefore need to be searched on) add them here.
