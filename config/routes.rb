@@ -11,7 +11,9 @@ ActionController::Routing::Routes.draw do |map|
                          { :edit_popup => :post })
   
   map.search '/search', :controller => 'search', :action => 'show'
+  map.connect '/search.:format', :controller => 'search', :action => 'show'
   map.connect '/search/:query', :controller => 'search', :action => 'show'
+  map.connect '/search.:format/:query', :controller => 'search', :action => 'show'
   
   map.resources :service_providers
 

@@ -21,15 +21,13 @@ class SearchController < ApplicationController
     
     # Check query is present
     if @query.blank?
-      flash[:error] = 'No search query provided'
-      redirect_to :back
+      error('No search query provided')
       return
     end
     
     # Check if the query is '*' in which case give the user an appropriate message.
     if @query == '*'
-      flash[:error] = "It looks like you were trying to search for everything in BioCatalogue! If you would like to browse all services then <a href='#{services_path}'>click here</a>."
-      redirect_to :back
+      error("It looks like you were trying to search for everything in BioCatalogue! If you would like to browse all services then <a href='#{services_path}'>click here</a>.")
       return
     end
     
@@ -52,7 +50,7 @@ class SearchController < ApplicationController
     
     # Check that a valid type has been provided
     unless any_types_synonyms.include?(@type) || VALID_SEARCH_TYPES.include?(@type)
-      error(@type)
+      error("'#{@type}' is an invalid search type")
       return false
     end
     
@@ -76,6 +74,7 @@ class SearchController < ApplicationController
       
       respond_to do |format|
         format.html # show.html.erb
+        format.xml { set_no_layout } # show.xml.builder
       end
     else
       redirect_to :controller => @type, :action => "search", :query => params[:query]
@@ -126,11 +125,12 @@ protected
 
   end
 
-  def error(type)
-    flash[:error] = "'#{type}' is an invalid search type"
+  def error(msg)
+    flash[:error] = msg
     
     respond_to do |format|
-      format.html { redirect_to :back }
+      format.html { redirect_to (session[:original_uri].nil? ? home_url : :back) }
+      format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
     end
   end
 
