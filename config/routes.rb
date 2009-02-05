@@ -5,11 +5,18 @@
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
-  # Routes from the annotations plugin
+  
+  # Routes from the annotations plugin + extensions
   Annotations.map_routes(map, 
                          { :new_popup => :post }, 
                          { :edit_popup => :post })
   
+  # Tags
+  map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
+  map.tags_auto_complete '/tags/auto_complete', :controller => 'tags', :action => 'auto_complete', :conditions => { :method => :get }
+  map.connect '/tags/:tag', :controller => 'tags', :action => 'show', :conditions => { :method => :get }
+  
+  # Search
   map.search '/search', :controller => 'search', :action => 'show'
   map.connect '/search.:format', :controller => 'search', :action => 'show'
   map.connect '/search/:query', :controller => 'search', :action => 'show'
