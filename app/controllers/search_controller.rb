@@ -110,16 +110,7 @@ protected
     
     # Then collect together the appropriate results.
     
-    total_count = 0
-    grouped_results = { }
-    
-    search_type_models = VALID_SEARCH_TYPES.map{|t| t.classify.constantize}
-    
-    search_type_models.each do |m|
-      m_name = m.to_s
-      grouped_results[m_name] = BioCatalogue::Util.discover_model_objects_from_collection(m, all_results)
-      total_count = total_count + grouped_results[m_name].length
-    end
+    total_count, grouped_results = BioCatalogue::Util.group_model_objects(all_results, VALID_SEARCH_TYPES, true)
     
     return [ total_count, grouped_results ]
 
