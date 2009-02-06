@@ -5,4 +5,7 @@
 # See license.txt for details
 
 module TagsHelper
+  def generate_tag_cloud(tags, *args)
+    BioCatalogue::Tags.tag_cloud(tags, *args)
+  end
 end

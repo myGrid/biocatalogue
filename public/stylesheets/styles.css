@@ -1389,3 +1389,16 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 /* END generic horizontal buttons classes */
+
+/* BEGIN tag cloud styles */
+	
+.tag_cloud {
+	text-align: center;
+	line-height: 1.5;
+}
+
+.tag_cloud .tag {
+	margin: 0 0.3em;
+}
+/* END tag cloud styles
+ */

@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
   # Tags
   map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
   map.tags_auto_complete '/tags/auto_complete', :controller => 'tags', :action => 'auto_complete', :conditions => { :method => :get }
-  map.connect '/tags/:tag', :controller => 'tags', :action => 'show', :conditions => { :method => :get }
+  map.tag_show '/tags/:tag', :controller => 'tags', :action => 'show', :conditions => { :method => :get }
   
   # Search
   map.search '/search', :controller => 'search', :action => 'show'

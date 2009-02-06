@@ -40,29 +40,7 @@ class TagsController < ApplicationController
 protected
 
   def find_tags
-    # TODO: potentially move this kind of functionality into the Annotations plugin.
-    
-    # NOTE: this query has only been tested to work with MySQL 5.0.x
-    sql = "SELECT annotations.value, COUNT(*) AS count 
-          FROM annotations 
-          INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
-          WHERE annotation_attributes.name = 'tag' 
-          GROUP BY annotations.value 
-          ORDER BY COUNT(*) DESC"
-    
-    # If limit has been provided in the URL then add that to query
-    # (this allows customisation of the size of the tag cloud, whilst keeping into account ranking of tags).
-    if !params[:limit].nil? && params[:limit].is_a?(Fixnum) && params[:limit].to_i < 0
-      sql += " LIMIT #{params[:limit]}"
-    end
-    
-    # This will return regular Annotation objects BUT
-    # with only the "value" attribute (which is equivalent to the tag name) AND 
-    # an extra "count" attribute to show how many of those tags exist in the db.
-    tag_annotations = Annotation.find_by_sql(sql)
-    
-    # Sort by the tag names
-    @tags = tag_annotations.sort! { |a,b| a.value.downcase <=> b.value.downcase }
+    @tags = BioCatalogue::Tags.get_tags(params[:limit])
   end
   
   def find_tag_and_results

@@ -32,7 +32,7 @@
 		<% unless (tag_annotations = annotatable.annotations_with_attribute("tag")).empty? %>
 			| 
 			<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
-				<%= h(val) -%> |
+				<%= link_to(h(val), tag_show_path(:tag => val)) -%> |
 			<% end %>
 		<% else %>
 			<span class="none_text">none</span>
