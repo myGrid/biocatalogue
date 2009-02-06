@@ -35,8 +35,10 @@
 				<span class="clear"></span>
 			</div>
 			
+			<br/>
+			
 			<b>Inputs:</b>
-			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 2em;">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1.5em;">
 				<% operation.soap_inputs.each do |input| %>
 					<div class="port">
 						<div style="float: left; width: 73%;">
@@ -45,6 +47,8 @@
 						  	(<%= h input.computational_type -%>) 
 							<% end %>
 							<%= render :partial => "annotations/descriptions",
+							 	 				 :locals => { :annotatable => input } -%>
+							<%= render :partial => "annotations/examples",
 							 	 				 :locals => { :annotatable => input } -%>
 						</div>
 						<div style="float: right; width: 24%; font-size: 0.9em;">
@@ -55,9 +59,11 @@
 					</div>
 				<% end %>
 			</div>
+			
+			<br/>
 					
 			<b>Outputs:</b>
-			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 2em;">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1.5em;">
 				<% operation.soap_outputs.each do |output| %>
 					<div class="port">
 						<div style="float: left; width: 73%;">
