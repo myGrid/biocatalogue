@@ -18,7 +18,9 @@ class ServicesController < ApplicationController
     @services = Service.paginate(:page => params[:page],
                                  :order => 'created_at DESC',
                                  :include => [ :service_versions, :service_deployments ])
-
+    
+    @tags = BioCatalogue::Tags.get_tags(50)
+    
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @services }

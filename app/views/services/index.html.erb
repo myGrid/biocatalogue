@@ -10,8 +10,17 @@
 
 <% t "Browse Services" -%>
 
+<div class="box_info" style="margin: 0 2em 2em 2em; padding: 1em 0.6em;">
+	<h3>
+		<b>Top 50 tags on BioCatalogue</b>
+		<span style="font-size: 0.7em; margin-left: 1em;">[ <%= link_to("See All Tags", tags_index_path) -%> ]</span>
+	</h3>
+	
+	<%= generate_tag_cloud(@tags, :tag_cloud_style => "margin-top: 0.6em;") -%>
+</div>
+
 <span style="float: right;">
-	<%= link_to 'New Service', new_service_path -%>
+	<%= link_to 'Submit a Service', new_service_path -%>
 </span>
 
 <h1>Browse Web Services</h1>
