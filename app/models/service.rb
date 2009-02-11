@@ -9,6 +9,8 @@ class Service < ActiveRecord::Base
   
   acts_as_annotatable
   
+  has_many :relationships, :as => :subject, :dependent => :destroy
+  
   has_many :service_versions, 
            :dependent => :destroy,
            :order => "created_at ASC"
