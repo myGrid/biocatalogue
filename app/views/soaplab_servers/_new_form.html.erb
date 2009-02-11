@@ -36,16 +36,20 @@
 					<!-- services -->
 					<% if @wsdl_info %>
 						<div>
-							<p><b>Services from this Server:</b></p>
+							<p><b>Service(s) from this Server:</b></p>
 							
-							<div class="field">
-								<ul>
-									<% @wsdl_info["tools"].each do |service| -%>
-										<li><%= h service -%></li>
-									<% end -%>
-								</ul>
-							</div>
-						</div>
+							<% if !@wsdl_info["tools"].empty? %>
+								<div class="field">
+									<ul>
+										<% @wsdl_info["tools"].each do |service| -%>
+											<li><%= h service -%></li>
+										<% end -%>
+									</ul>
+								</div>
+							<%else%>
+								<p class="none_text"> <font color="red">No services found!! Server may be down or wrong service is used...</font></p>
+							<%end%>
+						</div>	
 					<% end -%>
 					
 				</fieldset>
@@ -77,6 +81,6 @@
 	</table>
 	
   <p style="text-align: center; margin-top: 1.5em;">
-    <%= f.submit "Submit", :disable_with => "Submitting...", :disabled => @wsdl_info.nil? %>
+    <%= f.submit "Submit", :disable_with => "Submitting...", :disabled => @wsdl_info.nil? || @wsdl_info["tools"].empty? %>
   </p>
 <% end %>

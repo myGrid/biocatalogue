@@ -15,7 +15,11 @@
 <%= error_messages_for :soaplab_server %>
 
 <p class="step_text">1. Specify the URL to the WSDL that lists all the tools in the soaplab server, then preview...</p>
-<i>e.g http://www.ebi.ac.uk/soaplab/typed/services/list?wsdl</i>
+<i>e.g <br/>
+   http://www.ebi.ac.uk/soaplab/typed/services/list?wsdl <br/>
+   http://www.ebi.ac.uk/soaplab/services/AnalysisFactory?wsdl
+</i>
+<p/>
 <% form_remote_tag(:url => load_wsdl_soaplab_servers_url, 
 								   :update => 'soaplab_server_after_wsdl_load', 
 							 		 :success => "new Effect.Highlight('soap_service_form', { duration: 1.5 });",
