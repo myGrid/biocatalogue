@@ -25,10 +25,11 @@ class SoaplabServersController < ApplicationController
   # GET /soaplab_servers/1.xml
   def show
     @soaplab_server = SoaplabServer.find(params[:id])
-    @services = @soaplab_server.associated_services
+    #@services = @soaplab_server.associated_services
+    @services = Service.find(@soaplab_server.relationships.collect{ |r| r.subject_id})
     @services = @services.paginate(:page => params[:page],
                                    :per_page => 10,
-                                   :order => 'name',
+                                   :order => 'created_at DESC',
                                    :include => [ :service_versions, :service_deployments ])
 
     respond_to do |format|
@@ -61,7 +62,6 @@ class SoaplabServersController < ApplicationController
     respond_to do |format|
       if @soaplab_server.save
         new_wsdl_urls, existing_services, error_urls = @soaplab_server.save_services(current_user)
-        @soaplab_server.create_relationships(new_wsdl_urls)
         flash[:notice] = 'SoaplabServer was successfully created.'
         format.html { redirect_to(@soaplab_server) }
         format.xml  { render :xml => @soaplab_server, :status => :created, :location => @soaplab_server }
@@ -114,7 +114,7 @@ class SoaplabServersController < ApplicationController
       @soaplab_server = SoaplabServer.new(:location =>wsdl_location)
       begin
         @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
-        @wsdl_info["service_urls"], @wsdl_info["tools"] = @soaplab_server.get_info_from_server()
+        @wsdl_info["tools"] = @soaplab_server.services_factory().values.flatten.collect{ |v| v['name']}.sort
         @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(wsdl_location)
       rescue Exception => ex
         @error_message = "Failed to load the WSDL location provided."

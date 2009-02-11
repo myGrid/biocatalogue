@@ -13,24 +13,24 @@ class SoaplabServer < ActiveRecord::Base
   
   acts_as_annotatable
   
-  #validates_presence_of :name, :location
+  has_many :relationships, :as => :object, :dependent =>:destroy
+
   validates_presence_of :location
   validates_uniqueness_of :location, :message => " for this server seems to exist in BioCatalogue"
   validates_url_format_of :location,
                           :allow_nil => false
-  
-  before_destroy :remove_relationships
-  
-  # save the soap services on this server in
+
+  # save the soap services from this server in
   # the database
   def save_services(current_user)
     error_urls        = []
     existing_services = []
     new_wsdls         = []
-    wsdl_urls         = get_info_from_server()[0]
+    server_data       = services_factory().values.flatten
     
-    unless wsdl_urls.empty?  
-      wsdl_urls.each { |url|
+    unless server_data.empty?
+      server_data.each{ |datum|
+         url = datum['location']
          soap_service  = SoapService.new({:wsdl_location => url})
          success, data = soap_service.populate
          dup = SoapService.check_duplicate(url, data["endpoint"])
@@ -41,7 +41,7 @@ class SoaplabServer < ActiveRecord::Base
         transaction do
           begin
             if success 
-              c_success = soap_service.create_service(data["endpoint"], current_user, {:tag => 'soaplab'}) 
+              c_success = soap_service.create_service(data["endpoint"], current_user, {} ) 
               if c_success
                 new_wsdls << url
                 logger.info("INFO: registered service - #{url}. SUCCESS:")
@@ -59,65 +59,142 @@ class SoaplabServer < ActiveRecord::Base
       end
       }
     end
+    create_relationships(new_wsdls)
+    create_tags(find_services_in_catalogue(new_wsdls), current_user)
     return [new_wsdls, existing_services, error_urls]
   end
     
   
-  #Get list of wsdls and tools from server by using the soaplab server API
-  def get_info_from_server(server_wsdl=self.location)   
+  #returns data from soaplab1 servers 
+  #structure  of data:
+  # data = {category_name1 =>[{'name' =>tool_name, 'location' => wsd_url},...],
+  #         category_name2 =>[{'name' =>tool_name, 'location' => wsd_url}, ...]  
+  #         }
+  #
+  def get_soaplab1_data(proxy)
+    data    = {}
     begin
-      result = [] 
-      proxy = SOAP::WSDLDriverFactory.new(server_wsdl).create_rpc_driver
-      result = get_wsdls_and_tool_names(proxy)
-    rescue
-      errors.add_to_base("there were problems getting wsdls and tool names from server ")  
-      result
+      categories = proxy.getAvailableCategories()  
+      categories.each{|cat| 
+        data[cat] = proxy.getAvailableAnalysesInCategory(cat) 
+        data[cat].collect! {|a|
+          analysis             = {}
+          analysis['name']     = a
+          analysis['location'] = proxy.getServiceLocation(a)+'?wsdl'
+          analysis
+          }
+      }
+      return data
+    rescue Exception => ex
+      logger.error("ERROR: failed to get data from sooaplab server:")
+      logger.error(ex)
+      return {}
+    end
+  end
+
+
+  #get data from soaplab2 server. 
+  # TODO : use the getAvailableAnalysesInCategory(cat)
+  #        method to get the analysis in each category and remove
+  #        the current work around
+  # Problems seem to be comming from how ruby handles document literal wsdls
+  # with external schemas
+  #
+  #returns data from soaplab2 servers 
+  #structure  of data:
+  # data = {category_name1 =>[{'name' =>tool_name, 'location' => wsd_url},...],
+  #         category_name2 =>[{'name' =>tool_name, 'location' => wsd_url}, ...]  
+  #         }
+  #
+  def get_soaplab2_data(proxy)
+    data  = {}
+    begin
+      base  = proxy.getServiceLocation("").return
+      categories = proxy.getAvailableCategories("").return
+      categories.each {|cat| 
+        data[cat] = []
+        }
+      analyses   = proxy.getAvailableAnalyses("").return
+      analyses.each{|a|
+        datum = {'name'=> a, 'location' => File.join(base, a+'?wsdl') }
+        data[a.split('.')[0]]<< datum
+      }
+      return data
+    rescue Exception => ex
+      logger.error("ERROR: failed to get data from sooaplab server:")
+      logger.error(ex)
+      return {}
     end
   end
   
-  def get_wsdls_and_tool_names(proxy)
-    wsdls = [self.location]
-    base  = proxy.getServiceLocation("").return
-    tools = proxy.getAvailableAnalyses("").return
-    tools.each{ |t| wsdls << File.join(base, t+'?wsdl')}
-    
-    return [wsdls, tools]
-  end
-  
   def find_services_in_catalogue(wsdls =[])
-    wsdls    = get_info_from_server()[0] if wsdls.empty?
-    services = []
-    wsdls.each{ |url|
-         obj = SoapService.find(:first, :conditions => { :wsdl_location => url })
-         services << (obj.nil? ? nil : obj.service)     
-     }
+    services = Service.find(:all)
+    services.collect!{ |service| 
+          if wsdls.include?(service.latest_version.service_versionified.wsdl_location)
+            service
+          end
+          }
      return services.compact
   end
  
-  # the relation table maps services to a soaplab instance 
+  # the relationship table maps services to a soaplab instance 
+  # the emboss subgroup is indicated in the predicate
   def create_relationships(wsdls=[])
     services = find_services_in_catalogue(wsdls)
     services.each{ |service|
+    group_name = service.latest_version.service_versionified.wsdl_location.split('/')[-1].split('.')[0]
     
     relationship = Relationship.new(:subject_type => service.class.to_s,
-                                    :subject_id =>service.id, 
-                                    :predicate =>'BioCatalogue:memberOf', 
-                                    :object_type => self.class.to_s,
-                                    :object_id =>self.id)
+                                    :subject_id   => service.id, 
+                                    :predicate    => "BioCatalogue:memberOf", 
+                                    :object_type  => self.class.to_s,
+                                    :object_id    => self.id)
     relationship.save!
     }
   end
   
-  def remove_relationships
-    rels = Relationship.find(:all, :conditions =>{:object_id => self.id})
-    rels.each{ |r| r.destroy}
+  def create_annotations(annotations_data, source, destination)
+    annotations_data.each do |item|
+      item.each do |attrib, val|
+        unless val.blank?
+          anns =[]
+          anns << Annotation.new(:attribute_name    => attrib.strip.downcase, 
+                                      :value        => val, 
+                                      :source_type  => source.class.name, 
+                                      :source_id    => source.id,
+                                      :annotatable_type => destination.class.name,
+                                      :annotatable_id   => destination.id)
+          anns.each{ |a| a.save!}
+        end
+      end
+    end
   end
   
-  def associated_services
-    services = []
-    rels = Relationship.find(:all, :conditions =>{:object_id => self.id})
-    rels.each{ |r| services << Service.find(:first, :conditions => {:id => r.subject_id})}
-    return services
+  def create_tags(services, current_user)
+    services.each{ |service|
+    group_name = service.latest_version.service_versionified.wsdl_location.split('/')[-1].split('.')[0]
+    create_annotations([{'tag' =>'soaplab'}, {'tag'=> group_name}], current_user, service )
+    }   
   end
+  
+  
+  # based on the url passed, determine how to call the 
+  # soaplab interface methods
+  def services_factory(url= self.location)
+    server_data = {}
+    proxy = SOAP::WSDLDriverFactory.new(url).create_rpc_driver
+    if url.include?('AnalysisFactory')
+      server_data = get_soaplab1_data(proxy)
+    else
+      server_data = get_soaplab2_data(proxy)
+    end
+    server_data
+  end
+  
+  def services
+    rels = self.relationships
+    Service.find(rels.collect{ |r| r.subject_id})
+  end
+  
    
 end
