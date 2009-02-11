@@ -133,23 +133,46 @@ module BioCatalogue
       end
       
       unless  wsdl_hash["definitions"]["types"] == nil
-        unless wsdl_hash["definitions"]["types"]["schema"] == nil
+        if wsdl_hash["definitions"]["types"].class.to_s =="Array"
+          wsdl_hash["definitions"]["types"].each{ |type|
+           unless type["schema"] == nil
+             
+             if type["schema"].class.to_s == "Array"
+                elements =[]
+                type["schema"].each{ |schema|
+                  unless schema["element"]== nil
+                    if schema["element"].class.to_s =="Array"
+                      elements.concat(schema["element"])
+                    else
+                      elements << schema["element"]
+                    end
+                  end
+                }
+            else
+                elements   = type["schema"]["element"] || nil  
+            end
+             
+           end
+          }
+        else
+          
           if wsdl_hash["definitions"]["types"]["schema"].class.to_s == "Array"
             elements =[]
             wsdl_hash["definitions"]["types"]["schema"].each{ |schema|
-            unless schema["element"]== nil
-              if schema["element"].class.to_s =="Array"
-                elements.concat(schema["element"])
-              else
-                elements << schema["element"]
+              unless schema["element"]== nil
+                if schema["element"].class.to_s =="Array"
+                  elements.concat(schema["element"])
+                else
+                  elements << schema["element"]
+                end
               end
-            end
-            }
-          else
-            elements   = wsdl_hash["definitions"]["types"]["schema"]["element"] || nil  
-          end
-        end
+              }
+            else
+              elements   = wsdl_hash["definitions"]["types"]["schema"]["element"] || nil  
+            end    
+          end    
       end
+      
       unless operations.class.to_s == "Array"
         operations =[operations]
       end
@@ -332,6 +355,7 @@ module BioCatalogue
     
     def WsdlParser.test(num=0)
       wsdls= [
+      "http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl",
       "http://biomoby.org/services/wsdl/biomoby.renci.org/Water",
       "http://wsembnet.vital-it.ch/soaplab2/services/embnet.blastp?wsdl",
       "http://www.ebi.ac.uk/intact/binary-search-ws/binarysearch?wsdl",
