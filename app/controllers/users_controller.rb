@@ -113,9 +113,6 @@ class UsersController < ApplicationController
           ActivityLog.create(:action => "activate", :activity_loggable => user)
           return
         end
-      else
-        flash[:error] = "<div class=\"flash_header\">User unknown.</div><div class=\"flash_body\">Please check the activation link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
-        return
       end
     end
     flash[:error] = "<div class=\"flash_header\">Wrong activation code.</div><div class=\"flash_body\">Please check the activation link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
