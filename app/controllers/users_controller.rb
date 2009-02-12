@@ -61,7 +61,8 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         UserMailer.deliver_registration_notification(@user)
-        flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
+        #flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
+        flash[:notice] = "<div class=\"flash_header\">An email as been sent to your address<br />in order to complete your registration.</div><div class=\"flash_body\">If you haven't received this email in the next few minutes,<br />please contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
         format.html { redirect_to(@user) }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
@@ -104,24 +105,20 @@ class UsersController < ApplicationController
 
   def activate_account
     unless params[:security_token] == nil
-      # TODO: use User.find_by_security_token for performance reasons!
-      users = User.find(:all)
-      users.each do |user|
-        token = user.security_token
-        if token == params[:security_token]
-            # TODO: refactor this into the User model, ie: into a user.activate! method instead of doing it in the controller.
-            # TODO: DON'T use the update_attribute method as it bypasses AR validations.
-            if user.update_attribute(:activated_at, Time.now)
-              user.update_attribute(:security_token, nil)
-              session[:original_uri] = "/users/#{user.id}"
-              flash[:notice] = "Account activated.<br />You can log into your account now."
-              ActivityLog.create(:action => "activate", :activity_loggable => user)
-              return
-            end
+      user = User.find_by_security_token(params[:security_token])
+      if user
+        if user.activate!
+          session[:original_uri] = "/users/#{user.id}"
+          flash[:notice] = "<div class=\"flash_header\">Account activated.</div><div class=\"flash_body\">You can log into your account now.</div>"
+          ActivityLog.create(:action => "activate", :activity_loggable => user)
+          return
         end
+      else
+        flash[:error] = "<div class=\"flash_header\">User unknown.</div><div class=\"flash_body\">Please check the activation link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
+        return
       end
     end
-    flash[:error] = "Wrong activation code. Please contact the Administrator."
+    flash[:error] = "<div class=\"flash_header\">Wrong activation code.</div><div class=\"flash_body\">Please check the activation link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
   end
 
   private
