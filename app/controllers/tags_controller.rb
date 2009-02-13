@@ -44,7 +44,7 @@ protected
   end
   
   def find_tag_and_results
-    @tag = params[:tag]
+    @tag = CGI::unescape(params[:tag])
     
     @count = 0
     @results = { }
