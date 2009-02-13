@@ -125,8 +125,8 @@ module BioCatalogue
           output <<        "alt=\"#{count}\""
           output <<        "class=\"tag\" "
           output <<        "style=\"font-size:#{fsize}px; #{options[:tag_style]}\""
-          output <<        "href=\"/tags/#{URI.escape(tag_name)}\">"
-          output <<        h(tag_name) + " "
+          output <<        "href=\"/tags/#{CGI.escape(tag_name)}\">"
+          output <<        CGI.escapeHTML(tag_name) + " "
           output <<    "</a>"
           output <<    "</span>"
         end 
