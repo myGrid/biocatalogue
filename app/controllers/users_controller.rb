@@ -137,6 +137,7 @@ class UsersController < ApplicationController
       if request.post?
         if @user.reset_password!(params[:user][:password], params[:user][:password_confirmation])
           flash[:notice] = "<div class=\"flash_header\">New password accepted.</div><div class=\"flash_body\">Please log in with your new password.</div>"
+          session[:original_uri] = "/users/#{@user.id}"
           flash[:error] = nil
           ActivityLog.create(:action => "reset_password", :activity_loggable => @user)
           redirect_to(new_session_url)
