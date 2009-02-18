@@ -22,7 +22,8 @@
       </span>
       <%= submit_tag "Sign in", { :class => 'small_submit_button' } %>
 	  <br />
-	  <a id="forgot_pwd" href="#">Forgot your<br />password ?</a>
+	  <!--<a id="forgot_pwd" href="#">Forgot your<br />password ?</a>-->
+	  <%= link_to 'Forgot your<br />password ?', "/forgot_password", :id => "forgot_pwd" -%>
 	  <div id="sign_up">Don't have an account ? <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></div>
     <% end %>
 </div>

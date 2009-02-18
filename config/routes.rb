@@ -1,60 +1,62 @@
 # BioCatalogue: app/config/routes.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
-  
+
   # Routes from the annotations plugin + extensions
-  Annotations.map_routes(map, 
-                         { :new_popup => :post }, 
+  Annotations.map_routes(map,
+                         { :new_popup => :post },
                          { :edit_popup => :post })
-  
+
   # Tags
   map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
   map.tags_auto_complete '/tags/auto_complete', :controller => 'tags', :action => 'auto_complete', :conditions => { :method => :get }
   map.tag_show '/tags/:tag', :controller => 'tags', :action => 'show', :conditions => { :method => :get }
-  
+
   # Search
   map.search '/search', :controller => 'search', :action => 'show'
   map.connect '/search.:format', :controller => 'search', :action => 'show'
   map.connect '/search/:query', :controller => 'search', :action => 'show'
   map.connect '/search.:format/:query', :controller => 'search', :action => 'show'
-  
+
   map.resources :service_providers
 
   #map.resources :service_deployments
-  
+
   #map.resources :service_versions
-  
+
   map.resources :users, :collection => { :activate_account => :get }
   map.resource :session
-  
+
   map.register '/register', :controller => 'users', :action => 'new'
   map.signup '/signup', :controller => 'users', :action => 'new'
   map.login '/login', :controller => 'sessions', :action => 'new'
   map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
-  map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil  
+  map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil
+  map.forgot_password '/forgot_password', :controller => 'users', :action => 'forgot_password'
+  map.reset_password '/reset_password/:security_token', :controller => 'users', :action => 'reset_password', :security_token => nil
   map.contact '/contact', :controller => 'contact', :action => 'index'
   map.home '/', :controller => 'home', :action => 'index'
-  
+
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,
                                  :bulk_new => :get }
-  
+
   #map.resources :soap_operations
   #map.resources :soap_inputs
   #map.resources :soap_outputs
-  
+
   map.resources :soaplab_servers,
                  :collection => { :load_wsdl => :post}
-  
+
   map.resources :services
-  
+
   # Root of website
   map.root :controller => 'home', :action => 'index'
-  
+
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
@@ -73,7 +75,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Sample resource route with sub-resources:
   #   map.resources :products, :has_many => [ :comments, :sales ], :has_one => :seller
-  
+
   # Sample resource route with more complex sub-resources
   #   map.resources :products do |products|
   #     products.resources :comments

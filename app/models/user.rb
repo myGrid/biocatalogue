@@ -75,6 +75,32 @@ class User < ActiveRecord::Base
     self.display_name
   end
 
+  def generate_security_token!
+    begin
+      generate_security_token
+      self.save!
+      return true
+    rescue Exception => ex
+      logger.error("ERROR: failed to generate the security token for user #{self.id}. Exception:")
+      logger.error(ex)
+      return false
+    end
+  end
+
+  def reset_password!(password = nil, password_confirmation = nil)
+    begin
+      self.password = password
+      self.password_confirmation = password_confirmation
+      self.security_token = nil
+      self.save!
+      return true
+    rescue Exception => ex
+      logger.error("ERROR: failed to reset password for user #{self.id}. Exception:")
+      logger.error(ex)
+      return false
+    end
+  end
+
   private
 
   # Encrypts password with the salt.
@@ -101,6 +127,12 @@ class User < ActiveRecord::Base
 
   # Generate the confirmation key sent by email to activate an account
   def generate_activation_code
+    #self.security_token = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{email}--#{salt}--")
+    generate_security_token
+  end
+
+    # Generate the confirmation a security token for account activation or password reset
+  def generate_security_token
     self.security_token = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{email}--#{salt}--")
   end
 
