@@ -664,7 +664,7 @@ body.sidebar-right #login_box {
 	float: left;
 	position: relative;
 	top: -12px;
-	font-size: 0.9em;
+	font-size: 0.85em;
 	font-weight: bold;
 	white-space: nowrap;
 	text-decoration: underline;
@@ -674,6 +674,7 @@ body.sidebar-right #login_box {
 
 #sign_up {
 	clear: both;
+	font-size: 0.85em;
 }
 
 /* END Login box styles */
