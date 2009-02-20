@@ -120,7 +120,7 @@ protected
     flash[:error] = msg
     
     respond_to do |format|
-      format.html { redirect_to (session[:original_uri].nil? ? home_url : :back) }
+      format.html { redirect_to(session[:original_uri].nil? ? home_url : :back) }
       format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
     end
   end
