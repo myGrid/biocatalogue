@@ -1,5 +1,8 @@
 # Be sure to restart your server when you modify this file
 
+require 'rubygems'
+gem 'soap4r'
+
 # Uncomment below to force Rails into production mode when
 # you don't control web/app server and can't set it the proper way
 # ENV['RAILS_ENV'] ||= 'production'
