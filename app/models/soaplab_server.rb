@@ -3,6 +3,8 @@
 # Copyright (c) 2008, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
+require 'rubygems'
+gem 'soap4r'
 
 require 'open-uri'
 require 'soap/wsdlDriver'
@@ -109,12 +111,12 @@ class SoaplabServer < ActiveRecord::Base
   def get_soaplab2_data(proxy)
     data  = {}
     begin
-      base  = proxy.getServiceLocation("").return
-      categories = proxy.getAvailableCategories("").return
+      base  = proxy.getServiceLocation("")["return"]
+      categories = proxy.getAvailableCategories("")["return"]
       categories.each {|cat| 
         data[cat] = []
         }
-      analyses   = proxy.getAvailableAnalyses("").return
+      analyses   = proxy.getAvailableAnalyses("")["return"]
       analyses.each{|a|
         datum = {'name'=> a, 'location' => File.join(base, a+'?wsdl') }
         data[a.split('.')[0]]<< datum
@@ -170,10 +172,12 @@ class SoaplabServer < ActiveRecord::Base
     end
   end
   
+  #TODO: Handlers different deployments of the service
   def create_tags(services, current_user)
     services.each{ |service|
-    group_name = service.latest_version.service_versionified.wsdl_location.split('/')[-1].split('.')[0]
-    create_annotations([{'tag' =>'soaplab'}, {'tag'=> group_name}], current_user, service )
+    provider = service.providers.first if service.providers.length == 1
+    group_name, name = service.latest_version.service_versionified.wsdl_location.split('/')[-1].split('.')
+    create_annotations([{'tag' =>'soaplab'}, {'tag'=> group_name}, {'name'=> name.split('?')[0]}], provider, service )
     }   
   end
   
