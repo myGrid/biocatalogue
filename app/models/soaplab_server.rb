@@ -77,8 +77,10 @@ class SoaplabServer < ActiveRecord::Base
     data    = {}
     begin
       categories = proxy.getAvailableCategories()  
+      proxy.wiredump_dev = STDERR
       categories.each{|cat| 
         data[cat] = proxy.getAvailableAnalysesInCategory(cat) 
+        proxy.wiredump_dev = STDERR
         data[cat].collect! {|a|
           analysis             = {}
           analysis['name']     = a
