@@ -27,7 +27,9 @@ class ApplicationController < ActionController::Base
   layout "application_wide"
 
   before_filter :set_original_uri
-
+  
+  prepend_before_filter :initialise_use_tab_cookie_in_session
+  
   def login_required
     respond_to do |format|
       format.html do
@@ -126,4 +128,19 @@ class ApplicationController < ActionController::Base
       session[:original_uri] = request.request_uri if not logged_in?
     end
   end
+  
+  # ========================================
+  # Code to help with remembering which tab
+  # the  user was in after redirects etc.
+  # ----------------------------------------
+  
+  def initialise_use_tab_cookie_in_session
+    session[:use_tab_cookie] = false if session[:use_tab_cookie] == nil
+  end
+  
+  def add_use_tab_cookie_to_session
+    session[:use_tab_cookie] = true
+  end
+  
+  # ========================================
 end

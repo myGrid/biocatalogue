@@ -283,4 +283,23 @@ module ApplicationHelper
       
     return desc
   end
+  
+  # ========================================
+  # Code to help with remembering which tab
+  # the  user was in after redirects etc.
+  # ----------------------------------------
+  
+  # Note: the implementation of this method means that when it is used
+  # it also resets the param to "false", thus the remembering of a tab is 
+  # only done in the one (current) request. 
+  # If more control than that is required (ie: being able to configure how long tab is remembered for), 
+  # then split into 2 different methods.
+  def get_and_reset_use_tab_cookie_param_value
+    value = session[:use_tab_cookie]
+    value = value.blank? ? false : value
+    session[:use_tab_cookie] = false
+    return value
+  end
+  
+  # ========================================
 end

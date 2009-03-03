@@ -37,7 +37,7 @@ function tabberObj(argsObj)
   /* Added by Jits on 2009-03-02 to allow for anchors to select tab to open */
 	if ( window.location.hash && window.location.hash.match( /^#/ ) ) 
 	{ 
-		var el = document.getElementById(window.location.hash.substr(2)); 
+		var el = document.getElementById("tab-" + window.location.hash.substr(1)); 
 		if (el) 
 		{ 
 			el.className = "tabbertab tabbertabdefault" 
@@ -430,7 +430,7 @@ tabberObj.prototype.navSetActive = function(tabberIndex)
 
   /* Set classNavActive for the navigation list item */
   this.tabs[tabberIndex].li.className = this.classNavActive;
-
+	
   return this;
 };
 

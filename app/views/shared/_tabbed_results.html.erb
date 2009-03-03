@@ -2,7 +2,7 @@
 	<% types.each do |s_type| %>
 		<% visible_s_type = s_type.titleize.pluralize %>
 		<% unless (res = @results[s_type.classify]).nil? or res.empty? %>
-			<div id="<%= s_type.pluralize -%>" class="tabbertab">
+			<div id="tab-<%= s_type.pluralize -%>" class="tabbertab">
 		    <h3><%= "#{visible_s_type} (#{res.length})" -%></h3>
 				<%= render :partial => "#{s_type}/listing", :locals => { :items => res } %>
 		  </div>
