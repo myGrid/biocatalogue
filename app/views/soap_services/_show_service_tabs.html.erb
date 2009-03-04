@@ -14,7 +14,7 @@
   <h3>Operations (<%= ops.length -%>)</h3>
 	
 	<a name='operations_index'></a>
-	<div style="padding: 0.8em 0.4em; border: 2px solid #CCC; line-height: 1.5; background-color: #EEE;">
+	<div style="padding: 0.6em 0.4em; border: 1px solid #CCC; line-height: 1.5; background-color: #F3F3F3; font-weight: bold; font-size: 110%;">
 		<% ops.each do |operation| %>
 			<span style="margin: 0 0.4em;">
 				<%= content_tag(:a, h(operation.name), :href => "#soap_operation_#{operation.id}") -%>
@@ -24,7 +24,7 @@
 	
 	<% ops.each do |operation| %>
 		<a name='<%= "soap_operation_#{operation.id}" -%>'></a>
-		<div style="margin: 1em 0; padding: 1.5em 1.2em 1em 1.2em; border: 2px solid #CCC; line-height: 1.5;">
+		<div style="margin: 1em 0; padding: 1.5em 1.2em 1em 1.2em; border: 1px solid #CCC; line-height: 1.5;">
 			<div>
 				<div style="float: left; width: 73%;">
 					<b>Name:</b>
@@ -94,8 +94,8 @@
 			</div>
 			
 		</div>
-		<p style="margin: 0.3em 0 0 0; text-align: right;">
-			<a href="#operations_index">Back to index</a>
+		<p style="margin: 0 0 1.5em 0; font-size: 90%;">
+			<a href="#operations_index">Back to top</a>
 		</p>
 	<% end %>
   
