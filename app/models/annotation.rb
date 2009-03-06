@@ -23,7 +23,7 @@ class Annotation < ActiveRecord::Base
   end
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :value ])
+    acts_as_solr(:fields => [ :value ], :auto_commit => false )
   end
   
   protected

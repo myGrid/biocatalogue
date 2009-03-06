@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   end
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :display_name, :affiliation, :country ])
+    acts_as_solr(:fields => [ :display_name, :affiliation, :country ], :auto_commit => false )
   end
 
   validates_presence_of       :email

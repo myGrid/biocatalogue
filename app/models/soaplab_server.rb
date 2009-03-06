@@ -21,6 +21,10 @@ class SoaplabServer < ActiveRecord::Base
   validates_uniqueness_of :location, :message => " for this server seems to exist in BioCatalogue"
   validates_url_format_of :location,
                           :allow_nil => false
+  
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :location ], :auto_commit => false )
+  end
 
   # save the soap services from this server in
   # the database
