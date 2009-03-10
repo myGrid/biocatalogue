@@ -17,14 +17,23 @@
 
 <% unless annotatable.nil? %>
 	<% if show_header == true %>
-		<div>
-			<%= annotation_add_by_popup_link annotatable,
-																			 :attribute_name => "Description",
-					                             :tooltip_text => "Click to provide a new description",
-					                             :style => "margin-left:1em; float:right;" -%>
-			<p>
+		<div style="margin-top: 1em;">
+			<%= # annotation_add_by_popup_link annotatable,
+			    # :attribute_name => "Description",
+			    # :tooltip_text => "Click to provide a new description",
+			    # :style => "margin-left:1em;"
+			-%>
+
 				<b>Description(s):</b>
-			</p>
+
+			<%= annotation_add_by_popup_link annotatable,
+			     :attribute_name => "Description",
+			     :tooltip_text => "Click to add a description",
+                             :icon_filename => "add_annotation.gif",
+                             :icon_hover_filename => "/images/add_annotation_hover.gif",
+			     :style => "margin-left:0.5em;"
+			-%>
+
 		</div>
 	<% end %>
 	
