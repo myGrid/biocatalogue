@@ -109,7 +109,7 @@ module ActsAsSolr #:nodoc:
         :fields => nil,
         :additional_fields => nil,
         :exclude_fields => [],
-        :auto_commit => true,
+        :auto_commit => false,
         :include => nil,
         :facets => nil,
         :boost => nil,
