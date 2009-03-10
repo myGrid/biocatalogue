@@ -142,8 +142,8 @@ class SoapService < ActiveRecord::Base
   protected
   
   def post_create(endpoint, current_user)
-    # Try and find location of the service from the url of the WSDL.
-    wsdl_geoloc = BioCatalogue::Util.url_location_lookup(self.wsdl_location)
+    # Try and find location of the service from the url of the endpoint.
+    wsdl_geoloc = BioCatalogue::Util.url_location_lookup(endpoint)
     city, country = BioCatalogue::Util.city_and_country_from_geoloc(wsdl_geoloc)
     
     # Create the associated service, service_version and service_deployment objects.
