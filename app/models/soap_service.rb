@@ -39,8 +39,7 @@ class SoapService < ActiveRecord::Base
                           :message => 'is not valid'
    
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :documentation_url, :wsdl_location, :service_type_name ], 
-                            :auto_commit => false )
+    acts_as_solr(:fields => [ :name, :description, :documentation_url, :wsdl_location, :service_type_name ] )
   end
   
   if USE_EVENT_LOG
@@ -48,8 +47,14 @@ class SoapService < ActiveRecord::Base
   end
   
   def self.check_duplicate(wsdl_location, endpoint)
-    obj = SoapService.find(:first, :conditions => { :wsdl_location => wsdl_location }) || 
-          ServiceDeployment.find(:first, :conditions => { :endpoint => endpoint })
+    obj = SoapService.find(:first, :conditions => { :wsdl_location => wsdl_location }) #||
+          # commenting the ||  on 10-03-2009
+          # ================================
+          #  Soome wsdls share endpoints though not exposing the same interface.
+          #  which makes them appear as duplicates of each other
+          # e.g       http://www.cbs.dtu.dk/ws/MaxAlign/MaxAlign_1_1_ws0.wsdl
+          #     and   http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl 
+          #ServiceDeployment.find(:first, :conditions => { :endpoint => endpoint })
           
     return (obj.nil? ? nil : obj.service)
   end

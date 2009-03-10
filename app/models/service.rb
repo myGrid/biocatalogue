@@ -9,6 +9,8 @@ class Service < ActiveRecord::Base
   
   acts_as_annotatable
   
+  is_testable
+  
   has_many :relationships, :as => :subject, :dependent => :destroy
   
   has_many :service_versions, 
@@ -37,7 +39,7 @@ class Service < ActiveRecord::Base
   validates_existence_of :submitter   # User must exist in the db beforehand.
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :unique_code, :submitter_name ], :auto_commit => false )
+    acts_as_solr(:fields => [ :name, :unique_code, :submitter_name ] )
   end
   
   if USE_EVENT_LOG

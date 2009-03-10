@@ -23,7 +23,7 @@ class SoaplabServer < ActiveRecord::Base
                           :allow_nil => false
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :location ], :auto_commit => false )
+    acts_as_solr(:fields => [ :location ] )
   end
 
   # save the soap services from this server in

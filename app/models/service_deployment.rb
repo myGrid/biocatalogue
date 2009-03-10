@@ -29,7 +29,7 @@ class ServiceDeployment < ActiveRecord::Base
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :endpoint, :city, :country ],
-                 :include => [ :provider ], :auto_commit => false )
+                 :include => [ :provider ] )
   end
   
   if USE_EVENT_LOG

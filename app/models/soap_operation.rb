@@ -15,7 +15,7 @@ class SoapOperation < ActiveRecord::Base
   has_many :soap_outputs, :dependent => :destroy
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :parent_port_type ], :auto_commit => false )
+    acts_as_solr(:fields => [ :name, :description, :parent_port_type ] )
   end
   
   if USE_EVENT_LOG
