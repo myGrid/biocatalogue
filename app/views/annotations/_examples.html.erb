@@ -16,19 +16,11 @@
 <% unless annotatable.nil? %>
 	<% if show_header == true %>
 		<div style="margin-top: 1em;">
-			<%= # annotation_add_by_popup_link annotatable,
-			    # :attribute_name => "Example",
-			    # :tooltip_text => "Click to provide a new example",
-			    # :style => "margin-left:1em; float: right;" 
-			-%>
-
-				<b>Example(s):</b>
+		  <b>Example(s):</b>
 
 				<%= annotation_add_by_popup_link annotatable,
 				    :attribute_name => "Example",
 				    :tooltip_text => "Click to add an example",
-				    :icon_filename => "add_annotation.gif",
-				    :icon_hover_filename => "/images/add_annotation_hover.gif",
 				    :style => "margin-left:0.5em;" -%>
 
 		</div>
