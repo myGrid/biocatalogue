@@ -126,13 +126,17 @@ module ApplicationHelper
   #  :tooltip_text - text that will be displayed in a tooltip over the icon/text.
   #    default: 'Add annotation'
   #  :style - any CSS inline styles that need to be applied to the icon/text.
+  #    default: text-decoration: none; (to avoid the icon beeing underlined when used in combination with text)
+  #  :class - any CSS class that need to be applied to the icon/text.
   #    default: nil
   #  :link_text - text to be displayed as part of the link.
   #    default: ''
   #  :show_icon - specifies whether to show the standard annotate icon or not.
   #    default: true
   #  :icon_filename - the filename of the image in the /public/images directory.
-  #    default: 'note_add.png'
+  #    default: 'add_annotation.gif'
+  #  :icon_hover_filename - the filename of the image in the /public/images directory used for the mouseover event.
+  #    default: 'add_annotation_hover.gif'
   #  :show_not_logged_in_text - specifies whether to display some text when a user is not logged in, in place of the annotate icon/text (will display something like: "log in to add description", where "log in" links to the login page).
   #    default: true
   #  :multiple - specified whether multiple annotations need to be created at once (eg: for tags).
@@ -150,7 +154,7 @@ module ApplicationHelper
                            :link_text => '',
                            :show_icon => true,
                            :icon_filename => 'add_annotation.gif',
-                           :icon_hover_filename => '/images/add_annotation_hover.gif',
+                           :icon_hover_filename => 'add_annotation_hover.gif',
                            :show_not_logged_in_text => true,
                            :multiple => false,
                            :multiple_separator => ',')
@@ -158,7 +162,7 @@ module ApplicationHelper
     if logged_in?
       link_html = ''
       link_html = link_html + "<span style='vertical-align:middle; text-decoration: underline;'>#{options[:link_text]}</span>" unless options[:link_text].blank?
-      link_html = image_tag(options[:icon_filename], :mouseover => options[:icon_hover_filename], :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if options[:show_icon]
+      link_html = image_tag(options[:icon_filename], :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if options[:show_icon]
 
       url_options = { :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id }
       url_options[:attribute_name] = options[:attribute_name] unless options[:attribute_name].nil?
