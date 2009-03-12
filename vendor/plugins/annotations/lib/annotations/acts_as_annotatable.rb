@@ -109,6 +109,11 @@ module Annotations
         # Arrays for Hash values will be converted to multiple annotations.
         # Blank values will still cause annotation(s) to be created, but nil
         # values won't.
+        #
+        # Code example:
+        # -------------
+        # data = { "tag" => [ "tag1", "tag2", "tag3" ], "description" => "This is a book" }
+        # book.create_annotations(data, current_use)
         def create_annotations(annotations_data, source)
           annotations_data.each do |attrib, val|
             unless val.nil?
