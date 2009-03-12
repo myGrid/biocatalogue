@@ -3,8 +3,8 @@
 # Copyright (c) 2008, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
-require 'rubygems'
-gem 'soap4r'
+#require 'rubygems'
+#gem 'soap4r'
 
 require 'open-uri'
 require 'soap/wsdlDriver'
@@ -47,7 +47,7 @@ class SoaplabServer < ActiveRecord::Base
         transaction do
           begin
             if success 
-              c_success = soap_service.create_service(data["endpoint"], current_user, {} ) 
+              c_success = soap_service.submit_service( data["endpoint"], current_user, {} )  
               if c_success
                 new_wsdls << url
                 logger.info("INFO: registered service - #{url}. SUCCESS:")
