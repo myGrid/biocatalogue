@@ -110,28 +110,41 @@ module Annotations
         # Blank values will still cause annotation(s) to be created, but nil
         # values won't.
         #
+        # Returns an array of Annotation objects of the annotations that were
+        # successfully created.
+        #
         # Code example:
         # -------------
         # data = { "tag" => [ "tag1", "tag2", "tag3" ], "description" => "This is a book" }
         # book.create_annotations(data, current_use)
         def create_annotations(annotations_data, source)
+          anns = [ ]
+          
           annotations_data.each do |attrib, val|
             unless val.nil?
               if val.is_a? Array
                 val.each do |val_inner|
-                  self.annotations << Annotation.new(:attribute_name => attrib, 
-                                                     :value => val_inner, 
-                                                     :source_type => source.class.name, 
-                                                     :source_id => source.id)
+                  ann = Annotation.new(:attribute_name => attrib, 
+                                       :value => val_inner, 
+                                       :source_type => source.class.name, 
+                                       :source_id => source.id)
+                  
+                  self.annotations << ann
+                  anns << ann
                 end
               else
-                self.annotations << Annotation.new(:attribute_name => attrib, 
-                                                   :value => val, 
-                                                   :source_type => source.class.name, 
-                                                   :source_id => source.id)
+                ann = Annotation.new(:attribute_name => attrib, 
+                                     :value => val, 
+                                     :source_type => source.class.name, 
+                                     :source_id => source.id)
+                
+                self.annotations << ann
+                anns << ann
               end
             end
           end
+          
+          return anns
         end
       end
       

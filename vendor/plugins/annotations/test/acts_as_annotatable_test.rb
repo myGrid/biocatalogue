@@ -70,8 +70,9 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     }
     
     bk = Book.create
-    bk.create_annotations(data, users(:jane))
+    anns = bk.create_annotations(data, users(:jane))
     
+    assert_equal 7, anns.length
     assert_equal 7, bk.annotations.length
   end
   
