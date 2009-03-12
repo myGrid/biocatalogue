@@ -124,22 +124,24 @@ module Annotations
             unless val.nil?
               if val.is_a? Array
                 val.each do |val_inner|
-                  ann = Annotation.new(:attribute_name => attrib, 
-                                       :value => val_inner, 
-                                       :source_type => source.class.name, 
-                                       :source_id => source.id)
+                  ann = self.annotations << Annotation.new(:attribute_name => attrib, 
+                                               :value => val_inner, 
+                                               :source_type => source.class.name, 
+                                               :source_id => source.id)
                   
-                  self.annotations << ann
-                  anns << ann
+                  unless ann.nil? || ann == false
+                    anns << ann
+                  end
                 end
               else
-                ann = Annotation.new(:attribute_name => attrib, 
-                                     :value => val, 
-                                     :source_type => source.class.name, 
-                                     :source_id => source.id)
+                ann = self.annotations << Annotation.new(:attribute_name => attrib, 
+                                             :value => val, 
+                                             :source_type => source.class.name, 
+                                             :source_id => source.id)
                 
-                self.annotations << ann
-                anns << ann
+                unless ann.nil? || ann == false
+                  anns << ann
+                end
               end
             end
           end
