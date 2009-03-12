@@ -20,7 +20,7 @@ class AnnotationsController < ApplicationController
   
   before_filter :set_no_layout, :only => [ :new_popup, :edit_popup ]
   
-  before_filter :add_use_tab_cookie_to_session, :only => [ :create, :create_multiple ]
+  before_filter :add_use_tab_cookie_to_session, :only => [ :create, :create_multiple, :update, :destroy ]
   
   def new_popup
     # @annotatable is set in a before filter from the controller in the plugin. 

@@ -131,7 +131,7 @@ class ApplicationController < ActionController::Base
   
   # ========================================
   # Code to help with remembering which tab
-  # the  user was in after redirects etc.
+  # the user was in after redirects etc.
   # ----------------------------------------
   
   def initialise_use_tab_cookie_in_session
