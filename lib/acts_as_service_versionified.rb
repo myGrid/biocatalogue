@@ -37,6 +37,16 @@ module BioCatalogue
       
       module SingletonMethods
         
+        # =======================================================
+        # Class level method stubs that models should reimplement
+        # -------------------------------------------------------
+        
+        def check_duplicate(endpoint)
+          nil
+        end
+        
+        # =======================================================
+        
       end
       
       module InstanceMethods
@@ -54,11 +64,54 @@ module BioCatalogue
           end
         end
         
-        # Method stub that models should reimplement
+        # ==========================================================
+        # Instance level method stubs that models should reimplement
+        # ----------------------------------------------------------
+        
+        def service_type_name
+          ""  
+        end
+        
         def total_annotations_count(source_type)
           0
         end
         
+        # ==========================================================
+        
+        protected
+        
+        # This method should be used as part of the submission process, 
+        # ideally wrapped in a transaction, 
+        # after the service version instance is created,
+        # in order to create the parent Service, ServiceVersion and ServiceDeployment objects and assign the necessary data.
+        def perform_post_submit(endpoint, current_user)
+          # Try and find location of the service from the url of the endpoint.
+          wsdl_geoloc = BioCatalogue::Util.url_location_lookup(endpoint)
+          city, country = BioCatalogue::Util.city_and_country_from_geoloc(wsdl_geoloc)
+          
+          # Create the associated service, service_version and service_deployment objects.
+          # We can assume here that this is the submission of a completely new service in BioCatalogue.
+          
+          new_service = Service.new(:name => self.name)
+          
+          new_service.submitter = current_user
+                                    
+          new_service_version = new_service.service_versions.build(:version => "1", 
+                                                                   :version_display_text => "1")
+          
+          new_service_version.service_versionified = self
+          new_service_version.submitter = current_user
+          
+          new_service_deployment = new_service_version.service_deployments.build(:endpoint => endpoint,
+                                                                                 :city => city,
+                                                                                 :country => country)
+          
+          new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(endpoint).host)
+          new_service_deployment.service = new_service
+          new_service_deployment.submitter = current_user
+                                                        
+          return new_service.save!
+        end
       end
     end
   end

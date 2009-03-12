@@ -14,7 +14,7 @@
 
 <%= error_messages_for :soap_service %>
 
-<p class="step_text">1. Specify the URL to the WSDL of the service, then preview...</p>
+<p class="step_text">1. Specify the URL to the WSDL of the service, then preview:</p>
 
 <% form_remote_tag(:url => load_wsdl_soap_services_url, 
 								   :update => 'soap_service_after_wsdl_load', 
@@ -25,7 +25,7 @@
 	
 	<div>
 		<p style=" margin-top: 0;">
-			<%= text_field_tag "wsdl_url", params[:wsdl_url], :size => 60 -%>
+			<%= text_field_tag "wsdl_url", params[:wsdl_url], :style => "width: 550px" -%>
 			<%= submit_tag "Preview" -%>
 			<%= image_tag "spinner.gif", :id => "spinner", :style => "display: none; vertical-align: middle;" -%>
 		</p>

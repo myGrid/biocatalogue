@@ -12,9 +12,6 @@ require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
-  #do not log the plain text passwords
-  filter_parameter_logging "password"
-
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery :secret => 'bc5fa0462513829e6a733e8947c24994'
@@ -22,7 +19,7 @@ class ApplicationController < ActionController::Base
   # See ActionController::Base for details
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password").
-  # filter_parameter_logging :password
+  filter_parameter_logging :password
 
   layout "application_wide"
 
@@ -62,7 +59,7 @@ class ApplicationController < ActionController::Base
 
   # Check Administrator status for a user.
   # To make a user an Administrator, edit manually the user
-  # in the datatbase: assign 'role_id' to 1
+  # in the database: assign 'role_id' to 1
   def is_admin?
     unless logged_in? && !current_user.nil? && current_user.role_id == 1
       return false

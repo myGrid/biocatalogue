@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/soap_services/_new_form.html.erb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -96,37 +96,35 @@
 			</td>
 			<td style="width: 49%; padding-left: 1em;">
 				<fieldset>
-					<legend>Extra Information</legend>
+					<legend>More Information</legend>
 					
-					<!-- Add new name alias -->
-					<p>
-						<%= link_to_function "Add name alias...", visual_effect(:toggle_blind, "new_name_box", :duration => 0.3) %>
+					<!-- Name alias -->
+					<p class="high_linespaced">
+						Add a name alias (ie: an alternative name for this service):
+						<br/>
+						<%= text_field_tag "annotations[name]", params[:annotations][:name], :disabled => @wsdl_info.nil?, :style => "width: 98%;" %>
 					</p>
-					<div id="new_name_box" style="display: block;">
-						<p><%= text_field_tag "annotations[name]", params[:annotations][:name], :disabled => @wsdl_info.nil?, :style => "width: 98%;" %></p>
-					</div>
 					
-					<!-- Add new description -->
-					<p>
-						<%= link_to_function "Add description...", visual_effect(:toggle_blind, "new_description_box", :duration => 0.3) %>
+					<!-- Documentation URL -->
+					<p class="high_linespaced">
+						Add a URL to additional documentation for this service:
+						<br/>
+						<%= text_field_tag "annotations[documentation_url]", params[:annotations][:documentation_url], :disabled => @wsdl_info.nil?, :style => "width: 98%;" %>
 					</p>
-					<div id="new_description_box" style="display: block;">
-						<p><%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => @wsdl_info.nil?, :size => "50x10", :style => "width: 98%;" %></p>
-					</div>
 					
-					<!-- Add documentation URL -->
-					<p>
-						<%= link_to_function "Add documentation URL...", visual_effect(:toggle_blind, "doc_url_box", :duration => 0.3) %>
+					<!-- Description -->
+					<p class="high_linespaced">
+						Add a description of this service:
+						<br/>
+						<%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => @wsdl_info.nil?, :size => "50x10", :style => "width: 98%;" %>
 					</p>
-					<div id="doc_url_box" style="display: block;">
-						<p><%= text_field_tag "annotations[documentation_url]", params[:annotations][:documentation_url], :disabled => @wsdl_info.nil?, :style => "width: 98%;" %></p>
-					</div>
+					
 				</fieldset>
 			</td>
 		</tr>
 	</table>
 	
   <p style="text-align: center; margin-top: 1.5em;">
-    <%= f.submit "Submit", :disable_with => "Submitting...", :disabled => @wsdl_info.nil? %>
+    <%= f.submit "Submit", :disable_with => "Submitting...", :disabled => @wsdl_info.nil? -%>
   </p>
 <% end %>

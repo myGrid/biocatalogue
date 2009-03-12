@@ -101,6 +101,7 @@ class Annotation < ActiveRecord::Base
   end
   
   def attribute_name=(attr_name)
+    attr_name = ( attr_name.is_a?(String) ? attr_name.strip : attr_name.to_s )
     self.attribute = AnnotationAttribute.find_or_create_by_name(attr_name)
   end
   

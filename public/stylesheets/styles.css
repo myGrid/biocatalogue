@@ -239,6 +239,18 @@ small {
 	text-align: center;
 }
 
+.nomargin {
+	margin: 0;
+}
+
+.medium_linespaced {
+	line-height: 1.5;
+}
+
+.high_linespaced {
+	line-height: 2.0;
+}
+
 .green_box {
 	border: 1px dotted #999999;
 	background-color: #e9f7cc;
@@ -815,8 +827,10 @@ body.sidebar-right #login_box {
 
 .step_text {
 	font-weight: bold;
-	margin-top: 1.2em;
+	margin-top: 2em;
 	color: #333333;
+	/* border-top: 1px dotted #CCC;
+	padding-top: 0.5em; */
 }
 
 .none_text {
@@ -829,10 +843,21 @@ body.sidebar-right #login_box {
 	font-weight: bold;
 }
 
+.additional_info_text {
+	font-size: 85%;
+	color: #666666;
+	font-weight: normal;
+}
+
+.required {
+	color: red;
+	font-weight: bold;
+}
+
 .soap_service_form {
-	margin: 1.5em 0;
+	margin: 1em 0;
 	border: 1px dotted #999999;
-	padding: 0.8em 1.3em;
+	padding: 0.7em 1.2em;
 	background-color: #F5F5F5;
 }
 
@@ -1366,22 +1391,13 @@ ul.tabbernav li.tabberactive a:hover
 	text-align: center;
 }
 
-.buttons * {
-	vertical-align: middle;
-}
-
 .buttons li {
 	display: inline;
-	vertical-align: middle;
 	margin: 0;
 	margin-left: 8px;
 }
 
 .buttons li.first {
-	margin-left: 0;
-}
-
-.buttons li:first {
 	margin-left: 0;
 }
 

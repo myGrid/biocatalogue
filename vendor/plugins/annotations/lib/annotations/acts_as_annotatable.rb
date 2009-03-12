@@ -98,10 +98,33 @@ module Annotations
         # "all" (no case sensitive) can be provided to get all annotations regardless of source type.
         # E.g.: book.count_annotations_by("User") or book.count_annotations_by("All")
         def count_annotations_by(source_type_in)
-          if source_type_in.downcase == "all"
+          if source_type_in == nil || source_type_in.downcase == "all"
             return self.annotations.count
           else
             return self.annotations.count(:conditions => [ "source_type = ?", source_type_in ])  
+          end
+        end
+        
+        # Use this method to create many annotations from a Hash of data.
+        # Arrays for Hash values will be converted to multiple annotations.
+        # Blank values will still cause annotation(s) to be created.
+        def create_annotations(annotations_data, source)
+          annotations_data.each do |attrib, val|
+            unless val.nil?
+              if val.is_a? Array
+                val.each do |val_inner|
+                  self.annotations << Annotation.new(:attribute_name => attrib, 
+                                                     :value => val_inner, 
+                                                     :source_type => source.class.name, 
+                                                     :source_id => source.id)
+                end
+              else
+                self.annotations << Annotation.new(:attribute_name => attrib, 
+                                                   :value => val, 
+                                                   :source_type => source.class.name, 
+                                                   :source_id => source.id)
+              end
+            end
           end
         end
       end

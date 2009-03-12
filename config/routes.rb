@@ -41,6 +41,8 @@ ActionController::Routing::Routes.draw do |map|
   map.contact '/contact', :controller => 'contact', :action => 'index'
   map.home '/', :controller => 'home', :action => 'index'
 
+  map.resources :rest_services
+  
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,
                                  :bulk_new => :get }

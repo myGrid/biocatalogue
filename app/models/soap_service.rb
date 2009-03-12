@@ -25,6 +25,8 @@ class SoapService < ActiveRecord::Base
            :dependent => :destroy,
            :include => [ :soap_inputs, :soap_outputs ]
   
+  # This is to protect some fields that should
+  # only get their data from the WSDL doc.
   attr_protected :name, 
                  :description, 
                  :wsdl_file, 
@@ -46,11 +48,16 @@ class SoapService < ActiveRecord::Base
     acts_as_activity_logged(:models => { :referenced => { :model => :service_version } })
   end
   
+  # ======================================
+  # Class level method stubs reimplemented
+  # from acts_as_service_versionified
+  # --------------------------------------
+  
   def self.check_duplicate(wsdl_location, endpoint)
     obj = SoapService.find(:first, :conditions => { :wsdl_location => wsdl_location }) #||
           # commenting the ||  on 10-03-2009
           # ================================
-          #  Soome wsdls share endpoints though not exposing the same interface.
+          #  Some wsdls share endpoints though not exposing the same interface.
           #  which makes them appear as duplicates of each other
           # e.g       http://www.cbs.dtu.dk/ws/MaxAlign/MaxAlign_1_1_ws0.wsdl
           #     and   http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl 
@@ -58,13 +65,52 @@ class SoapService < ActiveRecord::Base
           
     return (obj.nil? ? nil : obj.service)
   end
+  
+  # ======================================
+  
+  
+  # =========================================
+  # Instance level method stubs reimplemented
+  # from acts_as_service_versionified
+  # -----------------------------------------
+  
+  def service_type_name
+    "SOAP"
+  end
+  
+  # This method returns a count of all the annotations for this SOAP Service.
+  # This takes into account annotations on all the child operations/inputs/outputs
+  def total_annotations_count(source_type)
+    # TODO: need take into account database fields that have metadata - these are essentially "provider" annotations.
+    
+    count = 0
+    
+    count += self.count_annotations_by(source_type)
+    
+    self.soap_operations.each do |op|
+      count += op.count_annotations_by(source_type)
+      
+      op.soap_inputs.each do |input|
+        count += input.count_annotations_by(source_type)
+      end
+      
+      op.soap_outputs.each do |output|
+        count += output.count_annotations_by(source_type)
+      end
+    end
+    
+    return count
+  end
+  
+  # =========================================
+
 
   # Populates (but does not save) this soap service with all the relevant data and child soap objects
   # based on the data from the WSDL file.
   #
   # Returns an array with:
   # - success - whether the process of populating the soap service suceeded or not.
-  # - data - the hash structure representing the soap service and it's underlying metadat from the WSDL.
+  # - data - the hash structure representing the soap service and it's underlying metadata from the WSDL.
   def populate
     success = true
     data = { }
@@ -97,95 +143,21 @@ class SoapService < ActiveRecord::Base
     return [ success, data ]
   end
   
-  def service_type_name
-    "SOAP"
-  end
-  
-  def create_service(endpoint, current_user, annotations)
+  def submit_service(endpoint, current_user, annotations)
     transaction do
       self.save!
-      self.post_create(endpoint, current_user)
+      self.perform_post_submit(endpoint, current_user)
       self.create_annotations(annotations, current_user)
       return true
     end
     rescue Exception => ex
       #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
-      logger.error("ERROR: failed to register SOAP service - #{self.wsdl_location}. Exception:")
+      logger.error("ERROR: failed to submit SOAP service - #{self.wsdl_location}. Exception:")
       logger.error(ex)
       return false
   end
-  
-  # This method returns all the annotations for this SOAP Service.
-  # This takes into account annotations on all the child operations/inputs/outputs
-  def total_annotations_count(source_type)
-    # TODO: need take into account database fields that have metadata - these are essentially "provider" annotations.
-    
-    count = 0
-    
-    count += self.count_annotations_by(source_type)
-    
-    self.soap_operations.each do |op|
-      count += op.count_annotations_by(source_type)
-      
-      op.soap_inputs.each do |input|
-        count += input.count_annotations_by(source_type)
-      end
-      
-      op.soap_outputs.each do |output|
-        count += output.count_annotations_by(source_type)
-      end
-    end
-    
-    return count
-  end
-  
+   
   protected
-  
-  def post_create(endpoint, current_user)
-    # Try and find location of the service from the url of the endpoint.
-    wsdl_geoloc = BioCatalogue::Util.url_location_lookup(endpoint)
-    city, country = BioCatalogue::Util.city_and_country_from_geoloc(wsdl_geoloc)
-    
-    # Create the associated service, service_version and service_deployment objects.
-    # We can assume here that this is the submission of a completely new service in BioCatalogue.
-    
-    new_service = Service.new(:name => self.name)
-    
-    new_service.submitter = current_user
-                              
-    new_service_version = new_service.service_versions.build(:version => "1", 
-                                                             :version_display_text => "1")
-    
-    new_service_version.service_versionified = self
-    new_service_version.submitter = current_user
-    
-    new_service_deployment = new_service_version.service_deployments.build(:endpoint => endpoint,
-                                                                           :city => city,
-                                                                           :country => country)
-    
-    new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(endpoint).host)
-    new_service_deployment.service = new_service
-    new_service_deployment.submitter = current_user
-                                                  
-    if new_service.save!
-      return true
-    else
-      logger.error("ERROR: post_create method for SoapServicesController failed!")
-      logger.error("Error messages: #{new_service.errors.full_messages.to_sentence}")
-      return false
-    end
-  end
-  
-  def create_annotations(annotations_data, source)
-    annotations_data.each do |attrib, val|
-      unless val.blank?
-        annotations << Annotation.new(:attribute_name => attrib.strip.downcase, 
-                                      :value => val, 
-                                      :source_type => source.class.name, 
-                                      :source_id => source.id)
-      end
-    end
-  end
   
   # This builds the parts of the SOAP service 
   # (ie: it's operations and their inputs and outputs).

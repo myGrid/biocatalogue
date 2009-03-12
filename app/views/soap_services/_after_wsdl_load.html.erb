@@ -24,8 +24,12 @@
 		</p>
 	</div>
 <% else %>
-	<p class="step_text">2. Check the details, then submit... </p>
-	<p style="color: #666666;">After submission you will be able to provide more information</p>
+	<p class="step_text">
+		2. Check the details and provide more informatiom, then submit:
+		<br/>
+		<span class="additional_info_text" style="margin-top: 0.8em;">After submission you can also provide more information</span>
+	</p>
+	
 	<div class="soap_service_form">
 		<%= render :partial => "new_form" %>
 	</div>

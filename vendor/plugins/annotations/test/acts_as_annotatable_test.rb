@@ -60,6 +60,21 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     assert_equal 3, chapters(:br_c2).count_annotations_by("User")
   end
   
+  def test_create_annotations_instance_method
+    data = {
+      :test1 => "test123",
+      "test2" => nil,
+      "  test3" => "",
+      :foo => 1,
+      :bar => [ "one", "two", 3, "" ]
+    }
+    
+    bk = Book.create
+    bk.create_annotations(data, users(:jane))
+    
+    assert_equal 7, bk.annotations.length
+  end
+  
   def test_adding_of_annotation
     ch = chapters(:bh_c10)
     assert_equal 2, ch.annotations.length
