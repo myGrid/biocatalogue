@@ -107,7 +107,8 @@ module Annotations
         
         # Use this method to create many annotations from a Hash of data.
         # Arrays for Hash values will be converted to multiple annotations.
-        # Blank values will still cause annotation(s) to be created.
+        # Blank values will still cause annotation(s) to be created, but nil
+        # values won't.
         def create_annotations(annotations_data, source)
           annotations_data.each do |attrib, val|
             unless val.nil?
