@@ -107,8 +107,8 @@ module Annotations
         
         # Use this method to create many annotations from a Hash of data.
         # Arrays for Hash values will be converted to multiple annotations.
-        # Blank values will still cause annotation(s) to be created, but nil
-        # values won't.
+        # Blank values (nil or empty string) will be ignored and thus annotations
+        # will not be created for them.
         #
         # Returns an array of Annotation objects of the annotations that were
         # successfully created.
@@ -121,16 +121,18 @@ module Annotations
           anns = [ ]
           
           annotations_data.each do |attrib, val|
-            unless val.nil?
+            unless val.blank?
               if val.is_a? Array
                 val.each do |val_inner|
-                  ann = self.annotations << Annotation.new(:attribute_name => attrib, 
-                                               :value => val_inner, 
-                                               :source_type => source.class.name, 
-                                               :source_id => source.id)
-                  
-                  unless ann.nil? || ann == false
-                    anns << ann
+                  unless val_inner.blank?
+                    ann = self.annotations << Annotation.new(:attribute_name => attrib, 
+                                                 :value => val_inner, 
+                                                 :source_type => source.class.name, 
+                                                 :source_id => source.id)
+                    
+                    unless ann.nil? || ann == false
+                      anns << ann
+                    end
                   end
                 end
               else

@@ -66,14 +66,14 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
       "test2" => nil,
       "  test3" => "",
       :foo => 1,
-      :bar => [ "one", "two", 3, "" ]
+      :bar => [ "one", "two", 3, "", nil ]
     }
     
     bk = Book.create
     anns = bk.create_annotations(data, users(:jane))
     
-    assert_equal 7, anns.length
-    assert_equal 7, bk.annotations.length
+    assert_equal 5, anns.length
+    assert_equal 5, bk.annotations.length
   end
   
   def test_adding_of_annotation

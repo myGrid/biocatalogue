@@ -25,6 +25,7 @@ class Annotation < ActiveRecord::Base
                         :annotatable_type,
                         :annotatable_id,
                         :attribute_id,
+                        :value,
                         :value_type
   
   # ========================
