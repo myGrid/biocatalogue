@@ -84,7 +84,7 @@ class SoapServicesController < ApplicationController
       else
         respond_to do |format|
           if success
-            success = @soap_service.submit_service(data["endpoint"], current_user, params[:annotations])
+            success = @soap_service.submit_service(data["endpoint"], current_user, params[:annotations].clone)
             if success
               flash[:notice] = 'Service was successfully submitted.'
               format.html { redirect_to(@soap_service.service(true)) }

@@ -76,17 +76,30 @@ class RestService < ActiveRecord::Base
   # =========================================
   
   
-  def submit_service(endpoint, current_user, annotations)
-    transaction do
-      self.save!
-      self.perform_post_submit(endpoint, current_user)
-      self.create_annotations(annotations, current_user)
-      return true
-    end
+  def submit_service(endpoint, current_user, annotations_data)
+    success = true
+    
+    begin
+      transaction do
+        self.save!
+        self.perform_post_submit(endpoint, current_user)
+      end
     rescue Exception => ex
       #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
       logger.error("ERROR: failed to submit REST service - #{endpoint}. Exception:")
       logger.error(ex)
-      return false
+      success = false
+    end  
+    
+    if success
+      begin
+        self.process_annotations_data(annotations_data, current_user)
+      rescue Exception => ex
+        logger.error("ERROR: failed to process annotations after REST service creation. REST service ID: #{self.id}. Exception:")
+        logger.error(ex)
+      end
+    end
+    
+    return success
   end
 end

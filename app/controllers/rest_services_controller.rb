@@ -69,23 +69,22 @@ class RestServicesController < ApplicationController
       
       if !existing_service.nil?
         # Because the service already exists, add any information provided by the user as additional annotations to the existing service.
+
+        annotations_data = params[:annotations].clone
         
-        annotations_data = { }
+        # Special case for name annotations...
         
-        # First any name annotations...
         name_annotations = [ ]
-        name_annotations << params[:rest_service][:name] unless params[:rest_service][:name].blank?
-        unless params[:annotations][:name].blank?
-          name_annotations << params[:annotations][:name]
-          params[:annotations].delete(:name)
-        end
-        annotations_data["name"] = name_annotations
         
-        # Then all other annotations...
-        annotations_data.merge!(params[:annotations])
+        main_name = params[:rest_service][:name]
+        name_annotations << params[:rest_service][:name] if !main_name.blank? && !existing_service.name.downcase.eql?(main_name.downcase)
+        
+        name_annotations << annotations_data[:name] if !annotations_data[:name].blank? || !existing_service.name.downcase.eql?(annotations_data[:name].downcase)
+        
+        annotations_data[:name] = name_annotations
         
         # Now create them...  
-        existing_service.latest_version.service_versionified.create_annotations(annotations_data, current_user)
+        existing_service.latest_version.service_versionified.process_annotations_data(annotations_data, current_user)
         
         respond_to do |format|
           flash[:notice] = "The service you specified already exists in the BioCatalogue. See below. Any information you provided has been added to this service."
@@ -98,7 +97,7 @@ class RestServicesController < ApplicationController
         @rest_service.name = params[:rest_service][:name]
         
         respond_to do |format|
-          if @rest_service.submit_service(endpoint, current_user, params[:annotations])
+          if @rest_service.submit_service(endpoint, current_user, params[:annotations].clone)
             flash[:notice] = 'Service was successfully submitted.'
             format.html { redirect_to(@rest_service.service(true)) }
             

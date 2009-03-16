@@ -32,3 +32,10 @@
 	<%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => fields_disabled, :size => "50x10", :style => "width: 98%;" %>
 </p>
 
+<!-- Tags -->
+<p class="high_linespaced">
+	Add tags/keywords to describe this service (comma seperated):
+	<br/>
+	<%= text_field_tag "annotations[tags]", params[:annotations][:tags], :disabled => fields_disabled, :style => "width: 98%;" %>
+</p>
+

@@ -112,6 +112,41 @@ module BioCatalogue
                                                         
           return new_service.save!
         end
+        
+        # Given a hash of annotation data, this method will process them 
+        # and allocate the appropriate Annotation objects to the appropriate objects of this service.
+        #
+        # For example, tags go on the parent Service object, but things like descriptions, ratings 
+        # and so on go on the service version instance object (eg: SoapService).
+        #
+        # This should be used instead of object.create_annotations when preprocessing is required and 
+        # different annotations need to be allocated to different objects of a service.
+        def process_annotations_data(annotations_data, current_user)
+          # Preprocess (so that we get the correct structure to work with)
+          annotations_data = BioCatalogue::Util.preprocess_annotations_data(annotations_data)
+          
+          # Split into seperate annotation data sets
+          
+          service_version_instance_annotations = { }     # Annotations just for the soap_service object
+          service_container_annotations = { }            # Annotations just for the parent service container object
+          
+          # Process
+          
+          annotations_data.each do |attrib, value|
+            case attrib.to_s
+              when "tag"
+                service_container_annotations[attrib] = value
+              else
+                # By default, annotations are allocated to the service version instance
+                service_version_instance_annotations[attrib] = value
+            end
+          end
+          
+          # Create annotations
+          
+          self.create_annotations(service_version_instance_annotations, current_user) unless service_version_instance_annotations.blank?
+          self.service(true).create_annotations(service_container_annotations, current_user) unless service_container_annotations.blank?
+        end
       end
     end
   end
