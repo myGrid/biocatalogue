@@ -4,6 +4,9 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
+# Require the extensions to the Array class
+require 'array' 
+
 # Mappings for service types supported, to corresponding model class names.
 SERVICE_TYPES = {
   "SOAP Web Service"  => "SoapService",
@@ -36,9 +39,10 @@ class ActiveRecord::Base
   @@per_page = 10
 end
 
-# ==========
-# Configure the Annotations plugin...
-# ----------
+
+# ================================
+# Configure the Annotations plugin
+# --------------------------------
 
 # Remember that all attribute names specified MUST be in lowercase
 
@@ -46,4 +50,35 @@ Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "tag" ])
 
 Annotations::Config.strip_text_rules.update({ "tag" => [ '"' ] })
 
-# ==========
+Annotations::Config.limits_per_source = { "rating.speed" => [ 1, true ],
+                                          "rating.reliability" => [ 1, true ],
+                                          "rating.ease-of-use" => [ 1, true ] }
+
+# ================================
+
+
+# ====================================================
+# Configure global settings for the Disqus integration
+# ----------------------------------------------------
+
+Disqus::defaults[:avatar_size] = 48
+Disqus::defaults[:color] = "green"
+Disqus::defaults[:default_tab] = "recent"
+Disqus::defaults[:num_items] = 15
+
+# ====================================================
+
+
+# ================================
+# Ratings categories configuration
+# --------------------------------
+
+# These take the form:
+# { rating_annotation_attribute_name => [ visible_name, help_text ] }
+
+SERVICE_RATINGS_CATEGORIES = { "rating.speed" => [ "Speed", "Rate how fast this service has been for you" ],
+                               "rating.reliability" => [ "Reliability", "Rate how reliable this service has been for you" ],
+                               "rating.ease-of-use" => [ "Ease of Use", "Rate how easy this service has been to use for you" ],
+                               "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }
+
+# ================================

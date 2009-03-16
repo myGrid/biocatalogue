@@ -9,33 +9,34 @@
 %>
 
 <% tag_annotations = annotatable.annotations_with_attribute("tag") %>
-	<div class="box_info_standout" style="padding: 0.8em 1em; line-height: 1.5;">
-		<p class="center" style="margin-top: 0; font-weight: bold;">
-			Tags
-			<span style="color: #999999;">(<%= tag_annotations.length -%>)</span>
-		</p>
-		
-		<div class="center">
-			<% unless tag_annotations.empty? %>
-				<% tags = BioCatalogue::Tags.annotations_to_tags_structure(tag_annotations) %>
-				<%= generate_tag_cloud(tags, :max_font_size => 20) %>
-			<% else %>
-				<span class="none_text">none</span>
-			<% end %>
-		</div>
-		
-		<div class="center" style="margin-top: 1em; border-top: 1px dotted #666666; padding-top: 1em;">
-			<% if logged_in? %>
-				<%= annotation_add_by_popup_link annotatable,
-																			 	 :attribute_name => "Tag",
-				:tooltip_text => '',
-				:link_text => 'Add tags',
-				:icon_filename => 'add_tag.gif', 
-				:icon_hover_filename => 'add_tag_hover.gif',
-				:show_not_logged_in_text => false,
-				:multiple => true -%>
-		 <% else %>
-		 	<%= link_to "Log in", login_path -%> to add tags
-		 <% end %>
-	 </div>
+
+<div class="box_section">
+	<p class="heading">
+		Tags
+		<span class="faded">(<%= tag_annotations.length -%>)</span>
+	</p>
+	
+	<div class="center">
+		<% unless tag_annotations.empty? %>
+			<% tags = BioCatalogue::Tags.annotations_to_tags_structure(tag_annotations) %>
+			<%= generate_tag_cloud(tags, :max_font_size => 20) %>
+		<% else %>
+			<span class="none_text">none</span>
+		<% end %>
 	</div>
+	
+	<div class="footer">
+		<% if logged_in? %>
+			<%= annotation_add_by_popup_link annotatable,
+												 :attribute_name => "Tag",
+				                             	 :tooltip_text => '',
+				                             	 :link_text => 'Add tags',
+				                             	 :icon_filename => 'add_tag.gif', 
+												 :icon_hover_filename => 'add_tag_hover.gif',
+				                             	 :show_not_logged_in_text => false,
+				                             	 :multiple => true -%>
+			<% else %>
+				<small><%= link_to "Log in", login_path -%> to add tags</small>
+			<% end %>
+  </div>
+</div>

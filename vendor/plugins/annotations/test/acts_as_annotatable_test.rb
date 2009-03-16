@@ -48,6 +48,13 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     assert_equal 1, chapters(:br_c202).annotations_with_attribute("Title").length
   end
   
+  def test_annotations_with_attribute_and_by_source_instance_method
+    assert_equal 1, books(:h).annotations_with_attribute_and_by_source("tag", users(:jane)).length
+    assert_equal 0, books(:r).annotations_with_attribute_and_by_source("doesnt_exist", users(:jane)).length
+    assert_equal 1, chapters(:bh_c10).annotations_with_attribute_and_by_source("endingType", groups(:sci_fi_geeks)).length
+    assert_equal 1, chapters(:br_c202).annotations_with_attribute_and_by_source("Title", users(:john)).length
+  end
+  
   def test_annotatable_name_instance_method
     assert_equal "Learning Ruby in 2 Seconds", books(:r).annotatable_name
     assert_equal "Hashing It Up", chapters(:br_c2).annotatable_name

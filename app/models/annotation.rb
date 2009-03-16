@@ -29,6 +29,6 @@ class Annotation < ActiveRecord::Base
   protected
   
   def sanitise_value
-    self.value = white_list(self.value)
+    self.value = white_list(self.value) if self.value.is_a?(String)
   end
 end

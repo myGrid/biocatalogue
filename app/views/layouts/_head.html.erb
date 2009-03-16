@@ -19,6 +19,7 @@
 	<%= stylesheet_link_tag 'reset-min' %>
 	<%= stylesheet_link_tag 'styles' %>
 	<%= stylesheet_link_tag 'redbox' %>
+	<%= stylesheet_link_tag 'ratings' %>
 	
 	<%= javascript_include_tag :defaults %>
 	
@@ -31,4 +32,5 @@
 	<%= render :partial => "layouts/feed_link_tags" %>
 	<link rel="search" type="application/opensearchdescription+xml" title="BioCatalogue Search" href="/opensearch.xml" />
 
+	<%= render :partial => "layouts/head_browser_overrides" -%>
 </head>	

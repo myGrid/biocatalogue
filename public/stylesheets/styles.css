@@ -1,8 +1,8 @@
 @charset "utf-8";
 /**
- * BioCatalogue: app/public/stylesheets/styles_2.css
+ * BioCatalogue: app/public/stylesheets/styles.css
  *
- * Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+ * Copyright (c) 2009, University of Manchester, The European Bioinformatics 
  * Institute (EMBL-EBI) and the University of Southampton.
  * See license.txt for details
  */
@@ -207,6 +207,7 @@ a:hover.write_email {
 
 hr {
   margin: 0.5em 0;
+	*margin: 0;
   padding: 0;
   border: none;
   height: 1px;
@@ -249,6 +250,18 @@ small {
 
 .high_linespaced {
 	line-height: 2.0;
+}
+
+.faded {
+	color: #999;
+}
+
+.faded_plus {
+	color: #AAA;
+}
+
+.faded_plus_plus {
+	color: #BBB;
 }
 
 .green_box {
@@ -1439,5 +1452,93 @@ ul.tabbernav li.tabberactive a:hover
 .tag_cloud .tag {
 	margin: 0 0.3em;
 }
-/* END tag cloud styles
- */
+
+/* END tag cloud styles */
+
+/* BEGIN Section Boxes (usually for inner sidebars) */
+
+.box_section {
+	background-image: url('/images/box-bg1.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #FFC;
+	padding: 0.3em 0.3em;
+	border: 1px dotted #DDD;
+	text-align: center;
+	margin-bottom: 1em;
+	padding: 0.8em 1em; 
+	line-height: 1.5;
+}
+
+.box_section .heading {
+	font-size: 110%;
+	font-weight: bold;
+	line-height: 1.0;
+	margin-top: 0.2em;
+}
+
+.box_section .footer {
+	text-align: center;
+	margin-top: 1em; 
+	border-top: 1px dotted #CCC; 
+	padding-top: 0.7em;
+}
+
+/* END Section Boxes (usually for inner sidebars) */
+
+ 
+/* BEGIN ratings table styles */
+
+.ratings_table {
+	border: 1px solid #cccccc;
+	margin-bottom: 0.5em;
+	background-color: #FFC;
+}
+
+.ratings_table th {
+	font-weight: bold;
+	white-space: nowrap;
+	vertical-align: middle;
+	color: #333333;
+	height: 2em;
+	background: url(../images/box_title_bkgd_green_14.gif) repeat-x;
+	background-position: bottom;
+	padding-left: 6px;
+	padding-right: 6px;
+	border-right: 1px solid #cccccc;
+	text-align: center;
+}
+
+.ratings_table td {
+	white-space: nowrap;
+	padding: 4px 6px 4px 6px;
+	border-left: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.ratings_table tr:hover {
+	background-color: #F7F7F7;
+}
+
+.ratings_table .your_rating .delete_rating_faded {
+	width: 10px;
+	height: 10px;
+	margin-left: 0.5em;
+	vertical-align: middle;
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
+	background: url('/images/delete_faded.png') no-repeat center;
+}
+
+.ratings_table .your_rating .delete_rating a {
+	text-decoration: none;	
+}
+
+.ratings_table .your_rating:hover .delete_rating {
+	background: url('/images/delete.png') no-repeat center;
+}
+
+/* END ratings table styles */

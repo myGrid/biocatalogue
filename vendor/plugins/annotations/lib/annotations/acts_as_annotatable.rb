@@ -22,7 +22,8 @@ module Annotations
       # Class methods added to the model that has been made acts_as_annotatable (the mixing annotatable type).
       module SingletonMethods
         # Helper finder to get all objects of the mixin annotatable type that have the specified attribute name and value.
-        # Note: both the attribute name and the value will be treated case insensitively.
+        # NOTE (1): both the attribute name and the value will be treated case insensitively.
+        # NOTE (2): the objects returned are Read Only.
         def with_annotations_with_attribute_name_and_value(attribute_name, value)
           return [ ] if attribute_name.blank? or value.nil?
           
@@ -74,16 +75,42 @@ module Annotations
                           :limit => limit)
         end
         
-        # Finder to get annotations with a specific attribute
+        # Finder to get annotations with a specific attribute.
+        # The input parameter is the attribute name 
+        # (either a String or a Symbol representing the attribute's name).
+        # NOTE: the objects returned are Read Only.
         def annotations_with_attribute(attrib)
           return [] if attrib.blank?
+          
+          attrib = attrib.strip.downcase if attrib.is_a? String
           
           Annotation.find(:all,
                           :joins => "JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id",
                           :conditions => [ "annotations.annotatable_type = ? AND annotations.annotatable_id = ? AND annotation_attributes.name = ?", 
                                            ActiveRecord::Base.send(:class_name_of_active_record_descendant, self.class).to_s, 
                                            id,
-                                           attrib.strip.downcase ],
+                                           attrib ],
+                          :order => "created_at DESC")
+        end
+        
+        # Finder to get annotations with a specific attribute by a specific source.
+        # The first input parameter is the attribute name 
+        # (either a String or a Symbol representing the attribute's name).
+        # The second input is the source.
+        # NOTE: the objects returned are Read Only.
+        def annotations_with_attribute_and_by_source(attrib, source)
+          return [] if attrib.blank? or source.nil?
+          
+          attrib = attrib.strip.downcase if attrib.is_a? String
+          
+          Annotation.find(:all,
+                          :joins => "JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id",
+                          :conditions => [ "annotations.annotatable_type = ? AND annotations.annotatable_id = ? AND annotations.source_type = ? AND annotations.source_id = ? AND annotation_attributes.name = ?", 
+                                           ActiveRecord::Base.send(:class_name_of_active_record_descendant, self.class).to_s, 
+                                           id,
+                                           source.class.name,
+                                           source.id,
+                                           attrib ],
                           :order => "created_at DESC")
         end
         

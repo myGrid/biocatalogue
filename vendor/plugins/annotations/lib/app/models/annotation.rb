@@ -7,6 +7,8 @@ class Annotation < ActiveRecord::Base
   
   before_save :process_value_adjustments
   
+  before_save :check_limits
+  
   belongs_to :annotatable, 
              :polymorphic => true
   
@@ -58,7 +60,8 @@ class Annotation < ActiveRecord::Base
   # ========================
   
   # Returns all the annotatable objects that have a specified attribute name and value.
-  # Note: both the attribute name and the value will be treated case insensitively.
+  # NOTE (1): both the attribute name and the value will be treated case insensitively.
+  # NOTE (2): the objects returned are Read Only.
   def self.find_annotatables_with_attribute_name_and_value(attribute_name, value)
     return [ ] if attribute_name.blank? or value.nil?
     
@@ -155,13 +158,14 @@ class Annotation < ActiveRecord::Base
   end
   
   def process_value_adjustments
+    attr_name = self.attribute_name.downcase
     # Make lowercase or uppercase if required
-    self.value.downcase! if Annotations::Config::attribute_names_for_values_to_be_downcased.include?(self.attribute_name.downcase)
-    self.value.upcase! if Annotations::Config::attribute_names_for_values_to_be_upcased.include?(self.attribute_name.downcase)
+    self.value.downcase! if Annotations::Config::attribute_names_for_values_to_be_downcased.include?(attr_name)
+    self.value.upcase! if Annotations::Config::attribute_names_for_values_to_be_upcased.include?(attr_name)
     
     # Apply strip text rules
     Annotations::Config::strip_text_rules.each do |attr, strip_rules|
-      if self.attribute_name.downcase == attr.downcase
+      if attr_name == attr.downcase
         if strip_rules.is_a? Array
           strip_rules.each do |s|
             self.value = self.value.gsub(s, '')
@@ -170,6 +174,59 @@ class Annotation < ActiveRecord::Base
           self.value = self.value.gsub(strip_rules, '')
         end
       end
+    end
+  end
+  
+  # This method uses the limits_per_source config setting
+  # to check whether a limit has been reached and takes appropriate action if it has.
+  # If a limit has been reach and the limit is 1 and the replace existing otion is true, 
+  # it will overwrite the value of the existing annotation and then stop the save procedure. 
+  # Otherwise it will just stop the save procedure.
+  def check_limits
+    attr_name = self.attribute_name.downcase
+    if Annotations::Config::limits_per_source.has_key?(attr_name)
+      options = Annotations::Config::limits_per_source[attr_name]
+      max = options[0]
+      can_replace = options[1]
+      
+      unless (found_annotatable = Annotation.find_annotatable(self.annotatable_type, self.annotatable_id)).nil?
+        anns = found_annotatable.annotations_with_attribute_and_by_source(attr_name, self.source)
+        
+        # If this annotation is being updated (not created), remove it from the anns collection.
+        # This prevents an infinite loop when an existing annotation is being updated as further below.
+        unless self.new_record?
+          anns.each do |a|
+            anns.delete(a) if a.id == self.id
+          end
+        end
+      
+        if anns.length >= max
+          # Only update an existing annotation if the limit is 1, AND 
+          # only one existing was found (it's possible that this config was introduced afterwards 
+          # in a situation where the limit has already been surpassed previously, so we need this check), AND
+          # the config option says that we can replace it. 
+          if max == 1 && anns.length == 1 && can_replace
+            ann = anns[0]
+            
+            # Because the object is read only, load it up again.
+            ann2 = Annotation.find(ann.id)
+            
+            ann2.value = self.value
+            ann2.save
+            self.errors.add_to_base("The limit has been reached for annotations with this attribute and by this source. The existing annotation has been updated.")
+          else
+            self.errors.add_to_base("The limit has been reached for annotations with this attribute and by this source. No further action has been taken.")
+          end
+          
+          return false
+        else
+          return true
+        end
+      else
+        return true
+      end
+    else
+      return true
     end
   end
 end

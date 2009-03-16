@@ -1,12 +1,14 @@
 # BioCatalogue: app/controllers/services_controller.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
 class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update, :destroy ]
+  
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy ]
   
   # Set the sidebar layout for certain actions.
   # Note: the set_sidebar_layout method resides in the ApplicationController.
@@ -31,8 +33,6 @@ class ServicesController < ApplicationController
   # GET /services/1
   # GET /services/1.xml
   def show
-    @service = Service.find(params[:id])
-    
     @latest_version = @service.latest_version
     @latest_version_instance = @latest_version.service_versionified
     
@@ -58,7 +58,6 @@ class ServicesController < ApplicationController
 
   # GET /services/1/edit
   def edit
-    @service = Service.find(params[:id])
   end
 
   # POST /services
@@ -75,8 +74,6 @@ class ServicesController < ApplicationController
   # PUT /services/1
   # PUT /services/1.xml
   def update
-    @service = Service.find(params[:id])
-
     respond_to do |format|
       if @service.update_attributes(params[:service])
         flash[:notice] = 'Service was successfully updated.'
@@ -92,13 +89,18 @@ class ServicesController < ApplicationController
   # DELETE /services/1
   # DELETE /services/1.xml
   def destroy
-    @service = Service.find(params[:id])
     @service.destroy
 
     respond_to do |format|
       format.html { redirect_to(services_url) }
       format.xml  { head :ok }
     end
+  end
+ 
+  protected
+ 
+  def find_service
+    @service = Service.find(params[:id])
   end
  
 end

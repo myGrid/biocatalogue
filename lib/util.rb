@@ -209,5 +209,19 @@ module BioCatalogue
       
       return annotations_data
     end
+    
+    # Helper method to get the ratings categories configuration hash for a specific model type.
+    # This acts as a lookup table for ratings configuration to models and allows us to maintain different
+    # ratings configurations for different models.
+    def self.get_ratings_categories_config_for_model(model)
+      ratings_config = { }
+      
+      case model.name
+        when "Service", "SoapService", "RestService"  
+          ratings_config = SERVICE_RATINGS_CATEGORIES
+      end
+      
+      return ratings_config
+    end
   end
 end

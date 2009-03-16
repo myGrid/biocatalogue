@@ -24,7 +24,7 @@
     <h3>Overview</h3>
 		
 		<!-- Left column -->
-		<div style="float: left; width: 70%;">
+		<div style="float: left; width: 67%;">
 			<p>
 				<b>Aliases:</b>
 				<br/>
@@ -102,13 +102,20 @@
 		</div>
 		
 		<!-- Right column -->
-		<div style="float: right; width: 27%;">
-			<div class="box_info_standout" style="margin-bottom: 1em; font-weight: bold; text-align: center; font-size: 1.2em;">
+		<div style="float: right; width: 30%;">
+			<div class="box_section" style="font-size: 115%; font-weight: bold; padding: 0.5em 1em;">
 				<%= pluralize(total_number_of_annotations_for_service(@service, "User"), "user annotation") + " in total" -%>
 			</div>
 				
 			<%= render :partial => "annotations/tags_box",
 								 :locals => { :annotatable => @service } -%>
+			
+			<div id="ratings">
+				<%= render :partial => "annotations/ratings_box",
+								 	 :locals => { :annotatable => @latest_version_instance,
+																:categories_config => BioCatalogue::Util.get_ratings_categories_config_for_model(@latest_version_instance.class) } -%>
+			</div>					 
+			
 			
 		</div>
 		
@@ -118,4 +125,12 @@
 	<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_tabs", 
 					 	 :locals => { :service_version_instance =>  @latest_version_instance } %>
 
+</div>
+
+<div style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
+	<h2>Comments</h2>
+	
+	<%= disqus_comment_counts -%>
+	
+	<%= disqus_thread -%>
 </div>
