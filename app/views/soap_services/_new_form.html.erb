@@ -98,27 +98,8 @@
 				<fieldset>
 					<legend>More Information</legend>
 					
-					<!-- Name alias -->
-					<p class="high_linespaced">
-						Add a name alias (ie: an alternative name for this service):
-						<br/>
-						<%= text_field_tag "annotations[name]", params[:annotations][:name], :disabled => @wsdl_info.nil?, :style => "width: 98%;" %>
-					</p>
-					
-					<!-- Documentation URL -->
-					<p class="high_linespaced">
-						Add a URL to additional documentation for this service:
-						<br/>
-						<%= text_field_tag "annotations[documentation_url]", params[:annotations][:documentation_url], :disabled => @wsdl_info.nil?, :style => "width: 98%;" %>
-					</p>
-					
-					<!-- Description -->
-					<p class="high_linespaced">
-						Add a description of this service:
-						<br/>
-						<%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => @wsdl_info.nil?, :size => "50x10", :style => "width: 98%;" %>
-					</p>
-					
+					<%= render :partial => 'annotations/service_submission_fields',
+										 :locals => { :fields_disabled => @wsdl_info.nil? } -%>
 				</fieldset>
 			</td>
 		</tr>

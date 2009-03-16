@@ -44,27 +44,7 @@
 			<%= f.text_field :name, :style => "width: 98%;" %>
 		</p>
 		
-		<!-- Name alias -->
-		<p class="high_linespaced">
-			Add a name alias (ie: an alternative name for this service):
-			<br/>
-			<%= text_field_tag "annotations[name]", params[:annotations][:name], :style => "width: 98%;" %>
-		</p>
-		
-		<!-- Documentation URL -->
-		<p class="high_linespaced">
-			Add a URL to additional documentation for this service:
-			<br/>
-			<%= text_field_tag "annotations[documentation_url]", params[:annotations][:documentation_url], :style => "width: 98%;" %>
-		</p>
-		
-		<!-- Description -->
-		<p class="high_linespaced">
-			Add a description of this service:
-			<br/>
-			<%= text_area_tag "annotations[description]", params[:annotations][:description], :size => "50x10", :style => "width: 98%;" %>
-		</p>
-	</div>
+		<%= render :partial => 'annotations/service_submission_fields' -%>
 	
   <p style="margin-top: 1.5em;">
     <%= f.submit "Submit", :disable_with => "Submitting..." -%>
