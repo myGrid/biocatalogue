@@ -1,3 +1,4 @@
+xml.instruct!(:xml)
 xml.tag!("search-results") {
   @results.each { |type, res|
     type = type.underscore.dasherize
