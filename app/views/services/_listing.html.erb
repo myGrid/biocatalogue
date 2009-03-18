@@ -16,6 +16,7 @@
 				<span style="float: right; margin-bottom: 0.5em; font-weight: bold;">
 					<%= pluralize(total_number_of_annotations_for_service(service, "User"), "user annotation") -%>
 				</span>
+				
 				<p class="name">
 					<%= link_to(h(service.name), service_path(service)) -%>
 					<%= service_type_badges(service.service_types) -%>
@@ -53,6 +54,8 @@
 				</p>
 				
 				<div class="detail">
+					<!-- using the only available deployment for now. In the future statuses will be deplayed for each deployment -->
+					<span style="float: right;"><%= onlooker_format service.service_deployments[0].latest_online_status.status, :online_img => "/images/accepted_48.png", :offline_img => "/images/cancel_48.png" -%></span>
 					<%= render :partial => "annotations/tags_flat",
 								 		 :locals => { :annotatable => service,
 																	:show_add_option => false } -%>

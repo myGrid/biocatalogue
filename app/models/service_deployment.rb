@@ -21,6 +21,8 @@ class ServiceDeployment < ActiveRecord::Base
              :class_name => "User",
              :foreign_key => "submitter_id"
   
+  has_many :online_statuses , :as => :pingable
+  
   validates_existence_of :provider    # Service Provider must exist in the db beforehand.
   
   validates_presence_of :endpoint
@@ -46,6 +48,11 @@ class ServiceDeployment < ActiveRecord::Base
     else
       return "#{self.city}, #{self.country}"
     end
+  end
+  
+  def latest_online_status
+    OnlineStatus.find(:first, :conditions => ["pingable_id= ? AND pingable_type= ?", self.id, self.class.to_s ],
+                                    :order => "created_at DESC")
   end
   
 protected
