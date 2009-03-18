@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 
-# This script ensures that entries for the initial versions of annotation objects
-# are in the annotation_versions table (as required by the annotations versioning mechanism).
+# This script pings the endpoint of the service deployments and record the statuses
+# in the online_statuses table. It also records references to the ServiceDeployment
+# object whose endpoint was pinged
+# For pinging the endpoints, it uses the onlooker plugin
 #
-# Note: only creates annotation_version entries for those annotation objects are on version 1.
 
 env = "development"
 
