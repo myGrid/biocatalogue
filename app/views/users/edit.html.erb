@@ -8,11 +8,12 @@
 
 %>
 
-<h1>Editing user</h1>
+<h1>Editing my profile</h1>
 
 <% form_for(@user) do |f| %>
   <%= f.error_messages %>
-
+<fieldset>
+  <legend>Change my profile</legend>
   <p>
     <%= f.label :email %><br />
     <%= f.text_field :email %>
@@ -32,6 +33,7 @@
   <p>
     <%= f.submit "Update" %>
   </p>
+</fieldset>
 <% end %>
 
-<%= link_to 'Show', @user %>
+<%= link_to 'Back to User Profile', @user, :class => "red_arrow_left" %>

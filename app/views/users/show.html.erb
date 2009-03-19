@@ -8,39 +8,46 @@
 
 %>
 
-<% if mine?(@user) -%>
-	<span style="float: right;">
-		<%= link_to 'Edit', edit_user_path(@user) %>
-	</span>
-<% end -%>
+<h1>User: <span class="orange_highlight"><%=h @user.display_name %></span></h1>
 
-<h1>User Profile</h1>
-<p>
-  <b>Display Name:</b>
-  <%=h @user.display_name %>
-</p>
-
-<p>
-<% if mine?(@user) -%>
-  <b>Email:</b>
-  <%=h @user.email %>
-<% end -%>
-</p>
-
-<p>
-  <b>Affiliation:</b>
-  <%=h @user.affiliation %>
-</p>
-
-<p>
-  <b>Country:</b>
-  <%=h @user.country %>
-</p>
 
 <br/>
 
 <div class="tabber">
 	
+  <div id="tab-profile" class="tabbertab">
+    <h3>Profile</h3>
+    <p>
+      <b>Display Name:</b>
+      <%=h @user.display_name %>
+    </p>
+    
+    <p>
+      <% if mine?(@user) -%>
+      <b>Email:</b>
+      <%=h @user.email %>
+      <% end -%>
+    </p>
+    
+    <p>
+      <b>Affiliation:</b>
+      <%=h @user.affiliation %>
+    </p>
+    
+    <p>
+      <b>Country:</b>
+      <%=h @user.country %>
+    </p>
+
+    <% if mine?(@user) -%>
+    <p><br />
+      <%= link_to 'Edit my profile', edit_user_path(@user), :class => "edit_profile" %>
+      <%= link_to 'Change my password', change_password_user_path(@user), :class => "change_pwd" %>
+    </p>
+    <% end -%>
+    
+  </div>
+  
   <div id="tab-services" class="tabbertab">
     <h3><%= "Services submitted (#{@users_services.total_entries})" -%></h3>
     
