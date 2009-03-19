@@ -130,6 +130,14 @@ p {
   line-height: 1.5;
 }
 
+strong {
+    font-weight: bold;
+}
+
+em {
+    font-style: italic;
+}
+
 a:link, a:visited {
   color: #333333;
   text-decoration: underline;
@@ -173,10 +181,31 @@ a:link.red_arrow, a:visited.red_arrow {
 	white-space: nowrap;
 }
 
+a:link.red_arrow_left, a:visited.red_arrow_left {
+	padding-right: 2px;
+	padding-left: 18px;
+	background: url(../images/red_arrow_left.gif) left no-repeat;
+	white-space: nowrap;
+}
+
 a:link.write_email, a:visited.write_email {
 	padding-left: 2px;
 	padding-right: 22px;
 	background: url(../images/write_email.gif) right no-repeat;
+	white-space: nowrap;
+}
+
+a:link.edit_profile, a:visited.edit_profile {
+	padding-right: 2px;
+	padding-left: 22px;
+	background: url(../images/user_edit.gif) left no-repeat;
+	white-space: nowrap;
+}
+
+a:link.change_pwd, a:visited.change_pwd {
+	padding-right: 2px;
+	padding-left: 22px;
+	background: url(../images/key.gif) left no-repeat;
 	white-space: nowrap;
 }
 
@@ -200,8 +229,23 @@ a:hover.red_arrow {
 	text-decoration: underline;
 }
 
+a:hover.red_arrow_left {
+	background: url(../images/red_arrow_left_hover.gif) left no-repeat;
+	text-decoration: underline;
+}
+
 a:hover.write_email {
 	background: url(../images/write_email_hover.gif) right no-repeat;
+	text-decoration: underline;
+}
+
+a:hover.edit_profile {
+	background: url(../images/user_edit_hover.gif) left no-repeat;
+	text-decoration: underline;
+}
+
+a:hover.change_pwd {
+	background: url(../images/key_hover.gif) left no-repeat;
 	text-decoration: underline;
 }
 
@@ -267,7 +311,17 @@ small {
 .green_box {
 	border: 1px dotted #999999;
 	background-color: #e9f7cc;
-	padding: 5px;
+	padding: 2px;
+}
+
+.green_highlight {
+    background-color: #e9f7cc;
+    padding: 2px 3px 2px 3px;
+}
+
+.orange_highlight {
+    background-color: #ffbb7f;
+    padding: 2px 3px 2px 3px;
 }
 
 #error_flash {	
@@ -1257,38 +1311,50 @@ ul.tabbernav li.tabberactive a:hover
 
 /* BEGIN ActiveRecord errors box */
 
-.fieldWithErrors {
+/*.fieldWithErrors {
 	padding: 2px;
-	background-color: red;
+	background-color: #ffaaaa;
 	display: table;
+}*/
+
+.fieldWithErrors label {
+	padding: 2px;
+	background-color: #ffaaaa;
+}
+
+.fieldWithErrors input, .fieldWithErrors select {
+	padding: 2px;
+	background-color: #ffaaaa;
 }
 
 #errorExplanation {
 	width: 400px;
-	border: 2px solid #c00;
+	border: 2px solid #ffaaaa;
 	padding: 0.5em;
 	margin-bottom: 1.5em;
-	background-color: #F5F5F5;
+	background-color: #f5f5f5;
 }
 
 #errorExplanation h2 {
-	text-align: left;
+        text-align: center;
 	font-weight: bold;
-	padding: 5px 5px 5px 15px;
+	padding: 0.5em;
 	font-size: 93%;
 	margin: 0;
 	background-image: none;
-	background-color: #c00;
+	background-color: #ffaaaa;
 	border: none;
-	color: #fff;
 }
 
 #errorExplanation p {
 	font-size: 93%;
-	color: #333;
 	margin-bottom: 0;
 	margin-top: 0.5em;
-	padding: 5px;
+	padding: 0.5em;
+}
+
+#errorExplanation ul {
+        padding-left: 2em;
 }
 
 #errorExplanation ul li {
