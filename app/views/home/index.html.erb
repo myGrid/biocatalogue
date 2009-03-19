@@ -13,8 +13,8 @@
 <center>
 	<div class="box_info">
 		BioCatalogue currently has
-		<%= link_to pluralize(Service.count, "service"), services_path -%> and
-		<%= link_to pluralize(User.count(:conditions => "users.activated_at IS NOT NULL"), "user"), users_url -%>
+		<strong><%= link_to pluralize(Service.count, "service"), services_path -%></strong> and
+		<strong><%= link_to pluralize(User.count(:conditions => "users.activated_at IS NOT NULL"), "user"), users_url -%></strong>
 	</div>
 </center>
 
