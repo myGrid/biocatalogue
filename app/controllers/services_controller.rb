@@ -21,7 +21,7 @@ class ServicesController < ApplicationController
                                  :order => 'created_at DESC',
                                  :include => [ :service_versions, :service_deployments ])
     
-    @tags = BioCatalogue::Tags.get_tags(50)
+    @tags = BioCatalogue::Tags.get_tags(30)
     
     respond_to do |format|
       format.html # index.html.erb

@@ -63,7 +63,7 @@ module BioCatalogue
       
       # If limit has been provided in the URL then add that to query
       # (this allows customisation of the size of the tag cloud, whilst keeping into account ranking of tags).
-      if !limit.nil? && limit.is_a?(Fixnum) && limit.to_i < 0
+      if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
         sql += " LIMIT #{limit}"
       end
        
