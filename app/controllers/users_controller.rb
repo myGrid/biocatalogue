@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   before_filter :disable_action, :only => [ :destroy ]
 
   before_filter :login_required, :except => [:index, :new, :create, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password]
-  before_filter :check_user_rights, :only => [:edit, :update, :destroy]
+  before_filter :check_user_rights, :only => [:edit, :update, :destroy, :change_password]
 
   # GET /users
   # GET /users.xml
@@ -147,6 +147,20 @@ class UsersController < ApplicationController
     else
       flash[:error] = "<div class=\"flash_header\">Could not find the user.</div><div class=\"flash_body\">No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
       flash[:notice] = nil
+    end
+  end
+
+  def change_password
+    @user = User.find(params[:id])
+    if request.post?
+      if @user.reset_password!(params[:user][:password], params[:user][:password_confirmation])
+        flash[:notice] = "<div class=\"flash_header\">New password accepted.</div>"
+        session[:original_uri] = "/users/#{@user.id}"
+        flash[:error] = nil
+        ActivityLog.create(:action => "change_password", :activity_loggable => @user)
+        redirect_to(@user)
+        return
+      end
     end
   end
 
