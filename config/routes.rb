@@ -32,7 +32,7 @@ ActionController::Routing::Routes.draw do |map|
 
   #map.resources :service_versions
 
-  map.resources :users, :collection => { :activate_account => :get }
+  map.resources :users, :collection => { :activate_account => :get }, :member => { :change_password => [:get, :post] }
   map.resource :session
 
   map.register '/register', :controller => 'users', :action => 'new'
@@ -46,7 +46,7 @@ ActionController::Routing::Routes.draw do |map|
   map.home '/', :controller => 'home', :action => 'index'
 
   map.resources :rest_services
-  
+
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,
                                  :bulk_new => :get }
