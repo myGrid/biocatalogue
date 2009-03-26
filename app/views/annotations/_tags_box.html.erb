@@ -18,8 +18,7 @@
 	
 	<div class="center">
 		<% unless tag_annotations.empty? %>
-			<% tags = BioCatalogue::Tags.annotations_to_tags_structure(tag_annotations) %>
-			<%= generate_tag_cloud(tags, :max_font_size => 16) %>
+			<%= generate_tag_cloud_from_annotations(tag_annotations, :max_font => 14) %>
 		<% else %>
 			<span class="none_text">none</span>
 		<% end %>

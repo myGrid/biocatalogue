@@ -16,7 +16,7 @@
 		<b>Top <%= pluralize(@tags.length, "tag") -%> on BioCatalogue</b>
 	</h3>
 	
-	<%= generate_tag_cloud(@tags, :tag_cloud_style => "margin-top: 0.6em;", :max_font_size => 30) -%>
+	<%= generate_tag_cloud(@tags, :tag_cloud_style => "margin-top: 0.6em;") -%>
 </div>
 
 <span style="float: right;">

@@ -93,7 +93,7 @@ module BioCatalogue
       options.reverse_merge!(:tag_cloud_style => "",
                              :tag_style => "",
                              :min_font => 10,
-                             :max_font => 30)
+                             :max_font => 20)
       
       # Sort by count
       tags.sort! { |a,b| b["count"] <=> a["count"] }
