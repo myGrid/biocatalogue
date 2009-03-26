@@ -17,7 +17,7 @@
 	<%= service_type_badges(@service.service_types) -%>
 	<%= service_location_flags(@service) -%>
 	<!-- using the only available deployment for now. In the future statuses will be deplayed for each deployment -->
-	<span style="float: right;"><%= onlooker_format @service.service_deployments[0].latest_online_status.status, :online_img => "/images/accepted_48.png", :offline_img => "/images/cancel_48.png" -%></span>
+	<span style="float: right;"><%= onlooker_format @service.service_deployments[0].latest_online_status.status, :online_img => "/images/accepted_48.png", :offline_img => "/images/cancel_48.png", :unknown_img => "/images/cirle_blue.png"  -%></span>
 </h1>
 
 <div class="tabber" style="margin-top:1.5em;">

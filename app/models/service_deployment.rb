@@ -51,8 +51,12 @@ class ServiceDeployment < ActiveRecord::Base
   end
   
   def latest_online_status
-    OnlineStatus.find(:first, :conditions => ["pingable_id= ? AND pingable_type= ?", self.id, self.class.to_s ],
+    status = OnlineStatus.find(:first, :conditions => ["pingable_id= ? AND pingable_type= ?", self.id, self.class.to_s ],
                                     :order => "created_at DESC")
+    if status == nil
+      status = OnlineStatus.new(:status => "Unknown")
+    end
+    status
   end
   
 protected

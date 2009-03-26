@@ -55,7 +55,7 @@
 				
 				<div class="detail">
 					<!-- using the only available deployment for now. In the future statuses will be deplayed for each deployment -->
-					<span style="float: right;"><%= onlooker_format service.service_deployments[0].latest_online_status.status, :online_img => "/images/accepted_48.png", :offline_img => "/images/cancel_48.png" -%></span>
+					<span style="float: right;"><%= onlooker_format service.service_deployments[0].latest_online_status.status, :online_img => "/images/accepted_48.png", :offline_img => "/images/cancel_48.png", :unknown_img => "/images/circle_blue.png" -%></span>
 					<%= render :partial => "annotations/tags_flat",
 								 		 :locals => { :annotatable => service,
 																	:show_add_option => false } -%>
