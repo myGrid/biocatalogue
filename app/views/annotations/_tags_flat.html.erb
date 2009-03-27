@@ -27,15 +27,19 @@
 		<% end %>
 	<% end %>
 	
-	<p>
-		<b>Tags:</b>
-		<% unless (tag_annotations = annotatable.annotations_with_attribute("tag")).empty? %>
+	<% tag_annotations = annotatable.annotations_with_attribute("tag") %>
+	<% unless tag_annotations.empty? %>
+		<p>
+			<strong>
+				Tags
+				<span class="faded">(<%= tag_annotations.length -%>)</span>:
+			</strong>
 			| 
 			<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
 				<%= link_to(h(val), tag_show_path(:tag => val)) -%> |
 			<% end %>
-		<% else %>
-			<span class="none_text">none</span>
-		<% end %>
-	</p>
+		</p>
+	<% else %>
+		<span class="none_text" style="font-weight: bold;">No Tags</span>
+	<% end %>
 <% end %>
