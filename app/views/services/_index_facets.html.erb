@@ -1,0 +1,51 @@
+<div class="facets">
+	<% service_type_facets = get_facets_for_service_types %>
+	<table>
+		<tr>
+			<td class="type">
+				Service Types
+				<span class="faded">(<%= service_type_facets.length -%>)</span>
+			</td>
+			<td>
+				<ul>
+					<% service_type_facets.each do |f| %>
+						<li>
+							<a href="#">
+								<%= h(f["name"]) -%>
+							</a>
+							<span class="faded" style="font-size: 85%;">
+								(<%= pluralize(f["count"], "service") -%>)
+							</span>
+						</li>
+					<% end %>
+				</ul>
+			</td>
+		</tr>	
+	</table>
+	
+	<hr/>
+	
+	<% service_provider_facets = get_facets_for_service_providers %>
+	<table>
+		<tr>
+			<td class="type">
+				Service Providers
+				<span class="faded">(<%= service_provider_facets.length -%>)</span>
+			</td>
+			<td>
+				<ul>
+					<% service_provider_facets.each do |f| %>
+						<li>
+							<a href="#">
+								<%= h(f["name"]) -%>
+							</a>
+							<span class="faded" style="font-size: 85%;">
+								(<%= pluralize(f["count"], "service") -%>)
+							</span>
+						</li>
+					<% end %>
+				</ul>
+			</td>
+		</tr>	
+	</table>
+</div>

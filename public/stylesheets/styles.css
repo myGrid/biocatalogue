@@ -1608,3 +1608,31 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 /* END ratings table styles */
+
+/* BEGIN facets box */
+
+div.facets {
+	padding: 0.6em 0.4em; 
+	border: 1px solid #CCC; 
+	line-height: 1.5; 
+	background-color: #F3F3F3;
+}
+
+div.facets table {
+	width: 99%;
+}
+
+div.facets td.type {
+	width: 150px; 
+	font-weight: bold;
+	text-align: left;
+	padding-right: 10px;
+}
+
+div.facets li {
+	display: inline;
+	margin: 0;
+	margin-right: 0.6em;
+}
+
+/* END facets box */
