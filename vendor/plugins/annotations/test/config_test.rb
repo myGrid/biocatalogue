@@ -6,13 +6,15 @@ class ConfigTest < Test::Unit::TestCase
     Annotations::Config.attribute_names_for_values_to_be_upcased = [ "upcased_thing" ]
     Annotations::Config.strip_text_rules = { "tag" => [ '"', ',' ], "comma_stripped" => ',', "regex_strip" => /\d/ }
     Annotations::Config.limits_per_source = { "rating" => [ 1, true ] }
+    Annotations::Config.attribute_names_to_allow_duplicates = [ "allow_duplicates_for_this" ]
   end
   
   def teardown
     Annotations::Config.attribute_names_for_values_to_be_downcased = [ ]
-    Annotations::Config.attribute_names_for_values_to_be_upcased = [ "upcased_thing" ]
+    Annotations::Config.attribute_names_for_values_to_be_upcased = [ ]
     Annotations::Config.strip_text_rules = { }
     Annotations::Config.limits_per_source = { }
+    Annotations::Config.attribute_names_to_allow_duplicates = [ ]
   end
   
   def test_values_downcased_or_upcased
@@ -126,13 +128,70 @@ class ConfigTest < Test::Unit::TestCase
                                     :source_id => source.id)
     
     assert_not_nil ann2
-    
-    # Need to reload annotations collection
-    bk.annotations(true)
-    
-    assert_equal 1, bk.annotations.length
+    assert_equal 1, bk.annotations(true).length
     
     # Check that two versions of the annotation now exist
     assert_equal 2, bk.annotations[0].versions.length
+  end
+  
+  def test_attribute_names_to_allow_duplicates
+    source = users(:john)
+    
+    # First test the default case of not allowing duplicates...
+    
+    bk1 = Book.create
+    
+    ann1 = bk1.annotations << Annotation.new(:attribute_name => "no_duplicates_allowed", 
+                                    :value => "Hello there", 
+                                    :source_type => source.class.name, 
+                                    :source_id => source.id)
+    
+    assert_not_nil ann1
+    assert_equal 1, bk1.annotations.length
+    
+    ann2 = bk1.annotations << Annotation.new(:attribute_name => "no_duplicates_allowed", 
+                                    :value => "Hello there again", 
+                                    :source_type => source.class.name, 
+                                    :source_id => source.id)
+    
+    assert_not_nil ann2
+    assert_equal 2, bk1.annotations(true).length
+    
+    ann3 = bk1.annotations << Annotation.new(:attribute_name => "no_duplicates_allowed", 
+                                    :value => "Hello there", 
+                                    :source_type => source.class.name, 
+                                    :source_id => source.id)
+    
+    assert_equal false, ann3
+    assert_equal 2, bk1.annotations(true).length
+    
+    
+    # Then test the exceptions to the default rule...
+    
+    bk2 = Book.create
+    
+    ann4 = bk2.annotations << Annotation.new(:attribute_name => "allow_duplicates_for_this", 
+                                    :value => "Hi there", 
+                                    :source_type => source.class.name, 
+                                    :source_id => source.id)
+    
+    assert_not_nil ann4
+    assert_equal 1, bk2.annotations.length
+    
+    ann5 = bk2.annotations << Annotation.new(:attribute_name => "allow_duplicates_for_this", 
+                                    :value => "Hi there again", 
+                                    :source_type => source.class.name, 
+                                    :source_id => source.id)
+    
+    assert_not_nil ann5
+    assert_equal 2, bk2.annotations(true).length
+    
+    ann6 = bk2.annotations << Annotation.new(:attribute_name => "allow_duplicates_for_this", 
+                                    :value => "Hi there", 
+                                    :source_type => source.class.name, 
+                                    :source_id => source.id)
+    
+    assert_not_nil ann6
+    assert_equal 3, bk2.annotations(true).length
   end
 end

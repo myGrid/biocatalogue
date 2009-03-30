@@ -52,7 +52,14 @@ Annotations::Config.strip_text_rules.update({ "tag" => [ '"' ] })
 
 Annotations::Config.limits_per_source = { "rating.speed" => [ 1, true ],
                                           "rating.reliability" => [ 1, true ],
-                                          "rating.ease-of-use" => [ 1, true ] }
+                                          "rating.ease-of-use" => [ 1, true ],
+                                          "rating.documentation" => [ 1, true ] }
+
+Annotations::Config.attribute_names_to_allow_duplicates = [ "tag",
+                                                            "rating.speed",
+                                                            "rating.reliability",
+                                                            "rating.ease-of-use",
+                                                            "rating.documentation" ]
 
 # ================================
 
@@ -75,6 +82,8 @@ Disqus::defaults[:num_items] = 15
 
 # These take the form:
 # { rating_annotation_attribute_name => [ visible_name, help_text ] }
+
+# IMPORTANT: remember to update any Annotations plugin configuration settings above when adding to this.
 
 SERVICE_RATINGS_CATEGORIES = { "rating.speed" => [ "Speed", "Rate how fast this service has been for you" ],
                                "rating.reliability" => [ "Reliability", "Rate how reliable this service has been for you" ],

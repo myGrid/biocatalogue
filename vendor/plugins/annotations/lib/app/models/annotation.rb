@@ -7,7 +7,9 @@ class Annotation < ActiveRecord::Base
   
   before_save :process_value_adjustments
   
-  before_save :check_limits
+  before_save :check_duplicate
+  
+  before_save :check_limit
   
   belongs_to :annotatable, 
              :polymorphic => true
@@ -85,6 +87,13 @@ class Annotation < ActiveRecord::Base
   named_scope :for_annotatable, lambda { |annotatable_type, annotatable_id| 
     { :conditions => { :annotatable_type =>  annotatable_type, 
                        :annotatable_id => annotatable_id },
+      :order => "created_at DESC" }
+  }
+  
+  # Finder to get all annotations with a given attribute_name.
+  named_scope :with_attribute_name, lambda { |attrib_name|
+    { :conditions => { :annotation_attributes => { :name => attrib_name } },
+      :joins => :attribute,
       :order => "created_at DESC" }
   }
   
@@ -177,12 +186,38 @@ class Annotation < ActiveRecord::Base
     end
   end
   
+  # This method checks whether duplicates are allowed for this particular annotation type (ie: 
+  # for the attribute that this annotation belongs to). If not, it checks for a duplicate existing annotation.
+  def check_duplicate
+    attr_name = self.attribute_name.downcase
+    if Annotations::Config.attribute_names_to_allow_duplicates.include?(attr_name)
+      return true
+    else
+      existing = Annotation.find(:all,
+                                 :joins => "JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id",
+                                 :conditions => [ "annotations.annotatable_type = ? AND annotations.annotatable_id = ? AND annotation_attributes.name = ? AND annotations.value = ?", 
+                                                  self.annotatable_type,
+                                                  self.annotatable_id,
+                                                  attr_name,
+                                                  self.value ])
+      
+      if existing.length == 0
+        # It's all good...
+        return true
+      else
+        self.errors.add_to_base("This annotation already exists and is not allowed to be created again.")
+        return false
+      end
+    end
+  end
+  
   # This method uses the limits_per_source config setting
   # to check whether a limit has been reached and takes appropriate action if it has.
+  #
   # If a limit has been reach and the limit is 1 and the replace existing otion is true, 
   # it will overwrite the value of the existing annotation and then stop the save procedure. 
   # Otherwise it will just stop the save procedure.
-  def check_limits
+  def check_limit
     attr_name = self.attribute_name.downcase
     if Annotations::Config::limits_per_source.has_key?(attr_name)
       options = Annotations::Config::limits_per_source[attr_name]

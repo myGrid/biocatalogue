@@ -64,6 +64,13 @@ class AnnotationTest < Test::Unit::TestCase
     assert_equal 0, Annotation.for_annotatable('Chapter', chapters(:bh_c1).id).length 
   end
   
+  def test_with_attribute_name_named_scope_finder
+    assert_equal 6, Annotation.with_attribute_name('tag').length
+    assert_equal 5, Annotation.with_attribute_name('title').length
+    assert_equal 1, Annotation.with_attribute_name('note').length
+    assert_equal 0, Annotation.with_attribute_name('does_not_exist_zzzzzz').length
+  end
+  
   def test_find_annotatable_class_method
     assert_equal books(:h), Annotation.find_annotatable('Book', books(:h).id)
     assert_equal books(:r), Annotation.find_annotatable('Book', books(:r).id)

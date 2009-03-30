@@ -32,13 +32,31 @@ module Annotations
     # NOTE (2): The should_replace_existing? option is only used if the max_number_allowed is set to 1.
     @@limits_per_source = { }
     
+    # By default, duplicate annotations cannot be created (same value for the same attribute, on an annotatable object, regardless of source). 
+    # For example: a user cannot add a description to a book that matches an existing description for that book.
+    # 
+    # This config setting allows exceptions to this rule, on a per attribute basis. 
+    # I.e: allow annotations with certain attribute names to have duplicate values.
+    #
+    # The format for the setting is:
+    # [ "attribute_name_1", "attribute_name_2", ... ]
+    #
+    # e.g: [ "tag", "rating" ]
+    #
+    # NOTE (1): The attribute name(s) specified MUST all be in lowercase.
+    # NOTE (2): This setting can be used in conjunction with the limits_per_source setting to allow duplicate annotations 
+    # BUT limit the number of annotations (per attribute) per user.
+    @@attribute_names_to_allow_duplicates = [ ]
+    
+    
     # This makes the variables above available externally.
-    # Shamelessly borrowed from GeoKit.
+    # Shamelessly borrowed from the GeoKit plugin.
     [ :attribute_names_for_values_to_be_downcased,
       :attribute_names_for_values_to_be_upcased,
       :strip_text_rules,
       :user_model_name,
-      :limits_per_source ].each do |sym|
+      :limits_per_source,
+      :attribute_names_to_allow_duplicates ].each do |sym|
       class_eval <<-EOS, __FILE__, __LINE__
         def self.#{sym}
           if defined?(#{sym.to_s.upcase})
