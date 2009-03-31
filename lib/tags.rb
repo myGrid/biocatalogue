@@ -7,6 +7,8 @@
 module BioCatalogue
   module Tags
     
+    @@logger = RAILS_DEFAULT_LOGGER
+    
     # ==============================
     # IMPORTANT - Tag data structure
     # ------------------------------
@@ -93,11 +95,11 @@ module BioCatalogue
       options.reverse_merge!(:tag_cloud_style => "",
                              :tag_style => "",
                              :min_font => 10,
-                             :max_font => 20)
+                             :max_font => 30)
       
       # Sort by count
-      tags.sort! { |a,b| b["count"] <=> a["count"] }
-  
+      tags.sort! { |a,b| b["count"].to_i <=> a["count"].to_i }
+      
       maxlog = Math.log(tags.first['count'])
       minlog = Math.log(tags.last['count'])
       rangelog = maxlog - minlog;
@@ -105,21 +107,21 @@ module BioCatalogue
       min_font = options[:min_font]
       max_font = options[:max_font]
       font_range = max_font - min_font
-      cloud = []
       
       # Sort by tag name
       tags.sort! { |a,b| a["name"].downcase <=> b["name"].downcase }
+      
+      cloud = []
   
       tags.each do |tag|
-        font_size = min_font + font_range * (Math.log(tag['count']) - minlog)/rangelog
+        font_size = min_font + font_range * ((Math.log(tag['count']) - minlog) / rangelog)
         cloud << [tag['name'], font_size.to_i, tag['count']] 
       end
       
-      the_cloud = cloud
-       unless the_cloud.blank?
+      unless cloud.blank?
         output = "<div class=\"tag_cloud\" style=\"#{options[:tag_cloud_style]}\">"
-        
-        the_cloud.each do |tag_name,fsize,count|
+
+        cloud.each do |tag_name,fsize,count|
           output <<    "<span>"
           output <<    "<a title=\"#{count}\""
           output <<        "alt=\"#{count}\""
