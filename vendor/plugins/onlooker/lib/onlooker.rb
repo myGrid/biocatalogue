@@ -40,11 +40,14 @@ module OnLookerHelper
     options[:unknown_img] ||= options.include?(:unknown_img)
     
     if status == "Online"
-      "<img src='#{options[:online_img]}' alt='Online' />"
+      options[:online_img]
+      #"<img src='#{options[:online_img]}' alt='Online' />"
     elsif status == "Offline"
-      "<img src='#{options[:offline_img]}' alt='Offline' />"
+      options[:offline_img]
+      #"<img src='#{options[:offline_img]}' alt='Offline' />"
     else
-      "<img src='#{options[:unknown_img]}' alt='Unknown' />"
+      options[:unknown_img]
+      #"<img src='#{options[:unknown_img]}' alt='Unknown' />"
     end
   end
   
