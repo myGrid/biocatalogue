@@ -38,7 +38,7 @@ class ServicesController < ApplicationController
     
     @all_service_version_instances = @service.service_version_instances
     @all_service_types = @service.service_types
-    @online_status = @service.service_deployments[0].latest_online_status.status
+    @online_status = @service.service_deployments[0].latest_online_status
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @service }

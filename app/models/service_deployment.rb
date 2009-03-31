@@ -54,7 +54,7 @@ class ServiceDeployment < ActiveRecord::Base
     status = OnlineStatus.find(:first, :conditions => ["pingable_id= ? AND pingable_type= ?", self.id, self.class.to_s ],
                                     :order => "created_at DESC")
     if status == nil
-      status = OnlineStatus.new(:status => "Unknown")
+      status = OnlineStatus.create(:status => "Unknown", :pingable_id => self.id, :pingable_type => self.class.to_s)
     end
     status
   end
