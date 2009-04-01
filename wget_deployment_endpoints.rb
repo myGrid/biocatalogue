@@ -1,10 +1,17 @@
 #!/usr/bin/env ruby
 
-# This script pings the endpoint of the service deployments and record the statuses
+# This script attempts to access the endpoint of the service deployments and record the statuses
 # in the online_statuses table. It also records references to the ServiceDeployment
-# object whose endpoint was pinged
-# For pinging the endpoints, it uses the onlooker plugin
+# object whose endpoint was access
+# For accessing the  endpoints, it uses the open-uri library
 #
+# This scripts records simple online/offline status. Only endpoints that generate the
+# 'not found' exception are considered to be offline
+
+# TODO:
+# See what other error codes should be mapped to offline status
+
+
 require 'open-uri'
 
 env = "development"
