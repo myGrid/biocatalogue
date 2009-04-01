@@ -32,7 +32,7 @@
 #  ruby feta_import.rb -h                                   <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout and $stderr have been redirected to 'feta_import.log' so you won't see anything output in the console.
+# NOTE (1): $stdout has been redirected to 'feta_import.log' so you won't see any normal output in the console.
 #
 # 
 # Depedencies:
@@ -168,8 +168,14 @@ class FetaImporter
         Agent.transaction do
           # Go through all XML files and store metadata
           
-          # 1st level is just folders
-          Dir.chdir(File.join(source_path, "descriptions")) do
+          descriptions_folder_path = File.join(source_path, "descriptions")
+          
+          puts ""
+          puts "=> Processing all XML files within the '#{descriptions_folder_path}' folder..."
+          puts ""
+          
+          Dir.chdir(descriptions_folder_path) do
+            # 1st level is just provider folders
             Dir["*"].each do |folder_path|
               folder_path_end = File.basename(folder_path)
               if FileTest.directory?(folder_path)
@@ -253,7 +259,8 @@ class FetaImporter
       stats["total_xml_files_found"].increment
       
       puts ""
-      puts "> File '#{path}' found. Processing..."
+      puts ">> XML file '#{path}' found. Processing..."
+      puts "INFO: 2nd level folder name = #{second_level_folder_name} (this will be stored as a name annotation [ie: a name alias])" unless second_level_folder_name.blank?
       
       begin
         success = true
@@ -319,18 +326,22 @@ class FetaImporter
               end
               
               existing_service.service_versions.each do |s_v|
-                if s_v.service_versionified_type == "SoapService" && (s_v_i = s_v.service_versionified).wsdl_location == wsdl_url
+                if (s_v.service_versionified_type == "SoapService") && ((s_v_i = s_v.service_versionified).wsdl_location.downcase == wsdl_url.downcase)
                   soap_service = s_v_i
                 end
               end
             end
             
             # Add annotations from the metadata now...
-            if success && !soap_service.nil?
+            if success
               # If this XML file came from a second level folder, store it as a name alias for the service.
               # BUT only if it doesn't match the existing name of the service.
-              if !second_level_folder_name.blank? && second_level_folder_name != soap_service.name
-                create_annotation(soap_service, "name", second_level_folder_name, stats)
+              unless second_level_folder_name.blank?
+                if second_level_folder_name == soap_service.name
+                  puts "INFO: 2nd level folder name is the same as the actual service name, so not creating an annotation for this."
+                else
+                  create_annotation(soap_service, "name", second_level_folder_name, stats)  
+                end
               end
             end
           end
@@ -342,6 +353,9 @@ class FetaImporter
         puts ex.message
         puts ex.backtrace.join("\n")
       end
+    else
+      puts ""
+      puts "INFO: non XML file encountered. Ignoring..."
     end
   end
   
@@ -372,20 +386,17 @@ class FetaImporter
   end
 end
 
-# Redirect $stdout and $stderr to log file
-puts "Redirecting output of $stdout and $stderr to log file: feta_import.log ..."
+# Redirect $stdout to log file
+puts "Redirecting output of $stdout to log file: feta_import.log ..."
 $stdout = File.new("feta_import.log", "w")
 $stdout.sync = true
-$stderr = $stderr.reopen("feta_import.log", "w")
-$stderr.sync = true
 
 # Redirect warnings from libxml-ruby
 LibXML::XML::Error.set_handler do |error|
-  puts error.to_s
+  #puts error.to_s
 end
 
 puts Benchmark.measure { FetaImporter.new(ARGV.clone).run }
 
-# Reset $stdout and $stderr
+# Reset $stdout
 $stdout = STDOUT
-$stderr = STDERR
