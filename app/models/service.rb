@@ -18,9 +18,7 @@ class Service < ActiveRecord::Base
   has_many :service_deployments, 
            :dependent => :destroy
   
-  belongs_to :submitter,
-             :class_name => "User",
-             :foreign_key => "submitter_id"
+  has_submitter
              
   before_validation_on_create :generate_unique_code
   

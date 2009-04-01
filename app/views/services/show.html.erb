@@ -75,7 +75,7 @@
 			<p>
 				<b>Submitted by:</b>
 				<br/>
-				<%= link_to(h(@service.submitter.display_name), user_path(@service.submitter)) %>
+				<%= link_to(h(@service.submitter_name), @service.submitter) %>
 				(<%= distance_of_time_in_words_to_now(@service.created_at) -%> ago)
 			</p>
 			

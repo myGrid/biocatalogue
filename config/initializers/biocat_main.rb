@@ -17,11 +17,11 @@ SERVICE_TYPES = {
 # Initialise the country codes
 CountryCodes
 
-# Require the util library 
+# Require libraries
 require 'util'
-
-# Require the tags library
 require 'tags'
+require 'acts_as_service_versionified'
+require 'has_submitter'
 
 # List of all the valid search types available, in the order they should be shown.
 # (must be in lowercase and in the plural form and MUST correspond to a resource type in the system)

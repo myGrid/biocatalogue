@@ -1,6 +1,6 @@
 # BioCatalogue: app/lib/acts_as_service_versionified.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -84,7 +84,7 @@ module BioCatalogue
         # ideally wrapped in a transaction, 
         # after the service version instance is created,
         # in order to create the parent Service, ServiceVersion and ServiceDeployment objects and assign the necessary data.
-        def perform_post_submit(endpoint, current_user)
+        def perform_post_submit(endpoint, actual_submitter)
           # Try and find location of the service from the url of the endpoint.
           wsdl_geoloc = BioCatalogue::Util.url_location_lookup(endpoint)
           city, country = BioCatalogue::Util.city_and_country_from_geoloc(wsdl_geoloc)
@@ -94,13 +94,13 @@ module BioCatalogue
           
           new_service = Service.new(:name => self.name)
           
-          new_service.submitter = current_user
+          new_service.submitter = actual_submitter
                                     
           new_service_version = new_service.service_versions.build(:version => "1", 
                                                                    :version_display_text => "1")
           
           new_service_version.service_versionified = self
-          new_service_version.submitter = current_user
+          new_service_version.submitter = actual_submitter
           
           new_service_deployment = new_service_version.service_deployments.build(:endpoint => endpoint,
                                                                                  :city => city,
@@ -108,7 +108,7 @@ module BioCatalogue
           
           new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(endpoint).host)
           new_service_deployment.service = new_service
-          new_service_deployment.submitter = current_user
+          new_service_deployment.submitter = actual_submitter
                                                         
           return new_service.save!
         end
@@ -121,7 +121,7 @@ module BioCatalogue
         #
         # This should be used instead of object.create_annotations when preprocessing is required and 
         # different annotations need to be allocated to different objects of a service.
-        def process_annotations_data(annotations_data, current_user)
+        def process_annotations_data(annotations_data, actual_submitter)
           # Preprocess (so that we get the correct structure to work with)
           annotations_data = BioCatalogue::Util.preprocess_annotations_data(annotations_data)
           
@@ -144,8 +144,8 @@ module BioCatalogue
           
           # Create annotations
           
-          self.create_annotations(service_version_instance_annotations, current_user) unless service_version_instance_annotations.blank?
-          self.service(true).create_annotations(service_container_annotations, current_user) unless service_container_annotations.blank?
+          self.create_annotations(service_version_instance_annotations, actual_submitter) unless service_version_instance_annotations.blank?
+          self.service(true).create_annotations(service_container_annotations, actual_submitter) unless service_container_annotations.blank?
         end
       end
     end

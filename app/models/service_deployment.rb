@@ -17,9 +17,7 @@ class ServiceDeployment < ActiveRecord::Base
   
   belongs_to :service_version
   
-  belongs_to :submitter,
-             :class_name => "User",
-             :foreign_key => "submitter_id"
+  has_submitter
   
   has_many :online_statuses , :as => :pingable
   

@@ -4,8 +4,6 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-require 'acts_as_service_versionified'
-
 class RestService < ActiveRecord::Base
   acts_as_trashable
   
@@ -76,27 +74,29 @@ class RestService < ActiveRecord::Base
   # =========================================
   
   
-  def submit_service(endpoint, current_user, annotations_data)
+  def submit_service(endpoint, actual_submitter, annotations_data)
     success = true
     
     begin
       transaction do
         self.save!
-        self.perform_post_submit(endpoint, current_user)
+        self.perform_post_submit(endpoint, actual_submitter)
       end
     rescue Exception => ex
       #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
       logger.error("ERROR: failed to submit REST service - #{endpoint}. Exception:")
-      logger.error(ex)
+      logger.error(ex.message)
+      logger.error(ex.backtrace.join("\n"))
       success = false
     end  
     
     if success
       begin
-        self.process_annotations_data(annotations_data, current_user)
+        self.process_annotations_data(annotations_data, actual_submitter)
       rescue Exception => ex
         logger.error("ERROR: failed to process annotations after REST service creation. REST service ID: #{self.id}. Exception:")
-        logger.error(ex)
+        logger.error(ex.message)
+        logger.error(ex.backtrace.join("\n"))
       end
     end
     

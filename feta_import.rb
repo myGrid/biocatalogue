@@ -19,15 +19,17 @@
 # 
 # Examples of running this script:
 #
-#  ruby feta_import.rb -s "/home/Feta/"      <- runs the script on the development database, using the source files from "/home/Feta/".
+#  ruby feta_import.rb -s "/home/jits/Feta/"                <- runs the script on the development database, using the source files from "/home/jits/Feta/" (absolute path).
 #
-#  ruby feta_import.rb -e production         <- runs the script on the production database, using the source files from the default location of "{app_root}/feta".
+#  ruby feta_import.rb -s "./../../Feta/"                   <- runs the script on the development database, using the source files from "./../../Feta/" (relative path; which would look for the 'Feta' folder in the folder 2 levels above the current folder). 
 #
-#  ruby feta_import.rb -e production -s "/home/Feta"      <- runs the script on the production database, using the source files from "/home/Feta/".
+#  ruby feta_import.rb -e production                        <- runs the script on the production database, using the source files from the default location of "{app_root}/feta".
 #
-#  ruby feta_import.rb -s "/home/Feta/"      <- runs the script on the development database, using the source files from "/home/Feta/", and in test mode (so no data is written to the db).
+#  ruby feta_import.rb -e production -s "/home/jits/Feta/"  <- runs the script on the production database, using the source files from "/home/jits/Feta/".
 #
-#  ruby feta_import.rb -h                    <- displays help text for this script.  
+#  ruby feta_import.rb -s "/home/jits/Feta/" -t             <- runs the script on the development database, using the source files from "/home/jits/Feta/", and in test mode (so no data is written to the db).
+#
+#  ruby feta_import.rb -h                                   <- displays help text for this script.  
 #
 #
 # NOTE (1): $stdout and $stderr have been redirected to 'feta_import.log' so you won't see anything output in the console.
@@ -44,10 +46,34 @@ require 'libxml'
 require 'benchmark'
 require 'addressable/uri'
 
+class Counter
+  attr_accessor :count
+  
+  def initialize
+    @count = 0
+  end
+  
+  def increment(amount=nil)
+    if amount.nil?
+      @count = @count + 1
+    else
+      @count = @count + amount
+    end
+  end
+  
+  def decrement(amount=nil)
+    if amount.nil?
+      @count = @count - 1
+    else
+      @count = @count - amount
+    end
+  end
+end
+
 class FetaImporter
   include LibXML
   
-  attr_accessor :options
+  attr_accessor :options, :agent
   
   def initialize(args)
     @options = {
@@ -76,6 +102,14 @@ class FetaImporter
     RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
     
     require File.dirname(__FILE__) + '/config/environment'
+    
+    # Get the Agent model object we will be using as the annotation source
+    @agent = Agent.find_by_name("feta_importer")
+    
+    # Exit if feta importer Agent is not available
+    if @agent.nil?
+      raise "FATAL: the feta importer Agent has not been registered into the database yet. It is required to create annotations with the correct source. You may need to run rake db:migrate in order to update your db with the appropriate Agent record. Exiting... "
+    end
   end
   
   def run
@@ -84,7 +118,9 @@ class FetaImporter
     
     if @options[:test]
       puts ""
+      puts "*********************************************************************************"
       puts "NOTE: you have asked me to run in test mode, so I won't write any data to the db."
+      puts "*********************************************************************************"
     end
     
     source_path = @options[:source]
@@ -107,31 +143,25 @@ class FetaImporter
     
     if preconditions_met
       # Extra config options
-      excluded_directories = [ "biomoby", "local_java_widget" ]
+      excluded_directories = [ "biomoby", "local_java_widget", "govizservice" ]
       
       # Variables for statistics
       stats = { } 
-      stats["total_provider_folders_processed"] = 0
-      stats["total_xml_files_found"] = 0
-      stats["total_xml_files_successfully_processed"] = 0
-      stats["total_xml_service_descriptions_found"] = 0
-      stats["total_services_created"] = 0
-      stats["total_services_existed_and_updated"] = 0
-      stats["total_annotations_new"] = 0
-      stats["total_annotations_already_exist"] = 0
+      stats["total_provider_folders_processed"] = Counter.new
+      stats["total_xml_files_found"] = Counter.new
+      stats["total_xml_files_successfully_processed"] = Counter.new
+      stats["total_xml_service_descriptions_found"] = Counter.new
+      stats["total_xml_service_descriptions_are_for_existing_services"] = Counter.new
+      stats["total_xml_service_descriptions_are_for_new_services"] = Counter.new
+      stats["total_services_created"] = Counter.new
+      stats["total_services_existed_and_updated"] = Counter.new
+      stats["total_annotations_new"] = Counter.new
+      stats["total_annotations_already_exist"] = Counter.new
+      stats["total_annotations_failed"] = Counter.new
       stats["ids_of_created_services"] = [ ]
       stats["ids_of_updated_services"] = [ ]
       
-      # Get the Agent model object we will be using as the annotation source
-      feta_importer_agent = Agent.find_by_name("feta_importer")
-      
-      # Exit if feta importer Agent is not available
-      if feta_importer_agent.nil?
-        puts ""
-        puts "FATAL: the feta importer Agent has not been registered into the database yet. It is required to create annotations with the correct source. You may need to run rake db:migrate in order to update your db with the appropriate Agent record. Exiting... "
-        return 1
-      end
-      
+
       # Run everything in a transaction
       
       begin
@@ -152,7 +182,7 @@ class FetaImporter
                   
                   Dir[File.join(folder_path, "*")].each do |path|
                     # 2nd level...
-                    # Further folders are individual services, XML files are the metadata files.
+                    # Further folders are individual services folders, XML files are the metadata files for operations.
                     if FileTest.directory?(path)
                       puts ""
                       puts "> Folder '#{path}' found. Processing..."
@@ -161,15 +191,15 @@ class FetaImporter
                           puts ""
                           puts "WARNING: 3rd level folder found. Ignoring for now, but please check if it contains anything important."
                         elsif FileTest.file?(path2)
-                          process_xml(path2, feta_importer_agent, stats)
+                          process_xml(path2, stats, File.basename(path))
                         end
                       end
                     elsif FileTest.file?(path)
-                      process_xml(path, feta_importer_agent, stats)
+                      process_xml(path, stats)
                     end
                   end
                   
-                  stats["total_provider_folders_processed"] = stats["total_provider_folders_processed"] + 1
+                  stats["total_provider_folders_processed"].increment
                 end
               end
             end
@@ -210,15 +240,17 @@ class FetaImporter
     stats.sort.each do |h|
       if h[1].is_a? Array
         puts "#{h[0].humanize} = #{h[1].to_sentence}"
+      elsif h[1].is_a? Counter
+        puts "#{h[0].humanize} = #{h[1].count}" 
       else
         puts "#{h[0].humanize} = #{h[1]}"  
       end
     end
   end
   
-  def process_xml(path, agent, stats)
+  def process_xml(path, stats, second_level_folder_name=nil)
     if File.extname(path).downcase == ".xml"
-      stats["total_xml_files_found"] = stats["total_xml_files_found"] + 1
+      stats["total_xml_files_found"].increment
       
       puts ""
       puts "> File '#{path}' found. Processing..."
@@ -231,7 +263,7 @@ class FetaImporter
         doc.root.namespaces.default_prefix = 'pd'
 
         doc.root.find('//pd:serviceDescription').each do |service_description_node|
-          stats["total_xml_service_descriptions_found"] = stats["total_xml_service_descriptions_found"] + 1
+          stats["total_xml_service_descriptions_found"].increment
           
           # Get WSDL URL
           wsdl_url = nil
@@ -256,34 +288,85 @@ class FetaImporter
             if (existing_service = SoapService.check_duplicate(wsdl_url, endpoint_url)).nil?
               # Doesn't exist, so new SoapService needs to be created...
               
+              stats["total_xml_service_descriptions_are_for_new_services"].increment
       
               soap_service = SoapService.new(:wsdl_location => wsdl_url)
-              #success, data = soap_service.populate
+              new_service_success, data = soap_service.populate
               
-              #unless stats["ids_of_created_services"].include?(soap_service.service.id)
-              #stats["ids_of_created_services"] << soap_service.service.id
-              #end
+              if new_service_success
+                new_service_success = soap_service.submit_service(data["endpoint"], @agent, { })
+                
+                if new_service_success
+                  puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
+                  stats["ids_of_created_services"] << soap_service.service.id
+                else
+                  puts "ERROR: failed to carry out submit_service of SoapService object with WSDL URL '#{wsdl_url}' (ie: db has not been populated with the SoapService and associated objects). Check the relevant Rails log file for more info."
+                  success = false
+                end
+              else
+                puts "ERROR: failed to populate SoapService object from WSDL URL '#{wsdl_url}'. Error messages: #{soap_service.errors.full_messages.to_sentence}"
+                success = false
+              end
             else
               # Exists, so get the relevant SoapService object...
               
+              stats["total_xml_service_descriptions_are_for_existing_services"].increment
+              
+              puts "INFO: existing matching service found (ID: #{existing_service.id}, WSDL URL: '#{wsdl_url}')."
+              
               unless stats["ids_of_created_services"].include?(existing_service.id) or stats["ids_of_updated_services"].include?(existing_service.id) 
-                stats["ids_of_updated_services"] << existing_service.id 
+                stats["ids_of_updated_services"] << existing_service.id
               end
               
               existing_service.service_versions.each do |s_v|
-                if s_v.service_versionified_type && (s_v_i = s_v.service_versionified).wsdl_location == wsdl_url
+                if s_v.service_versionified_type == "SoapService" && (s_v_i = s_v.service_versionified).wsdl_location == wsdl_url
                   soap_service = s_v_i
                 end
+              end
+            end
+            
+            # Add annotations from the metadata now...
+            if success && !soap_service.nil?
+              # If this XML file came from a second level folder, store it as a name alias for the service.
+              # BUT only if it doesn't match the existing name of the service.
+              if !second_level_folder_name.blank? && second_level_folder_name != soap_service.name
+                create_annotation(soap_service, "name", second_level_folder_name, stats)
               end
             end
           end
         end
         
-        stats["total_xml_files_successfully_processed"] = stats["total_xml_files_successfully_processed"] + 1 if success
+        stats["total_xml_files_successfully_processed"].increment if success
       rescue Exception => ex
         puts "ERROR: exception occured whilst processing '#{path}':"
         puts ex.message
         puts ex.backtrace.join("\n")
+      end
+    end
+  end
+  
+  def create_annotation(annotatable, attribute, value, stats)
+    annotatable_type = annotatable.class.name
+    value = CGI.unescape(value)
+    
+    ann = Annotation.new(:attribute_name => attribute,
+                         :value => value,
+                         :source_type => "Agent",
+                         :source_id => @agent.id,
+                         :annotatable_type => annotatable_type,
+                         :annotatable_id => annotatable.id)
+
+    if ann.save
+      stats["total_annotations_new"].increment
+      puts "INFO: annotation successfully created. Annotatable: #{annotatable_type} ID #{annotatable.id}; Attribute: '#{attribute}'; Value: '#{value}';"
+    else
+      # Check if it failed because of duplicate...
+      if ann.errors.full_messages.include?("This annotation already exists and is not allowed to be created again.")
+        stats["total_annotations_already_exist"].increment
+        puts "INFO: duplicate annotation detected so not storing it again. Annotatable: #{annotatable_type} ID #{annotatable.id}; Attribute: '#{attribute}'; Value: '#{value}';"
+      else
+        stats["total_annotations_failed"].increment
+        puts "ERROR: creation of annotation failed! Annotatable: #{annotatable_type} ID #{annotatable.id}; Attribute: '#{attribute}'; Value: '#{value}';"
       end
     end
   end
