@@ -151,8 +151,13 @@ class FetaImporter
       stats["total_xml_files_found"] = Counter.new
       stats["total_xml_files_successfully_processed"] = Counter.new
       stats["total_xml_service_descriptions_found"] = Counter.new
+      stats["total_xml_service_descriptions_are_wsdl_services"] = Counter.new
       stats["total_xml_service_descriptions_are_for_existing_services"] = Counter.new
       stats["total_xml_service_descriptions_are_for_new_services"] = Counter.new
+      stats["total_xml_service_operations_found"] = Counter.new
+      stats["total_xml_service_operations_that_do_not_exist_in_service_now"] = Counter.new
+      stats["total_xml_service_input_parameters_found"] = Counter.new
+      stats["total_xml_service_output_parameters_found"] = Counter.new
       stats["total_services_created"] = Counter.new
       stats["total_services_existed_and_updated"] = Counter.new
       stats["total_annotations_new"] = Counter.new
@@ -260,90 +265,172 @@ class FetaImporter
       
       puts ""
       puts ">> XML file '#{path}' found. Processing..."
-      puts "INFO: 2nd level folder name = #{second_level_folder_name} (this will be stored as a name annotation [ie: a name alias])" unless second_level_folder_name.blank?
+      puts "INFO: 2nd level folder name = '#{second_level_folder_name}' (this will be stored as a name annotation [ie: a name alias])" unless second_level_folder_name.blank?
       
       begin
         success = true
         
-        # Load up XML doc and process the <serviceDescription> node...
+        # Load up XML doc and process the <serviceDescription> node(s)...
         doc = XML::Parser.file(path).parse
         doc.root.namespaces.default_prefix = 'pd'
 
         doc.root.find('//pd:serviceDescription').each do |service_description_node|
           stats["total_xml_service_descriptions_found"].increment
           
-          # Get WSDL URL
-          wsdl_url = nil
-          endpoint_url = nil
+          service_type = service_description_node.find_first("pd:serviceType").inner_xml
           
-          wsdl_url_node = service_description_node.find_first("pd:interfaceWSDL")
-          endpoint_url_node = service_description_node.find_first("pd:locationURL")
-          
-          if wsdl_url_node.nil? || (wsdl_url = wsdl_url_node.inner_xml).blank?
-            success = false
-            puts "ERROR: could not process file '#{path}' as it doesn't contain an <interfaceWSDL> element"
-          elsif endpoint_url_node.nil? || (endpoint_url = endpoint_url_node.inner_xml).blank?
-            success = false
-            puts "ERROR: could not process file '#{path}' as it doesn't contain a <locationURL> element"
-          else
-            # Normalize WSDL URL
-            wsdl_url = Addressable::URI.parse(wsdl_url).normalize.to_s
+          # Only continue if WSDL service
+          if service_type.downcase == "wsdl service"
+            stats["total_xml_service_descriptions_are_wsdl_services"].increment
             
-            soap_service = nil
+            # Get WSDL and endpoint URLs
+            wsdl_url = nil
+            endpoint_url = nil
             
-            # Check if the service exists in the database
-            if (existing_service = SoapService.check_duplicate(wsdl_url, endpoint_url)).nil?
-              # Doesn't exist, so new SoapService needs to be created...
+            # <interfaceWSDL>
+            wsdl_url_node = service_description_node.find_first("pd:interfaceWSDL")
+            
+            # <locationURL>
+            endpoint_url_node = service_description_node.find_first("pd:locationURL")
+            
+            if wsdl_url_node.nil? || (wsdl_url = wsdl_url_node.inner_xml).blank?
+              success = false
+              puts "ERROR: could not process file '#{path}' as it doesn't contain an <interfaceWSDL> element"
+            elsif endpoint_url_node.nil? || (endpoint_url = endpoint_url_node.inner_xml).blank?
+              success = false
+              puts "ERROR: could not process file '#{path}' as it doesn't contain a <locationURL> element"
+            else
+              # Normalize WSDL URL
+              wsdl_url = Addressable::URI.parse(wsdl_url).normalize.to_s
               
-              stats["total_xml_service_descriptions_are_for_new_services"].increment
-      
-              soap_service = SoapService.new(:wsdl_location => wsdl_url)
-              new_service_success, data = soap_service.populate
+              soap_service = nil
               
-              if new_service_success
-                new_service_success = soap_service.submit_service(data["endpoint"], @agent, { })
+              # Check if the service exists in the database
+              if (existing_service = SoapService.check_duplicate(wsdl_url, endpoint_url)).nil?
+                # Doesn't exist, so new SoapService needs to be created...
+                
+                stats["total_xml_service_descriptions_are_for_new_services"].increment
+        
+                soap_service = SoapService.new(:wsdl_location => wsdl_url)
+                new_service_success, data = soap_service.populate
                 
                 if new_service_success
-                  puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
-                  stats["ids_of_created_services"] << soap_service.service.id
+                  new_service_success = soap_service.submit_service(data["endpoint"], @agent, { })
+                  
+                  if new_service_success
+                    puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
+                    stats["ids_of_created_services"] << soap_service.service.id
+                  else
+                    puts "ERROR: failed to carry out submit_service of SoapService object with WSDL URL '#{wsdl_url}' (ie: db has not been populated with the SoapService and associated objects). Check the relevant Rails log file for more info."
+                    success = false
+                  end
                 else
-                  puts "ERROR: failed to carry out submit_service of SoapService object with WSDL URL '#{wsdl_url}' (ie: db has not been populated with the SoapService and associated objects). Check the relevant Rails log file for more info."
+                  puts "ERROR: failed to populate SoapService object from WSDL URL '#{wsdl_url}'. Error messages: #{soap_service.errors.full_messages.to_sentence}"
                   success = false
                 end
               else
-                puts "ERROR: failed to populate SoapService object from WSDL URL '#{wsdl_url}'. Error messages: #{soap_service.errors.full_messages.to_sentence}"
-                success = false
+                # Exists, so get the relevant SoapService object...
+                
+                stats["total_xml_service_descriptions_are_for_existing_services"].increment
+                
+                puts "INFO: existing matching service found (ID: #{existing_service.id}, WSDL URL: '#{wsdl_url}')."
+                
+                unless stats["ids_of_created_services"].include?(existing_service.id) or stats["ids_of_updated_services"].include?(existing_service.id) 
+                  stats["ids_of_updated_services"] << existing_service.id
+                end
+                
+                existing_service.service_versions.each do |s_v|
+                  if (s_v.service_versionified_type == "SoapService") && ((s_v_i = s_v.service_versionified).wsdl_location.downcase == wsdl_url.downcase)
+                    soap_service = s_v_i
+                  end
+                end
               end
-            else
-              # Exists, so get the relevant SoapService object...
               
-              stats["total_xml_service_descriptions_are_for_existing_services"].increment
-              
-              puts "INFO: existing matching service found (ID: #{existing_service.id}, WSDL URL: '#{wsdl_url}')."
-              
-              unless stats["ids_of_created_services"].include?(existing_service.id) or stats["ids_of_updated_services"].include?(existing_service.id) 
-                stats["ids_of_updated_services"] << existing_service.id
-              end
-              
-              existing_service.service_versions.each do |s_v|
-                if (s_v.service_versionified_type == "SoapService") && ((s_v_i = s_v.service_versionified).wsdl_location.downcase == wsdl_url.downcase)
-                  soap_service = s_v_i
+              # Add annotations from the metadata and operations now...
+              if success
+                # If this XML file came from a second level folder, store it as a name alias for the service.
+                # BUT only if it doesn't match the existing name of the service.
+                unless second_level_folder_name.blank?
+                  if second_level_folder_name == soap_service.name
+                    puts "INFO: 2nd level folder name is the same as the actual service name, so not creating an annotation for this."
+                  else
+                    create_annotation(soap_service, "name", second_level_folder_name, stats)  
+                  end
+                end
+                
+                # Process <serviceOperation> node(s)
+                service_description_node.find('//pd:serviceOperation').each do |operation_node|
+                  
+                  stats["total_xml_service_operations_found"].increment
+                  
+                  # <operationName>
+                  op_name = operation_node.find_first("pd:operationName").inner_xml
+                  
+                  # Find the operation in the service
+                  operation = soap_service.soap_operations.find(:first, :conditions => { :name => op_name })
+                  
+                  if operation.nil?
+                    stats["total_xml_service_operations_that_do_not_exist_in_service_now"].increment
+                    puts "WARNING: could not get SoapOperation matching '#{op_name}' - most likely the service has changed. Skipping..."
+                  else
+                    
+                    # <operationDescriptionText>
+                    op_desc_text = operation_node.find_first("pd:operationDescriptionText").inner_xml
+                    create_annotation(operation, "description", op_desc_text, stats) unless op_desc_text.blank?
+                    
+                    # <operationTask>
+                    operation_task_node = operation_node.find_first("pd:operationTask")
+                    unless operation_task_node.nil?
+                      val = operation_task_node.inner_xml
+                      create_annotation(operation, "<http://www.mygrid.org.uk/mygrid-moby-service#performsTask>", val, stats, true)
+                      create_annotation(operation, "tag", val, stats, true)
+                    end
+  
+                    # <operationMethod>
+                    operation_method_node = operation_node.find_first("pd:operationMethod")
+                    unless operation_method_node.nil?
+                      val = operation_method_node.inner_xml
+                      create_annotation(operation, "<http://www.mygrid.org.uk/mygrid-moby-service#usesMethod>", val, stats, true)
+                      create_annotation(operation, "tag", val, stats, true)
+                    end
+                    
+                    # <operationResource>
+                    operation_resource_node = operation_node.find_first("pd:operationResource")
+                    unless operation_resource_node.nil?
+                      val = operation_resource_node.inner_xml
+                      create_annotation(operation, "<http://www.mygrid.org.uk/mygrid-moby-service#usesResource>", val, stats, true)
+                      create_annotation(operation, "tag", val, stats, true)
+                    end
+                    
+                    # Process <parameter> node(s) in <operationInputs>
+                    operation_node.find('//pd:operationInputs/pd:parameter').each do |parameter_node|
+                      
+                      stats["total_xml_service_input_parameters_found"].increment
+                       
+                      process_parameter_xml(parameter_node, operation.soap_inputs, stats)
+                      
+                    end
+                    
+                    # Process <parameter> node(s) in <operationOutputs>
+                    operation_node.find('//pd:operationOutputs/pd:parameter').each do |parameter_node|
+                      
+                      stats["total_xml_service_output_parameters_found"].increment
+                      
+                      process_parameter_xml(parameter_node, operation.soap_outputs, stats)
+                      
+                    end
+                    
+                    # Finally, add the link to the example workflow
+                    example_workflow_url = "http://www.mygrid.org.uk/feta/mygrid/example_workflow/#{path.gsub(".xml", "")}_workflow.xml"
+                    create_annotation(operation, "example_workflow", example_workflow_url, stats)
+                    
+                  end
+                  
                 end
               end
             end
-            
-            # Add annotations from the metadata now...
-            if success
-              # If this XML file came from a second level folder, store it as a name alias for the service.
-              # BUT only if it doesn't match the existing name of the service.
-              unless second_level_folder_name.blank?
-                if second_level_folder_name == soap_service.name
-                  puts "INFO: 2nd level folder name is the same as the actual service name, so not creating an annotation for this."
-                else
-                  create_annotation(soap_service, "name", second_level_folder_name, stats)  
-                end
-              end
-            end
+          else
+            puts "INFO: not a WSDL based service. Skipping..."
           end
         end
         
@@ -359,12 +446,58 @@ class FetaImporter
     end
   end
   
-  def create_annotation(annotatable, attribute, value, stats)
+  def process_parameter_xml(parameter_node, collection_to_find_annotatable, stats)
+    # <parameterName>
+    param_name = parameter_node.find_first("pd:parameterName").inner_xml
+    
+    # Find the object that needs to be annotated
+    parameter = collection_to_find_annotatable.find(:first, :conditions => { :name => param_name })
+    
+    # <parameterDescription>
+    param_desc_text = parameter_node.find_first("pd:parameterDescription").inner_xml
+    create_annotation(parameter, "description", param_desc_text, stats) unless param_desc_text.blank?
+    
+    # <parameterFormat>
+    parameter_format_node = parameter_node.find_first("pd:parameterFormat")
+    unless parameter_format_node.nil?
+      val = parameter_format_node.inner_xml
+      create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#objectType>", val, stats, true)
+      create_annotation(parameter, "tag", val, stats, true)
+    end
+
+    # <collectionSemanticType>
+    collection_semantic_type_node = parameter_node.find_first("pd:collectionSemanticType")
+    unless collection_semantic_type_node.nil?
+      val = collection_semantic_type_node.inner_xml
+      create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#hasParameterType>", val, stats, true)
+      create_annotation(parameter, "tag", val, stats, true)
+    end
+    
+    # <semanticType>
+    semantic_type_node = parameter_node.find_first("pd:semanticType")
+    unless semantic_type_node.nil?
+      val = semantic_type_node.inner_xml
+      create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#inNamespaces>", val, stats, true)
+      create_annotation(parameter, "tag", val, stats, true)
+    end
+  end
+  
+  def create_annotation(annotatable, attribute, value, stats, is_ontological_term=false)
     annotatable_type = annotatable.class.name
-    value = CGI.unescape(value)
+    
+    value_type = "String"
+    
+    # Preprocess value
+    if is_ontological_term
+      value = "<" + value + ">" unless value.starts_with?('<') and value.ends_with?('>')
+      value_type = "URI"
+    else
+      value = CGI.unescapeHTML(value)
+    end
     
     ann = Annotation.new(:attribute_name => attribute,
                          :value => value,
+                         :value_type => value_type,
                          :source_type => "Agent",
                          :source_id => @agent.id,
                          :annotatable_type => annotatable_type,
@@ -372,17 +505,27 @@ class FetaImporter
 
     if ann.save
       stats["total_annotations_new"].increment
-      puts "INFO: annotation successfully created. Annotatable: #{annotatable_type} ID #{annotatable.id}; Attribute: '#{attribute}'; Value: '#{value}';"
+      puts "INFO: annotation successfully created:"
+      puts format_annotation_info(annotatable_type, annotatable.id, attribute, value, value_type)
     else
       # Check if it failed because of duplicate...
       if ann.errors.full_messages.include?("This annotation already exists and is not allowed to be created again.")
         stats["total_annotations_already_exist"].increment
-        puts "INFO: duplicate annotation detected so not storing it again. Annotatable: #{annotatable_type} ID #{annotatable.id}; Attribute: '#{attribute}'; Value: '#{value}';"
+        puts "INFO: duplicate annotation detected so not storing it again. Annotation is:"
+        puts format_annotation_info(annotatable_type, annotatable.id, attribute, value,value_type)
       else
         stats["total_annotations_failed"].increment
-        puts "ERROR: creation of annotation failed! Annotatable: #{annotatable_type} ID #{annotatable.id}; Attribute: '#{attribute}'; Value: '#{value}';"
+        puts "ERROR: creation of annotation failed! Errors: #{ann.errors.full_messages.to_sentence}. Check Rails logs for more info. Annotation is:"
+        puts format_annotation_info(annotatable_type, annotatable.id, attribute, value, value_type)
       end
     end
+  end
+  
+  def format_annotation_info(annotatable_type, annotatable_id, attribute, value, value_type)
+    return "\tAnnotatable: #{annotatable_type} (ID: #{annotatable_id}) \n" +
+           "\tAttribute name: #{attribute} \n" +
+           "\tValue: #{value} \n" +
+           "\tValue type: #{value_type}"
   end
 end
 
