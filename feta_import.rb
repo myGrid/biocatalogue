@@ -158,6 +158,7 @@ class FetaImporter
       stats["total_xml_service_operations_that_do_not_exist_in_service_now"] = Counter.new
       stats["total_xml_service_input_parameters_found"] = Counter.new
       stats["total_xml_service_output_parameters_found"] = Counter.new
+      stats["total_xml_service_parameters_that_do_not_exist_in_service_now"] = Counter.new
       stats["total_services_created"] = Counter.new
       stats["total_services_existed_and_updated"] = Counter.new
       stats["total_annotations_new"] = Counter.new
@@ -430,7 +431,7 @@ class FetaImporter
               end
             end
           else
-            puts "INFO: not a WSDL based service. Skipping..."
+            puts "WARNING: not a WSDL based service. Skipping..."
           end
         end
         
@@ -453,32 +454,37 @@ class FetaImporter
     # Find the object that needs to be annotated
     parameter = collection_to_find_annotatable.find(:first, :conditions => { :name => param_name })
     
-    # <parameterDescription>
-    param_desc_text = parameter_node.find_first("pd:parameterDescription").inner_xml
-    create_annotation(parameter, "description", param_desc_text, stats) unless param_desc_text.blank?
-    
-    # <parameterFormat>
-    parameter_format_node = parameter_node.find_first("pd:parameterFormat")
-    unless parameter_format_node.nil?
-      val = parameter_format_node.inner_xml
-      create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#objectType>", val, stats, true)
-      create_annotation(parameter, "tag", val, stats, true)
-    end
-
-    # <collectionSemanticType>
-    collection_semantic_type_node = parameter_node.find_first("pd:collectionSemanticType")
-    unless collection_semantic_type_node.nil?
-      val = collection_semantic_type_node.inner_xml
-      create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#hasParameterType>", val, stats, true)
-      create_annotation(parameter, "tag", val, stats, true)
-    end
-    
-    # <semanticType>
-    semantic_type_node = parameter_node.find_first("pd:semanticType")
-    unless semantic_type_node.nil?
-      val = semantic_type_node.inner_xml
-      create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#inNamespaces>", val, stats, true)
-      create_annotation(parameter, "tag", val, stats, true)
+    if parameter.nil?
+      stats["total_xml_service_parameters_that_do_not_exist_in_service_now"].increment
+      puts "WARNING: could not get SoapInput/SoapOutput matching parameter name '#{param_name}' - most likely the service has changed. Skipping..."
+    else
+      # <parameterDescription>
+      param_desc_text = parameter_node.find_first("pd:parameterDescription").inner_xml
+      create_annotation(parameter, "description", param_desc_text, stats) unless param_desc_text.blank?
+      
+      # <parameterFormat>
+      parameter_format_node = parameter_node.find_first("pd:parameterFormat")
+      unless parameter_format_node.nil?
+        val = parameter_format_node.inner_xml
+        create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#objectType>", val, stats, true)
+        create_annotation(parameter, "tag", val, stats, true)
+      end
+  
+      # <collectionSemanticType>
+      collection_semantic_type_node = parameter_node.find_first("pd:collectionSemanticType")
+      unless collection_semantic_type_node.nil?
+        val = collection_semantic_type_node.inner_xml
+        create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#hasParameterType>", val, stats, true)
+        create_annotation(parameter, "tag", val, stats, true)
+      end
+      
+      # <semanticType>
+      semantic_type_node = parameter_node.find_first("pd:semanticType")
+      unless semantic_type_node.nil?
+        val = semantic_type_node.inner_xml
+        create_annotation(parameter, "<http://www.mygrid.org.uk/mygrid-moby-service#inNamespaces>", val, stats, true)
+        create_annotation(parameter, "tag", val, stats, true)
+      end
     end
   end
   
