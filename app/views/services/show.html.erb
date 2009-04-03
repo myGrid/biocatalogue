@@ -25,6 +25,10 @@
 													:title => tooltip_title_attrib("Service status  : #{@online_status.status} #{distance_of_time_in_words_to_now(@online_status.created_at)} ago"))  -%></span>
 </h1>
 
+<%= render :partial => "annotations/name_aliases",
+					 :locals => { :annotatable => @service,
+												:name_annotations => all_name_annotations_for_service(@service) } -%>
+
 <div class="tabber" style="margin-top:1.5em;">
 	
   <div id="tab-overview" class="tabbertab">
@@ -32,18 +36,6 @@
 		
 		<!-- Left column -->
 		<div style="float: left; width: 67%;">
-			<p>
-				<b>Aliases:</b>
-				<br/>
-				<% unless (aliases = all_name_annotations_for_service(@service)).empty? %>
-					<% aliases.each do |al| %>
-						<%= h(al.value) -%><br/>
-					<% end %>
-				<% else %>
-					<span class="none_text">none</span>
-				<% end %>
-			</p>
-			
 			<% if false %>
 			<p>
 			  <b>Unique code:</b>

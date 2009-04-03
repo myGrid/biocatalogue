@@ -30,6 +30,9 @@
 					<b>Name:</b>
 					<span class="operation_name" style="font-size: 1.2em;"><%= h operation.name -%></span>
 					
+					<%= render :partial => "annotations/name_aliases",
+									 	 :locals => { :annotatable => operation } -%>
+					
 					<div style="margin-bottom: 1em;">
 						<%= render :partial => "annotations/descriptions",
 										 	 :locals => { :annotatable => operation } -%>
@@ -56,6 +59,8 @@
 							<% unless input.computational_type.blank? %>
 						  	(<%= h input.computational_type -%>) 
 							<% end %>
+							<%= render :partial => "annotations/name_aliases",
+									 	 		 :locals => { :annotatable => input } -%>
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => input } -%>
 							<%= render :partial => "annotations/examples",
@@ -81,6 +86,8 @@
 							<% unless output.computational_type.blank? %>
 						  	(<%= h output.computational_type -%>) 
 							<% end %>
+							<%= render :partial => "annotations/name_aliases",
+									 	 		 :locals => { :annotatable => output } -%>
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => output } -%>
 						</div>

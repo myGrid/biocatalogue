@@ -1,0 +1,30 @@
+<%
+
+# BioCatalogue: app/views/annotations/_name_aliases.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%# Set defaults for optional parameters to this partial... %>
+<% name_annotations = annotatable.annotations_with_attribute("name") unless local_assigns.has_key?(:name_annotations) %>
+<% show_add_option = true unless local_assigns.has_key?(:show_add_option) %>
+<% show_modify_options = true unless local_assigns.has_key?(:show_modify_options) %>
+
+<div class="aliases">
+	<% unless name_annotations.empty? %>
+		<% name_annotations.each do |al| %>
+			<span class="faded_plus">aka</span>
+			<span style="font-weight: bold; margin-right: 1em;"><%= h(al.value) -%></span>
+		<% end %>
+	<% end %>
+	
+	<% if show_add_option == true %>
+		<%= annotation_add_by_popup_link annotatable,
+		     :attribute_name => "name",
+		     :tooltip_text => "Click to add a name alias",
+				 :link_text => "Add a name alias" -%>
+	<% end %>
+</div>

@@ -1035,11 +1035,6 @@ body.sidebar-right #login_box {
 	margin-bottom: 0.6em;
 }
 
-.listing_item aliases {
-	font-size: 0.85em;
-	line-height: 1.4;
-}
-
 .listing_item .desc {
 	color: #333333;
 	padding: 0.6em 1em; 
@@ -1441,6 +1436,12 @@ ul.tabbernav li.tabberactive a:hover
 
 .annotation_source_user {
 	background-color: #FFC;
+}
+
+.aliases {
+	font-size: 0.85em;
+	line-height: 1.4;
+	margin: 0.8em 0;
 }
 
 /* END annotations styles */
