@@ -34,7 +34,7 @@
 #
 # NOTE (1): $stdout has been redirected to 'feta_import.log' so you won't see any normal output in the console.
 #
-# NOTE (2): this script assumes that any Soaplab services found are already in the BioCatalogue so we don't have to create all the Soaplab Server stuff.
+# NOTE (2): this script DOES NOT import any Soaplab service metadata due to the discrepancies with the way operations are defined in Feta for Soaplab services.
 # 
 #
 # Depedencies:
@@ -283,9 +283,7 @@ class FetaImporter
           service_type = service_description_node.find_first("pd:serviceType").inner_xml
           
           # Only continue if WSDL service
-          # Note: we are assuming that any Soaplab services found are already 
-          # in the BioCatalogue so we don't have to create all the Soaplab Server stuff.
-          if ["wsdl service", "soaplab service"].include?(service_type.downcase)
+          if service_type.downcase == "wsdl service"
             stats["total_xml_service_descriptions_are_wsdl_services"].increment
             
             # Get WSDL and endpoint URLs
