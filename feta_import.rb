@@ -34,7 +34,9 @@
 #
 # NOTE (1): $stdout has been redirected to 'feta_import.log' so you won't see any normal output in the console.
 #
+# NOTE (2): this script assumes that any Soaplab services found are already in the BioCatalogue so we don't have to create all the Soaplab Server stuff.
 # 
+#
 # Depedencies:
 # - Rails (v2.2.2)
 # - libxml-ruby (> v1.1.2) [For windows users: make sure you install the windows specific ruby gem for this]
@@ -143,7 +145,7 @@ class FetaImporter
     
     if preconditions_met
       # Extra config options
-      excluded_directories = [ "biomoby", "local_java_widget", "govizservice" ]
+      excluded_directories = [ "biomoby", "local_java_widget", "govizservice", "soaplab_manchester", "soaplab_ebi" ]
       
       # Variables for statistics
       stats = { } 
@@ -159,12 +161,12 @@ class FetaImporter
       stats["total_xml_service_input_parameters_found"] = Counter.new
       stats["total_xml_service_output_parameters_found"] = Counter.new
       stats["total_xml_service_parameters_that_do_not_exist_in_service_now"] = Counter.new
-      stats["total_services_created"] = Counter.new
+      stats["total_services_new"] = Counter.new
       stats["total_services_existed_and_updated"] = Counter.new
       stats["total_annotations_new"] = Counter.new
       stats["total_annotations_already_exist"] = Counter.new
       stats["total_annotations_failed"] = Counter.new
-      stats["ids_of_created_services"] = [ ]
+      stats["ids_of_new_services"] = [ ]
       stats["ids_of_updated_services"] = [ ]
       
 
@@ -239,10 +241,10 @@ class FetaImporter
   protected
   
   def print_stats(stats)
-    stats["ids_of_created_services"].sort!
+    stats["ids_of_new_services"].sort!
     stats["ids_of_updated_services"].sort!
     
-    stats["total_services_created"] = stats["ids_of_created_services"].length
+    stats["total_services_new"] = stats["ids_of_new_services"].length
     stats["total_services_existed_and_updated"] = stats["ids_of_updated_services"].length
     
     puts ""
@@ -281,7 +283,9 @@ class FetaImporter
           service_type = service_description_node.find_first("pd:serviceType").inner_xml
           
           # Only continue if WSDL service
-          if service_type.downcase == "wsdl service"
+          # Note: we are assuming that any Soaplab services found are already 
+          # in the BioCatalogue so we don't have to create all the Soaplab Server stuff.
+          if ["wsdl service", "soaplab service"].include?(service_type.downcase)
             stats["total_xml_service_descriptions_are_wsdl_services"].increment
             
             # Get WSDL and endpoint URLs
@@ -320,7 +324,7 @@ class FetaImporter
                   
                   if new_service_success
                     puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
-                    stats["ids_of_created_services"] << soap_service.service.id
+                    stats["ids_of_new_services"] << soap_service.service.id
                   else
                     puts "ERROR: failed to carry out submit_service of SoapService object with WSDL URL '#{wsdl_url}' (ie: db has not been populated with the SoapService and associated objects). Check the relevant Rails log file for more info."
                     success = false
@@ -336,7 +340,7 @@ class FetaImporter
                 
                 puts "INFO: existing matching service found (ID: #{existing_service.id}, WSDL URL: '#{wsdl_url}')."
                 
-                unless stats["ids_of_created_services"].include?(existing_service.id) or stats["ids_of_updated_services"].include?(existing_service.id) 
+                unless stats["ids_of_new_services"].include?(existing_service.id) or stats["ids_of_updated_services"].include?(existing_service.id) 
                   stats["ids_of_updated_services"] << existing_service.id
                 end
                 
@@ -366,6 +370,13 @@ class FetaImporter
                   
                   # <operationName>
                   op_name = operation_node.find_first("pd:operationName").inner_xml
+                  
+                  # A special case for VBI services is that some operation names are eg: "getIprscan.aboutOperations".
+                  # So need to split...
+                  op_name_split = op_name.split('.')
+                  if op_name_split.length > 1
+                    op_name = op_name_split[1]
+                  end
                   
                   # Find the operation in the service
                   operation = soap_service.soap_operations.find(:first, :conditions => { :name => op_name })
@@ -451,13 +462,24 @@ class FetaImporter
     # <parameterName>
     param_name = parameter_node.find_first("pd:parameterName").inner_xml
     
+    # Some parameters in Feta are further "enhanced" with info, eg: "in0" becomes "in0:query_sequence1",
+    # ie: an annotation (name alias) has been embedded.
+    
+    param_name_split = param_name.split(':')
+    
     # Find the object that needs to be annotated
-    parameter = collection_to_find_annotatable.find(:first, :conditions => { :name => param_name })
+    parameter = collection_to_find_annotatable.find(:first, :conditions => { :name => param_name_split[0] })
     
     if parameter.nil?
       stats["total_xml_service_parameters_that_do_not_exist_in_service_now"].increment
-      puts "WARNING: could not get SoapInput/SoapOutput matching parameter name '#{param_name}' - most likely the service has changed. Skipping..."
+      puts "WARNING: could not get SoapInput/SoapOutput matching parameter name '#{param_name_split[0]}' - most likely the service has changed. Skipping..."
     else
+      # If a name alias was in the <parameterName> then store it as an annotation
+      unless param_name_split[1].blank?
+        puts "INFO: <parameterName> has a name alias embedded within it so storing this as a 'name' annotation (ie: name alias) on the SoapInput/SoapOutput."
+        create_annotation(parameter, "name", param_name_split[1], stats)  
+      end
+      
       # <parameterDescription>
       param_desc_text = parameter_node.find_first("pd:parameterDescription").inner_xml
       create_annotation(parameter, "description", param_desc_text, stats) unless param_desc_text.blank?
