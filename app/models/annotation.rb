@@ -11,11 +11,7 @@
 require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/models/annotation'
 
 class Annotation < ActiveRecord::Base
-  include WhiteListHelper
-  
   acts_as_trashable
-  
-  before_save :sanitise_value
   
   if USE_EVENT_LOG
     acts_as_activity_logged :models => { :culprit => { :model => :source },
@@ -24,11 +20,5 @@ class Annotation < ActiveRecord::Base
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :value ] )
-  end
-  
-  protected
-  
-  def sanitise_value
-    self.value = white_list(self.value) if self.value.is_a?(String)
   end
 end
