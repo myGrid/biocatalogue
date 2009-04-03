@@ -12,6 +12,8 @@ require 'addressable/uri'
 module BioCatalogue
   module WsdlParser
     
+    @@logger = RAILS_DEFAULT_LOGGER
+    
     # This method takes a URL to a WSDL file and returns back the following array:
     # [ service_info, error_messages, wsdl_file_contents ]
     # 
@@ -66,11 +68,21 @@ module BioCatalogue
         end
         
       rescue Exception => ex
-        error_messages << "There was a problem loading the WSDL file - #{ex.message}."
+        error_messages << "There was a problem loading the WSDL file '#{wsdl_url}'. Exception message: #{ex.message}."
+        @@logger.error("Exception occurred whilst loading WSDL '#{wsdl_url}'. Exception:")
+        @@logger.error(ex.message)
+        @@logger.error(ex.backtrace.join("\n"))
       end
       
       if error_messages.empty?
-        service_info  = get_service_info(wsdl_hash)
+        begin
+          service_info  = get_service_info(wsdl_hash)
+        rescue Exception => ex
+          error_messages << "There was a problem parsing the WSDL file '#{wsdl_url}'. Exception message: #{ex.message}."
+          @@logger.error("Exception occurred whilst parsing WSDL '#{wsdl_url}'. Exception:")
+          @@logger.error(ex.message)
+          @@logger.error(ex.backtrace.join("\n"))
+        end
       end
       return [ service_info, error_messages, wsdl_file_contents ]
     end

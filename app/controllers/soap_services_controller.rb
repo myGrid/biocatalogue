@@ -160,13 +160,14 @@ class SoapServicesController < ApplicationController
             # Try and find location of the service from the url of the WSDL.
             @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@soap_service.wsdl_location)
           else
-            @error_message = "Error messages: #{err_msgs.to_sentence}."
+            @error_message = "Failed to load the WSDL location provided."
           end
         end
       rescue Exception => ex
         @error_message = "Failed to load the WSDL location provided."
         logger.error("ERROR: failed to load WSDL from location - #{wsdl_location}. Exception:")
-        logger.error(ex)
+        logger.error(ex.message)
+        logger.error(ex.backtrace.join("\n"))
       end
     end
     respond_to do |format|
