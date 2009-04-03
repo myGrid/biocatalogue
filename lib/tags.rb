@@ -108,6 +108,8 @@ module BioCatalogue
       max_font = options[:max_font]
       font_range = max_font - min_font
       
+      separator_font_size = min_font + 2
+      
       # Sort by tag name
       tags.sort! { |a,b| a["name"].downcase <=> b["name"].downcase }
       
@@ -119,19 +121,31 @@ module BioCatalogue
       end
       
       unless cloud.blank?
+        count = 0
+        
         output = "<div class=\"tag_cloud\" style=\"#{options[:tag_cloud_style]}\">"
-
-        cloud.each do |tag_name,fsize,count|
-          output <<    "<span>"
-          output <<    "<a title=\"#{count}\""
-          output <<        "alt=\"#{count}\""
-          output <<        "class=\"tag\" "
+        
+        output << "<ul>"
+        
+        cloud.each do |tag_name,fsize,freq|
+          output <<    "<li>"
+          output <<    "<a title=\"Tag: #{tag_name}, frequency: #{freq} times.\""
+          output <<        "alt=\"Tag: #{tag_name}, frequency: #{freq} times.\""
           output <<        "style=\"font-size:#{fsize}px; #{options[:tag_style]}\""
           output <<        "href=\"/tags/#{CGI.escape(tag_name)}\">"
-          output <<        CGI.escapeHTML(tag_name) + " "
+          output <<        CGI.escapeHTML(tag_name)
           output <<    "</a>"
-          output <<    "</span>"
-        end 
+          output <<    "</li>"
+          
+          count += 1
+      
+          if count < cloud.length
+            output << "<li class='faded_plus' style='font-size:#{separator_font_size}px'> | </li>"
+          end
+        end
+        
+        output << "</ul>"
+        
         output << "</div>"
       end
       

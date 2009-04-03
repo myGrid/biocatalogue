@@ -1515,8 +1515,18 @@ ul.tabbernav li.tabberactive a:hover
 	line-height: 1.5;
 }
 
-.tag_cloud .tag {
-	margin: 0 0.3em;
+.tag_cloud ul {
+	margin: 0; 
+	padding: 0;
+}
+
+.tag_cloud ul li {
+	display: inline; 
+	text-decoration: none;
+	margin: 0 0.25em;
+}
+
+.tag_cloud li a {
 }
 
 /* END tag cloud styles */

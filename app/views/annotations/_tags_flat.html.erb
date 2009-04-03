@@ -34,9 +34,10 @@
 				Tags
 				<span class="faded">(<%= tag_annotations.length -%>)</span>:
 			</strong>
-			| 
+			<span class="faded_plus"> | </span>
 			<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
-				<%= link_to(h(val), tag_show_path(:tag => val)) -%> |
+				<%= link_to(h(val), tag_show_path(:tag => val)) -%>
+				<span class="faded_plus"> | </span>
 			<% end %>
 		</p>
 	<% else %>
