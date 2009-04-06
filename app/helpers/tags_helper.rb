@@ -88,7 +88,7 @@ module TagsHelper
                 tag!(:a, 
                      :href => href, 
                      :style => "font-size:#{font_size}px; #{options[:tag_style]}",
-                     :title => tooltip_title_attrib(alt_text, 500)) { inner _html }
+                     :title => tooltip_title_attrib(alt_text, 500)) { inner_html }
               end
             
               count += 1
