@@ -4,8 +4,15 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-# Require the extensions to the Array class
-require 'array' 
+# Initialise the country codes
+CountryCodes
+
+# Require our libraries
+require 'util'
+require 'tags'
+require 'acts_as_service_versionified'
+require 'has_submitter'
+require 'array'
 
 # Mappings for service types supported, to corresponding model class names.
 SERVICE_TYPES = {
@@ -13,15 +20,6 @@ SERVICE_TYPES = {
   #"REST Web Service"  => "RestService",
   "Soaplab Server"    => "SoaplabServer"
 }
-
-# Initialise the country codes
-CountryCodes
-
-# Require libraries
-require 'util'
-require 'tags'
-require 'acts_as_service_versionified'
-require 'has_submitter'
 
 # List of all the valid search types available, in the order they should be shown.
 # (must be in lowercase and in the plural form and MUST correspond to a resource type in the system)

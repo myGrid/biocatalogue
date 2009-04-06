@@ -10,6 +10,10 @@ require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/helpers/app
 
 module ApplicationHelper
 
+  def markaby(&block)
+    Markaby::Builder.new({}, self, &block)
+  end
+  
   def controller_visible_name(controller_name)
     controller_name.humanize.titleize
   end
