@@ -1,0 +1,23 @@
+<% testable_item  = service_tests %>
+
+<h4> Upload a test for this <%= testable_item.class %></h4>
+
+<% form_tag (add_test_service_tests_path, :multipart => true )  do -%>
+	<%= hidden_field_tag 'service_test[testable_id]', testable_item.id -%>
+	<%= hidden_field_tag 'service_test[testable_type]', testable_item.class -%>
+	Name: <br/>
+	<%= text_field_tag 'service_test[name]' %>
+	<p/>
+	Executable Name: <br/>
+	<%= text_field_tag 'service_test[exec_name]' %>
+	<p/>
+	Description: <br/>
+	<%= text_area_tag 'service_test[description]', nil , :style => 'width:50%; height:100%' %>
+	<p/>
+	File ( zip if many files ): <br/>
+	<%= file_field 'service_test', :test_data  %>
+	<p/>
+	
+<%= submit_tag 'upload' -%>
+
+<% end %>

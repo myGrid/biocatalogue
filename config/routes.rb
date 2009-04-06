@@ -60,6 +60,8 @@ ActionController::Routing::Routes.draw do |map|
                  :collection => { :load_wsdl => :post}
 
   map.resources :services
+  
+  map.resources :service_tests, :collection => {:add_test => :post }
 
   # Root of website
   map.root :controller => 'home', :action => 'index'

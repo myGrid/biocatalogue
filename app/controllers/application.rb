@@ -101,6 +101,8 @@ class ApplicationController < ActionController::Base
       return c_id == thing.id
     when "Annotation"
       return thing.source == current_user
+    when "Service"
+      return c_id == thing.submitter_id.to_i
     else
       return false
     end

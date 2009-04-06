@@ -9,6 +9,8 @@ class Service < ActiveRecord::Base
   
   acts_as_annotatable
   
+  is_testable
+  
   has_many :relationships, :as => :subject, :dependent => :destroy
   
   has_many :service_versions, 
@@ -19,6 +21,8 @@ class Service < ActiveRecord::Base
            :dependent => :destroy
   
   has_submitter
+           
+  has_many :online_statuses , :as => :pingable , :dependent => :destroy
              
   before_validation_on_create :generate_unique_code
   

@@ -1,0 +1,59 @@
+Is Testable
+=================
+
+Allows test scripts to be added to multiple and different models.
+
+== Resources
+
+Install
+ * Copy the is_testable plugin [from the BioCatalogue source]
+ 
+ * Run the following command:
+ 
+   ruby script/generate is_testable_migration
+   which will create a migration file with the following contents
+ 
+     class IsTestable < ActiveRecord::Migration
+  		def self.up
+    		create_table :service_tests do |t|
+      			t.string :name ,          :null => false
+      			t.string :exec_name ,     :null => false
+      			t.string :test_status,    :default =>'UNKNOWN'
+      			t.integer :running_status,:default => 0
+      			t.binary :test_data,      :null =>false ,:limit => 5.megabyte
+      			t.integer :testable_id,   :null => false
+      			t.string :testable_type,  :null => false
+      			t.text :description,      :null => false
+      			t.timestamps
+    		end
+  		end
+
+  		def self.down
+    		drop_table :service_tests
+  		end
+	end
+
+== Usage
+ 
+ * Make you ActiveRecord model testable.
+ 
+ class Model < ActiveRecord::Base
+ 	is_testable
+ end
+ 
+ * Add a test to a model instance
+ 
+ model = Model.new
+ test = ServiceTest.new({<test params>})
+ model.service_tests << test
+ 
+ * Each test reference a testable object
+ 
+ model = Model.find(1)
+ model.comments.get(0).commtable == model
+
+== Credits
+
+This plugin was heavily influenced by acts as commentable plugin
+
+http://www.juixe.com/projects/acts_as_commentable
