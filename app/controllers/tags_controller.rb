@@ -46,6 +46,11 @@ protected
   def find_tag_and_results
     @tag = URI::unescape(params[:tag])
     
+    # Check for ontology base URI
+    if params[:base_ontology]
+      @tag = "<#{params[:base_ontology]}##{@tag}>"
+    end
+    
     @count = 0
     @results = { }
     
