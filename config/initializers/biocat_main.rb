@@ -44,7 +44,8 @@ end
 
 # Remember that all attribute names specified MUST be in lowercase
 
-Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "tag" ])
+# Disabled this due to ontological term URIs as tags...
+#Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "tag" ])
 
 Annotations::Config.strip_text_rules.update({ "tag" => [ '"' ] })
 
