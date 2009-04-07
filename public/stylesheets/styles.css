@@ -1528,6 +1528,11 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .tag_cloud li a {
+	color: #000099;
+}
+
+.tag_cloud li a.ontology_term {
+	color: #BB6600;
 }
 
 /* END tag cloud styles */

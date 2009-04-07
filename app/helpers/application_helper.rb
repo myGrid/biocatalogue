@@ -171,7 +171,7 @@ module ApplicationHelper
     if logged_in?
       link_html = ''
       link_html = link_html + "<span style='vertical-align:middle; text-decoration: underline;'>#{options[:link_text]}</span>" unless options[:link_text].blank?
-      link_html = image_tag(options[:icon_filename], :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if options[:show_icon]
+      link_html = image_tag(options[:icon_filename], :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.3em;') + link_html if options[:show_icon]
 
       url_options = { :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id }
       url_options[:attribute_name] = options[:attribute_name] unless options[:attribute_name].nil?
@@ -221,7 +221,7 @@ module ApplicationHelper
 
     link_html = ''
     link_html = link_html + "<span style='vertical-align:middle'>#{options[:link_text]}</span>" unless options[:link_text].blank?
-    link_html = image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.5em;') + link_html if options[:show_icon]
+    link_html = image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.3em;') + link_html if options[:show_icon]
 
     return link_to_remote_redbox(link_html,
                                  { :url => edit_popup_annotation_url(annotation),

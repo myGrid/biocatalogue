@@ -25,6 +25,7 @@ module BioCatalogue
 
     # Takes in a set of annotations and returns a collection of tags
     # in the format of the general tag data structure described above.
+    # NOTE (1): these are sorted by tag name.
     def self.annotations_to_tags_structure(annotations)
       return [ ] if annotations.blank?
       
@@ -49,11 +50,12 @@ module BioCatalogue
         end
       end
       
-      return tags
+      return self.sort_tags_alphabetically(tags.sort)
     end
     
     # This will return a set of tags found from the annotations in the database.
     # The return format is the general tag data structure described above.
+    # NOTE (1): these are sorted by tag name.
     def self.get_tags(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = "SELECT annotations.value AS name, COUNT(*) AS count 
@@ -69,8 +71,42 @@ module BioCatalogue
         sql += " LIMIT #{limit}"
       end
        
-      return ActiveRecord::Base.connection.select_all(sql)
+      return self.sort_tags_alphabetically(ActiveRecord::Base.connection.select_all(sql))
     end
     
+    # A special sort method that takes into account special cases like ontological term URIs etc.
+    def self.sort_tags_alphabetically(tags)
+      return nil if tags.nil?
+      
+      tags.sort do |a,b|
+        a_name = a["name"]
+        a_name = self.split_ontology_term_uri(a_name)[1] if self.is_ontology_term_uri?(a_name)
+        
+        b_name = b["name"]
+        b_name = self.split_ontology_term_uri(b_name)[1] if self.is_ontology_term_uri?(b_name)
+        
+        a_name.downcase <=> b_name.downcase 
+      end
+    end
+    
+    # Determines whether a given tag name is an ontology term URI or not.  
+    #
+    # NOTE (1): the tag name must be enclosed in chevrons (< >) to indicate it is a URI.
+    # NOTE (2): the tag name must contain a hash (#) to indicate it is an ontology term URI.
+    def self.is_ontology_term_uri?(tag_name)
+      return tag_name.starts_with?("<") && tag_name.ends_with?(">") && tag_name.include?("#") 
+    end
+    
+    # Splits a tag name into 2 parts (base ontology URI and term keyword) IF it is a ontology term URI.
+    # 
+    # NOTE (1): the chevrons (< >) will be removed from the resulting split.
+    # NOTE (2): it is assumed that the term keyword is the word(s) after a hash ('#')
+    def self.split_ontology_term_uri(tag_name)
+      if self.is_ontology_term_uri?(tag_name)
+        return tag_name.gsub(/[<>]/, "").split("#")
+      else
+        return tag_name
+      end
+    end
   end
 end

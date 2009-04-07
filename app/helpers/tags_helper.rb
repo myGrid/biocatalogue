@@ -21,7 +21,7 @@ module TagsHelper
   # but modified and adapted for BioCatalogue by Jits.
   #
   # Currently takes into account the following 'special' tags:
-  # - Ontological terms (enclosed in < >)
+  # - Ontological term URIs (enclosed in < >)
   #
   # Options:
   #   :tag_cloud_style - additional styles to add to the tag_cloud div.
@@ -56,8 +56,8 @@ module TagsHelper
     
     separator_font_size = min_font + 2
     
-    # Sort by tag name
-    tags.sort! { |a,b| a["name"].downcase <=> b["name"].downcase }
+    # Sort tags alphabetically
+    tags = BioCatalogue::Tags.sort_tags_alphabetically(tags)
     
     cloud = []
 
@@ -81,14 +81,27 @@ module TagsHelper
             cloud.each do |tag_name, font_size, freq|
               # <li>
               li do
-                inner_html = h(tag_name)
-                href = tag_show_url(:tag => URI::escape(tag_name))
-                alt_text = "Tag: #{h(tag_name)}, frequency: #{freq} times."
+                # Special processing for ontological term URIs...
+                if BioCatalogue::Tags.is_ontology_term_uri?(tag_name)
+                  base_ontology_uri, ontology_term = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
+                  
+                  inner_html = h(ontology_term)
+                  a_href = tag_show_url(:tag => URI::escape(ontology_term)) + "?#{base_ontology_uri.to_query("base_ontology")}"
+                  title_text = "Full tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
+                  css_class = "ontology_term"
+                # Otherwise, regular tags...
+                else
+                  inner_html = h(tag_name)
+                  a_href = tag_show_url(:tag => URI::escape(tag_name))
+                  title_text = "Tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
+                  css_class = ""
+                end
                 
-                tag!(:a, 
-                     :href => href, 
-                     :style => "font-size:#{font_size}px; #{options[:tag_style]}",
-                     :title => tooltip_title_attrib(alt_text, 500)) { inner_html }
+                tag!(:a,
+                     :href => a_href,
+                     :class => css_class,
+                     :style => "font-size:#{font_size}px;  text-decoration: none; #{options[:tag_style]}",
+                     :title => tooltip_title_attrib(title_text, 500)) { inner_html }
               end
             
               count += 1
