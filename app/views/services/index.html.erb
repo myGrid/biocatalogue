@@ -10,14 +10,22 @@
 
 <% t "Browse Services" -%>
 
-<div class="box_info" style="margin: 0 4em 2em 4em; padding: 1em 0.6em;">
-	<span style="float:right; font-size: 0.7em; margin-left: 1em;">[ <%= link_to("See All Tags", tags_index_path) -%> ]</span>
-	<h3>
-		<b>Top <%= pluralize(@tags.length, "tag") -%> on BioCatalogue</b>
-	</h3>
+<center>
+	<% rounded "#E9F7CC", "#000", "1000px" do %>
 	
-	<%= generate_tag_cloud(@tags, :tag_cloud_style => "margin-top: 0.6em;") -%>
-</div>
+		<div class="box_info" style="padding: 0.4em 0.6em; margin: 0;">
+			<span style="float:right; font-size: 0.7em;">[ <%= link_to("See All Tags", tags_index_path) -%> ]</span>
+			<h3>
+				<b>Top <%= pluralize(@tags.length, "tag") -%> on BioCatalogue</b>
+			</h3>
+			
+			<%= generate_tag_cloud(@tags, :tag_cloud_style => "margin-top: 0.6em;") -%>
+		</div>
+	
+	<% end %>
+</center>
+
+<br/>
 
 <span style="float: right;">
 	<%= link_to 'Submit a Service', new_service_path -%>

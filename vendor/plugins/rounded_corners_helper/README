@@ -1,0 +1,37 @@
+= Rounded Corners Helper v0.2
+
+== Dependency
+
+Rounded Corners Helper has no dependancy
+
+
+== To use Rounded Corners Helper
+
+Directions to get the helper up and running for your install:
+
+	1. run rake rounded_corners_helper:install. This will copy the required CSS file in #{RAILS_ROOT}/public/stylesheets/rounded-corners.css
+	2. Include the #{RAILS_ROOT}/public/stylesheets/rounded-corners.css file in your layout with:
+	  <%= stylesheet_link_tag 'rounded-corners' %>
+
+	3. The following is the helper method, the parameters are:
+	  
+	  "the text" 
+	  "the background color of the BOX in HEX string" like "#999"
+	  "the color of the TEXT in HEX string" like "#999"
+	  "the width of the box in %, px or em"
+	  
+
+		<%= rounded @text, "#999", "#FFF", "200px" -%>
+
+
+
+== License
+
+Rounded Corners Helper is released under the MIT license.
+
+
+= Credits
+
+Rounded Corners Helper was created by Sergio R. de la Garza of Development and Technology Advisors S.A. de C.V. (http://www.devtech.com.mx/)
+
+
