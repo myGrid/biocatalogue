@@ -50,7 +50,7 @@ module BioCatalogue
         end
       end
       
-      return self.sort_tags_alphabetically(tags.sort)
+      return self.sort_tags_alphabetically(tags)
     end
     
     # This will return a set of tags found from the annotations in the database.
