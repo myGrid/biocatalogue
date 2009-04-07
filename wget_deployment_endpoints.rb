@@ -27,14 +27,22 @@ require File.dirname(__FILE__) + '/config/environment'
 
 Service.find(:all).each do |service|
     service.service_deployments.each do |deployment| 
-    status = 'Unknown' 
+    status = 'Unknown'
+    msg = ''
+    
     begin
       open(deployment.endpoint,
            'User-Agent' => 'Ruby-Wget').read
       status = 'Online'
+      msg = "connected successfully"
       
     rescue Timeout::Error => timeout
+      msg = "connection timed out"
       puts "timeout on accessing #{deployment.endpoint}"
+    
+    rescue Errno::ECONNREFUSED => conn_refused
+      msg = "connection refused"
+      puts "Connection refused #{deployment.endpoint}"
       
     rescue Exception=> ex
       if ex.io.status == 404
