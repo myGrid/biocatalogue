@@ -32,6 +32,10 @@ Service.find(:all).each do |service|
       open(deployment.endpoint,
            'User-Agent' => 'Ruby-Wget').read
       status = 'Online'
+      
+    rescue Timeout::Error => timeout
+      puts "timeout on accessing #{deployment.endpoint}"
+      
     rescue Exception=> ex
       if ex.io.status == 404
         status = 'Offline'
