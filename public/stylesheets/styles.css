@@ -1456,13 +1456,14 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .annotations_counts_box span {
-	padding: 5px;
+	padding: 5px 4px 5px 8px;
 	border: 0 solid #CCC;
 	border-width: 2px 0 2px 0;
 }
 
 .annotations_counts_box img {
 	vertical-align: middle;
+	margin-left: 2px;
 }
 
 .annotations_counts_box span.total {

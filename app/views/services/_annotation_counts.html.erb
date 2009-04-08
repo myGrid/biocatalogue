@@ -10,8 +10,8 @@
 
 <span class="annotations_counts_box">
 	<% content_tag(:span, :class => "total", :title => tooltip_title_attrib("Overall number of extra annotations on this service and its parts"))  do %>
-		<%= image_tag('page.png', :alt => "Overall number of extra annotations") -%>
 		Total: <%= total_number_of_annotations_for_service(service) -%>
+		<%= image_tag('page.png', :alt => "Overall number of extra annotations") -%>
 	<% end %>
 	
 	<% content_tag(:span, :class => "annotation_source_user", :title => tooltip_title_attrib("Total number of user submitted annotations on this service and its parts"))  do %>
