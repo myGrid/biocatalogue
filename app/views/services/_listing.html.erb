@@ -13,7 +13,7 @@
 		<% unless service.nil? %>
 			<% service_version_instance = service.latest_version.service_versionified %>
 			<div class="listing_item">
-				<span style="float: right; margin: 0.5em 0;">
+				<span style="float: right; margin-top: 1em;">
 					<%= render :partial => "services/annotation_counts",
 										 :locals => { :service => service } -%>
 				</span>

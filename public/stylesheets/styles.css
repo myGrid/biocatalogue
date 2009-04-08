@@ -1030,7 +1030,7 @@ body.sidebar-right #login_box {
 }
 
 .listing_item .name {
-	font-size: 1.2em;
+	font-size: 1.3em;
 	font-weight: bold;
 	margin-bottom: 0.6em;
 }
@@ -1452,11 +1452,12 @@ ul.tabbernav li.tabberactive a:hover
 	font-weight: bold;
 	color: #333333;
 	vertical-align: middle;
-	display: inline;
+	display: inline-block;
+	* padding: 8px 0;
 }
 
 .annotations_counts_box span {
-	padding: 5px 4px 5px 8px;
+	padding: 5px 3px 5px 7px;
 	border: 0 solid #CCC;
 	border-width: 2px 0 2px 0;
 }
@@ -1464,6 +1465,7 @@ ul.tabbernav li.tabberactive a:hover
 .annotations_counts_box img {
 	vertical-align: middle;
 	margin-left: 2px;
+	* margin-left: 0;
 }
 
 .annotations_counts_box span.total {
