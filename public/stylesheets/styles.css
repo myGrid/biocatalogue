@@ -1438,10 +1438,40 @@ ul.tabbernav li.tabberactive a:hover
 	background-color: #FFC;
 }
 
+.annotation_source_registry {
+	background-color: #DDFFDD;
+}
+
 .aliases {
 	font-size: 0.85em;
 	line-height: 1.4;
 	margin: 0.8em 0;
+}
+
+.annotations_counts_box {
+	font-weight: bold;
+	color: #333333;
+	vertical-align: middle;
+	display: inline;
+}
+
+.annotations_counts_box span {
+	padding: 5px;
+	border: 0 solid #CCC;
+	border-width: 2px 0 2px 0;
+}
+
+.annotations_counts_box img {
+	vertical-align: middle;
+}
+
+.annotations_counts_box span.total {
+	border-left: 2px solid #CCC;
+	background-color: #CCC;
+}
+
+.annotations_counts_box span.end {
+	border-right: 2px solid #CCC;
 }
 
 /* END annotations styles */
