@@ -5,6 +5,8 @@
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
+  map.resources :registries
+
   map.resources :agents
 
   # Routes from the annotations plugin + extensions

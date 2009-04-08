@@ -75,7 +75,7 @@ end
 class FetaImporter
   include LibXML
   
-  attr_accessor :options, :agent
+  attr_accessor :options, :registry_source
   
   def initialize(args)
     @options = {
@@ -105,12 +105,12 @@ class FetaImporter
     
     require File.dirname(__FILE__) + '/config/environment'
     
-    # Get the Agent model object we will be using as the annotation source
-    @agent = Agent.find_by_name("feta_importer")
+    # Get the Registry model object we will be using as the annotation source
+    @registry_source = Registry.find_by_name("feta")
     
-    # Exit if feta importer Agent is not available
-    if @agent.nil?
-      raise "FATAL: the feta importer Agent has not been registered into the database yet. It is required to create annotations with the correct source. You may need to run rake db:migrate in order to update your db with the appropriate Agent record. Exiting... "
+    # Exit if feta Registry object is not available
+    if @registry_source.nil?
+      raise "FATAL: the feta Registry object has not been registered into the database yet. It is required to create annotations with the correct source. You may need to run rake db:migrate in order to update your db with the appropriate Registry record. Exiting... "
     end
   end
   
@@ -173,7 +173,7 @@ class FetaImporter
       # Run everything in a transaction
       
       begin
-        Agent.transaction do
+        Registry.transaction do
           # Go through all XML files and store metadata
           
           descriptions_folder_path = File.join(source_path, "descriptions")
@@ -318,7 +318,7 @@ class FetaImporter
                 new_service_success, data = soap_service.populate
                 
                 if new_service_success
-                  new_service_success = soap_service.submit_service(data["endpoint"], @agent, { })
+                  new_service_success = soap_service.submit_service(data["endpoint"], @registry_source, { })
                   
                   if new_service_success
                     puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
@@ -524,8 +524,8 @@ class FetaImporter
     ann = Annotation.new(:attribute_name => attribute,
                          :value => value,
                          :value_type => value_type,
-                         :source_type => "Agent",
-                         :source_id => @agent.id,
+                         :source_type => "Registry",
+                         :source_id => @registry_source.id,
                          :annotatable_type => annotatable_type,
                          :annotatable_id => annotatable.id)
 

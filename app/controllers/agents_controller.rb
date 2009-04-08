@@ -1,4 +1,13 @@
+# BioCatalogue: app/controllers/agents_controller.rb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details.
+
 class AgentsController < ApplicationController
+  
+  before_filter :disable_action, :only => [ :new, :edit, :create, :update, :destroy ]
+  
   # GET /agents
   # GET /agents.xml
   def index
