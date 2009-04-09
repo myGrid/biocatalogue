@@ -8,5 +8,40 @@
 
 %>
 
-<%= link_to 'Edit', edit_registry_path(@registry) %> |
-<%= link_to 'Back', registries_path %>
+<h1>Registry: <span class="orange_highlight"><%=h @registry.display_name %></span></h1>
+
+
+<br/>
+
+<div class="tabber">
+	
+  <div id="tab-profile" class="tabbertab">
+    <h3>Profile</h3>
+    <p>
+      <b>Homepage:</b>
+      <%= h @registry.homepage -%>
+    </p>
+		
+		<p><b>Description:</b></p>
+		<div class="box_description">
+			<% unless @registry.description.blank? %>
+				<%= h(@registry.description) -%>
+			<% else %>
+				<span class="none_text">None</span>
+			<% end %>
+		</div>
+  </div>
+  
+  <div id="tab-services" class="tabbertab">
+    <h3><%= "Services submitted (#{@registrys_services.total_entries})" -%></h3>
+    
+		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @registrys_services } %>
+		
+		<div id="users_services" style="margin: 1em 0;">
+			<%= render :partial => "services/listing", :locals => { :items => @registrys_services } %>
+		</div>
+		
+		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @registrys_services } %>
+  </div>
+
+</div>

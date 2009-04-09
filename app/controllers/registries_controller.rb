@@ -23,6 +23,8 @@ class RegistriesController < ApplicationController
   # GET /registries/1.xml
   def show
     @registry = Registry.find(params[:id])
+    @registrys_services = @registry.services.paginate(:page => params[:page],
+                                                      :order => "created_at DESC")
 
     respond_to do |format|
       format.html # show.html.erb

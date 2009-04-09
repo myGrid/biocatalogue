@@ -14,6 +14,17 @@ class Registry < ActiveRecord::Base
   
   before_create :generate_default_display_name
   
+  has_many :services,
+           :as => "submitter"
+  
+  if USE_EVENT_LOG
+    acts_as_activity_logged
+  end
+
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :display_name, :description, :homepage ] )
+  end
+  
   def annotation_source_name
     self.display_name
   end

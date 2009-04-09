@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   acts_as_annotation_source
 
   has_many :services,
-           :foreign_key => 'submitter_id'
+           :as => "submitter"
 
   if USE_EVENT_LOG
     acts_as_activity_logged
