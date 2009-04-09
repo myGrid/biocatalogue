@@ -97,7 +97,7 @@ module BioCatalogue
       return tag_name.starts_with?("<") && tag_name.ends_with?(">") && tag_name.include?("#") 
     end
     
-    # Splits a tag name into 2 parts (base ontology URI and term keyword) IF it is a ontology term URI.
+    # Splits a tag name into 2 parts (base identifier URI and term keyword) IF it is an ontology term URI.
     # 
     # NOTE (1): the chevrons (< >) will be removed from the resulting split.
     # NOTE (2): it is assumed that the term keyword is the word(s) after a hash ('#')
@@ -107,6 +107,35 @@ module BioCatalogue
       else
         return tag_name
       end
+    end
+    
+    # Given a tag name, this generates the appropriate URL to show the tag results for that tag name.
+    def self.generate_tag_show_uri(tag_name)
+      url = ""
+      
+      if BioCatalogue::Tags.is_ontology_term_uri?(tag_name)
+        base_identifier_uri, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
+        url = "/tags/#{URI::escape(keyword)}?#{base_identifier_uri.to_query("identifier_uri")}"
+      else
+        url = "/tags/#{URI::escape(tag_name)}"
+      end
+      
+       return url
+    end
+    
+    # This method works out the exact tag name from the parameters provided 
+    # (these should be the params hash that ActionController generates from query string data and POST data).
+    def self.get_tag_name_from_params(params)
+      tag_name  = ""
+      
+      tag_name = URI::unescape(params[:tag_keyword])
+    
+      # Check for base identifier URI
+      if params[:identifier_uri]
+        tag_name = "<#{URI::unescape(params[:identifier_uri])}##{tag_name}>"
+      end
+      
+      return tag_name
     end
   end
 end

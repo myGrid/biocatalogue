@@ -44,18 +44,13 @@ protected
   end
   
   def find_tag_and_results
-    @tag = URI::unescape(params[:tag])
-    
-    # Check for ontology base URI
-    if params[:base_ontology]
-      @tag = "<#{params[:base_ontology]}##{@tag}>"
-    end
+    @tag_name = BioCatalogue::Tags.get_tag_name_from_params(params)
     
     @count = 0
     @results = { }
     
-    unless @tag.nil?
-      tagged_items = Annotation.find_annotatables_with_attribute_name_and_value("tag", @tag)
+    unless @tag_name.nil?
+      tagged_items = Annotation.find_annotatables_with_attribute_name_and_value("tag", @tag_name)
       
       @count, @results = BioCatalogue::Util.group_model_objects(tagged_items, VALID_SEARCH_TYPES, true)
     end
