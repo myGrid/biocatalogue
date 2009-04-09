@@ -19,7 +19,7 @@
 				<b>Top <%= pluralize(@tags.length, "tag") -%> on BioCatalogue</b>
 			</h3>
 			
-			<%= generate_tag_cloud(@tags, :tag_cloud_style => "margin-top: 0.6em;") -%>
+			<%= generate_tag_cloud(@tags, "weighted", :tag_cloud_style => "margin-top: 0.6em;") -%>
 		</div>
 	
 	<% end %>

@@ -11,5 +11,5 @@
 <h1>All Tags on BioCatalogue (<%= pluralize(@tags.length, "tag") -%>)</h1>
 
 <center>
-	<%= generate_tag_cloud(@tags, :tag_cloud_style => "width: 80%;") %>
+	<%= generate_tag_cloud(@tags, "weighted", :tag_cloud_style => "width: 80%;") %>
 </center>

@@ -31,16 +31,13 @@
 	<% unless tag_annotations.empty? %>
 		<p>
 			<strong>
-				Tags
+				Tags on this service
 				<span class="faded">(<%= tag_annotations.length -%>)</span>:
 			</strong>
-			<span class="faded_plus"> | </span>
-			<% tag_annotations.map{|ann| ann.value}.uniq.sort.each do |val| %>
-				<%= link_to(h(val), BioCatalogue::Tags.generate_tag_show_uri(val)) -%>
-				<span class="faded_plus"> | </span>
-			<% end %>
 		</p>
+			
+		<%= generate_tag_cloud_from_annotations(tag_annotations, "flat", :tag_cloud_style => "display: inline; text-align: left; margin: 0 1em;") -%>
 	<% else %>
-		<span class="none_text" style="font-weight: bold;">No Tags</span>
+		<span class="none_text">No tags on this service</span>
 	<% end %>
 <% end %>

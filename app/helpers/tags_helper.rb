@@ -10,14 +10,16 @@ module TagsHelper
   include ApplicationHelper
   
   # Generates a tag cloud from a list of annotations that are tags. 
-  def generate_tag_cloud_from_annotations(tag_annotations, *args)
-    generate_tag_cloud(BioCatalogue::Tags.annotations_to_tags_structure(tag_annotations), *args)
+  def generate_tag_cloud_from_annotations(tag_annotations, cloud_type, *args)
+    generate_tag_cloud(BioCatalogue::Tags.annotations_to_tags_structure(tag_annotations), cloud_type, *args)
   end
   
   # This takes in a collection of 'tags' (in the format of the standardised tag data structure described in /lib/tags.rb)
   # and generates a tag cloud of either one of the following types:
   # - weighted
   # - flat
+  #
+  # The set of tags provided is assumed to be in the order that is to be shown in the cloud.
   #
   # This method is originally based on the one from the tag_cloud_helper plugin - 
   # http://github.com/sgarza/tag_cloud_helper/tree/master
@@ -35,9 +37,13 @@ module TagsHelper
   #     default: 10
   #   :max_font - the maximum font size (in px) to use.
   #     default: 30
-  def generate_tag_cloud(tags, type="weighted", *args)
+  def generate_tag_cloud(tags, cloud_type, *args)
     return "" if tags.blank?
-      
+    
+    cloud_type = cloud_type.downcase
+    
+    return "" unless [ "weighted", "flat" ].include?(cloud_type)
+    
     # Do options the Rails Way ;-)
     options = args.extract_options!
     # defaults:
@@ -46,26 +52,31 @@ module TagsHelper
                            :min_font => 10,
                            :max_font => 30)
     
-    # Sort by count
-    tags.sort! { |a,b| b["count"].to_i <=> a["count"].to_i }
-    
-    maxlog = Math.log(tags.first['count'])
-    minlog = Math.log(tags.last['count'])
-    rangelog = maxlog - minlog;
-    rangelog = 1 if maxlog==minlog
     min_font = options[:min_font]
     max_font = options[:max_font]
-    font_range = max_font - min_font
+      
+    # Set up control variables for weighted tag cloud
+    if cloud_type == "weighted"
+      all_counts = tags.map{|t| t['count'].to_i } 
+      maxlog = Math.log(all_counts.max)
+      minlog = Math.log(all_counts.min)
+      rangelog = maxlog - minlog;
+      rangelog = 1 if maxlog==minlog
+      font_range = max_font - min_font
+    end
     
     separator_font_size = min_font + 2
-    
-    # Sort tags alphabetically
-    tags = BioCatalogue::Tags.sort_tags_alphabetically(tags)
     
     cloud = []
 
     tags.each do |tag|
-      font_size = min_font + font_range * ((Math.log(tag['count']) - minlog) / rangelog)
+      font_size = case cloud_type
+        when "weighted"
+          min_font + font_range * ((Math.log(tag['count']) - minlog) / rangelog)
+        when "flat"
+          min_font
+      end
+        
       cloud << [tag['name'], font_size.to_i, tag['count']] 
     end
     
