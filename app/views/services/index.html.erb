@@ -33,10 +33,12 @@
 
 <h1>Browse Web Services</h1>
 
+<% if false %>
 <%= render :partial => 'index_facets' %>
 
 <br/>
 <br/>
+<% end %>
 
 <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
 

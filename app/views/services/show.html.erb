@@ -114,12 +114,13 @@
 			<%= render :partial => "annotations/tags_box",
 								 :locals => { :annotatable => @service } -%>
 			
+			<% if false %>
 			<div id="ratings">
 				<%= render :partial => "annotations/ratings_box",
 								 	 :locals => { :annotatable => @latest_version_instance,
 																:categories_config => BioCatalogue::Util.get_ratings_categories_config_for_model(@latest_version_instance.class) } -%>
-			</div>					 
-			
+			</div>				 
+			<% end %>
 			
 		</div>
 		
