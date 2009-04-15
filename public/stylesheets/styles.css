@@ -1468,7 +1468,7 @@ ul.tabbernav li.tabberactive a:hover
 
 .annotations_counts_box span {
 	padding: 5px 3px 5px 7px;
-	border: 0 solid #CCC;
+	border: 0 solid #DDD;
 	border-width: 2px 0 2px 0;
 }
 
@@ -1479,12 +1479,12 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .annotations_counts_box span.total {
-	border-left: 2px solid #CCC;
-	background-color: #CCC;
+	border-left: 2px solid #DDD;
+	background-color: #DDD;
 }
 
 .annotations_counts_box span.end {
-	border-right: 2px solid #CCC;
+	border-right: 2px solid #DDD;
 }
 
 /* END annotations styles */
