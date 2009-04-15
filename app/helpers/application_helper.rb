@@ -423,4 +423,21 @@ module ApplicationHelper
   end
 
   # ========================================
+  
+  def service_latest_status_symbol(service)
+    return '' if service.nil?
+    
+    # Service latest status - using the only available deployment for now. In the future statuses will be displayed for each deployment
+    latest_status = service.service_deployments[0].latest_online_status
+    
+    tooltip_text = "Service status: <b>#{latest_status.status}</b>"
+    tooltip_text = tooltip_text + " (last checked #{distance_of_time_in_words_to_now(latest_status.created_at)} ago)" unless latest_status.status.downcase == "unknown"
+    
+    return image_tag(onlooker_format(latest_status.status, 
+                                     :online_img => "/images/accepted_48.png", 
+                                     :offline_img => "/images/cancel_48.png", 
+                                     :unknown_img => "/images/circle_blue.png"), 
+                                     :alt => latest_status.status, 
+                                     :title => tooltip_title_attrib(tooltip_text))
+  end
 end

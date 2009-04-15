@@ -41,15 +41,8 @@
 				</div>
 				
 				<p class="detail">
-					<!-- using the only available deployment for now. In the future statuses will be deplayed for each deployment -->
-					<% online_status = service.service_deployments[0].latest_online_status -%>
-					<span style="float: right;">
-						<%= image_tag(onlooker_format(online_status.status,
-																					:online_img => "/images/accepted_48.png", 
-																					:offline_img => "/images/cancel_48.png", 
-																					:unknown_img => "/images/circle_blue.png"), 
-																					:alt => online_status.status, 
-																					:title => tooltip_title_attrib("Service status : #{online_status.status} #{distance_of_time_in_words_to_now(online_status.created_at)} ago"))  -%>
+					<span style="float: right; vertical-align: bottom;">
+						<%= service_latest_status_symbol(service) -%>
 					</span>
 					
 					<b>Provider:</b>

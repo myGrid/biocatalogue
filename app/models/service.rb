@@ -22,8 +22,6 @@ class Service < ActiveRecord::Base
   
   has_submitter
            
-  has_many :online_statuses , :as => :pingable , :dependent => :destroy
-             
   before_validation_on_create :generate_unique_code
   
   attr_protected :unique_code

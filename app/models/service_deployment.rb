@@ -19,7 +19,9 @@ class ServiceDeployment < ActiveRecord::Base
   
   has_submitter
   
-  has_many :online_statuses , :as => :pingable
+  has_many :online_statuses, 
+           :as => :pingable,
+           :dependent => :destroy
   
   validates_existence_of :provider    # Service Provider must exist in the db beforehand.
   
@@ -49,12 +51,11 @@ class ServiceDeployment < ActiveRecord::Base
   end
   
   def latest_online_status
-    status = OnlineStatus.find(:first, :conditions => ["pingable_id= ? AND pingable_type= ?", self.id, self.class.to_s ],
-                                    :order => "created_at DESC")
-    if status == nil
-      status = OnlineStatus.create(:status => "Unknown", :pingable_id => self.id, :pingable_type => self.class.to_s)
-    end
-    status
+    status = OnlineStatus.find(:first, 
+                               :conditions => ["pingable_id= ? AND pingable_type= ?", self.id, self.class.to_s ],
+                               :order => "created_at DESC")
+                                    
+    return status || OnlineStatus.new(:status => "Unknown", :pingable_id => self.id, :pingable_type => self.class.to_s)
   end
   
 protected
