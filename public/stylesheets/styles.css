@@ -921,6 +921,13 @@ body.sidebar-right #login_box {
 	font-weight: bold;
 }
 
+.flag {
+	vertical-align: middle;
+	padding: 3px;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+}
+
 .soap_service_form {
 	margin: 1em 0;
 	border: 1px dotted #999999;

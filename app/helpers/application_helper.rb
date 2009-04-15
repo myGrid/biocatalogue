@@ -47,7 +47,8 @@ module ApplicationHelper
     text = CountryCodes.country(code.upcase) if text.nil?
     return image_tag("flags/#{code.downcase}.png",
               :title => tooltip_title_attrib(text),
-              :style => "vertical-align:middle; #{style}")
+              :class => "flag",
+              :style => "#{style}")
   end
 
   def tooltip_title_attrib(text, delay=200)
