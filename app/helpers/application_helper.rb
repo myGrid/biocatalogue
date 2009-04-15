@@ -427,6 +427,9 @@ module ApplicationHelper
   def service_latest_status_symbol(service)
     return '' if service.nil?
     
+    # DISABLED FOR NOW...
+    return ''
+    
     # Service latest status - using the only available deployment for now. In the future statuses will be displayed for each deployment
     latest_status = service.service_deployments[0].latest_online_status
     
