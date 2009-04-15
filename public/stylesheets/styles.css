@@ -1051,7 +1051,7 @@ body.sidebar-right #login_box {
 /* END listing styles */
 
 .service_type_badge {
-	font-size: 0.8em;
+	font-size: 12px;
 	font-weight: bold;
 	background-color: #FFBB7F;
 	padding: 0.2em 0.4em;

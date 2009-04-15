@@ -13,7 +13,8 @@
 <span style="float: right;"><%= link_to("permalink", service_url(@service)) -%></span>
 
 <h1>
-	Service: <%= h @service.name -%>
+	Service: 
+	<span class="orange_highlight"><%= h @service.name -%></span>
 	<%= service_type_badges(@service.service_types) -%>
 	<%= service_location_flags(@service) -%>
 </h1>
