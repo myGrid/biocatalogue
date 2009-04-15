@@ -188,7 +188,7 @@ module ApplicationHelper
                                      :title => tooltip_title_attrib(options[:tooltip_text]) })
     else
       if options[:show_not_logged_in_text] == true
-        return content_tag(:span, "#{link_to("Log in", login_path)} to add #{options[:attribute_name].downcase}", :style => options[:style])
+        return content_tag(:span, "(#{link_to("Log in", login_path)} to add #{options[:attribute_name].downcase})", :style => options[:style])
       else
         return ''
       end
