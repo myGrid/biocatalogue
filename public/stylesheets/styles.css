@@ -1060,8 +1060,11 @@ body.sidebar-right #login_box {
 .service_type_badge {
 	font-size: 12px;
 	font-weight: bold;
-	background-color: #FFBB7F;
-	padding: 0.2em 0.3em;
+	/*background-color: #FFBB7F;
+	padding: 0.2em 0.3em;*/
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	padding: 2px;
 }
 
 .operation_name {
