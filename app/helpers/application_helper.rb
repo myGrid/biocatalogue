@@ -136,7 +136,7 @@ module ApplicationHelper
   #  :tooltip_text - text that will be displayed in a tooltip over the icon/text.
   #    default: 'Add annotation'
   #  :style - any CSS inline styles that need to be applied to the icon/text.
-  #    default: text-decoration: none; (to avoid the icon being underlined when used in combination with text)
+  #    default: ''
   #  :class - any CSS class that need to be applied to the icon/text.
   #    default: nil
   #  :link_text - text to be displayed as part of the link.
@@ -159,7 +159,7 @@ module ApplicationHelper
     # defaults:
     options.reverse_merge!(:attribute_name => nil,
                            :tooltip_text => 'Add annotation',
-                           :style => 'text-decoration: none;',
+                           :style => '',
                            :class => nil,
                            :link_text => '',
                            :show_icon => true,
@@ -171,7 +171,7 @@ module ApplicationHelper
 
     if logged_in?
       link_html = ''
-      link_html = link_html + "<span style='vertical-align:middle; text-decoration: underline;'>#{options[:link_text]}</span>" unless options[:link_text].blank?
+      link_html = link_html + "<span style='vertical-align: middle; text-decoration: underline;'>#{options[:link_text]}</span>" unless options[:link_text].blank?
       link_html = image_tag(options[:icon_filename], :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.3em;') + link_html if options[:show_icon]
 
       url_options = { :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id }
@@ -183,13 +183,15 @@ module ApplicationHelper
                                    { :url => new_popup_annotations_url(url_options),
                                      :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
                                      :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
-                                   { :style => options[:style],
+                                   { :style => "text-decoration: none; vertical-align: baseline; #{options[:style]}",
                                      :class => options[:class],
                                      :alt => options[:tooltip_text],
                                      :title => tooltip_title_attrib(options[:tooltip_text]) })
     else
       if options[:show_not_logged_in_text] == true
-        return content_tag(:span, "(#{link_to("Log in", login_path)} to add #{options[:attribute_name].downcase})", :style => options[:style])
+        return content_tag(:span, 
+                           "(#{link_to("Log in", login_path)} to add #{options[:attribute_name].downcase})", 
+                           :style => "vertical-align: middle; #{options[:style]}")
       else
         return ''
       end
@@ -202,7 +204,7 @@ module ApplicationHelper
   #  :tooltip_text - text that will be displayed in a tooltip over the icon/text.
   #    default: 'Edit annotation'
   #  :style - any CSS inline styles that need to be applied to the icon/text.
-  #    default: nil
+  #    default: ''
   #  :link_text - text to be displayed as part of the link.
   #    default: 'edit'
   #  :show_icon - specifies whether to show the standard edit annotation icon or not.
@@ -215,20 +217,20 @@ module ApplicationHelper
     # defaults:
     options.reverse_merge!(:attribute_name => nil,
                            :tooltip_text => 'Edit annotation',
-                           :style => nil,
+                           :style => '',
                            :link_text => 'edit',
                            :show_icon => false,
                            :icon_filename => 'note_edit.png')
 
     link_html = ''
-    link_html = link_html + "<span style='vertical-align:middle'>#{options[:link_text]}</span>" unless options[:link_text].blank?
+    link_html = link_html + "<span style='vertical-align: middle; text-decoration: underline;'>#{options[:link_text]}</span>" unless options[:link_text].blank?
     link_html = image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.3em;') + link_html if options[:show_icon]
 
     return link_to_remote_redbox(link_html,
                                  { :url => edit_popup_annotation_url(annotation),
                                    :id => "edit_ann_#{annotation.id}_redbox",
                                    :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
-                                 { :style => options[:style],
+                                 { :style => "text-decoration: none; vertical-align: baseline; #{options[:style]}",
                                    :alt => options[:tooltip_text],
                                    :title => tooltip_title_attrib(options[:tooltip_text]) })
   end

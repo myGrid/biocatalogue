@@ -1039,7 +1039,7 @@ body.sidebar-right #login_box {
 .listing_item .name {
 	font-size: 1.3em;
 	font-weight: bold;
-	margin-bottom: 0.6em;
+	margin-bottom: 0.5em;
 }
 
 .listing_item .desc {
@@ -1064,7 +1064,7 @@ body.sidebar-right #login_box {
 	padding: 0.2em 0.3em;*/
 	background-color: #FFF;
 	border: 1px solid #DDD;
-	padding: 2px;
+	padding: 2px 3px;
 }
 
 .operation_name {
@@ -1403,6 +1403,16 @@ ul.tabbernav li.tabberactive a:hover
 
 /* BEGIN annotations styles */
 
+.annotations_container { }
+
+.annotations_container .add_option { 
+	display: none;
+}
+
+.annotations_container:hover .add_option {
+	display: inline;
+}
+
 .box_annotations {
 	padding: 0;
 	/*background-color: #EEEEEE; 
@@ -1454,8 +1464,8 @@ ul.tabbernav li.tabberactive a:hover
 
 .aliases {
 	font-size: 1em;
-	line-height: 1.4;
-	margin: 0.8em 0;
+	margin: 0.2em 0;
+	line-height: 1.8;
 }
 
 .annotations_counts_box {
