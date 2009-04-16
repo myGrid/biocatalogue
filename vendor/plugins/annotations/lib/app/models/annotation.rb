@@ -62,18 +62,37 @@ class Annotation < ActiveRecord::Base
   # ========================
   
   # Returns all the annotatable objects that have a specified attribute name and value.
+  #
   # NOTE (1): both the attribute name and the value will be treated case insensitively.
-  # NOTE (2): the objects returned are Read Only.
   def self.find_annotatables_with_attribute_name_and_value(attribute_name, value)
     return [ ] if attribute_name.blank? or value.nil?
     
     anns = Annotation.find(:all,
-                           :joins => "JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id",
-                           :conditions => [ "annotation_attributes.name = ? AND annotations.value = ?", 
-                                            attribute_name.strip.downcase,
-                                            value.strip.downcase ])
+                           :joins => :attribute,
+                           :conditions => { :annotation_attributes =>  { :name => attribute_name.strip.downcase }, 
+                                            :value => value.strip.downcase })
                                                   
-    return anns.map{|a| a.annotatable}.uniq
+    return anns.map{|a| a.annotatable}
+  end
+  
+  # Same as the Annotation.find_annotatables_with_attribute_name_and_value method but 
+  # takes in arrays for attribute names and values.
+  #
+  # This allows you to build any combination of attribute names and values to search on.
+  # E.g. (1): Annotation.find_annotatables_with_attribute_names_and_values([ "tag" ], [ "fiction", "sci-fi", "fantasy" ])
+  # E.g. (2): Annotation.find_annotatables_with_attribute_names_and_values([ "tag", "keyword", "category" ], [ "fiction", "fantasy" ])
+  #
+  # NOTE (1): the arguments to this method MUST be Arrays of Strings.
+  # NOTE (2): all attribute names and the values will be treated case insensitively.
+  def self.find_annotatables_with_attribute_names_and_values(attribute_names, values)
+    return [ ] if attribute_names.blank? or values.blank?
+    
+    anns = Annotation.find(:all,
+                           :joins => :attribute,
+                           :conditions => { :annotation_attributes =>  { :name => attribute_names }, 
+                                            :value => values })
+    
+    return anns.map{|a| a.annotatable}
   end
   
   # Finder to get all annotations by a given source.

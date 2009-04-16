@@ -50,6 +50,22 @@ class AnnotationTest < Test::Unit::TestCase
     assert_equal 0, Annotation.find_annotatables_with_attribute_name_and_value("asfrertewt", "JBuoGU IT I\tIPyI tRyyI tpIY T YFy fY f yF").length
   end
   
+  def test_find_annotatables_with_attribute_names_and_values_class_method
+    ats1 = Annotation.find_annotatables_with_attribute_names_and_values(["tag" ], [ "programming", "complex", "Long" ])
+    assert_equal 3, ats1.length
+    assert ats1[0].class != Annotation
+    
+    ats2 = Annotation.find_annotatables_with_attribute_names_and_values(["rating", "complexity" ], [ "O(x^2)" ])
+    assert_equal 1, ats2.length
+    
+    ats3 = Annotation.find_annotatables_with_attribute_names_and_values(["title", "LENGTH" ], [ "345", "Ruby Hashes", "does_not_exist_but_still_counts" ])
+    assert_equal 2, ats3.length
+    
+    assert_equal 0, Annotation.find_annotatables_with_attribute_names_and_values([ "asfrertewt" ], [ "JBuoGU IT I\tIPyI tRyyI tpIY T YFy fY f yF" ]).length
+    
+    assert_equal 0, Annotation.find_annotatables_with_attribute_names_and_values([ "asfrertewt", "askiki" ], [ "JBuoGU IT I\tIPyI tRyyI tpIY T YFy fY f yF", "yfyfyyfyfyff" ]).length
+  end
+  
   def test_by_source_named_scope_finder
     assert_equal 7, Annotation.by_source('User', users(:john).id).length
     assert_equal 6, Annotation.by_source('User', users(:jane).id).length

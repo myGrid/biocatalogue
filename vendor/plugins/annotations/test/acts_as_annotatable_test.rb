@@ -34,6 +34,11 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     assert_equal 2, Chapter.find_annotations_by("Group", groups(:classical_fans)).length
   end
   
+  def test_annotatable_name_instance_method
+    assert_equal "Learning Ruby in 2 Seconds", books(:r).annotatable_name
+    assert_equal "Hashing It Up", chapters(:br_c2).annotatable_name
+  end
+  
   def test_latest_annotations_instance_method
     assert_equal 5, books(:h).latest_annotations.length
     assert_equal 2, chapters(:bh_c10).latest_annotations.length
@@ -48,6 +53,13 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     assert_equal 1, chapters(:br_c202).annotations_with_attribute("Title").length
   end
   
+  def test_annotations_with_attributes_instance_method
+    assert_equal 4, books(:h).annotations_with_attributes([ "tag", "summary", "LENGTH" ]).length
+    assert_equal 0, books(:h).annotations_with_attributes([ "doesnt_exist", "also doesn't exist" ]).length
+    assert_equal 1, chapters(:bh_c10).annotations_with_attributes([ "endingType" ]).length
+    assert_equal 2, chapters(:br_c202).annotations_with_attributes([ "Title", "complexity", "doesn't exist but still"]).length
+  end
+  
   def test_annotations_with_attribute_and_by_source_instance_method
     assert_equal 1, books(:h).annotations_with_attribute_and_by_source("tag", users(:jane)).length
     assert_equal 0, books(:r).annotations_with_attribute_and_by_source("doesnt_exist", users(:jane)).length
@@ -55,9 +67,11 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     assert_equal 1, chapters(:br_c202).annotations_with_attribute_and_by_source("Title", users(:john)).length
   end
   
-  def test_annotatable_name_instance_method
-    assert_equal "Learning Ruby in 2 Seconds", books(:r).annotatable_name
-    assert_equal "Hashing It Up", chapters(:br_c2).annotatable_name
+  def test_all_annotations_excluding_attributes
+    assert_equal 3, books(:h).all_annotations_excluding_attributes([ "TITLE", "length" ]).length
+    assert_equal 5, books(:r).all_annotations_excluding_attributes([ "doesnt_exist" ]).length
+    assert_equal 1, chapters(:bh_c10).all_annotations_excluding_attributes([ "endingType" ]).length
+    assert_equal 2, chapters(:br_c202).all_annotations_excluding_attributes([ "tag", "doesn't exist but who cares" ]).length
   end
   
   def test_count_annotations_by_instance_method
