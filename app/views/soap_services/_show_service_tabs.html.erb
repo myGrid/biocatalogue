@@ -38,6 +38,11 @@
 										 	 :locals => { :annotatable => operation } -%>
 					 
 					</div>
+					
+					<div>
+						<%= render :partial => "annotations/other_annotations",
+						 		 			 :locals => { :annotatable => operation } -%>
+					</div>
 				</div>
 				
 				<div style="float: right; width: 24%; font-size: 0.9em;">
@@ -68,6 +73,8 @@
 							 	 				 :locals => { :annotatable => input } -%>
 							<%= render :partial => "annotations/examples",
 							 	 				 :locals => { :annotatable => input } -%>
+							<%= render :partial => "annotations/other_annotations",
+						 		 		 		 :locals => { :annotatable => input } -%>
 						</div>
 						<div style="float: right; width: 24%; font-size: 0.9em;">
 							<%= render :partial => "annotations/tags_box",
@@ -96,6 +103,10 @@
 									 	 		 :locals => { :annotatable => output } -%>
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => output } -%>
+							<%= render :partial => "annotations/examples",
+							 	 				 :locals => { :annotatable => output } -%>
+							<%= render :partial => "annotations/other_annotations",
+						 		 		 		 :locals => { :annotatable => output } -%>
 						</div>
 						<div style="float: right; width: 24%; font-size: 0.9em;">
 							<%= render :partial => "annotations/tags_box",

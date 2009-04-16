@@ -38,6 +38,18 @@ class ActiveRecord::Base
 end
 
 
+# List of annotation attributes that are considered "known" or important in the system
+KNOWN_ANNOTATION_ATTRIBUTES = [ "tag",
+                                "description",
+                                "name",
+                                "example",
+                                "documentation_url",
+                                "rating.speed",
+                                "rating.reliability",
+                                "rating.ease-of-use",
+                                "rating.documentation" ]
+
+
 # ================================
 # Configure the Annotations plugin
 # --------------------------------
@@ -63,18 +75,6 @@ Annotations::Config.attribute_names_to_allow_duplicates = [ "tag",
 # ================================
 
 
-# ====================================================
-# Configure global settings for the Disqus integration
-# ----------------------------------------------------
-
-Disqus::defaults[:avatar_size] = 48
-Disqus::defaults[:color] = "green"
-Disqus::defaults[:default_tab] = "recent"
-Disqus::defaults[:num_items] = 15
-
-# ====================================================
-
-
 # ================================
 # Ratings categories configuration
 # --------------------------------
@@ -90,3 +90,17 @@ SERVICE_RATINGS_CATEGORIES = { "rating.speed" => [ "Speed", "Rate how fast this 
                                "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }
 
 # ================================
+
+
+# ====================================================
+# Configure global settings for the Disqus integration
+# ----------------------------------------------------
+
+Disqus::defaults[:avatar_size] = 48
+Disqus::defaults[:color] = "green"
+Disqus::defaults[:default_tab] = "recent"
+Disqus::defaults[:num_items] = 15
+
+# ====================================================
+
+
