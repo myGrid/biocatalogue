@@ -190,7 +190,7 @@ module ApplicationHelper
     else
       if options[:show_not_logged_in_text] == true
         return content_tag(:span, 
-                           "(#{link_to("Log in", login_path)} to add #{options[:attribute_name].downcase})", 
+                           "(#{link_to("Log in", login_path)} to add #{options[:attribute_name].nil? ? "annotation" : options[:attribute_name].downcase})", 
                            :style => "vertical-align: middle; #{options[:style]}")
       else
         return ''
