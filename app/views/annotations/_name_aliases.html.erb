@@ -13,7 +13,7 @@
 <% show_add_option = true unless local_assigns.has_key?(:show_add_option) %>
 <% show_modify_options = true unless local_assigns.has_key?(:show_modify_options) %>
 
-<div class="aliases annotations_container" style="<%= "height: 24px;" if show_add_option == true -%>">
+<div class="aliases annotations_container">
 	<% unless name_annotations.empty? %>
 		<% name_annotations.each do |al| %>
 			<span class="faded_plus">aka</span>
@@ -22,11 +22,9 @@
 	<% end %>
 	
 	<% if show_add_option == true %>
-		<div class="add_option">
-			<%= annotation_add_by_popup_link annotatable,
-			     :attribute_name => "name",
-			     :tooltip_text => "Click to add a name alias",
-					 :link_text => "Add a name alias" -%>
-		</div>
+		<%= annotation_add_by_popup_link annotatable,
+		     :attribute_name => "name",
+		     :tooltip_text => "Click to add a name alias",
+				 :link_text => "Add a name alias" -%>
 	<% end %>
 </div>

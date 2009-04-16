@@ -1405,38 +1405,50 @@ ul.tabbernav li.tabberactive a:hover
 
 .annotations_container { }
 
-.annotations_container .add_option { 
+.annotations_container .inactive {
+	color: #BBB;
+	text-decoration: none;
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
+}
+
+.annotations_container .active { 
 	display: none;
 }
 
-.annotations_container:hover .add_option {
-	display: inline;
+.annotations_container:hover .inactive {
+	display: none;
+}
+
+.annotations_container:hover .active {
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
 }
 
 .box_annotations {
 	padding: 0;
-	/*background-color: #EEEEEE; 
-	border: 1px dotted #DDD;*/
 	line-height: 1.4;
 }
 
 .box_annotations div.description {
 	border: 1px dotted #AAA;
-	padding: 0.2em 0.5em;
+	padding: 0.2em 0.5em 0.3em 0.5em;
 	margin: 0.5em 0;
 	background-color: #EEF0FF;
 }
 
 .box_annotations div.example {
 	border: 1px dotted #AAA;
-	padding: 0.2em 0.5em;
+	padding: 0.2em 0.5em 0.3em 0.5em;
 	margin: 0.5em 0;
 	background-color: #EEF0FF;
 }
 
 .box_annotations div.other {
 	border: 1px dotted #AAA;
-	padding: 0.2em 0.5em;
+	padding: 0.2em 0.5em 0.3em 0.5em;
 	margin: 0.5em 0;
 	background-color: #EEF0FF;
 }
@@ -1453,7 +1465,7 @@ ul.tabbernav li.tabberactive a:hover
 	color: #666;
 	background-color: #FFC;
 	font-size: 0.8em;
-	margin: -0.3em -0.6em 0 1em;
+	margin: 0 0 0 1em;
 	padding: 0.1em 0.5em;
 }
 
@@ -1471,7 +1483,7 @@ ul.tabbernav li.tabberactive a:hover
 
 .aliases {
 	font-size: 1em;
-	margin: 0.2em 0;
+	margin: 0.4em 0 0.2em 0;
 	line-height: 1.8;
 }
 

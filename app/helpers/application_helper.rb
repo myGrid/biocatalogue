@@ -141,13 +141,17 @@ module ApplicationHelper
   #    default: nil
   #  :link_text - text to be displayed as part of the link.
   #    default: ''
-  #  :show_icon - specifies whether to show the standard annotate icon or not.
+  #  :show_icon - specifies whether to show an icon or not to the left of the link text.
   #    default: true
-  #  :icon_filename - the filename of the image in the /public/images directory.
+  #  :icon_filename - the filename of the icon to use when in normal view (in the /public/images directory).
   #    default: 'add_annotation.gif'
-  #  :icon_hover_filename - the filename of the image in the /public/images directory used for the mouseover event.
+  #  :icon_hover_filename - the filename of the icon to use for the mouseover event (in the /public/images directory).
   #    default: 'add_annotation_hover.gif'
-  #  :show_not_logged_in_text - specifies whether to display some text when a user is not logged in, in place of the annotate icon/text (will display something like: "log in to add description", where "log in" links to the login page).
+  #  :icon_inactive_filename - the filename of the icon to use when the link is inactive (in the /public/images directory).
+  #    default: 'add_annotation_inactive.gif'
+  #  :show_not_logged_in_text - specifies whether to display some text (and an icon) when a user is not logged in, in place of the normal icon/text (will display something like: "log in to add description", where "log in" links to the login page).
+  #    default: true
+  #  :only_show_on_hover - specifies whether the add link (or log in link) should be hidden by default and only shown on hover. NOTE: this will only work when the link is inside a container with the class "annotations_container".
   #    default: true
   #  :multiple - specified whether multiple annotations need to be created at once (eg: for tags).
   #    default: false
@@ -165,37 +169,73 @@ module ApplicationHelper
                            :show_icon => true,
                            :icon_filename => 'add_annotation.gif',
                            :icon_hover_filename => 'add_annotation_hover.gif',
+                           :icon_inactive_filename => 'add_annotation_inactive.gif',
                            :show_not_logged_in_text => true,
+                           :only_show_on_hover => true,
                            :multiple => false,
                            :multiple_separator => ',')
-
+    
+    link_content = ''
+    
     if logged_in?
-      link_html = ''
-      link_html = link_html + "<span style='vertical-align: middle; text-decoration: underline;'>#{options[:link_text]}</span>" unless options[:link_text].blank?
-      link_html = image_tag(options[:icon_filename], :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.3em;') + link_html if options[:show_icon]
+      
+      link_inner_html = ''
+      link_inner_html = link_inner_html + image_tag(options[:icon_filename], :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
+      link_inner_html = link_inner_html + content_tag(:span, options[:link_text], :style => "vertical-align: middle; text-decoration: underline;") unless options[:link_text].blank?
 
       url_options = { :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id }
       url_options[:attribute_name] = options[:attribute_name] unless options[:attribute_name].nil?
       url_options[:multiple] = options[:multiple] if options[:multiple]
       url_options[:separator] = options[:multiple_separator] if options[:multiple]
+      
+      link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
 
-      return link_to_remote_redbox(link_html,
+      link_content =  link_to_remote_redbox(link_inner_html,
                                    { :url => new_popup_annotations_url(url_options),
                                      :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
                                      :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
-                                   { :style => "text-decoration: none; vertical-align: baseline; #{options[:style]}",
-                                     :class => options[:class],
+                                   { :style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
+                                     :class => link_class,
                                      :alt => options[:tooltip_text],
                                      :title => tooltip_title_attrib(options[:tooltip_text]) })
+    
+      # Add the greyed out inactive bit if required
+      if options[:only_show_on_hover] == true
+        inactive_inner_html = ''
+        inactive_inner_html = inactive_inner_html + image_tag(options[:icon_inactive_filename], :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
+        inactive_inner_html = inactive_inner_html + content_tag(:span, options[:link_text], :style => "vertical-align: middle;") unless options[:link_text].blank?
+        
+        inactive_span = content_tag(:span, inactive_inner_html, :class => "inactive #{options[:class]}", :style => "vertical-align: middle; #{options[:style]}")
+        
+        link_content = inactive_span + link_content
+      end
+    
     else
+      # Not logged in...
       if options[:show_not_logged_in_text] == true
-        return content_tag(:span, 
-                           "(#{link_to("Log in", login_path)} to add #{options[:attribute_name].nil? ? "annotation" : options[:attribute_name].downcase})", 
-                           :style => "vertical-align: middle; #{options[:style]}")
-      else
-        return ''
+        login_text = "Log in to add #{options[:attribute_name].nil? ? "annotation" : options[:attribute_name].downcase}"
+        
+        link_content_inner_html = image_tag('lock.png', :style => 'vertical-align:middle;margin-right:0.3em;')
+        link_content_inner_html = link_content_inner_html + content_tag(:span, login_text, :style => "vertical-align: middle;")
+        
+        link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
+        
+        link_content = link_to(link_content_inner_html, login_path, :class => link_class, :style => "vertical-align: middle; #{options[:style]}")
+        
+        # Add the greyed out inactive bit if required
+        if options[:only_show_on_hover] == true
+          inactive_inner_html = image_tag('lock_inactive.gif', :style => 'vertical-align:middle;margin-right:0.3em;')
+          inactive_inner_html = inactive_inner_html + content_tag(:span, login_text, :style => "vertical-align: middle;")
+          
+          inactive_span = content_tag(:span, inactive_inner_html, :class => "inactive #{options[:class]}", :style => "vertical-align: middle; #{options[:style]}")
+          
+          link_content = inactive_span + link_content
+        end
+        
       end
     end
+    
+    return link_content 
   end
 
   # This method is used to generate an icon and/or link that will popup up an in page dialog box for the user to edit an annotation.
@@ -209,7 +249,7 @@ module ApplicationHelper
   #    default: 'edit'
   #  :show_icon - specifies whether to show the standard edit annotation icon or not.
   #    default: false
-  #  :icon_filename - the filename of the image in the /public/images directory.
+  #  :icon_filename - the filename of the icon to use when in normal view (in the /public/images directory).
   #    default: 'note_edit.png'
   def annotation_edit_by_popup_link(annotation, *args)
     # Do options the Rails Way ;-)

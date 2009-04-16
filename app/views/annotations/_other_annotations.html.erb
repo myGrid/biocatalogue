@@ -16,20 +16,18 @@
 <% unless annotatable.nil? %>
 	<div class="annotations_container">
 		<% if show_header == true %>
-			<div style="margin-top: 1em; line-height: 2.0;">
+			<div style="margin-top: 1em;">
 			  <b>Other Annotations:</b>
 				
 				<span>
 					<%= help_icon_with_tooltip("This is a \"catch all\" for all annotations that do not fit into any specific known classes/categories/attributes.<br/><br/>Some of these annotations may be intended for machine use (so won't necessarily be easily readable).<br/><br/>BioCatalogue may in the future choose to move some of these annotations to other parts of the UI if deemed appropriate.") -%>
 				</span>
 				
-				<div class="add_option">
-					<%= annotation_add_by_popup_link annotatable,
-							 :link_text => "Add a new annotation",
-					     :tooltip_text => "Click to add a new annotation",
-					     :style => "margin-left: 1em;"
-					-%>
-				</div>
+				<%= annotation_add_by_popup_link annotatable,
+						 :link_text => "Add a new annotation",
+				     :tooltip_text => "Click to add a new annotation",
+				     :style => "margin-left: 1em;"
+				-%>
 	
 			</div>
 		<% end %>

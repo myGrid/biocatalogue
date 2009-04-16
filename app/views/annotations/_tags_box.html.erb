@@ -28,12 +28,13 @@
 		<% if logged_in? %>
 			<%= annotation_add_by_popup_link annotatable,
 												 :attribute_name => "Tag",
-				                             	 :tooltip_text => '',
-				                             	 :link_text => 'Add tags',
-				                             	 :icon_filename => 'add_tag.gif', 
+                       	 :tooltip_text => '',
+                       	 :link_text => 'Add tags',
+                       	 :icon_filename => 'add_tag.gif', 
 												 :icon_hover_filename => 'add_tag_hover.gif',
-				                             	 :show_not_logged_in_text => false,
-				                             	 :multiple => true -%>
+												 :only_show_on_hover => false,
+                       	 :show_not_logged_in_text => false,
+                       	 :multiple => true -%>
 			<% else %>
 				<small><%= link_to "Log in", login_path -%> to add tags</small>
 			<% end %>
