@@ -134,11 +134,27 @@ class ApplicationController < ActionController::Base
   # ----------------------------------------
   
   def initialise_use_tab_cookie_in_session
+    logger.info ""
+    logger.info "initialise_use_tab_cookie_in_session called; before - session[:use_tab_cookie] = #{session[:use_tab_cookie]}"
+    logger.info ""
+    
     session[:use_tab_cookie] = false if session[:use_tab_cookie] == nil
+    
+    logger.info ""
+    logger.info "initialise_use_tab_cookie_in_session called; after - session[:use_tab_cookie] = #{session[:use_tab_cookie]}"
+    logger.info ""
   end
   
   def add_use_tab_cookie_to_session
+    logger.info ""
+    logger.info "add_use_tab_cookie_to_session called; before - session[:use_tab_cookie] = #{session[:use_tab_cookie]}"
+    logger.info ""
+    
     session[:use_tab_cookie] = true
+    
+    logger.info ""
+    logger.info "add_use_tab_cookie_to_session called; after - session[:use_tab_cookie] = #{session[:use_tab_cookie]}"
+    logger.info ""
   end
   
   # ========================================
