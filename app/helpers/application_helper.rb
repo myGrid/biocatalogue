@@ -143,11 +143,11 @@ module ApplicationHelper
   #    default: ''
   #  :show_icon - specifies whether to show an icon or not to the left of the link text.
   #    default: true
-  #  :icon_filename - the filename of the icon to use when in normal view (in the /public/images directory).
+  #  :icon_filename - the filename of the icon to use when in logged in (in the /public/images directory).
   #    default: 'add_annotation.gif'
   #  :icon_hover_filename - the filename of the icon to use for the mouseover event (in the /public/images directory).
   #    default: 'add_annotation_hover.gif'
-  #  :icon_inactive_filename - the filename of the icon to use when the link is inactive (in the /public/images directory).
+  #  :icon_inactive_filename - the filename of the icon to use when not logged in (in the /public/images directory).
   #    default: 'add_annotation_inactive.gif'
   #  :show_not_logged_in_text - specifies whether to display some text (and an icon) when a user is not logged in, in place of the normal icon/text (will display something like: "log in to add description", where "log in" links to the login page).
   #    default: true
@@ -179,8 +179,10 @@ module ApplicationHelper
     
     if logged_in?
       
+      icon_filename_to_use = (options[:only_show_on_hover] == true ? options[:icon_hover_filename] : options[:icon_filename])
+      
       link_inner_html = ''
-      link_inner_html = link_inner_html + image_tag(options[:icon_filename], :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
+      link_inner_html = link_inner_html + image_tag(icon_filename_to_use, :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
       link_inner_html = link_inner_html + content_tag(:span, options[:link_text], :style => "vertical-align: middle; text-decoration: underline;") unless options[:link_text].blank?
 
       url_options = { :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id }
@@ -201,11 +203,10 @@ module ApplicationHelper
     
       # Add the greyed out inactive bit if required
       if options[:only_show_on_hover] == true
-        inactive_inner_html = ''
-        inactive_inner_html = inactive_inner_html + image_tag(options[:icon_inactive_filename], :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
-        inactive_inner_html = inactive_inner_html + content_tag(:span, options[:link_text], :style => "vertical-align: middle;") unless options[:link_text].blank?
-        
-        inactive_span = content_tag(:span, inactive_inner_html, :class => "inactive #{options[:class]}", :style => "vertical-align: middle; #{options[:style]}")
+        inactive_span = content_tag(:span, 
+                                    image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.3em;'), 
+                                    :class => "inactive #{options[:class]}", 
+                                    :style => "vertical-align: middle; #{options[:style]}")
         
         link_content = inactive_span + link_content
       end
@@ -213,21 +214,23 @@ module ApplicationHelper
     else
       # Not logged in...
       if options[:show_not_logged_in_text] == true
+        icon_filename_to_use = options[:icon_inactive_filename]
+        
         login_text = "Log in to add #{options[:attribute_name].nil? ? "annotation" : options[:attribute_name].downcase}"
         
-        link_content_inner_html = image_tag('lock.png', :style => 'vertical-align:middle;margin-right:0.3em;')
-        link_content_inner_html = link_content_inner_html + content_tag(:span, login_text, :style => "vertical-align: middle;")
+        link_content_inner_html = image_tag(icon_filename_to_use, :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
+        link_content_inner_html = link_content_inner_html + content_tag(:span, login_text, :style => "vertical-align: middle;") unless options[:link_text].blank?
         
         link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
         
-        link_content = link_to(link_content_inner_html, login_path, :class => link_class, :style => "vertical-align: middle; #{options[:style]}")
+        link_content = link_to(link_content_inner_html, login_path, :class => link_class, :style => "vertical-align: middle; #{options[:style]}", :title => tooltip_title_attrib(login_text))
         
         # Add the greyed out inactive bit if required
         if options[:only_show_on_hover] == true
-          inactive_inner_html = image_tag('lock_inactive.gif', :style => 'vertical-align:middle;margin-right:0.3em;')
-          inactive_inner_html = inactive_inner_html + content_tag(:span, login_text, :style => "vertical-align: middle;")
-          
-          inactive_span = content_tag(:span, inactive_inner_html, :class => "inactive #{options[:class]}", :style => "vertical-align: middle; #{options[:style]}")
+          inactive_span = content_tag(:span, 
+                                    image_tag(icon_filename_to_use, :style => 'vertical-align:middle;margin-right:0.3em;'), 
+                                    :class => "inactive #{options[:class]}", 
+                                    :style => "vertical-align: middle; #{options[:style]}")
           
           link_content = inactive_span + link_content
         end

@@ -1407,6 +1407,7 @@ ul.tabbernav li.tabberactive a:hover
 
 .annotations_container .inactive {
 	color: #BBB;
+	line-height: 1.0;
 	text-decoration: none;
 	display:-moz-inline-block;
 	display:-moz-inline-box;
@@ -1414,6 +1415,8 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .annotations_container .active { 
+	line-height: 1.0;
+	color: #333;
 	display: none;
 }
 
@@ -1483,8 +1486,8 @@ ul.tabbernav li.tabberactive a:hover
 
 .aliases {
 	font-size: 1em;
-	margin: 0.4em 0 0.2em 0;
-	line-height: 1.8;
+	margin: 0.3em 0 0.2em 0;
+	line-height: 1.6;
 }
 
 .annotations_counts_box {
