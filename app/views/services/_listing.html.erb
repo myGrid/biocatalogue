@@ -61,8 +61,6 @@
 																	:show_add_option => false } -%>
 				</div>
 				
-				<hr/>
-				
 				<div class="detail">
 					<%= render :partial => "#{service_version_instance.class.to_s.pluralize.underscore}/service_listing_info", 
 					 	 				 :locals => { :service_version_instance =>  service_version_instance } %>
