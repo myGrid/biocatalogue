@@ -16,8 +16,10 @@
 <div class="aliases annotations_container">
 	<% unless name_annotations.empty? %>
 		<% name_annotations.each do |al| %>
-			<span class="faded_plus">aka</span>
-			<span style="font-weight: bold; margin-right: 1em;"><%= h(al.value) -%></span>
+			<span style="vertical-align: middle;">
+				<span class="faded_plus">aka</span>
+				<span style="font-weight: bold; margin-right: 1em;"><%= h(al.value) -%></span>
+			</span>
 		<% end %>
 	<% end %>
 	

@@ -30,8 +30,10 @@
 					<b>Operation:</b>
 					<span class="operation_name" style="font-size: 1.2em;"><%= h operation.name -%></span>
 					
-					<%= render :partial => "annotations/name_aliases",
-									 	 :locals => { :annotatable => operation } -%>
+					<div style="margin-top: 0.6em;">
+						<%= render :partial => "annotations/name_aliases",
+										 	 :locals => { :annotatable => operation } -%>
+					</div>
 					
 					<div>
 						<%= render :partial => "annotations/descriptions",
@@ -60,7 +62,7 @@
 				<% operation.soap_inputs.each do |input| %>
 					<div class="port">
 						<div style="float: left; width: 73%;">
-							<div style="margin-bottom: 0.2em;">
+							<div style="margin-bottom: 0.6em;">
 								<span class="operation_name"><%= h input.name -%></span>
 								<% unless input.computational_type.blank? %>
 							  	(<%= h input.computational_type -%>) 
@@ -92,7 +94,7 @@
 				<% operation.soap_outputs.each do |output| %>
 					<div class="port">
 						<div style="float: left; width: 73%;">
-							<div style="margin-bottom: 0.2em;">
+							<div style="margin-bottom: 0.6em;">
 								<span class="operation_name"><%= h output.name -%></span>
 								<% unless output.computational_type.blank? %>
 							  	(<%= h output.computational_type -%>) 
