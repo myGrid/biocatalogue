@@ -182,7 +182,7 @@ module ApplicationHelper
       icon_filename_to_use = (options[:only_show_on_hover] == true ? options[:icon_hover_filename] : options[:icon_filename])
       
       link_inner_html = ''
-      link_inner_html = link_inner_html + image_tag(icon_filename_to_use, :mouseover => "/images/#{options[:icon_hover_filename]}", :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
+      link_inner_html = link_inner_html + image_tag(icon_filename_to_use, :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
       link_inner_html = link_inner_html + content_tag(:span, options[:link_text], :style => "vertical-align: middle; text-decoration: underline;") unless options[:link_text].blank?
 
       url_options = { :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id }
