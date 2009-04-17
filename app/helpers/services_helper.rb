@@ -44,9 +44,9 @@ module ServicesHelper
   end
 
   
-  # ==============
-  # Facets helpers
-  # --------------
+  # ============================
+  # Facets and filtering helpers
+  # ----------------------------
   
   # Example return data:
   # [ { "name" => "ebi.ac.uk", "count" => "12" }, { "name" => "example.com", "count" => "11" }, ... ]
@@ -95,5 +95,13 @@ module ServicesHelper
     return facets
   end
   
-  # ==============
+  def generate_include_filter_url(filter_type, filter_value)
+    
+  end
+
+  def generate_exclude_filter_url(filter_type, filter_value)
+    
+  end
+  
+  # ============================
 end

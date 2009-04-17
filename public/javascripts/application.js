@@ -81,3 +81,7 @@ function closeLoginBox(boxID, openLinkID) {
 	}
 }
 
+function loadUrlFromSelectInputTag(input_tag) {
+	//location.href = form_element.url_field.value
+	location.href = input_tag.value
+}

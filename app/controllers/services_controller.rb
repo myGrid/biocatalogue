@@ -8,6 +8,8 @@ class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update, :destroy ]
   
+  before_filter :find_services, :only => [ :index ]
+  
   before_filter :find_service, :only => [ :show, :edit, :update, :destroy ]
   
   # Set the sidebar layout for certain actions.
@@ -17,10 +19,6 @@ class ServicesController < ApplicationController
   # GET /services
   # GET /services.xml
   def index
-    @services = Service.paginate(:page => params[:page],
-                                 :order => 'created_at DESC',
-                                 :include => [ :service_versions, :service_deployments ])
-    
     @tags = BioCatalogue::Tags.get_tags(30)
     
     respond_to do |format|
@@ -98,7 +96,77 @@ class ServicesController < ApplicationController
   end
  
   protected
- 
+  
+  def find_services
+    
+    # TODO: move most of the logic below into the new lib/filtering.rb library.
+    
+    # Sorting
+    
+    order = 'created_at DESC'
+    
+    if !params[:sortby].blank? and !params[:sortorder].blank?
+      order_field = nil
+      order_direction = nil
+      
+      case params[:sortby].downcase
+        when 'created'
+          order_field = "created_at"
+        when 'updated'
+          order_field = "updated_at"
+      end
+      
+      case params[:sortorder].downcase
+        when 'asc'
+          order_direction = 'ASC'
+        when 'desc'
+          order_direction = "DESC"
+      end
+      
+      unless order_field.blank? or order_direction.nil?
+        order = "#{order_field} #{order_direction}"
+      end
+    end
+    
+    # Filter conditions
+    
+    conditions = { }
+    joins = [ ]
+    
+    unless params[:filter].blank?
+      params[:filter].each do |filter_type, filter_values|
+        unless filter_values.blank?
+          case filter_type.to_s.downcase
+            when 'type'
+              service_types = [ ]
+              filter_values.each do |f|
+                # TODO: strip this out into a more generic mapping table (prob in config or lib)
+                case f.downcase
+                  when 'soap'
+                    service_types << 'SoapService'
+                  when 'rest'
+                    service_types << 'RestService'
+                end
+              end
+              
+              unless service_types.blank?
+                conditions[:service_versions] = { :service_versionified_type => service_types }
+                joins << :service_versions
+              end
+            when 'provider'
+              
+          end
+        end
+      end
+    end
+    
+    @services = Service.paginate(:page => params[:page],
+                                 :order => order,
+                                 :conditions => conditions,
+                                 :joins => joins,
+                                 :include => [ :service_versions, :service_deployments ])
+  end
+  
   def find_service
     @service = Service.find(params[:id])
   end

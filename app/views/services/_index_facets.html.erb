@@ -1,9 +1,19 @@
+<%
+
+# BioCatalogue: app/views/services/_index_facets.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
 <div class="facets">
 	<% service_type_facets = get_facets_for_service_types %>
 	<table>
 		<tr>
 			<td class="type">
-				Service Types
+				All Service Types
 				<span class="faded">(<%= service_type_facets.length -%>)</span>
 			</td>
 			<td>
@@ -29,7 +39,7 @@
 	<table>
 		<tr>
 			<td class="type">
-				Service Providers
+				All Service Providers
 				<span class="faded">(<%= service_provider_facets.length -%>)</span>
 			</td>
 			<td>
