@@ -103,7 +103,7 @@ class ServicesController < ApplicationController
     
     # Sorting
     
-    order = 'created_at DESC'
+    order = 'services.created_at DESC'
     
     if !params[:sortby].blank? and !params[:sortorder].blank?
       order_field = nil
@@ -111,9 +111,9 @@ class ServicesController < ApplicationController
       
       case params[:sortby].downcase
         when 'created'
-          order_field = "created_at"
+          order_field = "services.created_at"
         when 'updated'
-          order_field = "updated_at"
+          order_field = "services.updated_at"
       end
       
       case params[:sortorder].downcase
@@ -144,8 +144,10 @@ class ServicesController < ApplicationController
                 case f.downcase
                   when 'soap'
                     service_types << 'SoapService'
+                    @filter_message = "The services index has been filtered to only show SOAP based services."
                   when 'rest'
                     service_types << 'RestService'
+                    @filter_message = "The services index has been filtered to only show REST based services."
                 end
               end
               
@@ -153,18 +155,26 @@ class ServicesController < ApplicationController
                 conditions[:service_versions] = { :service_versionified_type => service_types }
                 joins << :service_versions
               end
-            when 'provider'
+            when 'prov'
+              provider = filter_values
               
+              unless provider.blank?
+                conditions[:service_deployments] = { :service_providers => { :name => provider } }
+                joins << [ { :service_deployments => :provider } ]
+                
+                @filter_message = "The services index has been filtered to only show services from the provider: '#{provider}'."
+              end
           end
         end
       end
     end
     
+    #flash.now[:notice] = "The services index has been filtered. Please see below." unless conditions.blank? or joins.blank?
+    
     @services = Service.paginate(:page => params[:page],
                                  :order => order,
                                  :conditions => conditions,
-                                 :joins => joins,
-                                 :include => [ :service_versions, :service_deployments ])
+                                 :joins => joins)
   end
   
   def find_service

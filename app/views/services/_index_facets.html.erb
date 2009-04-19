@@ -8,6 +8,12 @@
 
 %>
 
+<% unless @filter_message.blank? %>
+	<p class="box_info_standout" style="font-weight: bold; text-align: center; padding: 0.3em 0.5em;">
+		<%= @filter_message -%>
+	</p>
+<% end %>
+
 <div class="facets">
 	<% service_type_facets = get_facets_for_service_types %>
 	<table>
@@ -20,10 +26,8 @@
 				<ul>
 					<% service_type_facets.each do |f| %>
 						<li>
-							<a href="#">
-								<%= h(f["name"]) -%>
-							</a>
-							<span class="faded" style="font-size: 85%;">
+							<%= link_to(h(f["name"]), generate_include_filter_url(:type, f["name"])) -%>
+							<span class="faded count">
 								(<%= pluralize(f["count"], "service") -%>)
 							</span>
 						</li>
@@ -46,10 +50,8 @@
 				<ul>
 					<% service_provider_facets.each do |f| %>
 						<li>
-							<a href="#">
-								<%= h(f["name"]) -%>
-							</a>
-							<span class="faded" style="font-size: 85%;">
+							<%= link_to(h(f["name"]), generate_include_filter_url(:prov, f["name"])) -%>
+							<span class="faded count">
 								(<%= pluralize(f["count"], "service") -%>)
 							</span>
 						</li>

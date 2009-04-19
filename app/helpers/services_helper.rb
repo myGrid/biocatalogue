@@ -102,10 +102,11 @@ module ServicesHelper
   end
 
   
-  # ============================
-  # Facets and filtering helpers
-  # ----------------------------
-  
+  # ========================================
+  # Faceting, filtering  and sorting helpers
+  # ----------------------------------------
+
+  # Gets all the service providers and their counts of services.
   # Example return data:
   # [ { "name" => "ebi.ac.uk", "count" => "12" }, { "name" => "example.com", "count" => "11" }, ... ]
   def get_facets_for_service_providers(limit=nil)
@@ -125,6 +126,7 @@ module ServicesHelper
     return ActiveRecord::Base.connection.select_all(sql)
   end
   
+  # Gets all the different service types and their counts of services.
   # Example return data:
   # [ { "name" => "SOAP", "count" => "102" }, { "name" => "REST", "count" => "11" }, ... ]
   def get_facets_for_service_types(limit=nil)
@@ -154,12 +156,28 @@ module ServicesHelper
   end
   
   def generate_include_filter_url(filter_type, filter_value)
+    params_dup = params.clone
+    params_dup[:filter] = { }
+    params_dup[:filter][filter_type] = filter_value
     
+    return services_url(params_dup)
   end
 
   def generate_exclude_filter_url(filter_type, filter_value)
     
   end
   
-  # ============================
+  def generate_sort_url(sort_by, sort_order)
+    params_dup = params.clone
+    params_dup[:sortby] = sort_by.downcase
+    params_dup[:sortorder] = sort_order.downcase
+    
+    return services_url(params_dup)
+  end
+  
+  def is_sort_selected(sort_by, sort_order)
+    return params[:sortby] == sort_by.downcase && params[:sortorder] == sort_order.downcase
+  end
+  
+  # ========================================
 end

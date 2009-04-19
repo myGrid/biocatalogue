@@ -14,10 +14,10 @@
 
 <span style="vertical-align: middle; margin-left: 0.3em;">
 	<select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
-		<option value="<%= url_for({ :sortby => 'created', :sortorder => 'desc' }) -%>" <%= "selected" if params[:sortby] == "created" and params[:sortorder] == "desc" -%>>
+		<option value="<%= generate_sort_url('created', 'desc') -%>" <%= "selected" if is_sort_selected('created', 'desc') -%>>
 			Newest
 		</option>
-		<option value="<%= url_for({ :sortby => 'created', :sortorder => 'asc' }) -%>" <%= "selected" if params[:sortby] == "created" and params[:sortorder] == "asc" -%>>
+		<option value="<%= generate_sort_url('created', 'asc') -%>" <%= "selected" if is_sort_selected('created', 'asc') -%>>
 			Earliest
 		</option>
 	</select>

@@ -1734,4 +1734,9 @@ div.facets li {
 	margin-right: 0.6em;
 }
 
+div.facets .count {
+	margin-left: 0.2em;
+	font-size: 85%;
+}
+
 /* END facets box */
