@@ -30,9 +30,18 @@
 					<b>Operation:</b>
 					<span class="operation_name" style="font-size: 1.2em;"><%= h operation.name -%></span>
 					
-					<div style="margin-top: 0.6em;">
+					<div style="margin-top: 0.6em; margin-bottom: 1em;">
 						<%= render :partial => "annotations/name_aliases",
 										 	 :locals => { :annotatable => operation } -%>
+					</div>
+					
+					<div>
+						<b>Parameter Order:</b>
+						<% unless operation.parameter_order.blank? %>
+							<%= h(operation.parameter_order) -%>
+						<% else %>
+							<span class="none_text">unknown</span>
+						<% end %>
 					</div>
 					
 					<div>
