@@ -59,8 +59,18 @@ class RestService < ActiveRecord::Base
     "REST"
   end
   
-  # This method returns a count of all the annotations for this REST Service.
-  # This takes into account annotations on all the child resources/methods/parameters/representations.
+  def total_db_metadata_fields_count
+    count = 0
+    
+    count += 1 unless self.description.blank?
+    count += 1 unless self.documentation_url.blank?
+    
+    # TODO: get counts for resources, methods, parameters and representations.
+    
+    return count
+  end
+  
+  # This method returns a count of all the annotations for this RestService and its child resources/methods/parameters/representations.
   def total_annotations_count(source_type)
     count = 0
     

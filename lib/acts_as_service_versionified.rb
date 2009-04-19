@@ -72,6 +72,11 @@ module BioCatalogue
           ""  
         end
         
+        def total_db_metadata_fields_count
+          0
+        end
+        
+        # NOTE: this method should ONLY take into account annotations stored through the annotations plugin.
         def total_annotations_count(source_type)
           0
         end

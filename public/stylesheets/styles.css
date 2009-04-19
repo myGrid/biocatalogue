@@ -1493,6 +1493,8 @@ ul.tabbernav li.tabberactive a:hover
 
 .annotations_counts_box {
 	font-weight: bold;
+	font-size: 0.9em;
+	line-height: 1.0;
 	color: #333333;
 	vertical-align: middle;
 	display: inline-block;
@@ -1503,6 +1505,7 @@ ul.tabbernav li.tabberactive a:hover
 	padding: 5px 3px 5px 7px;
 	border: 0 solid #DDD;
 	border-width: 2px 0 2px 0;
+	vertical-align: middle;
 }
 
 .annotations_counts_box img {
@@ -1514,6 +1517,10 @@ ul.tabbernav li.tabberactive a:hover
 .annotations_counts_box span.total {
 	border-left: 2px solid #DDD;
 	background-color: #DDD;
+}
+
+.annotations_counts_box img {
+	vertical-align: middle;
 }
 
 .annotations_counts_box span.end {

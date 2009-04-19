@@ -8,19 +8,26 @@
 
 %>
 
+<% counts = metadata_counts_for_service(service) %>
+
 <span class="annotations_counts_box">
-	<% content_tag(:span, :class => "total", :title => tooltip_title_attrib("Overall number of extra annotations on this service and its parts"))  do %>
-		Total: <%= total_number_of_annotations_for_service(service) -%>
-		<%= image_tag('page.png', :alt => "Overall number of extra annotations") -%>
+	<% content_tag(:span, :class => "total", :title => tooltip_title_attrib("Overall number of annotations on this service and its parts"))  do %>
+		Total: <%= counts[:total] -%>
+		<%= image_tag('note.png', :alt => "Overall number of annotations on this service and its parts") -%>
 	<% end %>
 	
-	<% content_tag(:span, :class => "annotation_source_user", :title => tooltip_title_attrib("Total number of user submitted annotations on this service and its parts"))  do %>
-		<%= total_number_of_annotations_for_service(service, "User") -%>
+	<% content_tag(:span, :class => "annotation_source_provider", :title => tooltip_title_attrib("Total number of annotations sourced from service provider(s)"))  do %>
+		<%= counts[:providers] -%>
+		<%= image_tag('page_white_code.png', :alt => "Total number of annotations sourced from service provider(s)") -%>
+	<% end %>
+	
+	<% content_tag(:span, :class => "annotation_source_registry", :title => tooltip_title_attrib("Total number of annotations sourced from other registries"))  do %>
+		<%= counts[:registries] -%>
+		<%= image_tag('page_white_link.png', :alt => "Total number of annotations sourced from other registries") -%>
+	<% end %>
+	
+	<% content_tag(:span, :class => "annotation_source_user end", :title => tooltip_title_attrib("Total number of user submitted annotations"))  do %>
+		<%= counts[:users] -%>
 		<%= image_tag('user.png', :alt => "Total number of user submitted annotations") -%>
-	<% end %>
-	
-	<% content_tag(:span, :class => "annotation_source_registry end", :title => tooltip_title_attrib("Total number of annotations from other registries on this service and its parts"))  do %>
-		<%= total_number_of_annotations_for_service(service, "Registry") -%>
-		<%= image_tag('book_addresses.png', :alt => "Total number of annotations from other registries") -%>
 	<% end %>
 </span>
