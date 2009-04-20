@@ -219,11 +219,11 @@ module ApplicationHelper
         login_text = "Log in to add #{options[:attribute_name].nil? ? "annotation" : options[:attribute_name].downcase}"
         
         link_content_inner_html = image_tag(icon_filename_to_use, :style => 'vertical-align:middle;margin-right:0.3em;') if options[:show_icon] == true
-        link_content_inner_html = link_content_inner_html + content_tag(:span, login_text, :style => "vertical-align: middle;") unless options[:link_text].blank?
+        link_content_inner_html = link_content_inner_html + content_tag(:span, login_text, :style => "vertical-align: middle; text-decoration: underline;") unless options[:link_text].blank?
         
         link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
         
-        link_content = link_to(link_content_inner_html, login_path, :class => link_class, :style => "vertical-align: middle; #{options[:style]}", :title => tooltip_title_attrib(login_text))
+        link_content = link_to(link_content_inner_html, login_path, :class => link_class, :style => "text-decoration: none; vertical-align: middle; #{options[:style]}", :title => tooltip_title_attrib(login_text))
         
         # Add the greyed out inactive bit if required
         if options[:only_show_on_hover] == true

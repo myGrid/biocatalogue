@@ -73,17 +73,28 @@
 						<div style="float: left; width: 73%;">
 							<div style="margin-bottom: 0.6em;">
 								<span class="operation_name"><%= h input.name -%></span>
-								<% unless input.computational_type.blank? %>
-							  	(<%= h input.computational_type -%>) 
-								<% end %>
 							</div>
 							
-							<%= render :partial => "annotations/name_aliases",
-									 	 		 :locals => { :annotatable => input } -%>
+							<div style="margin-bottom: 1em;">
+								<%= render :partial => "annotations/name_aliases",
+										 	 		 :locals => { :annotatable => input } -%>
+							</div>
+								 
+							<div>
+								<b>Computational Type:</b>
+								<% unless input.computational_type.blank? %>
+									<%= h(input.computational_type) -%>
+								<% else %>
+									<span class="none_text">unknown</span>
+								<% end %>
+							</div> 
+						 
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => input } -%>
+												 
 							<%= render :partial => "annotations/examples",
 							 	 				 :locals => { :annotatable => input } -%>
+												 
 							<%= render :partial => "annotations/other_annotations",
 						 		 		 		 :locals => { :annotatable => input } -%>
 						</div>
@@ -105,17 +116,28 @@
 						<div style="float: left; width: 73%;">
 							<div style="margin-bottom: 0.6em;">
 								<span class="operation_name"><%= h output.name -%></span>
-								<% unless output.computational_type.blank? %>
-							  	(<%= h output.computational_type -%>) 
-								<% end %>
 							</div>
 							
-							<%= render :partial => "annotations/name_aliases",
-									 	 		 :locals => { :annotatable => output } -%>
+							<div style="margin-bottom: 1em;">
+								<%= render :partial => "annotations/name_aliases",
+										 	 		 :locals => { :annotatable => output } -%>
+							</div>
+							
+							<div>
+								<b>Computational Type:</b>
+								<% unless output.computational_type.blank? %>
+									<%= h(output.computational_type) -%>
+								<% else %>
+									<span class="none_text">unknown</span>
+								<% end %>
+							</div> 
+												 
 							<%= render :partial => "annotations/descriptions",
 							 	 				 :locals => { :annotatable => output } -%>
+												 
 							<%= render :partial => "annotations/examples",
 							 	 				 :locals => { :annotatable => output } -%>
+												 
 							<%= render :partial => "annotations/other_annotations",
 						 		 		 		 :locals => { :annotatable => output } -%>
 						</div>

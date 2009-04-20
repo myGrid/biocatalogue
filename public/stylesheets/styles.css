@@ -1408,7 +1408,6 @@ ul.tabbernav li.tabberactive a:hover
 .annotations_container .inactive {
 	color: #BBB;
 	line-height: 1.0;
-	text-decoration: none;
 	display:-moz-inline-block;
 	display:-moz-inline-box;
 	display: inline-block;
@@ -1416,6 +1415,7 @@ ul.tabbernav li.tabberactive a:hover
 
 .annotations_container .active { 
 	line-height: 1.0;
+	text-decoration: none;
 	color: #333;
 	display: none;
 }
