@@ -6,6 +6,8 @@
 
 class SearchController < ApplicationController
   
+  before_filter :set_no_layout, :only => [ :ignore_last ]
+  
   def show
     
     # First check that search is available
@@ -72,12 +74,22 @@ class SearchController < ApplicationController
         logger.error(ex)
       end
       
+      session[:last_search] = request.url if @count > 0
+      
       respond_to do |format|
         format.html # show.html.erb
         format.xml { set_no_layout } # show.xml.builder
       end
     else
       redirect_to :controller => @type, :action => "search", :query => params[:query]
+    end
+  end
+  
+  def ignore_last
+    session[:last_search] = ""
+    
+    respond_to do |format|
+      format.js { render :text => "" }
     end
   end
   

@@ -23,9 +23,10 @@ ActionController::Routing::Routes.draw do |map|
   map.create_rating '/ratings', :controller => 'ratings', :action => 'create', :conditions => { :method => :post }
   map.destroy_rating '/ratings', :controller => 'ratings', :action => 'destroy', :conditions => { :method => :delete }
   
-  # Search
+  # Search (ordering is important!)
   map.search '/search', :controller => 'search', :action => 'show'
   map.connect '/search.:format', :controller => 'search', :action => 'show'
+  map.ignore_last_search '/search/ignore_last', :controller => 'search', :action => 'ignore_last', :conditions => { :method => :post }
   map.connect '/search/:query', :controller => 'search', :action => 'show'
   map.connect '/search.:format/:query', :controller => 'search', :action => 'show'
 
