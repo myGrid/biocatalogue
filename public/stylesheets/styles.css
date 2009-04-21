@@ -382,11 +382,10 @@ small {
  */
 #header-region {
   height: 0.75em;
-  /*background: #e9f7cc url(images/bg-navigation.png) repeat-x 50% 100%;*/
 }
 
 #wrapper {
-  background: #e9f7cc url(../images/central_part_3.gif) repeat-x top center;
+  background: #e9f7cc url(../images/central_part_small.gif) repeat-x top center;
 }
 
 #wrapper #container {
@@ -396,8 +395,8 @@ small {
 }
 
 #wrapper #container #header {
-  height: 97px;
-  /*border: 1px solid #ff0000;*/
+    padding-top: 1.1em;
+    height: 5em;
 }
 
 #wrapper #container #header #logo-floater {
@@ -729,8 +728,7 @@ span.clear {
 #wrapper #container #header #login_links {
 	clear: both;
 	float: right;
-	padding: 3.75em 0.5em 0 0;
-	/*margin: auto auto 0 auto;*/
+	padding: 1.2em 0.5em 0 0;
 	margin-bottom: 0;
 	position: relative;
 	z-index: 4;
