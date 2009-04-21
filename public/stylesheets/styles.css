@@ -401,7 +401,7 @@ small {
 
 #wrapper #container #header #logo-floater {
   position: absolute;
-  padding-top: 5px;
+  padding-top: 8px;
 }
 
 /* With 2 columns, require a minimum width of 800px. */
