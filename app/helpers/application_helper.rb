@@ -498,4 +498,8 @@ module ApplicationHelper
                                      :alt => latest_status.status, 
                                      :title => tooltip_title_attrib(tooltip_text))
   end
+  
+  def render_breadcrumbs_after_home
+    render :partial => "breadcrumbs" if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb'))
+  end
 end

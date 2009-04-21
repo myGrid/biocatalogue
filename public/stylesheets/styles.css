@@ -347,7 +347,8 @@ small {
 #last_search_notice {
 	text-align: right;
 	line-height: 1.0;
-	margin-bottom: 0.5em;
+	padding: 0;
+	margin: 0;
 }
 
 #last_search_notice * {
@@ -509,14 +510,10 @@ body.sidebar-right #footer {
   color: #ff7400;
 }
 
-/*
-#wrapper #container .breadcrumb {
-  position: absolute;
-  top: 15px;
-  left: 35px;
-  z-index: 3;
+#wrapper #container #content {
+	margin-top: 2em;
 }
-*/
+
 #wrapper #container #action_bar {
   position: absolute;
   top: 10px;
@@ -547,6 +544,48 @@ body.sidebar-right #footer {
 body.sidebar-right #footer {
   margin-right: -210px;
 }
+
+/* BEGIN breadcrumbs */
+
+#breadcrumbs_bar {
+  z-index: 3;
+	font-size: 90%;
+	/*background-color: #F8FDF0;
+	border: 1px solid #E9F7CC;*/
+	color: #666666;
+	margin: -5px -15px 0 -15px;
+}
+
+#breadcrumbs_bar table {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+#breadcrumbs_bar td {
+	text-align: left;
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+}
+
+#breadcrumbs_bar td * {
+	vertical-align: middle;
+}
+
+ul.breadcrumb_list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+	vertical-align: middle;
+}
+
+ul.breadcrumb_list li {
+	display: inline;
+}
+
+/* END breadcrumbs */
 
 /**
  * Primary navigation

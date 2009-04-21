@@ -1,0 +1,28 @@
+<%
+
+# BioCatalogue: app/views/widgets/_breadcrumbs_bar.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div id="breadcrumbs_bar">
+	<table>
+		<tr>
+			<td>
+				<ul class="breadcrumb_list">
+					<li><%= link_to "Home", home_url %></li>
+					<li><b>&#187;</b></li>
+					<%= render_breadcrumbs_after_home %>
+				</ul>
+			</td>
+			<td style="text-align: right; padding-left: 1em;">
+				<%#= render :partial => "layouts/bookmark_widget" if USE_BOOKMARK_WIDGET %>
+				<%= render :partial => "widgets/last_search_notice" -%>
+			</td>
+		</tr>
+	</table>
+</div>
+

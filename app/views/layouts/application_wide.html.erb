@@ -40,35 +40,25 @@
 			      
 			    <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
 			    	<%= render :partial => "widgets/login_box" -%>
-					<%= render :partial => "widgets/action_bar" -%>
-					
-					<% unless session[:last_search].blank? or controller.controller_name.downcase == "search" %>
-						<div id="last_search_notice">
-							<span id="last_search_notice_text">
-								<%= link_to("Click here to return back to your last search results", session[:last_search]) -%>
-								<%= link_to_remote(image_tag("close.gif"),
-																	 { :url => ignore_last_search_url,
-																		 :method => :post,
-																		 :update => { :success => "last_search_notice_text" },
-																		 :complete => "new Effect.Fade('last_search_notice', { duration: 0.7 });" },
-																	 { :style => "margin-left:0.2em;",
-																		 :title => tooltip_title_attrib("Click this close button to get rid of this message") }) -%>
-							</span>
-						</div>
-					<% end %>	    	
-                    
-					<% if flash[:error] %>
-						<div id="error_flash">
-							<%= white_list flash[:error] %>
-						</div>
-					<% end %>
-    				<% if flash[:notice] %>
-						<div id="notice_flash">
-							<%= white_list flash[:notice] %>
-						</div>
-					<% end %>
+						<%= render :partial => "widgets/action_bar" -%>
 						
-					<%= yield -%>          
+						<%= render :partial => "widgets/breadcrumbs_bar" -%>
+          
+						<div id="content">
+							<% if flash[:error] %>
+								<div id="error_flash">
+									<%= white_list flash[:error] %>
+								</div>
+							<% end %>
+							
+	    				<% if flash[:notice] %>
+								<div id="notice_flash">
+									<%= white_list flash[:notice] %>
+								</div>
+							<% end %>
+								
+							<%= yield -%>
+						</div>        
           
           			<span class="clear"></span>
 					
