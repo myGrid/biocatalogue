@@ -20,7 +20,7 @@ SERVICE_TYPES = {
 
 # List of all the valid search types available, in the order they should be shown.
 # (must be in lowercase and in the plural form and MUST correspond to a resource type in the system)
-VALID_SEARCH_TYPES = [ "services", "users", "service_providers" ]
+VALID_SEARCH_TYPES = [ "services", "users", "service_providers", "registries" ]
 
 # Initialise the country codes library
 CountryCodes

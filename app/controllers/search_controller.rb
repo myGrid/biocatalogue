@@ -114,7 +114,7 @@ protected
     # As new models are indexed (and therefore need to be searched on) add them here.
     models = [ Service, ServiceVersion, ServiceDeployment,
                SoapService, SoapOperation, SoapInput, SoapOutput,
-               User, ServiceProvider,
+               User, ServiceProvider, Registry,
                Annotation ]
     
     

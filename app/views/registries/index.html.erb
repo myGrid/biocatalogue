@@ -8,21 +8,17 @@
 
 %>
 
-<h1>Listing registries</h1>
+<% t "Registries" -%>
 
-<table>
-  <tr>
-  </tr>
+<h1>
+	Registries
+	<%= info_icon_with_tooltip("These are the other registries that we connect to and harvest metadata from") -%>
+</h1>
 
-<% for registry in @registries %>
-  <tr>
-    <td><%= link_to 'Show', registry %></td>
-    <td><%= link_to 'Edit', edit_registry_path(registry) %></td>
-    <td><%= link_to 'Destroy', registry, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @registries } %>
 
-<br />
+<div id="latest_registries" style="margin: 1em 0;">
+	<%= render :partial => "listing", :locals => { :items => @registries } %>
+</div>
 
-<%= link_to 'New registry', new_registry_path %>
+<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @registries } %>

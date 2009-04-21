@@ -10,8 +10,10 @@
 
 <% t "#{h @registry.display_name}" -%>
 
-<h1>Registry: <span class="orange_highlight"><%=h @registry.display_name %></span></h1>
-
+<h1>
+	Registry: <span class="orange_highlight"><%=h @registry.display_name %></span>
+	<%= info_icon_with_tooltip("This is an external registry that we connect to and harvest metadata from") -%>
+</h1>
 
 <br/>
 
@@ -27,7 +29,7 @@
 		<p><b>Description:</b></p>
 		<div class="box_description">
 			<% unless @registry.description.blank? %>
-				<%= h(@registry.description) -%>
+				<%= white_list(simple_format(@registry.description)) -%>
 			<% else %>
 				<span class="none_text">None</span>
 			<% end %>

@@ -11,7 +11,8 @@ class RegistriesController < ApplicationController
   # GET /registries
   # GET /registries.xml
   def index
-    @registries = Registry.find(:all)
+    @registries = Registry.paginate(:page => params[:page],
+                                :order => 'created_at DESC')
 
     respond_to do |format|
       format.html # index.html.erb
