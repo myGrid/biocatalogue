@@ -19,14 +19,18 @@
 	<%= service_location_flags(@service) -%>
 </h1>
 
-<span style="float: right; line-height: 1.0;">
-	<span style="margin-right: 2em; vertical-align: top; position: relative; top: 18px; *top: 9px;">
+<div class="inline-block" style="float: right; line-height: 1.0; text-align: right;">
+	<a href="#comments" style="font-size: 90%; font-weight: bold; color: #555;">View the comments on this service</a>
+	
+	<br/>
+	
+	<span style="vertical-align: top; position: relative; top: 25px;">
 		<%= render :partial => "services/annotation_counts",
 							 :locals => { :service => @service } -%>
 	</span>
 	
 	<%= service_latest_status_symbol(@service) -%>
-</span>
+</div>
 
 <div style="margin-top: 1em;">
 	<%= render :partial => "annotations/name_aliases",
@@ -131,7 +135,7 @@
 <div style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
 	<h2>Comments</h2>
 	
-	<%= disqus_comment_counts -%>
+	<a name="comments"><%= disqus_comment_counts -%></a>
 	
 	<%= disqus_thread -%>
 </div>

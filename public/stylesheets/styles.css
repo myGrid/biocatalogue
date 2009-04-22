@@ -296,6 +296,12 @@ small {
 	line-height: 2.0;
 }
 
+.inline-block {
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
+}
+
 .faded {
 	color: #999;
 }
