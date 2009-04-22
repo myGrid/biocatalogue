@@ -18,53 +18,22 @@
 	<%= link_to("Show all services", "#{services_url}#browse", :class => "standout_link", :style => "float:right; font-size: 90%; margin: 1px;") -%>	
 	<div id="facets_header">
 		<span class="text">Filtering</span>
+		<span style="vertical-align:middle; margin-left:0.5em;"><%= help_icon_with_tooltip("You can build up a filtered list of services by selected/deselecting the options below...") -%></span>
 	</div>
 </div>
 
 <div class="facets">
 	<% service_type_facets = get_facets_for_service_types %>
-	<table>
-		<tr>
-			<td class="type">
-				Service Types
-				<span class="faded">(<%= service_type_facets.length -%>)</span>
-			</td>
-			<td>
-				<ul>
-					<% service_type_facets.each do |f| %>
-						<li>
-							<%= link_to(h(f["name"]), generate_include_filter_url(:type, f["name"])) -%>
-							<span class="faded count">
-								(<%= pluralize(f["count"], "service") -%>)
-							</span>
-						</li>
-					<% end %>
-				</ul>
-			</td>
-		</tr>	
-	</table>
+	<%= render :partial => "faceting/facet_options", 
+						 :locals => { :facets => service_type_facets,
+													:facet_type_display_name => "Service Types",
+													:facet_type_query_key => :t } -%>
 	
 	<hr/>
 	
 	<% service_provider_facets = get_facets_for_service_providers %>
-	<table>
-		<tr>
-			<td class="type">
-				Service Providers
-				<span class="faded">(<%= service_provider_facets.length -%>)</span>
-			</td>
-			<td>
-				<ul>
-					<% service_provider_facets.each do |f| %>
-						<li>
-							<%= link_to(h(f["name"]), generate_include_filter_url(:prov, f["name"])) -%>
-							<span class="faded count">
-								(<%= pluralize(f["count"], "service") -%>)
-							</span>
-						</li>
-					<% end %>
-				</ul>
-			</td>
-		</tr>	
-	</table>
+	<%= render :partial => "faceting/facet_options", 
+						 :locals => { :facets => service_provider_facets,
+													:facet_type_display_name => "Service Providers",
+													:facet_type_query_key => :p } -%>
 </div>

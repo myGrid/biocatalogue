@@ -133,21 +133,19 @@ class ServicesController < ApplicationController
     conditions = { }
     joins = [ ]
     
-    unless params[:filter].blank?
-      params[:filter].each do |filter_type, filter_values|
+    unless params[:f].blank?
+      params[:f].each do |filter_type, filter_values|
         unless filter_values.blank?
           case filter_type.to_s.downcase
-            when 'type'
+            when 't'
               service_types = [ ]
               filter_values.each do |f|
                 # TODO: strip this out into a more generic mapping table (prob in config or lib)
                 case f.downcase
                   when 'soap'
                     service_types << 'SoapService'
-                    @filter_message = "The services index has been filtered to only show SOAP based services."
                   when 'rest'
                     service_types << 'RestService'
-                    @filter_message = "The services index has been filtered to only show REST based services."
                 end
               end
               
@@ -155,21 +153,19 @@ class ServicesController < ApplicationController
                 conditions[:service_versions] = { :service_versionified_type => service_types }
                 joins << :service_versions
               end
-            when 'prov'
+            when 'p'
               provider = filter_values
               
               unless provider.blank?
                 conditions[:service_deployments] = { :service_providers => { :name => provider } }
                 joins << [ { :service_deployments => :provider } ]
-                
-                @filter_message = "The services index has been filtered to only show services from the provider: '#{provider}'"
               end
           end
         end
       end
     end
     
-    #flash.now[:notice] = "The services index has been filtered. Please see below." unless conditions.blank? or joins.blank?
+    @filter_message = "The services index has been filtered using the selected options below..." unless conditions.blank? or joins.blank?
     
     @services = Service.paginate(:page => params[:page],
                                  :order => order,

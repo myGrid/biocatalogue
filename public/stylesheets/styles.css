@@ -1796,6 +1796,7 @@ ul.tabbernav li.tabberactive a:hover
 #facets_header .text {
 	font-size: 110%;
 	font-weight: bold;
+	vertical-align: middle;
 }
 
 div.facets {
@@ -1810,6 +1811,10 @@ div.facets table {
 	width: 99%;
 }
 
+div.facets td {
+	
+}
+
 div.facets td.type {
 	width: 150px; 
 	font-weight: bold;
@@ -1820,13 +1825,50 @@ div.facets td.type {
 div.facets li {
 	display: inline;
 	margin: 0;
-	margin-right: 0.6em;
+	margin-right: 0.5em;
+	line-height: 1.7;
+	*line-height: 1.9;
+	font-size: 95%;
 }
 
-div.facets .count {
-	margin-left: 0.2em;
-	font-size: 85%;
+div.facets li * {
+	padding: 0;
 }
+
+div.facets li a {
+	text-decoration: none;
+	border: 1px dotted transparent;
+	padding: 0 0.2em;
+}
+
+div.facets li a * {
+	vertical-align: middle;
+}
+
+div.facets li a:hover {
+	border: 1px dotted #D2EE9B;
+	background-color: #E9F7CC;
+}
+
+div.facets li a.selected {
+	border: 1px dotted #D2EE9B;
+	background: url('/images/delete_faded.png') no-repeat right 80%;
+	*background-position-y: 60%;
+	background-color: #E9F7CC;
+	padding-right: 14px;
+}
+
+div.facets li a:hover.selected {
+	background: url('/images/delete.png') no-repeat right 80%;
+	*background-position-y: 60%;
+	background-color: #E9F7CC;
+}
+
+div.facets li a span.text {
+	text-decoration: underline;
+}
+
+div.facets li a span.count { }
 
 div.facets hr {
 	background: #DDD;
