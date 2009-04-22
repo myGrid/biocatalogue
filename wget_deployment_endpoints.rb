@@ -31,8 +31,8 @@ Service.find(:all).each do |service|
     msg = ''
     
     begin
-      open(deployment.endpoint,
-           'User-Agent' => 'Ruby-Wget').read
+      res = open(deployment.endpoint,
+              'User-Agent' => 'Ruby-Wget').read
       status = 'Online'
       msg = "connected successfully"
       
@@ -56,7 +56,8 @@ Service.find(:all).each do |service|
       puts status
       on_stat   = OnlineStatus.new(:status => status, 
                                 :pingable_id =>  deployment.id,
-                                :pingable_type => deployment.class.to_s)
+                                :pingable_type => deployment.class.to_s,
+                                :message => msg)
       begin
         on_stat.save!
       rescue Exception => ex

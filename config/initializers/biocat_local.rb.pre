@@ -34,3 +34,6 @@ Disqus::defaults[:account] = "biocatalogue-test"
 Disqus::defaults[:developer] = true # allows for threads to work on localhost during dev. Should be set to false on production sites!
 
 # ====================================================
+
+# Enable or disable endpoint status check icon in view
+DISABLE_STATUS_CHECK = true

@@ -55,7 +55,9 @@ class ServiceDeployment < ActiveRecord::Base
                                :conditions => ["pingable_id= ? AND pingable_type= ?", self.id, self.class.to_s ],
                                :order => "created_at DESC")
                                     
-    return status || OnlineStatus.new(:status => "Unknown", :pingable_id => self.id, :pingable_type => self.class.to_s)
+    return status || OnlineStatus.new(:status => "Unchecked", :pingable_id => self.id, 
+                                      :pingable_type => self.class.to_s, 
+                                      :message => "status unchecked ")
   end
   
 protected

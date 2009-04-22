@@ -482,19 +482,27 @@ module ApplicationHelper
   def service_latest_status_symbol(service)
     return '' if service.nil?
     
-    # DISABLED FOR NOW...
-    return ''
+    if DISABLE_STATUS_CHECK 
+      return ''
+    end
     
     # Service latest status - using the only available deployment for now. In the future statuses will be displayed for each deployment
     latest_status = service.service_deployments[0].latest_online_status
     
     tooltip_text = "Service status: <b>#{latest_status.status}</b>"
-    tooltip_text = tooltip_text + " (last checked #{distance_of_time_in_words_to_now(latest_status.created_at)} ago)" unless latest_status.status.downcase == "unknown"
+    tooltip_text = tooltip_text + " (last checked #{distance_of_time_in_words_to_now(latest_status.created_at)} ago)" unless latest_status.status.downcase == "unchecked"
+    
+    # Unknown status means that a check was actually made but due to some condition, cannot conclude on the status
+    # Possible causes are connection time out, connection refused
+    if latest_status.status.downcase == "unknown"
+      tooltip_text = tooltip_text + "<br> Message : #{latest_status.message} </br>"
+    end
     
     return image_tag(onlooker_format(latest_status.status, 
                                      :online_img => "/images/accepted_48.png", 
                                      :offline_img => "/images/cancel_48.png", 
-                                     :unknown_img => "/images/circle_blue.png"), 
+                                     :unknown_img => "/images/circle_orange.png", 
+                                     :default_img => "/images/circle_blue.png"),
                                      :alt => latest_status.status, 
                                      :title => tooltip_title_attrib(tooltip_text))
   end
