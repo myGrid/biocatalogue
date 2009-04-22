@@ -52,7 +52,20 @@
 			</p>
 			<p style="margin-top: 0.3em;">
 				<%= f.text_area :value, :size => "50x10", :style => "width: 98%;" -%>
+				
+				<% if @annotation.attribute_name.downcase == "tag" %>
+					<div class="auto_complete" id="tags_auto_complete"></div>
+					<%= auto_complete_field :annotation_value,
+							:update => "tags_auto_complete",
+							:url => tags_auto_complete_url,
+							:tokens => ',',
+							:indicator => "add_annotation_value_spinner" -%>
+				<% end %>
 			</p>
+			
+			<%= image_tag "spinner.gif", :id => "add_annotation_value_spinner", :style => "margin-left: 1em; display: none;" %>
+			
+			<br/>
 			
 			<% if @multiple -%>
 				<%= hidden_field_tag "separator", @separator -%>

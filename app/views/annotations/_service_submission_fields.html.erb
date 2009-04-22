@@ -34,8 +34,15 @@
 
 <!-- Tags -->
 <p class="high_linespaced">
-	Add tags/keywords to describe this service (comma seperated):
+	Add tags/keywords to describe this service (seperated by commas):
 	<br/>
-	<%= text_field_tag "annotations[tags]", params[:annotations][:tags], :disabled => fields_disabled, :style => "width: 98%;" %>
+	<%= text_field_tag "annotations[tags]", params[:annotations][:tags], :id => "tags_field", :disabled => fields_disabled, :style => "width: 98%;", :autocomplete => "off"  %>
+	<div class="auto_complete" id="tags_auto_complete"></div>
+	<%= image_tag "spinner.gif", :id => "addtag_indicator", :style => "display: none;" %>
+	<%= auto_complete_field :tags_field,
+			:update => "tags_auto_complete",
+			:url => tags_auto_complete_url,
+			:tokens => ',',
+			:indicator => "addtag_indicator" -%>
 </p>
 

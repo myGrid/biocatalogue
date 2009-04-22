@@ -65,13 +65,32 @@ module BioCatalogue
             GROUP BY annotations.value 
             ORDER BY COUNT(*) DESC"
       
-      # If limit has been provided in the URL then add that to query
+      # If limit has been provided then add that to query
       # (this allows customisation of the size of the tag cloud, whilst keeping into account ranking of tags).
       if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
         sql += " LIMIT #{limit}"
       end
        
       return self.sort_tags_alphabetically(ActiveRecord::Base.connection.select_all(sql))
+    end
+    
+    # Returns an array of suggested tag names given the tag fragment.
+    def self.get_tag_suggestions(tag_fragment, limit=nil)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = [ "SELECT annotations.value AS name
+             FROM annotations 
+             INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
+             WHERE annotation_attributes.name = 'tag' AND annotations.value LIKE ?
+             GROUP BY annotations.value 
+             ORDER BY annotations.value ASC",
+             "%#{tag_fragment}%" ]
+      
+      # If limit has been provided then add that to query
+      if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
+        sql[0] = sql[0] + " LIMIT #{limit}"
+      end
+      
+      return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
     end
     
     # A special sort method that takes into account special cases like ontological term URIs etc.

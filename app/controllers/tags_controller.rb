@@ -5,6 +5,10 @@
 # See license.txt for details.
 
 class TagsController < ApplicationController
+  before_filter :set_no_layout, :only => [ :auto_complete ]
+  
+  skip_before_filter :verify_authenticity_token, :only => [ :auto_complete ]
+  
   before_filter :find_tags, :only => [ :index ]
   before_filter :find_tag_and_results, :only => [ :show ]
   
@@ -21,20 +25,17 @@ class TagsController < ApplicationController
   end
   
   def auto_complete
-#    text = '';
-#    
-#    if params[:tag_list]
-#      text = params[:tag_list]
-#    elsif params[:tags_input]
-#      text = params[:tags_input]
-#    end
-#    
-#    @tags = Tag.find(:all, 
-#                     :conditions => ["LOWER(name) LIKE ?", text.downcase + '%'], 
-#                     :order => 'name ASC', 
-#                     :limit => 20, 
-#                     :select => 'DISTINCT *')
-#    render :inline => "<%= auto_complete_result @tags, 'name' %>"
+    tag_fragment = '';
+    
+    if params[:annotations] and params[:annotations][:tags]
+      tag_fragment = params[:annotations][:tags]
+    elsif  params[:annotation] and params[:annotation][:value]
+      tag_fragment = params[:annotation][:value]
+    end
+    
+    @tags = BioCatalogue::Tags.get_tag_suggestions(tag_fragment, 20)
+                     
+    render :inline => "<%= auto_complete_result @tags, 'name' %>"
   end
   
 protected

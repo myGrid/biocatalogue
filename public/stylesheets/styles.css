@@ -1805,3 +1805,36 @@ div.facets .count {
 }
 
 /* END facets box */
+
+/* BEGIN autocomplete styles */
+
+div.auto_complete {
+  width: 300px; 
+  background: #fff;
+	z-index: 10000;
+} 
+
+div.auto_complete ul { 
+  border: 1px solid #888; 
+  margin: 0px; 
+  padding: 0px; 
+  width: 100%; 
+  list-style-type: none; 
+} 
+
+div.auto_complete ul li { 
+  margin: 0px; 
+  padding: 3px; 
+} 
+
+div.auto_complete ul li.selected { 
+  background-color: #ffb; 
+} 
+
+div.auto_complete ul strong.highlight { 
+  color: #800; 
+  margin: 0px; 
+  padding: 0px; 
+} 
+
+/* END autocomplete styles */
