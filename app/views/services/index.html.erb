@@ -31,6 +31,8 @@
 	<%= link_to 'Submit a Service', new_service_path -%>
 </span>
 
+<a name="browse"></a>
+
 <h1>Browse Web Services</h1>
 
 <%= render :partial => 'index_facets' %>
@@ -39,7 +41,7 @@
 <br/>
 
 <div>
-	<span style="float:right; margin-left: 2em;">
+	<span class="inline-block" style="float:right; margin-left: 2em;">
 		<%= render :partial => 'index_sortby' %>
 	</span>
 	

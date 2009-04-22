@@ -162,7 +162,7 @@ class ServicesController < ApplicationController
                 conditions[:service_deployments] = { :service_providers => { :name => provider } }
                 joins << [ { :service_deployments => :provider } ]
                 
-                @filter_message = "The services index has been filtered to only show services from the provider: '#{provider}'."
+                @filter_message = "The services index has been filtered to only show services from the provider: '#{provider}'"
               end
           end
         end

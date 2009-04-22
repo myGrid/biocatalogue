@@ -160,7 +160,10 @@ module ServicesHelper
     params_dup[:filter] = { }
     params_dup[:filter][filter_type] = filter_value
     
-    return services_url(params_dup)
+    # Reset page param
+    params_dup.delete(:page)
+    
+    return "#{services_url(params_dup)}#browse"
   end
 
   def generate_exclude_filter_url(filter_type, filter_value)
@@ -171,8 +174,11 @@ module ServicesHelper
     params_dup = params.clone
     params_dup[:sortby] = sort_by.downcase
     params_dup[:sortorder] = sort_order.downcase
+      
+    # Reset page param
+    params_dup.delete(:page)
     
-    return services_url(params_dup)
+    return "#{services_url(params_dup)}#browse"
   end
   
   def is_sort_selected(sort_by, sort_order)
