@@ -56,7 +56,7 @@ body {
   /*font: 12px/170% "Trebuchet MS";*/
   font:13px/1.231 "Trebuchet MS", Arial, sans-serif;
   color: #333333;
-  min-width: 700px;
+  min-width: 950px;
 }
 
 input {
@@ -444,7 +444,8 @@ body.sidebar-right #squeeze {
 #wrapper #container #center #squeeze {
   background: #fff url(../images/central_bar_big.png) repeat-x 50% 0;
   position: relative;
-  min-width: 600px;
+  /*min-width: 600px;*/
+  min-width: 900px;
 }
 
 #wrapper #container #center .right-corner {
@@ -453,7 +454,8 @@ body.sidebar-right #squeeze {
   /*left: 10px;*/
   left: 5px;
   /*border: 1px #ff0000 solid;*/
-  min-width: 600px;
+  /*min-width: 600px;*/
+  min-width: 900px;
 }
 
 #wrapper #container #center .right-corner .left-corner {
@@ -1163,8 +1165,8 @@ body.sidebar-right #login_box {
 }
 
 #home_content {
-	width: 600px;
-	padding-top: 1em;
+	width: 950px;
+	/*padding-top: 1em;*/
 	margin: 1em auto auto auto;
 }
 
@@ -1175,7 +1177,7 @@ body.sidebar-right #login_box {
 
 #key_points {
 	clear:both;
-	margin: 1.5em 0 1em 0;
+	margin: 0 0 1em 0;
 }
 
 #key_points li {
