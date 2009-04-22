@@ -45,17 +45,7 @@
 						<%= render :partial => "widgets/breadcrumbs_bar" -%>
           
 						<div id="content">
-							<% if flash[:error] %>
-								<div id="error_flash">
-									<%= white_list flash[:error] %>
-								</div>
-							<% end %>
-							
-	    				<% if flash[:notice] %>
-								<div id="notice_flash">
-									<%= white_list flash[:notice] %>
-								</div>
-							<% end %>
+							<%= render :partial => 'layouts/flashes' %>
 								
 							<%= yield -%>
 						</div>        
