@@ -1812,6 +1812,7 @@ div.auto_complete {
   width: 300px; 
   background: #fff;
 	z-index: 10000;
+	font-size: 90%;
 } 
 
 div.auto_complete ul { 
