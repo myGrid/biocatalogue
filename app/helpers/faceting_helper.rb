@@ -8,9 +8,9 @@
 
 module FacetingHelper
   def help_text_for_filtering
-    "You can build up a filtered list of services by selecting/deselecting the options below.
+    "You can build up a filtered list of services by selecting/deselecting the options below.<br/><br/>
     Filtering results will show services from all selected Providers.
-    If you also select service types, the results will then be filtered to only show services of those type(s).
+    If you also select service types, the results will then be filtered to only show services of those type(s).<br/><br/>
     You can also just filter on service types alone."
   end
   
