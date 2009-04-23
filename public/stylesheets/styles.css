@@ -1860,7 +1860,7 @@ div.facets li a.selected {
 
 div.facets li a:hover.selected {
 	background: url('/images/delete.png') no-repeat right 80%;
-	*background-position-y: 60%;
+	*background-position-y: 50%;
 	background-color: #E9F7CC;
 }
 
