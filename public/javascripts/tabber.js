@@ -35,13 +35,39 @@
 function tabberObj(argsObj)
 {
   /* Added by Jits on 2009-03-02 to allow for anchors to select tab to open */
+	/* Modified again by Jits on 2009-04-23 to take into account anchors within tabs */
 	if ( window.location.hash && window.location.hash.match( /^#/ ) ) 
 	{ 
-		var el = document.getElementById("tab-" + window.location.hash.substr(1)); 
-		if (el) 
-		{ 
-			el.className = "tabbertab tabbertabdefault" 
-		} 
+		var hash_value = window.location.hash.substr(1);
+		var tab_el = document.getElementById("tab-" + hash_value);
+		var anchor_el = null;
+		 
+		if (tab_el == null) {
+			/* It wasn't a tab so we need to find the anchor it refers to and scroll to it. */
+			
+			anchor_el = document.getElementByName(hash_value);
+			
+			p = anchor_el.parentNode
+			
+			finish = false
+			
+			while (!finish) {
+		  	if (p) {
+		  		if (p.hasClassName('tabbertab')) {
+		  			tab_el = p;
+						finish = true;
+		  		}
+		  	}
+				else {
+					finish = true;
+				}
+	  	}
+		}
+		
+		/* Now set the class accordingly on the tab elements, to show the tab. */
+		if (tab_el) { 
+			tab_el.className = "tabbertab tabbertabdefault";
+		}
 	}
  
 	var arg; /* name of an argument to override */
