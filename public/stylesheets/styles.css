@@ -1826,49 +1826,63 @@ div.facets li {
 	display: inline;
 	margin: 0;
 	margin-right: 0.5em;
-	line-height: 1.7;
-	*line-height: 1.9;
 	font-size: 95%;
+	/*line-height: 1.8;
+	*line-height: 1.6;*/
 }
 
 div.facets li * {
 	padding: 0;
 }
 
-div.facets li a {
-	text-decoration: none;
-	border: 1px dotted transparent;
-	padding: 0 0.2em;
+div.facets li span.container {
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
+	height: 20px;
 }
 
-div.facets li a * {
+div.facets li span.container a {
+	text-decoration: none;
+	border: 1px dotted transparent;
+	padding: 1px 0 1px 4px;
 	vertical-align: middle;
 }
 
-div.facets li a:hover {
-	border: 1px dotted #D2EE9B;
-	background-color: #E9F7CC;
+div.facets li span.container a * {
+	vertical-align: middle;
 }
 
-div.facets li a.selected {
-	border: 1px dotted #D2EE9B;
-	background: url('/images/delete_faded.png') no-repeat right 80%;
-	*background-position-y: 60%;
-	background-color: #E9F7CC;
-	padding-right: 14px;
+div.facets li span.container a:hover {
+	border: 1px dotted #CCC;
+	background-color: #DDE;
 }
 
-div.facets li a:hover.selected {
-	background: url('/images/delete.png') no-repeat right 80%;
-	*background-position-y: 50%;
-	background-color: #E9F7CC;
+div.facets li span.container a.selected {
+	border: 1px dotted #CCC;
+	background-color: #DDE;
 }
 
-div.facets li a span.text {
+div.facets li span.container a:hover.selected { }
+
+div.facets li span.container a span.text {
 	text-decoration: underline;
 }
 
-div.facets li a span.count { }
+div.facets li span.container a span.count { }
+
+div.facets li span.container a.selected span.deselect {
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
+	width: 12px;
+	padding-right: 2px;
+	background: url('/images/delete_faded_darker.png') no-repeat left center;
+}
+
+div.facets li span.container a.selected:hover span.deselect {
+	background: url('/images/delete.png') no-repeat left center;
+}
 
 div.facets hr {
 	background: #DDD;

@@ -7,6 +7,13 @@
 # Faceting, filtering  and sorting helpers
 
 module FacetingHelper
+  def help_text_for_filtering
+    "You can build up a filtered list of services by selecting/deselecting the options below.
+    Filtering results will show services from all selected Providers.
+    If you also select service types, the results will then be filtered to only show services of those type(s).
+    You can also just filter on service types alone."
+  end
+  
   # Gets all the service providers and their counts of services.
   # Example return data:
   # [ { "name" => "ebi.ac.uk", "count" => "12" }, { "name" => "example.com", "count" => "11" }, ... ]

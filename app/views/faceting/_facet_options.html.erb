@@ -20,12 +20,17 @@
 			<ul>
 				<% facets.each do |f| %>
 					<li>
-						<% selected = is_filter_selected(facet_type_query_key, f["name"]) %>
-						<% url = selected ? generate_exclude_filter_url(facet_type_query_key, f["name"]) : generate_include_filter_url(facet_type_query_key, f["name"]) %>
-						<% link_to(url, :class => (selected ? "selected" : nil)) do -%>
-							<span class="text"><%= h(f["name"]) -%></span>
-							<span class="faded count">(<%= f["count"] -%>)</span>
-						<% end %>
+						<span class="container">
+							<% selected = is_filter_selected(facet_type_query_key, f["name"]) %>
+							<% url = selected ? generate_exclude_filter_url(facet_type_query_key, f["name"]) : generate_include_filter_url(facet_type_query_key, f["name"]) %>
+							<% link_to(url, :class => (selected ? "selected" : nil)) do -%>
+								<span class="text"><%= h(f["name"]) -%></span>
+								<span class="faded count">(<%= f["count"] -%>)</span>
+								<% if selected %>
+									<span class="deselect">&nbsp</span>
+								<% end %>
+							<% end %>
+						</span>
 					</li>
 				<% end %>
 			</ul>
