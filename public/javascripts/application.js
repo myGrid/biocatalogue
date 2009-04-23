@@ -85,3 +85,19 @@ function loadUrlFromSelectInputTag(input_tag) {
 	//location.href = form_element.url_field.value
 	location.href = input_tag.value
 }
+
+/**
+ * Helper method to attach a method/closure to be the page load event
+ * From: http://www.sitepoint.com/blogs/2004/05/26/closures-and-executing-javascript-on-page-load/
+ */
+function addLoadEvent(func) { 
+	var oldonload = window.onload; 
+  if (typeof window.onload != 'function') { 
+    window.onload = func; 
+  } else { 
+    window.onload = function() { 
+      oldonload(); 
+      func(); 
+    } 
+  } 
+}
