@@ -16,10 +16,15 @@
 		<div class="box_info" style="padding: 0.4em 0.6em; margin: 0;">
 			<span style="float:right; font-size: 0.7em;">[ <%= link_to("See All Tags", tags_index_path) -%> ]</span>
 			<h3>
-				<b>Top <%= pluralize(@tags.length, "tag") -%> on BioCatalogue</b>
+				<span style="vertical-align:middle;">
+					<b>Top <%= pluralize(@tags.length, "tag") -%> on BioCatalogue</b>
+				</span>
+				<span style="vertical-align:middle; margin-left:0.5em;">
+					<%= help_icon_with_tooltip(help_text_for_tag_clouds) -%>
+				</span>
 			</h3>
 			
-			<%= generate_tag_cloud(@tags, "weighted", :tag_cloud_style => "margin-top: 0.6em;") -%>
+			<%= generate_tag_cloud(@tags, "weighted", :tag_cloud_style => "margin-top: 0.3em;") -%>
 		</div>
 	
 	<% end %>

@@ -9,6 +9,11 @@
 module TagsHelper
   include ApplicationHelper
   
+  def help_text_for_tag_clouds
+    "Tags in orange are from ontologies / controlled vocabularies. <br/><br/>
+    Tags in blue are regular keyword based tags."
+  end
+  
   # Generates a tag cloud from a list of annotations that are tags. 
   def generate_tag_cloud_from_annotations(tag_annotations, cloud_type, *args)
     generate_tag_cloud(BioCatalogue::Tags.annotations_to_tags_structure(tag_annotations), cloud_type, *args)

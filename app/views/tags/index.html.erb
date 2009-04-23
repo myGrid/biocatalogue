@@ -8,7 +8,14 @@
 
 %>
 
-<h1>All Tags on BioCatalogue (<%= pluralize(@tags.length, "tag") -%>)</h1>
+<h1 style="text-align: center; margin-bottom: 1em;">
+	<span style="vertical-align:middle;">
+		All Tags on BioCatalogue (<%= pluralize(@tags.length, "tag") -%>)
+	</span>
+	<span style="vertical-align:middle; margin-left:0.5em;">
+		<%= help_icon_with_tooltip(help_text_for_tag_clouds) -%>
+	</span>
+</h1>
 
 <center>
 	<%= generate_tag_cloud(@tags, "weighted", :tag_cloud_style => "width: 80%;") %>
