@@ -6,12 +6,15 @@
 # For accessing the  endpoints, it uses the open-uri library
 #
 # This scripts records simple online/offline status. Only endpoints that generate the
-# 'not found' exception are considered to be offline
+# an HTTP 404 status code are considered to be offline. If the stutus cannot be determined
+# because of some condition like a timeout, the status is set to unknown. A debug message is
+# also added where possible.
 
 # TODO:
 # See what other error codes should be mapped to offline status
 
-
+require 'benchmark'
+require 'timeout'
 require 'open-uri'
 
 env = "development"
@@ -29,14 +32,21 @@ Service.find(:all).each do |service|
     service.service_deployments.each do |deployment| 
     status = 'Unknown'
     msg = ''
+    time = 0.0
     
+    # attempt to read the endpoint and timeout after 20 seconds
     begin
-      res = open(deployment.endpoint,
-              'User-Agent' => 'Ruby-Wget').read
+      time = Benchmark.realtime(){
+        Timeout::timeout(20) do
+            open(deployment.endpoint,
+                   'User-Agent' => 'Ruby-Wget').read
+        end
+      }
       status = 'Online'
       msg = "connected successfully"
       
-    rescue Timeout::Error => timeout
+    rescue Timeout::Error,Errno::ETIMEDOUT,Timeout::Error => timeout
+      time = 20.0
       msg = "connection timed out"
       puts "timeout on accessing #{deployment.endpoint}"
     
@@ -44,20 +54,29 @@ Service.find(:all).each do |service|
       msg = "connection refused"
       puts "Connection refused #{deployment.endpoint}"
       
-    rescue Exception=> ex
-      if ex.io.status == 404
+    rescue OpenURI::HTTPError => ex
+      if ex.io.status[0] == '404'
         status = 'Offline'
+        msg = "got an HTTP 404 status code "
       else
-        status = 'Online'
+        #status = 'Online'
+        msg = "got an HTTP #{ex.io.status[0]} status code "
       end
       ex.io.meta.each{ |k, v| puts "#{k} => #{v}"}
       puts ex.io.base_uri
+      
+    rescue Exception => ex
+     msg = "exception occured which connecting to server "
+     puts ex
+     
     end
       puts status
-      on_stat   = OnlineStatus.new(:status => status, 
-                                :pingable_id =>  deployment.id,
+      puts time
+      on_stat   = OnlineStatus.new(:status     => status, 
+                                :pingable_id   =>  deployment.id,
                                 :pingable_type => deployment.class.to_s,
-                                :message => msg)
+                                :message        => msg, 
+                                :connection_time => time)
       begin
         on_stat.save!
       rescue Exception => ex
