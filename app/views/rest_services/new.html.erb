@@ -26,6 +26,18 @@
 	<p class="step_text">1. Specify the URL of the endpoint of the REST service (ie: the base URL):</p>
 	
 	<p><%= text_field_tag "endpoint", params[:endpoint], :style => "width: 600px" -%></p>
+	
+	<div class="box_info_standout" style="font-size: 100%; width: 582px; padding: 7px 10px;">
+		<b>Note:</b> please do not specify parameterised URLs or URLs to specific functionality. Only provide the base URL to the REST service.
+		(In the future you will be able to describe the different functionality and parameters and so on). 
+		<br/><br/>
+		Example:
+		<br/>
+		<ul style="margin-left: 1em;">
+			<li>Bad URL: http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/{db}/{id}</li>
+			<li>Good URL: http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/</li>
+		</ul>
+	</div>
 
 	<p class="step_text">
 		2. Provide more information about this REST service, then submit:
