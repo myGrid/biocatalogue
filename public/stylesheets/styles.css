@@ -95,6 +95,7 @@ h3 {
 
 h4 {
   font-size: 130%;
+	margin: 0.5em 0;
 }
 
 h5 {
@@ -1471,7 +1472,7 @@ ul.tabbernav li.tabberactive a:hover
 	border: 0;
 	border-left: 4px solid #DDD;
 	padding: 1em 0 1em 1em;
-	padding-left: 1em;
+	margin-left: 1em;
 }
 
 /* BEGIN annotations styles */
@@ -1923,3 +1924,30 @@ div.auto_complete ul strong.highlight {
 }
 
 /* END autocomplete styles */
+
+/* BEGIN stats page styles */
+
+#stats_page {
+	margin: 0 3em;	
+}
+
+#stats_page p {
+	margin: 0.6em 0;
+}
+
+#stats_page .box_indented_with_bar {
+	padding: 0.5em 1.5em;
+}
+
+#stats_page .box_info_standout {
+	width: 400px;
+	font-size: 85%;
+}
+
+#stats_page .services {
+	margin-left: 1.5em;
+	margin-bottom: 0.5em;
+	font-size: 85%;
+}
+
+/* END stats page styles */

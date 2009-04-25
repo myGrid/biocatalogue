@@ -1,0 +1,47 @@
+<%
+
+# BioCatalogue: app/views/stats/_metadata_stats_for_type.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<p>
+	<b>Total on services:</b>
+	<%= @stats.total_metadata_on_services(type) -%>
+</p>
+
+<p>
+	<b>Average no. per service:</b>
+	<%= @stats.avg_metadata_per_service(type) -%>
+</p>
+
+<% max_met = @stats.max_metadata_on_services(type) -%>
+<p>
+	<b>Max no. on services:</b>
+	<%= max_met[:count] -%>
+	<br/>
+</p>
+<p class="services">
+	(
+	<% max_met[:services].each do |s| %>
+		<%= link_to(h(s.name), s) -%>
+	<% end %>
+	)
+</p>
+
+<% min_met = @stats.min_metadata_on_services(type) -%>
+<p>
+	<b>Min no. on services:</b>
+	<%= min_met[:count] -%>
+	<br/>
+</p>
+<p class="services">
+	(
+	<% min_met[:services].each do |s| %>
+		<%= link_to(h(s.name), s) -%>
+	<% end %>
+	)
+</p>

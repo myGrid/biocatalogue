@@ -40,7 +40,7 @@ module BioCatalogue
       info = ''
       
       begin
-        timeout(5) { info = open(url, :proxy => HTTP_PROXY).read }
+        Timeout::timeout(4) { info = open(url, :proxy => HTTP_PROXY).read }
       rescue TimeoutError
         @@logger.error("Method BioCatalogue::Util.ip_geocode - timeout occurred when attempting to get info from HostIp.")
         return geoloc

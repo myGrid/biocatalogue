@@ -5,11 +5,13 @@
 # See license.txt for details
 
 # Require our libraries
+require 'array'
 require 'util'
 require 'tags'
+require 'stats'
+require 'annotations'
 require 'acts_as_service_versionified'
 require 'has_submitter'
-require 'array'
 
 # Mappings for service types supported, to corresponding model class names.
 SERVICE_TYPES = {

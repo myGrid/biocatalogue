@@ -15,7 +15,14 @@ module ApplicationHelper
   end
   
   def controller_visible_name(controller_name)
-    controller_name.humanize.titleize
+    return "" if controller_name.blank?
+    
+    case controller_name.downcase
+      when "stats"
+        return "System Statistics"
+      else
+        return controller_name.humanize.titleize
+    end
   end
 
   def flag_icon_from_country(country, text=country, style="margin-left: 0.5em;")
