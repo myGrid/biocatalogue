@@ -1950,4 +1950,20 @@ div.auto_complete ul strong.highlight {
 	font-size: 85%;
 }
 
+#stats_page .contents_box {
+	/*position: fixed;*/
+}
+
+#stats_page ul.contents {
+	text-align: left;
+}
+
+#stats_page ul.contents li {
+	padding: 0.2em 0;
+}
+
+#stats_page ul.contents li ul {
+	margin-left: 1em;
+}
+
 /* END stats page styles */

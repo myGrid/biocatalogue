@@ -8,12 +8,8 @@
 
 module BioCatalogue
   class Stats
-    def initialize
-      
-    end
-    
     # Returns: Integer
-    def total(model)
+    def total_for_model(model)
       model.count
     end
     
@@ -57,6 +53,22 @@ module BioCatalogue
       result
     end
     
+    # Returns: Integer
+    def total_searches_non_unique
+      self.searches_all.length
+    end
+    
+    # Returns: Integer
+    def total_searches_unique
+      self.searches_grouped_by_frequency.keys.length
+    end
+    
+    # Returns an Array of Arrays:
+    # [ [ "query1", frequency ], [ "query2", frequency ], ... ]
+    def search_queries_with_frequencies_sorted_descending
+      self.searches_grouped_by_frequency.to_a.sort{|a,b| b[1] <=> a[1]}
+    end
+    
     protected
     
     # Maintains a hash for all service metadat counts where:
@@ -83,7 +95,27 @@ module BioCatalogue
         end
         
       end
+      
       @metadata_counts_grouped_by_counts
+    end
+    
+    # Maintains a non unique list of all the searches carried out.
+    def searches_all
+      @searches_all ||= ActivityLog.find_all_by_action('search').map{|s| s.data[:query]}
+    end
+    
+    # Maintains a hash of all the searches carried out and the frequency of each. 
+    # ie: { "query1" => frequency, "query2" => frequency, ... }   
+    def searches_grouped_by_frequency
+      if @searches_grouped_by_frequency.nil?
+        @searches_grouped_by_frequency = { }
+        
+        @searches_all.each do |s|
+          @searches_grouped_by_frequency[s].nil? ? @searches_grouped_by_frequency[s] = 1 : @searches_grouped_by_frequency[s] = @searches_grouped_by_frequency[s] + 1
+        end
+      end
+      
+      @searches_grouped_by_frequency
     end
     
   end
