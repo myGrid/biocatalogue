@@ -1935,6 +1935,12 @@ div.auto_complete ul strong.highlight {
 	margin: 0.6em 0;
 }
 
+#stats_page h4 {
+	padding: 0.2em 0.6em;
+	background-color: #EEE;
+	margin-top: 1.5em;
+}
+
 #stats_page .left_column {
 	float: left; 
 	width: 80%;
@@ -1950,7 +1956,7 @@ div.auto_complete ul strong.highlight {
 }
 
 #stats_page .box_info_standout {
-	width: 400px;
+	width: 550px;
 	font-size: 85%;
 }
 
