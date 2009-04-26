@@ -22,26 +22,28 @@
 <p>
 	<b>Max no. on services:</b>
 	<%= max_met[:count] -%>
+	<span style="margin-left: 2em;">
+		(<%= link_to_function("services" + expand_image, visual_effect(:toggle_blind, "metadata_#{type}_max_services", :duration => 0.3)) %>)
+	</span>
 	<br/>
 </p>
-<p class="services">
-	(
+<ul id='<%= "metadata_#{type}_max_services" -%>' class="services" style="display: none;">
 	<% max_met[:services].each do |s| %>
-		<%= link_to(h(s.name), s) -%>
+		<li><%= link_to(h(s.name), s) -%></li>
 	<% end %>
-	)
-</p>
+</ul>
 
 <% min_met = @stats.min_metadata_on_services(type) -%>
 <p>
 	<b>Min no. on services:</b>
 	<%= min_met[:count] -%>
+	<span style="margin-left: 2em;">
+		(<%= link_to_function("services" + expand_image, visual_effect(:toggle_blind, "metadata_#{type}_min_services", :duration => 0.3)) %>)
+	</span>
 	<br/>
 </p>
-<p class="services">
-	(
+<ul id='<%= "metadata_#{type}_min_services" -%>' class="services" style="display: none;">
 	<% min_met[:services].each do |s| %>
-		<%= link_to(h(s.name), s) -%>
+		<li><%= link_to(h(s.name), s) -%></li>
 	<% end %>
-	)
-</p>
+</ul>

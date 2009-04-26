@@ -1935,6 +1935,16 @@ div.auto_complete ul strong.highlight {
 	margin: 0.6em 0;
 }
 
+#stats_page .left_column {
+	float: left; 
+	width: 80%;
+}
+
+#stats_page .right_column {
+	float: right; 
+	width: 18%; 
+}
+
 #stats_page .box_indented_with_bar {
 	padding: 0.5em 1.5em;
 }
@@ -1945,13 +1955,9 @@ div.auto_complete ul strong.highlight {
 }
 
 #stats_page .services {
-	margin-left: 1.5em;
-	margin-bottom: 0.5em;
+	margin: 0.5em 0 0.5em 1.5em;
+	line-height: 1.5;
 	font-size: 85%;
-}
-
-#stats_page .contents_box {
-	/*position: fixed;*/
 }
 
 #stats_page ul.contents {

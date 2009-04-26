@@ -9,22 +9,180 @@
 %>
 <div id="stats_page">
 	
-	<div style="float: right;">
+	<!-- Left column -->
+	<div class="left_column">
+		
+		<h1>Statistics</h1>
+	
+		<p><b>Last calculated: <%= Time.now.to_s -%></b> (click on the refresh button to the right to calculate latest stats)</p>
+	
+		<a name="general"></a>
+	
+		<h4>General</h4>
+		
+		<div class="box_indented_with_bar">
+			
+			<p>
+				<b>Services:</b>
+				<%= @stats.total_for_model Service -%>
+			</p>
+			
+			<p>
+				<b>Service Versions:</b>
+				<%= @stats.total_for_model ServiceVersion -%>
+			</p>
+				
+			<p>
+				<b>Service Deployments:</b>
+				<%= @stats.total_for_model ServiceDeployment -%>
+			</p>
+			
+			<p>
+				<b>SOAP Services:</b>
+				<%= @stats.total_for_model SoapService -%>
+			</p>
+					
+			<p>
+				<b>SOAP Operations:</b>
+				<%= @stats.total_for_model SoapOperation -%>
+			</p>
+						
+			<p>
+				<b>SOAP Inputs:</b>
+				<%= @stats.total_for_model SoapInput -%>
+			</p>
+							
+			<p>
+				<b>Soap Outputs:</b>
+				<%= @stats.total_for_model SoapOutput -%>
+			</p>
+						
+			<p>
+				<b>REST Services:</b>
+				<%= @stats.total_for_model RestService -%>
+			</p>
+					
+			<p>
+				<b>SOAPLAB Servers:</b>
+				<%= @stats.total_for_model SoaplabServer -%>
+			</p>
+				
+			<p>
+				<b>Users:</b>
+				<%= @stats.total_for_model User -%>
+			</p>
+			
+			<p>
+				<b>Service Providers:</b>
+				<%= @stats.total_for_model ServiceProvider -%>
+			</p>
+			
+			<p>
+				<b>Annotations*:</b>
+				<%= @stats.total_for_model Annotation -%>
+			</p>
+			
+			<p class="box_info_standout">
+				<b>*</b> These are ONLY the annotations stored within the generic Annotations mechanism and 
+				do not include the initial metadata (from WSDL for SOAP) that is stored directly in database 
+				tables for the entities.
+			</p>
+			
+			<p>
+				<b>Activity Log Entries:</b>
+				<%= @stats.total_for_model ActivityLog -%>
+			</p>
+			
+		</div>
+		
+		<br/>
+	
+		<a name="metadata"></a>
+		
+		<h4>Metadata *</h4>
+		
+		<div class="box_indented_with_bar">
+			
+			<p class="box_info_standout">
+				<b>*</b> These include all the annotations stored via the generic Annotations mechanism AND 
+				the initial metadata (from WSDL for SOAP) that is stored directly in database tables for the entities.
+			</p>
+			
+			<% BioCatalogue::Annotations.metadata_sources.each do |type| %>
+				
+				<a name="metadata_<%= type.to_s -%>"></a>
+				
+				<p><b>By <%= type.to_s.titleize -%></b></p>
+				
+				<div class="box_indented_with_bar">
+					
+					<%= render :partial => 'metadata_stats_for_type', :locals => { :type => type } -%>
+					
+				</div>
+			
+			<% end %>
+			
+			<a name="metadata_all"></a>
+			
+			<p><b>By ALL metadata sources:</b></p>
+			
+			<div class="box_indented_with_bar">
+				
+				<%= render :partial => 'metadata_stats_for_type', :locals => { :type => :total } -%>
+				
+			</div>
+					
+		</div>
+		
+		<br/>
+		
+		<a name="search"></a>
+		
+		<h4>Search</h4>
+		
+		<div class="box_indented_with_bar">
+			
+			<p>
+				<b>Total:</b>
+				<%= @stats.total_searches_non_unique -%>
+			</p>
+			
+			<p>
+				<b>Total unique queries:</b>
+				<%= @stats.total_searches_unique -%>
+			</p>
+			
+			<p>
+				<b>Queries:</b>
+			</p>
+			
+			<table class="biocat_table">
+				<tr>
+					<th>Query:</th>
+					<th>Frequency:</th>
+				</tr>
+				
+				<% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
+					<tr>
+						<td><%= h(query) -%></td>
+						<td style="text-align:center;"><%= frequency -%></td>
+					</tr>
+				<% end %>
+			</table>
+			
+		</div>
+		
+	</div>
+	
+	<!-- Right column -->
+	<div class="right_column">
 		<ul class="buttons" style="text-align: right;">
 			<li class="first">
-				<%= link_to(image_tag('refresh.gif') + " Refresh", refresh_stats_path) -%>
+				<%= link_to(refresh_image + " Refresh", refresh_stats_path) -%>
 			</li>
 		</ul>
-	</div>
-
-	<h1>Statistics</h1>
-	
-	<p><b>Last calculated: <%= Time.now.to_s -%></b> (click on the refresh button to the right to calculate latest stats)</p>
-
-	<a name="general"></a>
-
-	<div class="contents_box" style="float: right;">
-		<div class="box_info">
+		
+		<div class="box_info" style="position: fixed;">
 			<ul class="contents">
 				<li><a href="#general">General</a></li>
 				<li>
@@ -41,159 +199,7 @@
 			</ul>
 		</div>
 	</div>
-
-	<h4>General</h4>
 	
-	<div class="box_indented_with_bar">
-		
-		<p>
-			<b>Services:</b>
-			<%= @stats.total_for_model Service -%>
-		</p>
-		
-		<p>
-			<b>Service Versions:</b>
-			<%= @stats.total_for_model ServiceVersion -%>
-		</p>
-			
-		<p>
-			<b>Service Deployments:</b>
-			<%= @stats.total_for_model ServiceDeployment -%>
-		</p>
-		
-		<p>
-			<b>SOAP Services:</b>
-			<%= @stats.total_for_model SoapService -%>
-		</p>
-				
-		<p>
-			<b>SOAP Operations:</b>
-			<%= @stats.total_for_model SoapOperation -%>
-		</p>
-					
-		<p>
-			<b>SOAP Inputs:</b>
-			<%= @stats.total_for_model SoapInput -%>
-		</p>
-						
-		<p>
-			<b>Soap Outputs:</b>
-			<%= @stats.total_for_model SoapOutput -%>
-		</p>
-					
-		<p>
-			<b>REST Services:</b>
-			<%= @stats.total_for_model RestService -%>
-		</p>
-				
-		<p>
-			<b>SOAPLAB Servers:</b>
-			<%= @stats.total_for_model SoaplabServer -%>
-		</p>
-			
-		<p>
-			<b>Users:</b>
-			<%= @stats.total_for_model User -%>
-		</p>
-		
-		<p>
-			<b>Service Providers:</b>
-			<%= @stats.total_for_model ServiceProvider -%>
-		</p>
-		
-		<p>
-			<b>Annotations*:</b>
-			<%= @stats.total_for_model Annotation -%>
-		</p>
-		
-		<p class="box_info_standout">
-			<b>*</b> These are ONLY the annotations stored within the generic Annotations mechanism and 
-			do not include the initial metadata (from WSDL for SOAP) that is stored directly in database 
-			tables for the entities.
-		</p>
-		
-		<p>
-			<b>Activity Log Entries:</b>
-			<%= @stats.total_for_model ActivityLog -%>
-		</p>
-		
-	</div>
+	<span class="clear"></span>
 	
-	<br/>
-
-	<a name="metadata"></a>
-	
-	<h4>Metadata *</h4>
-	
-	<div class="box_indented_with_bar">
-		
-		<p class="box_info_standout">
-			<b>*</b> These include all the annotations stored via the generic Annotations mechanism AND 
-			the initial metadata (from WSDL for SOAP) that is stored directly in database tables for the entities.
-		</p>
-		
-		<% BioCatalogue::Annotations.metadata_sources.each do |type| %>
-			
-			<a name="metadata_<%= type.to_s -%>"></a>
-			
-			<p><b>By <%= type.to_s.titleize -%></b></p>
-			
-			<div class="box_indented_with_bar">
-				
-				<%= render :partial => 'metadata_stats_for_type', :locals => { :type => type } -%>
-				
-			</div>
-		
-		<% end %>
-		
-		<a name="metadata_all"></a>
-		
-		<p><b>By ALL metadata sources:</b></p>
-		
-		<div class="box_indented_with_bar">
-			
-			<%= render :partial => 'metadata_stats_for_type', :locals => { :type => :total } -%>
-			
-		</div>
-				
-	</div>
-	
-	<br/>
-	
-	<a name="search"></a>
-	
-	<h4>Search</h4>
-	
-	<div class="box_indented_with_bar">
-		
-		<p>
-			<b>Total:</b>
-			<%= @stats.total_searches_non_unique -%>
-		</p>
-		
-		<p>
-			<b>Total unique queries:</b>
-			<%= @stats.total_searches_unique -%>
-		</p>
-		
-		<p>
-			<b>Queries:</b>
-		</p>
-		
-		<table class="biocat_table">
-			<tr>
-				<th>Query:</th>
-				<th>Frequency:</th>
-			</tr>
-			
-			<% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
-				<tr>
-					<td><%= h(query) -%></td>
-					<td style="text-align:center;"><%= frequency -%></td>
-				</tr>			
-			<% end %>
-		</table>
-		
-	</div>
-
 </div>

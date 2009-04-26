@@ -14,6 +14,20 @@ module ApplicationHelper
     Markaby::Builder.new({}, self, &block)
   end
   
+  # =================
+  # Helpers for icons
+  # -----------------
+
+  def refresh_image
+    image_tag "refresh.gif", :style => "vertical-align: middle;", :alt => "Refresh"
+  end
+  
+  def expand_image(margin_left="0.3em")
+    image_tag "expand.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
+  end  
+
+  #==================
+  
   def controller_visible_name(controller_name)
     return "" if controller_name.blank?
     
@@ -517,4 +531,5 @@ module ApplicationHelper
   def render_breadcrumbs_after_home
     render :partial => "breadcrumbs" if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb'))
   end
+  
 end
