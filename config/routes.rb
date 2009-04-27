@@ -7,7 +7,7 @@
 ActionController::Routing::Routes.draw do |map|
   # Stats
   map.stats_index '/stats', :controller => 'stats', :action => 'index'
-  map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh'
+  map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh', :conditions => { :method => :post }
   
   map.resources :registries
 
