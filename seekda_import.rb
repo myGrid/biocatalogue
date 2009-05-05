@@ -228,8 +228,6 @@ class SeekDaImporter
               
               service_nodes = doc.root.find('//result/service')
               
-              service_nodes = [ service_nodes[0] ]
-              
               if service_nodes.length == 0
                 # Empty page
                 has_items = false
