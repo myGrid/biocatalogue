@@ -27,8 +27,13 @@
 		<p>
 			<%= submit_tag 'Log in' %>
 		</p>
-		<p style="padding-top: 10px;">
-			<span class="green_box">I don't have an account yet : <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>
+		
+		<p style="padding-top: 1em;">
+			<span class="green_box"><%= link_to 'Forgot you password?', forgot_password_url -%></span>
+		</p>
+		
+		<p style="padding-top: 1em;">
+			<span class="green_box">I don't have an account yet - <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>
 		</p>
 	</fieldset>
 	<% end -%>
