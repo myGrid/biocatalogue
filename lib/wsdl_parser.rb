@@ -179,8 +179,15 @@ module BioCatalogue
                 end
               end
               }
-            else
+           
+         elsif wsdl_hash["definitions"]["types"]["schema"]["element"]
+           
               elements   = wsdl_hash["definitions"]["types"]["schema"]["element"] || nil  
+              
+            else
+              # possibly wsdl_hash["definitions"]["types"].class.to_s == "Hash"
+             
+              puts " Warning : this is probably a complex type without a schema definition. The complex types may not be expanded completely "
             end    
           end    
       end
@@ -225,8 +232,10 @@ module BioCatalogue
       if message["part"].class.to_s == "Hash"
         if message["part"].has_key?("element")
           elm = message["part"]["element"]
-          if elm.split(":").length > 1
-            elm = elm.split(":")[1]
+          if elm.include?(':')
+            if elm.split(":").length > 1
+              elm = elm.split(":")[1]
+            end
           end
           if elements == nil || []
             message["part"]["element"] = {"name" => elm}
@@ -367,6 +376,8 @@ module BioCatalogue
     
     def WsdlParser.test(num=0)
       wsdls= [
+      "http://www.cbs.dtu.dk/ws/GenomeAtlas/GenomeAtlas_3_0_ws0.wsdl",
+      "http://omabrowser.org/omabrowser.wsdl",
       "http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl",
       "http://biomoby.org/services/wsdl/biomoby.renci.org/Water",
       "http://wsembnet.vital-it.ch/soaplab2/services/embnet.blastp?wsdl",
