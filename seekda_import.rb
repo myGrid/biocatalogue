@@ -139,7 +139,8 @@ class SeekDaImporter
     @password = @options[:password]
     
     # Set excludes
-    @excludes = [ "phoebus.cs.man.ac.uk" ]
+    @excludes = [ "phoebus.cs.man.ac.uk",
+                  "ppdev.vbi.vt.edu" ]
   end
   
   def run
