@@ -9,6 +9,29 @@
 module TagsHelper
   include ApplicationHelper
   
+  # This method gets the tag annotation objects for the specific annotatable object.
+  # It applies special finder rules. E.g: for a Service, it also gets the tags for it's
+  # ServiceDeployment, ServiceVersion and service versionified objects.
+  def get_tags_for_annotatable(annotatable)
+    tag_annotations = [ ]
+    
+    tag_annotations = annotatable.annotations_with_attribute("tag")
+    
+    # Any specific processing...
+    if annotatable.class.name == "Service"
+      annotatable.service_deployments.each do |s_d|
+        tag_annotations.concat(s_d.annotations_with_attribute("tag"))
+      end
+      
+      annotatable.service_versions.each do |s_v|
+        tag_annotations.concat(s_v.annotations_with_attribute("tag"))
+        tag_annotations.concat(s_v.service_versionified.annotations_with_attribute("tag"))
+      end
+    end
+  
+    return tag_annotations
+  end
+  
   def help_text_for_tag_clouds
     "Tags in orange are from ontologies / controlled vocabularies. <br/><br/>
     Tags in blue are regular keyword based tags."
