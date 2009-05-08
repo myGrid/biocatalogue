@@ -14,6 +14,37 @@ module FacetingHelper
     You can also just filter on service types alone."
   end
   
+  def get_facets_all_cookie_key(facet_type_query_key)
+    "facets_all_#{facet_type_query_key}".to_sym
+  end
+  
+  def get_facets_all_cookie_value(facet_type_query_key)
+    key = get_facets_all_cookie_key(facet_type_query_key)
+    cookies[key]
+  end
+  
+  # Note: this relies on the cookie functions defined in layouts/_head_tabber_html.erb
+  def render_show_hide_links(facet_type_query_key, all_facets_id, top_facets_id)
+    html = ""
+    
+    more_link_id = "more_link_#{facet_type_query_key}"
+    less_link_id = "less_link_#{facet_type_query_key}"
+    facets_all_cookie_key = get_facets_all_cookie_key(facet_type_query_key)
+    facets_all_cookie_current_value = get_facets_all_cookie_value(facet_type_query_key)
+    
+    html << link_to_function("Show all" + expand_image("0.5em"), :id => more_link_id, :style => (facets_all_cookie_current_value == "true" ? "display:none;" : "")) do |page| 
+      page.toggle more_link_id, less_link_id, all_facets_id, top_facets_id
+      page.call "setCookie", "#{facets_all_cookie_key}", "true"
+    end
+    
+    html << link_to_function("Show top 10 only" + collapse_image("0.5em"), :id => less_link_id, :style => (facets_all_cookie_current_value == "true" ? "" : "display:none;")) do |page| 
+      page.toggle more_link_id, less_link_id, all_facets_id, top_facets_id
+      page.call "setCookie", "#{facets_all_cookie_key}", "false"
+    end
+    
+    return html
+  end
+  
   def get_facets_for_service_providers(limit=nil)
     BioCatalogue::Faceting.get_facets_for_service_providers(limit)
   end

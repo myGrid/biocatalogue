@@ -1,6 +1,6 @@
 <%
 
-# BioCatalogue: app/views/faceting/_options.html.erb
+# BioCatalogue: app/views/faceting/_facet_options.html.erb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -17,23 +17,35 @@
 			<span class="faded">(<%= facets.length -%>)</span>
 		</td>
 		<td>
-			<ul>
-				<% facets.each do |f| %>
+			<% facets_all_cookie_current_value = get_facets_all_cookie_value(facet_type_query_key) %>
+			
+			<%# Show the first 10...  %>
+			<ul id="top_facets_<%= facet_type_query_key -%>" style="<%= (facets_all_cookie_current_value == "true" ? "display:none;" : "") -%>">
+				<% facets[0..9].each do |facet| %>
 					<li>
-						<span class="container">
-							<% selected = is_filter_selected(facet_type_query_key, f["name"]) %>
-							<% url = selected ? generate_exclude_filter_url(facet_type_query_key, f["name"]) : generate_include_filter_url(facet_type_query_key, f["name"]) %>
-							<% link_to(url, :class => (selected ? "selected" : nil)) do -%>
-								<span class="text"><%= h(f["name"]) -%></span>
-								<span class="faded count">(<%= f["count"] -%>)</span>
-								<% if selected %>
-									<span class="deselect">&nbsp</span>
-								<% end %>
-							<% end %>
-						</span>
+						<%= render :partial => 'faceting/facet_options_item',
+											 :locals => { :facet => facet,
+																		:facet_type_query_key => facet_type_query_key } -%>
 					</li>
 				<% end %>
 			</ul>
+			
+			<%# ... make available the option to show all, if there are more.  %>
+			<% if facets.length > 10 %>
+				<ul id="all_facets_<%= facet_type_query_key -%>" style="<%= (facets_all_cookie_current_value == "true" ? "" : "display:none;") -%>">
+					<% facets.each do |facet| %>
+						<li>
+							<%= render :partial => 'faceting/facet_options_item',
+												 :locals => { :facet => facet,
+																			:facet_type_query_key => facet_type_query_key } -%>
+						</li>
+					<% end %>
+				</ul>
+				
+				<p class="show_hide">
+					<%= render_show_hide_links(facet_type_query_key, "all_facets_#{facet_type_query_key}", "top_facets_#{facet_type_query_key}") -%>
+				</p>
+			<% end %>
 		</td>
 	</tr>	
 </table>

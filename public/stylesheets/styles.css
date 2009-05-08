@@ -154,6 +154,10 @@ a:active, a.active {
   text-decoration: underline;
 }
 
+a img {
+	text-decoration: none;
+}
+
 a:link.login, a:visited.login {
 	padding-left: 2px;
 	padding-right: 20px;
@@ -1809,7 +1813,7 @@ div.facets {
 }
 
 div.facets table {
-	width: 99%;
+	width: 100%;
 }
 
 div.facets td {
@@ -1821,6 +1825,17 @@ div.facets td.type {
 	font-weight: bold;
 	text-align: left;
 	padding-right: 10px;
+}
+
+div.facets p.show_hide {
+	font-weight: bold;
+	text-align: right;
+	font-size: 80%;
+	margin: 0;
+}
+
+div.facets p.show_hide a {
+	text-decoration: none;
 }
 
 div.facets li {

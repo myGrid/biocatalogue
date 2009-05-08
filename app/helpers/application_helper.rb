@@ -24,7 +24,11 @@ module ApplicationHelper
   
   def expand_image(margin_left="0.3em")
     image_tag "expand.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
-  end  
+  end
+  
+  def collapse_image(margin_left="0.3em")
+    image_tag "collapse.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Collapse'
+  end 
 
   #==================
   
