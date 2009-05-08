@@ -22,7 +22,7 @@ class ServiceVersion < ActiveRecord::Base
   validates_presence_of :version, :version_display_text
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :version_display_text ] )
+    acts_as_solr(:fields => [ :version_display_text, :submitter_name ] )
   end
   
   if USE_EVENT_LOG

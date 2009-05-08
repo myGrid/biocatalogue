@@ -30,7 +30,7 @@ class ServiceDeployment < ActiveRecord::Base
   before_save :check_service_id
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :endpoint, :city, :country ],
+    acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name ],
                  :include => [ :provider ] )
   end
   

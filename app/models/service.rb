@@ -48,14 +48,6 @@ class Service < ActiveRecord::Base
     "#{self.id}-#{self.unique_code}"
   end
   
-  def submitter_name
-    if self.submitter
-      return submitter.display_name
-    else 
-      return ''
-    end
-  end
-  
   def latest_version
     self.service_versions.last
   end
