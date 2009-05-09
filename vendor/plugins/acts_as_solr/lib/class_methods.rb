@@ -61,7 +61,11 @@ module ActsAsSolr #:nodoc:
     #            => 0.12321548
     # 
     def find_by_solr(query, options={})
-      data = parse_query(query, options)
+      # UPDATED by Jits, for BioCatalogue (2009-05-09):
+      # added models to parse_query so as to get the model name in the IDs in the result set.
+      # This is required in the parse_results method.
+      models = "AND (#{solr_configuration[:type_field]}:#{self.name})"
+      data = parse_query(query, options, models)
       return parse_results(data, options) if data
     end
     
@@ -70,7 +74,11 @@ module ActsAsSolr #:nodoc:
     # The options accepted are the same as find_by_solr
     # 
     def find_id_by_solr(query, options={})
-      data = parse_query(query, options)
+      # UPDATED by Jits, for BioCatalogue (2009-05-09):
+      # added models to parse_query so as to get the model name in the IDs in the result set.
+      # This is required in the parse_results method.
+      models = "AND (#{solr_configuration[:type_field]}:#{self.name})"
+      data = parse_query(query, options, models)
       return parse_results(data, {:format => :ids}) if data
     end
     
@@ -91,26 +99,42 @@ module ActsAsSolr #:nodoc:
     def multi_solr_search(query, options = {})
       models = "AND (#{solr_configuration[:type_field]}:#{self.name}"
       # UPDATED by Jits, for BioCatalogue (2009-01-15):
-      # options[:models].each{|m| models << " OR type_t:"+m.to_s} if options[:models].is_a?(Array)
       options[:models].each{|m| models << " OR #{solr_configuration[:type_field]}:#{m.name}"} if options[:models].is_a?(Array)
       options.update(:results_format => :objects) unless options[:results_format]
       data = parse_query(query, options, models<<")")
       result = []
       if data
-        docs = data.docs
-        return SearchResults.new(:docs => [], :total => 0) if data.total == 0
+        # UPDATED by Jits, for BioCatalogue (2009-05-08):
+        # To fix a bug.... search results for say "Book" will also retrieve items of other types beginning with "Book", eg: "BookMark",
+        # IF the solr index uses the NGramTokenizer.
+        # So we need to check the ids are for correct models.
+        
+        docs = [ ]
+        
+        models_allowed = options[:models].blank? ? [ self.name ] : options[:models].map{|m| m.name }.concat([ self.name ])
+        
+        data.docs.each do |doc|
+          if models_allowed.include?(doc['id'].first.split(':').first)
+            docs << doc
+          end
+        end
+          
+        return SearchResults.new(:docs => [], :total => 0) if docs.length == 0
+        
         if options[:results_format] == :objects
           docs.each{|doc| k = doc.fetch('id').to_s.split(':'); result << k[0].constantize.find_by_id(k[1])}
         elsif options[:results_format] == :ids
           docs.each{|doc| result << {"id"=>doc.values.pop.to_s}}
         end
-        SearchResults.new :docs => result, :total => data.total
+        
+        SearchResults.new :docs => result, :total => docs.length
       end
     end
     
     # returns the total number of documents found in the query specified:
     #  Book.count_by_solr 'rails' => 3
     # 
+    # NOTE, by Jits, on (2009-05-09): this method still suffers from the bugs that have been fixed in the multi_solr_search method.
     def count_by_solr(query, options = {})        
       data = parse_query(query, options)
       data.total_hits

@@ -38,7 +38,7 @@ module ActsAsSolr #:nodoc:
         
         query_options[:field_list] = [field_list, 'score']
         # UPDATED by Jits, for BioCatalogue (2009-01-16):
-        # The processing of field names to add an "_t" should only be done if the query doesn't start and end with double quotation marks.
+        # The processing of field names within queries (to add an "_t") should only be done if the query doesn't start and end with double quotation marks.
         # This is required to search for things like URLs, that have strings like "http:" in them.
         query = "(#{query.gsub(/ *: */,"_t:")}) #{models}" unless query.starts_with?('"') and query.ends_with?('"')
         order = options[:order].split(/\s*,\s*/).collect{|e| e.gsub(/\s+/,'_t ').gsub(/\bscore_t\b/, 'score')  }.join(',') if options[:order] 
@@ -56,6 +56,9 @@ module ActsAsSolr #:nodoc:
     end
     
     # Parses the data returned from Solr
+    #
+    # Comment by Jits (2009-05-08): it is assumed that this method
+    # is used for only one Model (the current Class it is attached too).
     def parse_results(solr_data, options = {})
       results = {
         :docs => [],
@@ -68,14 +71,19 @@ module ActsAsSolr #:nodoc:
       return SearchResults.new(results) if solr_data.total == 0
       
       configuration.update(options) if options.is_a?(Hash)
-
-      ids = solr_data.docs.collect {|doc| doc["#{solr_configuration[:primary_key_field]}"]}.flatten
+      
+      # UPDATED by Jits, for BioCatalogue (2009-05-08):
+      # To fix a bug.... search results for say "Book" will also retrieve items of other types beginning with "Book", eg: "BookMark",
+      # IF the solr index uses the NGramTokenizer.
+      # So we need to check the ids are for correct models.
+      ids = solr_data.docs.collect { |doc| id = doc['id'].first.split(':'); id[0] == self.name ? id[1] : nil }.compact!
       conditions = [ "#{self.table_name}.#{primary_key} in (?)", ids ]
       result = configuration[:format] == :objects ? reorder(self.find(:all, :conditions => conditions), ids) : ids
       add_scores(result, solr_data) if configuration[:format] == :objects && options[:scores]
       
       results.update(:facets => solr_data.data['facet_counts']) if options[:facets]
-      results.update({:docs => result, :total => solr_data.total, :max_score => solr_data.max_score})
+      #results.update({:docs => result, :total => solr_data.total, :max_score => solr_data.max_score})
+      results.update({:docs => result, :total => ids.length, :max_score => solr_data.max_score})
       SearchResults.new(results)
     end
     
