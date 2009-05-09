@@ -8,6 +8,8 @@ class SearchController < ApplicationController
   
   before_filter :set_no_layout, :only => [ :ignore_last ]
   
+  before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
+  
   def show
     
     # First check that search is available

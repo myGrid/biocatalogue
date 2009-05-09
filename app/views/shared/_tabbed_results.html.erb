@@ -8,7 +8,7 @@
 
 %>
 
-<div class="tabber">
+<div id='<%= "#{controller.controller_name}_#{controller.action_name}_results" -%>' class="tabber">
 	<% types.each do |s_type| %>
 		<% visible_s_type = s_type.titleize.pluralize %>
 		<% unless (res = @results[s_type.classify]).nil? or res.empty? %>
