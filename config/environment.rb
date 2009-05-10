@@ -38,6 +38,7 @@ Rails::Initializer.run do |config|
 
 	# Rotate logs when they reach a size of 10M and keep no more than 10 of these
   #config.logger = Logger.new(config.log_path, 10, (1024**2)*10)
+  config.logger = Logger.new(config.log_path, 100, (1024**2)*10)
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
