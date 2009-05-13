@@ -74,10 +74,8 @@ module ActsAsSolr #:nodoc:
         # The processing of field names within queries (to add an "_t") should only be done if the query doesn't start and end with double quotation marks.
         # This is required to search for things like URLs, that have strings like "http:" in them.
         #query = "(#{query.gsub(/ *: */,"_t:")}) #{models}"
-        puts "This is the query before: #{query}"
         query = query.gsub(/ *: */,"_t:") unless query.starts_with?('"') and query.ends_with?('"')
         query = "(#{query}) #{models}"
-        puts "This is the query after #{query}"
         
         order = options[:order].split(/\s*,\s*/).collect{|e| e.gsub(/\s+/,'_t ').gsub(/\bscore_t\b/, 'score')  }.join(',') if options[:order] 
         query_options[:query] = replace_types([query])[0] # TODO adjust replace_types to work with String or Array  
