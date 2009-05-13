@@ -11,7 +11,18 @@ module SearchHelper
   end
   
   def search_item_ids_to_objects(item_ids, result_type)
-    result_type.classify.constantize.find(item_ids)
+    items = [ ]
+    
+    return items if item_ids.blank? or result_type.blank?
+    
+    model = result_type.classify.constantize
+    
+    item_ids.each do |item_id|
+      item = model.find(:first, :conditions => { :id => item_id })
+      items << item unless item.nil?
+    end
+    
+    return items
   end
   
 end
