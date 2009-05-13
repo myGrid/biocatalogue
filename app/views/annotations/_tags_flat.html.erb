@@ -37,7 +37,7 @@
 			</strong>
 		</p>
 			
-		<%= generate_tag_cloud_from_annotations(tag_annotations, "flat", :tag_cloud_style => "display: inline; text-align: left; margin: 0 1em;") -%>
+		<%= generate_tag_cloud_from_annotations(tag_annotations, :flat, :tag_cloud_style => "display: inline; text-align: left; margin: 0 1em;") -%>
 	<% else %>
 		<span class="none_text">No tags on this service</span>
 	<% end %>

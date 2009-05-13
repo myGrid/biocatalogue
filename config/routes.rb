@@ -66,7 +66,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :soaplab_servers,
                  :collection => { :load_wsdl => :post}
 
-  map.resources :services
+  map.resources :services,
+                :collection => { :search => :get }
   
   map.resources :service_tests, :collection => {:add_test => :post }
 

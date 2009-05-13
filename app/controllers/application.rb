@@ -108,6 +108,8 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :mine?
+  
+  protected
 
   def set_sidebar_layout
     self.class.layout "application_sidebar"
@@ -127,6 +129,28 @@ class ApplicationController < ActionController::Base
       session[:original_uri] = request.request_uri if not logged_in?
     end
   end
+  
+  # Generic method to raise / proceed from errors. Redirects to home.
+  # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
+  def error_to_home(msg)
+    flash[:error] = msg
+    
+    respond_to do |format|
+      format.html { redirect_to home_url }
+      format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
+    end
+  end
+  
+  # Generic method to raise / proceed from errors. Redirects to the previous page or if not available, to home.
+  # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
+  def error_to_back_or_home(msg)
+    flash[:error] = msg
+    
+    respond_to do |format|
+      format.html { redirect_to(session[:original_uri].blank? ? home_url : :back) }
+      format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
+    end
+  end  
   
   # ========================================
   # Code to help with remembering which tab
@@ -158,4 +182,70 @@ class ApplicationController < ActionController::Base
   end
   
   # ========================================
+  
+  
+  # =========================
+  # Helper methods for Search
+  # -------------------------
+  
+  def validate_and_setup_search
+    
+    # First check that search is available
+    unless BioCatalogue::Search.available?
+      error_to_home('Search is unavailable at this time')
+      return false
+    end
+    
+    query = (params[:q] || '').strip
+    
+    # Check query is present
+    unless query.blank?
+      
+      # Check if the query is '*' in which case give the user an appropriate message.
+      if query == '*'
+        error_to_home("It looks like you were trying to search for everything in the BioCatalogue! If you would like to browse all services then <a href='#{services_path}'>click here</a>.")
+        return false
+      end
+      
+      # Query is fine...
+      @query = query
+      
+      type = params[:t]
+      
+      if type.blank?
+        if controller_name.downcase == "search"
+          type = "all"
+        else
+          type = controller_name.downcase
+        end
+      else
+        type = type.strip.downcase.pluralize
+      end
+      
+      all_valid_types = BioCatalogue::Search::VALID_SEARCH_TYPES + BioCatalogue::Search::ALL_TYPES_SYNONYMS
+      
+      # Check that a valid type has been provided
+      unless all_valid_types.include?(type)
+        error_to_home("'#{type}' is an invalid search type")
+        return false
+      end
+      
+      # Type is fine...
+      @type = type
+      
+      @results = nil
+      
+    end
+    
+  end
+  
+  def log_search
+    if USE_EVENT_LOG
+      if !@query.blank? and !@type.blank?
+        ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type })
+      end
+    end
+  end
+  
+  # =========================
 end

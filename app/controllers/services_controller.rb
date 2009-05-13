@@ -12,6 +12,10 @@ class ServicesController < ApplicationController
   
   before_filter :find_service, :only => [ :show, :edit, :update, :destroy ]
   
+  before_filter :validate_and_setup_search, :only => [ :search ]
+  
+  before_filter :log_search, :only => [ :search ]
+  
   # Set the sidebar layout for certain actions.
   # Note: the set_sidebar_layout method resides in the ApplicationController.
   #before_filter :set_sidebar_layout, :only => [ :show ]
@@ -19,7 +23,7 @@ class ServicesController < ApplicationController
   # GET /services
   # GET /services.xml
   def index
-    @tags = BioCatalogue::Tags.get_tags(30)
+    @tags = BioCatalogue::Tags.get_tags(100)
     
     respond_to do |format|
       format.html # index.html.erb
@@ -94,6 +98,28 @@ class ServicesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  # DELETE /services/search
+  # DELETE /services/search.xml
+  def search
+    unless @query.blank?
+      begin
+        @results = BioCatalogue::Search.search(@query, @type)
+      rescue Exception => ex
+        flash.now[:error] = "Search failed. Possible bad search term. Please report this if it continues for other searches."
+        logger.error("ERROR: search failed for query: '#{@query}'. Exception:")
+        logger.error(ex.message)
+        logger.error(ex.backtrace.join("\n"))
+      end
+      
+      session[:last_search] = request.url if @results and @results.total > 0
+    end
+    
+    respond_to do |format|
+      format.html # search.html.erb
+      format.xml { set_no_layout } # search.xml.builder
+    end
+  end
  
   protected
   
@@ -128,44 +154,11 @@ class ServicesController < ApplicationController
       end
     end
     
-    # Filter conditions
+    # Filters
     
-    conditions = { }
-    joins = [ ]
+    conditions, joins = BioCatalogue::Faceting.generate_conditions_and_joins_from_filters(params)
     
-    unless params[:f].blank?
-      params[:f].each do |filter_type, filter_values|
-        unless filter_values.blank?
-          case filter_type.to_s.downcase
-            when 't'
-              service_types = [ ]
-              filter_values.each do |f|
-                # TODO: strip this out into a more generic mapping table (prob in config or lib)
-                case f.downcase
-                  when 'soap'
-                    service_types << 'SoapService'
-                  when 'rest'
-                    service_types << 'RestService'
-                end
-              end
-              
-              unless service_types.blank?
-                conditions[:service_versions] = { :service_versionified_type => service_types }
-                joins << :service_versions
-              end
-            when 'p'
-              provider = filter_values
-              
-              unless provider.blank?
-                conditions[:service_deployments] = { :service_providers => { :name => provider } }
-                joins << [ { :service_deployments => :provider } ]
-              end
-          end
-        end
-      end
-    end
-    
-    @filter_message = "The services index has been filtered using the selected options below..." unless conditions.blank? or joins.blank?
+    @filter_message = "The services index has been filtered using the selected filters on the left..." unless conditions.blank? or joins.blank?
     
     @services = Service.paginate(:page => params[:page],
                                  :order => order,

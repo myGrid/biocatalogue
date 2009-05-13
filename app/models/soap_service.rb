@@ -4,8 +4,6 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-require 'wsdl_parser'
-
 class SoapService < ActiveRecord::Base
   acts_as_trashable
   

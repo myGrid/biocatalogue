@@ -11,7 +11,7 @@
 <div id="action_bar">
 	<% form_tag search_url, :method => :get, :style => "display: inline;" do %>
 	  Search:
-		<%= text_field_tag :query, params[:query], :size => 40 -%> 
+		<%= text_field_tag :q, params[:q], :size => 40 -%> 
 	  <%= submit_tag '', :class => "search_button" -%>
 	<% end %>
 	

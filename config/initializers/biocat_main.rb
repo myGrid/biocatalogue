@@ -4,26 +4,19 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-# Require our libraries
+# NOTE: 
+# all libraries within /lib/bio_catalogue will be loaded automatically by Rails (when accessed),
+# as long as they follow the convention. E.g.: the module BioCatalogue::ActsAsHuman
+# should be defined in the file /lib/bio_catalogue/acts_as_human.rb
+#
+# Some of these need to be preloaded...
+require 'bio_catalogue/acts_as_service_versionified'
+require 'bio_catalogue/has_submitter'
+
+# Require additional libraries
 require 'array'
-require 'util'
-require 'tags'
-require 'stats'
-require 'annotations'
-require 'acts_as_service_versionified'
-require 'has_submitter'
-require 'faceting'
-
-# Mappings for service types supported, to corresponding model class names.
-SERVICE_TYPES = {
-  "SOAP Web Service"  => "SoapService",
-  #"REST Web Service"  => "RestService",
-  "Soaplab Server"    => "SoaplabServer"
-}
-
-# List of all the valid search types available, in the order they should be shown.
-# (must be in lowercase and in the plural form and MUST correspond to a resource type in the system)
-VALID_SEARCH_TYPES = [ "services", "users", "service_providers", "registries" ]
+require 'object'
+require 'addressable/uri'
 
 # Initialise the country codes library
 CountryCodes
@@ -35,9 +28,10 @@ if "irb" == $0
 end
 
 # Set global pagination per_page parameter in all models.
+PAGE_ITEMS_SIZE = 10
 class ActiveRecord::Base
   cattr_reader :per_page
-  @@per_page = 10
+  @@per_page = PAGE_ITEMS_SIZE
 end
 
 
@@ -50,7 +44,7 @@ KNOWN_ANNOTATION_ATTRIBUTES = [ "tag",
                                 "rating.speed",
                                 "rating.reliability",
                                 "rating.ease-of-use",
-                                "rating.documentation" ]
+                                "rating.documentation" ].freeze
 
 
 # ================================
@@ -90,7 +84,7 @@ Annotations::Config.attribute_names_to_allow_duplicates = [ "tag",
 SERVICE_RATINGS_CATEGORIES = { "rating.speed" => [ "Speed", "Rate how fast this service has been for you" ],
                                "rating.reliability" => [ "Reliability", "Rate how reliable this service has been for you" ],
                                "rating.ease-of-use" => [ "Ease of Use", "Rate how easy this service has been to use for you" ],
-                               "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }
+                               "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }.freeze
 
 # ================================
 

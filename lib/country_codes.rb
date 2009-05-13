@@ -1,4 +1,4 @@
-# BioCatalogue: app/lib/country_codes.rb
+# BioCatalogue: lib/country_codes.rb
 #
 # Copyright (c) 2008, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.

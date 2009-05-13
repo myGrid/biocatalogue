@@ -8,7 +8,7 @@
 
 %>
 
-<% unless session[:last_search].blank? or controller.controller_name.downcase == "search" %>
+<% unless session[:last_search].blank? or controller.controller_name.downcase == "search" or controller.action_name.downcase == "search" %>
 	<div id="last_search_notice">
 		<span id="last_search_notice_text">
 			<%= link_to("Click here to return back to your last search results", session[:last_search]) -%>

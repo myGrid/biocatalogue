@@ -10,51 +10,53 @@
 
 <% t "Browse Services" -%>
 
-<center>
-	<% rounded "#E9F7CC", "#000", "80%" do %>
-	
-		<div class="box_info" style="padding: 0.4em 0.6em; margin: 0;">
-			<span style="float:right; font-size: 0.7em;">[ <%= link_to("See All Tags", tags_index_path) -%> ]</span>
-			<h3>
-				<span style="vertical-align:middle;">
-					<b>Top <%= pluralize(@tags.length, "tag") -%> on BioCatalogue</b>
-				</span>
-				<span style="vertical-align:middle; margin-left:0.5em;">
-					<%= help_icon_with_tooltip(help_text_for_tag_clouds) -%>
-				</span>
-			</h3>
-			
-			<%= generate_tag_cloud(@tags, "weighted", :tag_cloud_style => "margin-top: 0.3em;") -%>
-		</div>
-	
-	<% end %>
-</center>
+<ul class="buttons" style="margin-top: 0; margin-bottom: 1.5em;">
+	<li class="first"><%= link_to image_tag(icon_filename_for(:search)) + ' Search for Services', search_services_path -%></li>
+	<li><%= link_to image_tag(icon_filename_for(:submit_service)) + ' Submit a Service', new_service_path -%></li>
+</ul>
 
-<br/>
-
-<span style="float: right;">
-	<%= link_to 'Submit a Service', new_service_path -%>
-</span>
+<div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em">
+	<%= render :partial => 'index_tag_cloud' %>
+</div>
 
 <a name="browse"></a>
 
-<h1>Browse Web Services</h1>
+<div style="margin-top: 1em;">
 
-<%= render :partial => 'index_facets' %>
-
-<br/>
-<br/>
-
-<div>
-	<span class="inline-block" style="float:right; margin-left: 2em;">
-		<%= render :partial => 'index_sortby' %>
-	</span>
+	<% unless @filter_message.blank? %>
+		<p class="box_info_standout" style="text-align: center; padding: 0.3em 0.5em;">
+			<%= h(@filter_message) -%>
+		</p>
+	<% end %>
 	
-	<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
+	<div>
+	
+		<!-- Left column -->
+		<div style="float: left; width: 20%;">
+			<%= render :partial => 'index_facets' %>
+		</div>
+		
+		<!-- Right column -->
+		<div style="float: right; width: 78%;">
+			<div style="margin-top: 5px;">
+				<span class="inline-block" style="float:right; margin-left: 2em;">
+					<%= render :partial => 'index_sortby' %>
+				</span>
+				
+				<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
+			</div>
+			
+			<div id="latest_services" style="margin: 1em 0;">
+				<%= render :partial => "listing", :locals => { :items => @services } %>
+			</div>
+			
+			<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @services } %>
+		</div>
+		
+		<span class="clear"></span>
+	
+	</div>
+	
 </div>
 
-<div id="latest_services" style="margin: 1em 0;">
-	<%= render :partial => "listing", :locals => { :items => @services } %>
-</div>
-
-<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @services } %>
+<br/>

@@ -18,7 +18,7 @@
 	
 	<div class="center">
 		<% unless tag_annotations.empty? %>
-			<%= generate_tag_cloud_from_annotations(tag_annotations, "weighted", :max_font => 14) %>
+			<%= generate_tag_cloud_from_annotations(tag_annotations, :weighted, :max_font => 14) %>
 		<% else %>
 			<span class="none_text">none</span>
 		<% end %>

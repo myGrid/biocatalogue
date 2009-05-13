@@ -30,8 +30,7 @@ class ServiceDeployment < ActiveRecord::Base
   before_save :check_service_id
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name ],
-                 :include => [ :provider ] )
+    acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name, :provider_name ])
   end
   
   if USE_EVENT_LOG
@@ -58,6 +57,10 @@ class ServiceDeployment < ActiveRecord::Base
     return status || OnlineStatus.new(:status => "Unchecked", :pingable_id => self.id, 
                                       :pingable_type => self.class.to_s, 
                                       :message => "status unchecked ")
+  end
+  
+  def provider_name
+    self.provider.name
   end
   
 protected

@@ -10,7 +10,11 @@
 
 <div class="pagination">
 	<div class="page_info">
-		<%= page_entries_info paginated_items %>
+		<% if local_assigns.has_key?(:entry_name) %>
+			<%= page_entries_info paginated_items, :entry_name => entry_name -%>
+		<% else %>
+			<%= page_entries_info paginated_items -%>
+		<% end %>
 	</div>
 	<%= will_paginate paginated_items -%>
 </div>

@@ -8,24 +8,90 @@
 
 %>
 
-<% t "Results" -%>
-
-<h1>Search Results</h1>
-
-<p>
-	Search query:
-	"<b><%= h @query -%></b>"
-	returned <%= pluralize(@count, "item") -%>
-</p>
-
-<% if @count == 0 %>
-
-  <p class="none_text">No search results.</p>
-  
+<% if @query.blank? %>
+	<h1>Search</h1>
 <% else %>
+	<% t "Results for '#{h(@query)}'" -%>
+	<h1>Search Results</h1>
+<% end %>
 
-	<%= render :partial => "shared/tabbed_results", :locals => { :types => VALID_SEARCH_TYPES } -%>
+<div>
 	
+	<div style="float:right; margin-left: 2em;">
+		<% form_tag(search_url, :method => :get) do %>
+		  <b>Search:</b>
+			<%= text_field_tag :q, @query || params[:q], :size => 30 -%> 
+		  <%= submit_tag '', :class => "search_button" -%>
+		<% end %>
+	</div>
+	
+	<% if @query.blank? %>
+		<p>
+			<%= search_provide_query_text -%>
+		</P>
+	<% else %>
+		<p>
+			Search query:
+			"<b><%= h @query -%></b>"
+			returned <%= pluralize(@results.total, "item") -%>
+		</p>
+	<% end %>
+	
+</div>
+
+<br/>
+	
+<% unless @query.blank? %>
+
+	<% if @results.total == 0 %>
+	
+	  <p class="none_text">No items found</p>
+	  
+	<% else %>
+	
+		<div id="search_results" class="tabber">
+			<% @results.result_types.each do |result_type| %>
+			
+				<% 
+					 visible_result_type = result_type.titleize
+					 items = search_item_ids_to_objects(@results.item_ids(result_type, 1), result_type)
+					 count = @results.count(result_type)
+					 more_items = count > PAGE_ITEMS_SIZE 
+				 %>
+				
+				<% unless items.empty? %>
+					<div id='<%= "tab-#{result_type}" -%>' class="tabbertab">
+						<% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}"  %>
+				    <h3><%= "#{visible_result_type} (#{count_text})" -%></h3>
+						
+						<% if more_items %>
+							<table style="width:100%; margin: 0 0 1.5em 0;">
+								<tr>
+									<td style="color: #555;">
+										<%= "Showing the top #{items.length} items out of #{count} in total" -%>
+									</td>
+									<td style="text-align: right;">
+										<%= link_to("Click here to see all Services for '#{h(@query)}'", search_services_path(:q => @query)) -%>
+									</td>
+								</tr>
+							</table>
+						<% end %>
+						
+						<%= render :partial => "#{result_type}/listing", :locals => { :items => items } %>
+						
+						<% if more_items %>
+							<p style="text-align: right;">
+								<%= link_to("Click here to see all Services for '#{h(@query)}'", search_services_path(:q => @query)) -%>
+							</p>
+						<% end %>
+				  </div>
+				<% end %>
+				
+			<% end %>
+		</div>
+	
+	<% end %>
+
 <% end %>
 
 <br />

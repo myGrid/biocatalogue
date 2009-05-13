@@ -17,17 +17,36 @@ module ApplicationHelper
   # =================
   # Helpers for icons
   # -----------------
+  
+  def icon_filename_for(thing)
+    case thing
+      when :refresh
+        "refresh.gif"
+      when :expand
+        "expand.png"
+      when :collapse
+        "collapse.png"
+      when :help
+        "help_icon.png"
+      when :info
+        "info.png"
+      when :search
+        "search.png"
+      when :submit_service
+        "add.png"
+    end
+  end
 
   def refresh_image
-    image_tag "refresh.gif", :style => "vertical-align: middle;", :alt => "Refresh"
+    image_tag icon_filename_for(:refresh), :style => "vertical-align: middle;", :alt => "Refresh"
   end
   
   def expand_image(margin_left="0.3em")
-    image_tag "expand.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
+    image_tag icon_filename_for(:expand), :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
   end
   
   def collapse_image(margin_left="0.3em")
-    image_tag "collapse.png", :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Collapse'
+    image_tag icon_filename_for(:collapse), :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Collapse'
   end 
 
   #==================
@@ -137,13 +156,13 @@ module ApplicationHelper
   end
 
   def help_icon_with_tooltip(help_text, delay=200)
-    return image_tag("help_icon.png",
+    return image_tag(icon_filename_for(:help),
                      :title => tooltip_title_attrib(help_text, delay),
                      :style => "vertical-align:middle;")
   end
 
   def info_icon_with_tooltip(info_text, delay=200)
-    return image_tag("info.png",
+    return image_tag(icon_filename_for(:info),
                      :title => tooltip_title_attrib(info_text, delay),
                      :style => "vertical-align:middle;")
   end

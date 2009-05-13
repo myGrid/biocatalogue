@@ -1,0 +1,88 @@
+<%
+
+# BioCatalogue: app/views/faceting/_selected_facets.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%
+	current_filters = BioCatalogue::Faceting.convert_params_to_filters(params)
+%>
+
+<div class="facet_type_box">
+	<% rounded "#D9D9D9", "#333", "100%" do %>
+		
+		<p class="type">
+			Current Filters Applied
+		</p>
+		
+		<% if current_filters.blank? %>
+		
+			<div style="text-align:center;">
+				<span class="none_text">none</span>
+			</div>
+			
+		<% else %>
+			
+			<% filters_count = 0 %>
+			
+			<% current_filters.each do |filter_type, values| %>
+			
+				<% filters_count += 1 %>
+				
+				<div class="selected_facets_box">
+					
+					<% rounded "#FFC", "#333", "100%" do %>
+					
+						<p class="type_small">
+							<%= BioCatalogue::Faceting.filter_type_to_display_name(filter_type) -%>
+						</p>
+						
+						<% values_count = 0 %>
+						
+						<ul>
+							<% values.each do |value| %>
+								
+								<% 
+									 values_count += 1
+									 facet = { "name" => value }
+								%>
+								
+								<li style="text-align: center;">
+									<%= render :partial => 'faceting/facet_options_item',
+	                         	 :locals => { :facet => facet,
+	                                      	:facet_type => filter_type } -%>
+								</li>
+								
+								<% unless values_count == values.length %>
+									<li style="font-weight: bold; font-size: 85%; text-align: center; line-height: 1.1;">
+										OR
+									</li>
+								<% end %>
+								
+							<% end %>
+						</ul>
+					
+					<% end %>
+					
+				</div>
+				
+				<% unless filters_count == current_filters.length %>
+					<p style="font-weight: bold; font-size: 100%; text-align: center; margin: 0;">
+						AND
+					</p>
+				<% end %>
+			
+			<% end %>
+			
+			<div style="margin-top: 0.8em; text-align: center;">
+				<%= link_to("Clear all filters", "#{services_url}#browse", :class => "standout_link", :style => "font-size: 90%;") -%>
+			</div>
+		
+		<% end %>    
+		
+	<% end %>
+</div>

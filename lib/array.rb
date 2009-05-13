@@ -1,4 +1,4 @@
-# BioCatalogue: app/lib/array.rb
+# BioCatalogue: lib/array.rb
 
 # From: http://snippets.dzone.com/posts/show/2161
 

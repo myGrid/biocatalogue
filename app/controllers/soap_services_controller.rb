@@ -4,9 +4,6 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
-require 'wsdl_parser'
-require 'addressable/uri'
-
 class SoapServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy, :bulk_new, :bulk_create ]

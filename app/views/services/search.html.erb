@@ -1,0 +1,75 @@
+<%
+
+# BioCatalogue: app/views/services/search.html.erb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% if @query.blank? %>
+<% t "Search" -%>
+	<h1>Search Services</h1>
+<% else %>
+	<% t "Search Results for '#{h(@query)}'" -%>
+	<h1>Search Results</h1>
+<% end %>
+
+<div>
+	
+	<div style="float:right; margin-left: 2em;">
+		<% form_tag(search_services_url, :method => :get) do %>
+		  <b>Search services:</b>
+			<%= text_field_tag :q, @query || params[:q], :size => 30 -%> 
+		  <%= submit_tag '', :class => "search_button" -%>
+		<% end %>
+	</div>
+	
+	<% if @query.blank? %>
+		<p>
+			<%= search_provide_query_text -%>
+		</P>
+	<% else %>
+		<p>
+			Search query:
+			"<b><%= h @query -%></b>"
+			returned <%= pluralize(@results.total, "services") -%>
+		</p>
+	<% end %>
+	
+</div>
+
+<br/>
+
+<% unless @query.blank? %>
+
+	<% if @results.total == 0 %>
+	
+	  <p class="none_text">No services found</p>
+	  
+	<% else %>
+	
+		<% 
+			 result_type = "services"
+			 visible_result_type = result_type.titleize
+			 item_ids = @results.item_ids(result_type, params[:page])
+			 items = search_item_ids_to_objects(item_ids, result_type)
+			 total_count = @results.count(result_type)
+			 more_items = total_count > PAGE_ITEMS_SIZE 
+		 %>
+		
+		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => item_ids, :entry_name => 'service' } %>
+		
+		<div id="search_results" style="margin: 2em 0;">
+			<%= render :partial => "services/listing", :locals => { :items => items } %>
+		</div>
+			
+		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => item_ids } %>
+	
+	<% end %>
+
+<% end %>
+
+<br />
+

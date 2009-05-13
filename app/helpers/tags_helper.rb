@@ -44,8 +44,8 @@ module TagsHelper
   
   # This takes in a collection of 'tags' (in the format of the standardised tag data structure described in /lib/tags.rb)
   # and generates a tag cloud of either one of the following types:
-  # - weighted
-  # - flat
+  # - :weighted
+  # - :flat
   #
   # The set of tags provided is assumed to be in the order that is to be shown in the cloud.
   #
@@ -68,9 +68,10 @@ module TagsHelper
   def generate_tag_cloud(tags, cloud_type, *args)
     return "" if tags.blank?
     
-    cloud_type = cloud_type.downcase
-    
-    return "" unless [ "weighted", "flat" ].include?(cloud_type)
+    unless [ :weighted, :flat ].include?(cloud_type)
+      logger.error("ERROR: Tried to build a tag cloud with an invalid cloud_type.")
+      return ""      
+    end
     
     # Do options the Rails Way ;-)
     options = args.extract_options!
@@ -84,7 +85,7 @@ module TagsHelper
     max_font = options[:max_font]
       
     # Set up control variables for weighted tag cloud
-    if cloud_type == "weighted"
+    if cloud_type == :weighted
       all_counts = tags.map{|t| t['count'].to_i } 
       maxlog = Math.log(all_counts.max)
       minlog = Math.log(all_counts.min)
@@ -99,9 +100,9 @@ module TagsHelper
 
     tags.each do |tag|
       font_size = case cloud_type
-        when "weighted"
+        when :weighted
           min_font + font_range * ((Math.log(tag['count']) - minlog) / rangelog)
-        when "flat"
+        when :flat
           min_font
       end
         
@@ -159,6 +160,6 @@ module TagsHelper
       
     end
     
-    return output
+    return output.to_s
   end
 end
