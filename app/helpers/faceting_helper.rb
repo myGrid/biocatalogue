@@ -61,12 +61,12 @@ module FacetingHelper
   
   def generate_include_filter_url(filter_type, filter_value)
     new_params = BioCatalogue::Faceting.add_filter_to_params(params, filter_type, filter_value)
-    return "#{services_url(new_params)}#browse"
+    return services_url(new_params)
   end
 
   def generate_exclude_filter_url(filter_type, filter_value)
     new_params = BioCatalogue::Faceting.remove_filter_to_params(params, filter_type, filter_value)
-    return "#{services_url(new_params)}#browse"
+    return services_url(new_params)
   end
   
   def is_filter_selected(filter_type, filter_value)
@@ -81,7 +81,7 @@ module FacetingHelper
     # Reset page param
     params_dup.delete(:page)
     
-    return "#{services_url(params_dup)}#browse"
+    return services_url(params_dup)
   end
   
   def is_sort_selected(sort_by, sort_order)
