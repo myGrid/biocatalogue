@@ -38,6 +38,28 @@ class TagsController < ApplicationController
     render :inline => "<%= auto_complete_result @tags, 'name' %>"
   end
   
+  # DELETE /tags
+  def destroy
+    annotatable = Annotation.find_annotatable(params[:annotatable_type], params[:annotatable_id])
+    
+    tag_name = params[:tag]
+    
+    if !annotatable.nil? and !tag_name.blank?
+      existing = annotatable.annotations.find(:all, 
+                                              :conditions => { :attribute_id => AnnotationAttribute.find_by_name("tag").id, 
+                                                               :source_type => current_user.class.name,
+                                                               :source_id => current_user.id,
+                                                               :value => tag_name })
+      annotatable.annotations.delete(existing)
+    end
+    
+    respond_to do |format|
+      format.html { render :partial => 'annotations/tags_box_inner_tag_cloud', 
+                           :locals => { :tag_annotations => BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable),
+                                        :annotatable => annotatable } }
+    end
+  end
+  
 protected
 
   def find_tags

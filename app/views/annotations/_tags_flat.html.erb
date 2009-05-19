@@ -28,7 +28,7 @@
 		<% end %>
 	<% end %>
 	
-	<% tag_annotations = get_tags_for_annotatable(annotatable) %>
+	<% tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable) %>
 	<% unless tag_annotations.empty? %>
 		<p>
 			<strong>

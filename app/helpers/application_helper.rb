@@ -20,6 +20,12 @@ module ApplicationHelper
   
   def icon_filename_for(thing)
     case thing
+      when :delete
+        "delete.png"
+      when :delete_faded
+        "delete_faded_darker.png"
+      when :delete_faded_plus
+        "delete_faded.png"
       when :refresh
         "refresh.gif"
       when :expand

@@ -22,6 +22,7 @@ ActionController::Routing::Routes.draw do |map|
   map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
   map.tags_auto_complete '/tags/auto_complete', :controller => 'tags', :action => 'auto_complete', :conditions => { :method => :get }
   map.tag_show '/tags/:tag_keyword', :controller => 'tags', :action => 'show', :conditions => { :method => :get }
+  map.destroy_tag '/tags', :controller => 'tags', :action => 'destroy', :conditions => { :method => :delete }
 
   # Ratings
   map.create_rating '/ratings', :controller => 'ratings', :action => 'create', :conditions => { :method => :post }

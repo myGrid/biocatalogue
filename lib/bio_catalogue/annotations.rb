@@ -4,7 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-# A helper module for annotations/metadata related functionality
+# A helper module for annotations/metadata related functionality, that works on top of the Annotations plugin.
 
 module BioCatalogue
   module Annotations
@@ -128,6 +128,29 @@ module BioCatalogue
       end
       
       return annotations
+    end
+    
+    # This method gets the tag annotation objects for the specific annotatable object.
+    # It applies special finder rules. E.g: for a Service, it also gets the tags for it's
+    # ServiceDeployment, ServiceVersion and service versionified objects.
+    def self.get_tag_annotations_for_annotatable(annotatable)
+      tag_annotations = [ ]
+      
+      tag_annotations = annotatable.annotations_with_attribute("tag")
+      
+      # Any specific processing...
+      if annotatable.class.name == "Service"
+        annotatable.service_deployments.each do |s_d|
+          tag_annotations.concat(s_d.annotations_with_attribute("tag"))
+        end
+        
+        annotatable.service_versions.each do |s_v|
+          tag_annotations.concat(s_v.annotations_with_attribute("tag"))
+          tag_annotations.concat(s_v.service_versionified.annotations_with_attribute("tag"))
+        end
+      end
+    
+      return tag_annotations
     end
     
   end

@@ -36,7 +36,7 @@ class RatingsController < ApplicationController
     
     if !annotatable.nil? and !category.blank?
       existing = annotatable.annotations.find(:all, 
-                                              :conditions => { :attribute_id => AnnotationAttribute.find_by_name(category), 
+                                              :conditions => { :attribute_id => AnnotationAttribute.find_by_name(category).id, 
                                                                :source_type => current_user.class.name,
                                                                :source_id => current_user.id })
       annotatable.annotations.delete(existing)
@@ -44,8 +44,8 @@ class RatingsController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => "annotations/ratings_box", 
-                         :locals => { :annotatable => annotatable,
-                                      :categories_config => BioCatalogue::Util.get_ratings_categories_config_for_model(annotatable.class)} }
+                           :locals => { :annotatable => annotatable,
+                                        :categories_config => BioCatalogue::Util.get_ratings_categories_config_for_model(annotatable.class)} }
     end
   end
 end

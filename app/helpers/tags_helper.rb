@@ -9,29 +9,6 @@
 module TagsHelper
   include ApplicationHelper
   
-  # This method gets the tag annotation objects for the specific annotatable object.
-  # It applies special finder rules. E.g: for a Service, it also gets the tags for it's
-  # ServiceDeployment, ServiceVersion and service versionified objects.
-  def get_tags_for_annotatable(annotatable)
-    tag_annotations = [ ]
-    
-    tag_annotations = annotatable.annotations_with_attribute("tag")
-    
-    # Any specific processing...
-    if annotatable.class.name == "Service"
-      annotatable.service_deployments.each do |s_d|
-        tag_annotations.concat(s_d.annotations_with_attribute("tag"))
-      end
-      
-      annotatable.service_versions.each do |s_v|
-        tag_annotations.concat(s_v.annotations_with_attribute("tag"))
-        tag_annotations.concat(s_v.service_versionified.annotations_with_attribute("tag"))
-      end
-    end
-  
-    return tag_annotations
-  end
-  
   def help_text_for_tag_clouds
     "Tags in orange are from ontologies / controlled vocabularies. <br/><br/>
     Tags in blue are regular keyword based tags."
@@ -56,7 +33,7 @@ module TagsHelper
   # Currently takes into account the following 'special' tags:
   # - Ontological term URIs (see /lib/tags.rb for the rules on these)
   #
-  # Options:
+  # Args options (all optional):
   #   :tag_cloud_style - additional styles to add to the tag_cloud div.
   #     default: ''
   #   :tag_style - additional styles to add to each tag element in the cloud.
@@ -65,6 +42,9 @@ module TagsHelper
   #     default: 10
   #   :max_font - the maximum font size (in px) to use.
   #     default: 30
+  #   :allow_delete - if set to true then delete links will be placed next to each tag that the current user is allowed to delete.
+  #     default: false
+  #   :annotatable - required for the :allow_delete option. The current annotatable object that the tags apply to.
   def generate_tag_cloud(tags, cloud_type, *args)
     return "" if tags.blank?
     
@@ -79,7 +59,9 @@ module TagsHelper
     options.reverse_merge!(:tag_cloud_style => "",
                            :tag_style => "",
                            :min_font => 10,
-                           :max_font => 30)
+                           :max_font => 30,
+                           :allow_delete => false,
+                           :annotatable => nil)
     
     min_font = options[:min_font]
     max_font = options[:max_font]
@@ -106,7 +88,7 @@ module TagsHelper
           min_font
       end
         
-      cloud << [tag['name'], font_size.to_i, tag['count']] 
+      cloud << [tag['name'], font_size.to_i, tag['count'], tag['submitters']] 
     end
     
     output = ""
@@ -121,31 +103,59 @@ module TagsHelper
         tag!(:div, :class => "tag_cloud", :style => options[:tag_cloud_style]) do 
           # <ul>
           ul do
-            cloud.each do |tag_name, font_size, freq|
+            cloud.each do |tag_name, font_size, freq, submitters|
               # <li>
               li do
-                # Special processing for ontological term URIs...
-                if BioCatalogue::Tags.is_ontology_term_uri?(tag_name)
-                  base_identifier_uri, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
+                tag!(:span, :style => "font-size:#{font_size}px; #{options[:tag_style]}")  do
                   
-                  inner_html = h(keyword)
-                  title_text = "Full tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
-                  css_class = "ontology_term"
-                # Otherwise, regular tags...
-                else
-                  inner_html = h(tag_name)
-                  title_text = "Tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
-                  css_class = ""
+                  # Special processing for ontological term URIs...
+                  if BioCatalogue::Tags.is_ontology_term_uri?(tag_name)
+                    base_identifier_uri, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
+                    
+                    inner_html = h(keyword)
+                    title_text = "Full tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
+                    css_class = "ontology_term"
+                  # Otherwise, regular tags...
+                  else
+                    inner_html = h(tag_name)
+                    title_text = "Tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
+                    css_class = ""
+                  end
+                  
+                  # The URL is generated specially...
+                  a_href = BioCatalogue::Tags.generate_tag_show_uri(tag_name)
+                  
+                  tag!(:a,
+                       :href => a_href,
+                       :class => css_class,
+                       :style => "text-decoration: none;",
+                       :title => tooltip_title_attrib(title_text, 500)) { inner_html }
+                  
+                  # Add the option to delete the tag, if allowed and if the tag has the current user as a submitter....
+                  if logged_in? and 
+                     options[:allow_delete] and 
+                     !options[:annotatable].nil? and 
+                     !submitters.nil? and 
+                     submitters.include?("User:#{current_user.id}") then
+                     
+                    annotatable = options[:annotatable]
+                    
+                    # The delete AJAX functionality depends on the parent container for the tag clouds having
+                    # and ID of "#{annotatable.class.name}_#{annotatable.id}_tags"
+                    
+                    link_to_remote(image_tag(icon_filename_for(:delete_faded_plus), :mouseover => icon_filename_for(:delete), :style => "vertical-align:middle;margin-left:0.4em;"),
+                                  :url => "#{destroy_tag_url(:tag => tag_name)}&annotatable_type=#{annotatable.class.name}&annotatable_id=#{annotatable.id}",
+                                  :method => :delete,
+                                  :update => { :success => "#{annotatable.class.name}_#{annotatable.id}_tags", :failure => '' },
+                                  :loading => "Element.show('tags_spinner')",
+                                  :complete => "Element.hide('tags_spinner')", 
+                                  :success => "new Effect.Highlight('#{annotatable.class.name}_#{annotatable.id}_tags', { duration: 0.5 });",
+                                  :failure => "Element.hide('tags_spinner'); alert('Sorry, an error has occurred.');",
+                                  :html => { :title => tooltip_title_attrib("Delete this tag (you created it)") },
+                                  :confirm => "Are you sure you want to delete this tag?" )
+                  end
+                  
                 end
-                
-                # The URL is generated specially...
-                a_href = BioCatalogue::Tags.generate_tag_show_uri(tag_name)
-                
-                tag!(:a,
-                     :href => a_href,
-                     :class => css_class,
-                     :style => "font-size:#{font_size}px;  text-decoration: none; #{options[:tag_style]}",
-                     :title => tooltip_title_attrib(title_text, 500)) { inner_html }
               end
             
               count += 1

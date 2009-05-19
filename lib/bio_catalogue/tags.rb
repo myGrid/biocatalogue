@@ -10,21 +10,32 @@ module BioCatalogue
     @@logger = RAILS_DEFAULT_LOGGER
     
     # ==============================
-    # IMPORTANT - Tag data structure
+    # IMPORTANT - Tags data structure
     # ------------------------------
     # A simple (but extensible) data structure will be used to represent tags in the system.
     # This is essentially a view over the annotations in the database.
     #
     # This data structure takes the form of an array of hashes where each hash contains data for a single tag. 
-    # Each hash contains a "name" field (ie: the tag name), and a "count" field to specify 
-    # the popularity of that tag (ie: how many items are tagged with that value).
+    # Each hash contains:
+    # - "name" - the tag name.
+    # - "count" - specifies the popularity of that tag (ie: how many items are tagged with that value).
+    # - "submitters" (optional) - an array of unique compound IDs (eg: "User:10") that identify the submitters of this particular tag. 
+    #     NOTE: This may not necessarily be ALL the submitters of that specific tag in the system since sometimes a 
+    #     set of tags will be scoped to something specific (eg: a particular Service).
     #
-    # E.g.: [ { "name" => "blast", "count" => "34" }, { "name" => "fasta", "count" => "54" } ... ]
+    # E.g.: 
+    #   [ { "name" => "blast", 
+    #       "count" => "34", 
+    #       "submitters" => [ "User:15", "Registry:11", "User:45" ] },
+    #     { "name" => "fasta", 
+    #       "count" => "54", 
+    #       "submitters" => [ "Registry:11", "User:1" ] }, 
+    #   ... ]
     # ==============================
     
 
     # Takes in a set of annotations and returns a collection of tags
-    # in the format of the general tag data structure described above.
+    # The return format is the general tag data structure described above, INCLUDING the "submitters".
     # NOTE (1): these are sorted by tag name.
     def self.annotations_to_tags_structure(annotations)
       return [ ] if annotations.blank?
@@ -40,12 +51,13 @@ module BioCatalogue
             if t["name"].downcase == ann.value.downcase
               found = true
               t["count"] = t["count"] + 1
+              t["submitters"] << "#{ann.source_type}:#{ann.source_id}"
             end
           end
           
           # If it wasn't found, add it in the tags collection.
           unless found
-            tags << Hash[ "name" => ann.value, "count" => 1 ]
+            tags << { "name" => ann.value, "count" => 1, "submitters" => [ "#{ann.source_type}:#{ann.source_id}" ] }
           end
         end
       end
@@ -54,7 +66,7 @@ module BioCatalogue
     end
     
     # This will return a set of tags found from the annotations in the database.
-    # The return format is the general tag data structure described above.
+    # The return format is the general tag data structure described above, EXCLUDING the "submitters".
     # NOTE (1): these are sorted by tag name.
     def self.get_tags(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
