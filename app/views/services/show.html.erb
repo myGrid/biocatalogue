@@ -20,7 +20,7 @@
 </h1>
 
 <div class="inline-block" style="float: right; line-height: 1.0; text-align: right;">
-	<a href="#comments" style="font-size: 90%; font-weight: bold; color: #555;">View the comments on this service</a>
+	<a href="#disqus_thread" style="font-size: 90%; font-weight: bold; color: #555;">Comments</a>
 	
 	<br/>
 	
@@ -131,6 +131,8 @@
 					 	 :locals => { :service_version_instance =>  @latest_version_instance } %>
 
 </div>
+
+<%= render :partial => 'shared/tabber_startup' -%>
 
 <div style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
 	<h2>Comments</h2>
