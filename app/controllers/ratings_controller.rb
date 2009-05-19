@@ -35,11 +35,18 @@ class RatingsController < ApplicationController
     category = params[:category]
     
     if !annotatable.nil? and !category.blank?
-      existing = annotatable.annotations.find(:all, 
-                                              :conditions => { :attribute_id => AnnotationAttribute.find_by_name(category).id, 
-                                                               :source_type => current_user.class.name,
-                                                               :source_id => current_user.id })
-      annotatable.annotations.delete(existing)
+      existing = Annotation.find(:all, 
+                                 :conditions => { :annotatable_type => annotatable.class.name,
+                                                  :annotatable_id => annotatable.id,
+                                                  :attribute_id => AnnotationAttribute.find_by_name(category).id, 
+                                                  :source_type => current_user.class.name,
+                                                  :source_id => current_user.id })
+      
+      unless existing.blank?
+        existing.each do |a|
+          a.destroy
+        end
+      end
     end
     
     respond_to do |format|
