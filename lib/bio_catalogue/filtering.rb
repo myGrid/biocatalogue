@@ -180,6 +180,7 @@ module BioCatalogue
       params_dup = BioCatalogue::Util.duplicate_params(params)
     
       unless params_dup[filter_type].blank?
+        params_dup[filter_type].gsub!("[#{filter_value}],", "")
         params_dup[filter_type].gsub!(",[#{filter_value}]", "")
         params_dup[filter_type].gsub!("[#{filter_value}]", "")
       end
