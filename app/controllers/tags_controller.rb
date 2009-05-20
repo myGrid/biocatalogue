@@ -82,7 +82,7 @@ protected
     unless @tag_name.nil?
       tagged_items = Annotation.find_annotatables_with_attribute_name_and_value("tag", @tag_name)
       
-      @count, @results = BioCatalogue::Util.group_model_objects(tagged_items, VALID_SEARCH_TYPES, true)
+      @count, @results = BioCatalogue::Util.group_model_objects(tagged_items, BioCatalogue::Search::VALID_SEARCH_TYPES, true)
     end
   end
   
