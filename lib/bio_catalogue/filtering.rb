@@ -4,11 +4,11 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-# Module to carry out the bulk of the logic for filtering, faceting,
+# Module to carry out the bulk of the logic for filtering, filtering,
 # advanced search, and so on.
 
 module BioCatalogue
-  module Faceting
+  module Filtering
     
     # ====================
     # Filtering URL format
@@ -44,7 +44,7 @@ module BioCatalogue
     # Gets an ordered list of all the service providers and their counts of services.
     # Example return data:
     # [ { "name" => "ebi.ac.uk", "count" => "12" }, { "name" => "example.com", "count" => "11" }, ... ]
-    def self.get_facets_for_service_providers(limit=nil)
+    def self.get_filters_for_service_providers(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = "SELECT service_providers.name AS name, COUNT(*) AS count 
             FROM service_providers 
@@ -64,8 +64,8 @@ module BioCatalogue
     # Gets an ordered list of all the different service types and their counts of services.
     # Example return data:
     # [ { "name" => "SOAP", "count" => "102" }, { "name" => "REST", "count" => "11" }, ... ]
-    def self.get_facets_for_service_types(limit=nil)
-      facets = { }
+    def self.get_filters_for_service_types(limit=nil)
+      filters = { }
       
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = "SELECT service_versions.service_versionified_type AS name, COUNT(*) AS count 
@@ -79,21 +79,21 @@ module BioCatalogue
         sql += " LIMIT #{limit}"
       end
        
-      facets = ActiveRecord::Base.connection.select_all(sql)
+      filters = ActiveRecord::Base.connection.select_all(sql)
       
       # Need to "massage" the returned data...
       
-      facets.each do |f|
+      filters.each do |f|
         f["name"] = f["name"].constantize.new.service_type_name
       end
       
-      return facets
+      return filters
     end
     
     # Gets an ordered list of all the submitters that are Users and their counts of services.
     # Example return data:
     # [ { "name" => "John", "count" => "181" }, { "name" => "Paula", "count" => "11" }  ... ]
-    def self.get_facets_for_submitters_users(limit=nil)
+    def self.get_filters_for_submitters_users(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = "SELECT users.display_name AS name, COUNT(*) AS count 
             FROM users 
@@ -112,7 +112,7 @@ module BioCatalogue
     # Gets an ordered list of all the submitters that are Registries and their counts of services.
     # Example return data:
     # [ { "name" => "Feta", "count" => "181" }, { "name" => "Seekda", "count" => "11" }  ... ]
-    def self.get_facets_for_submitters_registries(limit=nil)
+    def self.get_filters_for_submitters_registries(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = "SELECT registries.display_name AS name, COUNT(*) AS count 
             FROM registries 
@@ -131,7 +131,7 @@ module BioCatalogue
     # Gets an ordered list of all the countries (the service deployments are in) and their counts of services.
     # Example return data:
     # [ { "name" => "England", "count" => "18" }, { "name" => "Germany", "count" => "5" }, { "name" => "(unknown)", "count" => "3" }  ... ]
-    def self.get_facets_for_countries(limit=nil)
+    def self.get_filters_for_countries(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = "SELECT service_deployments.country AS name, COUNT(*) AS count 
             FROM service_deployments 

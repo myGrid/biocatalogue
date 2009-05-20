@@ -1,6 +1,6 @@
 <%
 
-# BioCatalogue: app/views/faceting/_selected_facets.html.erb
+# BioCatalogue: app/views/filtering/_selected_filters.html.erb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -9,10 +9,10 @@
 %>
 
 <%
-	current_filters = BioCatalogue::Faceting.convert_params_to_filters(params)
+	current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
 %>
 
-<div class="facet_type_box">
+<div class="filter_type_box">
 	<% rounded "#D9D9D9", "#333", "100%" do %>
 		
 		<p class="type">
@@ -33,12 +33,12 @@
 			
 				<% filters_count += 1 %>
 				
-				<div class="selected_facets_box">
+				<div class="selected_filters_box">
 					
 					<% rounded "#FFC", "#333", "100%" do %>
 					
 						<p class="type_small">
-							<%= BioCatalogue::Faceting.filter_type_to_display_name(filter_type) -%>
+							<%= BioCatalogue::Filtering.filter_type_to_display_name(filter_type) -%>
 						</p>
 						
 						<% values_count = 0 %>
@@ -48,13 +48,13 @@
 								
 								<% 
 									 values_count += 1
-									 facet = { "name" => value }
+									 filter = { "name" => value }
 								%>
 								
 								<li style="text-align: center;">
-									<%= render :partial => 'faceting/facet_options_item',
-	                         	 :locals => { :facet => facet,
-	                                      	:facet_type => filter_type } -%>
+									<%= render :partial => 'filtering/filter_options_item',
+	                         	 :locals => { :filter => filter,
+	                                      	:filter_type => filter_type } -%>
 								</li>
 								
 								<% unless values_count == values.length %>
@@ -78,8 +78,8 @@
 			
 			<% end %>
 			
-			<div style="margin-top: 0.8em; text-align: center;">
-				<%= link_to("Clear all filters", "#{services_url}#browse", :class => "standout_link", :style => "font-size: 90%;") -%>
+			<div style="margin-top: 0.8em; text-align: center; font-weight: bold;">
+				<%= link_to("Clear all filters", "#{services_url}#browse", :style => "font-size: 90%;") -%>
 			</div>
 		
 		<% end %>    

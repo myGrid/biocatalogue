@@ -156,7 +156,7 @@ class ServicesController < ApplicationController
     
     # Filters
     
-    conditions, joins = BioCatalogue::Faceting.generate_conditions_and_joins_from_filters(params)
+    conditions, joins = BioCatalogue::Filtering.generate_conditions_and_joins_from_filters(params)
     
     @filter_message = "The services index has been filtered using the selected filters on the left..." unless conditions.blank? or joins.blank?
     
