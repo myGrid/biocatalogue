@@ -14,15 +14,24 @@
 %>
 
 <span class="container">
-	<% link_to(url, :class => (selected ? "selected" : nil), :title => tooltip_title_attrib(h(facet["name"]))) do -%>
-		<span class="text"><%= truncate(h(facet["name"]), :length => 28) -%></span>
-		
+	<% if facet["name"] == BioCatalogue::Faceting::UNKNOWN_TEXT %>
+		<span class="text" title="<%= tooltip_title_attrib(h(facet["name"])) -%>"><%= truncate(h(facet["name"]), :length => 28) -%></span>
+			
 		<% unless facet['count'].blank? %>
 			<span class="faded count">(<%= facet["count"] -%>)</span>
 		<% end %>
-		
-		<% if selected %>
-			<span class="deselect">&nbsp</span>
+	<% else %>
+		<% link_to(url, :class => (selected ? "selected" : nil), :title => tooltip_title_attrib(h(facet["name"]))) do -%>
+			<span class="text"><%= truncate(h(facet["name"]), :length => 28) -%></span>
+			
+			<% unless facet['count'].blank? %>
+				<span class="faded count">(<%= facet["count"] -%>)</span>
+			<% end %>
+			
+			<% if selected %>
+				<span class="deselect">&nbsp</span>
+			<% end %>
 		<% end %>
 	<% end %>
+	
 </span>

@@ -51,14 +51,6 @@ module FacetingHelper
     return html
   end
   
-  def get_facets_for_service_providers(limit=nil)
-    BioCatalogue::Faceting.get_facets_for_service_providers(limit)
-  end
-  
-  def get_facets_for_service_types(limit=nil)
-    BioCatalogue::Faceting.get_facets_for_service_types(limit)
-  end
-  
   def generate_include_filter_url(filter_type, filter_value)
     new_params = BioCatalogue::Faceting.add_filter_to_params(params, filter_type, filter_value)
     return services_url(new_params)

@@ -1786,9 +1786,9 @@ ul.tabbernav li.tabberactive a:hover
 
 /* END ratings table styles */
 
-/* BEGIN facets box */
+/* BEGIN filtering styles */
 
-#facets_header {
+#filters_header {
 	width: auto;
 	color: #000;
 	line-height: 1.2; 
@@ -1797,18 +1797,18 @@ ul.tabbernav li.tabberactive a:hover
 	margin-bottom: 0.5em;
 }
 
-#facets_header .text {
+#filters_header .text {
 	font-size: 110%;
 	font-weight: bold;
 	vertical-align: middle;
 }
 
-div.facets {
+div.filters {
 	padding: 0 0.3em;
 	line-height: 1.5; 
 }
 
-div.facets p.type {
+div.filters p.type {
 	font-weight: bold;
 	text-align: center;
 	line-height: 1.2; 
@@ -1819,7 +1819,7 @@ div.facets p.type {
 	color: #555;
 }
 
-div.facets p.type_small {
+div.filters p.type_small {
 	font-size: 90%;
 	line-height: 1.2;
 	font-weight: bold;
@@ -1829,24 +1829,24 @@ div.facets p.type_small {
 	color: #555;
 }
 
-div.facets div.facet_type_box {
+div.filters div.filter_type_box {
 	margin-bottom: 1em;
 	padding: 0;
 }
 
-div.facets div.selected_facets_box {
+div.filters div.selected_filters_box {
 	margin: 0 0.3em;
 	padding: 0;
 }
 
-div.facets li {
+div.filters li {
 	font-size: 90%;
 	padding: 0;
 	list-style: none;
 	margin: 0;
 }
 
-div.facets li .container {
+div.filters li .container {
 	display: block;
 	padding: 0 0.1em;
 	margin: 0.3em 0;
@@ -1854,36 +1854,36 @@ div.facets li .container {
 	vertical-align: top;
 }
 
-div.facets li .container a {
+div.filters li .container a {
 	text-decoration: none;
 	border: 1px dotted transparent;
 	padding: 0.1em 0.2em;
 	vertical-align: middle;
 }
 
-div.facets li .container a * {
+div.filters li .container a * {
 	vertical-align: middle;
 }
 
-div.facets li .container a:hover {
+div.filters li .container a:hover {
 	border: 1px dotted #CCC;
 	background-color: #DDE;
 }
 
-div.facets li .container a.selected {
+div.filters li .container a.selected {
 	border: 1px dotted #CCC;
 	background-color: #DDE;
 }
 
-div.facets li .container a:hover.selected { }
+div.filters li .container a:hover.selected { }
 
-div.facets li .container a span.text {
+div.filters li .container a span.text {
 	text-decoration: underline;
 }
 
-div.facets li .container a span.count { }
+div.filters li .container a span.count { }
 
-div.facets li .container a.selected span.deselect {
+div.filters li .container a.selected span.deselect {
 	display:-moz-inline-block;
 	display:-moz-inline-box;
 	display: inline-block;
@@ -1891,11 +1891,11 @@ div.facets li .container a.selected span.deselect {
 	background: url('/images/delete_faded_darker.png') no-repeat left center;
 }
 
-div.facets li .container a.selected:hover span.deselect {
+div.filters li .container a.selected:hover span.deselect {
 	background: url('/images/delete.png') no-repeat left center;
 }
 
-/* END facets box */
+/* END filtering styles */
 
 /* BEGIN autocomplete styles */
 

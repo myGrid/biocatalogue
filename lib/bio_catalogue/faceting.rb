@@ -10,7 +10,38 @@
 module BioCatalogue
   module Faceting
     
-    # Gets all the service providers and their counts of services.
+    # ====================
+    # Filtering URL format
+    # --------------------
+
+    # Filters are specified via the query parameters in URLs.
+    # The general format for this is:
+    #   ...?filter_type_1=[value1],[value2],[value3]&filter_type_2=[value4]&filter_type_3=[value5],[value6]&...
+
+    # ====================
+    
+    UNKNOWN_TEXT = "(unknown)".freeze
+    
+    def self.filter_type_to_display_name(filter_type)
+      case filter_type
+        when :t
+          "Service Types"
+        when :p
+          "Service Providers"
+        when :su
+          "Submitters (Users)"
+        when :sr
+          "Submitters (Registries)"
+        when :tag
+          "Tags"
+        when :c
+          "Countries"
+        else
+          "(unknown)"
+      end
+    end
+    
+    # Gets an ordered list of all the service providers and their counts of services.
     # Example return data:
     # [ { "name" => "ebi.ac.uk", "count" => "12" }, { "name" => "example.com", "count" => "11" }, ... ]
     def self.get_facets_for_service_providers(limit=nil)
@@ -30,7 +61,7 @@ module BioCatalogue
       return ActiveRecord::Base.connection.select_all(sql)
     end
     
-    # Gets all the different service types and their counts of services.
+    # Gets an ordered list of all the different service types and their counts of services.
     # Example return data:
     # [ { "name" => "SOAP", "count" => "102" }, { "name" => "REST", "count" => "11" }, ... ]
     def self.get_facets_for_service_types(limit=nil)
@@ -59,24 +90,72 @@ module BioCatalogue
       return facets
     end
     
-    def self.filter_type_to_display_name(filter_type)
-      case filter_type
-        when :t
-          "Service Types"
-        when :p
-          "Service Providers"
-        else
-          "(unknown)"
+    # Gets an ordered list of all the submitters that are Users and their counts of services.
+    # Example return data:
+    # [ { "name" => "John", "count" => "181" }, { "name" => "Paula", "count" => "11" }  ... ]
+    def self.get_facets_for_submitters_users(limit=nil)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = "SELECT users.display_name AS name, COUNT(*) AS count 
+            FROM users 
+            INNER JOIN services ON services.submitter_type = 'User' AND services.submitter_id = users.id 
+            GROUP BY users.id
+            ORDER BY COUNT(*) DESC"
+      
+      # If limit has been provided in the URL then add that to query.
+      if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
+        sql += " LIMIT #{limit}"
       end
+       
+      return ActiveRecord::Base.connection.select_all(sql)
     end
     
-    # ======================================
-    # Facet URL generation / parsing helpers
-    # --------------------------------------
-
-    # Filters are specified via the query parameters in URLs.
-    # The general format for this is:
-    #   ...?filter_type_1=[value1],[value2],[value3]&filter_type_2=[value4]&filter_type_3=[value5],[value6]&...
+    # Gets an ordered list of all the submitters that are Registries and their counts of services.
+    # Example return data:
+    # [ { "name" => "Feta", "count" => "181" }, { "name" => "Seekda", "count" => "11" }  ... ]
+    def self.get_facets_for_submitters_registries(limit=nil)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = "SELECT registries.display_name AS name, COUNT(*) AS count 
+            FROM registries 
+            INNER JOIN services ON services.submitter_type = 'Registry' AND services.submitter_id = registries.id 
+            GROUP BY registries.id
+            ORDER BY COUNT(*) DESC"
+      
+      # If limit has been provided in the URL then add that to query.
+      if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
+        sql += " LIMIT #{limit}"
+      end
+       
+      return ActiveRecord::Base.connection.select_all(sql)
+    end
+    
+    # Gets an ordered list of all the countries (the service deployments are in) and their counts of services.
+    # Example return data:
+    # [ { "name" => "England", "count" => "18" }, { "name" => "Germany", "count" => "5" }, { "name" => "(unknown)", "count" => "3" }  ... ]
+    def self.get_facets_for_countries(limit=nil)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = "SELECT service_deployments.country AS name, COUNT(*) AS count 
+            FROM service_deployments 
+            INNER JOIN services ON services.id = service_deployments.service_id 
+            GROUP BY service_deployments.country
+            ORDER BY COUNT(*) DESC"
+      
+      # If limit has been provided in the URL then add that to query.
+      if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
+        sql += " LIMIT #{limit}"
+      end
+       
+      items = ActiveRecord::Base.connection.select_all(sql)
+      
+      # IGNORE: Need to replace the blank name with "(unknown)" (for services that don't have a country set)...
+      # ... no easy way to get this to work right now so delete the empty value for now...
+      items.each do |item|
+        if item['name'].blank?
+          item['name'] = UNKNOWN_TEXT
+        end
+      end
+      
+      return items
+    end
     
     # Returns back a cloned params object with the new filter specified within it.
     def self.add_filter_to_params(params, filter_type, filter_value)
@@ -122,9 +201,21 @@ module BioCatalogue
       joins = [ ]
       
       # Get the necessary filters from the params object, in a more structured form...
-      filters = self.convert_params_to_filters(params) 
+      filters = self.convert_params_to_filters(params)
       
+      # Replace the unknown filter with nil
+      filters.each do |k,v|
+        v.each do |f|
+          if f == UNKNOWN_TEXT
+            v << nil
+            v.delete(f)
+          end
+        end
+      end
+            
       # Now build the conditions and joins...
+      
+      service_ids = [ ]
       
       unless filters.blank?
         filters.each do |filter_type, filter_values|
@@ -147,12 +238,23 @@ module BioCatalogue
                   joins << :service_versions
                 end
               when :p
-                provider = filter_values
+                providers = filter_values
                 
-                unless provider.blank?
-                  conditions[:service_deployments] = { :service_providers => { :name => provider } }
+                unless providers.blank?
+                  conditions[:service_deployments] = { } if conditions[:service_deployments].blank?
+                  conditions[:service_deployments][:service_providers] = { :name => providers }
                   joins << [ { :service_deployments => :provider } ]
                 end
+              when :c
+                countries = filter_values
+                
+                unless countries.blank?
+                  conditions[:service_deployments] = { } if conditions[:service_deployments].blank?
+                  conditions[:service_deployments][:country] = countries
+                  joins << [ :service_deployments ]
+                end
+              when :su
+                
             end
           end
         end
@@ -163,7 +265,7 @@ module BioCatalogue
     
     # Converts the params from a URL query string into a more structured filters collection.
     # Example return value:
-    #   { :t => [ "SOAP" ], :p => [ "ebi.ac.uk", "ddbj.jp" ] }
+    #   { :t => [ "SOAP" ], :p => [ "ebi.ac.uk", "ddbj.jp" ], :c => [ "USA", "(unknown)" ] }
     #
     # Note: irrelevant query parameters will be ignored and left untouched.
     def self.convert_params_to_filters(params)
@@ -172,9 +274,11 @@ module BioCatalogue
       params.each do |key, values|
         case key.to_s.downcase
           when 't'
-            filters[:t] = filter_options = self.split_filter_options_string(values)
+            filters[:t] = self.split_filter_options_string(values)
           when 'p'
-            filters[:p] = filter_options = self.split_filter_options_string(values)
+            filters[:p] = self.split_filter_options_string(values)
+          when 'c'
+            filters[:c] = self.split_filter_options_string(values)
         end
       end
       
@@ -198,8 +302,7 @@ module BioCatalogue
       filter_options[filter_options.length-1] = last_value[0...last_value_length-1]
       
       return filter_options
-   end
+    end
    
-   # ======================================
   end
 end

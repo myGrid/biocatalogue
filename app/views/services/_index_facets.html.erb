@@ -25,15 +25,30 @@
 			Select filters from below...
 		</p>
 		
-		<% service_type_facets = get_facets_for_service_types %>
+		<% service_type_facets = BioCatalogue::Faceting.get_facets_for_service_types %>
 		<%= render :partial => "faceting/facet_options", 
 							 :locals => { :facets => service_type_facets,
 														:facet_type => :t } -%>
 		
-		<% service_provider_facets = get_facets_for_service_providers %>
+		<% service_provider_facets = BioCatalogue::Faceting.get_facets_for_service_providers %>
 		<%= render :partial => "faceting/facet_options", 
 							 :locals => { :facets => service_provider_facets,
 														:facet_type => :p } -%>
+		
+		<% submitter_user_facets = BioCatalogue::Faceting.get_facets_for_submitters_users %>
+		<%= render :partial => "faceting/facet_options", 
+							 :locals => { :facets => submitter_user_facets,
+														:facet_type => :su } -%>
+																	
+		<% submitter_registry_facets = BioCatalogue::Faceting.get_facets_for_submitters_registries %>
+		<%= render :partial => "faceting/facet_options", 
+							 :locals => { :facets => submitter_registry_facets,
+														:facet_type => :sr } -%>
+																				
+		<% country_facets = BioCatalogue::Faceting.get_facets_for_countries %>
+		<%= render :partial => "faceting/facet_options", 
+							 :locals => { :facets => country_facets,
+														:facet_type => :c } -%>
 	</div>
 
 <% end %>
