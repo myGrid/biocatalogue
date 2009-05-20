@@ -9,7 +9,7 @@
 %>
 
 <%
-	current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
+	 current_filters_grouped = current_selected_filters_grouped
 %>
 
 <div class="filter_type_box">
@@ -19,7 +19,7 @@
 			Current Filters Applied
 		</p>
 		
-		<% if current_filters.blank? %>
+		<% if current_filters_grouped.blank? %>
 		
 			<div style="text-align:center;">
 				<span class="none_text">none</span>
@@ -29,48 +29,43 @@
 			
 			<% filters_count = 0 %>
 			
-			<% current_filters.each do |filter_type, values| %>
-			
+			<% current_filters_grouped.each do |current_filter_group| %>
+				
 				<% filters_count += 1 %>
 				
 				<div class="selected_filters_box">
 					
 					<% rounded "#FFC", "#333", "100%" do %>
 					
-						<p class="type_small">
-							<%= BioCatalogue::Filtering.filter_type_to_display_name(filter_type) -%>
-						</p>
-						
-						<% values_count = 0 %>
-						
-						<ul>
-							<% values.each do |value| %>
-								
-								<% 
-									 values_count += 1
-									 filter = { "name" => value }
-								%>
-								
-								<li style="text-align: center;">
-									<%= render :partial => 'filtering/filter_options_item',
-	                         	 :locals => { :filter => filter,
-	                                      	:filter_type => filter_type } -%>
-								</li>
-								
-								<% unless values_count == values.length %>
-									<li style="font-weight: bold; font-size: 85%; text-align: center; line-height: 1.1;">
-										OR
+						<% current_filter_group.each do |filter_type, values| %>
+					
+							<p class="type_small">
+								<%= BioCatalogue::Filtering.filter_type_to_display_name(filter_type) -%>
+							</p>
+							
+							<ul>
+								<% values.each do |value| %>
+									
+									<% 
+										 filter = { "name" => value }
+									%>
+									
+									<li style="text-align: center;">
+										<%= render :partial => 'filtering/filter_option_item',
+		                         	 :locals => { :filter => filter,
+		                                      	:filter_type => filter_type } -%>
 									</li>
+									
 								<% end %>
-								
-							<% end %>
-						</ul>
+							</ul>
+						
+						<% end %>
 					
 					<% end %>
 					
 				</div>
 				
-				<% unless filters_count == current_filters.length %>
+				<% unless filters_count == current_filters_grouped.length %>
 					<p style="font-weight: bold; font-size: 100%; text-align: center; margin: 0;">
 						AND
 					</p>

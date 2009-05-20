@@ -1819,12 +1819,26 @@ div.filters p.type {
 	color: #555;
 }
 
+div.filters p.subtype {
+	font-size: 95%;
+	font-weight: bold;
+	text-align: center;
+	line-height: 1.2; 
+	padding: 0;
+	margin: 0;
+	margin-top: 0.7em;
+	margin-bottom: 0.6em;
+	color: #666;
+	border-bottom: 1px dotted #DDD;
+	padding-bottom: 0.3em;
+}
+
 div.filters p.type_small {
 	font-size: 90%;
 	line-height: 1.2;
 	font-weight: bold;
 	margin: 0;
-	margin-bottom: 0.8em;
+	margin-bottom: 0.5em;
 	text-align: center;
 	color: #555;
 }

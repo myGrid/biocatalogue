@@ -57,12 +57,33 @@ module FilteringHelper
   end
 
   def generate_exclude_filter_url(filter_type, filter_value)
-    new_params = BioCatalogue::Filtering.remove_filter_to_params(params, filter_type, filter_value)
+    new_params = BioCatalogue::Filtering.remove_filter_from_params(params, filter_type, filter_value)
     return services_url(new_params)
   end
   
   def is_filter_selected(filter_type, filter_value)
     return BioCatalogue::Filtering.is_filter_selected(params, filter_type, filter_value)
+  end
+  
+  # Gets the current filters selected, in a grouped structure (Array of Hashes) to take into account subtypes...
+  def current_selected_filters_grouped
+    grouped = [ ]
+    
+    current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
+    
+    current_filters.each do |k,v|
+      unless [ :su, :sr ].include?(k)
+        grouped << { k => v }
+      end
+    end
+    
+    submitters = { }
+    submitters[:su] = current_filters[:su] unless current_filters[:su].blank?
+    submitters[:sr] = current_filters[:sr] unless current_filters[:sr].blank?
+    
+    grouped << submitters unless submitters.blank?
+    
+    return grouped
   end
   
   def generate_sort_url(sort_by, sort_order)

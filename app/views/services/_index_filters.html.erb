@@ -25,28 +25,24 @@
 			Select filters from below...
 		</p>
 		
+		<!-- Service Types -->
 		<% service_type_filters = BioCatalogue::Filtering.get_filters_for_service_types %>
-		<%= render :partial => "filtering/filter_options", 
+		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => service_type_filters,
 														:filter_type => :t } -%>
 		
+		<!-- Service Providers -->
 		<% service_provider_filters = BioCatalogue::Filtering.get_filters_for_service_providers %>
-		<%= render :partial => "filtering/filter_options", 
+		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => service_provider_filters,
 														:filter_type => :p } -%>
 		
-		<% submitter_user_filters = BioCatalogue::Filtering.get_filters_for_submitters_users %>
-		<%= render :partial => "filtering/filter_options", 
-							 :locals => { :filters => submitter_user_filters,
-														:filter_type => :su } -%>
-																	
-		<% submitter_registry_filters = BioCatalogue::Filtering.get_filters_for_submitters_registries %>
-		<%= render :partial => "filtering/filter_options", 
-							 :locals => { :filters => submitter_registry_filters,
-														:filter_type => :sr } -%>
-																				
+		<!-- Submitters -->
+		<%= render :partial => "filtering/filter_options_submitters" -%>
+											
+		<!-- Countries -->									
 		<% country_filters = BioCatalogue::Filtering.get_filters_for_countries %>
-		<%= render :partial => "filtering/filter_options", 
+		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => country_filters,
 														:filter_type => :c } -%>
 	</div>

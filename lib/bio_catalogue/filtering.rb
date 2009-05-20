@@ -22,6 +22,8 @@ module BioCatalogue
     
     UNKNOWN_TEXT = "(unknown)".freeze
     
+    FILTER_KEYS = [ :t, :p, :su, :sr, :tag, :c ].freeze
+    
     def self.filter_type_to_display_name(filter_type)
       case filter_type
         when :t
@@ -174,7 +176,7 @@ module BioCatalogue
     end
     
     # Returns back a cloned params object with the filter specified removed from it.
-    def self.remove_filter_to_params(params, filter_type, filter_value)
+    def self.remove_filter_from_params(params, filter_type, filter_value)
       params_dup = BioCatalogue::Util.duplicate_params(params)
     
       unless params_dup[filter_type].blank?
@@ -215,7 +217,7 @@ module BioCatalogue
             
       # Now build the conditions and joins...
       
-      service_ids = [ ]
+      service_ids_submitters = [ ]
       
       unless filters.blank?
         filters.each do |filter_type, filter_values|
@@ -254,11 +256,16 @@ module BioCatalogue
                   joins << [ :service_deployments ]
                 end
               when :su
-                
+                service_ids_submitters.concat(get_service_ids_with_submitter_users(filter_values))
+              when :sr
+                service_ids_submitters.concat(get_service_ids_with_submitter_registries(filter_values))
             end
           end
         end
       end
+      
+      # Add service IDs from submitters to conditions
+      conditions[:id] = service_ids_submitters unless service_ids_submitters.blank?
       
       return [ conditions, joins ]
     end
@@ -272,14 +279,8 @@ module BioCatalogue
       filters = { }
       
       params.each do |key, values|
-        case key.to_s.downcase
-          when 't'
-            filters[:t] = self.split_filter_options_string(values)
-          when 'p'
-            filters[:p] = self.split_filter_options_string(values)
-          when 'c'
-            filters[:c] = self.split_filter_options_string(values)
-        end
+        key_sym = key.to_s.to_sym
+        filters[key_sym] = self.split_filter_options_string(values) if FILTER_KEYS.include?(key_sym)
       end
       
       return filters
@@ -302,6 +303,34 @@ module BioCatalogue
       filter_options[filter_options.length-1] = last_value[0...last_value_length-1]
       
       return filter_options
+    end
+    
+    protected
+    
+    def self.get_service_ids_with_submitter_users(user_display_names)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = [ "SELECT services.id
+             FROM services 
+             INNER JOIN users ON services.submitter_type = 'User' AND services.submitter_id = users.id 
+             WHERE users.display_name IN (?)",
+             user_display_names ]
+      
+      results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+      
+      return results.map { |r| r['id'] }
+    end
+    
+    def self.get_service_ids_with_submitter_registries(registry_display_names)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = [ "SELECT services.id
+             FROM services 
+             INNER JOIN registries ON services.submitter_type = 'Registry' AND services.submitter_id = registries.id 
+             WHERE registries.display_name IN (?)",
+             registry_display_names ]
+      
+      results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+      
+      return results.map { |r| r['id'] }
     end
    
   end

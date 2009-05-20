@@ -1,0 +1,116 @@
+<%
+
+# BioCatalogue: app/views/filtering/_filter_options_submitters.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%# This partial MUST be used within a <div> element with class="filters" %>
+
+<% 
+	 submitter_user_filters = BioCatalogue::Filtering.get_filters_for_submitters_users
+	 submitter_registry_filters = BioCatalogue::Filtering.get_filters_for_submitters_registries 
+%>
+
+<div class="filter_type_box">
+		
+	<% rounded "#FFF", "#333", "100%" do %>
+		
+		<p class="type">
+			Submitters
+			<span class="faded">(<%= submitter_user_filters.length + submitter_registry_filters.length -%>)</span>
+		</p>
+		
+		
+		<!-- Registries -->
+		
+		<p class="subtype">
+			Registries
+			<span class="faded">(<%= submitter_registry_filters.length -%>)</span>
+		</p>
+		
+		<% 
+			filters_all_cookie_current_value = get_filters_all_cookie_value(:sr)
+			initial_no_to_show = 10
+			hidden_items_class = "filters_hidden_#{:sr}"
+		%>
+		
+		<ul>
+			<%# Show the first x amount...  %>
+			<% submitter_registry_filters[0...initial_no_to_show].each do |filter| %>
+				<li>
+					<%= render :partial => 'filtering/filter_option_item',
+										 :locals => { :filter => filter,
+																	:filter_type => :sr } -%>
+				</li>
+			<% end %>
+			
+			<%# ... hide the rest if there are more... %>
+			<% unless (hidden_filters = submitter_registry_filters[initial_no_to_show...submitter_registry_filters.length]).blank? %>
+				<% hidden_filters.each do |filter| %>
+					<li class='<%= hidden_items_class -%>' style="<%= (filters_all_cookie_current_value == "true" ? "" : "display:none;") -%>">
+						<%= render :partial => 'filtering/filter_option_item',
+											 :locals => { :filter => filter,
+																		:filter_type => :sr } -%>
+					</li>
+				<% end %>
+			<% end %>
+		</ul>
+		
+		<%# ... make available the option to show all, if there are more. %>
+		<% if submitter_registry_filters.length > initial_no_to_show %>
+			<p class="more_less_links" style="margin-top: 0.8em;">
+				<%= render_show_hide_links(:sr, hidden_items_class) -%>
+			</p>
+		<% end %>
+		
+		
+		<!-- Users -->
+		
+		<p class="subtype">
+			Users
+			<span class="faded">(<%= submitter_user_filters.length -%>)</span>
+		</p>
+		
+		<% 
+			filters_all_cookie_current_value = get_filters_all_cookie_value(:su)
+			initial_no_to_show = 10
+			hidden_items_class = "filters_hidden_#{:su}"
+		%>
+		
+		<ul>
+			<%# Show the first x amount...  %>
+			<% submitter_user_filters[0...initial_no_to_show].each do |filter| %>
+				<li>
+					<%= render :partial => 'filtering/filter_option_item',
+										 :locals => { :filter => filter,
+																	:filter_type => :su } -%>
+				</li>
+			<% end %>
+			
+			<%# ... hide the rest if there are more... %>
+			<% unless (hidden_filters = submitter_user_filters[initial_no_to_show...submitter_user_filters.length]).blank? %>
+				<% hidden_filters.each do |filter| %>
+					<li class='<%= hidden_items_class -%>' style="<%= (filters_all_cookie_current_value == "true" ? "" : "display:none;") -%>">
+						<%= render :partial => 'filtering/filter_option_item',
+											 :locals => { :filter => filter,
+																		:filter_type => :su } -%>
+					</li>
+				<% end %>
+			<% end %>
+		</ul>
+		
+		<%# ... make available the option to show all, if there are more. %>
+		<% if submitter_user_filters.length > initial_no_to_show %>
+			<p class="more_less_links" style="margin-top: 0.8em;">
+				<%= render_show_hide_links(:su, hidden_items_class) -%>
+			</p>
+		<% end %>
+		
+		
+	<% end %>
+		
+</div>
