@@ -390,7 +390,7 @@ module ApplicationHelper
     desc = strip_tags(desc) if do_strip_tags
     desc = truncate(desc, :length => truncate_length) unless truncate_length.nil?
     desc = simple_format(desc) unless do_strip_tags
-    desc = auto_link(desc, :all, :target => '_blank') if do_auto_link
+    desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank' }) if do_auto_link
     desc = white_list(desc)
 
     return desc
