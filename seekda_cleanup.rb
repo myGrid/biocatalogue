@@ -133,7 +133,7 @@ class SeekDaCleaner
                            "projects.dnv.com",
                            "rodeo.lemontech.cl",
                            "salut.gencat.net",
-                           "soap.apm-internet.net ",
+                           "soap.apm-internet.net",
                            "testbed.hr-xml.org",
                            "validator2.addressdoctor.com",
                            "webapps.datafed.net",

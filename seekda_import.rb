@@ -77,7 +77,7 @@ end
 class SeekDaImporter
   include LibXML
   
-  attr_accessor :options, :username, :password, :registry_source, :franck, :keywords, :tags, :excludes
+  attr_accessor :options, :username, :password, :registry_source, :franck, :keywords, :tags, :provider_excludes, :wsdl_excludes
   
   def initialize(args)
     @options = {
@@ -139,8 +139,67 @@ class SeekDaImporter
     @password = @options[:password]
     
     # Set excludes
-    @excludes = [ "phoebus.cs.man.ac.uk",
-                  "ppdev.vbi.vt.edu" ]
+    @provider_excludes = [ "128.192.66.83", 
+                           "194.203.47.11",
+                           "excedent.com",
+                           "ebay.com",
+                           "nasa.gov",
+                           "eurocv.eu",
+                           "verticalresponse.com",
+                           "asptest.de",
+                           "aspalliance.com",
+                           "brinsy.com",
+                           "berkeley.edu",
+                           "symantec.com",
+                           "avectra.com",
+                           "englandnet.co.uk",
+                           "umt.edu",
+                           "epa.gov",
+                           "identifythebest.com",
+                           "cmiservices.org",
+                           "kbyte.ru",
+                           "uni-mb.si",
+                           "lokasoft.com",
+                           "myopenlink.net",
+                           "ntu.edu.sg",
+                           "ohrwurm.net",
+                           "rdg.ac.uk",
+                           "dnv.com",
+                           "lemontech.cl",
+                           "gencat.net",
+                           "apm-internet.net",
+                           "hr-xml.org",
+                           "addressdoctor.com",
+                           "datafed.net",
+                           "cultuurweb.be",
+                           "serviceu.com",
+                           "socard.nl",
+                           "strikeiron.com",
+                           "weather.gov",
+                           "trendmicro.com",
+                           "2sms.com",
+                           "artikelbeheer.nl",
+                           "billmiami.com",
+                           "bmbconnect.org",
+                           "contrex.ch",
+                           "eqsl.cc",
+                           "gemx.org",
+                           "ippages.com",
+                           "fvg.it",
+                           "kintera.com",
+                           "offentligajobb.se",
+                           "salesforce.com",
+                           "sercotelhoteles.com",
+                           "spk.gov.tr",
+                           "teleprior.eu",
+                           "tradedate.com",
+                           "weather.gov",
+                           "webservicex.net",
+                           "xatanet.net",
+                           "xignite.com",
+                           "xatanet.net" ]
+    @wsdl_excludes = [ "phoebus.cs.man.ac.uk",
+                       "ppdev.vbi.vt.edu" ]
   end
   
   def run
@@ -253,7 +312,16 @@ class SeekDaImporter
                     
                     exclude_this = false
                     
-                    @excludes.each {|x| exclude_this = true if wsdl_url.match(x) }
+                    @provider_excludes.each do |excluded_provider|
+                      provider_node = service_node.find_first('provider')
+                      if !provider_node.nil? && !(provider_url = provider_node.inner_xml).blank?
+                        exclude_this = true if provider_url.match(excluded_provider)
+                      end
+                    end
+                    
+                    @wsdl_excludes.each do |excluded_wsdl|
+                      exclude_this = true if wsdl_url.match(excluded_wsdl)
+                    end
                     
                     if exclude_this
                       stats["total_services_excluded"].increment
