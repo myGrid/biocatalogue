@@ -18,7 +18,19 @@
 		<% name_annotations.each do |al| %>
 			<span style="vertical-align: middle;">
 				<span class="faded_plus">aka</span>
-				<span style="font-weight: bold; margin-right: 1em;"><%= h(al.value) -%></span>
+				<span style="font-weight: bold; margin-right: 1em;">
+					<%= h(al.value) -%>
+					<% if mine?(al) %>
+						<span style="margin-left: 0.3em;">
+							<%= link_to(image_tag(icon_filename_for(:delete_faded_plus), :mouseover => icon_filename_for(:delete), :style => "vertical-align:middle;"), 
+													annotation_path(al), 
+													:method => :delete, 
+													:confirm => "Are you sure you want to delete this name alias?", 
+													:style => 'vertical-align: middle;',
+													:title => tooltip_title_attrib("Delete this name alias (you created it)")) -%>
+						</span>
+					<% end %>
+				</span>
 			</span>
 		<% end %>
 	<% end %>
