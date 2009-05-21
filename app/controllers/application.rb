@@ -27,6 +27,8 @@ class ApplicationController < ActionController::Base
   
   prepend_before_filter :initialise_use_tab_cookie_in_session
   
+  after_filter :log_event
+  
   def login_required
     respond_to do |format|
       format.html do
@@ -150,7 +152,22 @@ class ApplicationController < ActionController::Base
       format.html { redirect_to(session[:original_uri].blank? ? home_url : :back) }
       format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
     end
-  end  
+  end
+  
+  def is_request_from_bot?
+    if @is_bot.nil?
+      @is_bot = false
+    
+      BOT_IGNORE_LIST.each do |bot|
+        if request.env['HTTP_USER_AGENT'] and request.env['HTTP_USER_AGENT'].match(bot)
+          @is_bot = true
+          break
+        end 
+      end
+    end
+    
+    return @is_bot
+  end
   
   # ========================================
   # Code to help with remembering which tab
@@ -242,10 +259,61 @@ class ApplicationController < ActionController::Base
   def log_search
     if USE_EVENT_LOG
       if !@query.blank? and !@type.blank?
-        ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type })
+        ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type, :http_user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] })
       end
     end
   end
   
   # =========================
+  
+  # Used to record certain events that are of importance...
+  def log_event
+    # Note: currently the following are logged seperately:
+    # - searches
+    
+    if USE_EVENT_LOG and !is_request_from_bot?
+      
+      c = controller_name.downcase
+      a = action_name.downcase
+        
+      core_data = { :http_user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] }
+      
+      if c == "services"
+        if a == "show"
+          ActivityLog.create(:action => "view", 
+                             :culprit => current_user, 
+                             :activity_loggable => @service, 
+                             :data => core_data)  
+        end
+      end
+      
+      if c == "users"
+        if a == "show"
+          ActivityLog.create(:action => "view", 
+                             :culprit => current_user, 
+                             :activity_loggable => @user, 
+                             :data => core_data)
+        end
+      end
+      
+      if c == "registries"
+        if a == "show"
+          ActivityLog.create(:action => "view", 
+                             :culprit => current_user, 
+                             :activity_loggable => @registry, 
+                             :data => core_data)
+        end
+      end
+      
+      if c == "service_providers"
+        if a == "show"
+          ActivityLog.create(:action => "view", 
+                             :culprit => current_user, 
+                             :activity_loggable => @service_provider, 
+                             :data => core_data)
+        end
+      end
+      
+    end
+  end
 end

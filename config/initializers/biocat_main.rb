@@ -34,6 +34,15 @@ class ActiveRecord::Base
   @@per_page = PAGE_ITEMS_SIZE
 end
 
+BOT_IGNORE_LIST = "Googlebot",
+                  "Slurp",
+                  "msnbot",
+                  "crawler",
+                  "bot",
+                  "heritrix",
+                  "spider",
+                  "Nutch"
+
 
 # List of annotation attributes that are considered "known" or important in the system
 KNOWN_ANNOTATION_ATTRIBUTES = [ "tag",
