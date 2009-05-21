@@ -4,6 +4,9 @@
 class ServiceTest < ActiveRecord::Base
   belongs_to :testable, :polymorphic => true
   
+  #test results
+  has_many :test_results, :as => :test, :dependent => :destroy  
+
   # NOTE: Tests belong to a user
   belongs_to :user
   belongs_to :content_blob, :dependent => :destroy
@@ -11,8 +14,10 @@ class ServiceTest < ActiveRecord::Base
   #validations 
   validates_associated :content_blob
   validates_presence_of :name, :exec_name, 
-                        :description, :content_blob_id,
+                        #:description, :content_blob_id,
                         :filename, :content_type
+  validates_inclusion_of :binding, :in  => %(perl python java ruby ), 
+                                    :message => "please select a binding"
                         
   attr_protected :filename, 
                  :content_type
@@ -41,20 +46,17 @@ class ServiceTest < ActiveRecord::Base
     testable_str.constantize.find(testable_id)
   end
   
-  # Set the attribute for the uploaded
-  # file in preparation for storing in db
-#  def uploaded_file=(incoming_file)
-#    self.filename = incoming_file.original_filename
-#    self.content_type = incoming_file.content_type
-#    self.content_blob = ContentBlob.create({:data => incoming_file.read})
-#  end
   
   #create an entry into the content_blobs table
   #containing the binary data of the uploaded file
   def test_data=(incoming_file)
-    self.filename = incoming_file.original_filename
-    self.content_type = incoming_file.content_type
-    self.content_blob = ContentBlob.create({:data => incoming_file.read})
+    begin
+      self.filename = incoming_file.original_filename
+      self.content_type = incoming_file.content_type
+      self.content_blob = ContentBlob.new({:data => incoming_file.read})
+    rescue Exception => ex
+      errors.add_to_base("Error uploading file: #{ex.backtrace.join("\n")}")
+    end
   end
  
 #  def filename=(new_filename)

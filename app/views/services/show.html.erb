@@ -20,7 +20,7 @@
 </h1>
 
 <div class="inline-block" style="float: right; line-height: 1.0; text-align: right;">
-	<a href="#disqus_thread" style="font-size: 90%; font-weight: bold; color: #555;">Comments</a>
+	<a href="#comments" style="font-size: 90%; font-weight: bold; color: #555;">View the comments on this service</a>
 	
 	<br/>
 	
@@ -29,7 +29,7 @@
 							 :locals => { :service => @service } -%>
 	</span>
 	
-	<%= service_latest_status_symbol(@service) -%>
+	<!-- <%= service_latest_status_symbol(@service) -%> -->
 </div>
 
 <div style="margin-top: 1em;">
@@ -115,10 +115,48 @@
 		
 		<span class="clear"></span>
   </div>
+  
 	
 	<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_tabs", 
 					 	 :locals => { :service_version_instance =>  @latest_version_instance } %>
 
+
+
+	
+  <div id="tab-monitoring" class="tabbertab">
+    <h3>Monitoring</h3>
+	<%= service_latest_status_symbol(@service) -%>  <br/>
+	
+	<h4>Availability Checks</h4>
+	<% @service.service_deployments.each  do |dep|  %>
+		<%= service_test_status_symbol(dep.latest_endpoint_status, "Endpoint")%> <br/>
+	<%end%>
+	
+	<% @service.service_version_instances_by_type('soap').each  do |soap|  %>
+		<%= service_test_status_symbol(soap.latest_wsdl_location_status, "Wsdl Location")%> <br/>
+	<%end%>
+	
+	<!--
+	
+	<h4>Tests for this Service</h4>
+	 
+	 <% if @service.service_tests.empty? -%>  <br/>
+	    None <br/>
+	 <% else -%>
+			<% @service.service_tests.each do |test| -%>  <br/>
+			<%= test.name -%>  <br/>
+		<% end %>
+		
+	<% end -%>
+	
+	
+	 <% if mine?(@service) -%>
+		<div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
+			<%= render :partial => 'shared/service_test', :locals => {:service_tests => @service} -%>
+		</div>
+		
+  </div>
+ -->
 </div>
 
 <%= render :partial => 'shared/tabber_startup' -%>
@@ -131,10 +169,5 @@
 	<%= disqus_thread -%>
 </div>
 
-<% if false %>
-<% if mine?(@service) -%>
-	<div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
-		<%= render :partial => 'shared/service_test', :locals => {:service_tests => @service} -%>
-	</div>
-<% end %>
+
 <% end %>

@@ -34,6 +34,8 @@ class Service < ActiveRecord::Base
   
   validates_associated :service_deployments
   
+  validates_associated :service_tests
+  
   validates_existence_of :submitter   # User must exist in the db beforehand.
   
   if ENABLE_SEARCH
@@ -68,6 +70,15 @@ class Service < ActiveRecord::Base
   # Gets an array of all the ServiceProviders
   def providers
     self.service_deployments.collect{|sd| sd.provider}.uniq
+  end
+  
+  def service_version_instances_by_type(type)
+    
+    types = {'soap' => 'SoapService',
+             'rest' => 'RestService'}
+             
+    instances = service_version_instances
+    return  instances.delete_if{ |instance| instance.class.to_s != types[type] } || []
   end
   
 protected

@@ -529,32 +529,69 @@ module ApplicationHelper
 
   # ========================================
   
+  # Calculate the overall status of the service from the set of check
+  # that are available for this service. If any of the check did not 
+  # pass, the overall status is set to warning.
+  
   def service_latest_status_symbol(service)
+    
     return '' if service.nil?
     
     if DISABLE_STATUS_CHECK 
       return ''
     end
     
-    # Service latest status - using the only available deployment for now. In the future statuses will be displayed for each deployment
-    latest_status = service.service_deployments[0].latest_online_status
-    
-    tooltip_text = "Service status: <b>#{latest_status.status}</b>"
-    tooltip_text = tooltip_text + " (last checked #{distance_of_time_in_words_to_now(latest_status.created_at)} ago)" unless latest_status.status.downcase == "unchecked"
-    
-    # Unknown status means that a check was actually made but due to some condition, cannot conclude on the status
-    # Possible causes are connection time out, connection refused
-    if latest_status.status.downcase == "unknown"
-      tooltip_text = tooltip_text + "<br> Message : #{latest_status.message} </br>"
+    stats = []
+   
+    service.service_deployments.each do |dep|
+      stats << dep.latest_endpoint_status
     end
     
-    return image_tag(onlooker_format(latest_status.status, 
-                                     :online_img => "/images/accepted_48.png", 
-                                     :offline_img => "/images/cancel_48.png", 
-                                     :unknown_img => "/images/circle_orange.png", 
-                                     :default_img => "/images/circle_blue.png"),
-                                     :alt => latest_status.status, 
+    service.service_version_instances_by_type('soap').each do |soap|
+      stats << soap.latest_wsdl_location_status
+    end
+    
+    # overall status of the service is the status of this one test
+    if stats.length == 1
+      return service_test_status_symbol(stats[0], 'Service')
+    end
+    
+    # check if any of the test for this service returned a non
+    # zero status, meaning something was not ok. If so, just return the warning symbol
+    stats.each{ |r| 
+      if r.result != 0 
+        return service_test_status_symbol(r, 'Service')
+      end }
+    
+    # every test was fine. Just return the status of the first one
+    return service_test_status_symbol(stats[0], 'Service')
+    
+  end
+  
+  #return a symbol according to the status of a test
+  def service_test_status_symbol(tresult, attribute)
+    status = "Unchecked"
+    if tresult.result == 0
+      status = "Online"
+    elsif tresult.result == 1
+      status = "Unknown"
+#    elsif tresult.result == -1
+#      status = "Unchecked"
+    end
+    
+    #tooltip_text = "#{attribute} status: <b>#{status}</b>"
+    tooltip_text = "#{attribute} : " 
+    tooltip_text = tooltip_text + status if status.downcase == "unchecked"
+    tooltip_text = tooltip_text + " (last checked #{distance_of_time_in_words_to_now(tresult.created_at)} ago)" unless status.downcase == "unchecked"
+    
+    return image_tag(onlooker_format(status, 
+                                     :online_img => "/images/tick-sphere-50.png", 
+                                     :offline_img => "/images/pling-sphere-50.png", 
+                                     :unknown_img => "/images/pling-sphere-50.png", 
+                                     :default_img => "/images/query-sphere-50.png"),
+                                     :alt => status, 
                                      :title => tooltip_title_attrib(tooltip_text))
+
   end
   
   def render_breadcrumbs_after_home

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090423101749) do
+ActiveRecord::Schema.define(:version => 20090521170054) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -87,16 +87,6 @@ ActiveRecord::Schema.define(:version => 20090423101749) do
     t.binary   "data",       :limit => 2147483647
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "online_statuses", :force => true do |t|
-    t.string   "status"
-    t.integer  "pingable_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "pingable_type"
-    t.string   "message",         :default => ""
-    t.float    "connection_time", :default => 0.0
   end
 
   create_table "registries", :force => true do |t|
@@ -226,6 +216,7 @@ ActiveRecord::Schema.define(:version => 20090423101749) do
     t.datetime "activated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "binding"
   end
 
   create_table "service_versions", :force => true do |t|
@@ -314,6 +305,16 @@ ActiveRecord::Schema.define(:version => 20090423101749) do
     t.datetime "updated_at"
   end
 
+  create_table "test_results", :force => true do |t|
+    t.integer  "test_id"
+    t.string   "test_type"
+    t.integer  "result"
+    t.string   "action"
+    t.string   "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "trash_records", :force => true do |t|
     t.string   "trashable_type"
     t.integer  "trashable_id"
@@ -323,6 +324,14 @@ ActiveRecord::Schema.define(:version => 20090423101749) do
 
   add_index "trash_records", ["created_at", "trashable_type"], :name => "index_trash_records_on_created_at_and_trashable_type"
   add_index "trash_records", ["trashable_type", "trashable_id"], :name => "index_trash_records_on_trashable_type_and_trashable_id"
+
+  create_table "url_monitors", :force => true do |t|
+    t.integer  "parent_id"
+    t.string   "parent_type"
+    t.string   "property"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email"

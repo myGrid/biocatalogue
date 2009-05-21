@@ -19,8 +19,8 @@ class ServiceDeployment < ActiveRecord::Base
   
   has_submitter
   
-  has_many :online_statuses, 
-           :as => :pingable,
+  has_many :url_monitors, 
+           :as => :parent,
            :dependent => :destroy
   
   validates_existence_of :provider    # Service Provider must exist in the db beforehand.
@@ -49,14 +49,20 @@ class ServiceDeployment < ActiveRecord::Base
     end
   end
   
-  def latest_online_status
-    status = OnlineStatus.find(:first, 
-                               :conditions => ["pingable_id= ? AND pingable_type= ?", self.id, self.class.to_s ],
-                               :order => "created_at DESC")
-                                    
-    return status || OnlineStatus.new(:status => "Unchecked", :pingable_id => self.id, 
-                                      :pingable_type => self.class.to_s, 
-                                      :message => "status unchecked ")
+  def latest_endpoint_status
+    monitor = UrlMonitor.find(:first, 
+                              :conditions => ["parent_id= ? AND parent_type= ?", self.id, self.class.to_s ],
+                              :order => "created_at DESC" )
+    
+    if monitor.nil?
+      return TestResult.new(:result => -1)
+    end
+    
+    result = TestResult.find(:first,
+                               :conditions => ["test_id= ? AND test_type= ?", monitor.id, monitor.class.to_s ],
+                               :order => "created_at DESC" )
+    return result || TestResult.new(:result => -1)
+    
   end
   
   def provider_name

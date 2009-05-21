@@ -22,6 +22,10 @@ class SoapService < ActiveRecord::Base
            :dependent => :destroy,
            :include => [ :soap_inputs, :soap_outputs ]
   
+  has_many :url_monitors, 
+           :as => :parent,
+           :dependent => :destroy
+  
   # This is to protect some fields that should
   # only get their data from the WSDL doc.
   attr_protected :name, 
@@ -189,6 +193,23 @@ class SoapService < ActiveRecord::Base
     end
     
     return success
+  end
+ 
+ 
+  def latest_wsdl_location_status
+    monitor = UrlMonitor.find(:first, 
+                              :conditions => ["parent_id= ? AND parent_type= ?", self.id, self.class.to_s ],
+                              :order => "created_at DESC" )
+                              
+    if monitor.nil?
+      return TestResult.new(:result => -1)
+    end
+    
+    result = TestResult.find(:first,
+                               :conditions => ["test_id= ? AND test_type= ?", monitor.id, monitor.class.to_s ],
+                               :order => "created_at DESC" )
+    return result || TestResult.new(:result => -1 )
+    
   end
    
   protected
