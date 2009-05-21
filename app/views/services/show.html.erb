@@ -91,8 +91,6 @@
 			<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_overview_metadata", 
 				 	 			 :locals => { :service_version_instance =>  @latest_version_instance } %>
 			
-			<br/>
-			
 			<%= render :partial => "annotations/documentation_urls",
 								 :locals => { :annotatable => @latest_version_instance } -%>
 
