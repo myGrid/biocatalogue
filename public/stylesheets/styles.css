@@ -1692,6 +1692,7 @@ ul.tabbernav li.tabberactive a:hover
 	color: #000099;
 }
 
+span.ontology_term,
 .tag_cloud li a.ontology_term {
 	color: #BB6600;
 }

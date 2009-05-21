@@ -14,6 +14,29 @@ module FilteringHelper
     You can also just filter on service types alone."
   end
   
+  def get_text_to_display_for_filter_value(filter_type, filter_value)
+    return "" if filter_value.blank?
+    
+    text = filter_value
+    
+    is_ontology_term = false
+    
+    # Special processing for tags
+    if [ :tag, :tag_ops, :tag_ins, :tag_outs ].include?(filter_type)
+      base_uri, term = BioCatalogue::Tags.split_ontology_term_uri(text)
+      text = term
+      is_ontology_term = true unless base_uri.blank?
+    end
+    
+    text = truncate(h(text), :length => 28)
+    
+    if is_ontology_term
+    text = content_tag(:span, text, :class => 'ontology_term')
+    end
+    
+    return text
+  end
+  
   def get_filters_all_cookie_key(filter_type_query_key)
     "filters_all_#{filter_type_query_key}".to_sym
   end

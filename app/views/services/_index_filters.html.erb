@@ -45,6 +45,12 @@
 		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => country_filters,
 														:filter_type => :c } -%>
+		
+		<!-- Tags (on Operations) -->												
+		<% operations_tags_filters = BioCatalogue::Filtering.get_filters_for_soap_operation_tags %>
+		<%= render :partial => "filtering/filter_options_generic", 
+							 :locals => { :filters => operations_tags_filters,
+														:filter_type => :tag_ops } -%>
 	</div>
 
 <% end %>

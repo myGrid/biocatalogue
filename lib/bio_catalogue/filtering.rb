@@ -22,7 +22,7 @@ module BioCatalogue
     
     UNKNOWN_TEXT = "(unknown)".freeze
     
-    FILTER_KEYS = [ :t, :p, :su, :sr, :tag, :c ].freeze
+    FILTER_KEYS = [ :t, :p, :su, :sr, :tag, :tag_ops, :tag_ins, :tag_outs, :c ].freeze
     
     def self.filter_type_to_display_name(filter_type)
       case filter_type
@@ -36,12 +36,22 @@ module BioCatalogue
           "Submitters (Registries)"
         when :tag
           "Tags"
+        when :tag_ops
+          "Tags (on Operations)"
+        when :tag_ins
+          "Tags (on Inputs)"
+        when :tag_outs
+          "Tags (on Outputs)"
         when :c
           "Countries"
         else
           "(unknown)"
       end
     end
+    
+    # ======================
+    # Filter options finders
+    # ----------------------
     
     # Gets an ordered list of all the service providers and their counts of services.
     # Example return data:
@@ -159,6 +169,63 @@ module BioCatalogue
       return items
     end
     
+    # Gets an ordered list of all the tags on SoapOperations.
+    # Example return data:
+    # [ { "name" => "blast", "count" => "500" }, { "name" => "bio", "count" => "110" }  ... ]
+    def self.get_filters_for_soap_operation_tags(limit=nil)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = "SELECT annotations.value AS name, annotations.annotatable_id as soap_operation_id
+              FROM annotations 
+              INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+              WHERE annotation_attributes.name = 'tag' AND annotations.annotatable_type = 'SoapOperation'"
+      
+      # If limit has been provided in the URL then add that to query.
+      if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
+        sql += " LIMIT #{limit}"
+      end
+      
+      items = ActiveRecord::Base.connection.select_all(sql)
+      
+      # Group these tags and find out how many services match.
+      # NOTE: MUST take into account that multiple Soap Operation could belong to the same Service, AND
+      # take into account tags with different case (must treat them in a case-insensitive way).
+      
+      grouped_tags = { }
+      
+      items.each do |item|
+        found = false
+        
+        tag_name = item['name']
+        
+        grouped_tags.each do |k,v|
+          if k.downcase == tag_name.downcase
+            found = true
+            grouped_tags[k] << "SoapOperation:#{item['soap_operation_id']}"
+          end
+        end
+        
+        unless found
+          grouped_tags[tag_name] = [ ] if grouped_tags[tag_name].nil?
+          grouped_tags[tag_name] << "SoapOperation:#{item['soap_operation_id']}"
+        end
+          
+      end
+      
+      filters = [ ]
+      
+      grouped_tags.each do |tag_name, op_ids|
+        service_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(op_ids, "Service")
+        service_ids.uniq!
+        filters << { 'name' => tag_name, 'count' => service_ids.length.to_s }
+      end
+      
+      filters.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }
+      
+      return filters
+    end
+    
+    # ======================
+    
     # Returns back a cloned params object with the new filter specified within it.
     def self.add_filter_to_params(params, filter_type, filter_value)
       params_dup = BioCatalogue::Util.duplicate_params(params)
@@ -219,6 +286,7 @@ module BioCatalogue
       # Now build the conditions and joins...
       
       service_ids_submitters = [ ]
+      service_ids_tags_ops = [ ]
       
       unless filters.blank?
         filters.each do |filter_type, filter_values|
@@ -260,13 +328,25 @@ module BioCatalogue
                 service_ids_submitters.concat(get_service_ids_with_submitter_users(filter_values))
               when :sr
                 service_ids_submitters.concat(get_service_ids_with_submitter_registries(filter_values))
+              when :tag_ops
+                service_ids_tags_ops = get_service_ids_with_tag_on_soap_operations(filter_values)
             end
           end
         end
       end
       
-      # Add service IDs from submitters to conditions
-      conditions[:id] = service_ids_submitters unless service_ids_submitters.blank?
+      # Add service IDs from different criteria to conditions.
+      # Remember to AND the service IDs (ie: use only the service IDs that match all criterion).
+ 
+      final_service_ids = [ ]
+      final_service_ids = service_ids_submitters unless service_ids_submitters.blank?
+      if final_service_ids.empty?
+        final_service_ids = service_ids_tags_ops unless service_ids_tags_ops.blank?
+      else
+        final_service_ids = final_service_ids & service_ids_tags_ops unless service_ids_tags_ops.blank?
+      end
+      
+      conditions[:id] = final_service_ids unless final_service_ids.blank?
       
       return [ conditions, joins ]
     end
@@ -311,10 +391,10 @@ module BioCatalogue
     def self.get_service_ids_with_submitter_users(user_display_names)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = [ "SELECT services.id
-             FROM services 
-             INNER JOIN users ON services.submitter_type = 'User' AND services.submitter_id = users.id 
-             WHERE users.display_name IN (?)",
-             user_display_names ]
+              FROM services 
+              INNER JOIN users ON services.submitter_type = 'User' AND services.submitter_id = users.id 
+              WHERE users.display_name IN (?)",
+              user_display_names ]
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
@@ -324,14 +404,29 @@ module BioCatalogue
     def self.get_service_ids_with_submitter_registries(registry_display_names)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = [ "SELECT services.id
-             FROM services 
-             INNER JOIN registries ON services.submitter_type = 'Registry' AND services.submitter_id = registries.id 
-             WHERE registries.display_name IN (?)",
-             registry_display_names ]
+              FROM services 
+              INNER JOIN registries ON services.submitter_type = 'Registry' AND services.submitter_id = registries.id 
+              WHERE registries.display_name IN (?)",
+              registry_display_names ]
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
       return results.map { |r| r['id'] }
+    end
+    
+    def self.get_service_ids_with_tag_on_soap_operations(tag_values)
+      sql = 
+              
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = [ "SELECT annotations.annotatable_id as soap_operation_id
+              FROM annotations 
+              INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+              WHERE annotation_attributes.name = 'tag' AND annotations.annotatable_type = 'SoapOperation' AND annotations.value IN (?)",
+              tag_values ]
+      
+      results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+      
+      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| "SoapOperation:#{r['soap_operation_id']}" }, "Service").uniq     
     end
    
   end

@@ -9,29 +9,37 @@
 %>
 
 <% 
+	 text_full = h(filter["name"])
+	 text_to_display = get_text_to_display_for_filter_value(filter_type, filter["name"])
+	 count = filter['count']
+
 	 selected = is_filter_selected(filter_type, filter["name"])
 	 url = selected ? generate_exclude_filter_url(filter_type, filter["name"]) : generate_include_filter_url(filter_type, filter["name"]) 
 %>
 
 <span class="container">
-	<% if filter["name"] == BioCatalogue::Filtering::UNKNOWN_TEXT %>
-		<span class="text" title="<%= tooltip_title_attrib(h(filter["name"])) -%>"><%= truncate(h(filter["name"]), :length => 28) -%></span>
+	<% if text_full == BioCatalogue::Filtering::UNKNOWN_TEXT %>
+	
+		<span class="text" title="<%= tooltip_title_attrib(text_full) -%>"><%= text_to_display -%></span>
 			
-		<% unless filter['count'].blank? %>
-			<span class="faded count">(<%= filter["count"] -%>)</span>
+		<% unless count.blank? %>
+			<span class="faded count">(<%= count -%>)</span>
 		<% end %>
+		
 	<% else %>
-		<% link_to(url, :class => (selected ? "selected" : nil), :title => tooltip_title_attrib(h(filter["name"]))) do -%>
-			<span class="text"><%= truncate(h(filter["name"]), :length => 28) -%></span>
+		
+		<% link_to(url, :class => (selected ? "selected" : nil), :title => tooltip_title_attrib(h(text_full))) do -%>
+			<span class="text"><%= text_to_display-%></span>
 			
-			<% unless filter['count'].blank? %>
-				<span class="faded count">(<%= filter["count"] -%>)</span>
+			<% unless count.blank? %>
+				<span class="faded count">(<%= count -%>)</span>
 			<% end %>
 			
 			<% if selected %>
 				<span class="deselect">&nbsp</span>
 			<% end %>
 		<% end %>
+		
 	<% end %>
 	
 </span>

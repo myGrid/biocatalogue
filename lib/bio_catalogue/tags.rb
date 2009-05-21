@@ -46,7 +46,8 @@ module BioCatalogue
         if ann.attribute_name.downcase == "tag"
           found = false
           
-          # Try and find it in the tags collection (if it was added previously)
+          # Try and find it in the tags collection (if it was added previously).
+          # MUST take into account tags with different case (must treat them in a case-insensitive way).
           tags.each do |t|
             if t["name"].downcase == ann.value.downcase
               found = true
@@ -129,6 +130,8 @@ module BioCatalogue
     end
     
     # Splits a tag name into 2 parts (base identifier URI and term keyword) IF it is an ontology term URI.
+    #
+    # Returns an Array where the first item is the base identifier URL and the second is the term keyword.
     # 
     # NOTE (1): the chevrons (< >) will be removed from the resulting split.
     # NOTE (2): it is assumed that the term keyword is the word(s) after a hash ('#')
@@ -136,7 +139,7 @@ module BioCatalogue
       if self.is_ontology_term_uri?(tag_name)
         return tag_name.gsub(/[<>]/, "").split("#")
       else
-        return tag_name
+        return [ "", tag_name ]
       end
     end
     
