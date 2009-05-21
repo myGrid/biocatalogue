@@ -143,7 +143,7 @@ module TagsHelper
                     # The delete AJAX functionality depends on the parent container for the tag clouds having
                     # and ID of "#{annotatable.class.name}_#{annotatable.id}_tags"
                     
-                    link_to_remote(image_tag(icon_filename_for(:delete_faded_plus), :mouseover => icon_filename_for(:delete), :style => "vertical-align:middle;margin-left:0.4em;"),
+                    link_to_remote(image_tag(icon_filename_for(:delete_faded_plus), :mouseover => icon_filename_for(:delete), :style => "vertical-align:middle;"),
                                   :url => "#{destroy_tag_url(:tag => tag_name)}&annotatable_type=#{annotatable.class.name}&annotatable_id=#{annotatable.id}",
                                   :method => :delete,
                                   :update => { :success => "#{annotatable.class.name}_#{annotatable.id}_tags", :failure => '' },
@@ -151,7 +151,7 @@ module TagsHelper
                                   :complete => "Element.hide('tags_spinner')", 
                                   :success => "new Effect.Highlight('#{annotatable.class.name}_#{annotatable.id}_tags', { duration: 0.5 });",
                                   :failure => "Element.hide('tags_spinner'); alert('Sorry, an error has occurred.');",
-                                  :html => { :title => tooltip_title_attrib("Delete this tag (you created it)") },
+                                  :html => { :title => tooltip_title_attrib("Delete this tag (you created it)"), :style => "margin-left:0.4em;" },
                                   :confirm => "Are you sure you want to delete this tag?" )
                   end
                   
