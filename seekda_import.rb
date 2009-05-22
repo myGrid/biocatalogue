@@ -197,7 +197,14 @@ class SeekDaImporter
                            "webservicex.net",
                            "xatanet.net",
                            "xignite.com",
-                           "xatanet.net" ]
+                           "xatanet.net",
+                           "uniovi.es",
+                           "webservices.nl",
+                           "weather.gov",
+                           "tamucc.edu",
+                           "usu.edu",
+                           "lcdnl.co.uk" ]
+    
     @wsdl_excludes = [ "phoebus.cs.man.ac.uk",
                        "ppdev.vbi.vt.edu" ]
   end
