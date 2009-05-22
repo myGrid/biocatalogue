@@ -30,22 +30,7 @@
 		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => service_type_filters,
 														:filter_type => :t } -%>
-		
-		<!-- Service Providers -->
-		<% service_provider_filters = BioCatalogue::Filtering.get_filters_for_service_providers %>
-		<%= render :partial => "filtering/filter_options_generic", 
-							 :locals => { :filters => service_provider_filters,
-														:filter_type => :p } -%>
-		
-		<!-- Submitters -->
-		<%= render :partial => "filtering/filter_options_submitters" -%>
-											
-		<!-- Countries -->									
-		<% country_filters = BioCatalogue::Filtering.get_filters_for_countries %>
-		<%= render :partial => "filtering/filter_options_generic", 
-							 :locals => { :filters => country_filters,
-														:filter_type => :c } -%>
-		
+														
 		<!-- Tags (on Operations) -->												
 		<% operations_tags_filters = BioCatalogue::Filtering.get_filters_for_soap_operation_tags %>
 		<%= render :partial => "filtering/filter_options_generic", 
@@ -63,7 +48,22 @@
 		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => outputs_tags_filters,
 														:filter_type => :tag_outs } -%>
-	
+		
+		<!-- Service Providers -->
+		<% service_provider_filters = BioCatalogue::Filtering.get_filters_for_service_providers %>
+		<%= render :partial => "filtering/filter_options_generic", 
+							 :locals => { :filters => service_provider_filters,
+														:filter_type => :p } -%>
+		
+		<!-- Submitters -->
+		<%= render :partial => "filtering/filter_options_submitters" -%>
+											
+		<!-- Countries -->									
+		<% country_filters = BioCatalogue::Filtering.get_filters_for_countries %>
+		<%= render :partial => "filtering/filter_options_generic", 
+							 :locals => { :filters => country_filters,
+														:filter_type => :c } -%>
+		
 	</div>
 
 <% end %>
