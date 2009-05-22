@@ -31,7 +31,7 @@ module BioCatalogue
         %w{ display_name name title }.each do |w|
           return eval("submitter.#{w}") if submitter.respond_to?(w)
         end
-        return "#{submitter.class.name}_#{id}"
+        return "#{submitter.class.name}_#{submitter.id}"
       end 
     end
   end
