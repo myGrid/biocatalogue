@@ -51,6 +51,19 @@
 		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => operations_tags_filters,
 														:filter_type => :tag_ops } -%>
+	
+		<!-- Tags (on Inputs) -->												
+		<% inputs_tags_filters = BioCatalogue::Filtering.get_filters_for_soap_input_tags %>
+		<%= render :partial => "filtering/filter_options_generic", 
+							 :locals => { :filters => inputs_tags_filters,
+														:filter_type => :tag_ins } -%>
+	
+		<!-- Tags (on Outputs) -->												
+		<% outputs_tags_filters = BioCatalogue::Filtering.get_filters_for_soap_output_tags %>
+		<%= render :partial => "filtering/filter_options_generic", 
+							 :locals => { :filters => outputs_tags_filters,
+														:filter_type => :tag_outs } -%>
+	
 	</div>
 
 <% end %>
