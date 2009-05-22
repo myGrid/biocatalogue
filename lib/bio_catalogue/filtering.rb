@@ -300,22 +300,25 @@ module BioCatalogue
                 service_ids_submitters.concat(get_service_ids_with_submitter_registries(filter_values))
               when :tag_ops
                 service_ids_tags_ops = get_service_ids_with_tag_on_service_substructure_model("SoapOperation", filter_values)
-                @@logger.info "service_ids_tags_ops = #{service_ids_tags_ops}"
               when :tag_ins
                 service_ids_tags_ins = get_service_ids_with_tag_on_service_substructure_model("SoapInput", filter_values)
-                @@logger.info "service_ids_tags_ins = #{service_ids_tags_ins}"
               when :tag_outs
                 service_ids_tags_outs = get_service_ids_with_tag_on_service_substructure_model("SoapOutput", filter_values)
-                @@logger.info "service_ids_tags_outs = #{service_ids_tags_outs}"
             end
           end
         end
       end
       
+      @@logger.info "service_ids_submitters = #{p service_ids_submitters}"
+      @@logger.info "service_ids_tags_ops = #{p service_ids_tags_ops}"
+      @@logger.info "service_ids_tags_ins = #{p service_ids_tags_ins}"
+      @@logger.info "service_ids_tags_outs = #{p service_ids_tags_outs}"
+      
       # Add service IDs from the different criterion to the conditions.
       # Remember to AND the service IDs (ie: use only the service IDs that match all criterion).
  
       final_service_ids = [ ]
+      
       
       # service_ids_submitters
       final_service_ids = service_ids_submitters unless service_ids_submitters.blank?
@@ -452,7 +455,7 @@ module BioCatalogue
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
-      return results.map { |r| r['id'] }
+      return results.map { |r| r['id'].to_i }
     end
     
     def self.get_service_ids_with_submitter_registries(registry_display_names)
@@ -465,7 +468,7 @@ module BioCatalogue
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
-      return results.map { |r| r['id'] }
+      return results.map { |r| r['id'].to_i }
     end
     
     def self.get_service_ids_with_tag_on_service_substructure_model(model_name, tag_values)
