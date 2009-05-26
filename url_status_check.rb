@@ -145,7 +145,7 @@ attr_accessor :options
       result = {}
       pingable = UrlMonitor.find_parent(monitor.parent_type, monitor.parent_id)
     
-      if monitor.property =="endpoint"
+      if monitor.property =="endpoint" and pingable.service_version.service_versionified_type =="SoapService"
         # eg: check :soap_endpoint => pingable.endpoint
         result = check :soap_endpoint => pingable.send(monitor.property)
       else
