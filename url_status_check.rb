@@ -79,7 +79,9 @@ attr_accessor :options
     data = %x[curl -I --max-time 20 #{url}]
   
     pieces = data.split
-    if pieces[1] =='200' and pieces[2] =='OK'
+    if pieces[1] =='200' and pieces[2] =='OK'   # status OK
+      status.merge!({:result=> 0, :message => data})
+    elsif pieces[1] =='302'                     # redirect means OK
       status.merge!({:result=> 0, :message => data})
     else 
       status.merge!({:result=> 1, :message => data})
