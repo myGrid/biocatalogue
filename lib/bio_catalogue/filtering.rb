@@ -309,42 +309,55 @@ module BioCatalogue
         end
       end
       
-      @@logger.info "service_ids_submitters = #{p service_ids_submitters}"
-      @@logger.info "service_ids_tags_ops = #{p service_ids_tags_ops}"
-      @@logger.info "service_ids_tags_ins = #{p service_ids_tags_ins}"
-      @@logger.info "service_ids_tags_outs = #{p service_ids_tags_outs}"
+      # Need to go through the various service IDs found for the different criterion 
+      # and add to the conditions collection (if common ones are found).
+      # This ANDs the service IDs (ie: uses only the service IDs that match all criterion).
       
-      # Add service IDs from the different criterion to the conditions.
-      # Remember to AND the service IDs (ie: use only the service IDs that match all criterion).
+      # To carry out this process properly, we set a dummy value of 0 to any array that returned NO service IDs.
+      service_ids_submitters = [ 0 ] if service_ids_submitters.empty? and (filters.has_key?(:su) or filters.has_key?(:sr))
+      service_ids_tags_ops = [ 0 ] if service_ids_tags_ops.empty? and filters.has_key?(:tag_ops)
+      service_ids_tags_ins = [ 0 ] if service_ids_tags_ins.empty? and filters.has_key?(:tag_ins)
+      service_ids_tags_outs = [ 0 ] if service_ids_tags_outs.empty? and filters.has_key?(:tag_outs)
+      
+      @@logger.info "\n*** service_ids_submitters = #{service_ids_submitters.inspect}"
+      @@logger.info "\n*** service_ids_tags_ops = #{service_ids_tags_ops.inspect}"
+      @@logger.info "\n*** service_ids_tags_ins = #{service_ids_tags_ins.inspect}"
+      @@logger.info "\n*** service_ids_tags_outs = #{service_ids_tags_outs.inspect} \n"
+      
+      service_id_arrays_to_process = [ ]
+      service_id_arrays_to_process << service_ids_submitters unless service_ids_submitters.blank?
+      service_id_arrays_to_process << service_ids_tags_ops unless service_ids_tags_ops.blank?
+      service_id_arrays_to_process << service_ids_tags_ins unless service_ids_tags_ins.blank?
+      service_id_arrays_to_process << service_ids_tags_outs unless service_ids_tags_outs.blank?
  
-      final_service_ids = [ ]
+      final_service_ids = nil
       
-      
-      # service_ids_submitters
-      final_service_ids = service_ids_submitters unless service_ids_submitters.blank?
-      
-      # service_ids_tags_ops
-      if final_service_ids.empty?
-        final_service_ids = service_ids_tags_ops unless service_ids_tags_ops.blank?
-      else
-        final_service_ids = (final_service_ids & service_ids_tags_ops) unless service_ids_tags_ops.blank?
+      service_id_arrays_to_process.each do |a|
+        if final_service_ids.nil?
+          final_service_ids = a
+        else
+          final_service_ids = (final_service_ids & a)
+        end
       end
       
-      # service_ids_tags_ins
-      if final_service_ids.empty?
-        final_service_ids = service_ids_tags_ins unless service_ids_tags_ins.blank?
-      else
-        final_service_ids = (final_service_ids & service_ids_tags_ins) unless service_ids_tags_ins.blank?
-      end
+      @@logger.info "\n*** final_service_ids (after combining service id arrays) = #{final_service_ids.inspect} \n"
       
-      # service_ids_tags_outs
-      if final_service_ids.empty?
-        final_service_ids = service_ids_tags_outs unless service_ids_tags_outs.blank?
-      else
-        final_service_ids = (final_service_ids & service_ids_tags_outs) unless service_ids_tags_outs.blank?
+      unless final_service_ids.nil?
+        # Remove the dummy value of 0 in case it is in there
+        final_service_ids.delete(0)
+        
+        # If a filter that relies on service IDs was specified but no services were found then no services should be returned
+        final_service_ids = [ -1 ] if final_service_ids.blank? and 
+                                      (filters.has_key?(:su) or 
+                                       filters.has_key?(:sr) or 
+                                       filters.has_key?(:tag_ops) or 
+                                       filters.has_key?(:tag_ins) or 
+                                       filters.has_key?(:tag_outs))
+        
+        @@logger.info "\n*** final_service_ids (after cleanup) = #{final_service_ids.inspect} \n"
+        
+        conditions[:id] = final_service_ids unless final_service_ids.blank?
       end
-      
-      conditions[:id] = final_service_ids unless final_service_ids.blank?
       
       return [ conditions, joins ]
     end
@@ -361,6 +374,8 @@ module BioCatalogue
         key_sym = key.to_s.to_sym
         filters[key_sym] = self.split_filter_options_string(values) if FILTER_KEYS.include?(key_sym)
       end
+      
+      @@logger.info "\n*** convert_params_to_filters returned #{filters.inspect} \n"
       
       return filters
     end
