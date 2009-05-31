@@ -23,8 +23,6 @@ class ServicesController < ApplicationController
   # GET /services
   # GET /services.xml
   def index
-    @tags = BioCatalogue::Tags.get_tags(100)
-    
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @services }
