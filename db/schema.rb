@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090521170054) do
+ActiveRecord::Schema.define(:version => 20090531162818) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -30,6 +30,8 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "agents", ["name"], :name => "agents_name_index"
 
   create_table "annotation_attributes", :force => true do |t|
     t.string   "name",       :null => false
@@ -98,6 +100,8 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "updated_at"
   end
 
+  add_index "registries", ["name"], :name => "registries_name_index"
+
   create_table "relationships", :force => true do |t|
     t.string   "subject_type", :null => false
     t.integer  "subject_id",   :null => false
@@ -107,6 +111,10 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "relationships", ["object_type", "object_id"], :name => "relationships_object_index"
+  add_index "relationships", ["predicate"], :name => "relationships_predicate_index"
+  add_index "relationships", ["subject_type", "subject_id"], :name => "relationships_subject_index"
 
   create_table "rest_method_parameters", :force => true do |t|
     t.integer  "rest_method_id",    :null => false
@@ -118,6 +126,7 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
 
   add_index "rest_method_parameters", ["rest_method_id", "http_cycle"], :name => "index_rest_method_parameters_on_rest_method_id_and_http_cycle"
   add_index "rest_method_parameters", ["rest_method_id"], :name => "index_rest_method_parameters_on_rest_method_id"
+  add_index "rest_method_parameters", ["rest_parameter_id"], :name => "rest_method_params_param_id_index"
 
   create_table "rest_method_representations", :force => true do |t|
     t.integer  "rest_method_id",         :null => false
@@ -127,6 +136,8 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "updated_at"
   end
 
+  add_index "rest_method_representations", ["rest_method_id", "http_cycle"], :name => "rest_method_reps_method_id_cycle_index"
+  add_index "rest_method_representations", ["rest_method_id"], :name => "rest_method_reps_method_id_index"
   add_index "rest_method_representations", ["rest_representation_id", "http_cycle"], :name => "index_rest_method_representations_repid_and_httpcycle"
   add_index "rest_method_representations", ["rest_representation_id"], :name => "index_rest_method_representations_on_rest_representation_id"
 
@@ -138,6 +149,7 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "updated_at"
   end
 
+  add_index "rest_methods", ["rest_resource_id", "method_type"], :name => "rest_methods_rest_resource_id_method_type_index"
   add_index "rest_methods", ["rest_resource_id"], :name => "index_rest_methods_on_rest_resource_id"
 
   create_table "rest_parameters", :force => true do |t|
@@ -171,6 +183,7 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "updated_at"
   end
 
+  add_index "rest_resources", ["parent_resource_id"], :name => "rest_resources_rest_parent_resource_id_index"
   add_index "rest_resources", ["rest_service_id"], :name => "index_rest_resources_on_rest_service_id"
 
   create_table "rest_services", :force => true do |t|
@@ -195,11 +208,20 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.string   "submitter_type"
   end
 
+  add_index "service_deployments", ["country"], :name => "service_deployments_country_index"
+  add_index "service_deployments", ["endpoint"], :name => "service_deployments_endpoint_index"
+  add_index "service_deployments", ["service_id"], :name => "service_deployments_service_id_index"
+  add_index "service_deployments", ["service_provider_id"], :name => "service_deployments_service_provider_id_index"
+  add_index "service_deployments", ["service_version_id"], :name => "service_deployments_service_version_id_index"
+  add_index "service_deployments", ["submitter_type", "submitter_id"], :name => "service_deployments_submitter_index"
+
   create_table "service_providers", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "service_providers", ["name"], :name => "service_providers_name_index"
 
   create_table "service_tests", :force => true do |t|
     t.string   "name",                                   :null => false
@@ -231,6 +253,11 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.string   "submitter_type"
   end
 
+  add_index "service_versions", ["service_id", "version"], :name => "service_versions_service_id_version_index"
+  add_index "service_versions", ["service_id"], :name => "service_versions_service_id_index"
+  add_index "service_versions", ["service_versionified_type", "service_versionified_id"], :name => "service_versions_service_versionified_index"
+  add_index "service_versions", ["submitter_type", "submitter_id"], :name => "service_versions_submitter_index"
+
   create_table "services", :force => true do |t|
     t.string   "unique_code"
     t.datetime "created_at"
@@ -239,6 +266,10 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.integer  "submitter_id"
     t.string   "submitter_type"
   end
+
+  add_index "services", ["name"], :name => "services_name_index"
+  add_index "services", ["submitter_type", "submitter_id"], :name => "services_submitter_index"
+  add_index "services", ["unique_code"], :name => "services_unique_code_index"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
@@ -298,12 +329,17 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.integer  "wsdl_file_id"
   end
 
+  add_index "soap_services", ["name"], :name => "soap_services_name_index"
+  add_index "soap_services", ["wsdl_location"], :name => "soap_services_wsdl_location_index"
+
   create_table "soaplab_servers", :force => true do |t|
     t.string   "name"
     t.string   "location"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "soaplab_servers", ["location"], :name => "soaplab_servers_location_index"
 
   create_table "test_results", :force => true do |t|
     t.integer  "test_id"
@@ -314,6 +350,8 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "test_results", ["test_type", "test_id"], :name => "test_results_test_index"
 
   create_table "trash_records", :force => true do |t|
     t.string   "trashable_type"
@@ -333,6 +371,8 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "updated_at"
   end
 
+  add_index "url_monitors", ["parent_type", "parent_id"], :name => "url_monitors_parent_index"
+
   create_table "users", :force => true do |t|
     t.string   "email"
     t.string   "crypted_password"
@@ -347,5 +387,8 @@ ActiveRecord::Schema.define(:version => 20090521170054) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "users", ["display_name"], :name => "users_display_name_index"
+  add_index "users", ["email"], :name => "users_email_index"
 
 end
