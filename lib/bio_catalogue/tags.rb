@@ -33,6 +33,19 @@ module BioCatalogue
     #   ... ]
     # ==============================
     
+    # Retrieves the IDs of all the services that have the sepcified tag (on any part of the substructure).
+    def self.get_service_ids_for_tag(tag_name)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
+              FROM annotations 
+              INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+              WHERE annotation_attributes.name = 'tag' AND annotations.value = ?",
+              tag_name ]
+      
+      results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+      
+      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| "#{r['type']}:#{r['id']}" }, "Service").uniq 
+    end
 
     # Takes in a set of annotations and returns a collection of tags
     # The return format is the general tag data structure described above, INCLUDING the "submitters".

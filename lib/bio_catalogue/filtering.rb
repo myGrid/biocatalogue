@@ -409,7 +409,7 @@ module BioCatalogue
     # [ { "name" => "blast", "count" => "500" }, { "name" => "bio", "count" => "110" }  ... ]
     def self.get_filters_for_tags_by_service_substructure_model(model_name, limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
-      sql = [ "SELECT annotations.value AS name, annotations.annotatable_id as id
+      sql = [ "SELECT annotations.value AS name, annotations.annotatable_id AS id
               FROM annotations 
               INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
               WHERE annotation_attributes.name = 'tag' AND annotations.annotatable_type = ?",
@@ -487,10 +487,8 @@ module BioCatalogue
     end
     
     def self.get_service_ids_with_tag_on_service_substructure_model(model_name, tag_values)
-      sql = 
-              
       # NOTE: this query has only been tested to work with MySQL 5.0.x
-      sql = [ "SELECT annotations.annotatable_id as id
+      sql = [ "SELECT annotations.annotatable_id AS id
               FROM annotations 
               INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
               WHERE annotation_attributes.name = 'tag' AND annotations.annotatable_type = ? AND annotations.value IN (?)",

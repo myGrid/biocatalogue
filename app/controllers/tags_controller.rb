@@ -78,13 +78,10 @@ protected
   def find_tag_and_results
     @tag_name = BioCatalogue::Tags.get_tag_name_from_params(params)
     
-    @count = 0
-    @results = { }
+    @service_ids = [ ]
     
     unless @tag_name.nil?
-      tagged_items = Annotation.find_annotatables_with_attribute_name_and_value("tag", @tag_name)
-      
-      @count, @results = BioCatalogue::Util.group_model_objects(tagged_items, BioCatalogue::Search::VALID_SEARCH_TYPES, true)
+      @service_ids = BioCatalogue::Tags.get_service_ids_for_tag(@tag_name)
     end
   end
   
