@@ -34,6 +34,9 @@ class ActiveRecord::Base
   @@per_page = PAGE_ITEMS_SIZE
 end
 
+# The amount of time to cache the metadata counts data.
+METADATA_COUNTS_DATA_CACHE_TIME = 60*60  # 60 minutes, in seconds.
+
 BOT_IGNORE_LIST = "Googlebot",
                   "Slurp",
                   "msnbot",

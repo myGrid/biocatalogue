@@ -102,9 +102,8 @@ module BioCatalogue
         # :total
         counts[:total] = counts.values.sum
         
-        
         # Finally write it to the cache...
-        Rails.cache.write(cache_key, counts, :expires_in => 15.minutes)
+        Rails.cache.write(cache_key, counts, :expires_in => METADATA_COUNTS_DATA_CACHE_TIME)
       else
         counts = cached_counts
       end
