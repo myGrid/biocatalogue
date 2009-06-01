@@ -1,0 +1,17 @@
+--- 
+javascripts: 
+- base: 
+  - prototype
+  - controls
+  - dragdrop
+  - effects
+  - application
+  - boxover
+  - redbox
+stylesheets: 
+- base:
+  - reset-min
+  - styles
+  - redbox
+  - rounded-corners
+  
