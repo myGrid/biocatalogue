@@ -3,8 +3,6 @@
 # This script cleans up any services that were imported from SeekDa but are deemed not relevant to the BioCatalogue.
 # E.g.: https://seekda.com/search_api?q=provider:ebi.ac.uk&p=0&numberOfResults=100
 #
-# A set of keywords are used to retrieve all bio based services.
-#
 #
 # Usage: seekda_cleanup [options]
 #
@@ -98,7 +96,6 @@ class SeekDaCleaner
     # Get the Registry model object we will be using as the annotation source
     @registry_source = Registry.find_by_name("seekda")
     
-    # Create the SeekDa registry entry if it doesn't exist
     if @registry_source.nil?
       raise "Could not find the Registry entry for SeekDa"
     end
