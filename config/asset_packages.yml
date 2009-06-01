@@ -2,10 +2,11 @@
 javascripts: 
 - base: 
   - prototype
-  - controls
-  - dragdrop
   - effects
+  - dragdrop
+  - controls
   - application
+  - tabber
   - boxover
   - redbox
 stylesheets: 
