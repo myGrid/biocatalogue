@@ -1839,7 +1839,7 @@ div.filters p.type_small {
 	line-height: 1.2;
 	font-weight: bold;
 	margin: 0;
-	margin-bottom: 0.5em;
+	margin-bottom: 0.7em;
 	text-align: center;
 	color: #555;
 }
@@ -1849,8 +1849,17 @@ div.filters div.filter_type_box {
 	padding: 0;
 }
 
-div.filters div.selected_filters_box {
-	margin: 0 0.3em;
+div.filters div.current_filters_box {
+	margin-bottom: 1em;
+	padding: 0;
+}
+
+div.filters div.current_filters_box .rcontain {
+	padding: 2px;
+}
+
+div.filters div.selected_filters_type_box {
+	margin: 0 0.1em;
 	padding: 0;
 }
 
