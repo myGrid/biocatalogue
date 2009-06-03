@@ -12,6 +12,8 @@ module BioCatalogue
     
     @@logger = RAILS_DEFAULT_LOGGER
     
+    SERVICE_TYPE_ROOT_MODELS = [ SoapService, RestService ]
+    
     SERVICE_STRUCTURE_MODELS = [ Service, ServiceVersion, ServiceDeployment,
                                  SoapService, SoapOperation, SoapInput, SoapOutput,
                                  RestService, RestResource, RestMethod, RestParameter, RestRepresentation, RestMethodParameter, RestMethodRepresentation ].freeze
