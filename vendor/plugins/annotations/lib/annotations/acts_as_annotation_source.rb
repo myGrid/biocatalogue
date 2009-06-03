@@ -18,7 +18,7 @@ module Annotations
         end
       end
       
-      # Class methods added to the model that has been made acts_as_annotation_source (the mixing source type).
+      # Class methods added to the model that has been made acts_as_annotation_source (the mixin source type).
       module SingletonMethods
         # Helper finder to get all annotations for an object of the mixin source type with the ID provided.
         # This is the same as object.annotations with the added benefit that the object doesnt have to be loaded.
@@ -57,7 +57,7 @@ module Annotations
         end
         
         def annotation_source_name
-          %w{ name title }.each do |w|
+          %w{ name display_name title }.each do |w|
             return eval("self.#{w}") if self.respond_to?(w)
           end
           return "#{self.class.name}_#{id}"

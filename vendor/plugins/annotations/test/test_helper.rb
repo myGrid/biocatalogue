@@ -1,9 +1,10 @@
 ENV['RAILS_ENV'] = 'mysql'
 
+RAILS_GEM_VERSION = '2.2.2' unless defined? RAILS_GEM_VERSION
+
 RAILS_ROOT = "#{File.dirname(__FILE__)}/app_root"
 
 require 'rubygems'
-require 'active_record'
 require 'plugin_test_helper'
 
 ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")

@@ -1,5 +1,7 @@
 class AnnotationsController < ApplicationController
   
+  before_filter :login_required, :only => [ :new, :create, :edit, :update, :destroy ]
+  
   before_filter :find_annotation, :only => [ :show, :edit, :update, :destroy ] 
   before_filter :find_annotatable, :except => [ :show, :edit, :update, :destroy ]
   before_filter :authorise_action, :only =>  [ :edit, :update, :destroy ]
