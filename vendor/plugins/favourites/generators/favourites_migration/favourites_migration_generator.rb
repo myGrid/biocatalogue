@@ -1,19 +1,20 @@
 class FavouritesMigrationGenerator < Rails::Generator::Base
+  
   attr_accessor :version
 
   def initialize(*runtime_args)
     super(*runtime_args)
-    if args[0].nil? 
+    if @args[0].nil? 
       @version = "v1"
     else
-      @version = args[0].downcase
+      @version = @args[0].downcase
     end
   end
   
   def manifest
     record do |m|
-      if @version 
-        m.migration_template 'migration_#{version}.rb', 'db/migrate'
+      if @version
+        m.migration_template "migration_#{@version}.rb", 'db/migrate'
       end
     end
   end
