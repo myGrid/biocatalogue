@@ -14,7 +14,7 @@
 
 <br/>
 
-<div class="tabber">
+<div id="user-tabs" class="tabber">
 	
   <div id="tab-profile" class="tabbertab">
     <h3>Profile</h3>
@@ -60,6 +60,31 @@
 		
 		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users_services } %>
   </div>
+	
+	<div id="tab-favourites" class="tabbertab">
+		<% favourites = @user.favourites %>
+		
+		<h3><%= "Favourites (#{favourites.length})" -%></h3>
+		
+		<% unless favourites.empty? %>
+			<% favourites.each do |f| %>
+				<%= render :partial => "#{f.favouritable_type.pluralize.downcase}/listing", :locals => { :items => [ f.favouritable ] }  -%>
+				
+				<p style="text-align: right; margin: 0 0 2em 0;">
+					<% if mine?(f) -%>
+						<%= link_to(image_tag(icon_filename_for(:delete), :style => 'vertical-align: middle;') + " <span style='vertical-align: middle;'>Remove from favourites</span>",
+	               				favourite_path(f),
+	               				:method => :delete,
+	               				:confirm => "Are you sure you want to remove this service from your favourites?",
+												:title => tooltip_title_attrib("Remove from your favourites"),
+												:class => "button_slim") -%>
+					<% end -%>
+				</p>
+			<% end %>
+		<% else %>
+			<p class="none_text">None</p>
+		<% end %>		
+	</div>
 
 </div>
 

@@ -12,6 +12,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :registries
 
   map.resources :agents
+  
+  # Routes from the favourites plugin + extensions
+  Favourites.map_routes(map)
 
   # Routes from the annotations plugin + extensions
   Annotations.map_routes(map,

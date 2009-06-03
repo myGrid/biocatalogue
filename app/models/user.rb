@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   acts_as_trashable
 
   acts_as_annotation_source
+  
+  acts_as_favouriter
 
   has_many :services,
            :as => "submitter"

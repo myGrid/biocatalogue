@@ -14,15 +14,15 @@
   <tr>
   </tr>
 
-<% for annotations in @annotations %>
+<% for annotation in @annotations %>
   <tr>
-    <td><%= link_to 'Show', annotations %></td>
-    <td><%= link_to 'Edit', edit_annotations_path(annotations) %></td>
-    <td><%= link_to 'Destroy', annotations, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', annotation %></td>
+    <td><%= link_to 'Edit', edit_annotation_path(annotation) %></td>
+    <td><%= link_to 'Destroy', annotation, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New annotations', new_annotations_path %>
+<%= link_to 'New annotation', new_annotation_path %>

@@ -1,13 +1,19 @@
 # BioCatalogue: app/controllers/application.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
+# ---
+# Need to do this so that we play nice with the annotations and favourites plugin.
+# THIS DOES UNFORTUNATELY MEAN THAT A SERVER RESTART IS REQUIRED WHENEVER CHANGES ARE MADE
+# TO THIS FILE, EVEN IN DEVELOPMENT MODE.
 require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers/application'
+require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/application'
+#---
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
@@ -105,6 +111,8 @@ class ApplicationController < ActionController::Base
       return thing.source == current_user
     when "Service"
       return c_id == thing.submitter_id.to_i
+    when "Favourite"
+      return c_id == thing.user_id
     else
       return false
     end

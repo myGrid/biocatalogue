@@ -6,7 +6,13 @@
 
 # Methods added to this helper will be available to all templates in the application.
 
+# ---
+# Need to do this so that we play nice with the annotations and favourites plugin.
+# THIS DOES UNFORTUNATELY MEAN THAT A SERVER RESTART IS REQUIRED WHENEVER CHANGES ARE MADE
+# TO THIS FILE, EVEN IN DEVELOPMENT MODE.
 require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
+require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/helpers/application_helper'
+# ---
 
 module ApplicationHelper
 
@@ -40,7 +46,15 @@ module ApplicationHelper
         "search.png"
       when :submit_service
         "add.png"
+      when :favourite
+        "favourite.png"
+      when :user
+        "user.png"
     end
+  end
+  
+  def delete_icon_faded_with_hover
+    image_tag(icon_filename_for(:delete_faded_plus), :mouseover => icon_filename_for(:delete), :style => "vertical-align:middle;")
   end
 
   def refresh_image
@@ -53,7 +67,19 @@ module ApplicationHelper
   
   def collapse_image(margin_left="0.3em")
     image_tag icon_filename_for(:collapse), :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Collapse'
-  end 
+  end
+  
+  def help_icon_with_tooltip(help_text, delay=200)
+    return image_tag(icon_filename_for(:help),
+                     :title => tooltip_title_attrib(help_text, delay),
+                     :style => "vertical-align:middle;")
+  end
+
+  def info_icon_with_tooltip(info_text, delay=200)
+    return image_tag(icon_filename_for(:info),
+                     :title => tooltip_title_attrib(info_text, delay),
+                     :style => "vertical-align:middle;")
+  end
 
   #==================
   
@@ -68,8 +94,15 @@ module ApplicationHelper
     end
   end
 
-  def flag_icon_from_country(country, text=country, style="margin-left: 0.5em;")
+  def flag_icon_from_country(country, *args)
     return '' if country.blank?
+    
+    # Do options the Rails Way ;-)
+    options = args.extract_options!
+    # defaults:
+    options.reverse_merge!(:text => country,
+                           :class => "flag",
+                           :style => "margin-left: 0.5em;")
 
     code = ''
 
@@ -86,19 +119,26 @@ module ApplicationHelper
     #puts "code = " + code
 
     unless code.blank?
-      return flag_icon_from_country_code(code, text, style)
+      return flag_icon_from_country_code(code, options)
     else
       return ''
     end
   end
 
-  def flag_icon_from_country_code(code, text=nil, style="margin-left: 0.5em;")
+  def flag_icon_from_country_code(code, *args)
+    # Do options the Rails Way ;-)
+    options = args.extract_options!
+    # defaults:
+    options.reverse_merge!(:text => nil,
+                           :class => "flag",
+                           :style => "margin-left: 0.5em;")
+                           
     code = "GB" if code.upcase == "UK"
-    text = CountryCodes.country(code.upcase) if text.nil?
+    text = (options[:text].nil? ? h(CountryCodes.country(code.upcase)) : h(options[:text].to_s))
     return image_tag("flags/#{code.downcase}.png",
               :title => tooltip_title_attrib(text),
-              :class => "flag",
-              :style => "#{style}")
+              :class => options[:class],
+              :style => "#{options[:style]}")
   end
 
   def tooltip_title_attrib(text, delay=200)
@@ -122,10 +162,10 @@ module ApplicationHelper
     country_code = h(geo_loc.country_code)
 
     if flag
-      case flag_pos.downcase
-        when 'right'
+      case flag_pos
+        when :right
           text = text + flag_icon_from_country_code(country_code)
-        when 'left'
+        when :left
           text = flag_icon_from_country_code(country_code) + text
         else
           text = text + flag_icon_from_country_code(country_code)
@@ -154,23 +194,31 @@ module ApplicationHelper
 
     service.service_deployments.each do |s_d|
       unless s_d.country.blank?
-        html = html + flag_icon_from_country(s_d.country, s_d.location)
+        html = html + flag_icon_from_country(s_d.country, :text => s_d.location, :class => "framed")
       end
     end
 
     return html
   end
-
-  def help_icon_with_tooltip(help_text, delay=200)
-    return image_tag(icon_filename_for(:help),
-                     :title => tooltip_title_attrib(help_text, delay),
-                     :style => "vertical-align:middle;")
+  
+  def submitter_link(submitter)
+    case submitter.class.name
+      when "User"
+        user_link_with_flag(submitter)
+      else
+        link_to(display_name(submitter), submitter) 
+    end
   end
 
-  def info_icon_with_tooltip(info_text, delay=200)
-    return image_tag(icon_filename_for(:info),
-                     :title => tooltip_title_attrib(info_text, delay),
-                     :style => "vertical-align:middle;")
+  def user_link_with_flag(user)
+    link_to(h(user.display_name), user_path(user)) + flag_icon_from_country(user.country, :style => "margin: 0 0.4em;")
+  end
+  
+  def display_name(item)
+    %w{ name display_name title }.each do |w|
+      return eval("h(item.#{w})") if item.respond_to?(w)
+    end
+    return "#{item.class.name}_#{id}"
   end
   
   
@@ -208,7 +256,7 @@ module ApplicationHelper
   #  :multiple_separator - the seperator character(s) that will be used to seperate out multiple annotations from one value text.
   #    default: ','
   def annotation_add_by_popup_link(annotatable, *args)
-     # Do options the Rails Way ;-)
+    # Do options the Rails Way ;-)
     options = args.extract_options!
     # defaults:
     options.reverse_merge!(:attribute_name => nil,

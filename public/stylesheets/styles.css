@@ -999,7 +999,7 @@ body.sidebar-right #login_box {
 	font-weight: bold;
 }
 
-.flag {
+.framed {
 	vertical-align: middle;
 	padding: 3px;
 	background-color: #FFF;
@@ -1021,6 +1021,10 @@ body.sidebar-right #login_box {
 	border: 1px dotted #DDDDDD;
 	background-color: #FFFFCC;
 	padding: 0.2em 0.5em;
+}
+
+.flag {
+	vertical-align: middle;
 }
 
 /* BEGIN pagination styles */
@@ -1668,6 +1672,25 @@ ul.tabbernav li.tabberactive a:hover
 	vertical-align: middle;
 }
 
+a.button_slim {
+	padding: 0.2em 0.4em 0.5em 0.4em;
+	*padding: 0.2em 0.4em;
+	line-height: 1;
+	text-decoration: none;
+	border: 1px solid #BBBBBB;
+	background-color: #EEF6FF;
+	vertical-align: middle;
+}
+
+a.button_slim:hover {
+	background-color: #0099FF;
+	color: #F5F5F5;
+}
+
+a.button_slim * {
+	vertical-align: middle;
+}
+
 /* END generic horizontal buttons classes */
 
 /* BEGIN tag cloud styles */
@@ -1726,6 +1749,24 @@ span.ontology_term,
 	margin-top: 1em; 
 	border-top: 1px dotted #CCC; 
 	padding-top: 0.7em;
+}
+
+.box_section ul.items {
+	margin: 0 0 0.8em 1em;
+	text-align: left;
+}
+
+.box_section ul.items li {
+	list-style-type: none;
+	margin: 0.6em 0;
+	padding-left: 0.8em;
+	line-height: 1.1;
+	/*border-left: 3px solid #DDDDBB;*/
+	text-align: center;
+}
+
+.box_section ul.items li * {
+	vertical-align: middle;
 }
 
 /* END Section Boxes (usually for inner sidebars) */

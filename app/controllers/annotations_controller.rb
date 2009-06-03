@@ -1,6 +1,6 @@
 # BioCatalogue: app/controllers/annotations_controller.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -13,9 +13,6 @@ require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers
 class AnnotationsController < ApplicationController
   
   # Disable some of the actions provided in the controller in the plugin.
-  # Note: the controller in the plugin has already disabled these actions
-  # BUT throws a 404, whereas we would like to use the specific disable_action 
-  # method we have set up in the main app.
   before_filter :disable_action, :only => [ :index, :show, :edit ]
   
   before_filter :set_no_layout, :only => [ :new_popup, :edit_popup ]

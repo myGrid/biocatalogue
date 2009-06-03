@@ -38,7 +38,7 @@
 													:name_annotations => all_name_annotations_for_service(@service) } -%>
 </div>
 
-<div id='services_index' class="tabber" style="margin-top:1.5em;">
+<div id="service-tabs" class="tabber" style="margin-top: 1.5em;">
 	
   <div id="tab-overview" class="tabbertab">
     <h3>Overview</h3>
@@ -67,7 +67,7 @@
 				<% @service.service_deployments.each do |s_d| %>
 					<% unless (loc = s_d.location).blank? -%>
 						<%= h s_d.location -%>
-						<%= flag_icon_from_country(s_d.country, loc, 'margin-left: 0.5em;') -%>
+						<%= flag_icon_from_country(s_d.country, :text => loc) -%>
 						<br/>
 					<% end %>
 				<% end %>
@@ -104,6 +104,7 @@
 			<%= render :partial => "annotations/tags_box",
 								 :locals => { :annotatable => @service } -%>
 			
+			<%= render :partial => "favourited_box" -%>
 		</div>
 		
 		<span class="clear"></span>
@@ -129,7 +130,7 @@
 			<%= service_test_status_symbol(soap.latest_wsdl_location_status, "Wsdl Location")%> <br/>
 		<%end%>
 	
-		<!--
+		<% if false %>
 	
 		<h4>Tests for this Service</h4>
 	 
@@ -148,7 +149,7 @@
 			</div>
 		<% end %>
 		
-		-->
+		<% end %>
 	</div>
  
 </div>

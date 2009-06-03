@@ -11,6 +11,8 @@ class Service < ActiveRecord::Base
   
   is_testable
   
+  acts_as_favouritable
+  
   has_many :relationships, :as => :subject, :dependent => :destroy
   
   has_many :service_versions, 

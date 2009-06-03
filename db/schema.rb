@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090531162818) do
+ActiveRecord::Schema.define(:version => 20090603155058) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -91,6 +91,17 @@ ActiveRecord::Schema.define(:version => 20090531162818) do
     t.datetime "updated_at"
   end
 
+  create_table "favourites", :force => true do |t|
+    t.integer  "favouritable_id"
+    t.string   "favouritable_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "favourites", ["favouritable_type", "favouritable_id"], :name => "favourites_favouritable_index"
+  add_index "favourites", ["user_id"], :name => "favourites_user_id_index"
+
   create_table "registries", :force => true do |t|
     t.string   "name"
     t.string   "display_name"
@@ -125,7 +136,6 @@ ActiveRecord::Schema.define(:version => 20090531162818) do
   end
 
   add_index "rest_method_parameters", ["rest_method_id", "http_cycle"], :name => "index_rest_method_parameters_on_rest_method_id_and_http_cycle"
-  add_index "rest_method_parameters", ["rest_method_id"], :name => "index_rest_method_parameters_on_rest_method_id"
   add_index "rest_method_parameters", ["rest_parameter_id"], :name => "rest_method_params_param_id_index"
 
   create_table "rest_method_representations", :force => true do |t|
