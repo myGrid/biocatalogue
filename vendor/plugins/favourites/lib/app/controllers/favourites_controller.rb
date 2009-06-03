@@ -45,7 +45,7 @@ class FavouritesController < ApplicationController
 
     respond_to do |format|
       if @favourite.save
-        flash[:notice] = 'Favourite was successfully created.'
+        flash[:notice] = 'Item successfully added to your favourites'
         format.html { redirect_to :back }
         format.xml  { render :xml => @favourite, :status => :created, :location => @favourite }
       else
@@ -64,7 +64,7 @@ class FavouritesController < ApplicationController
   def update
     respond_to do |format|
       if @favourite.update_attributes(params[:favourite])
-        flash[:notice] = 'Favourite was successfully updated.'
+        flash[:notice] = 'Favourite was successfully updated'
         format.html { redirect_to :back }
         format.xml  { head :ok }
       else
@@ -80,7 +80,7 @@ class FavouritesController < ApplicationController
     @favourite.destroy
 
     respond_to do |format|
-      flash[:notice] = 'Favourite successfully deleted.'
+      flash[:notice] = 'Item successfully removed from your favourites'
       format.html { redirect_to :back }
       format.xml  { head :ok }
     end
