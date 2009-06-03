@@ -20,7 +20,7 @@ class FavouritesMigrationGenerator < Rails::Generator::Base
   end
   
   def file_name
-    "favourites_migration"
+    "favourites_migration_#{@version}"
   end
   
 end
