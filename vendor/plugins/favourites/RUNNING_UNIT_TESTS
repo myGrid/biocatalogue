@@ -1,0 +1,4 @@
+To run the tests for this plugin:
+- ensure the gem 'plugin_test_helper' is installed (only tested with =< v0.2.1.0).
+- ensure database 'favourites_plugin_test' exists on a local mysql server installation (with default ports) and username 'root' with blank password.
+- run: rake test:plugins PLUGIN=favourites

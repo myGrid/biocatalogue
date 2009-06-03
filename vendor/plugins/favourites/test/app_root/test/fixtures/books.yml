@@ -1,0 +1,26 @@
+h:
+  id: 1
+  title: Harry Pooter and the Exploding Gentlemen's Lavatory
+  author_name: Rich Woman
+  pub_year: 2056
+  summary: Wonderfully delightful!
+  
+r:
+  id: 2
+  title: Learning Ruby in 2 Seconds
+  author_name: Too Much Time
+  pub_year: 1854
+  isbn: 1688HH979BLAH
+  
+s:
+  id: 3
+  title: How Many S's Can You Get Into a Name
+  author_name: Salasar Sissoko
+  pub_year: 1993
+  
+f:
+  id: 4
+  title: Crazy Frogs In Summer
+  author_name: Anne Summer
+  pub_year: 2009
+  summary: A crazy fairy tail...

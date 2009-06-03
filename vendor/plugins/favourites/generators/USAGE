@@ -1,0 +1,4 @@
+The favourites_migration generator generates the relevant db migrate script, based on the version specified (default: v1).
+      
+Syntax: 	./script/generate favourites_migration <version>
+Example:	./script/generate favourites_migration v1

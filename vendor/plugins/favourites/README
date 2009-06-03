@@ -1,0 +1,16 @@
+Favourites
+==========
+
+Based on acts_as_bookmarkable (http://www.juixe.com/techknow/index.php/2006/07/05/acts-as-bookmarkable-plugin/)
+and the BioCatalogue Annotations plugin.
+
+Currently, only Users are supported as "favouriters".
+Therefore, the acts_as_favouriter module must be mixed in to the User model only.
+
+Example
+=======
+
+Example goes here.
+
+
+Copyright (c) 2009 Jiten Bhagat, released under the MIT license
