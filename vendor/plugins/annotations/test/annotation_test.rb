@@ -112,4 +112,15 @@ class AnnotationTest < Test::Unit::TestCase
     
     assert_equal "User", ann.source_type
   end
+  
+  def test_cannot_create_annotation_with_invalid_annotatable
+    source = users(:john)
+    ann = Annotation.new(:attribute_name => "tag", 
+                         :value => "hot", 
+                         :source_type => source.class.name, 
+                         :source_id => source.id,
+                         :annotatable_type => "Book",
+                         :annotatable_id => 100)
+    assert_equal false, ann.save
+  end
 end
