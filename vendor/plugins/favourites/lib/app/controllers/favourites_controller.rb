@@ -40,8 +40,9 @@ class FavouritesController < ApplicationController
   # POST /favourites
   # POST /favourites.xml
   def create
-    @favourite = Favourite.new(params[:favourite])
+    @favourite = Favourite.new
     @favourite.user = current_user
+    @favourite.favouritable = @favouritable
 
     respond_to do |format|
       if @favourite.save

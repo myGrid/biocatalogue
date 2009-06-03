@@ -55,6 +55,7 @@ class AnnotationsController < ApplicationController
     end
     
     @annotation = Annotation.new(params[:annotation])
+    @annotation.annotatable = @annotatable
 
     respond_to do |format|
       if @annotation.save
