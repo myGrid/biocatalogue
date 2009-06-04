@@ -11,26 +11,30 @@
 <% tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable) %>
 
 <div class="box_section">
-	<p class="heading">
-		Tags
-		<span class="faded">(<%= tag_annotations.length -%>)</span>
-	</p>
-	
-	<div id='<%= "#{annotatable.class.name}_#{annotatable.id}_tags" -%>' class="center">
-		<%= render :partial => 'annotations/tags_box_inner_tag_cloud', 
-							 :locals => { :tag_annotations => tag_annotations,
-														:annotatable => annotatable } -%>
+	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+	<div class="content">
+		<p class="heading">
+			Tags
+			<span class="faded">(<%= tag_annotations.length -%>)</span>
+		</p>
+		
+		<div id='<%= "#{annotatable.class.name}_#{annotatable.id}_tags" -%>' class="center">
+			<%= render :partial => 'annotations/tags_box_inner_tag_cloud', 
+								 :locals => { :tag_annotations => tag_annotations,
+															:annotatable => annotatable } -%>
+		</div>
+		
+		<div class="footer">
+			<%= annotation_add_by_popup_link annotatable,
+												 :attribute_name => "Tag",
+	                     	 :tooltip_text => '',
+	                     	 :link_text => 'Add tags',
+	                     	 :icon_filename => 'add_tag.gif', 
+												 :icon_hover_filename => 'add_tag_hover.gif',
+												 :icon_inactive_filename => 'add_tag_inactive.gif',
+												 :only_show_on_hover => false,
+	                     	 :multiple => true -%>
+	  </div>
 	</div>
-	
-	<div class="footer">
-		<%= annotation_add_by_popup_link annotatable,
-											 :attribute_name => "Tag",
-                     	 :tooltip_text => '',
-                     	 :link_text => 'Add tags',
-                     	 :icon_filename => 'add_tag.gif', 
-											 :icon_hover_filename => 'add_tag_hover.gif',
-											 :icon_inactive_filename => 'add_tag_inactive.gif',
-											 :only_show_on_hover => false,
-                     	 :multiple => true -%>
-  </div>
+	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>

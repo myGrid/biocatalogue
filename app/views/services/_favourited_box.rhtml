@@ -11,39 +11,43 @@
 <% favourites = @service.favourites -%>
 
 <div class="box_section">
-	<p class="heading">
-		<%= info_icon_with_tooltip("The users who have added this service to their favourites") -%>
-		Favourited By <font class="faded">(<%= favourites.length -%>)</font>
-	</p>
-	
-	<% unless favourites.empty? %>
-		<div>
-			<ul class="items">
-				<% favourites.each do |f| %>
-					<li>
-						<%= user_link_with_flag(f.user) -%>
-						<% if mine?(f) -%>
-							<%= link_to(delete_icon_faded_with_hover,
-                   				favourite_path(f),
-                   				:method => :delete,
-                   				:confirm => "Are you sure you want to remove this service from your favourites?",
-													:title => tooltip_title_attrib("Remove from your favourites"),
-													:style => "margin-left: 0.2em;") -%>
-						<% end -%>
-					</li>
-				<% end %>
-			</ul>
-		</div>
-	<% else %>
-		<p class="none_text">No one</p>
-	<% end %>
-	
-	<% if logged_in? and !@service.favourited_by_user?(current_user.id) -%>
-		<div style="padding: 0.4em 0; font-size: 85%; font-weight: bold;">
-			<%= link_to image_tag(icon_filename_for(:favourite), :style => "vertical-align: middle; padding-right: 0.3em;") + " <span style='vertical-align:middle;'>Add to your Favourites</span>",
-									favourites_url(:favouritable_type => "Service", :favouritable_id => @service.id), 
-									:method => :post, 
-							 		:class => "button_slim" -%>
-		</div>
-	<% end %>
+	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+	<div class="content">
+		<p class="heading">
+			<%= info_icon_with_tooltip("The users who have added this service to their favourites") -%>
+			Favourited By <font class="faded">(<%= favourites.length -%>)</font>
+		</p>
+		
+		<% unless favourites.empty? %>
+			<div>
+				<ul class="items">
+					<% favourites.each do |f| %>
+						<li>
+							<%= user_link_with_flag(f.user) -%>
+							<% if mine?(f) -%>
+								<%= link_to(delete_icon_faded_with_hover,
+	                   				favourite_path(f),
+	                   				:method => :delete,
+	                   				:confirm => "Are you sure you want to remove this service from your favourites?",
+														:title => tooltip_title_attrib("Remove from your favourites"),
+														:style => "margin-left: 0.2em;") -%>
+							<% end -%>
+						</li>
+					<% end %>
+				</ul>
+			</div>
+		<% else %>
+			<p class="none_text">No one</p>
+		<% end %>
+		
+		<% if logged_in? and !@service.favourited_by_user?(current_user.id) -%>
+			<div style="padding: 0.4em 0; font-size: 85%; font-weight: bold;">
+				<%= link_to image_tag(icon_filename_for(:favourite), :style => "vertical-align: middle; padding-right: 0.3em;") + " <span style='vertical-align:middle;'>Add to your Favourites</span>",
+										favourites_url(:favouritable_type => "Service", :favouritable_id => @service.id), 
+										:method => :post, 
+								 		:class => "button_slim" -%>
+			</div>
+		<% end %>
+	</div>
+	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>
