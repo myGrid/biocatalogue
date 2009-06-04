@@ -1278,7 +1278,7 @@ ul.tabbernav li
 ul.tabbernav li a
 {
 	padding: 3px 0.5em;
-	margin-left: 3px;
+	margin-right: 4px;
 	border: 1px solid #CCC;
 	border-bottom: none;
 	background: #E9F7CC;
