@@ -11,7 +11,7 @@
 <% cache(:action_suffix => 'tag_cloud') do %>
 
 	<% 
-		 @tags = BioCatalogue::Tags.get_tags(100)
+		 @tags = BioCatalogue::Tags.sort_tags_by_frequency(BioCatalogue::Tags.get_tags(100))
 		 initial_number_of_tags = 20
 		 max_font_size = 20 
 	%>
@@ -38,12 +38,12 @@
 				</h3>
 				
 				<div id="tag_cloud_normal">
-					<%= generate_tag_cloud(@tags[0...initial_number_of_tags], :weighted, :max_font => max_font_size, :tag_cloud_style => "margin-top: 0.3em; margin-bottom: 0.5em;") -%>
+					<%= generate_tag_cloud(BioCatalogue::Tags.sort_tags_alphabetically(@tags[0...initial_number_of_tags]), :weighted, :max_font => max_font_size, :tag_cloud_style => "margin-top: 0.3em; margin-bottom: 0.5em;") -%>
 				</div>
 				
 				<% if @tags.length > initial_number_of_tags %>
 					<div id="tag_cloud_bigger" style="display:none;">
-						<%= generate_tag_cloud(@tags, :weighted, :max_font => max_font_size, :tag_cloud_style => "margin-top: 0.3em; margin-bottom: 0.5em;") -%>
+						<%= generate_tag_cloud(BioCatalogue::Tags.sort_tags_alphabetically(@tags), :weighted, :max_font => max_font_size, :tag_cloud_style => "margin-top: 0.3em; margin-bottom: 0.5em;") -%>
 					</div>
 				<% end %>
 				

@@ -68,7 +68,7 @@ module TagsHelper
       
     # Set up control variables for weighted tag cloud
     if cloud_type == :weighted
-      all_counts = tags.map{|t| t['count'].to_i } 
+      all_counts = tags.map{|t| t['count'] } 
       maxlog = Math.log(all_counts.max)
       minlog = Math.log(all_counts.min)
       rangelog = maxlog - minlog;

@@ -25,15 +25,15 @@ module BioCatalogue
     #
     # E.g.: 
     #   [ { "name" => "blast", 
-    #       "count" => "34", 
+    #       "count" => 34, 
     #       "submitters" => [ "User:15", "Registry:11", "User:45" ] },
     #     { "name" => "fasta", 
-    #       "count" => "54", 
+    #       "count" => 54, 
     #       "submitters" => [ "Registry:11", "User:1" ] }, 
     #   ... ]
     # ==============================
     
-    # Retrieves the IDs of all the services that have the sepcified tag (on any part of the substructure).
+    # Retrieves the IDs of all the services that have the specified tag (on any part of the substructure).
     def self.get_service_ids_for_tag(tag_name)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
@@ -44,7 +44,7 @@ module BioCatalogue
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
-      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| "#{r['type']}:#{r['id']}" }, "Service").uniq 
+      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| "#{r['type']}:#{r['id'].to_s}" }, "Service").uniq 
     end
 
     # Takes in a set of annotations and returns a collection of tags
@@ -96,8 +96,14 @@ module BioCatalogue
       if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
         sql += " LIMIT #{limit}"
       end
+      
+      results = ActiveRecord::Base.connection.select_all(sql)
+      
+      results = results.each do |r|
+        r["count"] = r["count"].to_i
+      end
        
-      return self.sort_tags_alphabetically(ActiveRecord::Base.connection.select_all(sql))
+      return self.sort_tags_alphabetically(results)
     end
     
     # Returns an array of suggested tag names given the tag fragment.
@@ -131,6 +137,14 @@ module BioCatalogue
         b_name = self.split_ontology_term_uri(b_name)[1] if self.is_ontology_term_uri?(b_name)
         
         a_name.downcase <=> b_name.downcase 
+      end
+    end
+    
+    def self.sort_tags_by_frequency(tags)
+      return nil if tags.nil?
+      
+      tags.sort do |a,b|
+        b["count"] <=> a["count"]
       end
     end
     
