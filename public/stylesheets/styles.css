@@ -1517,29 +1517,20 @@ ul.tabbernav li.tabberactive a:hover
 	line-height: 1.4;
 }
 
-.box_annotations div.description {
-	border: 1px dotted #AAA;
-	padding: 0.2em 0.5em 0.3em 0.5em;
-	margin: 0.5em 0;
-	background-color: #EEF0FF;
+.box_annotations .rcontain {
+	padding: 2px;
 }
 
-.box_annotations div.example {
-	border: 1px dotted #AAA;
+.box_annotations div.text {
 	padding: 0.2em 0.5em 0.3em 0.5em;
-	margin: 0.5em 0;
-	background-color: #EEF0FF;
 }
 
 .box_annotations div.other {
-	border: 1px dotted #AAA;
 	padding: 0.2em 0.5em 0.3em 0.5em;
-	margin: 0.5em 0;
-	background-color: #EEF0FF;
 }
 
 .box_annotations .actions {
-	margin: 0.6em 0 0 0; 
+	margin: 0.5em 0 0 0; 
 	font-size: 0.8em;
 	color: #666;
 	text-align: right;

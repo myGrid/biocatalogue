@@ -225,6 +225,11 @@ module ApplicationHelper
   # =======================
   # Helpers for Annotations
   # -----------------------
+
+  def annotation_text_item_background_color
+    #"#EEF0FF"
+    "#e9ecff"
+  end
   
   # This method is used to generate an icon and/or link that will popup up an in page dialog box for the user to add an annotation (or mutliple annotations at once).
   #
