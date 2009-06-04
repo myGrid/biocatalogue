@@ -1573,31 +1573,37 @@ ul.tabbernav li.tabberactive a:hover
 	line-height: 1.6;
 }
 
+.annotations_counts_outer_box {
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
+}
+
+.annotations_counts_outer_box .rcontain {
+	padding: 5px 4px 3px 4px;
+	*padding: 8px 3px;
+}
+
 .annotations_counts_box {
 	font-weight: bold;
 	font-size: 0.9em;
 	line-height: 1.0;
 	color: #333333;
 	vertical-align: middle;
-	display: inline-block;
-	* padding: 8px 0;
 }
 
 .annotations_counts_box span {
-	padding: 5px 3px 5px 7px;
-	border: 0 solid #DDD;
-	border-width: 2px 0 2px 0;
+	padding: 5px 3px 5px 5px;
 	vertical-align: middle;
 }
 
 .annotations_counts_box img {
 	vertical-align: middle;
 	margin-left: 2px;
-	* margin-left: 0;
+	*margin-left: 0;
 }
 
 .annotations_counts_box span.total {
-	border-left: 2px solid #DDD;
 	background-color: #DDD;
 }
 
@@ -1606,7 +1612,6 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .annotations_counts_box span.end {
-	border-right: 2px solid #DDD;
 }
 
 /* END annotations styles */
@@ -1730,7 +1735,7 @@ span.ontology_term,
 	background-repeat: repeat-x;
 	background-color: #FFC;
 	padding: 0.3em 0.3em;
-	border: 1px dotted #DDD;
+	border: 1px solid #DDD;
 	text-align: center;
 	margin-bottom: 1em;
 	padding: 0.8em 1em; 

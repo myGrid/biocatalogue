@@ -17,7 +17,7 @@
 	</p>
 	
 	<% unless favourites.empty? %>
-		<div style="font-size: 85%;">
+		<div>
 			<ul class="items">
 				<% favourites.each do |f| %>
 					<li>
@@ -28,7 +28,7 @@
                    				:method => :delete,
                    				:confirm => "Are you sure you want to remove this service from your favourites?",
 													:title => tooltip_title_attrib("Remove from your favourites"),
-													:style => "margin-left: 0.6em;") -%>
+													:style => "margin-left: 0.2em;") -%>
 						<% end -%>
 					</li>
 				<% end %>
@@ -40,7 +40,7 @@
 	
 	<% if logged_in? and !@service.favourited_by_user?(current_user.id) -%>
 		<div style="padding: 0.4em 0; font-size: 85%; font-weight: bold;">
-			<%= link_to image_tag(icon_filename_for(:favourite), :style => "vertical-align: middle; padding-right: 0.3em;") + " <span>Add to your Favourites</span>",
+			<%= link_to image_tag(icon_filename_for(:favourite), :style => "vertical-align: middle; padding-right: 0.3em;") + " <span style='vertical-align:middle;'>Add to your Favourites</span>",
 									favourites_url(:favouritable_type => "Service", :favouritable_id => @service.id), 
 									:method => :post, 
 							 		:class => "button_slim" -%>

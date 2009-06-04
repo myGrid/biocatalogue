@@ -211,7 +211,7 @@ module ApplicationHelper
   end
 
   def user_link_with_flag(user)
-    link_to(h(user.display_name), user_path(user)) + flag_icon_from_country(user.country, :style => "margin: 0 0.4em;")
+    link_to(h(user.display_name), user_path(user), :style => "vertical-align: middle;") + flag_icon_from_country(user.country, :style => "vertical-align: middle; margin: 0 0.4em;")
   end
   
   def display_name(item)
