@@ -72,15 +72,20 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
 end
 
-# Code to handle the issue of unintential file descriptor sharing in Passenger Phusion.
+# Code to handle the issue of unintential file descriptor sharing in Phusion Passenger.
 # Ref: http://www.modrails.com/documentation/Users%20guide.html#_example_1_memcached_connection_sharing_harmful
-if defined?(PhusionPassenger)
-  PhusionPassenger.on_event(:starting_worker_process) do |forked|
-    if forked
-      # We're in smart spawning mode.
-      reestablish_connection_to_memcached
-    else
-      # We're in conservative spawning mode. We don't need to do anything.
+# and: http://info.michael-simons.eu/2009/03/23/phusion-passenger-and-memcache-client-revisited/
+begin
+  if defined?(PhusionPassenger)
+    PhusionPassenger.on_event(:starting_worker_process) do |forked|
+      if forked
+        # We're in smart spawning mode.
+        CACHE.reset
+      else
+        # We're in conservative spawning mode. We don't need to do anything.
+      end
     end
   end
+# In case you're not running under Passenger (i.e. devmode with mongrel)
+rescue NameError => error
 end
