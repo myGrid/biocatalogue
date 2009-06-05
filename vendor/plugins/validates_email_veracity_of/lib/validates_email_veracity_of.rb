@@ -23,7 +23,7 @@ class ValidatesEmailVeracityOf
   class Domain
     
     require 'resolv'
-    require 'timeout'
+    require 'system_timer'
     
     attr_accessor :name
     
@@ -78,7 +78,7 @@ class ValidatesEmailVeracityOf
           when 'exchange' : Resolv::DNS::Resource::IN::MX
           when 'address' : Resolv::DNS::Resource::IN::A
         end
-        st = Timeout::timeout(options.fetch(:timeout, 2)) do
+        st = SystemTimer::timeout(options.fetch(:timeout, 2)) do
           Resolv::DNS.new.getresources(name, type).inject([]) do |servers, s|
             servers << Server.new(s.send(record).to_s)
           end

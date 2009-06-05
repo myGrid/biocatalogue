@@ -4,14 +4,11 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-#require 'geo_kit/geocoders'
 require 'dnsruby'
 require 'addressable/uri'
-require 'timeout'
 
 module BioCatalogue
   module Util
-    #include GeoKit::Geocoders
     
     @@logger = RAILS_DEFAULT_LOGGER
     
@@ -40,7 +37,7 @@ module BioCatalogue
       info = ''
       
       begin
-        Timeout::timeout(4) { info = open(url, :proxy => HTTP_PROXY).read }
+        SystemTimer::timeout(4) { info = open(url, :proxy => HTTP_PROXY).read }
       rescue TimeoutError
         @@logger.error("Method BioCatalogue::Util.ip_geocode - timeout occurred when attempting to get info from HostIp.")
         return geoloc

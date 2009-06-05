@@ -42,7 +42,7 @@ require 'rubygems'
 require 'optparse'
 require 'libxml'
 require 'benchmark'
-require 'timeout'
+require 'system_timer'
 require 'open-uri'
 require 'addressable/uri'
 
@@ -288,7 +288,7 @@ class SeekDaImporter
             begin
               xml_content = ''
               
-              Timeout::timeout(10) do
+              SystemTimer::timeout(10) do
                 xml_content = open(url, 
                                   :proxy => HTTP_PROXY, 
                                   :http_basic_authentication => [ @username, @password ],

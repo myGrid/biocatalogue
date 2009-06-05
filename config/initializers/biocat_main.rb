@@ -17,6 +17,7 @@ require 'bio_catalogue/has_submitter'
 require 'array'
 require 'object'
 require 'addressable/uri'
+require 'system_timer'
 
 # Initialise the country codes library
 CountryCodes
