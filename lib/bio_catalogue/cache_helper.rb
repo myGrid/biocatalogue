@@ -11,6 +11,13 @@ module BioCatalogue
     
     NO_VALUE = "<none>".freeze
     
+    def self.cache_key_for(type, *args)
+      case type
+        when :metadata_counts_for_service
+          "metadata_counts_for_service_#{args[0].id}"
+      end
+    end
+    
     module Expires
       
       def expire_service_index_tag_cloud

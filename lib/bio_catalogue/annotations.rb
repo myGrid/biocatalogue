@@ -59,12 +59,16 @@ module BioCatalogue
     #  :users       - the total number of annotations provided by users.
     #  :registries  - the total number of annotations that came from other registries.
     #  :providers   - the total number of annotations that came from the service providers (eg: from the service description docs).
-    def self.metadata_counts_for_service(service)
+    def self.metadata_counts_for_service(service, recalculate=false)
       counts = { }
       
       return counts if service.nil?
       
-      cache_key = "metadata_counts_for_service_#{service.id}"
+      cache_key = CacheHelper.cache_key_for(:metadata_counts_for_service, service)
+      
+      if recalculate
+        Rails.cache.delete(cache_key)
+      end
       
       # Try and get it from the cache...
       cached_counts = Rails.cache.read(cache_key)
