@@ -75,12 +75,12 @@ end
 # Code to handle the issue of unintential file descriptor sharing in Passenger Phusion.
 # Ref: http://www.modrails.com/documentation/Users%20guide.html#_example_1_memcached_connection_sharing_harmful
 if defined?(PhusionPassenger)
-    PhusionPassenger.on_event(:starting_worker_process) do |forked|
-        if forked
-            # We're in smart spawning mode.
-            reestablish_connection_to_memcached
-        else
-            # We're in conservative spawning mode. We don't need to do anything.
-        end
+  PhusionPassenger.on_event(:starting_worker_process) do |forked|
+    if forked
+      # We're in smart spawning mode.
+      reestablish_connection_to_memcached
+    else
+      # We're in conservative spawning mode. We don't need to do anything.
     end
+  end
 end
