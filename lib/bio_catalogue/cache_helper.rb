@@ -16,12 +16,15 @@ module BioCatalogue
       
       Util.say("memcache-client version = #{MemCache::VERSION}")
       
+      # Read the cache settings from config/memcache.yml.
+      # NOTE: to disable memcache for any environment, leave the servers part blank.
+      
       config_path = File.join(RAILS_ROOT, "config", "memcache.yml")
       
       if File.exist?(config_path)
         config = YAML.load(IO.read(config_path))[RAILS_ENV]
         
-        if config
+        if config and config['servers']
           
           begin
           
