@@ -1,1 +1,1 @@
-require "#{File.dirname(__FILE__)}/lib/favourites"
+require File.join(File.dirname(__FILE__), "lib", "favourites")

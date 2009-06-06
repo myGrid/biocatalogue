@@ -118,7 +118,7 @@ class SoaplabServersController < ApplicationController
         @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(wsdl_location)
       rescue Exception => ex
         @error_message = "Failed to load the WSDL location provided."
-        logger.error("ERROR: failed to load WSDL from location - #{wsdl_location}. Exception:")
+        logger.error("Failed to load WSDL from location - #{wsdl_location}. Exception:")
         logger.error(ex)
       end
     end

@@ -1,1 +1,1 @@
-require "#{File.dirname(__FILE__)}/lib/annotations"
+require File.join(File.dirname(__FILE__), "lib", "annotations")

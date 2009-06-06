@@ -10,8 +10,6 @@
 module BioCatalogue
   module Mapper
     
-    @@logger = RAILS_DEFAULT_LOGGER
-    
     SERVICE_TYPE_ROOT_MODELS = [ SoapService, RestService ]
     
     SERVICE_STRUCTURE_MODELS = [ Service, ServiceVersion, ServiceDeployment,
@@ -76,14 +74,14 @@ module BioCatalogue
           end
           
           if new_value.blank?
-            Rails.cache.write(cache_key, BioCatalogue::CacheHelper::NO_VALUE)
+            Rails.cache.write(cache_key, BioCatalogue::CacheHelper::NONE_VALUE)
           else
             new_value = new_value.to_i
             Rails.cache.write(cache_key, new_value)
             associated_model_object_id = new_value
           end
         else
-          unless cached_value == BioCatalogue::CacheHelper::NO_VALUE
+          unless cached_value == BioCatalogue::CacheHelper::NONE_VALUE
             associated_model_object_id = cached_value
           end
         end
@@ -172,7 +170,7 @@ module BioCatalogue
         when "User", "ServiceProvider", "Registry", "Agent"
           sql = "SELECT 'nothing'"
         else
-          @@logger.warn "WARNING: SQL for mapping #{source_model_name} objects to Services has not been implemented yet!"
+          Rails.logger.warn "SQL for mapping #{source_model_name} objects to Services has not been implemented yet!"
           sql = "SELECT 'nothing'"
       end
       

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class FavouriteTest < Test::Unit::TestCase
+class FavouriteTest < ActiveSupport::TestCase
   
   def test_favourite_class_loaded
     assert_kind_of Favourite, Favourite.new
@@ -58,7 +58,7 @@ class FavouriteTest < Test::Unit::TestCase
     f2 = Favourite.create(:favouritable_type => 'Chapter',
                           :favouritable_id => favouritable.id,
                           :user_id => user2.id)  
-    assert_valid f2
+    assert f2.valid?
   end
   
   def test_cannot_create_favourite_with_invalid_favouritable

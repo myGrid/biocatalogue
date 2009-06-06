@@ -48,15 +48,15 @@ class SoaplabServer < ActiveRecord::Base
               c_success = soap_service.submit_service( data["endpoint"], current_user, {} )  
               if c_success
                 new_wsdls << url
-                logger.info("INFO: registered service - #{url}. SUCCESS:")
+                logger.info("Registered service - #{url}. SUCCESS:")
               else
                 error_urls << url
-                logger.error("ERROR: post_create failed for service - #{url}. ")
+                logger.error("post_create failed for service - #{url}. ")
               end
             end
           rescue Exception => ex
             error_urls << url
-            logger.error("ERROR: failed to register service - #{url}. soaplab registration Exception:")
+            logger.error("failed to register service - #{url}. soaplab registration Exception:")
             logger.error(ex)
           end
         end
@@ -92,7 +92,7 @@ class SoaplabServer < ActiveRecord::Base
       }
       return data
     rescue Exception => ex
-      logger.error("ERROR: failed to get data from sooaplab server:")
+      logger.error("Failed to get data from sooaplab server:")
       logger.error(ex)
       return {}
     end
@@ -127,7 +127,7 @@ class SoaplabServer < ActiveRecord::Base
       }
       return data
     rescue Exception => ex
-      logger.error("ERROR: failed to get data from sooaplab server:")
+      logger.error("Failed to get data from sooaplab server:")
       logger.error(ex)
       return {}
     end

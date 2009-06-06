@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class AnnotationVersionTest < Test::Unit::TestCase
+class AnnotationVersionTest < ActiveSupport::TestCase
+  
   def test_annotation_version_class_loaded
     assert_kind_of Annotation::Version, Annotation::Version.new
   end
@@ -17,7 +18,7 @@ class AnnotationVersionTest < Test::Unit::TestCase
     ann.version_creator = users(:john)
     ann.save
     
-    assert_valid ann
+    assert ann.valid?
     assert_equal 2, ann.versions.length
     assert_equal "Harry Potter IIIIIII", ann.value
     assert_equal "Harry Potter IIIIIII", ann.versions.latest.value
@@ -26,4 +27,5 @@ class AnnotationVersionTest < Test::Unit::TestCase
     assert_equal users(:john).id, ann.versions.latest.version_creator_id
     assert_equal nil, ann.versions.latest.previous.version_creator_id
   end
+  
 end

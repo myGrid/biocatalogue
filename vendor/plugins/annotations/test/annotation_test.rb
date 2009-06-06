@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class AnnotationTest < Test::Unit::TestCase
+class AnnotationTest < ActiveSupport::TestCase
+  
   def test_annotation_class_loaded
     assert_kind_of Annotation, Annotation.new
   end
@@ -108,7 +109,7 @@ class AnnotationTest < Test::Unit::TestCase
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
-    assert_valid ann
+    assert ann.valid?
     
     assert_equal "User", ann.source_type
   end
@@ -123,4 +124,5 @@ class AnnotationTest < Test::Unit::TestCase
                          :annotatable_id => 100)
     assert_equal false, ann.save
   end
+  
 end

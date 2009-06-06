@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
       self.save!
       return true
     rescue Exception => ex
-      logger.error("ERROR: failed to activate user #{self.id}. Exception:")
+      logger.error("Failed to activate user #{self.id}. Exception:")
       logger.error(ex)
       return false
     end
@@ -83,7 +83,7 @@ class User < ActiveRecord::Base
       self.save!
       return true
     rescue Exception => ex
-      logger.error("ERROR: failed to generate the security token for user #{self.id}. Exception:")
+      logger.error("Failed to generate the security token for user #{self.id}. Exception:")
       logger.error(ex)
       return false
     end
@@ -97,7 +97,7 @@ class User < ActiveRecord::Base
       self.save!
       return true
     rescue Exception => ex
-      logger.error("ERROR: failed to reset password for user #{self.id}. Exception:")
+      logger.error("Failed to reset password for user #{self.id}. Exception:")
       logger.error(ex)
       return false
     end

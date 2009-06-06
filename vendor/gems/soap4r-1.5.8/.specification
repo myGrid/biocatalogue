@@ -562,4 +562,3 @@ specification_version: 1
 summary: An implementation of SOAP 1.1 for Ruby.
 test_files: 
 - test/runner.rb
-

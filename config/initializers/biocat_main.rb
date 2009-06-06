@@ -18,11 +18,24 @@ require 'array'
 require 'object'
 require 'addressable/uri'
 require 'system_timer'
+require 'libxml'
+require 'dnsruby'
+
+# Never explicitly load the memcache-client library as we need to use 
+# the specific one vendored in our codebase.
+#require 'memcache'
+
+# Change XML backend that Rails uses to a faster one
+#XmlMini.backend = 'LibXML'   # Not working currently. TODO: set this up when implementing the XML REST API.
 
 # Initialise the country codes library
 CountryCodes
 
-# Set up loggers to STDOUT if in script/console (so now things like SQL queries etc are shown in the console).
+# Set up caches
+BioCatalogue::CacheHelper.setup_caches
+
+# Set up loggers to STDOUT if in script/console 
+# (so now things like SQL queries etc are shown in the console instead of the development/production/etc logs).
 if "irb" == $0
   ActiveRecord::Base.logger = Logger.new(STDOUT)
   ActionController::Base.logger = Logger.new(STDOUT)

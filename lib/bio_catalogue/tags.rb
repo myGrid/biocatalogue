@@ -7,8 +7,6 @@
 module BioCatalogue
   module Tags
     
-    @@logger = RAILS_DEFAULT_LOGGER
-    
     # ==============================
     # IMPORTANT - Tags data structure
     # ------------------------------

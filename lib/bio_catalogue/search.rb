@@ -7,8 +7,6 @@
 module BioCatalogue
   module Search
     
-    @@logger = RAILS_DEFAULT_LOGGER
-    
     # MUST correspond to pluralised and underscored model names.
     VALID_SEARCH_TYPES = [ "services", "service_providers", "users", "registries" ].freeze
     

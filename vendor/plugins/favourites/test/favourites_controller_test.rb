@@ -5,7 +5,7 @@ require 'action_controller/test_process'
 # Manually override the rescue_action in the controller to raise the exception back.
 class FavouritesController; def rescue_action(e) raise e end; end
 
-class FavouritesControllerTest < Test::Unit::TestCase
+class FavouritesControllerTest < ActionController::TestCase
   def setup
     ActionController::Routing::Routes.draw do |map|
       Favourites.map_routes(map)

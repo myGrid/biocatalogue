@@ -33,10 +33,10 @@ ActionController::Routing::Routes.draw do |map|
   
   # Search (ordering is important!)
   map.search '/search', :controller => 'search', :action => 'show'
-  map.connect '/search.:format', :controller => 'search', :action => 'show'
+#  map.connect '/search.:format', :controller => 'search', :action => 'show'      # doesnt work in rails 2.3
   map.ignore_last_search '/search/ignore_last', :controller => 'search', :action => 'ignore_last', :conditions => { :method => :post }
   map.connect '/search/:query', :controller => 'search', :action => 'show'
-  map.connect '/search.:format/:query', :controller => 'search', :action => 'show'
+#  map.connect '/search.:format/:query', :controller => 'search', :action => 'show'     # doesnt work in rails 2.3
 
   map.resources :service_providers
 

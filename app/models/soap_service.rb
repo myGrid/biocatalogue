@@ -176,7 +176,7 @@ class SoapService < ActiveRecord::Base
       end
     rescue Exception => ex
       #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
-      logger.error("ERROR: failed to submit SOAP service - #{endpoint}. Exception:")
+      logger.error("Failed to submit SOAP service - #{endpoint}. Exception:")
       logger.error(ex.message)
       logger.error(ex.backtrace.join("\n"))
       success = false
@@ -186,7 +186,7 @@ class SoapService < ActiveRecord::Base
       begin
         self.process_annotations_data(annotations_data, actual_submitter)
       rescue Exception => ex
-        logger.error("ERROR: failed to process annotations after SOAP service creation. SOAP service ID: #{self.id}. Exception:")
+        logger.error("Failed to process annotations after SOAP service creation. SOAP service ID: #{self.id}. Exception:")
         logger.error(ex.message)
         logger.error(ex.backtrace.join("\n"))
       end

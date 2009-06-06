@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.2.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -27,6 +27,8 @@ Rails::Initializer.run do |config|
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem 'disqus', :version => '1.0.1'
   config.gem 'soap4r', :version => '1.5.8'
+  config.gem 'mperham-memcache-client', :version => '>= 1.7.3', :lib => 'memcache', :source => "http://gems.github.com"
+  config.gem 'geokit'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
@@ -38,7 +40,6 @@ Rails::Initializer.run do |config|
 
 	# Rotate logs when they reach a size of 10M and keep no more than 10 of these
   #config.logger = Logger.new(config.log_path, 10, (1024**2)*10)
-  config.logger = Logger.new(config.log_path, 100, (1024**2)*10)
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
@@ -80,7 +81,8 @@ begin
     PhusionPassenger.on_event(:starting_worker_process) do |forked|
       if forked
         # We're in smart spawning mode.
-        CACHE.reset
+        # Reset caches..
+        BioCatalogue::CacheHelper.reset_caches
       else
         # We're in conservative spawning mode. We don't need to do anything.
       end

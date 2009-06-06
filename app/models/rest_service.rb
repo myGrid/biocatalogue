@@ -94,7 +94,7 @@ class RestService < ActiveRecord::Base
       end
     rescue Exception => ex
       #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
-      logger.error("ERROR: failed to submit REST service - #{endpoint}. Exception:")
+      logger.error("Failed to submit REST service - #{endpoint}. Exception:")
       logger.error(ex.message)
       logger.error(ex.backtrace.join("\n"))
       success = false
@@ -104,7 +104,7 @@ class RestService < ActiveRecord::Base
       begin
         self.process_annotations_data(annotations_data, actual_submitter)
       rescue Exception => ex
-        logger.error("ERROR: failed to process annotations after REST service creation. REST service ID: #{self.id}. Exception:")
+        logger.error("Failed to process annotations after REST service creation. REST service ID: #{self.id}. Exception:")
         logger.error(ex.message)
         logger.error(ex.backtrace.join("\n"))
       end

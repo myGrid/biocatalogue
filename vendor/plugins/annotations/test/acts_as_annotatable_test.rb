@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class ActsAsAnnotatableTest < Test::Unit::TestCase
+class ActsAsAnnotatableTest < ActiveSupport::TestCase
+  
   def test_has_many_annotations_association
     assert_equal 5, books(:h).annotations.length
     assert_equal 5, books(:r).annotations.length
@@ -114,4 +115,5 @@ class ActsAsAnnotatableTest < Test::Unit::TestCase
     assert_not_nil(ann2)
     assert_equal 4, ch.annotations(true).length
   end
+  
 end

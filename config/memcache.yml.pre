@@ -1,0 +1,13 @@
+test:
+  namespace: biocat_test
+  servers: localhost:11211
+  
+development:
+  namespace: biocat_dev
+  servers: localhost:11211
+  
+production:
+  namespace: biocat_prod
+  servers: 
+    - localhost:11211
+    - another.cache.server.com:11211

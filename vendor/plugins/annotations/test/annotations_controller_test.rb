@@ -5,7 +5,7 @@ require 'action_controller/test_process'
 # Manually override the rescue_action in the controller to raise the exception back.
 class AnnotationsController; def rescue_action(e) raise e end; end
 
-class AnnotationsControllerTest < Test::Unit::TestCase
+class AnnotationsControllerTest < ActionController::TestCase
   def setup
     ActionController::Routing::Routes.draw do |map|
       Annotations.map_routes(map)

@@ -37,11 +37,3 @@ Disqus::defaults[:developer] = true # allows for threads to work on localhost du
 
 # Enable or disable endpoint status check icon in view
 DISABLE_STATUS_CHECK = true
-
-# ============
-# Cache config
-# ------------
-
-ActionController::Base.cache_store = :mem_cache_store, "127.0.0.1:11211", { :namespace => "BioCatalogue", :multithread => true }
-
-# ============

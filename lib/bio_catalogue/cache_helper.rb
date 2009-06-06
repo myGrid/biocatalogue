@@ -9,7 +9,76 @@
 module BioCatalogue
   module CacheHelper
     
-    NO_VALUE = "<none>".freeze
+    NONE_VALUE = "<none>".freeze
+    
+    def self.setup_caches
+      Util.say("Setting up caches...")
+      
+      Util.say("memcache-client version = #{MemCache::VERSION}")
+      
+      config_path = File.join(RAILS_ROOT, "config", "memcache.yml")
+      
+      if File.exist?(config_path)
+        config = YAML.load(IO.read(config_path))[RAILS_ENV]
+        
+        if config
+          
+          begin
+          
+            # We need to set up both the ActionController cache and the Rails.cache to use the same memcache client.
+            # Unfortunately there is no easy way to do this! I've had to dig into the Rails source code
+            # to figure out the best way of doing this...
+            
+            memcache_servers = config['servers']
+            
+            memcache_options = {
+              :namespace   => config['namespace'],
+              :readonly    => false,
+              :multithread => true,
+              :failover    => true,
+              :timeout     => 0.5,
+              :logger      => Rails.logger,
+              :no_reply    => false,
+            }
+            
+            memcache_client = MemCache.new(memcache_servers, memcache_options)
+            
+            Util.say("memcache servers: #{memcache_client.servers.inspect}") 
+            
+            # Set the global CACHE variable...
+            # BUT this MUST NOT be used directly, use Rails.cache instead.
+            silence_warnings { Object.const_set "CACHE", memcache_client }
+            
+            # Create the ActiveSupport::Cache::MemCacheStore which is what Rail will use...
+            rails_memcache_client = ActiveSupport::Cache::MemCacheStore.new(memcache_servers, memcache_options)
+            
+            # Set the Rails.cache
+            silence_warnings { Object.const_set "RAILS_CACHE", rails_memcache_client }
+            
+            # Set the ActionController cache
+            ActionController::Base.class_eval do
+              @@cache_store = rails_memcache_client
+            end
+          
+          rescue Exception => ex
+            Rails.logger.error("Error whilst setting up caches. Exception: #{ex.class.name} - #{ex.message}")
+            Rails.logger.error(ex.backtrace)
+          end
+          
+        else
+          Util.say("No cache defined for #{RAILS_ENV} environment. That's okay, a memory store will be used temporarily...")
+        end
+        
+      else
+        err_msg = "Missing config file: config/memcache.yml. Uses the settings from config/memcache.yml.pre."
+        puts err_msg
+        Rails.logger.error err_msg
+      end
+    end
+    
+    def self.reset_caches
+      CACHE.reset if defined?(CACHE)
+    end
     
     def self.cache_key_for(type, *args)
       case type

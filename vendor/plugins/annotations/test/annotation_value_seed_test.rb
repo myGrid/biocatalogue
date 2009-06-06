@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class AnnotationValueSeedTest < Test::Unit::TestCase
+class AnnotationValueSeedTest < ActiveSupport::TestCase
+  
   def test_annotation_value_seed_class_loaded
     assert_kind_of AnnotationValueSeed, AnnotationValueSeed.new
   end
@@ -9,4 +10,5 @@ class AnnotationValueSeedTest < Test::Unit::TestCase
     assert_equal 10, AnnotationValueSeed.find_by_attribute_name("tag").length
     assert_equal 5, AnnotationValueSeed.find_by_attribute_name("Author").length
   end
+  
 end

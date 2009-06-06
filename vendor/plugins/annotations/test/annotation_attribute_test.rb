@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class AnnotationAttributeTest < Test::Unit::TestCase
+class AnnotationAttributeTest < ActiveSupport::TestCase
+  
   def test_annotation_attribute_class_loaded
     assert_kind_of AnnotationAttribute, AnnotationAttribute.new
   end
@@ -17,4 +18,5 @@ class AnnotationAttributeTest < Test::Unit::TestCase
       AnnotationAttribute.create!(:name => 'Tag')
     end
   end
+  
 end

@@ -105,7 +105,7 @@ class ServicesController < ApplicationController
         @results = BioCatalogue::Search.search(@query, @type)
       rescue Exception => ex
         flash.now[:error] = "Search failed. Possible bad search term. Please report this if it continues for other searches."
-        logger.error("ERROR: search failed for query: '#{@query}'. Exception:")
+        logger.error("Search failed for query: '#{@query}'. Exception:")
         logger.error(ex.message)
         logger.error(ex.backtrace.join("\n"))
       end

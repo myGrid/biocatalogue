@@ -162,7 +162,7 @@ class SoapServicesController < ApplicationController
         end
       rescue Exception => ex
         @error_message = "Failed to load the WSDL location provided."
-        logger.error("ERROR: failed to load WSDL from location - #{wsdl_location}. Exception:")
+        logger.error("Failed to load WSDL from location - #{wsdl_location}. Exception:")
         logger.error(ex.message)
         logger.error(ex.backtrace.join("\n"))
       end
@@ -220,7 +220,7 @@ class SoapServicesController < ApplicationController
             end
           rescue Exception => ex
             @error_urls << url
-            logger.error("ERROR: failed to register service - #{url}. Bulk registration Exception:")
+            logger.error("Failed to register service - #{url}. Bulk registration Exception:")
             logger.error(ex)
           end
       end

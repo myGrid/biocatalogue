@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class ConfigTest < Test::Unit::TestCase
+class ConfigTest < ActiveSupport::TestCase
   def setup
     Annotations::Config.attribute_names_for_values_to_be_downcased = [ "downcased_thing" ]
     Annotations::Config.attribute_names_for_values_to_be_upcased = [ "upcased_thing" ]
@@ -29,7 +29,7 @@ class ConfigTest < Test::Unit::TestCase
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
-    assert_valid ann1
+    assert ann1.valid?
     assert_equal "unique", ann1.value
     
     # Should upcase
@@ -41,7 +41,7 @@ class ConfigTest < Test::Unit::TestCase
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
-    assert_valid ann2
+    assert ann2.valid?
     assert_equal "UNIQUE", ann2.value
     
     # Should not do anything
@@ -53,7 +53,7 @@ class ConfigTest < Test::Unit::TestCase
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
-    assert_valid ann3
+    assert ann3.valid?
     assert_equal "UNIque", ann3.value
   end
   
@@ -69,7 +69,7 @@ class ConfigTest < Test::Unit::TestCase
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
-    assert_valid ann1
+    assert ann1.valid?
     assert_equal "value", ann1.value
     
     # Strip 'comma_stripped'
@@ -81,7 +81,7 @@ class ConfigTest < Test::Unit::TestCase
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
-    assert_valid ann2
+    assert ann2.valid?
     assert_equal 'val"ue', ann2.value
     
     # Regexp strip
@@ -93,7 +93,7 @@ class ConfigTest < Test::Unit::TestCase
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
-    assert_valid ann3
+    assert ann3.valid?
     assert_equal 'v,al"uex', ann3.value
 
     # Don't strip!
@@ -105,7 +105,7 @@ class ConfigTest < Test::Unit::TestCase
                             :annotatable_type => "Book",
                             :annotatable_id => 1)
     
-    assert_valid ann4
+    assert ann4.valid?
     assert_equal 'v,al"ue', ann4.value
   end
   

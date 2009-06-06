@@ -10,8 +10,6 @@
 module BioCatalogue
   module Filtering
     
-    @@logger = RAILS_DEFAULT_LOGGER
-    
     # ====================
     # Filtering URL format
     # --------------------
@@ -335,11 +333,11 @@ module BioCatalogue
       service_ids_tags_ins = [ 0 ] if service_ids_tags_ins.empty? and filters.has_key?(:tag_ins)
       service_ids_tags_outs = [ 0 ] if service_ids_tags_outs.empty? and filters.has_key?(:tag_outs)
       
-      @@logger.info "\n*** service_ids_submitters = #{service_ids_submitters.inspect}"
-      @@logger.info "\n*** service_ids_tags_s = #{service_ids_tags_s.inspect}"
-      @@logger.info "\n*** service_ids_tags_ops = #{service_ids_tags_ops.inspect}"
-      @@logger.info "\n*** service_ids_tags_ins = #{service_ids_tags_ins.inspect}"
-      @@logger.info "\n*** service_ids_tags_outs = #{service_ids_tags_outs.inspect} \n"
+      Rails.logger.info "*** service_ids_submitters = #{service_ids_submitters.inspect}"
+      Rails.logger.info "*** service_ids_tags_s = #{service_ids_tags_s.inspect}"
+      Rails.logger.info "*** service_ids_tags_ops = #{service_ids_tags_ops.inspect}"
+      Rails.logger.info "*** service_ids_tags_ins = #{service_ids_tags_ins.inspect}"
+      Rails.logger.info "*** service_ids_tags_outs = #{service_ids_tags_outs.inspect}"
       
       service_id_arrays_to_process = [ ]
       service_id_arrays_to_process << service_ids_submitters unless service_ids_submitters.blank?
@@ -358,7 +356,7 @@ module BioCatalogue
         end
       end
       
-      @@logger.info "*** final_service_ids (after combining service id arrays) = #{final_service_ids.inspect} \n"
+      Rails.logger.info "*** final_service_ids (after combining service id arrays) = #{final_service_ids.inspect}"
       
       unless final_service_ids.nil?
         # Remove the dummy value of 0 in case it is in there
@@ -372,7 +370,7 @@ module BioCatalogue
                                        filters.has_key?(:tag_ins) or 
                                        filters.has_key?(:tag_outs))
         
-        @@logger.info "\n*** final_service_ids (after cleanup) = #{final_service_ids.inspect} \n"
+        Rails.logger.info "\n*** final_service_ids (after cleanup) = #{final_service_ids.inspect} \n"
         
         conditions[:id] = final_service_ids unless final_service_ids.blank?
       end
@@ -393,7 +391,7 @@ module BioCatalogue
         filters[key_sym] = self.split_filter_options_string(values) if FILTER_KEYS.include?(key_sym)
       end
       
-      @@logger.info "\n*** convert_params_to_filters returned #{filters.inspect} \n"
+      Rails.logger.info "*** convert_params_to_filters returned #{filters.inspect}"
       
       return filters
     end

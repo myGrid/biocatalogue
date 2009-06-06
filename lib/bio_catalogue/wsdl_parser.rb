@@ -12,8 +12,6 @@ require 'addressable/uri'
 module BioCatalogue
   module WsdlParser
     
-    @@logger = RAILS_DEFAULT_LOGGER
-    
     # This method takes a URL to a WSDL file and returns back the following array:
     # [ service_info, error_messages, wsdl_file_contents ]
     # 
@@ -69,9 +67,9 @@ module BioCatalogue
         
       rescue Exception => ex
         error_messages << "There was a problem loading the WSDL file '#{wsdl_url}'. Exception message: #{ex.message}."
-        @@logger.error("Exception occurred whilst loading WSDL '#{wsdl_url}'. Exception:")
-        @@logger.error(ex.message)
-        @@logger.error(ex.backtrace.join("\n"))
+        Rails.logger.error("Exception occurred whilst loading WSDL '#{wsdl_url}'. Exception:")
+        Rails.logger.error(ex.message)
+        Rails.logger.error(ex.backtrace.join("\n"))
       end
       
       if error_messages.empty?
@@ -79,9 +77,9 @@ module BioCatalogue
           service_info  = get_service_info(wsdl_hash)
         rescue Exception => ex
           error_messages << "There was a problem parsing the WSDL file '#{wsdl_url}'. Exception message: #{ex.message}."
-          @@logger.error("Exception occurred whilst parsing WSDL '#{wsdl_url}'. Exception:")
-          @@logger.error(ex.message)
-          @@logger.error(ex.backtrace.join("\n"))
+          Rails.logger.error("Exception occurred whilst parsing WSDL '#{wsdl_url}'. Exception:")
+          Rails.logger.error(ex.message)
+          Rails.logger.error(ex.backtrace.join("\n"))
         end
       end
       return [ service_info, error_messages, wsdl_file_contents ]
@@ -121,7 +119,7 @@ module BioCatalogue
     
     def WsdlParser.map_messages_and_operations(wsdl_hash)
       messages   = wsdl_hash["definitions"]["message"]
-      port_type  = wsdl_hash["definitions"]["portType"]
+      port_type  = wsdl_hash["definitions"]["port_type"]
       operations = []
       if port_type.class.to_s =="Array"
         port_type.each{ |a_pt|
@@ -137,7 +135,7 @@ module BioCatalogue
     
         }
       else
-        operations = wsdl_hash["definitions"]["portType"]["operation"]
+        operations = wsdl_hash["definitions"]["port_type"]["operation"]
         unless operations.class.to_s == "Array"
           operations =[operations]
         end
@@ -262,10 +260,10 @@ module BioCatalogue
         if in_parts.class.to_s =="Hash"
           operation["inputs"]= [in_parts]
            unless in_parts["element"]== nil
-             if in_parts["element"]["complexType"]== nil
+             if in_parts["element"]["complex_type"]== nil
                 operation["inputs"] = [in_parts["element"]]
              else
-               elm = in_parts["element"]["complexType"]["sequence"]["element"]
+               elm = in_parts["element"]["complex_type"]["sequence"]["element"]
                operation["inputs"]= elm
                
                unless elm.class.to_s =="Array"
@@ -281,10 +279,10 @@ module BioCatalogue
          if out_parts.class.to_s =="Hash"
            operation["outputs"]= [out_parts]
              unless out_parts["element"]== nil
-               if out_parts["element"]["complexType"]==nil
+               if out_parts["element"]["complex_type"]==nil
                   operation["outputs"] = [out_parts["element"]]
                else
-                  elm = out_parts["element"]["complexType"]["sequence"]["element"]
+                  elm = out_parts["element"]["complex_type"]["sequence"]["element"]
                  operation["outputs"]= elm
                  
                  unless elm.class.to_s =="Array"
@@ -339,13 +337,13 @@ module BioCatalogue
         item["computational_type"] = item["type"]
         item.delete("type")
       end                         
-      if item.has_key?("maxOccurs")
-        item["max_occurs"] = item["maxOccurs"]
-        item.delete("maxOccurs")
+      if item.has_key?("max_occurs")
+        item["max_occurs"] = item["max_occurs"]
+        item.delete("max_occurs")
       end
-      if item.has_key?("minOccurs")
-        item["min_occurs"] = item["minOccurs"]
-        item.delete("minOccurs")
+      if item.has_key?("min_occurs")
+        item["min_occurs"] = item["min_occurs"]
+        item.delete("min_occurs")
       end
       #if item.has_key?("complexType")
       #  item.delete("complexType")

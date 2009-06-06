@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class ActsAsFavouritableTest < Test::Unit::TestCase
+class ActsAsFavouritableTest < ActiveSupport::TestCase
   
   def test_has_many_favourites_association
     assert_equal 1, books(:s).favourites.length
