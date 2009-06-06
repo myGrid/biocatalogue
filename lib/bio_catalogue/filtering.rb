@@ -370,7 +370,7 @@ module BioCatalogue
                                        filters.has_key?(:tag_ins) or 
                                        filters.has_key?(:tag_outs))
         
-        Rails.logger.info "\n*** final_service_ids (after cleanup) = #{final_service_ids.inspect} \n"
+        Rails.logger.info "*** final_service_ids (after cleanup) = #{final_service_ids.inspect}"
         
         conditions[:id] = final_service_ids unless final_service_ids.blank?
       end
