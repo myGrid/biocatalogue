@@ -22,7 +22,7 @@ module FilteringHelper
     is_ontology_term = false
     
     # Special processing for tags
-    if [ :tag, :tag_ops, :tag_ins, :tag_outs ].include?(filter_type)
+    if [ :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs ].include?(filter_type)
       base_uri, term = BioCatalogue::Tags.split_ontology_term_uri(text)
       text = term
       is_ontology_term = true unless base_uri.blank?
@@ -69,6 +69,8 @@ module FilteringHelper
       end
       page.toggle more_link_id, less_link_id
       page.call "setCookie", "#{filters_all_cookie_key}", "false"
+      page << "$('#{more_link_id}').ancestors()[0].ancestors()[0].scrollTo();"
+      page << "new Effect.Highlight($('#{more_link_id}').ancestors()[0].ancestors()[0], { duration: 1 });"
     end
     
     return html
