@@ -15,7 +15,7 @@ class MemCache
   ##
   # The version of MemCache you are using.
 
-  VERSION = '1.7.3'
+  VERSION = '1.7.4'
 
   ##
   # Default options for the cache object.
@@ -1050,7 +1050,7 @@ class MemCache
         if IO.select([@io], nil, nil, @read_timeout)
           retry
         else
-          raise Timeout::Error
+          raise Timeout::Error, 'IO timeout'
         end
       end
     end

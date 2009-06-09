@@ -1,3 +1,7 @@
+= 1.7.4 (2009-06-09)
+
+* Fix issue with raising timeout errors.
+
 = 1.7.3 (2009-06-06)
 
 * Remove SystemTimer support, refactor I/O to use nonblocking operations.  Speeds up

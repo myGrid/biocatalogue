@@ -27,7 +27,7 @@ Rails::Initializer.run do |config|
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem 'disqus', :version => '1.0.1'
   config.gem 'soap4r', :version => '1.5.8'
-  config.gem 'mperham-memcache-client', :version => '>= 1.7.3', :lib => 'memcache', :source => "http://gems.github.com"
+  config.gem 'mperham-memcache-client', :version => '>= 1.7.4', :lib => 'memcache', :source => "http://gems.github.com"
   config.gem 'geokit'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
