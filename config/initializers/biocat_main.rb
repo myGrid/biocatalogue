@@ -20,6 +20,7 @@ require 'addressable/uri'
 require 'system_timer'
 require 'libxml'
 require 'dnsruby'
+require 'memcache'
 
 # Never explicitly load the memcache-client library as we need to use 
 # the specific one vendored in our codebase.
