@@ -71,11 +71,11 @@ module BioCatalogue
           end
           
         else
-          Util.say("No cache defined for #{RAILS_ENV} environment. That's okay, a memory store will be used temporarily...")
+          Util.say("No cache defined for #{RAILS_ENV} environment. That's okay, an in memory store will be used instead for caching...")
         end
         
       else
-        err_msg = "Missing config file: config/memcache.yml. Use the settings from config/memcache.yml.pre."
+        err_msg = "Missing config file: config/memcache.yml. Use the settings from config/memcache.yml.pre. Otherwise, an in memory store will be used instead for caching..."
         puts err_msg
         Rails.logger.error err_msg
       end
