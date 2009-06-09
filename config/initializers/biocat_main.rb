@@ -53,12 +53,14 @@ METADATA_COUNTS_DATA_CACHE_TIME = 60*60  # 60 minutes, in seconds.
 
 BOT_IGNORE_LIST = "Googlebot",
                   "Slurp",
+                  "Yahoo",
                   "msnbot",
                   "crawler",
                   "bot",
                   "heritrix",
                   "spider",
-                  "Nutch"
+                  "Nutch",
+                  "JMeter"
 
 
 # List of annotation attributes that are considered "known" or important in the system

@@ -165,7 +165,8 @@ class ApplicationController < ActionController::Base
       @is_bot = false
     
       BOT_IGNORE_LIST.each do |bot|
-        if request.env['HTTP_USER_AGENT'] and request.env['HTTP_USER_AGENT'].match(bot)
+        bot = bot.downcase
+        if request.env['HTTP_USER_AGENT'] and request.env['HTTP_USER_AGENT'].downcase.match(bot)
           @is_bot = true
           break
         end 
