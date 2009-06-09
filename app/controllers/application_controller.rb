@@ -119,21 +119,13 @@ class ApplicationController < ActionController::Base
   
   protected
 
-  def set_sidebar_layout
-    self.class.layout "application_sidebar"
-  end
-
-  def set_no_layout
-    self.class.layout nil
-  end
-
   def disable_action
     # This will cause a 404...
     raise ActionController::UnknownAction.new
   end
 
   def set_original_uri
-    unless controller_name.downcase == 'sessions' || action_name.downcase == 'activate_account'
+    unless controller_name.downcase == 'sessions' or action_name.downcase == 'activate_account'
       session[:original_uri] = request.request_uri if not logged_in?
     end
   end
@@ -261,6 +253,10 @@ class ApplicationController < ActionController::Base
       
     end
     
+  end
+  
+  def remember_search
+    session[:last_search] = request.url if defined?(@results) and !@results.nil? and @results.total > 0
   end
   
   def log_search

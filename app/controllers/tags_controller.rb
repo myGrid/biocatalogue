@@ -5,8 +5,6 @@
 # See license.txt for details.
 
 class TagsController < ApplicationController
-  before_filter :set_no_layout, :only => [ :auto_complete ]
-  
   skip_before_filter :verify_authenticity_token, :only => [ :auto_complete ]
   
   before_filter :find_tags, :only => [ :index ]
@@ -37,7 +35,7 @@ class TagsController < ApplicationController
     
     @tags = BioCatalogue::Tags.get_tag_suggestions(tag_fragment, 20)
                      
-    render :inline => "<%= auto_complete_result @tags, 'name' %>"
+    render :inline => "<%= auto_complete_result @tags, 'name' %>", :layout => false
   end
   
   # DELETE /tags

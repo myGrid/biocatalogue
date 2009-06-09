@@ -15,8 +15,6 @@ class AnnotationsController < ApplicationController
   # Disable some of the actions provided in the controller in the plugin.
   before_filter :disable_action, :only => [ :index, :show, :edit ]
   
-  before_filter :set_no_layout, :only => [ :new_popup, :edit_popup ]
-  
   before_filter :add_use_tab_cookie_to_session, :only => [ :create, :create_multiple, :update, :destroy ]
   
   cache_sweeper :tags_sweeper, :only => [ :create, :create_multiple, :update, :destroy ] 
@@ -44,7 +42,7 @@ class AnnotationsController < ApplicationController
       @separator = params[:separator].nil? ? '' : params[:separator]
   
       respond_to do |format|
-        format.js # new_popup.html.erb
+        format.js { render :layout => false } # new_popup.html.erb
       end
     end
   end
@@ -56,7 +54,7 @@ class AnnotationsController < ApplicationController
     find_annotation
     
     respond_to do |format|
-      format.js # edit_popup.html.erb
+      format.js { render :layout => false } # edit_popup.html.erb
     end
   end
   

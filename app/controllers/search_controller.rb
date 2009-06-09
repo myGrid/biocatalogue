@@ -6,11 +6,11 @@
 
 class SearchController < ApplicationController
   
-  before_filter :set_no_layout, :only => [ :ignore_last ]
-  
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
   
   before_filter :validate_and_setup_search, :only => [ :show ]
+  
+  after_filter :remember_search, :only => [ :show ]
   
   def show
     
@@ -18,7 +18,7 @@ class SearchController < ApplicationController
 
       respond_to do |format|
         format.html # show.html.erb
-        format.xml { set_no_layout } # show.xml.builder
+        format.xml { render :layout => false  } # show.xml.builder
       end
       
     else
@@ -38,11 +38,9 @@ class SearchController < ApplicationController
           logger.error(ex.backtrace.join("\n"))
         end
         
-        session[:last_search] = request.url if @results and @results.total > 0
-        
         respond_to do |format|
           format.html # show.html.erb
-          format.xml { set_no_layout } # show.xml.builder
+          format.xml { render :layout => false } # show.xml.builder
         end
         
       else
@@ -57,7 +55,7 @@ class SearchController < ApplicationController
     session[:last_search] = ""
     
     respond_to do |format|
-      format.js { render :text => "" }
+      format.js { render :text => "Bye bye :-( ..." }
     end
   end
   

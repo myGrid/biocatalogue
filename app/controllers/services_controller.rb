@@ -16,9 +16,7 @@ class ServicesController < ApplicationController
   
   before_filter :log_search, :only => [ :search ]
   
-  # Set the sidebar layout for certain actions.
-  # Note: the set_sidebar_layout method resides in the ApplicationController.
-  #before_filter :set_sidebar_layout, :only => [ :show ]
+  after_filter :remember_search, :only => [ :search ]
   
   # GET /services
   # GET /services.xml
@@ -115,7 +113,7 @@ class ServicesController < ApplicationController
     
     respond_to do |format|
       format.html # search.html.erb
-      format.xml { set_no_layout } # search.xml.builder
+      format.xml { render :layout => false } # search.xml.builder
     end
   end
  
