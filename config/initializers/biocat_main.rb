@@ -4,6 +4,9 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
+# This is not loaded in Rails 2.3 anymore (apparently).
+require 'net/smtp'
+
 # NOTE: 
 # all libraries within /lib/bio_catalogue will be loaded automatically by Rails (when accessed),
 # as long as they follow the convention. E.g.: the module BioCatalogue::ActsAsHuman
