@@ -75,7 +75,7 @@ module BioCatalogue
         end
         
       else
-        err_msg = "Missing config file: config/memcache.yml. Uses the settings from config/memcache.yml.pre."
+        err_msg = "Missing config file: config/memcache.yml. Use the settings from config/memcache.yml.pre."
         puts err_msg
         Rails.logger.error err_msg
       end
