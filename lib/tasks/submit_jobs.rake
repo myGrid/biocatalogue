@@ -11,6 +11,14 @@ namespace :biocatalogue do
     task :calculate_annotation_counts => :environment do
       Delayed::Job.enqueue(BioCatalogue::Jobs::CalculateAnnotationCountsJob.new)
     end
+    desc 'update the list of urls to be monitored'
+    task :update_urls_to_monitor => :environment do
+      Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateUrlsToMonitor.new)
+    end 
+    desc 'check the availability status of a url'
+    task :check_url_status => :environment do
+      Delayed::Job.enqueue(BioCatalogue::Jobs::CheckUrlStatus.new)
+    end 
     
   end
 end

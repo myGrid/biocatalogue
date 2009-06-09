@@ -647,6 +647,18 @@ module ApplicationHelper
 
   end
   
+  def service_test_status_message(tresult)
+    if tresult.result == 0
+      return "Available : last checked #{distance_of_time_in_words_to_now(tresult.created_at)} ago "
+    elsif tresult.result == 1
+      return "Could not verify status : last checked #{distance_of_time_in_words_to_now(tresult.created_at)} ago "
+    else
+      return "Unchecked"
+    end
+  end
+
+
+  
   def render_breadcrumbs_after_home
     render :partial => "breadcrumbs" if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb'))
   end
