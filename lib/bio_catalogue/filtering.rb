@@ -398,21 +398,19 @@ module BioCatalogue
     
     # Remember the query format (mentioned above):
     # ...?filter_type_1=[value1],[value2],[value3]&filter_type_2=[value4]&filter_type_3=[value5],[value6]&...
+    #
     # This method splits one set of values for one filter_type into an array of values.
+    # ie: splits the string "[value1],[value2],[value3],...,[valuen]"
     def self.split_filter_options_string(filter_options)
-      filter_options = filter_options.split("],[")
+      filter_options_splitted = filter_options.split("],[")
       
       # Now the first item will have a '[' at the beginning, and the last item will have a ']'...
+      # NOTE: array[-1] refers to the last item in the Array.
       
-      first_value = filter_options[0]
-      first_value_length = first_value.length
-      filter_options[0] = first_value[1...first_value_length]
+      filter_options_splitted[0] = filter_options_splitted[0][1..-1]
+      filter_options_splitted[-1] = filter_options_splitted[-1][0...-1] 
       
-      last_value = filter_options[filter_options.length-1]
-      last_value_length = last_value.length
-      filter_options[filter_options.length-1] = last_value[0...last_value_length-1]
-      
-      return filter_options
+      return filter_options_splitted
     end
     
     protected
