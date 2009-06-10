@@ -2147,3 +2147,7 @@ p.more_less_links {
 p.more_less_links a {
 	text-decoration: none;
 }
+
+.search_box .rcontain {
+	padding: 0.4em 1em;
+}
