@@ -17,11 +17,13 @@
 
 <div>
 	
-	<div style="float:right; margin-left: 2em;">
-		<% form_tag(search_url, :method => :get) do %>
-		  <b>Search:</b>
-			<%= text_field_tag :q, @query || params[:q], :size => 30 -%> 
-		  <%= submit_tag '', :class => "search_button" -%>
+	<div class="search_box" style="float:right; margin-left: 2em;">
+		<% rounded "#e9f7cc", "#333", "auto" do %>
+			<% form_tag(search_url, :method => :get) do %>
+			  <b>Search:</b>
+				<%= text_field_tag :q, @query || params[:q], :size => 30 -%> 
+			  <%= submit_tag '', :class => "search_button" -%>
+			<% end %>
 		<% end %>
 	</div>
 	
