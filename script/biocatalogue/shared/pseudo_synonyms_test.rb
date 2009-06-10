@@ -16,13 +16,11 @@ class PseudoSynonymsTest < Test::Unit::TestCase
   def test_process_values
     assert_equal [ "x", "Prediction", "Structure Prediction", "Function Prediction", "y" , "z" ], 
                  @stub.process_values("x", "Structure and Function Prediction", [ "y", "z" ]) 
-  end
-  
-  def test_process_value
+    
     assert_equal [ "Prediction", "Structure Prediction", "Function Prediction" ],
-                 @stub.process_value("Structure and Function Prediction")
+                 @stub.process_values("Structure and Function Prediction")
                  
-    assert_equal [ "TEST" ], @stub.process_value("TEST")
+    assert_equal [ "TEST" ], @stub.process_values("TEST")
   end
   
   def test_underscored_and_spaced_versions_of
@@ -31,6 +29,11 @@ class PseudoSynonymsTest < Test::Unit::TestCase
     assert_equal [ "my value", "my_value" ], @stub.underscored_and_spaced_versions_of("my value")
     
     assert_equal [ "value" ], @stub.underscored_and_spaced_versions_of("value")
+    
+    assert_equal [ "value" ], @stub.underscored_and_spaced_versions_of([ "value" ])
+    
+    assert_equal [ "value 1", "value_1", "value 2", "value_2", "value_3", "value 3" ], 
+                 @stub.underscored_and_spaced_versions_of("value 1", [ "value 2", "value_3" ])
   end
   
   def test_to_list

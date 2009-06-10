@@ -6,6 +6,7 @@ module PseudoSynonyms
   
   SUBSTITUTES = { "Structure and Function Prediction" => [ "Prediction", "Structure Prediction", "Function Prediction" ] }
   
+  # Checks for substitutes etc.
   # Always returns an Array
   def process_values(*vals)
     return [ ] if vals.nil?
@@ -15,7 +16,7 @@ module PseudoSynonyms
     vals.each do |v|
       case v
         when String
-          final << process_value(v)
+          final << (SUBSTITUTES.has_key?(v) ? SUBSTITUTES[v] : v)
         when Array
           v.each do |x|
             final << process_values(x)
@@ -26,31 +27,26 @@ module PseudoSynonyms
     return final.flatten.uniq
   end
   
-  # Checks for substitutes;
-  # Produces underscored and spaced version.
-  #
   # Always returns an Array.
-  def process_value(val)
-    return [ ] if val.nil?
-    
-    if SUBSTITUTES.has_key?(val)
-      return SUBSTITUTES[val]
-    else
-      return [ val ]
-    end
-  end
-  
-  # Always returns an Array.
-  def underscored_and_spaced_versions_of(val)
-    return [ ] if val.nil?
+  def underscored_and_spaced_versions_of(*vals)
+    return [ ] if vals.nil?
     
     final = [ ]
-    final << val
     
-    final << val.gsub(" ", "_") if val.include?(" ")
-    final << val.gsub("_", " ") if val.include?("_")
+    vals.each do |v|
+      case v
+        when String
+          final << v
+          final << v.gsub(" ", "_") if v.include?(" ")
+          final << v.gsub("_", " ") if v.include?("_")
+        when Array
+          v.each do |x|
+            final << underscored_and_spaced_versions_of(x)
+          end
+      end
+    end
     
-    return final.uniq
+    return final.flatten.uniq
   end
   
   def to_list(x)

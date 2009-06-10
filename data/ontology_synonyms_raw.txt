@@ -1,0 +1,53 @@
+protein, protein_sequence_database, protein_sequence, sequence => sequence, protein_sequence_database, protein_sequence,protein, DDBJ_Amino_Acid_Database_DAD, Entrez_GenBank_protein, PIR, SWISS-PROT, TREMBL, UniProt
+
+structure, biological_structure, structure_prediction, prediction => prediction, biological_structure, structure_prediction, structure, CATH, DSSP, FSSP, MSD, PDB, SCOP, protein_structure_database, secondary_structure_prediction, tertiary_structure_prediction,RNA_structure, anatomical_structure, genomic_structure, molecular_structure, protein_structure
+
+sequence, sequence_database, database => database, sequence, sequence_database, DDBJ, DDBJ_Amino_Acid_Database_DAD, EMBL_nucleotide_sequence_database, Entrez_GenBank_protein, Genbank_nucleotide_sequence_database, PIR, RefSeq, SWISS-PROT, TREMBL, UniProt, Unigene, dbEST, dbSNP, est_human, nucleotide_sequence_database, protein_sequence_database
+
+sequence => sequence, DNA_sequence, RNA_sequence, expressed_sequence_tag, genome_nucleotide_sequence, nucleotide_sequence, protein_sequence, single_nucleotide_polymorphism
+
+functional_motif, motif => functional_motif, motif, Gene3D, InterPro, PIRSF, PRINTS, Panther, Pfam, ProDom, Prosite, SMART, protein_family_database, superfamily, tigrfam
+ 
+ontology => ontology, BioPax, EDHA, EDHAA, EMAP, EMAPA, Gene_ontology_GO, HGNC, MeSH, NCBI_Taxonomy, Plant_ontology_PO, UMLS, anatomy_ontology, bio-ontology_resource, chEBI_ontology, human_anatomy_ontology, mged_ontology, mouse_anatomy_ontology
+
+gene_expression_database, gene_expression, expression => expression, gene_expression_database, gene_expression, gene_expression_omnibus_GEO, GermOnline
+
+enzyme => enzyme, BRENDA, ENZYME, REBASE
+
+pathway, pathway_resource => pathway, pathway_resource, BioCyc, INOH, KEGG, PATIKA, aMAZE, eMIM, reactome
+
+nucleotide_sequence_database, nucleotide_sequence, nucleotide, sequence, database => database, nucleotide, sequence, nucleotide_sequence, nucleotide_sequence_database, DDBJ, EMBL_nucleotide_sequence_database, Genbank_nucleotide_sequence_database, Unigene, dbEST, dbSNP, est_human
+
+sequence_alignment_algorithm, sequence_alignment, algorithm, sequence, alignment => sequence_alignment, algorithm, sequence, alignment, sequence_alignment_algorithm, Needleman_and_Wunsch_algorithm, Smith-Waterman_algorithm, word_match_sequence_algorithm
+
+interacting_molecule_resource, interacting_molecule, interaction, molecule => molecule, interaction, interacting_molecule_resource, interacting_molecule, kegg_compound_database, kegg_drug_database, kegg_glycan_database, kegg_ligand_database
+
+phylogenetic_analysis, phylogeny, phylogenetic => phylogeny, phylogenetic, phylogenetic_analysis, COG, TreeBASE, Tree_of_Life, phylogenetic_database, tree_fam
+
+single_sequence_format, sequence_format, format => format, sequence_format, single_sequence_format, GDE, NBRF_PIR, RSF, acedb, fasta, gff, raw_sequence, staden_experiment, text_plain
+
+protein_interaction, protein, interaction => protein, interaction, protein_interaction, BIND, InAct, KEGG_ligand, KEGG_pathway
+
+Literature => Literature, MEDLINE, pubmed, text_mining
+
+gene_analysis, gene => gene_analysis, gene, BioCyc, Candida_Genome_Database_CGD, DDBJ, DictyBase, DragonDB, EMBL_nucleotide_sequence_database, EcoCyc, Ensembl, FlyBase, Genbank_nucleotide_sequence_database, GeneDB_S._pombe, GeneDB_protozoa, Gramene, INOH, KEGG, KEGG_genes, Maize_genetics_and_genomics_database_MaizeGDB, Mouse_Genome_Database_MGD, PATIKA, Rat_Genome_Database_RGD, Reactome, RefSeq, Saccharomyces_Genome_Database_SGD, Sanger_GeneDB, TIGR, The_Arabidopsis_Information_Resource_TAIR, Unigene, WormBase, Zebrafish_Information_Network_ZFIN, aMAZE, dbEST, dbSNP, eMIM, est_human, model_organism_genome_database, nucleotide_sequence_database, pathway_resource
+
+protein_family, protein, familly => protein_family, protein, family, Gene3D, InterPro, PIRSF, PRINTS, Panther, Pfam, ProDom, Prosite, SMART, superfamily, tigrfam
+
+sequence_file_formats, format => sequence_file_formats, format, AMPS_block, DNA_strider, GCG_MSF, GDE, IG, Jackknifer, NBRF_PIR, Pfam_Stockholm, RSF, acedb, asn1, clustalw, codata, embl, fasta, fitch, genbank, gff, mega, multiple_sequence, nexus_paup, phylip, raw_sequence, selex, single_sequence, staden_experiment, text_plain, treecon
+
+nucleotide_sequence_id, nucleotide, sequence, id => nucleotide, sequence, id, nucleotide_sequence_id, Affymetrix_probe_set_id, DDBJ_accession, EMBL_accession, UniGene_id, dbEST_accession, dbSNP_id, genbank_GI
+
+genome_analysis, genome=> genome, Candida_Genome_Database_CGD, DictyBase, DragonDB, EcoCyc, Ensembl, FlyBase, GeneDB, GeneDB_protozoa, Gramene, KEGG_genes, Maize_genetics_and_genomics_database_MaizeGDB, Mouse_Genome_Database_MGD, Rat_Genome_Database_RGD, Saccharomyces_Genome_Database_SGD, Sanger_GeneDB, TIGR, The_Arabidopsis_Information_Resource_TAIR, WormBase, Zebrafish_Information_Network_ZFIN, model_organism_genome_database
+
+proteomics => proteomics, BIND, CATH, COG, DDBJ_Amino_Acid_Database_DAD, DSSP, Entrez_GenBank_protein, FSSP, Gene3D, InAct_database, InterPro, KEGG_ligand_database, MSD, PDB, PIR, PIRSF, PRINTS, Panther, Pfam, ProDom, Prosite, RefSeq, SCOP, SMART, SWISS-PROT, TREMBL, TreeBASE, Tree_of_Life, UniProt, functional_motif_searching, multiple_sequence_alignment, pairwise_alignment, phylogenetic_analysis, phylogenetic_database, protein_analysis, protein_family_database, protein_function_prediction, protein_interaction, protein_sequence_database, protein_structure_database, secondary_structure_prediction, sequence_alignment, sequence_assembly, sequence_similarity, structure_analysis, structure_prediction, superfamily, tertiary_structure__prediction_, tigrfam, tree_fam
+
+protein_analysis, protein => protein, protein_analysis, DDBJ_Amino_Acid_Database_DAD, Entrez_GenBank_protein, PIR, RefSeq, SWISS-PROT, TREMBL, UniProt, protein_sequence_database
+
+sequence_alignment, sequence, alignment => sequence, alignment, sequence_alignment, multiple_sequence_alignment, pairwise_alignment
+
+nucleotide_sequence_feature, nucleotide, sequence=>nucleotide, sequence, nucleotide_sequence_feature, ABI_graph_plot, ABI_sequence_trace, nucleotide_sequence_feature_diagram, primer_report, restriction_enzyme_report
+
+Microarray => Microarray, affymetrix, arrayExpress, MIAME, probe, gene expression, MAML ,bioconductor, ArrayExpress, 
+
+biostatistic => biostatistic, biostatistical_analysis, microarray_analysis, bioconductor 
