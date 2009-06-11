@@ -64,7 +64,8 @@ BOT_IGNORE_LIST = "Googlebot",
                   "spider",
                   "Nutch",
                   "JMeter",
-                  "test"
+                  "test",
+                  "Disqus"
 
 
 # List of annotation attributes that are considered "known" or important in the system
