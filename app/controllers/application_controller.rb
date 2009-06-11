@@ -153,17 +153,14 @@ class ApplicationController < ActionController::Base
   end
   
   def is_request_from_bot?
-    is_bot = false
-  
     BOT_IGNORE_LIST.each do |bot|
       bot = bot.downcase
       if request.env['HTTP_USER_AGENT'] and request.env['HTTP_USER_AGENT'].downcase.match(bot)
-        is_bot = true
-        break
+        return true
       end 
     end
     
-    return is_bot
+    return false
   end
   
   # ========================================
