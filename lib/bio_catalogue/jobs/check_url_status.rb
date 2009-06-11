@@ -8,7 +8,7 @@ module BioCatalogue
   module Jobs
     class CheckUrlStatus
       def perform
-          # Update the table that contains the list of urls on which to perform availability checks
+          # check the status of a url using curl
           BioCatalogue::Monitoring::CheckUrlStatus.run
         end
       end    
