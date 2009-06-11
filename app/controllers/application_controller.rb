@@ -258,7 +258,7 @@ class ApplicationController < ActionController::Base
   end
   
   def log_search
-    if USE_EVENT_LOG
+    if USE_EVENT_LOG and !is_request_from_bot?
       if !@query.blank? and !@type.blank?
         ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type, :http_user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] })
       end
