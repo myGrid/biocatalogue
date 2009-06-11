@@ -44,6 +44,18 @@ class PseudoSynonymsTest < Test::Unit::TestCase
     assert_equal "x,y,z", @stub.to_list([ "x", "y", "z" ])
   end
   
+  def test_array_includes
+    my_array = [ "Hello World", "hello", "GOOD evening" ]
+    
+    assert_equal false, @stub.array_includes?(my_array, "ihpihpi")
+    
+    assert_equal true, @stub.array_includes?(my_array, "hello")
+    
+    assert_equal true, @stub.array_includes?(my_array, "hello world")
+    
+    assert_equal true, @stub.array_includes?(my_array, "good evening")
+  end
+  
   def teardown
     
   end

@@ -1,68 +1,79 @@
 ---
-Sequence Analysis:
-  Protein Sequence Analysis:
-    Sequence Alignment:
-      - Multiple Alignment
-      - Pairwise Alignment
-    Sequence Similarity:
-    Structure Prediction:
-      - Secondary Structure
-      - Tertiary Structure
-    Function Prediction:
-      - Domains
-      - Motifs
-      - Repeats
-  Nucleotide Sequence Analysis:
-    Sequence Alignment:
-      - Multiple Alignment
-      - Pairwise Alignment
-    Sequence Similarity:
-    Gene Prediction:
-    Promoter Prediction:
-    Transcription Factors:
 
-Text Mining:
-  - Document Discovery
-  - Document Similarity
-  - Document Clustering
-  - Named Entity Recognition
+# IMPORTANT! READ BEFORE EDITING THIS FILE:
+#
+# The numbers after each label are the IDs. They must NEVER be changed.
+#
+# You can rearrange labels in the hierarchy but NEVER change the ID.
+# When adding new labels, anywhere in the hierarchy, please add a new ID, 
+# using a number that hasn't been used before.
+#
+# These IDs will never be shown to the end user.
 
-Ontology:
-  - Ontology Lookup
-  - Ontology Annotation
+Sequence Analysis [1]:
+  Protein Sequence Analysis [2]:
+    Sequence Alignment [3]:
+      - Multiple Alignment [4]
+      - Pairwise Alignment [5]
+    Sequence Similarity [6]:
+    Structure Prediction [7]:
+      - Secondary Structure [8]
+      - Tertiary Structure [9]
+    Function Prediction [10]:
+      - Domains [11]
+      - Motifs [12]
+      - Repeats [13]
+  Nucleotide Sequence Analysis [14]:
+    Sequence Alignment [15]:
+      - Multiple Alignment [16]
+      - Pairwise Alignment [17]
+    Sequence Similarity [18]:
+    Gene Prediction [19]:
+    Promoter Prediction [20]:
+    Transcription Factors [21]:
 
-Phylogeny:
-  - Evolutionary Distance Measurements
-  - Tree Inference
-  - Tree Display
-  - Statistical Robustness
+Text Mining [22]:
+  - Document Discovery [23]
+  - Document Similarity [24]
+  - Document Clustering [25]
+  - Named Entity Recognition [26]
 
-Microarrays:
+Ontology [27]:
+  - Ontology Lookup [28]
+  - Ontology Annotation [29]
 
-Data Retrieval:
-  - Sequence Retrieval
-  - Identifier Retrieval
-  - Pathway Retrieval
-  - Structure Retrieval
-  - Literature retrieval
-  - Image Retrieval
+Phylogeny [30]:
+  - Evolutionary Distance Measurements [31]
+  - Tree Inference [32]
+  - Tree Display [33]
+  - Statistical Robustness [34]
 
-Genomics:
-  - Genome Annotation
-  - Comparative Genomics
-  - Functional Genomics
-  - Structural Genomics
+Microarrays [35]:
 
-Proteomics:
-  - Protein Interaction
-  - Ligand Interaction
-  - Pathways
+Data Retrieval [36]:
+  - Sequence Retrieval [37]
+  - Identifier Retrieval [38]
+  - Pathway Retrieval [39]
+  - Structure Retrieval [40]
+  - Literature retrieval [41]
+  - Image Retrieval [42]
 
-Systems Biology:
-  - Model Creation
-  - Model Execution
-  - Model Analysis
+Genomics [43]:
+  - Genome Annotation [44]
+  - Comparative Genomics [45]
+  - Functional Genomics [46]
+  - Structural Genomics [47]
 
-Biostatistics:
+Proteomics [48]:
+  - Protein Interaction [49]
+  - Ligand Interaction [50]
+  - Pathways [51]
 
-Chemoinformatics:
+Systems Biology [52]:
+  - Model Creation [53]
+  - Model Execution [54]
+  - Model Analysis [55]
+
+Biostatistics [56]:
+
+Chemoinformatics [57]:

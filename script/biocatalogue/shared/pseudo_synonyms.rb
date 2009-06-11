@@ -62,4 +62,32 @@ module PseudoSynonyms
     end
   end
   
+  # A case insensitive check to see if a string is in an array.
+  def array_includes?(array_to_check, value)
+    return false if array_to_check.nil? or value.nil?
+    
+    value_downcased = value.downcase
+    
+    array_to_check.each do |s|
+      return true if s.downcase == value_downcased
+    end
+    
+    return false
+  end
+  
+  # Takes in a hash that represents the final synonyms mappings and 
+  # outputs it to the standard output, sorted alphabetically.
+  def output_synonyms(hash_to_output)
+    if hash_to_output.nil?
+      puts "Hash to output is nil!"
+    elsif hash_to_output.empty?
+      puts "No synonym mappings to output!"
+    else
+      keys = hash_to_output.keys.sort { |a,b| a.to_s.downcase <=> b.to_s.downcase }
+      keys.each do |key|
+        puts "#{to_list(key)} => #{to_list(hash_to_output[key])}"
+      end
+    end
+  end
+  
 end

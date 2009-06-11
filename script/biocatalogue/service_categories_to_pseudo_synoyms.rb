@@ -8,6 +8,8 @@ require 'pp'
 require File.join(File.dirname(__FILE__), 'shared', 'pseudo_synonyms')
 
 include PseudoSynonyms
+  
+IGNORES = [ "Sequence Analysis" ]
 
 categories = YAML.load(IO.read(File.join(File.dirname(__FILE__), '..', '..', 'data', 'service_categories.yml')))
 
@@ -20,19 +22,30 @@ puts "Synonyms for SOLR:"
 puts "=================="
 puts ""
 
-def process_node(node)
+def process_node(node, synonyms_collection)
   node.each do |key, children|
-    unless children.nil?
+    key = key.split('[')[0].strip
+    unless children.nil? or array_includes?(IGNORES, key)
       case children
         when Array
-          lhs = underscored_and_spaced_versions_of(process_values(key)).uniq
-          rhs = underscored_and_spaced_versions_of(process_values(key, children)).uniq
-          puts "#{to_list(lhs)} => #{to_list(rhs)}"
+          children = children.map{|c| c.split('[')[0].strip}
+          
+          children.each do |child|
+            lhs = underscored_and_spaced_versions_of(process_values(child)).uniq
+            rhs = underscored_and_spaced_versions_of(process_values(child, key)).uniq  
+            
+            synonyms_collection[lhs] = rhs
+          end
+          
         when Hash
-          process_node(children)
+          process_node(children, synonyms_collection)
       end
     end
   end
 end
 
-process_node(categories)
+synonyms = { }
+
+process_node(categories, synonyms)
+
+output_synonyms(synonyms)
