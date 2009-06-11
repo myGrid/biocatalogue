@@ -29,7 +29,7 @@ require 'dnsruby'
 #require 'memcache'
 
 # Change XML backend that Rails uses to a faster one
-#XmlMini.backend = 'LibXML'   # Not working currently. TODO: set this up when implementing the XML REST API.
+ActiveSupport::XmlMini.backend = 'LibXML'
 
 # Initialise the country codes library
 CountryCodes
