@@ -8,7 +8,7 @@
 # 
 # Main usage: 
 #
-#  ruby script/biocatalogue/process_pseudo_synonyms_for_solr.rb "../../data/ontology_synonyms_raw.txt"
+#  ruby script/biocatalogue/process_raw_pseudo_synonyms_for_solr.rb "../../data/ontology_synonyms_raw.txt"
 
 require File.join(File.dirname(__FILE__), 'shared', 'pseudo_synonyms')
 
