@@ -29,6 +29,7 @@ Television, Televisions, TV, TVs
 # Synonym mappings can be used for spelling correction too
 pixima => pixma
 
+# BEGIN BioCatalogue Pseudo Synonyms
 
 # Synonymns from service categories:
 
@@ -254,10 +255,13 @@ tree_fam,tree fam => tree_fam,tree fam,phylogenetic_analysis,phylogenetic analys
 Tree_of_Life,Tree of Life => Tree_of_Life,Tree of Life,phylogenetic_analysis,phylogenetic analysis,phylogeny,phylogenetic,proteomics
 TreeBASE => TreeBASE,phylogenetic_analysis,phylogenetic analysis,phylogeny,phylogenetic,proteomics
 treecon => treecon,sequence_file_formats,sequence file formats,format
-TREMBL => TREMBL,protein,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence_database,sequence database,database,proteomics,protein_analysis,UMLS => UMLS,ontology
+TREMBL => TREMBL,protein,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence_database,sequence database,database,proteomics,protein_analysis
+UMLS => UMLS,ontology
 Unigene => Unigene,sequence_database,sequence database,database,nucleotide_sequence_database,nucleotide sequence database,gene_analysis,gene analysis,gene
 UniGene_id,UniGene id => UniGene_id,UniGene id,nucleotide_sequence_id,nucleotide sequence id,nucleotide,sequence,id
 UniProt => UniProt,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence,sequence_database,sequence database,database,proteomics,protein_analysis,protein analysis
 word_match_sequence_algorithm,word match sequence algorithm => word_match_sequence_algorithm,word match sequence algorithm,sequence_alignment_algorithm,sequence alignment algorithm,sequence_alignment,sequence alignment,algorithm,alignment
 WormBase => WormBase,gene_analysis,gene,genome_analysis,genome analysis,genome, genomics
 Zebrafish_Information_Network_ZFIN,Zebrafish Information Network ZFIN => Zebrafish_Information_Network_ZFIN,Zebrafish Information Network ZFIN,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome, genomics
+
+# END BioCatalogue Pseudo Synonyms
