@@ -2,19 +2,18 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 class ConfigTest < ActiveSupport::TestCase
   def setup
-    Annotations::Config.attribute_names_for_values_to_be_downcased = [ "downcased_thing" ]
-    Annotations::Config.attribute_names_for_values_to_be_upcased = [ "upcased_thing" ]
-    Annotations::Config.strip_text_rules = { "tag" => [ '"', ',' ], "comma_stripped" => ',', "regex_strip" => /\d/ }
-    Annotations::Config.limits_per_source = { "rating" => [ 1, true ] }
-    Annotations::Config.attribute_names_to_allow_duplicates = [ "allow_duplicates_for_this" ]
+    Annotations::Config.reset
+    Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "downcased_thing" ])
+    Annotations::Config.attribute_names_for_values_to_be_upcased.concat([ "upcased_thing" ])
+    Annotations::Config.strip_text_rules.update({ "tag" => [ '"', ',' ], "comma_stripped" => ',', "regex_strip" => /\d/ })
+    Annotations::Config.limits_per_source.update({ "rating" => 1 })
+    Annotations::Config.attribute_names_to_allow_duplicates.concat([ "allow_duplicates_for_this" ])
+    Annotations::Config.value_restrictions.update({ "rating" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
+                                                    "category" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid category" } })
   end
   
   def teardown
-    Annotations::Config.attribute_names_for_values_to_be_downcased = [ ]
-    Annotations::Config.attribute_names_for_values_to_be_upcased = [ ]
-    Annotations::Config.strip_text_rules = { }
-    Annotations::Config.limits_per_source = { }
-    Annotations::Config.attribute_names_to_allow_duplicates = [ ]
+    Annotations::Config.reset
   end
   
   def test_values_downcased_or_upcased
@@ -63,11 +62,11 @@ class ConfigTest < ActiveSupport::TestCase
     # Strip 'tag'
     
     ann1 = Annotation.create(:attribute_name => "Tag", 
-                            :value => 'v,al"ue', 
-                            :source_type => source.class.name, 
-                            :source_id => source.id,
-                            :annotatable_type => "Book",
-                            :annotatable_id => 1)
+                             :value => 'v,al"ue', 
+                             :source_type => source.class.name, 
+                             :source_id => source.id,
+                             :annotatable_type => "Book",
+                             :annotatable_id => 1)
     
     assert ann1.valid?
     assert_equal "value", ann1.value
@@ -112,26 +111,36 @@ class ConfigTest < ActiveSupport::TestCase
   def test_limits_per_source
     source = users(:john)
     
-    bk = Book.create
+    bk1 = Book.create
     
-    ann1 = bk.annotations << Annotation.new(:attribute_name => "rating", 
+    ann1 = bk1.annotations << Annotation.new(:attribute_name => "rating", 
                                     :value => 4, 
                                     :source_type => source.class.name, 
                                     :source_id => source.id)
     
     assert_not_nil ann1
-    assert_equal 1, bk.annotations.length
+    assert_equal "4", bk1.annotations(true)[0].value
+    assert_equal 1, bk1.annotations(true).length
     
-    ann2 = bk.annotations << Annotation.new(:attribute_name => "rating", 
-                                    :value => 1, 
-                                    :source_type => source.class.name, 
-                                    :source_id => source.id)
+    ann2 = Annotation.new(:attribute_name => "rating", 
+                          :value => 1, 
+                          :source_type => source.class.name, 
+                          :source_id => source.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => bk1.id)
     
-    assert_not_nil ann2
-    assert_equal 1, bk.annotations(true).length
+    assert ann2.invalid?
+    assert !ann2.save
+    assert_equal 1, bk1.annotations(true).length
+    
+    ann3 = bk1.annotations(true)[0]
+    ann3.value = 3
+    assert ann3.valid?
+    assert ann3.save
+    assert_equal 1, bk1.annotations(true).length
     
     # Check that two versions of the annotation now exist
-    assert_equal 2, bk.annotations[0].versions.length
+    assert_equal 2, bk1.annotations[0].versions.length
   end
   
   def test_attribute_names_to_allow_duplicates
@@ -166,7 +175,7 @@ class ConfigTest < ActiveSupport::TestCase
     assert_equal 2, bk1.annotations(true).length
     
     
-    # Then test the exceptions to the default rule...
+    # Then test the configured exceptions to the default rule...
     
     bk2 = Book.create
     
@@ -193,5 +202,78 @@ class ConfigTest < ActiveSupport::TestCase
     
     assert_not_nil ann6
     assert_equal 3, bk2.annotations(true).length
+  end
+  
+  def test_value_restrictions
+    source1 = users(:john)
+    source2 = users(:jane)
+    
+    # First test the default case of not restricting values...
+    
+    bk1 = Book.create
+    
+    ann1 = Annotation.new(:attribute_name => "allow_any_value", 
+                          :value => "Hello there", 
+                          :source_type => source1.class.name, 
+                          :source_id => source1.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => bk1.id)
+    
+    assert ann1.valid?
+    assert ann1.save
+    assert_equal 1, bk1.annotations.length
+    
+    
+    # Then test the configured exceptions to the default rule...
+    
+    bk2 = Book.create
+    
+    ann2 = Annotation.new(:attribute_name => "rating", 
+                          :value => "2", 
+                          :source_type => source1.class.name, 
+                          :source_id => source1.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => bk2.id)
+    
+    assert ann2.valid?
+    assert ann2.save
+    assert_equal 1, bk2.annotations.length
+    
+    
+    ann3 = Annotation.new(:attribute_name => "rating", 
+                          :value => "10", 
+                          :source_type => source2.class.name, 
+                          :source_id => source2.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => bk2.id)
+    
+    assert ann3.invalid?
+    assert !ann3.save
+    assert ann3.errors.full_messages.include?("Please provide a rating between 1 and 5")
+    assert_equal 1, bk2.annotations(true).length
+    
+    
+    ann4 = Annotation.new(:attribute_name => "category", 
+                          :value => "fibre", 
+                          :source_type => source1.class.name, 
+                          :source_id => source1.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => bk2.id)
+    
+    assert ann4.valid?
+    assert ann4.save
+    assert_equal 2, bk2.annotations(true).length
+    
+    ann5 = Annotation.new(:attribute_name => "category", 
+                          :value => "home cooking", 
+                          :source_type => source2.class.name, 
+                          :source_id => source2.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => bk2.id)
+    
+    assert ann5.invalid?
+    assert !ann5.save
+    assert ann5.errors.full_messages.include?("Please select a valid category")
+    assert_equal 2, bk2.annotations(true).length
   end
 end

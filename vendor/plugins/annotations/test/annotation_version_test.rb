@@ -16,9 +16,11 @@ class AnnotationVersionTest < ActiveSupport::TestCase
     
     ann.value = "Harry Potter IIIIIII"
     ann.version_creator = users(:john)
-    ann.save
-    
+
     assert ann.valid?
+    
+    assert ann.save
+    
     assert_equal 2, ann.versions.length
     assert_equal "Harry Potter IIIIIII", ann.value
     assert_equal "Harry Potter IIIIIII", ann.versions.latest.value

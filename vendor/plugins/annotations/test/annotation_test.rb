@@ -102,27 +102,67 @@ class AnnotationTest < ActiveSupport::TestCase
   
   def test_annotation_create
     source = users(:john)
-    ann = Annotation.create(:attribute_name => "tag", 
-                            :value => "hot", 
-                            :source_type => source.class.name, 
-                            :source_id => source.id,
-                            :annotatable_type => "Book",
-                            :annotatable_id => 1)
+    
+    ann = Annotation.new(:attribute_name => "tag", 
+                         :value => "hot", 
+                         :source_type => source.class.name, 
+                         :source_id => source.id,
+                         :annotatable_type => "Book",
+                         :annotatable_id => 1)
     
     assert ann.valid?
+    
+    assert ann.save
     
     assert_equal "User", ann.source_type
   end
   
   def test_cannot_create_annotation_with_invalid_annotatable
     source = users(:john)
-    ann = Annotation.new(:attribute_name => "tag", 
-                         :value => "hot", 
-                         :source_type => source.class.name, 
-                         :source_id => source.id,
-                         :annotatable_type => "Book",
-                         :annotatable_id => 100)
-    assert_equal false, ann.save
+    
+    ann1 = Annotation.new(:attribute_name => "tag", 
+                          :value => "hot", 
+                          :source_type => source.class.name, 
+                          :source_id => source.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => 100)
+    
+    assert ann1.invalid?
+    assert !ann1.save
+    
+    ann2 = Annotation.new(:attribute_name => "tag", 
+                          :value => "hot", 
+                          :source_type => source.class.name, 
+                          :source_id => source.id,
+                          :annotatable_type => "Whale",
+                          :annotatable_id => 1)
+    
+    assert ann2.invalid?
+    assert !ann2.save
+  end
+  
+  def test_cannot_create_annotation_with_invalid_source
+    bk = books(:h)
+    
+    ann1 = Annotation.new(:attribute_name => "tag", 
+                          :value => "hot", 
+                          :source_type => "User", 
+                          :source_id => 100,
+                          :annotatable_type => bk.class.name,
+                          :annotatable_id => bk.id)
+    
+    assert ann1.invalid?
+    assert !ann1.save
+    
+    ann2 = Annotation.new(:attribute_name => "tag", 
+                          :value => "hot", 
+                          :source_type => "Monkey", 
+                          :source_id => 1,
+                          :annotatable_type => bk.class.name,
+                          :annotatable_id => bk.id)
+    
+    assert ann2.invalid?
+    assert !ann2.save
   end
   
 end

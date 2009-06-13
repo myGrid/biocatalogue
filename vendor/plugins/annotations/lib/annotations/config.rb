@@ -1,18 +1,18 @@
 module Annotations
   module Config
-    # Attribute name(s) that need the corresponding value to be downcased (made all lowercase).
+    # List of attribute name(s) that need the corresponding value to be downcased (made all lowercase).
     # 
     # NOTE: The attribute names specified MUST all be in lowercase.
     @@attribute_names_for_values_to_be_downcased = [ ]
     
-    # Attribute name(s) that need the corresponding value to be upcased (made all uppercase).
+    # List of attribute name(s) that need the corresponding value to be upcased (made all uppercase).
     #
     # NOTE: The attribute names specified MUST all be in lowercase.
     @@attribute_names_for_values_to_be_upcased = [ ]
     
     # This defines a hash of attributes, and the characters/strings that need to be stripped (removed) out of values of the attributes specified.
     # Regular expressions can also be used instead of characters/strings.
-    # ie: { attribute => [ array of characters to strip out ] }    (note: doesn't have to be an array, can be a single string)
+    # ie: { attribute_name => [ array of characters to strip out ] }    (note: doesn't have to be an array, can be a single string)
     #
     # e.g: { "tag" => [ '"', ','] } or { "tag" => '"' }
     # 
@@ -23,31 +23,50 @@ module Annotations
     @@user_model_name = "User"
     
     # This allows you to limit the number of annotations (of specified attribute names) per source per annotatable.
-    # Key/value pairs in hash should follow the spec:
-    # { :attribute_name => [ max_number_allowed, should_replace_existing? ] }
     #
-    # e.g: { "rating" => [ 1, true ] } will only ever allow 1 "rating" annotation per annotatable by each source.
+    # Key/value pairs in hash should follow the spec:
+    # { attribute_name => max_number_allowed }
+    #
+    # e.g: { "rating" =>1 } - will only ever allow 1 "rating" annotation per annotatable by each source.
     #
     # NOTE (1): The attribute name(s) specified MUST all be in lowercase.
-    # NOTE (2): The should_replace_existing? option is only used if the max_number_allowed is set to 1.
     @@limits_per_source = { }
     
-    # By default, duplicate annotations cannot be created (same value for the same attribute, on an annotatable object, regardless of source). 
-    # For example: a user cannot add a description to a book that matches an existing description for that book.
+    # By default, duplicate annotations CANNOT be created (same value for the same attribute, on the same annotatable object, regardless of source). 
+    # For example: a user cannot add a description to a specific book that matches an existing description for that book.
     # 
     # This config setting allows exceptions to this rule, on a per attribute basis. 
-    # I.e: allow annotations with certain attribute names to have duplicate values.
+    # I.e: allow annotations with certain attribute names to have duplicate values (per annotatable).
     #
-    # The format for the setting is:
-    # [ "attribute_name_1", "attribute_name_2", ... ]
-    #
-    # e.g: [ "tag", "rating" ]
+    # e.g: [ "tag", "rating" ] - allows tags and ratings to have the same value more than once.
     #
     # NOTE (1): The attribute name(s) specified MUST all be in lowercase.
-    # NOTE (2): This setting can be used in conjunction with the limits_per_source setting to allow duplicate annotations 
-    # BUT limit the number of annotations (per attribute) per user.
+    # NOTE (2): This setting can be used in conjunction with the limits_per_source setting to allow 
+    #           duplicate annotations BUT limit the number of annotations (per attribute) per user.
     @@attribute_names_to_allow_duplicates = [ ]
     
+    # This allows you to restrict the value for annotations with a specific attribute name.
+    #
+    # Key/value pairs in the hash should follow the spec:
+    # { attribute_name => { :in => array_or_range, :error_message => error_msg_to_show_if_value_not_allowed }
+    #
+    # e.g: { "rating" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" } }
+    #
+    # NOTE (1): The attribute name(s) specified MUST all be in lowercase.
+    # NOTE (2): values will be checked in a case insensitive manner.
+    @@value_restrictions = { }
+    
+    def self.reset
+      @@attribute_names_for_values_to_be_downcased = [ ]
+      @@attribute_names_for_values_to_be_upcased = [ ]
+      @@strip_text_rules = { }
+      @@user_model_name = "User"
+      @@limits_per_source = { }
+      @@attribute_names_to_allow_duplicates = [ ]
+      @@value_restrictions = { }
+    end
+    
+    reset
     
     # This makes the variables above available externally.
     # Shamelessly borrowed from the GeoKit plugin.
@@ -56,7 +75,8 @@ module Annotations
       :strip_text_rules,
       :user_model_name,
       :limits_per_source,
-      :attribute_names_to_allow_duplicates ].each do |sym|
+      :attribute_names_to_allow_duplicates,
+      :value_restrictions ].each do |sym|
       class_eval <<-EOS, __FILE__, __LINE__
         def self.#{sym}
           if defined?(#{sym.to_s.upcase})

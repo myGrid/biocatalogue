@@ -3,13 +3,7 @@ class Annotation < ActiveRecord::Base
   
   before_validation_on_create :set_default_value_type
   
-  before_save :check_annotatable
-  
-  before_save :process_value_adjustments
-  
-  before_save :check_duplicate
-  
-  before_save :check_limit
+  before_validation :process_value_adjustments
   
   belongs_to :annotatable, 
              :polymorphic => true
@@ -31,7 +25,13 @@ class Annotation < ActiveRecord::Base
                         :attribute_id,
                         :value,
                         :value_type
-  
+                        
+  validate :check_annotatable,
+           :check_source,
+           :check_duplicate,
+           :check_limit_per_source,
+           :check_value_restrictions
+           
   # ========================
   # Versioning configuration
   # ------------------------
@@ -117,11 +117,22 @@ class Annotation < ActiveRecord::Base
   }
   
   # Helper class method to look up an annotatable object
-  # given the annotatable class name and id 
+  # given the annotatable class name and ID. 
   def self.find_annotatable(annotatable_type, annotatable_id)
     return nil if annotatable_type.nil? or annotatable_id.nil?
     begin
       return annotatable_type.constantize.find(annotatable_id)
+    rescue
+      return nil
+    end
+  end
+  
+  # Helper class method to look up a source object
+  # given the source class name and ID. 
+  def self.find_source(source_type, source_id)
+    return nil if source_type.nil? or source_id.nil?
+    begin
+      return source_type.constantize.find(source_id)
     rescue
       return nil
     end
@@ -132,8 +143,12 @@ class Annotation < ActiveRecord::Base
   end
   
   def attribute_name=(attr_name)
-    attr_name = ( attr_name.is_a?(String) ? attr_name.strip : attr_name.to_s )
+    attr_name = attr_name.to_s.strip
     self.attribute = AnnotationAttribute.find_or_create_by_name(attr_name)
+  end
+  
+  def value=(value_in)
+    self[:value] = value_in.to_s
   end
   
   def self.create_multiple(params, separator)
@@ -176,15 +191,6 @@ class Annotation < ActiveRecord::Base
     self.value_type = "String" if self.value_type.blank?
   end
   
-  def check_annotatable
-    if Annotation.find_annotatable(self.annotatable_type, self.annotatable_id).nil?
-      self.errors.add(:annotatable_id, "doesn't exist")
-      return false
-    else
-      return true
-    end
-  end
-  
   def process_value_adjustments
     attr_name = self.attribute_name.downcase
     # Make lowercase or uppercase if required
@@ -205,6 +211,28 @@ class Annotation < ActiveRecord::Base
     end
   end
   
+  # ===========
+  # Validations
+  # -----------
+  
+  def check_annotatable
+    if Annotation.find_annotatable(self.annotatable_type, self.annotatable_id).nil?
+      self.errors.add(:annotatable_id, "doesn't exist")
+      return false
+    else
+      return true
+    end
+  end
+  
+  def check_source
+    if Annotation.find_source(self.source_type, self.source_id).nil?
+      self.errors.add(:source_id, "doesn't exist")
+      return false
+    else
+      return true
+    end
+  end
+  
   # This method checks whether duplicates are allowed for this particular annotation type (ie: 
   # for the attribute that this annotation belongs to). If not, it checks for a duplicate existing annotation.
   def check_duplicate
@@ -213,14 +241,13 @@ class Annotation < ActiveRecord::Base
       return true
     else
       existing = Annotation.find(:all,
-                                 :joins => "JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id",
-                                 :conditions => [ "annotations.annotatable_type = ? AND annotations.annotatable_id = ? AND annotation_attributes.name = ? AND annotations.value = ?", 
-                                                  self.annotatable_type,
-                                                  self.annotatable_id,
-                                                  attr_name,
-                                                  self.value ])
+                                 :joins => [ :attribute ],
+                                 :conditions => { :annotatable_type =>  self.annotatable_type, 
+                                                  :annotatable_id => self.annotatable_id, 
+                                                  :value => self.value,
+                                                  :annotation_attributes => { :name => attr_name  } })
       
-      if existing.length == 0
+      if existing.length == 0 or existing[0].id == self.id
         # It's all good...
         return true
       else
@@ -230,15 +257,12 @@ class Annotation < ActiveRecord::Base
     end
   end
   
-  # This method uses the limits_per_source config setting
-  # to check whether a limit has been reached and takes appropriate action if it has.
+  # This method uses the 'limits_per_source config' setting to check whether a limit has been reached.
   #
-  # If a limit has been reach and the limit is 1 and the replace existing otion is true, 
-  # it will overwrite the value of the existing annotation and then stop the save procedure. 
-  # Otherwise it will just stop the save procedure.
-  def check_limit
+  # NOTE: this check is only carried out on new records, not records that are being updated.
+  def check_limit_per_source
     attr_name = self.attribute_name.downcase
-    if Annotations::Config::limits_per_source.has_key?(attr_name)
+    if self.new_record? and Annotations::Config::limits_per_source.has_key?(attr_name)
       options = Annotations::Config::limits_per_source[attr_name]
       max = options[0]
       can_replace = options[1]
@@ -246,32 +270,8 @@ class Annotation < ActiveRecord::Base
       unless (found_annotatable = Annotation.find_annotatable(self.annotatable_type, self.annotatable_id)).nil?
         anns = found_annotatable.annotations_with_attribute_and_by_source(attr_name, self.source)
         
-        # If this annotation is being updated (not created), remove it from the anns collection.
-        # This prevents an infinite loop when an existing annotation is being updated as further below.
-        unless self.new_record?
-          anns.each do |a|
-            anns.delete(a) if a.id == self.id
-          end
-        end
-      
         if anns.length >= max
-          # Only update an existing annotation if the limit is 1, AND 
-          # only one existing was found (it's possible that this config was introduced afterwards 
-          # in a situation where the limit has already been surpassed previously, so we need this check), AND
-          # the config option says that we can replace it. 
-          if max == 1 && anns.length == 1 && can_replace
-            ann = anns[0]
-            
-            # Because the object is read only, load it up again.
-            ann2 = Annotation.find(ann.id)
-            
-            ann2.value = self.value
-            ann2.save
-            self.errors.add_to_base("The limit has been reached for annotations with this attribute and by this source. The existing annotation has been updated.")
-          else
-            self.errors.add_to_base("The limit has been reached for annotations with this attribute and by this source. No further action has been taken.")
-          end
-          
+          self.errors.add_to_base("The limit has been reached for annotations with this attribute and by this source.")
           return false
         else
           return true
@@ -283,4 +283,47 @@ class Annotation < ActiveRecord::Base
       return true
     end
   end
+  
+  def check_value_restrictions
+    attr_name = self.attribute_name.downcase
+    value_to_check = self.value.downcase
+    if Annotations::Config::value_restrictions.has_key?(attr_name)
+      options = Annotations::Config::value_restrictions[attr_name]
+      
+      case options[:in]
+        when Array
+          if options[:in].map{|s| s.downcase}.include?(value_to_check)
+            return true
+          else
+            self.errors.add_to_base(options[:error_message])
+            return false
+          end
+          
+        when Range
+          # Need to take into account that "a_string".to_i == 0
+          if value_to_check == "0"
+            if options[:in] === 0
+              return true
+            else
+              self.errors.add_to_base(options[:error_message])
+              return false
+            end
+          else
+            if options[:in] === value_to_check.to_i
+              return true
+            else
+              self.errors.add_to_base(options[:error_message])
+              return false
+            end
+          end
+          
+        else
+          return true
+      end
+    else
+      return true
+    end      
+  end
+  
+  # ===========
 end

@@ -14,6 +14,9 @@ class RatingsController < ApplicationController
     category = params[:category]
     rating = params[:rating].to_i
     
+    # TODO: move the value restriction (ie: the 1-5) to use the Annotations plugin's new config setting.
+    # TODO: change this behaviour to take into account updates of ratings, since the behaviour of Annotations::Config.limits_per_source has changed!
+    
     if !annotatable.nil? and !category.blank? and [1,2,3,4,5].include?(rating)
       annotatable.annotations << Annotation.new(:attribute_name => category, 
                                                 :value => rating, 

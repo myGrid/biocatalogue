@@ -23,13 +23,13 @@ Dir.chdir(File.join(File.dirname(__FILE__), "..")) do
     self.fixture_path = File.join(Dir.pwd, "test", "fixtures")
   
     set_fixture_class :books => Book,
-                    :chapters => Chapter,
-                    :users => User,
-                    :groups => Group,
-                    :annotations => Annotation,
-                    :annotation_versions => Annotation::Version,
-                    :annotation_attributes => AnnotationAttribute,
-                    :annotation_value_seeds => AnnotationValueSeed
+                      :chapters => Chapter,
+                      :users => User,
+                      :groups => Group,
+                      :annotations => Annotation,
+                      :annotation_versions => Annotation::Version,
+                      :annotation_attributes => AnnotationAttribute,
+                      :annotation_value_seeds => AnnotationValueSeed
   
     fixtures :all
   end

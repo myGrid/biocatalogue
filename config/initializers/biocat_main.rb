@@ -4,6 +4,8 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
+BioCatalogue::Util.say("Configuring the BioCatalogue application...")
+
 # This is not loaded in Rails 2.3 anymore (apparently).
 require 'net/smtp'
 
@@ -91,16 +93,19 @@ KNOWN_ANNOTATION_ATTRIBUTES = [ "tag",
 
 Annotations::Config.strip_text_rules.update({ "tag" => [ '"' ] })
 
-Annotations::Config.limits_per_source = { "rating.speed" => [ 1, true ],
-                                          "rating.reliability" => [ 1, true ],
-                                          "rating.ease-of-use" => [ 1, true ],
-                                          "rating.documentation" => [ 1, true ] }
+Annotations::Config.limits_per_source.update({ "rating.speed" => 1,
+                                               "rating.reliability" => 1,
+                                               "rating.ease-of-use" => 1,
+                                               "rating.documentation" => 1 })
 
-Annotations::Config.attribute_names_to_allow_duplicates = [ "tag",
-                                                            "rating.speed",
-                                                            "rating.reliability",
-                                                            "rating.ease-of-use",
-                                                            "rating.documentation" ]
+Annotations::Config.attribute_names_to_allow_duplicates.concat([ "tag",
+                                                                 "rating.speed",
+                                                                 "rating.reliability",
+                                                                 "rating.ease-of-use",
+                                                                 "rating.documentation" ])
+
+Annotations::Config.value_restrictions.update({ "rating" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
+                                                "category" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid category" } })
 
 # ================================
 

@@ -1,4 +1,4 @@
-# BioCatalogue: lib/bio_catalogue/faceting.rb
+# BioCatalogue: lib/bio_catalogue/filtering.rb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
