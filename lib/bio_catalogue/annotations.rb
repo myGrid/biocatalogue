@@ -156,5 +156,34 @@ module BioCatalogue
       return tag_annotations
     end
     
+    # This utility method takes a hash of annotations data and does some preprocessing on them.
+    # This is at a higher level than the processing done by the Annotations plugin,
+    # and is mainly just to rearrange/restructure the data in the annotations_data hash so that
+    # it is in a more appropriate format to be used when creating annotations out of it.
+    # (e.g.: when used in the create_annotations method).
+    #
+    # Fields with a nil value will be removed.
+    #
+    # The following attribute specific processing is applied:
+    #   - for :tags -
+    #       it will transform { :tags => "test1, test2, test3" } into { :tag => [ "test1", "test2", "test3" ] } 
+    #
+    # NOTE: for preprocessing to work on attributes, the keys MUST be symbols, NOT strings.
+    #       Keys with strings will still be returned back but no preprocessing will occur on them.
+    def self.preprocess_annotations_data(annotations_data)
+      # Remove fields that have a nil value
+      annotations_data.keys.each do |attrib|
+        annotations_data.delete(attrib) if annotations_data.has_key?(attrib) && annotations_data[attrib].nil?
+      end
+      
+      # :tags to :tag
+      if annotations_data.has_key?(:tags)
+        annotations_data[:tag] = annotations_data[:tags].split(',').map{|x| x.strip}
+        annotations_data.delete(:tags)
+      end
+      
+      return annotations_data
+    end
+    
   end
 end
