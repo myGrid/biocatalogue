@@ -9,9 +9,6 @@
 # using a number that hasn't been used before.
 #
 # These IDs will never be shown to the end user.
-#
-# When updating this list, remember to updates all aspects of the code (eg: the validation on the Annotation model)
-# that rely on the structure and IDs.
 
 Sequence Analysis [1]:
   Protein Sequence Analysis [2]:

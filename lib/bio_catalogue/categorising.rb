@@ -26,10 +26,10 @@ module BioCatalogue
     
     protected
     
-    def self.process_node(node)
+    def self.process_node(node, current_parent_id=nil)
       node.each do |key, values|
         parent_id, parent_name = split_raw_category(key)
-        process_category(parent_id, parent_name)
+        process_category(parent_id, parent_name, current_parent_id)
         unless values.nil?
           case values
             when Array
@@ -38,7 +38,8 @@ module BioCatalogue
                 process_category(id, name, parent_id)
               end
             when Hash
-              process_node(values)
+              new_current_parent_id = parent_id
+              process_node(values, new_current_parent_id)
           end
         end
       end
