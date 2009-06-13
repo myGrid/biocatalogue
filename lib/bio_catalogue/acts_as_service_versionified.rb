@@ -127,7 +127,7 @@ module BioCatalogue
       # different annotations need to be allocated to different objects of a service.
       def process_annotations_data(annotations_data, actual_submitter)
         # Preprocess (so that we get the correct structure to work with)
-        annotations_data = Annotations.preprocess_annotations_data(annotations_data)
+        annotations_data = BioCatalogue::Annotations.preprocess_annotations_data(annotations_data)
         
         # Split into seperate annotation data sets
         
