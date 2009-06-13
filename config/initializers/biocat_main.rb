@@ -39,12 +39,8 @@ CountryCodes
 # Set up caches
 BioCatalogue::CacheHelper.setup_caches
 
-# Set up loggers to STDOUT if in script/console 
-# (so now things like SQL queries etc are shown in the console instead of the development/production/etc logs).
-if "irb" == $0
-  ActiveRecord::Base.logger = Logger.new(STDOUT)
-  ActionController::Base.logger = Logger.new(STDOUT)
-end
+# Load the up categories data into the DB if required
+BioCatalogue::Categorising.load_data
 
 # Set global pagination per_page parameter in all models.
 PAGE_ITEMS_SIZE = 10
@@ -105,7 +101,7 @@ Annotations::Config.attribute_names_to_allow_duplicates.concat([ "tag",
                                                                  "rating.documentation" ])
 
 Annotations::Config.value_restrictions.update({ "rating" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
-                                                "category" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid category" } })
+                                                "test_xyz" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid test_xyz" } })
 
 # ================================
 

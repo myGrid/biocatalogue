@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090604130356) do
+ActiveRecord::Schema.define(:version => 20090613195338) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -84,6 +84,13 @@ ActiveRecord::Schema.define(:version => 20090604130356) do
   add_index "annotations", ["annotatable_type", "annotatable_id"], :name => "index_annotations_on_annotatable_type_and_annotatable_id"
   add_index "annotations", ["attribute_id"], :name => "index_annotations_on_attribute_id"
   add_index "annotations", ["source_type", "source_id"], :name => "index_annotations_on_source_type_and_source_id"
+
+  create_table "categories", :force => true do |t|
+    t.string   "name"
+    t.integer  "parent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "content_blobs", :force => true do |t|
     t.binary   "data",       :limit => 2147483647

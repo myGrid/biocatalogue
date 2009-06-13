@@ -13,6 +13,8 @@ require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/models/anno
 class Annotation < ActiveRecord::Base
   acts_as_trashable
   
+  validate :check_category_annotation
+  
   if USE_EVENT_LOG
     acts_as_activity_logged :models => { :culprit => { :model => :source },
                                          :referenced => { :model => :annotatable } }
@@ -20,5 +22,16 @@ class Annotation < ActiveRecord::Base
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :value ] )
+  end
+  
+  protected
+  
+  def check_category_annotation
+    if self.attribute_name.downcase == "category"
+      if Category.find_by_id(self.value).nil?
+        self.errors.add_to_base("Please select a valid category")
+      end
+    end
+    return true
   end
 end
