@@ -13,37 +13,24 @@
 
 <!-- Name alias -->
 <p class="high_linespaced form_field_section">
-	Add a <b>name alias</b> (ie: an alternative name for this service):
+	Add <b>name aliases</b> (separated by commas):
+	<%= info_icon_with_tooltip("These are alternative names that this service might be known as. They will be shown next to the main name of this service.") -%>
 	<br/>
-	<%= text_field_tag "annotations[name]", params[:annotations][:name], :disabled => fields_disabled, :style => "width: 98%;" %>
+	<%= text_field_tag "annotations[names]", params[:annotations][:names], :disabled => fields_disabled, :style => "width: 99%;" %>
 </p>
 
 <!-- Documentation URL -->
 <p class="high_linespaced form_field_section">
 	Add a URL to <b>additional documentation</b> for this service:
 	<br/>
-	<%= text_field_tag "annotations[documentation_url]", params[:annotations][:documentation_url], :disabled => fields_disabled, :style => "width: 98%;" %>
+	<%= text_field_tag "annotations[documentation_url]", params[:annotations][:documentation_url], :disabled => fields_disabled, :style => "width: 99%;" %>
 </p>
 
 <!-- Description -->
 <p class="high_linespaced form_field_section">
 	Add a <b>description</b> of this service:
 	<br/>
-	<%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => fields_disabled, :size => "50x10", :style => "width: 98%;" %>
-</p>
-
-<!-- Tags -->
-<p class="high_linespaced form_field_section">
-	Add <b>tags</b> to describe this service (separated by commas):
-	<br/>
-	<%= text_field_tag "annotations[tags]", params[:annotations][:tags], :id => "tags_field", :disabled => fields_disabled, :style => "width: 98%;", :autocomplete => "off"  %>
-	<div class="auto_complete" id="tags_auto_complete"></div>
-	<%= image_tag "spinner.gif", :id => "addtag_indicator", :style => "display: none;" %>
-	<%= auto_complete_field :tags_field,
-			:update => "tags_auto_complete",
-			:url => tags_auto_complete_url,
-			:tokens => ',',
-			:indicator => "addtag_indicator" -%>
+	<%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => fields_disabled, :size => "50x10", :style => "width: 99%;" %>
 </p>
 
 <!-- Categories -->
@@ -57,11 +44,27 @@
 		<i>No categories specified</i>
 	</div>
 	<p style="margin-top: 0.7em;">
-		<%= render_select_tag_for_category_options_on_service_submission("categories_selector", fields_disabled) -%>
+		<%= render_select_tag_for_category_options_on_service_submission("categories_selector", fields_disabled, "width: 450px;") -%>
 		<b><a href="" onclick="javascript:addServiceCategory('categories_selector'); return false;" class="button_slim" style="margin-left: 0.6em; padding: 0.2em 0.4em;">Add</a></b>
 	</p>
 </div>
 
+<!-- Tags -->
+<p class="high_linespaced form_field_section">
+	Add <b>tags</b> to further describe/classify this service (separated by commas):
+	<%= info_icon_with_tooltip("These are additional keywords or short phrases that describe aspects of this service in order to make it easy to find and use it.") -%>
+	<br/>
+	<%= text_field_tag "annotations[tags]", params[:annotations][:tags], :id => "tags_field", :disabled => fields_disabled, :style => "width: 99%;", :autocomplete => "off"  %>
+	<div class="auto_complete" id="tags_auto_complete"></div>
+	<%= image_tag "spinner.gif", :id => "addtag_indicator", :style => "display: none;" %>
+	<%= auto_complete_field :tags_field,
+			:update => "tags_auto_complete",
+			:url => tags_auto_complete_url,
+			:tokens => ',',
+			:indicator => "addtag_indicator" -%>
+</p>
+
+<%# The Javascript code below ensures that any categories selected persist across requests in the event of failed submission  %>
 <% if !params[:annotations].nil? and params[:annotations].has_key?(:categories) %>
 	<script>
 		<% params[:annotations][:categories].split(',').reject{|i| i == ""}.each do |id| %>

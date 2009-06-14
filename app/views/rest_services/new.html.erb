@@ -20,44 +20,48 @@
 	<br/>
 </div>
 
-<% form_for :rest_service, :url => { :action => :create } do |f| %>
-  <%= f.error_messages %>
-	
-	<p class="step_text">1. Specify the URL of the endpoint of the REST service (ie: the base URL):</p>
-	
-	<p><%= text_field_tag "endpoint", params[:endpoint], :style => "width: 600px" -%></p>
-	
-	<div class="box_info_standout" style="font-size: 100%; width: 582px; padding: 7px 10px;">
-		<b>Note:</b> please do not specify parameterised URLs or URLs to specific functionality. Only provide the base URL to the REST service.
-		(In the future you will be able to describe the different functionality and parameters and so on). 
-		<br/><br/>
-		Example:
-		<br/>
-		<ul style="margin-left: 1em;">
-			<li>Bad URL: http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/{db}/{id}</li>
-			<li>Good URL: http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/</li>
-		</ul>
-	</div>
+<div style="width: 600px;">
 
-	<p class="step_text">
-		2. Provide more information about this REST service, then submit:
-		<br/>
-		<span class="additional_info_text" style="margin-top: 0.8em;">After submission you can also provide more information</span>
-	</p>
-	
-	<div class="soap_service_form" style="width: 600px;">
-		<!-- Name -->
-		<p class="high_linespaced">
-			What is the <b>official name</b> of this REST service?
-			<span class="required">*</span>
+	<% form_for :rest_service, :url => { :action => :create } do |f| %>
+	  <%= f.error_messages %>
+		
+		<p class="step_text">1. Specify the URL of the endpoint of the REST service (ie: the base URL):</p>
+		
+		<p><%= text_field_tag "endpoint", params[:endpoint], :style => "width: 100%;" -%></p>
+		
+		<div class="box_info_standout" style="font-size: 100%; width: 582px; padding: 7px 10px;">
+			<b>Note:</b> please do not specify parameterised URLs or URLs to specific functionality. Only provide the base URL to the REST service.
+			(In the future you will be able to describe the different functionality and parameters and so on). 
+			<br/><br/>
+			Example:
 			<br/>
-			<%= text_field_tag "rest_service[name]", params[:rest_service] ? params[:rest_service][:name] : "", :style => "width: 98%;" %>
+			<ul style="margin-left: 1em;">
+				<li>Bad URL: http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/{db}/{id}</li>
+				<li>Good URL: http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/</li>
+			</ul>
+		</div>
+	
+		<p class="step_text">
+			2. Provide more information about this REST service, then submit:
 		</p>
 		
-		<%= render :partial => 'annotations/service_submission_fields' -%>
-	</div>
-	
-  <p style="margin-top: 1.5em; width: 600px; text-align: center;">
-    <%= f.submit "Submit", :disable_with => "Submitting..." -%>
-  </p>
-<% end %>
+		<%= render :partial => "shared/new_service_provide_info_text" -%>
+		
+		<div class="soap_service_form">
+			<!-- Name -->
+			<p class="high_linespaced">
+				What is the <b>official name</b> of this REST service?
+				<span class="required">*</span>
+				<br/>
+				<%= text_field_tag "rest_service[name]", params[:rest_service] ? params[:rest_service][:name] : "", :style => "width: 99%;" %>
+			</p>
+			
+			<%= render :partial => 'annotations/service_submission_fields' -%>
+		</div>
+		
+	  <p style="margin-top: 1.5em; text-align: center;">
+	    <%= f.submit "Submit", :disable_with => "Submitting..." -%>
+	  </p>
+	<% end %>
+
+</div>

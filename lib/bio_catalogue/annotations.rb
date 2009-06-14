@@ -188,6 +188,12 @@ module BioCatalogue
         annotations_data.delete(:categories)
       end
       
+      # :names to :name
+      if annotations_data.has_key?(:names)
+        annotations_data[:name] = annotations_data[:names].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
+        annotations_data.delete(:names)
+      end
+      
       return annotations_data
     end
     

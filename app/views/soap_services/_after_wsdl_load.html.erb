@@ -25,10 +25,10 @@
 	</div>
 <% else %>
 	<p class="step_text">
-		2. Check the details and provide more informatiom, then submit:
-		<br/>
-		<span class="additional_info_text" style="margin-top: 0.8em;">After submission you can also provide more information</span>
+		2. Check the details and provide more information, then submit:
 	</p>
+	
+	<%= render :partial => "shared/new_service_provide_info_text" -%>
 	
 	<div class="soap_service_form">
 		<%= render :partial => "new_form" %>
