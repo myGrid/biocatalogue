@@ -137,8 +137,8 @@ module BioCatalogue
         # Process
         
         annotations_data.each do |attrib, value|
-          case attrib.to_s
-            when "tag"
+          case attrib.downcase.to_s
+            when "tag", "category", "name"
               service_container_annotations[attrib] = value
             else
               # By default, annotations are allocated to the service version instance

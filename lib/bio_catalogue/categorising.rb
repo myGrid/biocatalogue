@@ -24,6 +24,21 @@ module BioCatalogue
       end
     end
     
+    def self.get_categories_for_service(service)
+      categories = [ ]
+      
+      anns = service.annotations_with_attribute("category")
+      
+      category_ids = anns.map{|a| a.value.to_i}
+      
+      category_ids.each do |category_id|
+        c = Category.find(:first, :conditions => { :id => category_id })
+        categories << c unless c.nil?
+      end
+      
+      return categories
+    end
+    
     protected
     
     def self.process_node(node, current_parent_id=nil)

@@ -6,8 +6,8 @@
 
 module CategoriesHelper
   
-  def render_select_tag_for_category_options_on_service_submission(element_id, disabled)
-    return select_tag("", options_for_select(get_categories_select_options), :id => element_id, :disabled => disabled, :style => "width: 500px;")
+  def render_select_tag_for_category_options_on_service_submission(element_id, disabled, style='')
+    return select_tag("", options_for_select(get_categories_select_options), :id => element_id, :disabled => disabled, :style => style)
   end
   
   protected

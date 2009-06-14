@@ -30,40 +30,60 @@
 																:show_add_option => false,
 																:show_modify_options => false } -%>
 				
-				<div style="margin: 1.1em 0 0.8em 0;">
-					<%= render :partial => "annotations/descriptions",
-								:locals => { :annotatable => service_version_instance,
-									:show_header => false,
-									:truncate_desc => 100,
-									:auto_link_desc => false,
-									:show_modify_options => false,
-									:show_none_text => false } -%>
-				</div>
-				
-				<p class="detail">
+				<div>
+					
+					<p style="font-size: 0.85em; margin: 1em 0 0 0;">
+						<% unless (categories = BioCatalogue::Categorising.get_categories_for_service(service)).empty? %>
+							<% categories.each do |category| %>
+								<%= content_tag(:span, 
+																h(category.name), 
+																:class => "green_highlight", 
+																:style => "margin-right: 0.3em;",
+																:title => tooltip_title_attrib("<b>Parent category:</b> #{category.has_parent? ? h(category.parent.name) : 'none'}")) -%>
+							<% end %>
+						<% else %>
+							<span class="faded">
+								This service has not been categorised yet. <%= link_to("Help categorise it.", service_path(service)) -%>
+							</span>
+						<% end %>
+					</p>
+					
+					<div style="margin: 0.8em 0;">
+						<%= render :partial => "annotations/descriptions",
+									:locals => { :annotatable => service_version_instance,
+										:show_header => false,
+										:truncate_desc => 100,
+										:auto_link_desc => false,
+										:show_modify_options => false,
+										:show_none_text => false } -%>
+					</div>
+					
 					<span style="float: right; vertical-align: bottom;">
 						<%= service_latest_status_symbol(service) -%>
 					</span>
+				
+					<p class="detail">
+						<b>Provider:</b>
+						<% service.providers.each do |provider| %>
+							<%= link_to(h(provider.name), service_provider_path(provider)) %>
+						<% end %>
+						|
+						<b>Submitted by:</b>
+						<%= submitter_link(service.submitter) %>
+						(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
+					</p>
 					
-					<b>Provider:</b>
-					<% service.providers.each do |provider| %>
-						<%= link_to(h(provider.name), service_provider_path(provider)) %>
-					<% end %>
-					|
-					<b>Submitted by:</b>
-					<%= submitter_link(service.submitter) %>
-					(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
-				</p>
+					<div class="detail">
+						<%= render :partial => "annotations/tags_flat",
+									 		 :locals => { :annotatable => service,
+																		:show_add_option => false } -%>
+					</div>
+					
+					<div class="detail">
+						<%= render :partial => "#{service_version_instance.class.to_s.pluralize.underscore}/service_listing_info", 
+						 	 				 :locals => { :service_version_instance =>  service_version_instance } %>
+					</div>
 				
-				<div class="detail">
-					<%= render :partial => "annotations/tags_flat",
-								 		 :locals => { :annotatable => service,
-																	:show_add_option => false } -%>
-				</div>
-				
-				<div class="detail">
-					<%= render :partial => "#{service_version_instance.class.to_s.pluralize.underscore}/service_listing_info", 
-					 	 				 :locals => { :service_version_instance =>  service_version_instance } %>
 				</div>
 			</div>
 		<% end %>
