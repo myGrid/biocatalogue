@@ -71,7 +71,8 @@ ActionController::Routing::Routes.draw do |map|
                  :collection => { :load_wsdl => :post}
 
   map.resources :services,
-                :collection => { :search => :get }
+                :collection => { :search => :get },
+                :member => { :categorise => :post }
   
   map.resources :service_tests, :collection => {:add_test => :post }
 

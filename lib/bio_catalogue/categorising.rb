@@ -39,6 +39,15 @@ module BioCatalogue
       return categories
     end
     
+    def self.user_created_category?(service, category_id, user)
+      anns = service.annotations_with_attribute_and_by_source("category", user)
+      if anns.blank?
+        return false
+      else
+        return anns.map{|a| a.value}.include?(category_id.to_s)
+      end
+    end
+    
     protected
     
     def self.process_node(node, current_parent_id=nil)

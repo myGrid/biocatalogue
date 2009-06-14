@@ -117,7 +117,7 @@ function updateServiceCategoriesList() {
 
 	if (markup == '')
 	{
-		markup = '<i>No categories specified</i>';
+		markup = '<i>None added</i>';
 	}
 
   $('selected_categories_list').innerHTML = markup;

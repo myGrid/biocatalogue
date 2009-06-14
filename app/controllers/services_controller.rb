@@ -10,7 +10,7 @@ class ServicesController < ApplicationController
   
   before_filter :find_services, :only => [ :index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise ]
   
   before_filter :validate_and_setup_search, :only => [ :search ]
   
@@ -114,6 +114,16 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html # search.html.erb
       format.xml { render :layout => false } # search.xml.builder
+    end
+  end
+  
+  def categorise
+    categories = params[:categories]
+    anns = @service.create_annotations({ "category" => categories.split(',').compact.map{|x| x.strip}.reject{|x| x == ""} }, current_user)
+    
+    respond_to do |format|
+      flash[:notice] = "Categories successfully added" unless anns.empty?
+      format.html { redirect_to(service_url(@service)) }
     end
   end
  

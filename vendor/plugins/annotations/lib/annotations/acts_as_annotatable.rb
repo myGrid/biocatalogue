@@ -179,7 +179,7 @@ module Annotations
         # Code example:
         # -------------
         # data = { "tag" => [ "tag1", "tag2", "tag3" ], "description" => "This is a book" }
-        # book.create_annotations(data, current_use)
+        # book.create_annotations(data, current_user)
         def create_annotations(annotations_data, source)
           anns = [ ]
           
