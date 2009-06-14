@@ -21,10 +21,23 @@ class Annotation < ActiveRecord::Base
   end
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :value ] )
+    acts_as_solr(:fields => [ :value_for_solr ] )
   end
   
   protected
+  
+  def value_for_solr
+    val = ''
+    
+    case self.attribute_name.downcase
+      when "category"
+        val = Category.find_by_id(self.value.to_i).try(:name) || ""
+      else
+        val = self.value
+    end
+    
+    return val
+  end
   
   def check_category_annotation
     if self.attribute_name.downcase == "category"

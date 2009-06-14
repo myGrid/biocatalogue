@@ -12,29 +12,29 @@
 <% fields_disabled = false unless local_assigns.has_key?(:fields_disabled) %>
 
 <!-- Name alias -->
-<p class="high_linespaced">
-	Add a name alias (ie: an alternative name for this service):
+<p class="high_linespaced form_field_section">
+	Add a <b>name alias</b> (ie: an alternative name for this service):
 	<br/>
 	<%= text_field_tag "annotations[name]", params[:annotations][:name], :disabled => fields_disabled, :style => "width: 98%;" %>
 </p>
 
 <!-- Documentation URL -->
-<p class="high_linespaced">
-	Add a URL to additional documentation for this service:
+<p class="high_linespaced form_field_section">
+	Add a URL to <b>additional documentation</b> for this service:
 	<br/>
 	<%= text_field_tag "annotations[documentation_url]", params[:annotations][:documentation_url], :disabled => fields_disabled, :style => "width: 98%;" %>
 </p>
 
 <!-- Description -->
-<p class="high_linespaced">
-	Add a description of this service:
+<p class="high_linespaced form_field_section">
+	Add a <b>description</b> of this service:
 	<br/>
 	<%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => fields_disabled, :size => "50x10", :style => "width: 98%;" %>
 </p>
 
 <!-- Tags -->
-<p class="high_linespaced">
-	Add tags/keywords to describe this service (separated by commas):
+<p class="high_linespaced form_field_section">
+	Add <b>tags</b> to describe this service (separated by commas):
 	<br/>
 	<%= text_field_tag "annotations[tags]", params[:annotations][:tags], :id => "tags_field", :disabled => fields_disabled, :style => "width: 98%;", :autocomplete => "off"  %>
 	<div class="auto_complete" id="tags_auto_complete"></div>
@@ -46,3 +46,27 @@
 			:indicator => "addtag_indicator" -%>
 </p>
 
+<!-- Categories -->
+<div class="high_linespaced form_field_section">
+	<input id="selected_categories_input" type="hidden" name="annotations[categories]"/>
+	<p style="margin-bottom: 0.5em;">
+		<b>Categorise</b> this service:
+		<%= info_icon_with_tooltip("Here you can specify what categories this service can be classified under. You can select more than one, but please try and be as specific as possible.") -%>
+	</p>
+	<div id="selected_categories_list" class="form_selected_values">
+		<i>No categories specified</i>
+	</div>
+	<p style="margin-top: 0.7em;">
+		<%= render_select_tag_for_category_options_on_service_submission("categories_selector", fields_disabled) -%>
+		<b><a href="" onclick="javascript:addServiceCategory('categories_selector'); return false;" class="button_slim" style="margin-left: 0.6em; padding: 0.2em 0.4em;">Add</a></b>
+	</p>
+</div>
+
+<% if !params[:annotations].nil? and params[:annotations].has_key?(:categories) %>
+	<script>
+		<% params[:annotations][:categories].split(',').reject{|i| i == ""}.each do |id| %>
+			service_categories[<%= id %>] = '<%= escape_javascript(Category.find_by_id(id).name) -%>';
+			updateServiceCategoriesList();
+		<% end %>
+	</script>
+<% end %>

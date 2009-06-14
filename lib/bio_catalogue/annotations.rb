@@ -178,8 +178,14 @@ module BioCatalogue
       
       # :tags to :tag
       if annotations_data.has_key?(:tags)
-        annotations_data[:tag] = annotations_data[:tags].split(',').map{|x| x.strip}
+        annotations_data[:tag] = annotations_data[:tags].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
         annotations_data.delete(:tags)
+      end
+      
+      # :categories to :category
+      if annotations_data.has_key?(:categories)
+        annotations_data[:category] = annotations_data[:categories].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
+        annotations_data.delete(:categories)
       end
       
       return annotations_data

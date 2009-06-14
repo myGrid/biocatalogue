@@ -20,7 +20,7 @@
 	<br/>
 </div>
 
-<% form_for @rest_service, :url => { :action => :create } do |f| %>
+<% form_for :rest_service, :url => { :action => :create } do |f| %>
   <%= f.error_messages %>
 	
 	<p class="step_text">1. Specify the URL of the endpoint of the REST service (ie: the base URL):</p>
@@ -48,15 +48,16 @@
 	<div class="soap_service_form" style="width: 600px;">
 		<!-- Name -->
 		<p class="high_linespaced">
-			What is the official name of this REST service?
+			What is the <b>official name</b> of this REST service?
 			<span class="required">*</span>
 			<br/>
-			<%= f.text_field :name, :style => "width: 98%;" %>
+			<%= text_field_tag "rest_service[name]", params[:rest_service] ? params[:rest_service][:name] : "", :style => "width: 98%;" %>
 		</p>
 		
 		<%= render :partial => 'annotations/service_submission_fields' -%>
+	</div>
 	
-  <p style="margin-top: 1.5em;">
+  <p style="margin-top: 1.5em; width: 600px; text-align: center;">
     <%= f.submit "Submit", :disable_with => "Submitting..." -%>
   </p>
 <% end %>

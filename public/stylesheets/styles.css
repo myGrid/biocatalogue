@@ -2151,3 +2151,14 @@ p.more_less_links a {
 .search_box .rcontain {
 	padding: 0.4em 1em;
 }
+
+.form_field_section {
+	margin-top: 1.5em;
+}
+
+.form_selected_values {
+	padding: 0.3em 0.5em;
+	border: 1px dotted #DDD;
+	background-color: #FFF;
+	color: #333;
+}

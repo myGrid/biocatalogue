@@ -11,19 +11,24 @@ module BioCatalogue
     # This uses the GeoKit plugin to do the geocoding.
     # Returns a Gecode::GeoLoc object if successful, otherwise returnes nil.
     def self.url_location_lookup(url)
-      return nil if url.blank?
-      
-      address = ""
-      
-      SystemTimer::timeout(4) { address = Dnsruby::Resolv.getaddress(Addressable::URI.parse(url).host) }
-      
-      loc = Util.ip_geocode(address)
-      
-      return loc.success ? loc : nil 
-    rescue
-      Rails.logger.error("Method BioCatalogue::Util.url_location_lookup errored. Exception:")
-      Rails.logger.error($!)
-      return nil
+      begin
+        return nil if url.blank?
+        
+        address = ""
+        
+        SystemTimer::timeout(4) { address = Dnsruby::Resolv.getaddress(Addressable::URI.parse(url).host) }
+        
+        loc = Util.ip_geocode(address)
+        
+        return loc.success ? loc : nil
+      rescue TimeoutError
+        Rails.logger.error("Method BioCatalogue::Util.url_location_lookup - timeout occurred when attempting to perform DNS resolution.")
+        Rails.logger.error($!)
+      rescue Exception => ex
+        Rails.logger.error("Method BioCatalogue::Util.url_location_lookup errored. Exception:")
+        Rails.logger.error($!)
+        return nil
+      end
     end
     
     # This method borrows code/principles from the GeoKit plugin.
@@ -40,8 +45,9 @@ module BioCatalogue
         SystemTimer::timeout(4) { info = open(url, :proxy => HTTP_PROXY).read }
       rescue TimeoutError
         Rails.logger.error("Method BioCatalogue::Util.ip_geocode - timeout occurred when attempting to get info from HostIp.")
+        Rails.logger.error($!)
         return geoloc
-      rescue
+      rescue Exception => ex
         Rails.logger.error("Method BioCatalogue::Util.ip_geocode - failed on call to HostIp. Exception:")
         Rails.logger.error($!)
         return geoloc

@@ -4,7 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
-# Filtering  and sorting helpers
+# Filtering and sorting helpers
 
 module FilteringHelper
   def help_text_for_filtering

@@ -101,3 +101,54 @@ function addLoadEvent(func) {
     } 
   } 
 }
+
+/* BEGIN code for service categories in service submission form */
+
+var service_categories = new Object();
+
+function updateServiceCategoriesList() {
+
+  var markup = '';
+
+	for (var key in service_categories) {
+		markup += '<span style="vertical-align: middle;">' + service_categories[key] + '&nbsp;&nbsp;&nbsp;<small><a href="#" onclick="javascript:removeServiceCategory(' + key + '); return false;">' +
+		'<img src="/images/delete.png" alt="Remove this category" style="vertical-align: middle;"/></a></small></span><br/>';
+	}
+
+	if (markup == '')
+	{
+		markup = '<i>No categories specified</i>';
+	}
+
+  $('selected_categories_list').innerHTML = markup;
+
+  // also update the hidden input element
+
+  var service_categories_list = '';
+
+  for (var key in service_categories) {
+    service_categories_list += key + ',';
+  }
+
+  $('selected_categories_input').value = service_categories_list;
+}
+
+function addServiceCategory(dropdown_id) {
+
+  var x = $(dropdown_id);
+  
+  if (x.options.length > 0)	{
+		var y = x.options[x.selectedIndex];
+		service_categories[y.value] = y.text.gsub('-', '').strip();
+	}
+
+  updateServiceCategoriesList();
+}
+
+function removeServiceCategory(key) {
+
+  delete service_categories[key];
+  updateServiceCategoriesList();
+}
+
+/* END code for service categories in service submission form */
