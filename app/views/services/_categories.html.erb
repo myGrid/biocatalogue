@@ -42,9 +42,9 @@
 			<% end %>
 		<% else %>
 			<span class="faded">
-				This service has not been categorised yet. 
+				Not categorised yet. 
 				<% unless show_add_option %>
-					<%= link_to("Help categorise it.", service_path(service)) -%>
+					<%= link_to("Help categorise this...", service_path(service)) -%>
 				<% end %>
 			</span>
 		<% end %>
