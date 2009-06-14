@@ -44,7 +44,7 @@
 			<span class="none_text">
 				Not categorised yet. 
 				<% unless show_add_option %>
-					<%= link_to("Help categorise this...", service_path(service)) -%>
+					<%= link_to("Help categorise this...", "#{service_path(service)}?categorise") -%>
 				<% end %>
 			</span>
 		<% end %>
@@ -82,19 +82,19 @@
 	</div>
 	
 	<% if show_add_option %>
-		<div id="add_service_category_box" class="box_info_standout" style="width: 470px; margin: 1em 0; display:none;">
-			<% form_for :rest_service, :url => categorise_service_url(service) do |f| %>
+		<div id="add_service_category_box" class="box_info_standout" style="width: 550px; margin: 1em 0; display: <%= params.has_key?(:categorise) ? 'block' : 'none' -%>;">
+			<% form_for :annotation, :url => categorise_service_url(service) do |f| %>
 				<input id="selected_categories_input" type="hidden" name="categories"/>
 				<p style="margin-bottom: 0.5em;">
 					<b>New categories to add:</b>
 					<%= info_icon_with_tooltip("Here you can specify what categories this service can be classified under. You can set more than one, but please try and be as specific as possible.") -%>
 				</p>
 				<div id="selected_categories_list" class="form_selected_values">
-					<i>None added</i>
+					<i>None</i>
 				</div>
 				<p style="margin-top: 0.7em;">
 					<%= render_select_tag_for_category_options_on_service_submission("categories_selector", false, "width: 400px;") -%>
-					<b><a href="#" onclick="javascript:addServiceCategory('categories_selector'); return false;" class="button_slim" style="margin-left: 0.6em; padding: 0.2em 0.4em;">Add</a></b>
+					<b><a href="#" onclick="javascript:addServiceCategory('categories_selector'); return false;" class="button_slim" style="margin-left: 0.6em; padding: 0.2em 0.4em;">Add to list</a></b>
 				</p>
 				<p style="text-align: center;">
 			    <%= f.submit "Submit", :disable_with => "Submitting..." -%>
