@@ -12,6 +12,7 @@
 <% name_annotations = annotatable.annotations_with_attribute("name") unless local_assigns.has_key?(:name_annotations) %>
 <% show_add_option = true unless local_assigns.has_key?(:show_add_option) %>
 <% show_modify_options = true unless local_assigns.has_key?(:show_modify_options) %>
+<% show_none_text = true unless local_assigns.has_key?(:show_none_text) %>
 
 <div class="aliases annotations_container">
 	<% unless name_annotations.empty? %>
@@ -34,6 +35,10 @@
 					<% end %>
 				</span>
 			</span>
+		<% end %>
+	<% else %>
+		<% if show_none_text %>
+			<span class="none_text">No name aliases</span>
 		<% end %>
 	<% end %>
 	
