@@ -50,6 +50,17 @@ module BioCatalogue
     #         ] 
     #   }
     #
+    # Known Issues:
+    # This module uses the rails Hash.from_xml function to generate a hash of the wsdl document
+    # from the xml file contents. It turns out that generated hash may be incomplete, notably that 
+    # some message and/or operation details are left out. This causes those wsdls to fail the parsing 
+    # hence the registration. The method 
+    #          WsdlParser.check_for_xml_parse_errors
+    # tries to identify this problem. 
+    #
+    #TODO: replace this wsdl parser by an elaborate wsdl handling library
+    
+    
    
     def WsdlParser.parse(wsdl_url="")
       
@@ -107,6 +118,7 @@ module BioCatalogue
     
     protected    
     def WsdlParser.get_service_info(wsdl_hash)
+      wsdl_hash = check_for_xml_parse_errors(wsdl_hash)
       service_info = {}
       service_info["name"]        = wsdl_hash["definitions"]["service"]["name"]
       service_info["description"] = wsdl_hash["definitions"]["documentation"] || wsdl_hash["definitions"]["service"]["documentation"] || wsdl_hash["definitions"]["service"]['port']["documentation"]
@@ -193,7 +205,6 @@ module BioCatalogue
       unless operations.class.to_s == "Array"
         operations =[operations]
       end
-      pp operations
       operations.each do |operation|
         
         operation["description"] = operation["documentation"]
@@ -330,6 +341,9 @@ module BioCatalogue
     end
     
     def WsdlParser.cleanup_input_output_params(item)
+      if item.class.to_s != "Hash"
+        return {}
+      end
       db_fields = ["name","description","computational_type",
                     "min_occurs", "max_occurs"]
                     
@@ -372,8 +386,105 @@ module BioCatalogue
       end_point
     end
     
+    #
+    # some messages are not parsed properly. This means that the operations
+    # which use those messages are not correctly parsed as well.
+    # This method scans messages and tries to rectify the parsing problems
+    
+    def WsdlParser.scan_messages_for_parse_errors(messages)
+      checked_messages = []
+      messages.each do |msg|
+        name = msg["name"]
+        part = msg["part"]
+        if part.class.to_s != "Hash"
+          if part.class.to_s == "String"
+            puts "There seems to be a problem with the parsing of this message"
+            
+            #part = {"name" => "parameters", "element" =>name }
+            part = {"name"  => name }
+            puts "New parts after problem"
+            pp part
+            msg["part"] = part
+          end
+        end
+        checked_messages << msg
+      end
+      checked_messages
+      end
+    
+      
+      # some operations are not parsed properly. This means that it may not be exactly
+      # clear what messages they use 
+      # This method scans operations and tries to rectify the parsing problems
+        
+      def WsdlParser.scan_operations_for_parse_error(operations, message_names)
+        checked_operations =[]
+        if operations.class.to_s == "Hash"
+          operations = [operations]
+        end
+        operations.each do |op|
+          name = op["name"]
+          input  = op["input"]
+          output = op["output"]
+          
+          if input.class.to_s != "Hash"
+            if input.class.to_s == "String"
+              puts "Seem there is a parsing error with this input"
+              if message_names.include?(name+"Request")
+                op["input"] ={"message"=>name+"Request"}
+              elsif message_names.include?(name)
+                op["input"] ={"message"=>name}
+              end
+            end
+          end
+          if output.class.to_s != "Hash"
+            if output.class.to_s == "String"
+              puts "Seems there is a parsing error with this output"
+              if message_names.include?(name+"Response")
+                op["output"] ={"message"=>name+"Response"}
+              elsif message_names.include?(name)
+                op["output"] ={"message"=>name}
+              end
+            end
+          end
+          checked_operations << op
+        end
+        checked_operations
+      end
+      
+      def WsdlParser.check_for_xml_parse_errors(wh)
+        message_names = [] 
+        wh["definitions"]["message"].each{ |m| message_names <<  m["name"] unless m["name"].nil?}
+        wh["definitions"]["message"] = scan_messages_for_parse_errors(wh["definitions"]["message"])
+        if wh["definitions"]["port_type"].class.to_s =="Array"
+          wh["definitions"]["port_type"].each  do |pt|
+            pt["operation"] = scan_operations_for_parse_error(pt["operation"], message_names)
+          end
+        else
+          wh["definitions"]["port_type"]["operation"] = scan_operations_for_parse_error(wh["definitions"]["port_type"]["operation"], message_names)
+        end
+        
+        wh
+      end
+      
+      def WsdlParser.get_service_name(wsdl_hash)
+        name =""
+        if wsdl_hash["definitions"]["service"].class.to_s == "Array"
+          puts "multiple services in this wsdl..."
+          wsdl_hash["definitions"]["service"].each do |service|
+            name += " #{service["name"]}"
+          end
+        else
+          name  = wsdl_hash["definitions"]["service"]["name"]
+        end
+        return name
+      end
+    
     def WsdlParser.test(num=0)
       wsdls= [
+      "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSWUBlast.wsdl",
+      "http://www.ebi.ac.uk/ebisearch/service.ebi?wsdl",
+      "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSBlastpgp.wsdl",
       "http://www.cbs.dtu.dk/ws/GenomeAtlas/GenomeAtlas_3_0_ws0.wsdl",
       "http://omabrowser.org/omabrowser.wsdl",
       "http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl",
