@@ -18,11 +18,12 @@
 <div class="annotations_container">
 
 	<div style="<%= small ? 'font-size: 0.85em;' : 'font-size: 1.1em;' -%> margin: 1.2em 0 0 0;">
+		<b>Categories: </b>
 		<% unless (category_annotations = service.annotations_with_attribute("category")).empty? %>
 			<% category_annotations.each do |category_annotation| %>
 				<% category = Category.find_by_id(category_annotation.value) %>
 				<% unless category.nil? %>
-					<span class="orange_highlight" style="margin-right: 1em;">
+					<span class="yellow_highlight" style="margin-right: 1em;">
 						<%= content_tag(:span, h(category.name), :title => tooltip_title_attrib(category_hierachy_text(category))) -%>
 					
 						<% if show_modify_options %>

@@ -335,6 +335,11 @@ small {
     padding: 4px 6px 4px 6px;
 }
 
+.yellow_highlight {
+    background-color: #FFC;
+    padding: 3px 5px 3px 5px;
+}
+
 .standout_link {
 	color: #333333;
 	border: 1px dotted #DDD; 
