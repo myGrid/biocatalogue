@@ -24,6 +24,7 @@ module BioCatalogue
       rescue TimeoutError
         Rails.logger.error("Method BioCatalogue::Util.url_location_lookup - timeout occurred when attempting to perform DNS resolution.")
         Rails.logger.error($!)
+        return nil
       rescue Exception => ex
         Rails.logger.error("Method BioCatalogue::Util.url_location_lookup errored. Exception:")
         Rails.logger.error($!)
