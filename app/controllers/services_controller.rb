@@ -118,11 +118,21 @@ class ServicesController < ApplicationController
   end
   
   def categorise
-    categories = params[:categories]
-    anns = @service.create_annotations({ "category" => categories.split(',').compact.map{|x| x.strip}.reject{|x| x == ""} }, current_user)
+    categories = [ ]
+    anns = [ ]
+    
+    categories = params[:categories] if params.has_key?(:categories)
+    
+    unless categories.empty?
+      anns = @service.create_annotations({ "category" => categories.split(',').compact.map{|x| x.strip}.reject{|x| x == ""} }, current_user)
+    end
     
     respond_to do |format|
-      flash[:notice] = "Categories successfully added" unless anns.empty?
+      flash[:notice] = if anns.empty?
+        "No new categories specified"
+      else
+        "Categories successfully added"
+      end
       format.html { redirect_to(service_url(@service)) }
     end
   end
