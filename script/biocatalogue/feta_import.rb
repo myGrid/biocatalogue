@@ -32,7 +32,7 @@
 #  ruby feta_import.rb -h                                   <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to 'feta_import.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to 'log/feta_import_{current_time}.log' so you won't see any normal output in the console.
 #
 # NOTE (2): this script DOES NOT import any Soaplab service metadata due to the discrepancies with the way operations are defined in Feta for Soaplab services.
 # 
@@ -103,7 +103,7 @@ class FetaImporter
     ENV["RAILS_ENV"] = @options[:environment]
     RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
     
-    require File.dirname(__FILE__) + '/config/environment'
+    require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
     
     # Get the Registry model object we will be using as the annotation source
     @registry_source = Registry.find_by_name("feta")
@@ -556,8 +556,8 @@ class FetaImporter
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: feta_import.log ..."
-$stdout = File.new("feta_import.log", "w")
+puts "Redirecting output of $stdout to log file: 'log/feta_import_{current_time}.log' ..."
+$stdout = File.new("log/feta_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log", "w")
 $stdout.sync = true
 
 # Redirect warnings from libxml-ruby

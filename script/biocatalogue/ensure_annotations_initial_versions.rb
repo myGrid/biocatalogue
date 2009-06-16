@@ -14,7 +14,7 @@ end
 RAILS_ENV = env
 
 # Load up the Rails app
-require File.dirname(__FILE__) + '/config/environment'
+require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
 
 Annotation::Version.record_timestamps = false
 

@@ -29,7 +29,7 @@
 #  ruby seekda_import.rb -h                               <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to 'seekda_import.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to 'log/seekda_import_{current_time}.log' so you won't see any normal output in the console.
 #
 #
 # Depedencies:
@@ -105,7 +105,7 @@ class SeekDaImporter
     ENV["RAILS_ENV"] = @options[:environment]
     RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
     
-    require File.dirname(__FILE__) + '/config/environment'
+    require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
     
     # Get the Registry model object we will be using as the annotation source
     @registry_source = Registry.find_by_name("seekda")
@@ -544,8 +544,8 @@ class SeekDaImporter
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: seekda_import.log ..."
-$stdout = File.new("seekda_import.log", "w")
+puts "Redirecting output of $stdout to log file: 'log/seekda_import_{current_time}.log' ..."
+$stdout = File.new("log/seekda_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log", "w")
 $stdout.sync = true
 
 # Redirect warnings from libxml-ruby

@@ -65,7 +65,7 @@ end
 
 class AutoTagger
   
-  attr_accessor :options, :franck, :rules
+  attr_accessor :options, :biocat_agent, :rules
   
   def initialize(args)
     @options = {
@@ -91,13 +91,14 @@ class AutoTagger
     ENV["RAILS_ENV"] = @options[:environment]
     RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
     
-    require File.dirname(__FILE__) + '/config/environment'
+    require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
     
-    # Get Franck's user profile, which we will be using as the annotation source...
-    @franck = User.find_by_email("ytanoh@cs.man.ac.uk")
+    # Get or create the BioCatalogue agent, which we will be using as the annotation source...
+    @biocat_agent = Agent.find_by_name("biocatalogue")
     
-    if @franck.nil?
-      raise "Could not find the User entry for Franck"
+    if @biocat_agent.nil?
+      @biocat_agent = Agent.create(:name => "biocatalogue",
+                                   :display_name => "BioCatalogue")
     end
     
     # Set up rules
@@ -209,8 +210,8 @@ class AutoTagger
     ann = Annotation.new(:attribute_name => attribute,
                          :value => value,
                          :value_type => value_type,
-                         :source_type => "Registry",
-                         :source_id => @franck.id,
+                         :source_type => @biocat_agent.class.name,
+                         :source_id => @biocat_agent.id,
                          :annotatable_type => annotatable_type,
                          :annotatable_id => annotatable.id)
 
