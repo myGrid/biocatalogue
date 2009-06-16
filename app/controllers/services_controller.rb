@@ -190,7 +190,7 @@ class ServicesController < ApplicationController
   
   def check_if_user_wants_to_categorise
     if !logged_in? and params.has_key?(:categorise)
-      flash[:notice] = "Please login or register to categorise this service"
+      flash.now[:notice] = "Please login or register to categorise this service"
     end
   end
  
