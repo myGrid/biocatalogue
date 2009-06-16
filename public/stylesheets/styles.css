@@ -2046,9 +2046,25 @@ div.filters div.current_filters_box .rcontain {
 	padding: 2px 3px;
 }
 
+div.filters div.current_filters_box .and {
+	font-weight: bold; 
+	font-size: 100%; 
+	text-align: center; 
+	margin: 0;
+	padding-right: 12px;
+}
+
 div.filters div.selected_filters_type_box {
 	margin: 0 0.1em;
 	padding: 0;
+}
+
+div.filters div.selected_filters_type_box .or {
+	font-weight: bold; 
+	font-size: 77%; 
+	text-align: center; 
+	margin: 2px 0;
+	padding-right: 12px;
 }
 
 div.filters li {
@@ -2100,9 +2116,6 @@ div.filters li .container a span.count {
 }
 
 div.filters li .container a span.deselect {
-	/*display:-moz-inline-block;
-	display:-moz-inline-box;
-	display: inline-block;*/
 	float: right;
 	width: 12px;
 	background: url('/images/delete_faded_darker.png') no-repeat left center;

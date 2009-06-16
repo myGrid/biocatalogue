@@ -44,10 +44,14 @@
 							</p>
 							
 							<ul>
+								
+								<% filter_items_count = 0 %>
+								
 								<% values.each do |value| %>
 									
 									<% 
 										 filter = { "name" => value }
+										 filter_items_count += 1
 									%>
 									
 									<li style="text-align: center;">
@@ -56,7 +60,14 @@
 		                                      	:filter_type => filter_type } -%>
 									</li>
 									
+									<% unless filter_items_count == values.length %>
+										<li class="or">
+											OR
+										</li>
+									<% end %>
+									
 								<% end %>
+								
 							</ul>
 						
 						<% end %>
@@ -66,7 +77,7 @@
 				</div>
 				
 				<% unless filters_count == current_filters_grouped.length %>
-					<p style="font-weight: bold; font-size: 100%; text-align: center; margin: 0;">
+					<p class="and">
 						AND
 					</p>
 				<% end %>
