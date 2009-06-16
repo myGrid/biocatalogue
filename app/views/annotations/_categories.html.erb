@@ -1,0 +1,126 @@
+<%
+
+# BioCatalogue: app/views/annotations/_categories.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%
+	# Set defaults for optional parameters to this partial...
+	show_add_option = true unless local_assigns.has_key?(:show_add_option)
+	show_modify_options = true unless local_assigns.has_key?(:show_modify_options)
+%>
+
+<div class="annotations_container">
+
+	<div class="categories_box">
+		<table style="width: auto;">
+			<tr>
+				<td style="padding-right: 1em; padding-top: 2px;">
+					<b>Categories: </b>
+				</td>
+				<td>
+					
+					<% unless (category_annotations = service.annotations_with_attribute("category")).empty? %>
+						<ul class="categories">
+							<% category_annotations.each do |category_annotation| %>
+								<% category = Category.find_by_id(category_annotation.value) %>
+								<% unless category.nil? %>
+									<li>
+										<span class="main">
+											<%= content_tag(:span, h(category.name), :title => tooltip_title_attrib(category_hierachy_text(category))) -%>
+										
+											<% if show_modify_options %>
+												<% if mine?(category_annotation) %>
+													<span style="margin-left: 0.2em;">
+														<%= link_to(image_tag(icon_filename_for(:delete_faded_plus), :mouseover => icon_filename_for(:delete), :style => "vertical-align:middle;"), 
+																				annotation_path(category_annotation), 
+																				:method => :delete, 
+																				:confirm => "Are you sure you want to delete this category?", 
+																				:style => 'vertical-align: middle;',
+																				:title => tooltip_title_attrib("Delete this category (that you added)")) -%>
+													</span>
+												<% end %>
+											<% end %>
+										</span>
+									</li>
+								<% end %>
+							<% end %>
+						</ul>
+					<% else %>
+						<div class="none_text" style="padding-right: 1em; margin-top: 2px;">
+							<% if show_add_option %>
+								Not categorised yet
+							<% else %>
+								<%= link_to("Help categorise this...", "#{service_path(service)}?categorise") -%>
+							<% end %>
+						</div>
+					<% end %>
+					
+				</td>
+				
+				<% if show_add_option %>
+					<td style="width: 160px;">
+					
+						<% if logged_in? %>
+						
+							<%= content_tag(:span, 
+			                        image_tag('add_annotation.gif', :style => 'vertical-align:middle;margin-right:0.3em;'), 
+			                        :class => "inactive", 
+			                        :style => "vertical-align: middle;") -%>
+															
+							<% link_text = image_tag('add_annotation_hover.gif', :style => 'vertical-align:middle;margin-right:0.3em;') + 
+														 content_tag(:span, "Add categories", :style => "vertical-align: middle; text-decoration: underline;") %>
+							<%= link_to_function(link_text + expand_image, 
+																	 visual_effect(:toggle_slide, "add_service_category_box", :duration => 0.3),
+																	 :class => "active",
+																	 :style => "text-decoration: none;") %>
+						
+						<% else %>
+						
+							<%= content_tag(:span, 
+			                        image_tag('add_annotation_inactive.gif', :style => 'vertical-align:middle;margin-right:0.3em;'), 
+			                        :class => "inactive", 
+			                        :style => "vertical-align: middle;") -%>
+															
+							<% link_to(login_path, :class => "active", :style => "text-decoration: none; vertical-align: middle;", :title => tooltip_title_attrib("Log in to categorise")) do -%>
+								<%= image_tag('add_annotation_inactive.gif', :style => 'vertical-align:middle;margin-right:0.2em;') %>
+								<%= content_tag(:span, "Log in to categorise", :style => "vertical-align: middle; text-decoration: underline;") -%>
+							<% end %>
+							
+						<% end %>
+					
+					</td>
+				<% end %>
+				
+			</tr>
+		</table>
+		
+	</div>
+	
+	<% if show_add_option %>
+		<div id="add_service_category_box" class="soap_service_form" style="width: 550px; margin: 1em 0; display: <%= params.has_key?(:categorise) ? 'block' : 'none' -%>;">
+			<% form_for :annotation, :url => categorise_service_url(service) do |f| %>
+				<input id="selected_categories_input" type="hidden" name="categories"/>
+				<p style="margin-bottom: 0.5em;">
+					<b>New categories to add:</b>
+					<%= info_icon_with_tooltip("Here you can specify what categories this service can be classified under. You can set more than one, but please try and be as specific as possible.") -%>
+				</p>
+				<div id="selected_categories_list" class="form_selected_values">
+					<i>None</i>
+				</div>
+				<p style="margin-top: 0.7em;">
+					<%= render_select_tag_for_category_options_on_service_submission("categories_selector", false, "width: 400px;") -%>
+					<b><a href="#" onclick="javascript:addServiceCategory('categories_selector'); return false;" class="button_slim" style="margin-left: 0.6em; padding: 0.2em 0.4em;">Add to list</a></b>
+				</p>
+				<p style="text-align: center;">
+			    <%= f.submit "Submit", :disable_with => "Submitting..." -%>
+			  </p>
+			<% end %>
+		</div>
+	<% end %>
+
+</div>

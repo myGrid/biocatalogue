@@ -13,7 +13,6 @@
 <% truncate_desc = false unless local_assigns.has_key?(:truncate_desc) %>
 <% auto_link_desc = true unless local_assigns.has_key?(:auto_link_desc) %>
 <% show_modify_options = true unless local_assigns.has_key?(:show_modify_options) %>
-<% show_none_text = true unless local_assigns.has_key?(:show_none_text) %>
 
 <% unless annotatable.nil? %>
 	<div class="annotations_container">
@@ -70,8 +69,8 @@
 					<% end %>
 				<% end %>
 			<% else %>
-				<% if show_none_text == true and annotatable.description.blank? %>
-					<span class="none_text">none</span>
+				<% if annotatable.description.blank? %>
+					<span class="none_text" style="vertical-align: middle;">No descriptions</span>
 				<% end %>
 			<% end %>
 		</div>

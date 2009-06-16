@@ -28,7 +28,7 @@ module FilteringHelper
       is_ontology_term = true unless base_uri.blank?
     end
     
-    text = truncate(h(text), :length => 28)
+    text = truncate(h(text), :length => 32)
     
     if is_ontology_term
     text = content_tag(:span, text, :class => 'ontology_term')

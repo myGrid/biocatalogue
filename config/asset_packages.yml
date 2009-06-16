@@ -11,7 +11,7 @@ javascripts:
   - redbox
 stylesheets: 
 - base:
-  - reset-min
+  - reset-fonts
   - styles
   - redbox
   - rounded-corners

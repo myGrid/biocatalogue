@@ -34,7 +34,7 @@
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
-							<div style="font-family: monospace; font-size: 1em;">
+							<div style="font-family: monospace; font-size: 100%;">
 								<%= h(ann.value) -%>
 							</div>
 							<% if mine?(ann) and (show_modify_options == true) %>

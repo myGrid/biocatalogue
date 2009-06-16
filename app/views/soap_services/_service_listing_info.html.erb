@@ -8,12 +8,10 @@
 
 %>
 
-<hr/>
-
-<p>
+<div class="extra_detail_box">
 	<b>WSDL Location:</b>
 	<%= link_to(h(service_version_instance.wsdl_location), service_version_instance.wsdl_location, :popup => true) -%>
 	|
 	<b><%= pluralize(service_version_instance.soap_operations.size, "Soap Operation") -%></b>
-</p>
+</div>
 

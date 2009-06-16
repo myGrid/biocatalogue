@@ -175,32 +175,6 @@ module ApplicationHelper
     return text
   end
 
-  def service_type_badges(service_types)
-    html = ''
-
-    unless service_types.blank?
-      service_types.each do |s_type|
-        html = html + content_tag(:span, s_type, :class => "service_type_badge", :style => "vertical-align: middle; margin-left: 1.5em;")
-      end
-    end
-
-    return html
-  end
-
-  def service_location_flags(service)
-    return '' if service.nil?
-
-    html = ''
-
-    service.service_deployments.each do |s_d|
-      unless s_d.country.blank?
-        html = html + flag_icon_from_country(s_d.country, :text => s_d.location, :class => "framed")
-      end
-    end
-
-    return html
-  end
-  
   def submitter_link(submitter)
     case submitter.class.name
       when "User"

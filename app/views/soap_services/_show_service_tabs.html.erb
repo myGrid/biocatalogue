@@ -14,7 +14,7 @@
   <h3>Operations (<%= ops.length -%>)</h3>
 	
 	<a name='operations_index'></a>
-	<div style="padding: 1em 0.6em; border: 1px solid #CCC; line-height: 1.5; background-color: #F3F3F3; font-weight: bold; font-size: 110%;">
+	<div style="padding: 1em 0.6em; border: 1px solid #CCC; line-height: 1.5; background-color: #F3F3F3; font-weight: bold; font-size: 108%;">
 		<% ops.each do |operation| %>
 			<span style="margin: 0 0.4em;">
 				<%= content_tag(:a, h(operation.name), :href => "#soap_operation_#{operation.id}") -%>
@@ -65,7 +65,7 @@
 						
 					</div>
 					
-					<div style="float: right; width: 24%; font-size: 0.9em;">
+					<div style="float: right; width: 24%; font-size: 85%;">
 						<%= render :partial => "annotations/tags_box",
 							 				 :locals => { :annotatable => operation } -%>
 					</div>
@@ -108,7 +108,7 @@
 								<%= render :partial => "annotations/other_annotations",
 							 		 		 		 :locals => { :annotatable => input } -%>
 							</div>
-							<div style="float: right; width: 24%; font-size: 0.9em;">
+							<div style="float: right; width: 24%; font-size: 85%;">
 								<%= render :partial => "annotations/tags_box",
 									 				 :locals => { :annotatable => input } -%>
 							</div>
@@ -152,7 +152,7 @@
 								<%= render :partial => "annotations/other_annotations",
 							 		 		 		 :locals => { :annotatable => output } -%>
 							</div>
-							<div style="float: right; width: 24%; font-size: 0.9em;">
+							<div style="float: right; width: 24%; font-size: 85%;">
 								<%= render :partial => "annotations/tags_box",
 									 				 :locals => { :annotatable => output } -%>
 							</div>
@@ -163,7 +163,7 @@
 			
 			</div>
 			
-			<p style="margin: 0 0 1.5em 0; font-size: 90%; text-align: right;">
+			<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">
 					<a href="#operations_index">Back to top</a>
 				</p>
 			
