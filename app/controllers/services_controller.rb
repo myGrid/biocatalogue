@@ -18,6 +18,8 @@ class ServicesController < ApplicationController
   
   after_filter :remember_search, :only => [ :search ]
   
+  before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
+  
   # GET /services
   # GET /services.xml
   def index
@@ -184,6 +186,12 @@ class ServicesController < ApplicationController
   
   def find_service
     @service = Service.find(params[:id])
+  end
+  
+  def check_if_user_wants_to_categorise
+    if !logged_in? and params.has_key?(:categorise)
+      flash[:notice] = "Please login or register to categorise this service"
+    end
   end
  
 end
