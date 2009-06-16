@@ -189,7 +189,7 @@ module ApplicationHelper
   end
   
   def display_name(item)
-    %w{ name display_name title }.each do |w|
+    %w{ display_name title name }.each do |w|
       return eval("h(item.#{w})") if item.respond_to?(w)
     end
     return "#{item.class.name}_#{id}"
