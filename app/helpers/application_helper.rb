@@ -102,7 +102,7 @@ module ApplicationHelper
     # defaults:
     options.reverse_merge!(:text => country,
                            :class => "flag",
-                           :style => "margin-left: 0.5em;")
+                           :style => "margin-left: 0.5em; vertical-align: middle;")
 
     code = ''
 
@@ -131,7 +131,7 @@ module ApplicationHelper
     # defaults:
     options.reverse_merge!(:text => nil,
                            :class => "flag",
-                           :style => "margin-left: 0.5em;")
+                           :style => "margin-left: 0.5em; vertical-align: middle;")
                            
     code = "GB" if code.upcase == "UK"
     text = (options[:text].nil? ? h(CountryCodes.country(code.upcase)) : h(options[:text].to_s))
@@ -180,7 +180,7 @@ module ApplicationHelper
       when "User"
         user_link_with_flag(submitter)
       else
-        link_to(display_name(submitter), submitter) 
+        link_to(display_name(submitter), submitter, :style => "vertical-align: middle;") 
     end
   end
 
@@ -201,8 +201,8 @@ module ApplicationHelper
   # -----------------------
 
   def annotation_text_item_background_color
-    #"#EEF0FF"
     "#e9ecff"
+    #"#DFE7FF"
   end
   
   # This method is used to generate an icon and/or link that will popup up an in page dialog box for the user to add an annotation (or mutliple annotations at once).
@@ -407,7 +407,9 @@ module ApplicationHelper
     return '' if annotation.nil?
 
     return content_tag(:p, :class => "annotation_source_text #{annotation_source_cssclass(annotation)}", :style => style) do
-      "by #{annotation.source_type.titleize.downcase}: <b>#{link_to(h(annotation.source.annotation_source_name), annotation.source)}</b> (#{distance_of_time_in_words_to_now(annotation.created_at)} ago)"
+      "<span>by #{annotation.source_type.titleize.downcase}: </span>" + 
+      "#{link_to(h(annotation.source.annotation_source_name), annotation.source)} " +
+      "<span style='margin-left: 0.2em;'>(#{distance_of_time_in_words_to_now(annotation.created_at)} ago)</span>"
     end
   end
 

@@ -61,20 +61,26 @@
 						<td>
 							
 							<p class="detail">
+								
 								<b>Provider:</b>
 								<% service.providers.each do |provider| %>
-									<%= link_to(h(provider.name), service_provider_path(provider)) %>
+									<%= link_to(h(provider.name), service_provider_path(provider), :style => "vertical-align: middle;") %>
 								<% end %>
+								
 								<span class="faded" style="margin: 0 0.2em; vertical-align: middle;">|</span>
+								
 								<b>Submitted by:</b>
 								<%= submitter_link(service.submitter) %>
-								(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
+								<span style="margin-left: 0.2em; vertical-align: middle; color: #666;">
+									(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
+								</span>
+								
 							</p>
 							
 							<div class="detail">
 								<table>
 									<tr>
-										<td style="width: 130px; line-height: 1.5; padding-top: 1px;">
+										<td style="width: 12em; line-height: 1.5; padding-top: 1px;">
 											<b>Tags on this service:</b>
 										</td>
 										<td>

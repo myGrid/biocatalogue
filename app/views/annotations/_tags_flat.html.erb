@@ -30,7 +30,7 @@
 	
 	<% tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable) %>
 	<% unless tag_annotations.empty? %>
-		<%= generate_tag_cloud_from_annotations(tag_annotations, :flat, :tag_cloud_style => "display: inline; text-align: left; margin: 0 1em;") -%>
+		<%= generate_tag_cloud_from_annotations(tag_annotations, :flat, :tag_cloud_style => "text-align: left;") -%>
 	<% else %>
 		<div class="none_text" style="margin-top: 2px;">None</div>
 	<% end %>
