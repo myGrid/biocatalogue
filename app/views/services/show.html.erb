@@ -97,10 +97,12 @@
 			</p>
 			
 			<p>
-				<b>Submitted by:</b>
+				<b>Submitter / Source:</b>
 				<br/>
-				<%= link_to(h(@service.submitter_name), @service.submitter) %>
-				(<%= distance_of_time_in_words_to_now(@service.created_at) -%> ago)
+				<%= submitter_link(@service.submitter, "margin-right: 0.5em; vertical-align: middle;") %>
+				<span class="ago" style="vertical-align: baseline;">
+					(<%= distance_of_time_in_words_to_now(@service.created_at) -%> ago)
+				</span>
 			</p>
 			
 			<p>

@@ -270,6 +270,11 @@ img, a img {
 	line-height: 1.3;
 }
 
+.ago {
+	margin-left: 0.2em; 
+	color: #666;
+}
+
 a:link.login, a:visited.login {
 	padding-left: 2px;
 	padding-right: 20px;
@@ -1179,6 +1184,15 @@ body.sidebar-right #login_box {
 
 /* END listing styles */
 
+.submitter_info {
+	color: #666;
+	vertical-align: baseline;
+}
+
+.submitter_info * {
+	vertical-align: baseline;
+}
+
 .service_type_badge {
 	font-size: 85%;
 	font-weight: bold;
@@ -1611,7 +1625,7 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .annotation_source_text * {
-	vertical-align: baseline;
+	vertical-align: middle;
 }
 
 .annotation_source_text a {

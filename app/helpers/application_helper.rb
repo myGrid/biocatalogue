@@ -48,8 +48,18 @@ module ApplicationHelper
         "add.png"
       when :favourite
         "favourite.png"
-      when :user
+      when :annotations
+        "note.png"
+      when :user, :annotation_source_user
         "user.png"
+      when :registry, :annotation_source_registry
+        "world_link.png"
+      when :provider_document, :annotation_source_provider_document
+        "page_white_code.png"
+      when :agent, :annotation_source_agent
+        "server_connect.png"
+      when :curator, :annotation_source_curator
+        "user_suit.png"
     end
   end
   
@@ -175,17 +185,29 @@ module ApplicationHelper
     return text
   end
 
-  def submitter_link(submitter)
-    case submitter.class.name
+  def submitter_link(submitter, icon_style='margin-right: 0.5em;')
+    output = ""
+    
+    c = submitter.class.name
+    
+    output << '<span class="submitter_info">'
+      
+    output << image_tag(icon_filename_for(c.underscore.to_sym), :alt => "", :title => tooltip_title_attrib(c), :style => icon_style)
+  
+    output << case c
       when "User"
         user_link_with_flag(submitter)
       else
-        link_to(display_name(submitter), submitter, :style => "vertical-align: middle;") 
+        link_to(display_name(submitter), submitter) 
     end
+    
+    output << '</span>'
+    
+    return output
   end
-
+  
   def user_link_with_flag(user)
-    link_to(h(user.display_name), user_path(user), :style => "vertical-align: middle;") + flag_icon_from_country(user.country, :style => "vertical-align: middle; margin: 0 0.4em;")
+    link_to(h(user.display_name), user_path(user), :style => "vertical-align: baseline") + flag_icon_from_country(user.country, :style => "vertical-align: middle; margin: 0 0.4em;")
   end
   
   def display_name(item)
@@ -402,14 +424,29 @@ module ApplicationHelper
   def annotation_source_cssclass(annotation)
     return "annotation_source_#{annotation.source_type.downcase}"
   end
+  
+  def annotation_source_icon(source_type, style='margin-right: 0.3em;')
+    return '' if source_type.nil?
+    
+    filename = case source_type
+      when "ServiceProvider"
+        style = 'margin-left: 0.2em; margin-right: 0.1em;'
+        icon_filename_for(:annotation_source_provider_document)
+      else
+        icon_filename_for("annotation_source_#{source_type.underscore}".to_sym)
+    end
+    
+    return image_tag(filename, :alt => "", :title => tooltip_title_attrib(source_type), :style => style)
+  end
 
   def annotation_source_text(annotation, style='')
     return '' if annotation.nil?
 
     return content_tag(:p, :class => "annotation_source_text #{annotation_source_cssclass(annotation)}", :style => style) do
-      "<span>by #{annotation.source_type.titleize.downcase}: </span>" + 
+      "<span>by </span>" +
+      annotation_source_icon(annotation.source_type) +
       "#{link_to(h(annotation.source.annotation_source_name), annotation.source)} " +
-      "<span style='margin-left: 0.2em;'>(#{distance_of_time_in_words_to_now(annotation.created_at)} ago)</span>"
+      "<span class='ago'>(#{distance_of_time_in_words_to_now(annotation.created_at)} ago)</span>"
     end
   end
 

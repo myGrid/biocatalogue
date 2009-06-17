@@ -14,22 +14,22 @@
 		<div class="annotations_counts_box">
 			<% content_tag(:span, :class => "total", :title => tooltip_title_attrib("Overall number of annotations on this service and its parts"))  do %>
 				Annotations: <%= counts[:total] -%>
-				<%= image_tag('note.png', :alt => "Overall number of annotations on this service and its parts") -%>
+				<%= image_tag(icon_filename_for(:annotations), :alt => "Overall number of annotations on this service and its parts") -%>
 			<% end %>
 			
-			<% content_tag(:span, :class => "annotation_source_provider", :title => tooltip_title_attrib("Total number of annotations sourced from service provider(s)"))  do %>
+			<% content_tag(:span, :class => "annotation_source_provider", :title => tooltip_title_attrib("Total number of annotations from the provider's definition / description document"))  do %>
 				<%= counts[:providers] -%>
-				<%= image_tag('page_white_code.png', :alt => "Total number of annotations sourced from service provider(s)") -%>
+				<%= image_tag(icon_filename_for(:annotation_source_provider_document), :alt => "Total number of annotations from the provider's definition / description document") -%>
 			<% end %>
 			
 			<% content_tag(:span, :class => "annotation_source_user", :title => tooltip_title_attrib("Total number of user submitted annotations"))  do %>
 				<%= counts[:users] -%>
-				<%= image_tag('user.png', :alt => "Total number of user submitted annotations") -%>
+				<%= image_tag(icon_filename_for(:annotation_source_user), :alt => "Total number of user submitted annotations") -%>
 			<% end %>
 			
 			<% content_tag(:span, :class => "annotation_source_registry end", :title => tooltip_title_attrib("Total number of annotations sourced from other registries"))  do %>
 				<%= counts[:registries] -%>
-				<%= image_tag('page_white_link.png', :alt => "Total number of annotations sourced from other registries") -%>
+				<%= image_tag(icon_filename_for(:annotation_source_registry), :alt => "Total number of annotations sourced from other registries") -%>
 			<% end %>
 		</div>
 	<% end %>
