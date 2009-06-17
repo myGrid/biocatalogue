@@ -248,7 +248,7 @@ module BioCatalogue
     end
     
     def self.is_filter_selected(current_filters, filter_type, filter_value)
-      return current_filters[filter_type] && current_filters[filter_type].include?(filter_value)
+      return current_filters[filter_type] && current_filters[filter_type].include?(filter_value.to_s)
     end
     
     # Returns:
