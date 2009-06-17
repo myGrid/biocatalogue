@@ -22,10 +22,12 @@ module BioCatalogue
     
     UNKNOWN_TEXT = "(unknown)".freeze
     
-    FILTER_KEYS = [ :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ].freeze
+    FILTER_KEYS = [ :cat, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ].freeze
     
     def self.filter_type_to_display_name(filter_type)
       case filter_type
+        when :cat
+          "Service Categories"
         when :t
           "Service Types"
         when :p
@@ -54,6 +56,14 @@ module BioCatalogue
     # ======================
     # Filter options finders
     # ----------------------
+    
+    # TODO: potentially for the future...
+    # Gets an alphabetically sorted list of the categories, as a tree.
+    # Example return data:
+    # [ { "name" => "x", "count" => "5", "children" => [ [ { "name" => "xx", "count" => "4" }, { "name" => "xy", "count" => "11" }, ... ] ] }, { "name" => "y", "count" => "11", "children" => [ ] }, ... ]
+    #def self.get_filters_for_categories
+    #  [ { "name" => "x", "count" => "5", "children" => [ [ { "name" => "xx", "count" => "4" }, { "name" => "xy", "count" => "11" } ] ] }, { "name" => "y", "count" => "11", "children" => [ ] } ]
+    #end
     
     # Gets an ordered list of all the service providers and their counts of services.
     # Example return data:
@@ -237,18 +247,15 @@ module BioCatalogue
       return params_dup
     end
     
-    def self.is_filter_selected(params, filter_type, filter_value)
-      return params[filter_type] && self.split_filter_options_string(params[filter_type]).include?(filter_value)
+    def self.is_filter_selected(current_filters, filter_type, filter_value)
+      return current_filters[filter_type] && current_filters[filter_type].include?(filter_value)
     end
     
     # Returns:
     #   [ conditions, joins ] for use in an ActiveRecord .find method (or .paginate).
-    def self.generate_conditions_and_joins_from_filters(params)
+    def self.generate_conditions_and_joins_from_filters(filters)
       conditions = { }
       joins = [ ]
-      
-      # Get the necessary filters from the params object, in a more structured form...
-      filters = self.convert_params_to_filters(params)
       
       # Replace the unknown filter with nil
       filters.each do |k,v|
@@ -262,6 +269,7 @@ module BioCatalogue
             
       # Now build the conditions and joins...
       
+      service_ids_categories = [ ]
       service_ids_submitters = [ ]
       service_ids_tags_s = [ ]
       service_ids_tags_ops = [ ]
@@ -272,6 +280,8 @@ module BioCatalogue
         filters.each do |filter_type, filter_values|
           unless filter_values.blank?
             case filter_type
+              when :cat
+                service_ids_categories = get_service_ids_with_categories(filter_values)
               when :t
                 service_types = [ ]
                 filter_values.each do |f|
@@ -327,12 +337,14 @@ module BioCatalogue
       # This ANDs the service IDs (ie: uses only the service IDs that match all criterion).
       
       # To carry out this process properly, we set a dummy value of 0 to any array that returned NO service IDs.
+      service_ids_categories = [ 0 ] if service_ids_categories.empty? and filters.has_key?(:cat)
       service_ids_submitters = [ 0 ] if service_ids_submitters.empty? and (filters.has_key?(:su) or filters.has_key?(:sr))
       service_ids_tags_ops = [ 0 ] if service_ids_tags_s.empty? and filters.has_key?(:tag_s)
       service_ids_tags_ops = [ 0 ] if service_ids_tags_ops.empty? and filters.has_key?(:tag_ops)
       service_ids_tags_ins = [ 0 ] if service_ids_tags_ins.empty? and filters.has_key?(:tag_ins)
       service_ids_tags_outs = [ 0 ] if service_ids_tags_outs.empty? and filters.has_key?(:tag_outs)
       
+      Rails.logger.info "*** service_ids_categories = #{service_ids_categories.inspect}"
       Rails.logger.info "*** service_ids_submitters = #{service_ids_submitters.inspect}"
       Rails.logger.info "*** service_ids_tags_s = #{service_ids_tags_s.inspect}"
       Rails.logger.info "*** service_ids_tags_ops = #{service_ids_tags_ops.inspect}"
@@ -340,6 +352,7 @@ module BioCatalogue
       Rails.logger.info "*** service_ids_tags_outs = #{service_ids_tags_outs.inspect}"
       
       service_id_arrays_to_process = [ ]
+      service_id_arrays_to_process << service_ids_categories unless service_ids_categories.blank?
       service_id_arrays_to_process << service_ids_submitters unless service_ids_submitters.blank?
       service_id_arrays_to_process << service_ids_tags_s unless service_ids_tags_s.blank?
       service_id_arrays_to_process << service_ids_tags_ops unless service_ids_tags_ops.blank?
@@ -364,8 +377,10 @@ module BioCatalogue
         
         # If a filter that relies on service IDs was specified but no services were found then no services should be returned
         final_service_ids = [ -1 ] if final_service_ids.blank? and 
-                                      (filters.has_key?(:su) or 
+                                      (filters.has_key?(:cat) or
+                                       filters.has_key?(:su) or 
                                        filters.has_key?(:sr) or 
+                                       filters.has_key?(:tag_s) or
                                        filters.has_key?(:tag_ops) or 
                                        filters.has_key?(:tag_ins) or 
                                        filters.has_key?(:tag_outs))
@@ -474,6 +489,16 @@ module BioCatalogue
       return filters
     end
     
+    def self.get_service_ids_with_categories(categories)
+      results = [ ]
+      
+      categories.map{|c| c.to_i}.each do |c_id|
+        results.concat(Categorising.get_service_ids_with_category(c_id))
+      end
+      
+      return results
+    end
+    
     def self.get_service_ids_with_submitter_users(user_display_names)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = [ "SELECT services.id
@@ -484,7 +509,7 @@ module BioCatalogue
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
-      return results.map { |r| r['id'].to_i }
+      return results.map{|r| r['id'].to_i}.uniq
     end
     
     def self.get_service_ids_with_submitter_registries(registry_display_names)
@@ -497,7 +522,7 @@ module BioCatalogue
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
-      return results.map { |r| r['id'].to_i }
+      return results.map{|r| r['id'].to_i}.uniq
     end
     
     def self.get_service_ids_with_tag_on_service_models(model_names, tag_values)

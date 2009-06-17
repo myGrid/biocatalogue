@@ -21,11 +21,7 @@ class Category < ActiveRecord::Base
   end
   
   def self.tree
-    roots = [ ]
-    
-    self.all.each do |c|
-      roots << c unless c.has_parent?
-    end
+    roots = Category.find(:all, :conditions => { :parent_id => nil })
     
     return roots.sort { |a,b| a.name <=> b.name }
   end

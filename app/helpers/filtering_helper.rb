@@ -8,10 +8,10 @@
 
 module FilteringHelper
   def help_text_for_filtering
-    "You can build up a filtered list of services by selecting/deselecting the options below.<br/><br/>
-    Filtering results will show services from all selected Providers.
-    If you also select service types, the results will then be filtered to only show services of those type(s).<br/><br/>
-    You can also just filter on service types alone."
+    "You can build up a filtered list of services by selecting/deselecting and combining the options below.<br/><br/>" +
+    "Filters within a filter type will be OR'ed and selections between filter types will be AND'ed.<br/><br/>" +
+    "e.g: selecting 2 providers - 'ebi.ac.uk' and 'example.com, and the service type 'SOAP', and the location 'United Kingdom' " +
+    " will retrieve all SOAP services that are from ebi.ac.uk and example.com and located in United Kingdom"
   end
   
   def get_text_to_display_for_filter_value(filter_type, filter_value)
@@ -28,13 +28,29 @@ module FilteringHelper
       is_ontology_term = true unless base_uri.blank?
     end
     
+    # Special processing for categories
+    if filter_type == :cat
+      c = Category.find_by_id(filter_value)
+      text = (c.nil? ? "(Invalid category!)" : c.name)
+    end
+    
     text = truncate(h(text), :length => 32)
     
     if is_ontology_term
-    text = content_tag(:span, text, :class => 'ontology_term')
+      text = content_tag(:span, text, :class => 'ontology_term')
     end
     
     return text
+  end
+  
+  def get_tooltip_text_for_filter_value(filter_type, filter_value)
+    case filter_type
+      when :cat
+        c = Category.find_by_id(filter_value)
+        return (c.nil? ? "(Invalid category!)" : BioCatalogue::Categorising.category_hierachy_text(c))
+      else
+        return h(h(filter_value))
+    end
   end
   
   def get_filters_all_cookie_key(filter_type_query_key)
@@ -47,15 +63,26 @@ module FilteringHelper
   end
   
   # Note: this relies on the cookie functions defined in layouts/_head_tabber_html.erb
-  def render_show_hide_links(filter_type_query_key, hidden_items_class)
+  def render_show_hide_filters_links(filter_type_query_key, hidden_items_class)
     html = ""
+    
+    more_text = ""
+    less_text = ""
+    case filter_type_query_key
+      when :cat
+        more_text = "Show subcategories"
+        less_text = "Show root categories only"
+      else
+        more_text = "Show all"
+        less_text = "Show top 10 only"
+    end
     
     more_link_id = "more_link_#{filter_type_query_key}"
     less_link_id = "less_link_#{filter_type_query_key}"
     filters_all_cookie_key = get_filters_all_cookie_key(filter_type_query_key)
     filters_all_cookie_current_value = get_filters_all_cookie_value(filter_type_query_key)
     
-    html << link_to_function("Show all" + expand_image("0.5em"), :id => more_link_id, :style => (filters_all_cookie_current_value == "true" ? "display:none;" : "")) do |page| 
+    html << link_to_function(more_text + expand_image("0.5em"), :id => more_link_id, :style => (filters_all_cookie_current_value == "true" ? "display:none;" : "")) do |page| 
       page.select(".#{hidden_items_class}").each do |el|
         el.toggle
       end
@@ -63,7 +90,7 @@ module FilteringHelper
       page.call "setCookie", "#{filters_all_cookie_key}", "true"
     end
     
-    html << link_to_function("Show top 10 only" + collapse_image("0.5em"), :id => less_link_id, :style => (filters_all_cookie_current_value == "true" ? "" : "display:none;")) do |page| 
+    html << link_to_function(less_text + collapse_image("0.5em"), :id => less_link_id, :style => (filters_all_cookie_current_value == "true" ? "" : "display:none;")) do |page| 
       page.select(".#{hidden_items_class}").each do |el|
         el.toggle
       end
@@ -87,24 +114,24 @@ module FilteringHelper
   end
   
   def is_filter_selected(filter_type, filter_value)
-    return BioCatalogue::Filtering.is_filter_selected(params, filter_type, filter_value)
+    return BioCatalogue::Filtering.is_filter_selected(@current_filters, filter_type, filter_value)
   end
   
   # Gets the current filters selected, in a grouped structure (Array of Hashes) to take into account subtypes...
   def current_selected_filters_grouped
     grouped = [ ]
     
-    current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
+    return grouped unless defined?(@current_filters) and !@current_filters.blank? 
     
-    current_filters.each do |k,v|
+    @current_filters.each do |k,v|
       unless [ :su, :sr ].include?(k)
         grouped << { k => v }
       end
     end
     
     submitters = { }
-    submitters[:su] = current_filters[:su] unless current_filters[:su].blank?
-    submitters[:sr] = current_filters[:sr] unless current_filters[:sr].blank?
+    submitters[:su] = @current_filters[:su] unless @current_filters[:su].blank?
+    submitters[:sr] = @current_filters[:sr] unless @current_filters[:sr].blank?
     
     grouped << submitters unless submitters.blank?
     

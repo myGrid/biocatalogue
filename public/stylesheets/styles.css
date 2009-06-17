@@ -2086,8 +2086,11 @@ div.filters div.selected_filters_type_box .or {
 	padding-right: 12px;
 }
 
-div.filters li {
+div.filters ul.top_level {
 	font-size: 85%;
+}
+
+div.filters li {
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -2142,6 +2145,15 @@ div.filters li .container a span.deselect {
 
 div.filters li .container a:hover span.deselect {
 	background: url('/images/delete.png') no-repeat left center;
+}
+
+div.filters li.category_root .container a {
+	margin-bottom: 0.5em;	
+}
+
+div.filters li.sub_category .container a {
+	border-left: 1px dotted #CCC;
+	padding-left: 0.5em;
 }
 
 /* END filtering styles */
@@ -2296,7 +2308,10 @@ ul.categories li span.main {
 	margin-bottom: 0.4em;
 	margin-right: 0.5em;
 	padding: 3px 5px;
-	border: 1px solid #DDD;
+	border-top: 1px solid #DEDEDE;
+	border-left: 1px solid #DEDEDE;
+	border-right: 2px solid #CDCDCD;
+	border-bottom: 2px solid #CDCDCD;
 }
 
 /* END categories styles */

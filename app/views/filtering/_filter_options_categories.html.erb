@@ -1,0 +1,45 @@
+<%
+
+# BioCatalogue: app/views/filtering/_filter_options_categories.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%# This partial MUST be used within a <div> element with class="filters" %>
+
+<div class="filter_type_box">
+		
+	<% rounded "#FFF", "#333", "100%" do %>
+		
+		<p class="type">
+			<%= BioCatalogue::Filtering.filter_type_to_display_name(filter_type) -%>
+			<span class="faded">(<%= Category.count -%>)</span>
+		</p>
+		
+		<%
+			filters_all_cookie_current_value = get_filters_all_cookie_value(filter_type)
+			hidden_items_class = "filters_hidden_#{filter_type}"
+		%>
+		
+		<ul class="top_level">
+			<% Category.tree.each do |category| %>
+				<%= render :partial => 'filtering/filter_option_category_item',
+									 :locals => { :category => category,
+																:filter_type => filter_type,
+																:level => 0,
+																:filters_all_cookie_current_value => filters_all_cookie_current_value,
+																:hidden_items_class => hidden_items_class } -%>
+			<% end %>
+		</ul>
+		
+		<p class="more_less_links" style="margin-top: 1.2em;">
+			<%= render_show_hide_filters_links(filter_type, hidden_items_class) -%>
+		</p>
+		
+	<% end %>
+		
+</div>
+

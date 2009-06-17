@@ -37,7 +37,11 @@
 					
 					<% rounded "#FFC", "#333", "100%" do %>
 					
+						<% filter_group_subs_count = 0 %>
+					
 						<% current_filter_group.each do |filter_type, values| %>
+						
+							<% filter_group_subs_count += 1 %>
 					
 							<p class="type_small">
 								<%= BioCatalogue::Filtering.filter_type_to_display_name(filter_type) -%>
@@ -60,7 +64,7 @@
 		                                      	:filter_type => filter_type } -%>
 									</li>
 									
-									<% unless filter_items_count == values.length %>
+									<% unless filter_items_count == values.length and filter_group_subs_count == current_filter_group.length %>
 										<li class="or">
 											OR
 										</li>

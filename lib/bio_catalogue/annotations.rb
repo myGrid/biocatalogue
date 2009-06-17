@@ -64,7 +64,7 @@ module BioCatalogue
       
       return counts if service.nil?
       
-      cache_key = CacheHelper.cache_key_for(:metadata_counts_for_service, service)
+      cache_key = CacheHelper.cache_key_for(:metadata_counts_for_service, service.id)
       
       if recalculate
         Rails.cache.delete(cache_key)

@@ -21,7 +21,7 @@ module BioCatalogue
     # ---------------
 
     def self.generate_cache_key(map_from, map_to)
-      "#{map_from}_#{map_to}"
+      "#{map_from}/#{map_to}"
     end
 
     # ===============

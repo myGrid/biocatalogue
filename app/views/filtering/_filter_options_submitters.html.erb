@@ -38,7 +38,7 @@
 			hidden_items_class = "filters_hidden_#{:sr}"
 		%>
 		
-		<ul>
+		<ul class="top_level">
 			<%# Show the first x amount...  %>
 			<% submitter_registry_filters[0...initial_no_to_show].each do |filter| %>
 				<li>
@@ -51,7 +51,7 @@
 			<%# ... hide the rest if there are more... %>
 			<% unless (hidden_filters = submitter_registry_filters[initial_no_to_show...submitter_registry_filters.length]).blank? %>
 				<% hidden_filters.each do |filter| %>
-					<li class='<%= hidden_items_class -%>' style="<%= (filters_all_cookie_current_value == "true" ? "" : "display:none;") -%>">
+					<li class="<%= hidden_items_class -%>" style="<%= (filters_all_cookie_current_value == "true" ? "" : "display:none;") -%>">
 						<%= render :partial => 'filtering/filter_option_item',
 											 :locals => { :filter => filter,
 																		:filter_type => :sr } -%>
@@ -63,7 +63,7 @@
 		<%# ... make available the option to show all, if there are more. %>
 		<% if submitter_registry_filters.length > initial_no_to_show %>
 			<p class="more_less_links" style="margin-top: 0.8em;">
-				<%= render_show_hide_links(:sr, hidden_items_class) -%>
+				<%= render_show_hide_filters_links(:sr, hidden_items_class) -%>
 			</p>
 		<% end %>
 		
@@ -81,7 +81,7 @@
 			hidden_items_class = "filters_hidden_#{:su}"
 		%>
 		
-		<ul>
+		<ul class="top_level">
 			<%# Show the first x amount...  %>
 			<% submitter_user_filters[0...initial_no_to_show].each do |filter| %>
 				<li>
@@ -94,7 +94,7 @@
 			<%# ... hide the rest if there are more... %>
 			<% unless (hidden_filters = submitter_user_filters[initial_no_to_show...submitter_user_filters.length]).blank? %>
 				<% hidden_filters.each do |filter| %>
-					<li class='<%= hidden_items_class -%>' style="<%= (filters_all_cookie_current_value == "true" ? "" : "display:none;") -%>">
+					<li class="<%= hidden_items_class -%>" style="<%= (filters_all_cookie_current_value == "true" ? "" : "display:none;") -%>">
 						<%= render :partial => 'filtering/filter_option_item',
 											 :locals => { :filter => filter,
 																		:filter_type => :su } -%>
@@ -106,7 +106,7 @@
 		<%# ... make available the option to show all, if there are more. %>
 		<% if submitter_user_filters.length > initial_no_to_show %>
 			<p class="more_less_links" style="margin-top: 0.8em;">
-				<%= render_show_hide_links(:su, hidden_items_class) -%>
+				<%= render_show_hide_filters_links(:su, hidden_items_class) -%>
 			</p>
 		<% end %>
 		

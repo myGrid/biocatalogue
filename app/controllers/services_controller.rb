@@ -8,6 +8,8 @@ class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update, :destroy ]
   
+  before_filter :parse_current_filters, :only => [ :index ]
+  
   before_filter :find_services, :only => [ :index ]
   
   before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise ]
@@ -174,9 +176,9 @@ class ServicesController < ApplicationController
     
     # Filters
     
-    conditions, joins = BioCatalogue::Filtering.generate_conditions_and_joins_from_filters(params)
+    conditions, joins = BioCatalogue::Filtering.generate_conditions_and_joins_from_filters(@current_filters)
     
-    @filter_message = "The services index has been filtered using the selected filters on the left..." unless conditions.blank? or joins.blank?
+    @filter_message = "The services index has been filtered using the selected filters on the left..." unless @current_filters.blank?
     
     @services = Service.paginate(:page => params[:page],
                                  :order => order,

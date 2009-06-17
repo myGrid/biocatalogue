@@ -178,6 +178,10 @@ class ApplicationController < ActionController::Base
 
     return false
   end
+  
+  def parse_current_filters
+    @current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
+  end
 
   # ========================================
   # Code to help with remembering which tab
