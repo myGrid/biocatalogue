@@ -16,9 +16,9 @@ require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/
 #---
 
 class ApplicationController < ActionController::Base
-  
+
   include ExceptionNotifiable
-  
+
   # This line ensures that templates and mailing is enabled for the Exception Notification plugin
   # on your local development set up (so as to test the templates etc).
   # Note: error templates will only show in production mode.
@@ -26,24 +26,24 @@ class ApplicationController < ActionController::Base
   # Be aware of this when configuring the email settings in biocat_local.rb -
   # in most cases you should disable email sending in your development setup (see biocat_local.rb.pre for more info).
   local_addresses.clear
-  
+
   helper :all # include all helpers, all the time
 
   # See ActionController::Base for details
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password").
   filter_parameter_logging :password
-  
+
   protect_from_forgery
 
   layout "application_wide"
 
   before_filter :set_original_uri
-  
+
   prepend_before_filter :initialise_use_tab_cookie_in_session
-  
+
   after_filter :log_event
-  
+
   def login_required
     respond_to do |format|
       format.html do
@@ -127,7 +127,12 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :mine?
-  
+
+  # Returns the host url and its port
+  def base_host
+    request.host_with_port
+  end
+
   protected
 
   def disable_action
@@ -140,100 +145,100 @@ class ApplicationController < ActionController::Base
       session[:original_uri] = request.request_uri if not logged_in?
     end
   end
-  
+
   # Generic method to raise / proceed from errors. Redirects to home.
   # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
   def error_to_home(msg)
     flash[:error] = msg
-    
+
     respond_to do |format|
       format.html { redirect_to home_url }
       format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
     end
   end
-  
+
   # Generic method to raise / proceed from errors. Redirects to the previous page or if not available, to home.
   # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
   def error_to_back_or_home(msg)
     flash[:error] = msg
-    
+
     respond_to do |format|
       format.html { redirect_to(session[:original_uri].blank? ? home_url : :back) }
       format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
     end
   end
-  
+
   def is_request_from_bot?
     BOT_IGNORE_LIST.each do |bot|
       bot = bot.downcase
       if request.env['HTTP_USER_AGENT'] and request.env['HTTP_USER_AGENT'].downcase.match(bot)
         return true
-      end 
+      end
     end
-    
+
     return false
   end
-  
+
   # ========================================
   # Code to help with remembering which tab
   # the user was in after redirects etc.
   # ----------------------------------------
-  
+
   def initialise_use_tab_cookie_in_session
     #logger.info ""
     #logger.info "initialise_use_tab_cookie_in_session called; before - session[:use_tab_cookie] = #{session[:use_tab_cookie]}"
     #logger.info ""
-    
+
     session[:use_tab_cookie] = false if session[:use_tab_cookie] == nil
-    
+
     #logger.info ""
     #logger.info "initialise_use_tab_cookie_in_session called; after - session[:use_tab_cookie] = #{session[:use_tab_cookie]}"
     #logger.info ""
   end
-  
+
   def add_use_tab_cookie_to_session
     #logger.info ""
     #logger.info "add_use_tab_cookie_to_session called; before - session[:use_tab_cookie] = #{session[:use_tab_cookie]}"
     #logger.info ""
-    
+
     session[:use_tab_cookie] = true
-    
+
     #logger.info ""
     #logger.info "add_use_tab_cookie_to_session called; after - session[:use_tab_cookie] = #{session[:use_tab_cookie]}"
     #logger.info ""
   end
-  
+
   # ========================================
-  
-  
+
+
   # =========================
   # Helper methods for Search
   # -------------------------
-  
+
   def validate_and_setup_search
-    
+
     # First check that search is available
     unless BioCatalogue::Search.available?
       error_to_home('Search is unavailable at this time')
       return false
     end
-    
+
     query = (params[:q] || '').strip
-    
+
     # Check query is present
     unless query.blank?
-      
+
       # Check if the query is '*' in which case give the user an appropriate message.
       if query == '*'
         error_to_home("It looks like you were trying to search for everything in the BioCatalogue! If you would like to browse all services then <a href='#{services_path}'>click here</a>.")
         return false
       end
-      
+
       # Query is fine...
       @query = query
-      
+
       type = params[:t]
-      
+
       if type.blank?
         if controller_name.downcase == "search"
           type = "all"
@@ -243,28 +248,28 @@ class ApplicationController < ActionController::Base
       else
         type = type.strip.downcase.pluralize
       end
-      
+
       all_valid_types = BioCatalogue::Search::VALID_SEARCH_TYPES + BioCatalogue::Search::ALL_TYPES_SYNONYMS
-      
+
       # Check that a valid type has been provided
       unless all_valid_types.include?(type)
         error_to_home("'#{type}' is an invalid search type")
         return false
       end
-      
+
       # Type is fine...
       @type = type
-      
+
       @results = nil
-      
+
     end
-    
+
   end
-  
+
   def remember_search
     session[:last_search] = request.url if defined?(@results) and !@results.nil? and @results.total > 0
   end
-  
+
   def log_search
     if USE_EVENT_LOG and !is_request_from_bot? and (params[:page].blank? or params[:page] == "1")
       if !@query.blank? and !@type.blank?
@@ -272,58 +277,58 @@ class ApplicationController < ActionController::Base
       end
     end
   end
-  
+
   # =========================
-  
+
   # Used to record certain events that are of importance...
   def log_event
     # Note: currently the following are logged seperately:
     # - searches
-    
+
     if USE_EVENT_LOG and !is_request_from_bot?
-      
+
       c = controller_name.downcase
       a = action_name.downcase
-        
+
       core_data = { :http_user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] }
-      
+
       if c == "services"
         if a == "show"
-          ActivityLog.create(:action => "view", 
-                             :culprit => current_user, 
-                             :activity_loggable => @service, 
-                             :data => core_data)  
+          ActivityLog.create(:action => "view",
+                             :culprit => current_user,
+                             :activity_loggable => @service,
+                             :data => core_data)
         end
       end
-      
+
       if c == "users"
         if a == "show"
-          ActivityLog.create(:action => "view", 
-                             :culprit => current_user, 
-                             :activity_loggable => @user, 
+          ActivityLog.create(:action => "view",
+                             :culprit => current_user,
+                             :activity_loggable => @user,
                              :data => core_data)
         end
       end
-      
+
       if c == "registries"
         if a == "show"
-          ActivityLog.create(:action => "view", 
-                             :culprit => current_user, 
-                             :activity_loggable => @registry, 
+          ActivityLog.create(:action => "view",
+                             :culprit => current_user,
+                             :activity_loggable => @registry,
                              :data => core_data)
         end
       end
-      
+
       if c == "service_providers"
         if a == "show"
-          ActivityLog.create(:action => "view", 
-                             :culprit => current_user, 
-                             :activity_loggable => @service_provider, 
+          ActivityLog.create(:action => "view",
+                             :culprit => current_user,
+                             :activity_loggable => @service_provider,
                              :data => core_data)
         end
       end
-      
+
     end
   end
-  
+
 end

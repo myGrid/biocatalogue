@@ -10,4 +10,11 @@
 
 Please, click on the following link to activate your account.
 <br />
-<a href="http://localhost:3005/activate_account/<%= @user.security_token %>">http://localhost:3005/activate_account/<%= @user.security_token %></a>
+
+
+<%= link_to "Activate my account",
+            :only_path => false,
+            :host => @base_url,
+            :controller => 'users',
+            :action => 'activate_account',
+            :security_token => @user.security_token %>
