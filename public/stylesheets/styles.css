@@ -54,6 +54,11 @@
 /**
  * Generic elements
  */
+
+html {
+	background-color: #e9f7cc;
+}
+
 body {
   margin: 0;
   padding: 0;

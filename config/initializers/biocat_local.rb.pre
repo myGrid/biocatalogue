@@ -35,5 +35,25 @@ Disqus::defaults[:developer] = true # allows for threads to work on localhost du
 
 # ====================================================
 
+
 # Enable or disable endpoint status check icon in view
 DISABLE_STATUS_CHECK = true
+
+
+# ==============================================================
+# Configure local settings for the SuperExceptionNotifier plugin
+# --------------------------------------------------------------
+
+# defaults to exception.notifier@default.com
+ExceptionNotifier.sender_address = %("BioCatalogue Errors" <biocatalogue-errors@company.com>)
+
+# defaults to "[ERROR] "
+#ExceptionNotifier.email_prefix = "[APP-#{RAILS_ENV.capitalize} ERROR] "
+
+# defaults to false - meaning by default it sends email.  Setting true will cause it to only render the error pages, and NOT email.
+# For local development purposes this SHOULD be set to true.
+#ExceptionNotifier.render_only = true
+
+ExceptionNotifier.exception_recipients = %w(joe@example.com bill@example.com)
+
+# ==============================================================

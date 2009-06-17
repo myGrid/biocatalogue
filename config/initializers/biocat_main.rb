@@ -142,3 +142,14 @@ Disqus::defaults[:num_items] = 15
 Delayed::Job.destroy_failed_jobs = false
 
 # ==============================================================
+
+
+# ===============================================================
+# Configure global settings for the SuperExceptionNotifier plugin
+# ---------------------------------------------------------------
+
+ExceptionNotifier.send_email_error_codes = %W( 405 500 501 503 )
+
+ExceptionNotifier.view_path = 'app/views/error'
+
+# ===============================================================

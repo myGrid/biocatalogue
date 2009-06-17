@@ -16,6 +16,17 @@ require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/
 #---
 
 class ApplicationController < ActionController::Base
+  
+  include ExceptionNotifiable
+  
+  # This line ensures that templates and mailing is enabled for the Exception Notification plugin
+  # on your local development set up (so as to test the templates etc).
+  # Note: error templates will only show in production mode.
+  #
+  # Be aware of this when configuring the email settings in biocat_local.rb -
+  # in most cases you should disable email sending in your development setup (see biocat_local.rb.pre for more info).
+  local_addresses.clear
+  
   helper :all # include all helpers, all the time
 
   # See ActionController::Base for details
@@ -314,4 +325,5 @@ class ApplicationController < ActionController::Base
       
     end
   end
+  
 end
