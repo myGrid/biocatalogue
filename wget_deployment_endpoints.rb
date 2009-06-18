@@ -38,8 +38,12 @@ Service.find(:all).each do |service|
     begin
       time = Benchmark.realtime(){
         Timeout::timeout(20) do
-            open(deployment.endpoint,
-                   'User-Agent' => 'Ruby-Wget').read
+            ep = deployment.endpoint
+            #open(deployment.endpoint,
+            #       'User-Agent' => 'Ruby-Wget').read
+            data = %x[curl -I #{ep}]
+            puts "curl data"
+            puts data
         end
       }
       status = 'Online'
@@ -55,9 +59,14 @@ Service.find(:all).each do |service|
       puts "Connection refused #{deployment.endpoint}"
       
     rescue OpenURI::HTTPError => ex
-      if ex.io.status[0] == '404'
-        status = 'Offline'
-        msg = "got an HTTP 404 status code "
+      if ['404'].include?(ex.io.status[0]) 
+        #status = 'Offline'
+        #msg = "got an HTTP 404 status code "
+        msg = "could not verify status. Got HTTP 404 status code"
+        
+      elsif ['411'].include?(ex.io.status[0])
+        status = 'Online'
+        msg = "service seems to be online but request was not correctly formed"
       else
         #status = 'Online'
         msg = "got an HTTP #{ex.io.status[0]} status code "
