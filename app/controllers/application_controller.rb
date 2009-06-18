@@ -26,6 +26,16 @@ class ApplicationController < ActionController::Base
   # Be aware of this when configuring the email settings in biocat_local.rb -
   # in most cases you should disable email sending in your development setup (see biocat_local.rb.pre for more info).
   local_addresses.clear
+  
+  # Mainly for the Exception Notification plugin:
+  self.rails_error_classes = { 
+    ActiveRecord::RecordNotFound => "400",
+    ::ActionController::UnknownController => "404",
+    ::ActionController::UnknownAction => "501",
+    ::ActionController::RoutingError => "404",
+    ::ActionView::MissingTemplate => "404",
+    ::ActionView::TemplateError => "500"
+  }
 
   helper :all # include all helpers, all the time
 

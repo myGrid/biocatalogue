@@ -5,11 +5,12 @@
 # See license.txt for details.
 
 class FailController < ApplicationController
+  
   # GET /fail/:http_code
   def index
     case params[:http_code]
       when "404"
-        raise ActiveRecord::RecordNotFound
+        raise ActionController::RoutingError, "test"
       when "500"
         x = nil
         x.hello_world
@@ -19,4 +20,5 @@ class FailController < ApplicationController
       format.html # index.html.erb
     end
   end
+  
 end
