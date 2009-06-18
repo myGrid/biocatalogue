@@ -5,6 +5,10 @@
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
+  
+  # To test error messages
+  map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index'
+  
   # Stats
   map.stats_index '/stats', :controller => 'stats', :action => 'index'
   map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh', :conditions => { :method => :post }

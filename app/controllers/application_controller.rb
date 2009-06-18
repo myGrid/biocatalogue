@@ -136,7 +136,6 @@ class ApplicationController < ActionController::Base
   protected
 
   def disable_action
-    # This will cause a 404...
     raise ActionController::UnknownAction.new
   end
 
