@@ -2314,4 +2314,18 @@ ul.categories li span.main {
 	border-bottom: 2px solid #CDCDCD;
 }
 
+ul.categories li span.main a.category {
+	line-height: 1.8;
+	text-decoration: none;
+	vertical-align: middle;
+}
+
+ul.categories li span.main a.category:hover {
+	color: #000;
+}
+
+ul.categories li span.main:hover {
+	background-color: #F0E68C;
+}
+
 /* END categories styles */

@@ -33,6 +33,7 @@
 										<span class="main">
 											<%= link_to(h(category.name),
 																	services_path(:cat => "[#{category.id}]"),
+																	:class => "category",
 																	:title => tooltip_title_attrib(category_hierachy_text(category))) -%>
 										
 											<% if show_modify_options %>
