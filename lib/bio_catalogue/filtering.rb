@@ -24,6 +24,8 @@ module BioCatalogue
     
     FILTER_KEYS = [ :cat, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ].freeze
     
+    TAG_FILTER_KEYS = [ :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs ].freeze
+    
     def self.filter_type_to_display_name(filter_type)
       case filter_type
         when :cat

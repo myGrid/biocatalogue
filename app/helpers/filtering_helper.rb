@@ -7,6 +7,8 @@
 # Filtering and sorting helpers
 
 module FilteringHelper
+  include ApplicationHelper
+  
   def help_text_for_filtering
     "You can build up a filtered list of services by selecting/deselecting and combining the options below.<br/><br/>" +
     "Filters within a filter type will be OR'ed and selections between filter types will be AND'ed.<br/><br/>" +
@@ -22,7 +24,7 @@ module FilteringHelper
     is_ontology_term = false
     
     # Special processing for tags
-    if [ :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs ].include?(filter_type)
+    if BioCatalogue::Filtering::TAG_FILTER_KEYS.include?(filter_type)
       base_uri, term = BioCatalogue::Tags.split_ontology_term_uri(text)
       text = term
       is_ontology_term = true unless base_uri.blank?
@@ -151,5 +153,34 @@ module FilteringHelper
   
   def is_sort_selected(sort_by, sort_order)
     return params[:sortby] == sort_by.downcase && params[:sortorder] == sort_order.downcase
+  end
+  
+  def show_tag_filters?
+    params.has_key?(:tag_filters) && params[:tag_filters].downcase == "on"
+  end
+  
+  def service_index_tag_filters_on_off_link
+    output = ''
+    
+    params_dup = BioCatalogue::Util.duplicate_params(params)
+    
+    if show_tag_filters?
+      text = "Switch off tag filters"
+      tooltip_text = "This will disable filtering by tags on services, operations, inputs and outputs. (This will likely improve the loading of this page)."
+      params_dup.delete(:tag_filters)
+      BioCatalogue::Filtering::TAG_FILTER_KEYS.each do |key|
+        params_dup.delete(key)
+      end
+    else
+      text = "Show tag filters"
+      tooltip_text = "This shows options to filter by tags on services, operations, inputs and outputs. (Note that this may cause slower loading of this page)."
+      params_dup[:tag_filters] = "on"
+    end
+    
+    url = services_path(params_dup)
+    
+    output << link_to(text, url, :class => "button_slim", :style => "font-size: 93%;", :title => tooltip_title_attrib(tooltip_text))
+    
+    return output
   end
 end

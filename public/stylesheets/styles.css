@@ -1767,13 +1767,16 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 a.button_slim {
-	padding: 0.2em 0.4em 0.5em 0.4em;
-	*padding: 0.2em 0.4em;
-	line-height: 1;
+	font-weight: bold;
+	line-height: 1.8;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
 	background-color: #EEF6FF;
 	vertical-align: middle;
+	padding: 1px 4px;
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;	
 }
 
 a.button_slim:hover {
@@ -2101,9 +2104,6 @@ div.filters li .container {
 }
 
 div.filters li .container a {
-	display:-moz-inline-block;
-	display:-moz-inline-box;
-	display: inline-block;
 	display: block;
 	vertical-align: top;
 	margin-bottom: 0.3em;
