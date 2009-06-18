@@ -31,7 +31,9 @@
 								<% unless category.nil? %>
 									<li>
 										<span class="main">
-											<%= content_tag(:span, h(category.name), :title => tooltip_title_attrib(category_hierachy_text(category))) -%>
+											<%= link_to(h(category.name),
+																	services_path(:cat => "[#{category.id}]"),
+																	:title => tooltip_title_attrib(category_hierachy_text(category))) -%>
 										
 											<% if show_modify_options %>
 												<% if mine?(category_annotation) %>
