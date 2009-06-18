@@ -8,6 +8,7 @@ require 'open-uri'
 require 'active_support/inflector'
 require 'pp'
 require 'addressable/uri'
+require 'system_timer'
 
 module BioCatalogue
   module WsdlParser
@@ -70,8 +71,9 @@ module BioCatalogue
       wsdl_hash          = nil
       
       begin
-        wsdl_hash, wsdl_file_contents = get_wsdl_hash_and_file_contents(wsdl_url)
-
+        SystemTimer.timeout(20.seconds) do
+        	wsdl_hash, wsdl_file_contents = get_wsdl_hash_and_file_contents(wsdl_url)
+				end
         if wsdl_hash.nil?
           error_messages << "The WSDL file could not be parsed. It may be invalid."
         end
@@ -422,6 +424,7 @@ module BioCatalogue
         if operations.class.to_s == "Hash"
           operations = [operations]
         end
+        operations = operations.compact
         operations.each do |op|
           name = op["name"]
           input  = op["input"]
@@ -482,6 +485,8 @@ module BioCatalogue
     
     def WsdlParser.test(num=0)
       wsdls= [
+      "http://edoc3.bibliothek.uni-halle.de:8080/axis/vascoda.wsdl",
+      "http://www.biomart.org/biomart/martwsdl",
       "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSWUBlast.wsdl",
       "http://www.ebi.ac.uk/ebisearch/service.ebi?wsdl",
       "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSBlastpgp.wsdl",
