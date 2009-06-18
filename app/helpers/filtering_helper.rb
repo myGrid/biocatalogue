@@ -165,14 +165,14 @@ module FilteringHelper
     params_dup = BioCatalogue::Util.duplicate_params(params)
     
     if show_tag_filters?
-      text = "Switch off tag filters"
+      text = "Enable tag filters"
       tooltip_text = "This will disable filtering by tags on services, operations, inputs and outputs. (This will likely improve the loading of this page)."
       params_dup.delete(:tag_filters)
       BioCatalogue::Filtering::TAG_FILTER_KEYS.each do |key|
         params_dup.delete(key)
       end
     else
-      text = "Show tag filters"
+      text = "Disable tag filters"
       tooltip_text = "This shows options to filter by tags on services, operations, inputs and outputs. (Note that this may cause slower loading of this page)."
       params_dup[:tag_filters] = "on"
     end
