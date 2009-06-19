@@ -11,6 +11,17 @@ module BioCatalogue
     
     NONE_VALUE = "<none>".freeze
     
+    def self.cache_key_for(type, *args)
+      case type
+        when :metadata_counts_for_service
+          "metadata_counts_for_service_#{args[0]}"
+        when :children_of_category
+          "children_of_category_#{args[0]}"
+        when :services_count_for_category
+          "services_count_for_category_#{args[0]}"
+      end
+    end
+    
     def self.setup_caches
       Util.say("Setting up caches...")
       
@@ -41,7 +52,7 @@ module BioCatalogue
               :readonly    => false,
               :multithread => true,
               :failover    => true,
-              :timeout     => 0.5,
+              :timeout     => 1,
               :logger      => Rails.logger,
               :no_reply    => false,
             }
@@ -83,15 +94,6 @@ module BioCatalogue
       CACHE.reset if defined?(CACHE)
     end
     
-    def self.cache_key_for(type, *args)
-      case type
-        when :metadata_counts_for_service
-          "metadata_counts_for_service_#{args[0]}"
-        when :children_of_category
-          "children_of_category_#{args[0]}"
-      end
-    end
-    
     module Expires
       
       def expire_service_index_tag_cloud
@@ -100,6 +102,20 @@ module BioCatalogue
       
       def expire_tags_flat(annotatable_type, annotatable_id)
         expire_fragment(:controller => 'annotations', :action => 'tags_flat', :annotatable_type => annotatable_type, :annotatable_id => annotatable_id)
+      end
+      
+      def reload_number_of_services_for_category_and_parents_caches(category)
+        return if category.nil?
+        
+        # Call the method, but with recalculate = true, to repopulate the cache
+        Categorising.number_of_services_for_category(category, true)
+        
+        # Parents
+        c = category
+        while c.has_parent?
+          c = c.parent
+          Categorising.number_of_services_for_category(c, true)
+        end
       end
       
     end

@@ -10,7 +10,7 @@ class TagsController < ApplicationController
   before_filter :find_tags, :only => [ :index ]
   before_filter :find_tag_and_results, :only => [ :show ]
   
-  cache_sweeper :tags_sweeper, :only => [ :destroy ] 
+  cache_sweeper :annotations_sweeper, :only => [ :destroy ] 
   
   def index
     respond_to do |format|

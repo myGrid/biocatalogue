@@ -71,9 +71,30 @@ module BioCatalogue
       end
     end
     
-    def self.number_of_services_for_category(category)
+    def self.number_of_services_for_category(category, recalculate=false)
       return -1 if category.nil?
-      return get_service_ids_with_category(category.id).length
+      
+      count = nil
+      
+      cache_key = CacheHelper.cache_key_for(:services_count_for_category, category.id)
+      
+      if recalculate
+        Rails.cache.delete(cache_key)
+      end
+      
+      # Try and get it from the cache...
+      count = Rails.cache.read(cache_key)
+      
+      if count.nil?
+        # It's not in the cache so get the value and store it in the cache...
+        
+        count = get_service_ids_with_category(category.id).length
+        
+        # Finally write it to the cache...
+        Rails.cache.write(cache_key, count)
+      end
+      
+      return count
     end
     
     # This takes into account subcategories.

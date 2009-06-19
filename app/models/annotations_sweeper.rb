@@ -1,10 +1,10 @@
-# BioCatalogue: app/models/tags_sweeper.rb
+# BioCatalogue: app/models/annotations_sweeper.rb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
-class TagsSweeper < ActionController::Caching::Sweeper 
+class AnnotationsSweeper < ActionController::Caching::Sweeper 
   
   include BioCatalogue::CacheHelper::Expires
   
@@ -12,14 +12,17 @@ class TagsSweeper < ActionController::Caching::Sweeper
   
   def after_create(annotation)
     expire_caches_for_tag_clouds(annotation)
+    expire_caches_for_categories(annotation)
   end
   
   def after_update(annotation)
     expire_caches_for_tag_clouds(annotation)
+    expire_caches_for_categories(annotation)
   end
   
   def after_destroy(annotation)
     expire_caches_for_tag_clouds(annotation)
+    expire_caches_for_categories(annotation)
   end
   
   protected
@@ -39,6 +42,12 @@ class TagsSweeper < ActionController::Caching::Sweeper
         expire_tags_flat(annotation.annotatable_type, BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id("#{annotation.annotatable_type}:#{annotation.annotatable_id}", "Service"))
       end
       
+    end
+  end
+  
+  def expire_caches_for_categories(annotation)
+    if annotation.attribute_name.downcase == "category"
+      reload_number_of_services_for_category_and_parents_caches(Category.find_by_id(annotation.value)) unless c.nil?
     end
   end
   
