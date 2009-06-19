@@ -21,9 +21,11 @@
     <p>
       <b>Display Name:</b>
       <%=h @user.display_name %>
-			<span style="color: #999; margin-left: 1em; font-size: 85%;">
-				[ <%= link_to 'change', edit_user_path(@user) %> ]
-			</span>
+			<% if mine? @user %>
+				<span style="color: #999; margin-left: 1em; font-size: 85%;">
+					[ <%= link_to 'change', edit_user_path(@user) %> ]
+				</span>
+			<% end %>
     </p>
     
     <p>
@@ -36,7 +38,7 @@
       <%=h @user.country %>
     </p>
 		
-		<% if logged_in? and mine? @user %>
+		<% if mine? @user %>
 			<div class="box_currentuser_specific" style="margin: 0.5em 0;">
 				<p style="font-size: 85%; margin-bottom: 1em;">Note: the information here is private and cannot be seen by anyone else.</p>
 				
