@@ -19,7 +19,7 @@ module BioCatalogue
                                   "users" => [ User ],
                                   "registries" => [ Registry ]}.freeze
     
-    def self.available?
+    def self.on?
       return ENABLE_SEARCH
     end
     

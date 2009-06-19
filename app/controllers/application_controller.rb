@@ -230,8 +230,8 @@ class ApplicationController < ActionController::Base
 
   def validate_and_setup_search
 
-    # First check that search is available
-    unless BioCatalogue::Search.available?
+    # First check that search is on
+    unless BioCatalogue::Search.on?
       error_to_home('Search is unavailable at this time')
       return false
     end

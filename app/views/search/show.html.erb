@@ -32,11 +32,13 @@
 			<%= search_provide_query_text -%>
 		</P>
 	<% else %>
-		<p>
-			Search query:
-			"<b><%= h @query -%></b>"
-			returned <%= pluralize(@results.total, "item") -%>
-		</p>
+		<% unless @results.nil? %>
+			<p>
+				Search query:
+				"<b><%= h @query -%></b>"
+				returned <%= pluralize(@results.total, "item") -%>
+			</p>
+		<% end %>
 	<% end %>
 	
 </div>
@@ -45,7 +47,7 @@
 	
 <% unless @query.blank? %>
 
-	<% if @results.total == 0 %>
+	<% if @results.nil? or @results.total == 0 %>
 	
 	  <p class="none_text">No items found</p>
 	  

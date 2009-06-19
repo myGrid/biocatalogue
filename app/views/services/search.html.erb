@@ -9,7 +9,7 @@
 %>
 
 <% if @query.blank? %>
-<% t "Search" -%>
+	<% t "Search" -%>
 	<h1>Search Services</h1>
 <% else %>
 	<% t "Search Results for '#{h(@query)}'" -%>
@@ -33,11 +33,13 @@
 			<%= search_provide_query_text -%>
 		</P>
 	<% else %>
-		<p>
-			Search query:
-			"<b><%= h @query -%></b>"
-			returned <%= pluralize(@results.total, "services") -%>
-		</p>
+		<% unless @results.nil? %>
+			<p>
+				Search query:
+				"<b><%= h @query -%></b>"
+				returned <%= pluralize(@results.total, "services") -%>
+			</p>
+		<% end %>
 	<% end %>
 	
 </div>
@@ -46,7 +48,7 @@
 
 <% unless @query.blank? %>
 
-	<% if @results.total == 0 %>
+	<% if @results.nil? or @results.total == 0 %>
 	
 	  <p class="none_text">No services found</p>
 	  
