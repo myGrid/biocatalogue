@@ -48,6 +48,8 @@ module ApplicationHelper
         "add.png"
       when :favourite
         "favourite.png"
+      when :favourite_faded
+        "favourite_faded.png"
       when :annotations
         "note.png"
       when :user, :annotation_source_user
