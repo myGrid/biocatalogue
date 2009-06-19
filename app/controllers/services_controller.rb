@@ -107,7 +107,7 @@ class ServicesController < ApplicationController
         @results = BioCatalogue::Search.search(@query, @type)
         raise "nil @results object returned" if @results.nil?
       rescue Exception => ex
-        flash.now[:error] = "Sorry, search didn't work this time. Try with different keyword(s). Please report this if it continues for other searches."
+        flash.now[:error] = "Sorry, search didn't work this time. Try with different keyword(s). Please <a href='/contact'>report this</a> if it continues for other searches."
         logger.error("Search failed for query: '#{@query}'. Search has still been logged in the activity log. Exception:")
         logger.error(ex.message)
         logger.error(ex.backtrace.join("\n"))
