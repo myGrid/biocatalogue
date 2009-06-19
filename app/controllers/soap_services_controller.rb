@@ -89,7 +89,7 @@ class SoapServicesController < ApplicationController
               # TODO: should this return the top level Service resource or SoapService? 
               format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
             else
-              flash[:error] = 'An error has occurred with the submission. Please contact us to report this. Thank you.'
+              flash[:error] = 'An error has occurred with the submission. Please <a href="/contact">contact us</a> to report this. Thank you.'
               format.html { render :action => "new" }
               format.xml  { render :xml => '', :status => 500 }
             end
@@ -143,6 +143,10 @@ class SoapServicesController < ApplicationController
     else
       @soap_service = SoapService.new(:wsdl_location => wsdl_location)
       
+      err_text = "Failed to load the WSDL URL provided.<br/>" +
+        "Please check that it points to a valid WSDL file.<br/>" +
+        "If this problem persists, please <a href='/contact'>contact us</a>."
+      
       begin
         @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
         
@@ -157,12 +161,12 @@ class SoapServicesController < ApplicationController
             # Try and find location of the service from the url of the WSDL.
             @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@soap_service.wsdl_location)
           else
-            @error_message = "Failed to load the WSDL location provided."
+            @error_message = err_text
           end
         end
       rescue Exception => ex
-        @error_message = "Failed to load the WSDL location provided."
-        logger.error("Failed to load WSDL from location - #{wsdl_location}. Exception:")
+        @error_message = err_text
+        logger.error("Failed to load WSDL from URL - #{wsdl_location}. Exception:")
         logger.error(ex.message)
         logger.error(ex.backtrace.join("\n"))
       end
