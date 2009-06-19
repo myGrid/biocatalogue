@@ -112,10 +112,10 @@ module BioCatalogue
         # It's not in the cache so get the value and store it in the cache...
         
         unless (category = Category.find_by_id(category_id)).nil?
-          while category.has_children?
+          if category.has_children?
             category.children.each do |c|
               ids << c.id
-              category = c
+              ids.concat(get_all_sub_category_ids(c.id, recalculate))
             end
           end
         end
