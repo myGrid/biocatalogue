@@ -73,7 +73,7 @@ module FilteringHelper
     case filter_type_query_key
       when :cat
         more_text = "Show subcategories"
-        less_text = "Show root categories only"
+        less_text = "Show top level categories only"
       else
         more_text = "Show all"
         less_text = "Show top 10 only"
