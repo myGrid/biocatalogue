@@ -203,7 +203,8 @@ class SeekDaImporter
                            "weather.gov",
                            "tamucc.edu",
                            "usu.edu",
-                           "lcdnl.co.uk" ]
+                           "lcdnl.co.uk",
+                           "opendap.co-ops.nos.noaa.gov" ]
     
     @wsdl_excludes = [ "phoebus.cs.man.ac.uk",
                        "ppdev.vbi.vt.edu" ]

@@ -130,6 +130,7 @@ class SeekDaCleaner
                            "myopenlink.net",
                            "ntu-cg.ntu.edu.sg",
                            "ohrwurm.net",
+                           "opendap.co-ops.nos.noaa.gov",
                            "ppc22.rdg.ac.uk",
                            "projects.dnv.com",
                            "rodeo.lemontech.cl",
