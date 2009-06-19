@@ -496,7 +496,7 @@ body.sidebar-right #squeeze {
 }
 
 #wrapper #container #center .right-corner .left-corner {
-  padding: 60px 25px 5em 35px;
+  padding: 50px 25px 3em 25px;
   background: transparent url(../images/left_corner.gif) no-repeat 0 0;
   margin-left: -10px;
   position: relative;
@@ -554,6 +554,18 @@ body.sidebar-right #footer {
   color: #ff7400;
 }
 
+#footer .logos {
+	margin: 1em 0;
+}
+
+#footer .logos * {
+	vertical-align: middle;
+}
+
+#footer .logos a {
+	margin: 0 0.6em;
+}
+
 #wrapper #container #content {
 	margin-top: 2em;
 }
@@ -599,7 +611,7 @@ body.sidebar-right #footer {
 	/*background-color: #F8FDF0;
 	border: 1px solid #E9F7CC;*/
 	color: #666666;
-	margin: -5px -15px 0 -15px;
+	margin: 3px -5px 0 -5px;
 }
 
 #breadcrumbs_bar table {
