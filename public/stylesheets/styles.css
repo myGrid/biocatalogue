@@ -1569,6 +1569,10 @@ ul.tabbernav li.tabberactive a:hover
 	background-color: #EEF6FF;
 }
 
+.box_currentuser_specific p {
+	margin: 0;
+}
+
 .box_currentuser_specific * {
 	vertical-align: middle;
 }
