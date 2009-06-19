@@ -110,6 +110,10 @@ class SoaplabServersController < ApplicationController
     if wsdl_location.blank?
       @error_message = "Please provide a valid WSDL URL"
     else
+      err_text = "Failed to load the WSDL URL provided.<br/>" +
+        "Please check that it points to a valid WSDL file.<br/>" +
+        "If this problem persists, please <a href='/contact'>contact us</a>."
+        
       @soap_service = SoapService.new(:wsdl_location => wsdl_location)
       @soaplab_server = SoaplabServer.new(:location =>wsdl_location)
       begin
@@ -117,7 +121,7 @@ class SoaplabServersController < ApplicationController
         @wsdl_info["tools"] = @soaplab_server.services_factory().values.flatten.collect{ |v| v['name']}.sort
         @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(wsdl_location)
       rescue Exception => ex
-        @error_message = "Failed to load the WSDL location provided."
+        @error_message = err_text
         logger.error("Failed to load WSDL from location - #{wsdl_location}. Exception:")
         logger.error(ex)
       end
