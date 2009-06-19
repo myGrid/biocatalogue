@@ -90,6 +90,10 @@ module BioCatalogue
       return associated_model_object_id
     end
     
+    protected
+    
+    # NOTE: this is NOT cached, and hence it is not a public method.
+    # Use Mapper::map_compound_id_to_associated_model_object_id
     def self.get_ancestor_service_id(source_model_name, source_id)
       case source_model_name.to_s
         when "Service"
@@ -98,8 +102,6 @@ module BioCatalogue
           return self.get_id_value_from_sql_query(self.sql_query_to_get_service_id_for_source_model_item(source_model_name, source_id))
       end
     end
-    
-    protected
     
     # Generic helper method to run a sql query and then return back the first record's "id" field.
     # The sql query provided must be in the form of an Array so it can be sanitised.

@@ -8,30 +8,13 @@
 
 %>
 
-<%# Set defaults for optional parameters to this partial... %>
-<% show_add_option = true unless local_assigns.has_key?(:show_add_option) %>
-
 <% unless annotatable.nil? %>
-	<% if show_add_option %>
-		<% if logged_in? %>
-			<%= annotation_add_by_popup_link annotatable,
-																		 	 :attribute_name => "Tag",
-				                             	 :tooltip_text => '',
-				                             	 :link_text => 'Add tags',
-				                             	 :show_icon => false, 
-				                             	 :show_not_logged_in_text => false,
-																			 :only_show_on_hover => false,
-				                             	 :multiple => true,
-																			 :style => "float: right; margin-left: 1em;" -%>
+	<% cache(:controller => 'annotations', :action => 'tags_flat', :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id) do -%>
+		<% tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable) %>
+		<% unless tag_annotations.empty? %>
+			<%= generate_tag_cloud_from_annotations(tag_annotations, :flat, :tag_cloud_style => "text-align: left;") -%>
 		<% else %>
-		 	<%= link_to "Log in", login_path -%> to add tags
+			<div class="none_text" style="margin-top: 2px;">None</div>
 		<% end %>
-	<% end %>
-	
-	<% tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable) %>
-	<% unless tag_annotations.empty? %>
-		<%= generate_tag_cloud_from_annotations(tag_annotations, :flat, :tag_cloud_style => "text-align: left;") -%>
-	<% else %>
-		<div class="none_text" style="margin-top: 2px;">None</div>
 	<% end %>
 <% end %>

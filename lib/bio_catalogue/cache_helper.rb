@@ -98,6 +98,10 @@ module BioCatalogue
         expire_fragment(:controller => 'services', :action => 'index', :action_suffix => 'tag_cloud')
       end
       
+      def expire_tags_flat(annotatable_type, annotatable_id)
+        expire_fragment(:controller => 'annotations', :action => 'tags_flat', :annotatable_type => annotatable_type, :annotatable_id => annotatable_id)
+      end
+      
     end
     
   end
