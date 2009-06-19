@@ -11,7 +11,7 @@
 <% if !@error_message.blank? -%>
 	<div class="soap_service_form">
 		<p class="error_text">
-			<%= h @error_message -%>
+			<%= @error_message -%>
 		</p>
 	</div>
 <% elsif !@existing_service.nil? %>
