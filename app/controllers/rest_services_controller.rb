@@ -104,7 +104,9 @@ class RestServicesController < ApplicationController
             # TODO: should this return the top level Service resource or RestService? 
             format.xml  { render :xml => @rest_service, :status => :created, :location => @rest_service }
           else
-            flash[:error] = 'An error has occurred with the submission. Please contact us if you need further help with this. Thank you.'
+            err_text = "An error has occurred with the submission.<br/>" +
+              "Please <a href='/contact'>contact us</a> if you need assistance with this."
+            flash[:error] = err_text
             format.html { render :action => "new" }
             format.xml  { render :xml => '', :status => 500 }
           end
