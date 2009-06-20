@@ -105,8 +105,14 @@ module BioCatalogue
     
     def self.reset_caches
       $memcache.reset if ENABLE_CACHE_MONEY and defined?($memcache) and !$memcache.nil?
+      
       CACHE.reset if defined?(CACHE) and !CACHE.nil?
-      RAILS_CACHE.reset if defined?(RAILS_CACHE) and !RAILS_CACHE.nil?
+      
+      if defined?(RAILS_CACHE) and !RAILS_CACHE.nil?
+        RAILS_CACHE.instance_eval do 
+          @data.reset
+        end
+      end
     end
     
     module Expires
