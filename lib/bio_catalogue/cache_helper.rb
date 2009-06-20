@@ -11,6 +11,10 @@ module BioCatalogue
     
     NONE_VALUE = "<none>".freeze
     
+    def self.set_base_host(base_host)
+      silence_warnings { CacheHelper::Expires.const_set "BASE_HOST", base_host } unless defined? CacheHelper::Expires.BASE_HOST
+    end
+    
     def self.cache_key_for(type, *args)
       case type
         when :metadata_counts_for_service
@@ -95,9 +99,25 @@ module BioCatalogue
     end
     
     module Expires
+      require 'action_controller/test_process'
+      
+      def expire_fragment(key, options=nil)
+        if defined?(BASE_HOST)
+          if @controller.nil?
+            @controller = ActionController::Base.new
+            @controller.request = ActionController::TestRequest.new
+            @controller.request.host = BASE_HOST
+            @controller.instance_eval do
+              @url = ActionController::UrlRewriter.new(request, {})
+            end
+          end
+  
+          @controller.expire_fragment(key, options)
+        end
+      end
       
       def expire_service_index_tag_cloud
-        expire_fragment(:controller => 'services', :action => 'index', :action_suffix => 'tag_cloud')
+        expire_fragment(:controller => 'services', :action => 'index', :part => 'tag_cloud')
       end
       
       def expire_tags_flat(annotatable_type, annotatable_id)

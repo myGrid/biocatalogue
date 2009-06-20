@@ -16,6 +16,10 @@ require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/
 #---
 
 class ApplicationController < ActionController::Base
+  
+  before_filter { |controller|
+    BioCatalogue::CacheHelper.set_base_host(controller.base_host)
+  }
 
   include ExceptionNotifiable
 

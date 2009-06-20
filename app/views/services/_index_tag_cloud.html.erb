@@ -8,7 +8,7 @@
 
 %>
 
-<% cache(:action_suffix => 'tag_cloud') do %>
+<% cache(:controller => 'services', :action => 'index', :part => 'tag_cloud') do %>
 
 	<% 
 		 @tags = BioCatalogue::Tags.sort_tags_by_frequency(BioCatalogue::Tags.get_tags(100))

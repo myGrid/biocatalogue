@@ -22,8 +22,6 @@ class ServicesController < ApplicationController
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
-  cache_sweeper :annotations_sweeper, :only => [ :categorise ] 
-  
   # GET /services
   # GET /services.xml
   def index

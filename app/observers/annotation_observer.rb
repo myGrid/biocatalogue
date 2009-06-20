@@ -1,14 +1,12 @@
-# BioCatalogue: app/models/annotations_sweeper.rb
+# BioCatalogue: app/models/observers/annotation_observer.rb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
-class AnnotationsSweeper < ActionController::Caching::Sweeper 
+class AnnotationObserver < ActiveRecord::Observer
   
   include BioCatalogue::CacheHelper::Expires
-  
-  observe Annotation
   
   def after_create(annotation)
     expire_caches_for_tag_clouds(annotation)
@@ -47,7 +45,7 @@ class AnnotationsSweeper < ActionController::Caching::Sweeper
   
   def expire_caches_for_categories(annotation)
     if annotation.attribute_name.downcase == "category"
-      reload_number_of_services_for_category_and_parents_caches(Category.find_by_id(annotation.value)) unless c.nil?
+      reload_number_of_services_for_category_and_parents_caches(Category.find_by_id(annotation.value))
     end
   end
   
