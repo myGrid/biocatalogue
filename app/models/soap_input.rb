@@ -5,6 +5,11 @@
 # See license.txt for details
 
 class SoapInput < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :soap_operation_id
+  end
+  
   acts_as_trashable
   
   acts_as_annotatable

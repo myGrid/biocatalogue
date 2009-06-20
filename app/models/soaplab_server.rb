@@ -9,6 +9,11 @@ require 'soap/wsdlDriver'
 require 'ftools'
 
 class SoaplabServer < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :location
+  end
+  
   acts_as_trashable
   
   acts_as_annotatable

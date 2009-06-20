@@ -57,3 +57,8 @@ ExceptionNotifier.sender_address = %("BioCatalogue Errors" <biocatalogue-errors@
 ExceptionNotifier.exception_recipients = %w(joe@example.com bill@example.com)
 
 # ==============================================================
+
+
+# Enable or disable the cache-money plugin, which caches AR models in memcached.
+# This setting may be useful in instances when cache-money is not working as required/
+ENABLE_CACHE_MONEY = true

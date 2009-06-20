@@ -5,6 +5,12 @@
 # See license.txt for details
 
 class RestMethod < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :rest_resource_id
+    index [ :rest_resource_id, :method_type ]
+  end
+  
   acts_as_trashable
   
   acts_as_annotatable

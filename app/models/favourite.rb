@@ -11,10 +11,14 @@
 require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/models/favourite'
 
 class Favourite < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :user_id, :limit => 2000, :buffer => 100
+    index [ :favouritable_type, :favouritable_id ], :limit => 2000, :buffer => 100
+  end
   
   if USE_EVENT_LOG
     acts_as_activity_logged :models => { :culprit => { :model => :user },
                                          :referenced => { :model => :favouritable } }
   end
-  
 end

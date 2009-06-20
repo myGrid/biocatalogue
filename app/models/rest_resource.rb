@@ -5,6 +5,12 @@
 # See license.txt for details
 
 class RestResource < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :rest_service_id
+    index :parent_resource_id
+  end
+  
   acts_as_trashable
   
   acts_as_annotatable

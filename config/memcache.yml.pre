@@ -1,12 +1,21 @@
 test:
+  ttl: 604800
+  sessions: false
+  debug: false
   namespace: biocat_test
   servers: localhost:11211
   
 development:
+  ttl: 604800
+  sessions: false
+  debug: false
   namespace: biocat_dev
   servers: localhost:11211
   
 production:
+  ttl: 604800
+  sessions: false
+  debug: false
   namespace: biocat_prod
   servers: 
     - localhost:11211

@@ -5,6 +5,13 @@
 # See license.txt for details
 
 class Service < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :unique_code
+    index :name
+    index [ :submitter_type, :submitter_id ]
+  end
+  
   acts_as_trashable
   
   acts_as_annotatable

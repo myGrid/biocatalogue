@@ -5,6 +5,16 @@
 # See license.txt for details
 
 class ServiceDeployment < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :service_id
+    index :service_version_id
+    index :endpoint
+    index :service_provider_id
+    index :country
+    index [ :submitter_type, :submitter_id ]
+  end
+  
   acts_as_trashable
   
   acts_as_annotatable

@@ -50,24 +50,33 @@ module BioCatalogue
             # to figure out the best way of doing this...
             
             memcache_servers = config['servers']
+            config.delete('servers')
             
             memcache_options = {
-              :namespace   => config['namespace'],
               :readonly    => false,
               :multithread => true,
               :failover    => true,
               :timeout     => 1,
               :logger      => Rails.logger,
               :no_reply    => false,
-            }
+            }.update(config)
             
-            memcache_client = MemCache.new(memcache_servers, memcache_options)
+            memcache_client1 = MemCache.new(memcache_servers, memcache_options)
+            memcache_client2 = MemCache.new(memcache_servers, memcache_options)
             
-            Util.say("memcache servers: #{memcache_client.servers.inspect}") 
+            Util.say("memcache_client servers: #{memcache_client1.servers.inspect}")
+            
+            # Set up cache objects for cache-money
+            if ENABLE_CACHE_MONEY
+              $memcache = memcache_client1
+              $local = Cash::Local.new($memcache)
+              $lock = Cash::Lock.new($memcache)
+              $cache = Cash::Transactional.new($local, $lock)
+            end 
             
             # Set the global CACHE variable...
             # BUT this MUST NOT be used directly, use Rails.cache instead.
-            silence_warnings { Object.const_set "CACHE", memcache_client }
+            silence_warnings { Object.const_set "CACHE", memcache_client2 }
             
             # Create the ActiveSupport::Cache::MemCacheStore which is what Rail will use...
             rails_memcache_client = ActiveSupport::Cache::MemCacheStore.new(memcache_servers, memcache_options)
@@ -95,7 +104,9 @@ module BioCatalogue
     end
     
     def self.reset_caches
-      CACHE.reset if defined?(CACHE)
+      $memcache.reset if ENABLE_CACHE_MONEY and defined?($memcache) and !$memcache.nil?
+      CACHE.reset if defined?(CACHE) and !CACHE.nil?
+      RAILS_CACHE.reset if defined?(RAILS_CACHE) and !RAILS_CACHE.nil?
     end
     
     module Expires

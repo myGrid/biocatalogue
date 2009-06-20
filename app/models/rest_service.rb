@@ -5,6 +5,10 @@
 # See license.txt for details
 
 class RestService < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+  end
+  
   acts_as_trashable
   
   acts_as_service_versionified

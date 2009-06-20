@@ -5,6 +5,11 @@
 # See license.txt for details
 
 class Agent < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :name
+  end
+  
   acts_as_trashable
   
   acts_as_annotation_source

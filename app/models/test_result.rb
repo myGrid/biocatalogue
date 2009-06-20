@@ -5,6 +5,12 @@
 # See license.txt for details
 
 class TestResult < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :action
+    index [ :test_type, :test_id ]
+    index [ :test_type, :test_id, :action ]
+  end
   
   belongs_to :monitorable, :polymorphic => true
   

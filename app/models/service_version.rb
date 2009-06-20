@@ -5,6 +5,14 @@
 # See license.txt for details
 
 class ServiceVersion < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :service_id
+    index [ :service_versionified_type, :service_versionified_id ]
+    index [ :service_id, :version ]
+    index [ :submitter_type, :submitter_id ]
+  end
+  
   acts_as_trashable
   
   acts_as_annotatable

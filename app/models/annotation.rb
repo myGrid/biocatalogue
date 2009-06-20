@@ -11,6 +11,13 @@
 require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/models/annotation'
 
 class Annotation < ActiveRecord::Base
+#  if ENABLE_CACHE_MONEY
+#    is_cached :repository => $cache
+#    index :attribute_id, :limit => 5000, :buffer => 100
+#    index [ :source_type, :source_id ], :limit => 5000, :buffer => 100
+#    index [ :annotatable_type, :annotatable_id ], :limit => 5000, :buffer => 100
+#  end
+
   acts_as_trashable
   
   validate :check_category_annotation

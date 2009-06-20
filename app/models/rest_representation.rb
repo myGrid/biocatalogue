@@ -5,6 +5,10 @@
 # See license.txt for details
 
 class RestRepresentation < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+  end
+   
   acts_as_trashable
   
   validates_presence_of :content_type

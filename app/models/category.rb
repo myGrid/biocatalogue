@@ -5,6 +5,11 @@
 # See license.txt for details
 
 class Category < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :parent_id
+  end
+
   validates_presence_of :name
   
   belongs_to :parent,

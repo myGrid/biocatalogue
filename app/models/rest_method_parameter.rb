@@ -5,6 +5,13 @@
 # See license.txt for details
 
 class RestMethodParameter < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :rest_method_id
+    index :rest_parameter_id
+    index [ :rest_method_id, :http_cycle ]
+  end
+  
   acts_as_trashable
   
   validates_presence_of :rest_method_id,

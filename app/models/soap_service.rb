@@ -5,6 +5,12 @@
 # See license.txt for details
 
 class SoapService < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :name
+    index :wsdl_location
+  end
+  
   acts_as_trashable
   
   acts_as_service_versionified
