@@ -33,11 +33,11 @@ class AnnotationObserver < ActiveRecord::Observer
       
       # tags_flat caches
       
-      expire_tags_flat(annotation.annotatable_type, annotation.annotatable_id)
+      expire_annotations_tags_flat_partial(annotation.annotatable_type, annotation.annotatable_id)
       
       # Need to also take into account service's immediate sub structure
       if ([ "ServiceDeployment", "ServiceVersion" ] + BioCatalogue::Mapper::SERVICE_TYPE_ROOT_MODELS.map{|t| t.class.name}).include?(annotation.annotatable_type)
-        expire_tags_flat(annotation.annotatable_type, BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id("#{annotation.annotatable_type}:#{annotation.annotatable_id}", "Service"))
+        expire_annotations_tags_flat_partial(annotation.annotatable_type, BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id("#{annotation.annotatable_type}:#{annotation.annotatable_id}", "Service"))
       end
       
     end
