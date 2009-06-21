@@ -46,10 +46,14 @@ module ApplicationHelper
         "search.png"
       when :submit_service
         "add.png"
-      when :favourite
+      when :favourite, :favourites
         "favourite.png"
-      when :favourite_faded
+      when :favourite_faded, :favourites_none
         "favourite_faded.png"
+      when :views
+        "eye.png"
+      when :views_none
+        "eye_faded.png"
       when :annotations
         "note.png"
       when :user, :annotation_source_user
@@ -62,6 +66,8 @@ module ApplicationHelper
         "server_connect.png"
       when :curator, :annotation_source_curator
         "user_suit.png"
+      else
+        ''
     end
   end
   

@@ -90,6 +90,15 @@ class Service < ActiveRecord::Base
     return  instances.delete_if{ |instance| instance.class.to_s != types[type] } || []
   end
   
+  def views_count
+    # NOTE: this query has only been tested to work with MySQL 5.0.x
+    sql = "SELECT COUNT(*) AS count 
+          FROM activity_logs
+          WHERE action = 'view' AND activity_logs.activity_loggable_type = 'Service' AND activity_logs.activity_loggable_id = '#{self.id}'"
+    
+    return ActiveRecord::Base.connection.select_all(sql)[0]['count'].to_i
+  end
+  
 protected
   
   def generate_unique_code

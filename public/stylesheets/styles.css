@@ -1162,7 +1162,7 @@ body.sidebar-right #login_box {
 }
 
 .listing_item .name_box {
-	margin-bottom: 0.5em;
+	margin-bottom: 0;
 	line-height: 28px;
 }
 
@@ -2345,3 +2345,20 @@ ul.categories li span.main:hover {
 }
 
 /* END categories styles */
+
+.stats_bar {
+	color: #555;
+	font-weight: bold;
+}
+
+.stats_bar * {
+	vertical-align: middle;
+}
+
+.stats_bar img {
+	margin-right: 0.3em;
+}
+
+.stats_bar .each {
+	margin-left: 1em;
+}
