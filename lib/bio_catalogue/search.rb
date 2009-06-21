@@ -19,8 +19,75 @@ module BioCatalogue
                                   "users" => [ User ],
                                   "registries" => [ Registry ]}.freeze
     
+    @@search_query_suggestions_file_path = File.join(Rails.root, 'data', 'search_query_suggestions.txt')
+    
     def self.on?
       return ENABLE_SEARCH
+    end
+    
+    def self.update_search_query_suggestions_file
+      begin
+        
+        latest_search_queries = ActivityLog.find_all_by_action("search").map{|a| a.data[:query]}.compact.uniq
+        
+        categories = Category.all.map{|c| c.name}.uniq
+        
+        unless latest_search_queries.blank? and categories.blank?
+          
+          current_data = IO.read(@@search_query_suggestions_file_path)
+          
+          terms = current_data.split(/[\n]/).compact.map{|i| i.strip}
+          
+          # Add new terms
+          terms = terms + latest_search_queries + categories
+          
+          # Remove unwanted ones
+          excludes = [ "*", "[object htmlcollection]" ]
+          terms.reject!{|t| excludes.include?(t)}
+          
+          # Remove duplicates
+          terms.uniq!
+          
+          # Sort
+          terms = terms.sort { |a,b| a.to_s.downcase <=> b.to_s.downcase }
+          
+          # Write out
+          File.open(@@search_query_suggestions_file_path, 'w') do |f|  
+            terms.each do |t|
+              f.puts t
+            end
+          end
+        
+        end
+        
+      rescue Exception => ex
+        msg = "Could not update the search query suggestions text file. Error message: #{ex.message}"
+        Rails.logger.error(msg)
+        puts(msg)
+      end
+    end
+    
+    def self.get_query_suggestions(query_fragment, limit=100)
+      return [ ] if query_fragment.blank?
+      
+      suggestions = [ ]
+      
+      begin
+        
+        current_terms = IO.read(@@search_query_suggestions_file_path).split(/[\n]/).compact.map{|i| i.strip}
+        
+        current_terms.each do |t|
+          s = t.downcase
+          suggestions << t if s.match(query_fragment)          
+        end
+        
+      rescue Exception => ex
+        msg = "Failed to get query suggestions. Error message: #{ex.message}."
+        Rails.logger.error(msg)
+        puts(msg)
+      end
+      
+      return suggestions.map{|s| { 'name' => s }}
     end
     
     def self.preprocess_query(query)

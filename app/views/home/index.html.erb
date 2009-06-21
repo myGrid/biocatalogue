@@ -36,9 +36,16 @@
 				<p>
 				  <div class="search_widget">
 				    <% form_tag search_url, :method => :get do %>
-				    <b>Search:</b>
-				    <%= text_field_tag :q, nil, :size => 40 -%> 
-				    <%= submit_tag '', :class => "search_button" -%>
+					    <b>Search:</b>
+							<%= text_field_tag :q, params[:q], :id => "home_search_field", :size => 40, :autocomplete => "off" -%>
+							
+							<div class="auto_complete" id="home_search_auto_complete"></div>
+							
+							<%= auto_complete_field "home_search_field",
+									:update => "home_search_auto_complete",
+									:url => search_auto_complete_url -%>
+									
+					    <%= submit_tag '', :class => "search_button" -%>
 				    <% end %>
 				  </div>
 				</p>

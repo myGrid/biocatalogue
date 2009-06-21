@@ -6,6 +6,8 @@
 
 class SearchController < ApplicationController
   
+  skip_before_filter :verify_authenticity_token, :only => [ :auto_complete ]
+  
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
   
   before_filter :validate_and_setup_search, :only => [ :show ]
@@ -58,6 +60,15 @@ class SearchController < ApplicationController
     respond_to do |format|
       format.js { render :text => "Bye bye :-( ..." }
     end
+  end
+  
+  def auto_complete
+    search_fragment = '';
+    search_fragment = params[:q] unless params[:q].blank?
+    
+    @queries = BioCatalogue::Search.get_query_suggestions(search_fragment, 50)
+                     
+    render :inline => "<%= auto_complete_result @queries, 'name' %>", :layout => false
   end
   
   protected

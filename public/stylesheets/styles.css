@@ -2181,19 +2181,23 @@ div.auto_complete {
   background: #fff;
 	z-index: 10000;
 	font-size: 93%;
+	font-weight: normal;
 } 
 
 div.auto_complete ul { 
-  border: 1px solid #888; 
+  border: 1px solid #999; 
   margin: 0px; 
   padding: 0px; 
   width: 100%; 
-  list-style-type: none; 
+  list-style-type: none;
 } 
 
 div.auto_complete ul li { 
   margin: 0px; 
   padding: 3px; 
+	border-bottom: 1px solid #DDD;
+	text-align: left;
+	cursor: pointer;
 } 
 
 div.auto_complete ul li.selected { 

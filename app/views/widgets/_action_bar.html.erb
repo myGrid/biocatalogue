@@ -10,9 +10,18 @@
 
 <div id="action_bar">
 	<% form_tag search_url, :method => :get, :style => "display: inline;" do %>
+	
 	  Search:
-		<%= text_field_tag :q, params[:q], :size => 40 -%> 
+		<%= text_field_tag :q, params[:q], :id => "action_bar_search_field", :size => 30, :autocomplete => "off" -%>
+		
+		<div class="auto_complete" id="action_bar_search_auto_complete"></div>
+		
+		<%= auto_complete_field "action_bar_search_field",
+				:update => "action_bar_search_auto_complete",
+				:url => search_auto_complete_url -%>
+		
 	  <%= submit_tag '', :class => "search_button" -%>
+				
 	<% end %>
 	
 	<span id="action_links">

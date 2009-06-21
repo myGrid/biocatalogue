@@ -31,7 +31,7 @@ class TagsController < ApplicationController
       tag_fragment = params[:annotation][:value]
     end
     
-    @tags = BioCatalogue::Tags.get_tag_suggestions(tag_fragment, 20)
+    @tags = BioCatalogue::Tags.get_tag_suggestions(tag_fragment, 50)
                      
     render :inline => "<%= auto_complete_result @tags, 'name' %>", :layout => false
   end

@@ -1,0 +1,642 @@
+"http://api.bioinfo.no/wsdl/blast.wsdl"
+"http://beta.biocatalogue.org/search?query=phylogenetic&commit="
+"http://bibiserv.techfak.uni-bielefeld.de/wsdl/rnaforester.wsdl"
+"http://biomoby.org/services/wsdl/mips.gsf.de/getelementsoftype"
+"http://developerdays.com/cgi-bin/tempconverter.exe/wsdl/itempconverter"
+"http://moby.ucalgary.ca/moby/moby-central.pl"
+"http://pdbjs3.protein.osaka-u.ac.jp/soap/pdbjsoapservicex.wsdl"
+"http://phoebus.cs.man.ac.uk:8081/axis/ensembllistner.jws?wsdl"
+"http://ppdev.bioinformatics.vt.edu:6565/axis/services/probedesign?wsdl"
+"http://soap.genome.ad.jp/kegg.wsdl"
+"http://soap.genome.jp/kegg.wsdl"
+"http://ws.adaptivedisclosure.org/axis/services/searcherws?wsdl"
+"http://www.biomart.org/biomart/martservice"
+"http://www.cbs.dtu.dk/ws/blastatlas/blastatlas_1_0_ws2.wsdl"
+"http://www.ebi.ac.uk/intact/binary-search-ws/binarysearch?wsdl"
+"http://www.ebi.ac.uk/soaplab/emboss4/services/alignment_multiple.emma"
+"http://www.ebi.ac.uk/soaplab/emboss4/services/alignment_multiple.emma?wsdl"
+"http://www.ebi.ac.uk/soaplab/emboss4/services/edit.seqret"
+"http://www.ebi.ac.uk/soaplab/typed/services/alignment_consensus.cons"
+"http://www.ebi.ac.uk/tools/webservices/wsdl/wsdbfetch.wsdl"
+"http://www.ebi.ac.uk/webservices/whatizit/ws?wsdl"
+"http://www.esynaps.com/webservices/dailydiblert.asmx?wsdl"
+"http://www.webservicex.com/globalweather.asmx?wsdl"
+"http://xml.nig.ac.jp/wsdl/arsa.wsdl"
+"http://xml.nig.ac.jp/wsdl/blast.wsdl"
+"http://xml.nig.ac.jp/wsdl/gtps.wsdl"
+"multiple sequence alignment"
+"search sequence"
+*blast
+*blast*
+*lopez*
+.ch
+.no
+10
+12
+128.192.66.83
+454
+a
+Accession
+accession
+ackm~
+ackno
+acknoledge
+acknowledge
+acknowledge~
+ackno~
+ackn~
+adn
+aerts
+affy
+aida
+AKS2
+align
+align 2 sequences
+align equences
+align sequences
+alignment
+alignment_multiple
+anemona
+anemona.xlt
+anni
+annova
+anova
+apoe
+arabidopsis thaliana
+arabydopsys
+arsa
+assembly
+b;ast
+basic local alignment search tool
+bbc
+bias
+bio
+biocatalogue
+bioinformatic
+bioinfo~
+biological softwares
+biomart
+biomoby
+biomodel
+biomodels
+biopax
+biosapiens
+Biostatistics
+bird
+blah
+blas
+BLAST
+blast
+Blast
+blast and hello
+blast bioinfo.no
+blast ebi
+BLAST EBI
+blast franck
+blast simplifier
+blast*
+blast2
+blast_ddbj
+blastddbj
+blastlocal
+blastlocal service
+blastlocalservice
+blastn
+blastp
+blastsimplifier
+blastw
+blast~
+blat
+BLAT
+caarray
+cabri
+cagrid
+carole
+cath
+CBS
+cdna
+cdna data sets
+censor
+cgh
+ch
+chebi
+Chemoinformatics
+chenli
+cins
+citations
+cite
+citexplore
+Clustal
+clustal
+clustalp
+clustalw
+clustalw ddbj
+clustalw.xml
+clustalw2
+cluster
+coda
+codeml
+codret
+Comparative Genomics
+cons
+crystal
+custalw
+CustalW
+das
+dasty
+data
+data mining
+Data Retrieval
+database
+database search
+database~
+databse
+data~
+day+26
+dbfetch
+ddbj
+ddbj get entry
+detergents
+discover~
+disease
+dk
+dna
+DNA
+dna analysis
+DNA size
+Document Clustering
+Document Discovery
+document literal wrapped
+document literal wrapper
+Document Similarity
+documentation~
+dolphin
+Domains
+dot plot
+drosophila
+drug
+dtu.dk
+duncan
+e
+eb-eye
+ebeye
+ebi
+ebi blast
+ebi.ac.uk
+ebinocle
+EchoService
+efetch
+eFetchPmcService
+eFetchRequest
+efetch~
+ELM
+elm
+emage
+embl
+emboss
+EMBOSS
+embrace
+embrace~
+emma
+encoded
+engine~
+ensembl
+enterobacter
+entry
+enzyme
+eopd
+eric
+eric*
+ericnzuo
+etools
+eutil
+Evolutionary Distance Measurements
+example input
+excel
+excel enzyme kinetic
+exon
+expression
+expression profiles
+eye
+family
+family*
+family~
+fantom
+fast
+FASTA
+fasta
+fasta format
+fasta_format
+fasta~
+fesquet
+feta
+fetch
+fetchData
+fetchprodom
+foo
+fos
+fproml
+france
+franck
+freeware sequence analysis
+ftmodeller
+fufu
+Function Prediction
+Functional Genomics
+gel
+genbank
+gene
+gene expression
+gene ontology
+Gene Prediction
+gene set enrichment
+gene set enrichment analysis
+genes
+geneseqer
+genetic
+genetic supplies
+genetics
+genetics software
+genetools
+genom
+genoma
+genome
+Genome Annotation
+genome browser
+genomematrix
+Genomics
+genotype
+gens
+go
+GO
+go term
+go_term
+goat
+google~
+gor
+gorl
+goterm
+hamish
+hapmap
+hello
+Hernández
+HH580M
+hhhhhhhhhhhhhhhhhh
+hitkeeper
+hiv
+hmm
+hmmer
+hormones
+http
+http://pathport.vbi.vt.edu/services/wsdls/beta/pathway.wsdl~
+http://spank.ba.itb.cnr.it/docs/funcnet.wsdl
+http://www.ebi.ac.uk/tools/webservices
+http://www.ebi.ac.uk/tools/webservices/services/censor
+http://www.ebi.ac.uk/tools/webservices/wsdl/wsclustalw2.wsdl
+http://www.google.co.uk
+http://xml.nig.ac.jp/wsdl/NCBIGenomeAnnotation.wsdl
+http://xml.nig.ac.jp/wsdl/OMIM.wsdl
+http://xml.nig.ac.jp/wsdl/TxSearch.wsdl
+http://xml.nig.ac.jp/xddbj/clustalw
+ibcp
+Identifier Retrieval
+identifiers
+Image Retrieval
+implementante
+in0
+input scorepairwiserelations
+input:scorepairwiserelations
+insignia
+insulin
+Interpro
+interpro
+interproscan
+intron
+IPI
+is
+jenny
+jist
+jits
+jits~
+job
+jp
+kalign
+kegg
+kinase
+kinetic
+kinetic*
+lab
+lectin
+Ligand Interaction
+lindna
+link
+lipop
+liposomes
+lister
+literature
+Literature retrieval
+litterature
+logp
+lookup
+lopez
+lsignalp
+lyon
+ma
+mafft
+MAFFT
+manchester
+mart
+matcher
+medline
+medline searches
+MFEprimer
+MHC prediction
+micro array
+microarray
+microarray affy
+microarray OR affy
+Microarrays
+microrna
+miriam
+moby
+model
+Model Analysis
+Model Creation
+Model Execution
+modeller
+molecule
+molecule pages
+molecules
+Motifs
+mouse
+mouse anatomy
+mpath
+msa
+multi fasta
+multiple
+multiple alignment
+Multiple Alignment
+multiple sequence
+multiple sequence alignment
+multiple+
+multiple+sequence
+multiple+sequence+alignment
+multtest
+muscle
+name:blast
+Named Entity Recognition
+nature
+ncbi
+ncbi blast
+ncbi structure
+nci
+ner
+net
+network
+ngs
+nob
+norway
+notseq
+no~
+nucleic_motifs
+Nucleotide Sequence Analysis
+nutrition
+nzuo
+obo
+ols
+onsres
+onsres~
+ontolog
+ontology
+Ontology
+Ontology Annotation
+Ontology Lookup
+ontology lookup
+ontology lookup service
+orf
+organ
+output~
+paired
+Pairwise
+pairwise
+Pairwise Alignment
+pairwise~
+pars
+parse_ddbj
+parse_ddbj_info
+pathbase
+pathogen
+Pathway Retrieval
+Pathways
+PCR
+pcr
+pdb
+pdb~
+phospho
+phosphoelmdb
+phylip
+Phylip
+phylogenetic
+phylogenetics
+Phylogeny
+picr
+planarity
+plasmid map
+plot
+pmhelp
+pmhelp08
+pml
+poseview
+pride
+primer
+primers
+prodom
+profiles of transcription factor binding sites
+Promoter Prediction
+proserver
+prote
+protein
+Protein Interaction
+protein interaction
+Protein Sequence Analysis
+protein structures
+protein~
+Proteomics
+proteomics
+protusion
+providers
+prtoek
+psi
+psi-blast
+psiblast
+psisearch
+pubmed
+query
+query service
+rat
+rdf
+receptors
+reconstruction
+registry
+regression
+relations
+relations~
+Repeats
+Request
+response
+Rest
+rest
+restriction
+restriction maps
+result
+retrieval
+retrieve
+riken
+rls
+rls~
+rpc
+rpc encoded
+RrnascanService
+runclustalw2
+runncbiblast
+sbo
+scan
+sce:q0085
+score
+scorepairwiserelations
+score~
+sd
+sdsdfdf
+search
+search sequence
+search simple
+searchcitations
+searching
+searching sequences
+searchsimple
+searchSimple
+Secondary Structure
+seekda
+seluence
+seq
+seqret
+sequence
+sequence alignment
+Sequence Alignment
+Sequence Analysis
+sequence analysis
+sequence reconstruction
+Sequence Retrieval
+sequence search
+sequence searching
+Sequence Similarity
+sequence similarity search
+sequence+
+sequence+alignment
+service
+service:blast:output~
+service~
+seuqnece
+shim
+signal peptide
+signalp
+simplifier
+slc8a1
+smiles string
+sms
+SNP
+snp
+soap
+SOAP
+soap seekda
+soap-input:scorepairwiserelations
+soap_input:name:result
+soap_input:scorepairwiserelations
+soapinput:scorepairwiserelations
+soaplab
+soatrader
+split
+ss
+ssap
+ssasdsd
+ssd
+ss~
+staff
+start
+Statistical Robustness
+statistics
+strider
+Structural Genomics
+Structure Prediction
+Structure Retrieval
+submited
+suita~
+sulfolobus acidocaldarius
+switzerland
+Systems Biology
+systems biology ontology
+tano
+taqman
+taxbrowser
+tblastn
+Tertiary Structure
+test
+test blast
+text
+Text Mining
+text mining
+textmining
+tfmodeller
+th.laurent
+thousandgenomes.org
+tlaurent
+tmodeller
+tools
+toucan
+Transcription Factors
+translate
+transmembrane
+tree
+Tree Display
+Tree Inference
+tuiuiu
+ucsc
+uludag
+uniprot
+upi
+virosomes
+wddbfetch
+weather
+web service
+web+service
+whatiz
+whatizit
+wiki
+wordcount
+workflow
+WSArrayofData
+wsblastatlas_1_0_ws2
+wschebi
+wsclustal
+wsclustalw2
+wsclustalw2service
+wsdbfetch
+WSDbfetch
+wsdl
+wsinterproscan
+WSInterProScan
+WSInterProScanService
+wsncbiblastservice
+wsncbiblastservice~
+wublast
+wublat
+www.ebi.ac.uk/tools/webservices
+www.ebi.ac.uk/tools/webservices/services/censor
+xcvzxvxcv~
+yahoo
+yeast
+yoda
+ytanoh~
+yta~
+yt~
+~blast

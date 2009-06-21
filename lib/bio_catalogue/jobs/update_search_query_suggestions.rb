@@ -1,4 +1,4 @@
-# BioCatalogue: lib/bio_catalogue/jobs/update_urls_to_monitor.rb
+# BioCatalogue: lib/bio_catalogue/jobs/update_search_query_suggestions.rb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -6,10 +6,9 @@
 
 module BioCatalogue
   module Jobs
-    class UpdateUrlsToMonitor
+    class UpdateSearchQuerySuggestions
       def perform
-          # Update the table that contains the list of urls on which to perform availability checks
-          BioCatalogue::Monitoring::MonitorUpdate.run
+          BioCatalogue::Search.update_search_query_suggestions_file
         end
       end    
   end
