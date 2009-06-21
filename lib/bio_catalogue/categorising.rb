@@ -83,15 +83,17 @@ module BioCatalogue
       end
       
       # Try and get it from the cache...
-      count = Rails.cache.read(cache_key)
+      cached_count = Rails.cache.read(cache_key)
       
-      if count.nil?
+      if cached_count.nil?
         # It's not in the cache so get the value and store it in the cache...
         
         count = get_service_ids_with_category(category.id).length
         
         # Finally write it to the cache...
         Rails.cache.write(cache_key, count)
+      else
+        count = cached_count
       end
       
       return count
