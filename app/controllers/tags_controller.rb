@@ -33,7 +33,7 @@ class TagsController < ApplicationController
     
     @tags = BioCatalogue::Tags.get_tag_suggestions(@tag_fragment, 50)
                      
-    render :inline => "<%= auto_complete_result @tags, 'name', @tag_fragment %>", :layout => false
+    render :inline => "<%= auto_complete_result @tags, 'name' %>", :layout => false
   end
   
   # DELETE /tags
