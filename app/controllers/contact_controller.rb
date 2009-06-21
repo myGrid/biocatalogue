@@ -11,4 +11,24 @@ class ContactController < ApplicationController
       format.html # index.html.erb
     end
   end
+  
+  def create
+    from_user = params[:from] || current_user.try(:display_name) || "no name specified"
+    from_user += ' (' + (params[:email] || current_user.try(:email) || 'no email specified') + ')'
+    
+    if verify_recaptcha
+      ContactMailer.deliver_feedback(from_user, params[:subject], params[:content])
+  
+      respond_to do |format|
+        flash[:notice] = 'Your message has been submitted. Thank you very much.'
+        format.html { redirect_to contact_url }
+      end
+    else
+      respond_to do |format|
+        flash[:error] = 'Your message has not been submitted. CAPTCHA was not entered correctly.'
+        format.html { render :action => :index }
+      end
+    end
+    
+  end
 end

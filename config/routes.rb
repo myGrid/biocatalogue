@@ -58,7 +58,8 @@ ActionController::Routing::Routes.draw do |map|
   map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil
   map.forgot_password '/forgot_password', :controller => 'users', :action => 'forgot_password'
   map.reset_password '/reset_password/:security_token', :controller => 'users', :action => 'reset_password', :security_token => nil
-  map.contact '/contact', :controller => 'contact', :action => 'index'
+  map.submit_feedback '/contact', :controller => 'contact', :action => 'create', :conditions => { :method => :post }
+  map.contact '/contact', :controller => 'contact', :action => 'index', :conditions => { :method => :get }
   map.home '/', :controller => 'home', :action => 'index'
 
   map.resources :rest_services
@@ -120,6 +121,6 @@ ActionController::Routing::Routes.draw do |map|
   # See how all your routes lay out with "rake routes"
 
   # Install the default routes as the lowest priority.
-  map.connect ':controller/:action/:id'
+  #map.connect ':controller/:action/:id'
   #map.connect ':controller/:action/:id.:format'
 end

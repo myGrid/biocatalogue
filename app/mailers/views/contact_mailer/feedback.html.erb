@@ -1,0 +1,16 @@
+<%
+
+# BioCatalogue: app/views/mailers/views/contact/feedback.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+BioCatalogue feedback from: <%= white_list @name %>
+
+Subject: <%= white_list @subject %>
+
+Message:
+<%= white_list @content %>

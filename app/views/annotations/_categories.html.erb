@@ -105,7 +105,7 @@
 	</div>
 	
 	<% if show_add_option and logged_in? %>
-		<div id="add_service_category_box" class="soap_service_form" style="width: 550px; margin: 1em 0; display: <%= params.has_key?(:categorise) ? 'block' : 'none' -%>;">
+		<div id="add_service_category_box" class="box_form" style="width: 550px; margin: 1em 0; display: <%= params.has_key?(:categorise) ? 'block' : 'none' -%>;">
 			<% form_for :annotation, :url => categorise_service_url(service) do |f| %>
 				<input id="selected_categories_input" type="hidden" name="categories"/>
 				<p style="margin-bottom: 0.5em;">

@@ -8,7 +8,84 @@
 
 %>
 
-<h1>Contact the BioCatalogue Team</h1>
+<% t "Contact Us" %>
 
-If you have any questions, you can send us an email at: 
-<%= mail_to "biocatalogue-support@rubyforge.org", "BioCatalogue Support", :encode => "javascript", :class => "write_email" -%>
+<center>
+	
+	<h1>Contact the BioCatalogue Team</h1>
+
+	<% rounded "#E9F7CC", "#333", "60%" do %>
+	
+		<p style="text-align: center; margin: 0.5em 0;">
+			Fill in the form below and submit, or alternatively you can email:
+			<b><%= mail_to "#{FEEDBACK_EMAIL_ADDRESS}", nil, { :subject => "BioCatalogue", :encode => "hex" } %></b>
+		</p>
+	
+		<p style="text-align: center; margin: 0.5em 0;">
+			Click 
+			<b><%= link_to_function "here" + expand_image, visual_effect(:toggle_blind, "feedback_help", :duration => 0.3), :style => "text-decoration:none;" %></b> 
+			for more info.
+		</p>
+		
+		<div id="feedback_help" style="display: none;">
+			<p>We would really appreciate feedback on your experiences with the BioCatalogue, especially in the following areas:</p>
+			<ul>
+			  <li><b>User Interface:</b>  
+			    <ul>
+			      <li>How easy is it to navigate?</li>
+			      <li>How have you found submitting, searching, browsing, tagging, annotating and so on for Services?</li> 
+			      <li>Have you found any features difficult to use? Do you have any suggestions on how to make them easier to use?</li>
+			    </ul>
+			  </li>
+			  <li><b>Bug Reporting:</b>
+			    <ul>
+			      <li>Did any of the features you tried to use fail? Report them here and we will endeavour to fix them as quickly as possible.</li>
+			    </ul>
+			  </li>
+			  <li><b>Feature Requests:</b>
+			    <ul>
+			      <li>Are there any new features that you would like to see on the BioCatalogue? Tell us about them and we will see if we can implement them for you.</li>
+			    </ul>
+			  </li>
+			</ul>
+			<p>Please specify any URLs if your feedback / bug report is about particular parts of the site.</p>
+			
+			<p>
+				Thanks!<br/>
+				<b>The BioCatalogue Team</b>
+			</p>
+		</div>
+	
+	<% end %>
+	
+</center>
+
+
+<center>
+	
+	<div class="box_form" style="width: 600px; margin: 2em 0; text-align: left;">
+		<% form_tag(submit_feedback_url) do %>
+			<p><b>From</b></p>
+		  <%= text_field_tag :from, current_user.try(:display_name) || params[:from], :size => 30 %>
+			<span class="faded_plus">(your name)</span>
+			
+			<p><b>Email (optional)</b></p>
+    	<%= text_field_tag :email, current_user.try(:email) || params[:email], :size => 30 %>
+			
+			<p><b>Subject</b></p>
+    	<%= text_field_tag :subject, params[:subject], :style => "width: 99%;" %>
+			
+			<p><b>Message</b></p>
+			<textarea id="feedback_content" name="content" rows="8" style="width: 99%;"><%= params[:content] %></textarea>
+			
+		  <br/><br/>
+			<center>
+				<%= recaptcha_tags(:ssl => true) -%>
+			</center>
+			<br/>
+		
+    	<center><%= submit_tag "Submit", :disable_with => "Submitting&hellip;" %></center>
+		<% end %>
+	</div>
+	
+</center>

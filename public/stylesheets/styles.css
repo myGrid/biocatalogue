@@ -1045,17 +1045,6 @@ body.sidebar-right #login_box {
 	border: 1px solid #DDD;
 }
 
-.soap_service_form {
-	margin: 1em 0;
-	border: 1px solid #CCC;
-	padding: 0.7em 1.2em;
-	background-color: #EEE;
-}
-
-.soap_service_form fieldset {
-	border: 1px solid #cccccc;
-}
-
 .field {
 	border: 1px solid #EEE;
 	background-color: #FFF;
@@ -1575,6 +1564,17 @@ ul.tabbernav li.tabberactive a:hover
 
 .box_currentuser_specific * {
 	vertical-align: middle;
+}
+
+.box_form {
+	margin: 1em 0;
+	border: 1px solid #CCC;
+	padding: 0.7em 1.2em;
+	background-color: #EEE;
+}
+
+.box_form fieldset {
+	border: 1px solid #cccccc;
 }
 
 /* BEGIN annotations styles */
@@ -2346,6 +2346,8 @@ ul.categories li span.main:hover {
 
 /* END categories styles */
 
+/* BEGIN stats bar styles */
+
 .stats_bar {
 	color: #555;
 	font-weight: bold;
@@ -2362,3 +2364,18 @@ ul.categories li span.main:hover {
 .stats_bar .each {
 	margin-left: 1em;
 }
+
+/* END stats bar styles */
+
+#feedback_help {
+	margin: 1.5em;
+	font-size: 93%; 
+	text-align: left;
+}
+
+#feedback_help ul {
+	margin-left: 1.5em;
+	margin-bottom: 1em;
+}
+
+

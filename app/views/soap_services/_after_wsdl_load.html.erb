@@ -9,13 +9,13 @@
 %>
 
 <% if !@error_message.blank? -%>
-	<div class="soap_service_form">
+	<div class="box_form">
 		<p class="error_text">
 			<%= @error_message -%>
 		</p>
 	</div>
 <% elsif !@existing_service.nil? %>
-	<div class="soap_service_form">
+	<div class="box_form">
 		<p class="error_text">
 			This service has already been submitted:
 		</p>
@@ -30,7 +30,7 @@
 	
 	<%= render :partial => "shared/new_service_provide_info_text" -%>
 	
-	<div class="soap_service_form">
+	<div id="soap_service_form" class="box_form">
 		<%= render :partial => "new_form" %>
 	</div>
 <% end -%>
