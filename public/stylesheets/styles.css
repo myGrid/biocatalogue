@@ -580,12 +580,12 @@ body.sidebar-right #footer {
 	vertical-align: middle;
 }
 
-#wrapper #container #action_bar * {
-	vertical-align: middle;
-}
-
 #wrapper #container #action_bar #action_links {
 	padding-left: 15px;
+}
+
+#wrapper #container #action_bar #action_links  * {
+	vertical-align: middle;
 }
 
 #wrapper #container #action_bar #action_links a {
@@ -2182,7 +2182,12 @@ div.auto_complete {
 	z-index: 10000;
 	font-size: 93%;
 	font-weight: normal;
+	vertical-align: baseline;
 } 
+
+div.auto_complete * {
+	vertical-align: baseline;
+}
 
 div.auto_complete ul { 
   border: 1px solid #999; 
@@ -2207,7 +2212,8 @@ div.auto_complete ul li.selected {
 div.auto_complete ul strong.highlight { 
   color: #800; 
   margin: 0px; 
-  padding: 0px; 
+  padding: 0px;
+	font-weight: normal;
 }
 
 /* END autocomplete styles */

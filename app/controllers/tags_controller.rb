@@ -23,17 +23,17 @@ class TagsController < ApplicationController
   end
   
   def auto_complete
-    tag_fragment = '';
+    @tag_fragment = '';
     
     if params[:annotations] and params[:annotations][:tags]
-      tag_fragment = params[:annotations][:tags]
+      @tag_fragment = params[:annotations][:tags]
     elsif  params[:annotation] and params[:annotation][:value]
-      tag_fragment = params[:annotation][:value]
+      @tag_fragment = params[:annotation][:value]
     end
     
-    @tags = BioCatalogue::Tags.get_tag_suggestions(tag_fragment, 50)
+    @tags = BioCatalogue::Tags.get_tag_suggestions(@tag_fragment, 50)
                      
-    render :inline => "<%= auto_complete_result @tags, 'name' %>", :layout => false
+    render :inline => "<%= auto_complete_result @tags, 'name', @tag_fragment %>", :layout => false
   end
   
   # DELETE /tags

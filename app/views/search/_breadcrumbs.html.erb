@@ -9,7 +9,16 @@
 %>
 
 <% case controller.action_name.to_s; when "show" -%>
-  <li><span>Search Results</span></li>
+  <li><%= link_to("Search", search_url) -%></li>
+	
+	<li><b>&#187;</b></li>
+	
+	<% if @query.blank? %>
+		<li><span>Please specify a search query...</span></li>
+	<% else %>
+		<li><span><%= "#{@type.titleize} <b>&#187;</b> Results for '#{h(@query)}'" -%></span></li>
+	<% end %>
+	
 <% else -%>
   <!-- no breadcrumb -->
 <% end -%>

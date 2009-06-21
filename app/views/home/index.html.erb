@@ -43,7 +43,8 @@
 							
 							<%= auto_complete_field "home_search_field",
 									:update => "home_search_auto_complete",
-									:url => search_auto_complete_url -%>
+									:url => search_auto_complete_url,
+									:min_chars => 3 -%>
 									
 					    <%= submit_tag '', :class => "search_button" -%>
 				    <% end %>

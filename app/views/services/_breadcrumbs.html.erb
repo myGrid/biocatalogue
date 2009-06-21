@@ -10,15 +10,13 @@
 
 <li><%= link_to 'Services', services_path -%></li>
 
-<% if ["show", "new", "search"].include? controller.action_name.downcase -%>
+<% if ["show", "new" ].include? controller.action_name.downcase -%>
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" -%>
     <li><span><%= h(@service.name) -%></span></li>
   <% when "new" -%>
     <li><span>Register a Service</span></li>
-	<% when "search" -%>
-    <li><span>Search Results</span></li>
   <% else -%>
     <!-- no breadcrumb -->
   <% end -%>

@@ -12,6 +12,8 @@ module BioCatalogue
     
     ALL_TYPES_SYNONYMS = [ "all", "any" ].freeze
     
+    VALID_SEARCH_TYPES_INCL_ALL = ([ ALL_TYPES_SYNONYMS[0] ] + VALID_SEARCH_TYPES).freeze
+    
     # As new models are indexed (and therefore need to be searched on) add them here.
     @@models_for_search_types = { "all" => Mapper::SERVICE_STRUCTURE_MODELS + [ ServiceProvider, User, Registry, Annotation ],
                                   "services" => Mapper::SERVICE_STRUCTURE_MODELS + [ Annotation ],

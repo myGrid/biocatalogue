@@ -8,31 +8,22 @@
 
 %>
 
+<% all_search = BioCatalogue::Search::ALL_TYPES_SYNONYMS.include?(@type) %>
+
 <% if @query.blank? %>
 	<h1>Search</h1>
 <% else %>
-	<% t "Results for '#{h(@query)}'" -%>
-	<h1>Search Results</h1>
+	<% t "#{@type.titleize} &#45; Results for '#{h(@query)}'" -%>
+	<% if all_search %>
+		<h1>Search Results <span class="faded">(for all things in the BioCatalogue)</span></h1>
+	<% else %>
+		<h1>Search Results <span class="faded">(for <%= @type.titleize -%>)</span></h1>
+	<% end%>
 <% end %>
 
 <div>
 	
-	<div class="search_box" style="float:right; margin-left: 2em;">
-		<% rounded "#e9f7cc", "#333", "auto" do %>
-			<% form_tag(search_url, :method => :get) do %>
-			  <b>Search:</b>
-				<%= text_field_tag :q, @query || params[:q], :id => "search_show_page_search_field", :size => 30, :autocomplete => "off" -%>
-				
-				<div class="auto_complete" id="search_show_page_auto_complete"></div>
-				
-				<%= auto_complete_field "search_show_page_search_field",
-						:update => "search_show_page_auto_complete",
-						:url => search_auto_complete_url -%>
-									
-			  <%= submit_tag '', :class => "search_button" -%>
-			<% end %>
-		<% end %>
-	</div>
+	<%= render :partial => 'search_form' %>
 	
 	<% if @query.blank? %>
 		<p>
@@ -60,49 +51,69 @@
 	  
 	<% else %>
 	
-		<div id="search_results" class="tabber">
-			<% @results.result_types.each do |result_type| %>
-			
-				<% 
-					 visible_result_type = result_type.titleize
-					 items = search_item_ids_to_objects(@results.item_ids(result_type, 1), result_type)
-					 count = @results.count(result_type)
-					 more_items = count > PAGE_ITEMS_SIZE 
-				 %>
+		<% if all_search %>
+		
+			<div id="search_results" class="tabber">
+				<% @results.result_types.each do |result_type| %>
 				
-				<% unless items.empty? %>
-					<div id='<%= "tab-#{result_type}" -%>' class="tabbertab">
-						<% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}"  %>
-				    <h3><%= "#{visible_result_type} (#{count_text})" -%></h3>
-						
-						<% if more_items %>
-							<table style="width:100%; margin: 0 0 1.5em 0;">
-								<tr>
-									<td style="color: #555;">
-										<%= "Showing the top #{items.length} items out of #{count} in total" -%>
-									</td>
-									<td style="text-align: right;">
-										<%= link_to("Click here to see all Services for '#{h(@query)}'", search_services_path(:q => @query)) -%>
-									</td>
-								</tr>
-							</table>
-						<% end %>
-						
-						<%= render :partial => "#{result_type}/listing", :locals => { :items => items } %>
-						
-						<% if more_items %>
-							<p style="text-align: right;">
-								<%= link_to("Click here to see all Services for '#{h(@query)}'", search_services_path(:q => @query)) -%>
-							</p>
-						<% end %>
-				  </div>
+					<% 
+						 visible_result_type = result_type.titleize
+						 items = search_item_ids_to_objects(@results.item_ids(result_type, 1), result_type)
+						 count = @results.count(result_type)
+						 more_items = count > PAGE_ITEMS_SIZE 
+					%>
+					
+					<% unless items.empty? %>
+						<div id='<%= "tab-#{result_type}" -%>' class="tabbertab">
+							<% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}"  %>
+					    <h3><%= "#{visible_result_type} (#{count_text})" -%></h3>
+							
+							<% if more_items %>
+								<table style="width:100%; margin: 0 0 1.5em 0;">
+									<tr>
+										<td style="color: #555;">
+											<%= "Showing the top #{items.length} items out of #{count} in total" -%>
+										</td>
+										<td style="text-align: right;">
+											<%= link_to("Click here to see all #{visible_result_type} for '#{h(@query)}'", search_url(:q => @query, :t => result_type, :page => 2)) -%>
+										</td>
+									</tr>
+								</table>
+							<% end %>
+							
+							<%= render :partial => "#{result_type}/listing", :locals => { :items => items } %>
+							
+							<% if more_items %>
+								<p style="text-align: right;">
+									<%= link_to("Click here to see all #{visible_result_type} for '#{h(@query)}'", search_url(:q => @query, :t => result_type, :page => 2)) -%>
+								</p>
+							<% end %>
+					  </div>
+					<% end %>
+					
 				<% end %>
-				
-			<% end %>
-		</div>
-
-		<%= render :partial => 'shared/tabber_startup' -%>
+			</div>
+	
+			<%= render :partial => 'shared/tabber_startup' -%>
+		
+		<% else %>
+		
+			<% 
+				 result_type = @type
+				 item_ids = @results.item_ids(result_type, params[:page])
+				 items = search_item_ids_to_objects(item_ids, result_type)
+			%>
 			
+			<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => item_ids, :entry_name => @type.gsub('_', ' ').singularize } %>
+			
+			<div id="search_results" style="margin: 2em 0;">
+				<%= render :partial => "#{@type}/listing", :locals => { :items => items } %>
+			</div>
+				
+			<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => item_ids } %>
+		
+		<% end%>
+	
 	<% end %>
 
 <% end %>

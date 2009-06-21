@@ -228,75 +228,6 @@ class ApplicationController < ActionController::Base
   # ========================================
 
 
-  # =========================
-  # Helper methods for Search
-  # -------------------------
-
-  def validate_and_setup_search
-
-    # First check that search is on
-    unless BioCatalogue::Search.on?
-      error_to_home('Search is unavailable at this time')
-      return false
-    end
-
-    query = (params[:q] || '').strip
-
-    # Check query is present
-    unless query.blank?
-
-      # Check if the query is '*' in which case give the user an appropriate message.
-      if query == '*'
-        error_to_home("It looks like you were trying to search for everything in the BioCatalogue! If you would like to browse all services then <a href='#{services_path}'>click here</a>.")
-        return false
-      end
-
-      # Query is fine...
-      @query = query
-
-      type = params[:t]
-
-      if type.blank?
-        if controller_name.downcase == "search"
-          type = "all"
-        else
-          type = controller_name.downcase
-        end
-      else
-        type = type.strip.downcase.pluralize
-      end
-
-      all_valid_types = BioCatalogue::Search::VALID_SEARCH_TYPES + BioCatalogue::Search::ALL_TYPES_SYNONYMS
-
-      # Check that a valid type has been provided
-      unless all_valid_types.include?(type)
-        error_to_home("'#{type}' is an invalid search type")
-        return false
-      end
-
-      # Type is fine...
-      @type = type
-
-      @results = nil
-
-    end
-
-  end
-
-  def remember_search
-    session[:last_search] = request.url if defined?(@results) and !@results.nil? and @results.total > 0
-  end
-
-  def log_search
-    if USE_EVENT_LOG and !is_request_from_bot? and (params[:page].blank? or params[:page] == "1")
-      if !@query.blank? and !@type.blank?
-        ActivityLog.create(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @type, :http_user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] })
-      end
-    end
-  end
-
-  # =========================
-
   # Used to record certain events that are of importance...
   def log_event
     # Note: currently the following are logged seperately:
@@ -308,8 +239,18 @@ class ApplicationController < ActionController::Base
       a = action_name.downcase
 
       core_data = { :http_user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] }
-
+      
+      # Search
+      if c == "search"
+        if a == "show"
+          if !@query.blank? and !@type.blank? and (params[:page].blank? or params[:page] == "1")
+            ActivityLog.create(:action => "search", :culprit => current_user, :data => core_data.update({ :query => @query, :type =>  @type }))
+          end
+        end
+      end
+      
       if c == "services"
+        # View service
         if a == "show"
           ActivityLog.create(:action => "view",
                              :culprit => current_user,
@@ -317,17 +258,21 @@ class ApplicationController < ActionController::Base
                              :data => core_data)
         end
       end
-
+      
       if c == "users"
+        # View user profile
         if a == "show"
-          ActivityLog.create(:action => "view",
-                             :culprit => current_user,
-                             :activity_loggable => @user,
-                             :data => core_data)
+          if current_user.try(:id) != @user.id
+            ActivityLog.create(:action => "view",
+                               :culprit => current_user,
+                               :activity_loggable => @user,
+                               :data => core_data)
+          end
         end
       end
-
+      
       if c == "registries"
+        # View registry profile
         if a == "show"
           ActivityLog.create(:action => "view",
                              :culprit => current_user,
@@ -335,8 +280,9 @@ class ApplicationController < ActionController::Base
                              :data => core_data)
         end
       end
-
+      
       if c == "service_providers"
+        # View service provider profile
         if a == "show"
           ActivityLog.create(:action => "view",
                              :culprit => current_user,

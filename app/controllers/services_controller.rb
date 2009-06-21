@@ -14,12 +14,6 @@ class ServicesController < ApplicationController
   
   before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise ]
   
-  before_filter :validate_and_setup_search, :only => [ :search ]
-  
-  before_filter :log_search, :only => [ :search ]
-  
-  after_filter :remember_search, :only => [ :search ]
-  
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
   # GET /services
@@ -96,29 +90,6 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(services_url) }
       format.xml  { head :ok }
-    end
-  end
-  
-  # DELETE /services/search
-  # DELETE /services/search.xml
-  def search
-    unless @query.blank?
-      begin
-        @results = BioCatalogue::Search.search(@query, @type)
-        raise "nil @results object returned" if @results.nil?
-      rescue Exception => ex
-        flash.now[:error] = "Sorry, search didn't work this time. Try with different keyword(s). Please <a href='/contact'>report this</a> if it continues for other searches."
-        logger.error("Search failed for query: '#{@query}'. Search has still been logged in the activity log. Exception:")
-        logger.error(ex.message)
-        logger.error(ex.backtrace.join("\n"))
-      end
-      
-      session[:last_search] = request.url if @results and @results.total > 0
-    end
-    
-    respond_to do |format|
-      format.html # search.html.erb
-      format.xml { render :layout => false } # search.xml.builder
     end
   end
   

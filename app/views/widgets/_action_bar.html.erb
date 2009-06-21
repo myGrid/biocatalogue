@@ -12,13 +12,16 @@
 	<% form_tag search_url, :method => :get, :style => "display: inline;" do %>
 	
 	  Search:
-		<%= text_field_tag :q, params[:q], :id => "action_bar_search_field", :size => 30, :autocomplete => "off" -%>
+		<%= text_field_tag :q, params[:q], :id => "action_bar_search_field", :size => 28, :autocomplete => "off" -%>
 		
-		<div class="auto_complete" id="action_bar_search_auto_complete"></div>
+		<%= select_tag :t, options_for_select(BioCatalogue::Search::VALID_SEARCH_TYPES_INCL_ALL.collect { |t| [t.titleize, t] }, params[:t]), :style => "width: 140px; font-size: 85%; vertical-align: middle;" %>
+		
+		<div class="auto_complete" id="action_bar_search_auto_complete" style="display:inline;"></div>
 		
 		<%= auto_complete_field "action_bar_search_field",
 				:update => "action_bar_search_auto_complete",
-				:url => search_auto_complete_url -%>
+				:url => search_auto_complete_url,
+				:min_chars => 3 -%>
 		
 	  <%= submit_tag '', :class => "search_button" -%>
 				
