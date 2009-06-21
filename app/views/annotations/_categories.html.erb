@@ -124,6 +124,26 @@
 			  </p>
 			<% end %>
 		</div>
+		
+		<script type="text/javascript"> 
+
+		function handleEnter(evt) {
+		
+		  var evt = evt ? evt : (event ? event : null); 
+		  var node = evt.target ? evt.target : (evt.srcElement ? evt.srcElement : null); 
+		
+		  if (evt.keyCode == 13) {
+		    if (node.id == "categories_selector") {
+		      addServiceCategory('categories_selector');
+		      return false;
+		    }
+		  }
+		} 
+		
+		document.onkeypress = handleEnter; 
+		
+		</script> 
+
 	<% end %>
 
 </div>
