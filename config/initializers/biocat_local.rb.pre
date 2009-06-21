@@ -12,8 +12,8 @@ ENABLE_SEARCH = false
 # Show the debug box at the end of the page or not.
 SHOW_DEBUG = false
 
-# Switch event logging on or off.
-USE_EVENT_LOG = false
+# Switch event / activity logging on or off.
+USE_EVENT_LOG = true
 
 # Set a proxy for open-uri calls
 #If :proxy option is specified, the value should be String, 

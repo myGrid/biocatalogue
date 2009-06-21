@@ -42,8 +42,19 @@ module BioCatalogue
           terms = terms + latest_search_queries + categories
           
           # Remove unwanted ones
-          excludes = [ "*", "[object htmlcollection]" ]
-          terms.reject!{|t| excludes.include?(t)}
+          excludes = [ "*", "[object htmlcollection]", /^[*]/ ]
+          excludes.each do |ex|
+            terms.reject! do |t|
+              case ex
+                when String
+                  ex == t
+                when Regexp
+                  t.match(ex)
+                else
+                  false
+              end
+            end
+          end
           
           # Remove duplicates
           terms.uniq!

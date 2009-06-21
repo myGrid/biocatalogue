@@ -26,9 +26,6 @@
 "http://xml.nig.ac.jp/wsdl/gtps.wsdl"
 "multiple sequence alignment"
 "search sequence"
-*blast
-*blast*
-*lopez*
 .ch
 .no
 10
@@ -36,8 +33,8 @@
 128.192.66.83
 454
 a
-Accession
 accession
+Accession
 ackm~
 ackno
 acknoledge
@@ -86,12 +83,12 @@ bird
 blah
 blas
 BLAST
-blast
 Blast
+blast
 blast and hello
 blast bioinfo.no
-blast ebi
 BLAST EBI
+blast ebi
 blast franck
 blast simplifier
 blast*
@@ -160,8 +157,8 @@ detergents
 discover~
 disease
 dk
-dna
 DNA
+dna
 dna analysis
 DNA size
 Document Clustering
@@ -193,8 +190,8 @@ ELM
 elm
 emage
 embl
-emboss
 EMBOSS
+emboss
 embrace
 embrace~
 emma
@@ -267,8 +264,8 @@ genomematrix
 Genomics
 genotype
 gens
-go
 GO
+go
 go term
 go_term
 goat
@@ -407,18 +404,18 @@ ols
 onsres
 onsres~
 ontolog
-ontology
 Ontology
+ontology
 Ontology Annotation
-Ontology Lookup
 ontology lookup
+Ontology Lookup
 ontology lookup service
 orf
 organ
 output~
 paired
-Pairwise
 pairwise
+Pairwise
 Pairwise Alignment
 pairwise~
 pars
@@ -428,14 +425,14 @@ pathbase
 pathogen
 Pathway Retrieval
 Pathways
-PCR
 pcr
+PCR
 pdb
 pdb~
 phospho
 phosphoelmdb
-phylip
 Phylip
+phylip
 phylogenetic
 phylogenetics
 Phylogeny
@@ -456,13 +453,13 @@ Promoter Prediction
 proserver
 prote
 protein
-Protein Interaction
 protein interaction
+Protein Interaction
 Protein Sequence Analysis
 protein structures
 protein~
-Proteomics
 proteomics
+Proteomics
 protusion
 providers
 prtoek
@@ -513,16 +510,16 @@ search simple
 searchcitations
 searching
 searching sequences
-searchsimple
 searchSimple
+searchsimple
 Secondary Structure
 seekda
 seluence
 seq
 seqret
 sequence
-sequence alignment
 Sequence Alignment
+sequence alignment
 Sequence Analysis
 sequence analysis
 sequence reconstruction
@@ -581,10 +578,9 @@ taxbrowser
 tblastn
 Tertiary Structure
 test
-test blast
 text
-Text Mining
 text mining
+Text Mining
 textmining
 tfmodeller
 th.laurent
@@ -620,8 +616,8 @@ wschebi
 wsclustal
 wsclustalw2
 wsclustalw2service
-wsdbfetch
 WSDbfetch
+wsdbfetch
 wsdl
 wsinterproscan
 WSInterProScan
