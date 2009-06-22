@@ -100,7 +100,7 @@ class SearchController < ApplicationController
       if type.blank?
         type = "all"
       else
-        type = type.strip.downcase.pluralize
+        type = type.strip.downcase
       end
 
       all_valid_types = BioCatalogue::Search::VALID_SEARCH_TYPES + BioCatalogue::Search::ALL_TYPES_SYNONYMS
