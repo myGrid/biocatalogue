@@ -4,8 +4,6 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-#require RAILS_ROOT + "/app/helpers/application_helper.rb"
-
 module TagsHelper
   include ApplicationHelper
   

@@ -75,9 +75,6 @@ KNOWN_ANNOTATION_ATTRIBUTES = [ "tag",
                                 "name",
                                 "example",
                                 "documentation_url",
-                                "rating.speed",
-                                "rating.reliability",
-                                "rating.ease-of-use",
                                 "rating.documentation" ].freeze
 
 
@@ -103,7 +100,7 @@ Annotations::Config.attribute_names_to_allow_duplicates.concat([ "tag",
                                                                  "rating.ease-of-use",
                                                                  "rating.documentation" ])
 
-Annotations::Config.value_restrictions.update({ "rating" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
+Annotations::Config.value_restrictions.update({ "rating.documentation" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
                                                 "test_xyz" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid test_xyz" } })
 
 # ================================
@@ -118,10 +115,12 @@ Annotations::Config.value_restrictions.update({ "rating" => { :in => 1..5, :erro
 
 # IMPORTANT: remember to update any Annotations plugin configuration settings above when adding to this.
 
-SERVICE_RATINGS_CATEGORIES = { "rating.speed" => [ "Speed", "Rate how fast this service has been for you" ],
-                               "rating.reliability" => [ "Reliability", "Rate how reliable this service has been for you" ],
-                               "rating.ease-of-use" => [ "Ease of Use", "Rate how easy this service has been to use for you" ],
-                               "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }.freeze
+#SERVICE_RATINGS_CATEGORIES = { "rating.speed" => [ "Speed", "Rate how fast this service has been for you" ],
+#                               "rating.reliability" => [ "Reliability", "Rate how reliable this service has been for you" ],
+#                               "rating.ease-of-use" => [ "Ease of Use", "Rate how easy this service has been to use for you" ],
+#                               "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }.freeze
+
+SERVICE_RATINGS_CATEGORIES = { "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }.freeze
 
 # ================================
 

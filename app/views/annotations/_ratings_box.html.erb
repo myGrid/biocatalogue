@@ -12,90 +12,101 @@
 <% div_id_after_ajax_rate = "ratings" unless local_assigns.has_key?(:div_id_after_ajax_rate) %>
 
 <div class="box_section">
-	<p class="heading">
-		User Ratings
-		<span class="faded">(<%= get_overall_count_of_ratings(annotatable) -%>)</span>
-	</p>
-	
-	<div class="center">
-		<% overall_rating = get_overall_average_rating(annotatable) %>
-		<p class="center" style="font-weight: bold; margin: 0; margin-bottom: 1em;">
-			<span style="vertical-align: middle;">Overall:</span>
-			<span class="inline-rating" style="margin-left: 0.5em;">
-				<ul class="star-rating">
-					<li class="current-rating" style="width:<%= rating_to_percentage(overall_rating) -%>%;">Currently <%= overall_rating -%>/5 Stars.</li>
-				</ul>
-			</span>
-			
-			<%= image_tag "spinner.gif", :id => "ratings_spinner", :style => "display: none; vertical-align: middle;" -%>
+	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+	<div class="content">
+		<%= image_tag "spinner.gif", :id => "ratings_spinner", :style => "float: right; display: none; vertical-align: middle; margin-left: 1em;" -%>
+		
+		<p class="heading">
+			Ratings by Users
+			<span class="faded">(<%= get_overall_count_of_ratings(annotatable) -%>)</span>
 		</p>
 		
-		<center>
-			<table class="ratings_table">
-				<tr>
-					<th>&nbsp;</th>
-					<th>Average</th>
-					<th>Your Rating</th>
-				</tr>
-				<% categories_config.each do |category, cat_data| %>
-					<% cat_label = cat_data[0]; cat_help_text = cat_data[1]; %>
+		<div class="center">
+			
+			<%# Disabling the overal rating for now as we only have one rating category anyways %>
+			<% if false %>
+			<% overall_rating = get_overall_average_rating(annotatable) %>
+			<p class="center" style="font-weight: bold; margin: 0; margin-bottom: 1em;">
+				<span style="vertical-align: middle;">Overall:</span>
+				<span class="inline-rating" style="margin-left: 0.5em;">
+					<ul class="star-rating">
+						<li class="current-rating" style="width:<%= rating_to_percentage(overall_rating) -%>%;">Currently <%= overall_rating -%>/5 Stars.</li>
+					</ul>
+				</span>
+				
+				<%= image_tag "spinner.gif", :id => "ratings_spinner", :style => "display: none; vertical-align: middle;" -%>
+			</p>
+			<% end %>
+			
+			<center>
+				<table class="ratings_table">
 					<tr>
-						<td style="font-weight: bold; text-align: right;">
-							<%= h(cat_label) -%>
-							<span style="margin-left: 0.2em;">
-								<%= info_icon_with_tooltip(h(cat_help_text)) -%>
-							</span>
-						</td>
-						<td>
-							<% current_rating = get_average_rating(annotatable, category) %>
-							<span class="inline-rating">
-								<ul class="star-rating small-star">
-									<li class="current-rating" style="width:<%= rating_to_percentage(current_rating) -%>%;">Currently <%= current_rating -%>/5 Stars.</li>
-								</ul>
-							</span>
-							<span class="faded_plus_plus" style="margin-left: 0.2em;">(<%= get_count_of_ratings(annotatable, category) -%>)</span>
-						</td>
-						<td class="your_rating">
-							<% if logged_in? %>
-								<% users_rating = get_users_rating(annotatable, current_user, category) %>
+						<th>&nbsp;</th>
+						<th>Average</th>
+						<th>Your Rating</th>
+					</tr>
+					<% categories_config.each do |category, cat_data| %>
+						<% cat_label = cat_data[0]; cat_help_text = cat_data[1]; %>
+						<tr>
+							<td style="font-weight: bold; text-align: right;">
+								<%= h(cat_label) -%>
+								<span style="margin-left: 0.2em;">
+									<%= info_icon_with_tooltip(h(cat_help_text)) -%>
+								</span>
+							</td>
+							<td>
+								<% current_rating = get_average_rating(annotatable, category) %>
 								<span class="inline-rating">
 									<ul class="star-rating small-star">
-										<li class="current-rating" style="width:<%= rating_to_percentage(users_rating) -%>%;">Currently <%= users_rating -%>/5 Stars.</li>
-										<li><%= render_star_rating_create_link(annotatable, category, 1, div_id_after_ajax_rate) -%></li>
-										<li><%= render_star_rating_create_link(annotatable, category, 2, div_id_after_ajax_rate) -%></li>
-										<li><%= render_star_rating_create_link(annotatable, category, 3, div_id_after_ajax_rate) -%></li>
-										<li><%= render_star_rating_create_link(annotatable, category, 4, div_id_after_ajax_rate) -%></li>
-										<li><%= render_star_rating_create_link(annotatable, category, 5, div_id_after_ajax_rate) -%></li>
+										<li class="current-rating" style="width:<%= rating_to_percentage(current_rating) -%>%;">Currently <%= current_rating -%>/5 Stars.</li>
 									</ul>
 								</span>
-								
-								<span class="delete_rating_faded<%= ' delete_rating' if users_rating > 0 -%>">
-									<% if users_rating > 0 %>
-										<%= link_to_remote("&nbsp",
-						                          :url => "#{destroy_rating_url}?annotatable_type=#{annotatable.class.name}&annotatable_id=#{annotatable.id}&category=#{category}",
-						                          :method => :delete,
-						                          :update => { :success => div_id_after_ajax_rate, :failure => '' },
-						                          :loading => "Element.show('ratings_spinner')",
-						                          :complete => "Element.hide('ratings_spinner')", 
-						                          :success => "new Effect.Highlight('#{div_id_after_ajax_rate}', { duration: 0.5 });",
-						                          :failure => "Element.hide('ratings_spinner'); alert('Sorry, an error has occurred.');",
-						                          :html => { :title => "Delete your rating for this category" },
-																			:confirm => "Are you sure you want to delete your rating?" ) -%>
-									<% end %>
-								</span>
-							<% else %>
-								<center><span class="faded">--</span></center>
-							<% end %>
-						</td>
-					</tr>
-				<% end %>
-			</table>
-		</center>
-		
-		<% unless logged_in? %>
-			<div class="footer">
-				<small><%= link_to "Log in", login_path -%> to rate</small>
-			</div>
-		<% end %>
- 	</div>
+								<span class="faded_plus_plus" style="margin-left: 0.2em;">(<%= get_count_of_ratings(annotatable, category) -%>)</span>
+							</td>
+							<td class="your_rating">
+								<% if logged_in? %>
+									<% users_rating = get_users_rating(annotatable, current_user, category) %>
+									<span class="inline-rating">
+										<ul class="star-rating small-star">
+											<li class="current-rating" style="width:<%= rating_to_percentage(users_rating) -%>%;">Currently <%= users_rating -%>/5 Stars.</li>
+											<li><%= render_star_rating_create_link(annotatable, category, 1, div_id_after_ajax_rate) -%></li>
+											<li><%= render_star_rating_create_link(annotatable, category, 2, div_id_after_ajax_rate) -%></li>
+											<li><%= render_star_rating_create_link(annotatable, category, 3, div_id_after_ajax_rate) -%></li>
+											<li><%= render_star_rating_create_link(annotatable, category, 4, div_id_after_ajax_rate) -%></li>
+											<li><%= render_star_rating_create_link(annotatable, category, 5, div_id_after_ajax_rate) -%></li>
+										</ul>
+									</span>
+									
+									<span class="delete_rating_faded<%= ' delete_rating' if users_rating > 0 -%>">
+										<% if users_rating > 0 %>
+											<%= link_to_remote("&nbsp",
+							                          :url => "#{destroy_rating_url}?annotatable_type=#{annotatable.class.name}&annotatable_id=#{annotatable.id}&category=#{category}",
+							                          :method => :delete,
+							                          :update => { :success => div_id_after_ajax_rate, :failure => '' },
+							                          :loading => "Element.show('ratings_spinner')",
+							                          :complete => "Element.hide('ratings_spinner')", 
+							                          :success => "new Effect.Highlight('#{div_id_after_ajax_rate}', { duration: 0.5 });",
+							                          :failure => "Element.hide('ratings_spinner'); alert('Sorry, an error has occurred.');",
+							                          :html => { :title => "Delete your rating for this category" },
+																				:confirm => "Are you sure you want to delete your rating?" ) -%>
+										<% end %>
+									</span>
+								<% else %>
+									<center><span class="faded">--</span></center>
+								<% end %>
+							</td>
+						</tr>
+					<% end %>
+				</table>
+			</center>
+			
+			<% unless logged_in? %>
+				<div class="footer">
+					<small><%= link_to "Log in", login_path -%> to rate</small>
+				</div>
+			<% end %>
+			
+	 	</div>
+	</div>
+	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>

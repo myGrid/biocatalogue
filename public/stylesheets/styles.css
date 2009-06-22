@@ -1845,7 +1845,7 @@ span.ontology_term,
 }
 
 .box_section .content {
-	padding: 0.1em 0.8em;
+	padding: 0.5em 0.8em;
 	border-top: none;
 	border-right: 1px solid #DDD;
 	border-bottom: none;
@@ -1855,7 +1855,6 @@ span.ontology_term,
 	background-repeat: repeat-x;
 	background-color: #FFC;
 	overflow: hidden;
-	padding: 0.8em 1em;
 	line-height: 1.5;
 }
 
@@ -1964,6 +1963,8 @@ span.ontology_term,
 	border: 1px solid #cccccc;
 	margin-bottom: 0.5em;
 	background-color: #FFC;
+	border-collapse: collapse;
+	font-size: 93%;
 }
 
 .ratings_table th {
