@@ -101,6 +101,49 @@ class Service < ActiveRecord::Base
     return ActiveRecord::Base.connection.select_all(sql)[0]['count'].to_i
   end
   
+  # Currently finds all services that have same (or parent) categories as this service.
+  def related_services
+    services = [ ]
+    
+    # NOTE: this query has only been tested to work with MySQL 5.0.x
+    sql = "SELECT annotations.value AS category_id
+          FROM annotations 
+          INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+          WHERE annotation_attributes.name = 'category' AND annotations.annotatable_type = 'Service' AND annotations.annotatable_id = '#{self.id}'"
+    
+    results = ActiveRecord::Base.connection.select_all(sql)
+    
+    unless results.blank?
+      category_ids = results.map{|r| r['category_id'].to_i}
+      
+      final_category_ids = category_ids.clone
+      
+      # Add parents
+      category_ids.each do |c_id|
+        unless (category = Category.find_by_id(c_id)).nil?
+          while category.has_parent?
+            category = category.parent 
+            final_category_ids << category.id
+          end
+        end
+      end
+      
+      final_category_ids.uniq!
+      
+      service_ids = [ ]
+      
+      final_category_ids.each do |c_id|
+        service_ids.concat(BioCatalogue::Categorising.get_service_ids_with_category(c_id))
+      end
+      
+      service_ids.uniq!
+      
+      services = Service.find(:all, :conditions => { :id => service_ids })
+    end
+    
+    return services
+  end
+  
 protected
   
   def generate_unique_code

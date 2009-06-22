@@ -17,10 +17,7 @@ module SearchHelper
     
     model = result_type.classify.constantize
     
-    item_ids.each do |item_id|
-      item = model.find(:first, :conditions => { :id => item_id })
-      items << item unless item.nil?
-    end
+    items = model.find(:all, :conditions => { :id => item_ids })
     
     return items
   end
