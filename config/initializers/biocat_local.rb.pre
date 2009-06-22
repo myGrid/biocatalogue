@@ -74,3 +74,14 @@ FEEDBACK_EMAIL_ADDRESS = "contact@biocatalogue.org"
 # reCAPTCHA settings:
 ENV["RECAPTCHA_PUBLIC_KEY"] = "123abc"
 ENV["RECAPTCHA_PRIVATE_KEY"] = "xyz456"
+
+
+# The site's base host URL (for times when the base host cannot be obtained from controllers):
+SITE_BASE_HOST = "http://www.example.com"
+
+
+# Twitter integration:
+ENABLE_TWITTER = false
+TWITTER_ACCOUNT_URL = "http://www.twitter.com/me"
+TWITTER_ACCOUNT_EMAIL = "somebody@example.com"
+TWITTER_ACCOUNT_PASSWORD = "password"
