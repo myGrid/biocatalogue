@@ -18,9 +18,9 @@
 					<%= render_breadcrumbs_after_home %>
 				</ul>
 			</td>
-			<td style="text-align: right; padding-left: 1em;">
-				<%#= render :partial => "layouts/bookmark_widget" if USE_BOOKMARK_WIDGET %>
+			<td style="text-align: right; overflow: hidden;">
 				<%= render :partial => "widgets/last_search_notice" -%>
+				<%= render :partial => "widgets/bookmarking" -%>
 			</td>
 		</tr>
 	</table>

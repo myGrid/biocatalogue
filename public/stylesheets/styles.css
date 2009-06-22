@@ -391,7 +391,7 @@ a:hover.change_pwd {
 	text-align: right;
 	line-height: 1.0;
 	padding: 0;
-	margin: 0;
+	margin: 0 1em;
 }
 
 #last_search_notice * {
@@ -405,7 +405,7 @@ a:hover.change_pwd {
 	color: #333333;
 	border: 1px solid #EED799; 
 	background: #FFFFCC; 
-	padding: 0.3em 0.5em;
+	padding: 0.2em 0.4em;
 }
 
 .flash_header {
@@ -555,15 +555,32 @@ body.sidebar-right #footer {
 }
 
 #footer .logos {
-	margin: 1em 0;
+	margin: 1.5em 0;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	border: 1px solid #DDD;
+	width: 950px;
+	color: #333;
+	background-color: #FFF;
 }
 
 #footer .logos * {
 	vertical-align: middle;
 }
 
+#footer .logos p {
+	text-align: center;
+}
+
 #footer .logos a {
-	margin: 0 0.6em;
+	margin: 0 0.8em;
+}
+
+#footer .copyright {
+	text-align: center;
+	font-weight: bold;
+	font-size: 93%;
+	margin-top: 1.5em;
 }
 
 #wrapper #container #content {
@@ -595,6 +612,25 @@ body.sidebar-right #footer {
 	vertical-align: middle;
 }
 
+#wrapper #container #action_icons {
+	position: absolute;
+	top: 12px;
+	right: 5px;
+	z-index: 3;
+	vertical-align: middle;
+}
+
+#wrapper #container #action_icons * {
+	vertical-align: middle;
+}
+
+#wrapper #container #action_icons a {
+	padding-left: 15px;
+	padding-right: 15px;
+	background: transparent url(../images/green_separator.gif) no-repeat left;
+	vertical-align: middle;
+}
+
 #wrapper #container #action_bar img {
 	vertical-align: middle;
 }
@@ -608,8 +644,6 @@ body.sidebar-right #footer {
 #breadcrumbs_bar {
   z-index: 3;
 	font-size: 85%;
-	/*background-color: #F8FDF0;
-	border: 1px solid #E9F7CC;*/
 	color: #666666;
 	margin: 3px -5px 0 -5px;
 }

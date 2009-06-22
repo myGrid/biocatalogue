@@ -16,28 +16,32 @@
 			<li class="separator"><a href="/contact">Contact us</a></li>
 		</ul>
 	</div>
-	<span class="clear"></span>
+	<span class="clear">&nbsp;</span>
 	
-	<div class="logos">
-		<center>
-			<% rounded "#FFF", "#333", "950px" do %>
-				<p style="font-size: 108%; margin-top: 0.5em;"><b>The BioCatalogue is brought to you by:</b></p>
-				<p>
-					<%= link_to(image_tag('ebi_logo.png', :alt => "EMBL-EBI"), "http://www.ebi.ac.uk/", :target => "_blank") -%>
-					<%= link_to(image_tag('manchester_logo.png', :alt => "University of Manchester"), "http://www.manchester.ac.uk/", :target => "_blank") -%>
-					<span>and the same people who brought you</span>
-					<%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>
-					<%= link_to(image_tag('taverna_logo.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>
-				</p>
-			<% end %>
-		</center>
-	</div>
+	<center>
+		<div class="logos">
+			<p style="font-size: 108%;"><b>The BioCatalogue is brought to you by:</b></p>
+			<p>
+				<%= link_to(image_tag('manchester_logo.png', :alt => "University of Manchester"), "http://www.manchester.ac.uk/", :target => "_blank") -%>
+				<%= link_to(image_tag('ebi_logo.png', :alt => "EMBL-EBI"), "http://www.ebi.ac.uk/", :target => "_blank") -%>
+				<span>and the same people who brought you</span>
+				<%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>
+				<%= link_to(image_tag('taverna_logo.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>
+			</p>
+		</div>
+	</center>
 	
 	<p>
 		The BioCatalogue project is funded by the <a target="_blank" href="http://www.bbsrc.ac.uk/">BBSRC</a> (BB/F01046X/1, BB/F010540/1)
 	</p>
 	
-	<p>
+	<p style="margin-top: 1.5em;">
 		<%= render :partial => "widgets/twitter", :locals => { :link_type => :big } -%>
+	</p>
+	
+	<p class="copyright">
+		Copyright (c) 2008 - 2009 
+		<%= link_to "The University of Manchester", "http://www.manchester.ac.uk/", :target => '_blank' %> and the
+		<%= link_to("European Bioinformatics Institute (EMBL-EBI)", "http://www.ebi.ac.uk/", :target => "_blank") -%>
 	</p>
 </div>
