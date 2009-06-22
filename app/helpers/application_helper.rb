@@ -66,6 +66,10 @@ module ApplicationHelper
         "server_connect.png"
       when :curator, :annotation_source_curator
         "user_suit.png"
+      when :twitter
+        "twitter_icon.png"
+      when :twitter_follow
+        "twitter_follow_me.gif"
       else
         ''
     end

@@ -573,7 +573,7 @@ body.sidebar-right #footer {
 #wrapper #container #action_bar {
   position: absolute;
   top: 10px;
-  left: 35px;
+  left: 30px;
   z-index: 3;
   font-size: 123.1%;
 	font-weight: bolder;
@@ -2387,5 +2387,4 @@ ul.categories li span.main:hover {
 	margin-left: 1.5em;
 	margin-bottom: 1em;
 }
-
 

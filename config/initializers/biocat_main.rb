@@ -42,6 +42,9 @@ BioCatalogue::CacheHelper.setup_caches
 # Load the up categories data into the DB if required
 BioCatalogue::Categorising.load_data
 
+# Set addthis.com username for bookmarking widgets
+Jaap3::Addthis::CONFIG[:publisher] = ADDTHIS_USERNAME if ENABLE_BOOKMARKING_WIDGET
+
 # Set global pagination per_page parameter in all models.
 PAGE_ITEMS_SIZE = 10
 class ActiveRecord::Base
