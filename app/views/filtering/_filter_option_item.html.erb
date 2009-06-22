@@ -8,13 +8,14 @@
 
 %>
 
-<% 
-	 text_to_display = get_text_to_display_for_filter_value(filter_type, filter["name"])
-	 text_tooltip = get_tooltip_text_for_filter_value(filter_type, filter["name"])
-	 count = filter['count']
+<%
+	selected = is_filter_selected(filter_type, filter["name"])
 	 
-	 selected = is_filter_selected(filter_type, filter["name"])
-	 url = selected ? generate_exclude_filter_url(filter_type, filter["name"]) : generate_include_filter_url(filter_type, filter["name"]) 
+	text_to_display = get_text_to_display_for_filter_value(filter_type, filter["name"])
+	text_tooltip = get_tooltip_text_for_filter_value(filter_type, filter["name"], selected)
+	count = filter['count']
+	
+	url = selected ? generate_exclude_filter_url(filter_type, filter["name"]) : generate_include_filter_url(filter_type, filter["name"]) 
 %>
 
 <span class="container">

@@ -11,10 +11,14 @@
 <% 
   category_li_class = level > 0 ? 'sub_category' : 'category_root'
 	category_li_style = "margin-left: #{level*1}em;"
+	filter = { }
 %>
 				
 <li class="<%= category_li_class -%>" style="<%= category_li_style -%>">
-	<% filter = { 'name' => category.id, 'count' => BioCatalogue::Categorising.number_of_services_for_category(category) } %>
+	<%  benchmark "Category filter number_of_services_for_category call" do %>
+		<% filter = { 'name' => category.id, 'count' => BioCatalogue::Categorising.number_of_services_for_category(category) } %>
+	<% end %>
+	
 	<%= render :partial => 'filtering/filter_option_item',
 						 :locals => { :filter => filter,
 													:filter_type => filter_type } -%>

@@ -45,11 +45,15 @@ module FilteringHelper
     return text
   end
   
-  def get_tooltip_text_for_filter_value(filter_type, filter_value)
+  def get_tooltip_text_for_filter_value(filter_type, filter_value, is_selected=false)
     case filter_type
       when :cat
         c = Category.find_by_id(filter_value)
-        return (c.nil? ? "(Invalid category!)" : BioCatalogue::Categorising.category_hierachy_text(c))
+        if c.nil?
+          return "(Invalid category!)"
+        else
+          return (is_selected ? BioCatalogue::Categorising.category_hierachy_text(c) : "<b>#{h(c.name)}</b>")
+        end
       else
         return h(h(filter_value))
     end
