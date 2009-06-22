@@ -1,6 +1,6 @@
 <%
 
-# BioCatalogue: app/views/services/_related_services_box.html.erb
+# BioCatalogue: app/views/services/_similar_services_box.html.erb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -8,20 +8,20 @@
 
 %>
 
-<% related_services = @service.related_services %>
+<% similar_services = @service.similar_services %>
 
 <div class="box_section">
 	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 	<div class="content">
 		<p class="heading">
-			<%= info_icon_with_tooltip("Other services that are related to this services. Currently we find other services with matching categories.") -%>
-			Related Services <font class="faded">(<%= related_services.length -%>)</font>
+			<%= info_icon_with_tooltip("Other services that are similar to this service. Currently we find other services with matching categories and parent categories.") -%>
+			Similar Services <font class="faded">(<%= similar_services.length -%>)</font>
 		</p>
 		
-		<% unless related_services.empty? %>
+		<% unless similar_services.empty? %>
 			<div>
 				<ul class="items">
-					<% related_services.each do |s| %>
+					<% similar_services.each do |s| %>
 						<li>
 							<%= link_to(h(s.name), service_url(s)) -%>
 						</li>

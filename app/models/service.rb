@@ -102,7 +102,7 @@ class Service < ActiveRecord::Base
   end
   
   # Currently finds all services that have same (or parent) categories as this service.
-  def related_services
+  def similar_services
     services = [ ]
     
     # NOTE: this query has only been tested to work with MySQL 5.0.x
@@ -128,15 +128,15 @@ class Service < ActiveRecord::Base
         end
       end
       
-      final_category_ids.uniq!
+      final_category_ids
       
       service_ids = [ ]
       
       final_category_ids.each do |c_id|
-        service_ids.concat(BioCatalogue::Categorising.get_service_ids_with_category(c_id))
+        service_ids.concat(BioCatalogue::Categorising.get_service_ids_with_category(c_id, false))
       end
       
-      service_ids.uniq!
+      service_ids = service_ids.uniq.reject{|i| i == self.id}
       
       services = Service.find(:all, :conditions => { :id => service_ids })
     end

@@ -102,8 +102,9 @@ module BioCatalogue
     # This takes into account subcategories.
     # NOTE: this assumes that only Service objects can be annotated with a "category" annotation,
     # and so wouldn't take into account category annotations on sub structure objects.
-    def self.get_service_ids_with_category(category_id)
-      category_ids = [ category_id ] + get_all_sub_category_ids(category_id)
+    def self.get_service_ids_with_category(category_id, incl_children=true)
+      category_ids = [ category_id ] 
+      category_ids.concat(get_all_sub_category_ids(category_id)) if incl_children
       
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
