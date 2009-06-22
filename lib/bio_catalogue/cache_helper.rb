@@ -119,11 +119,11 @@ module BioCatalogue
       require 'action_controller/test_process'
       
       def expire_fragment(key, options=nil)
-        if defined?(BASE_HOST)
+        if defined?(BASE_HOST) or defined?(SITE_BASE_HOST)
           if @controller.nil?
             @controller = ActionController::Base.new
             @controller.request = ActionController::TestRequest.new
-            @controller.request.host = BASE_HOST
+            @controller.request.host = (BASE_HOST || SITE_BASE_HOST)
             @controller.instance_eval do
               @url = ActionController::UrlRewriter.new(request, {})
             end
@@ -139,6 +139,22 @@ module BioCatalogue
       
       def expire_annotations_tags_flat_partial(annotatable_type, annotatable_id)
         expire_fragment(:controller => 'annotations', :action => 'tags_flat', :annotatable_type => annotatable_type, :annotatable_id => annotatable_id)
+      end
+      
+      def expire_categories_in_service_listing(service_id)
+        expire_fragment(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service_id)
+      end
+      
+      def expire_name_aliases_in_service_listing(service_id)
+        expire_fragment(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service_id)
+      end
+      
+      def expire_name_aliases_in_service_listing(service_id)
+        expire_fragment(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service_id)
+      end
+      
+      def expire_descriptions_in_service_listing(service_id)
+        expire_fragment(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service_id)
       end
       
       def reload_number_of_services_for_category_and_parents_caches(category)
