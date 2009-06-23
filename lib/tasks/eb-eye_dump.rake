@@ -103,7 +103,7 @@ namespace :biocatalogue do
           # Validate the XML dump against the eb-eye xml4dumps schema
 
           # Parse schema as xml document
-          schema_document = XML::Document.file('eb-eye/xml4dumps.xsd')
+          schema_document = XML::Document.file('data/eb-eye/xml4dumps.xsd')
 
           # Prepare schema for validation
           schema = XML::Schema.document(schema_document)
