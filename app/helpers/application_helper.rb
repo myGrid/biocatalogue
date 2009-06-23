@@ -70,6 +70,10 @@ module ApplicationHelper
         "twitter_icon.png"
       when :twitter_follow
         "twitter_follow_me.gif"
+      when :atom
+        "feed_icon.png"
+      when :atom_large
+        "feed_icon_large.png"
       else
         ''
     end
@@ -595,6 +599,119 @@ module ApplicationHelper
   
   def render_breadcrumbs_after_home
     render :partial => "breadcrumbs" if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb'))
+  end
+  
+  def service_body_for_feed(service)
+    output = ""
+    
+    unless service.nil?
+      
+      # Provider
+      output << content_tag(:p) do
+        x = "<b>Provider:</b> "
+        service.providers.each do |provider|
+          x << link_to(h(provider.name), service_provider_path(provider))
+        end
+        x
+      end
+      
+      # Location
+      output << content_tag(:p) do
+        x = "<b>Location:</b> "
+        service.service_deployments.each do |s_d|
+          unless (loc = s_d.location).blank?
+            h(loc)
+          end
+        end
+        x
+      end
+      
+      # Submitter
+      output << content_tag(:p) do
+        x = "<b>Submitter / Source:</b> "
+        x << (link_to(h(display_name(service.submitter)), service.submitter) + " (#{service.submitter_type.titleize})")
+        x
+      end
+      
+      # Endpoint
+      output << content_tag(:p) do
+        x = "<b>Endpoint:</b> "
+        service.service_deployments.each do |s_d|
+          x << link_to(h(s_d.endpoint), s_d.endpoint)
+        end
+        x
+      end
+      
+      latest_version_instance = service.latest_version.service_versionified
+      
+      # WSDL Location
+      unless latest_version_instance.nil?
+        if latest_version_instance.is_a?(SoapService)
+          output << content_tag(:p) do
+            x = "<b>WSDL Location:</b> "
+            x << link_to(h(latest_version_instance.wsdl_location), latest_version_instance.wsdl_location)
+            x
+          end
+        end
+      end
+      
+      # Descriptions
+      
+      output << "<p><b>Description(s):</b></p>"
+      
+      desc_annotations = latest_version_instance.annotations_with_attribute("description")
+      
+      if latest_version_instance.description.blank? and desc_annotations.blank?
+        output << content_tag(:p, "No descriptions yet", :style => "color: #666; font-style: italic;")
+      else
+        unless latest_version_instance.description.blank?
+          output << content_tag(:p, "from the provider's description document (#{distance_of_time_in_words_to_now(latest_version_instance.created_at)} ago):", :style => "font-style: italic;")
+          output << content_tag(:div, :style => "margin-left: 20px;") do
+            annotation_prepare_description(latest_version_instance.description)
+          end
+        end
+        desc_annotations.each do |ann|
+          output << content_tag(:p, :style => "font-style: italic;") do
+            x = "by "
+            x << "#{ann.source_type.titleize} "
+            x << "#{link_to(h(ann.source.annotation_source_name), ann.source)} "
+            x << "(#{distance_of_time_in_words_to_now(ann.created_at)} ago):"
+            x
+          end
+          output << content_tag(:div, :style => "margin-left: 20px;") do
+            annotation_prepare_description(ann.value) 
+          end
+        end
+      end
+      
+      output << link_to("<small>Do you know how this service works? If so, please help describe it...</small>", service)
+      
+      # Tags
+      
+      output << "<p><b>Tags:</b></p>"
+      
+      tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(service)
+      
+      if tag_annotations.blank?
+        output << content_tag(:p, "No tags yet", :style => "color: #666; font-style: italic;")
+      else
+        output << content_tag(:p, :style => "margin-left: 20px;") do
+          x = ''
+          tag_annotations.each do |ann|
+             x << link_to(BioCatalogue::Tags.split_ontology_term_uri(ann.value)[1], BioCatalogue::Tags.generate_tag_show_uri(ann.value))
+             x << "&nbsp;&nbsp;"
+          end
+          x
+        end
+      end
+      
+      output << link_to("<small>Do you know something about this service? If so, please help tag it...</small>", service)
+      
+      output << "<br/><br/><br/>"
+      
+    end
+    
+    return output
   end
   
 end

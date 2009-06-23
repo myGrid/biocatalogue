@@ -22,7 +22,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @services }
-      format.rss  { render :rss => @services, :layout => false}
+      format.atom
     end
   end
 
@@ -153,7 +153,11 @@ class ServicesController < ApplicationController
     
     @filter_message = "The services index has been filtered using the selected filters on the left..." unless @current_filters.blank?
     
+    # For atom feed we need to show 20 items instead
+    page_size = (params[:format] == 'atom' ? 20 : PAGE_ITEMS_SIZE)
+    
     @services = Service.paginate(:page => params[:page],
+                                 :per_page => page_size,
                                  :order => order,
                                  :conditions => conditions,
                                  :joins => joins)

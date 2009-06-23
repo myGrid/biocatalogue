@@ -625,8 +625,7 @@ body.sidebar-right #footer {
 }
 
 #wrapper #container #action_icons a {
-	padding-left: 15px;
-	padding-right: 15px;
+	padding: 0 0.7em;
 	background: transparent url(../images/green_separator.gif) no-repeat left;
 	vertical-align: middle;
 }
