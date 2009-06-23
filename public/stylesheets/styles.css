@@ -614,7 +614,7 @@ body.sidebar-right #footer {
 
 #wrapper #container #action_icons {
 	position: absolute;
-	top: 12px;
+	top: 15px;
 	right: 5px;
 	z-index: 3;
 	vertical-align: middle;

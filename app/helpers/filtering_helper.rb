@@ -109,13 +109,31 @@ module FilteringHelper
     return html
   end
   
-  def generate_include_filter_url(filter_type, filter_value)
+  def generate_include_filter_url(filter_type, filter_value, format=nil)
     new_params = BioCatalogue::Filtering.add_filter_to_params(params, filter_type, filter_value)
+
+    unless format.nil?
+      if format == :html
+        new_params.delete(:format)
+      else
+        new_params[:format] = format unless format.nil?
+      end
+    end
+    
     return services_url(new_params)
   end
 
-  def generate_exclude_filter_url(filter_type, filter_value)
+  def generate_exclude_filter_url(filter_type, filter_value, format=nil)
     new_params = BioCatalogue::Filtering.remove_filter_from_params(params, filter_type, filter_value)
+    
+    unless format.nil?
+      if format == :html
+        new_params.delete(:format)
+      else
+        new_params[:format] = format unless format.nil?
+      end
+    end
+    
     return services_url(new_params)
   end
   

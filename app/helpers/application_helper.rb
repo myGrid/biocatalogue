@@ -606,6 +606,49 @@ module ApplicationHelper
     
     unless service.nil?
       
+      # Service Types
+      output << content_tag(:p) do
+        x = "<b>Service Type:</b> "
+        service.service_types.each do |t|
+          x << link_to(h(t), generate_include_filter_url(:t, t, :html))
+        end
+        x
+      end
+      
+      # Name aliases
+      name_annotations = all_name_annotations_for_service(service)
+      unless name_annotations.blank?
+        output << content_tag(:p) do
+          x = "<b>Alternate names / aliases:</b> "
+          x << name_annotations.map{|a| a.value}.to_sentence(:last_word_connector => ', ', :two_words_connector => ', ' )
+          x
+        end
+      end
+      
+      # Categories
+      
+      output << "<p><b>Categories:</b></p>"
+      
+      category_annotations = service.annotations_with_attribute("category")
+      
+      if category_annotations.blank?
+        output << content_tag(:p, "<i>Not categorised yet</i>", :style => "color:#666;")
+      else
+        output << content_tag(:p, :style => "margin-left: 20px;") do
+          x = ''
+          category_annotations.each do |ann|
+            category = Category.find_by_id(ann.value)
+            unless category.nil?
+              x << link_to(h(category.name), services_path(:cat => "[#{category.id}]"))
+              x << "&nbsp;&nbsp;"
+            end
+          end
+          x
+        end
+      end
+      
+      output << link_to("<small>Help categorise this service...</small>", "#{service_url(service)}?categorise")
+      
       # Provider
       output << content_tag(:p) do
         x = "<b>Provider:</b> "
@@ -662,20 +705,22 @@ module ApplicationHelper
       desc_annotations = latest_version_instance.annotations_with_attribute("description")
       
       if latest_version_instance.description.blank? and desc_annotations.blank?
-        output << content_tag(:p, "No descriptions yet", :style => "color: #666; font-style: italic;")
+        output << content_tag(:p, "<i>No descriptions yet</i>", :style => "color:#666;")
       else
         unless latest_version_instance.description.blank?
-          output << content_tag(:p, "from the provider's description document (#{distance_of_time_in_words_to_now(latest_version_instance.created_at)} ago):", :style => "font-style: italic;")
+          output << content_tag(:p, "<i>from the provider's description document (#{distance_of_time_in_words_to_now(latest_version_instance.created_at)} ago):</i>")
           output << content_tag(:div, :style => "margin-left: 20px;") do
             annotation_prepare_description(latest_version_instance.description)
           end
         end
         desc_annotations.each do |ann|
-          output << content_tag(:p, :style => "font-style: italic;") do
-            x = "by "
+          output << content_tag(:p) do
+            x = "<i>"
+            x << "by "
             x << "#{ann.source_type.titleize} "
             x << "#{link_to(h(ann.source.annotation_source_name), ann.source)} "
             x << "(#{distance_of_time_in_words_to_now(ann.created_at)} ago):"
+            x << "</i>"
             x
           end
           output << content_tag(:div, :style => "margin-left: 20px;") do
@@ -693,7 +738,7 @@ module ApplicationHelper
       tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(service)
       
       if tag_annotations.blank?
-        output << content_tag(:p, "No tags yet", :style => "color: #666; font-style: italic;")
+        output << content_tag(:p, "<i>No tags yet</i>", :style => "color:#666;")
       else
         output << content_tag(:p, :style => "margin-left: 20px;") do
           x = ''
