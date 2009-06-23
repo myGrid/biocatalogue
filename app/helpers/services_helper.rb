@@ -22,7 +22,7 @@ module ServicesHelper
 
     unless service_types.blank?
       service_types.each do |s_type|
-        html << link_to(s_type, generate_include_filter_url(:t, s_type), :class => "service_type_badge", :style => "vertical-align: middle; margin-left: 1.5em;")
+        html << link_to(s_type, services_path(:t => "[#{s_type}]"), :class => "service_type_badge", :style => "vertical-align: middle; margin-left: 1.5em;")
       end
     end
 
@@ -37,7 +37,7 @@ module ServicesHelper
     service.service_deployments.each do |s_d|
       unless s_d.country.blank?
         html << link_to(flag_icon_from_country(s_d.country, :text => s_d.location, :style => 'vertical-align: middle;'), 
-                        generate_include_filter_url(:c, s_d.country), 
+                        services_path(:c => "[#{s_d.country}]"), 
                         :class => "service_location_flag")
       end
     end

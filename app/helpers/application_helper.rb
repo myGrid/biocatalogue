@@ -458,7 +458,7 @@ module ApplicationHelper
   def annotation_source_text(annotation, style='')
     return '' if annotation.nil?
 
-    return content_tag(:p, :class => "annotation_source_text #{annotation_source_cssclass(annotation)}", :style => style) do
+    return content_tag(:span, :class => "annotation_source_text #{annotation_source_cssclass(annotation)}", :style => style) do
       "<span>by </span>" +
       annotation_source_icon(annotation.source_type) +
       "#{link_to(h(annotation.source.annotation_source_name), annotation.source)} " +
