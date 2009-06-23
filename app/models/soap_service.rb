@@ -217,6 +217,25 @@ class SoapService < ActiveRecord::Base
     return result || TestResult.new(:result => -1 )
     
   end
+  
+  def wsdl_location_recent_history
+    
+    monitor = UrlMonitor.find(:first,
+                              :conditions => ["parent_id= ? AND parent_type= ?", self.id, self.class.to_s ],
+                              :order => "created_at DESC" )
+    if monitor.nil?
+      return [TestResult.new(:result => -1)]
+    end
+    
+    
+    if TestResult.find(:all).length > 0
+      results = TestResult.find(:all,
+                      :conditions => ["test_id= ? AND test_type= ?", monitor.id, monitor.class.to_s ],
+                      :order => "created_at DESC" ).first(5)
+    end
+    
+    return results || [TestResult.new(:result => -1)]
+  end
    
   protected
   

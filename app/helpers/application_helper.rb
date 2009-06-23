@@ -545,7 +545,7 @@ module ApplicationHelper
   end
   
   #return a symbol according to the status of a test
-  def service_test_status_symbol(tresult, attribute)
+  def service_test_status_symbol(tresult, attribute, history = false)
     status = "Unchecked"
     if tresult.result == 0
       status = "Online"
@@ -560,6 +560,17 @@ module ApplicationHelper
     tooltip_text = tooltip_text + status if status.downcase == "unchecked"
     tooltip_text = tooltip_text + " (last checked #{distance_of_time_in_words_to_now(tresult.created_at)} ago)" unless status.downcase == "unchecked"
     
+    if history
+      return image_tag(onlooker_format(status, 
+                                     :online_img => "/images/small-tick-sphere-50.png", 
+                                     :offline_img => "/images/small-pling-sphere-50.png", 
+                                     :unknown_img => "/images/small-pling-sphere-50.png", 
+                                     :default_img => "/images/small-query-sphere-50.png"),
+                                     :alt => status, 
+                                     :title => tooltip_title_attrib(tooltip_text))
+    end
+    
+    
     return image_tag(onlooker_format(status, 
                                      :online_img => "/images/tick-sphere-50.png", 
                                      :offline_img => "/images/pling-sphere-50.png", 
@@ -572,9 +583,9 @@ module ApplicationHelper
   
   def service_test_status_message(tresult)
     if tresult.result == 0
-      return "Available : last checked #{distance_of_time_in_words_to_now(tresult.created_at)} ago "
+      return "Available :  #{distance_of_time_in_words_to_now(tresult.created_at)} ago "
     elsif tresult.result == 1
-      return "Could not verify status : last checked #{distance_of_time_in_words_to_now(tresult.created_at)} ago "
+      return "Could not verify status :  #{distance_of_time_in_words_to_now(tresult.created_at)} ago "
     else
       return "Unchecked"
     end
