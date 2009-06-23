@@ -607,15 +607,16 @@ body.sidebar-right #footer {
 
 #wrapper #container #action_bar #action_links a {
 	padding-left: 15px;
-	padding-right: 15px;
+	padding-right: 14px;
 	background: transparent url(../images/green_separator.gif) no-repeat left;
 	vertical-align: middle;
+	text-align: center;
 }
 
 #wrapper #container #action_icons {
 	position: absolute;
 	top: 15px;
-	right: 5px;
+	right: 10px;
 	z-index: 3;
 	vertical-align: middle;
 }
@@ -625,7 +626,7 @@ body.sidebar-right #footer {
 }
 
 #wrapper #container #action_icons a {
-	padding: 0 0.7em;
+	padding: 0 5px 0 10px;
 	background: transparent url(../images/green_separator.gif) no-repeat left;
 	vertical-align: middle;
 }
@@ -644,7 +645,7 @@ body.sidebar-right #footer {
   z-index: 3;
 	font-size: 85%;
 	color: #666666;
-	margin: 3px -5px 0 -5px;
+	margin: 3px -10px 0 -5px;
 }
 
 #breadcrumbs_bar table {
@@ -697,13 +698,12 @@ ul.primary-links li {
   float: left;  
   list-style-type: none;
   list-style-image: none;
-  /*background-image: none;*/
+	text-align: m
 }
 
 ul.primary-links li.separator {
 	/*background: transparent url(../images/green_separator.gif) no-repeat bottom left;*/
 	border-left: 1px solid #999;
-	
 }
 
 ul.primary-links li a, ul.primary-links li a:link, ul.primary-links li a:visited {
@@ -821,7 +821,7 @@ span.clear {
 #wrapper #container #header #login_links {
 	clear: both;
 	float: right;
-	padding: 1.4em 0.5em 0 0;
+	padding: 1.4em 0 0 0;
 	margin-bottom: 0;
 	position: relative;
 	z-index: 4;
@@ -1245,7 +1245,19 @@ a.service_type_badge {
 
 a.service_type_badge:hover {
 	color: #FFF;
-	background-color: #666;
+	background-color: #999;
+}
+
+a.service_location_flag {
+	margin-left: 1em;
+	line-height: 1.0;
+	vertical-align: middle;
+	padding: 2px 3px;
+}
+
+a.service_location_flag:hover {
+	color: #FFF;
+	background-color: #999;
 }
 
 .operation_box {

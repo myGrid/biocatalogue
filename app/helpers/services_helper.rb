@@ -36,7 +36,9 @@ module ServicesHelper
 
     service.service_deployments.each do |s_d|
       unless s_d.country.blank?
-        html = html + flag_icon_from_country(s_d.country, :text => s_d.location, :class => "framed")
+        html << link_to(flag_icon_from_country(s_d.country, :text => s_d.location, :style => 'vertical-align: middle;'), 
+                        generate_include_filter_url(:c, s_d.country), 
+                        :class => "service_location_flag")
       end
     end
 

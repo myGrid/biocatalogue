@@ -106,20 +106,7 @@ module ApplicationHelper
                      :title => tooltip_title_attrib(info_text, delay),
                      :style => "vertical-align:middle;")
   end
-
-  #==================
   
-  def controller_visible_name(controller_name)
-    return "" if controller_name.blank?
-    
-    case controller_name.downcase
-      when "stats"
-        return "System Statistics"
-      else
-        return controller_name.humanize.titleize
-    end
-  end
-
   def flag_icon_from_country(country, *args)
     return '' if country.blank?
     
@@ -165,6 +152,19 @@ module ApplicationHelper
               :title => tooltip_title_attrib(text),
               :class => options[:class],
               :style => "#{options[:style]}")
+  end
+
+  #==================
+  
+  def controller_visible_name(controller_name)
+    return "" if controller_name.blank?
+    
+    case controller_name.downcase
+      when "stats"
+        return "System Statistics"
+      else
+        return controller_name.humanize.titleize
+    end
   end
 
   def tooltip_title_attrib(text, delay=200)
