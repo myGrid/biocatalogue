@@ -822,14 +822,21 @@ span.clear {
 #wrapper #container #header #login_links {
 	clear: both;
 	float: right;
-	padding: 1.2em 0.5em 0 0;
+	padding: 1.4em 0.5em 0 0;
 	margin-bottom: 0;
 	position: relative;
 	z-index: 4;
+	color: #333;
+	font-size: 93%;
+}
+
+#wrapper #container #header #login_links .sep {
+	color: #CCC;
+	margin: 0 0.4em;
 }
 
 body.sidebar-right #wrapper #container #header #login_links {
-  	margin-right: 210px;
+	margin-right: 210px;
 }
 
 #login_box {
