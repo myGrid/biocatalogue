@@ -27,9 +27,9 @@
 								<%= link_to(image_tag(icon_filename_for(:delete_faded_plus), :mouseover => icon_filename_for(:delete), :style => "vertical-align:middle;"), 
 														annotation_path(al), 
 														:method => :delete, 
-														:confirm => "Are you sure you want to delete this name alias?", 
+														:confirm => "Are you sure you want to delete this alternate name / alias", 
 														:style => 'vertical-align: middle;',
-														:title => tooltip_title_attrib("Delete this name alias (you created it)")) -%>
+														:title => tooltip_title_attrib("Delete this alternate name / alias (you created it)")) -%>
 							</span>
 						<% end %>
 					<% end %>
@@ -45,7 +45,7 @@
 	<% if show_add_option %>
 		<%= annotation_add_by_popup_link annotatable,
 		     :attribute_name => "name",
-		     :tooltip_text => "Click to add a name alias",
-				 :link_text => "Add a name alias" -%>
+		     :tooltip_text => "Click to add an alternate name / alias for this service",
+				 :link_text => "Add an alternate name for this service" -%>
 	<% end %>
 </div>
