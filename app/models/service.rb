@@ -65,6 +65,10 @@ class Service < ActiveRecord::Base
     self.service_versions.last
   end
   
+  def latest_deployment
+    self.service_deployments.last
+  end
+  
   def service_version_instances
     self.service_versions.collect{|sv| sv.service_versionified}    
   end

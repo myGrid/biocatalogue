@@ -43,7 +43,7 @@
 								<%= h(ann.attribute_name) -%>
 							</p>
 							<div>
-								<%= auto_link(h(ann.value), :all, :target => '_blank')-%>
+								<%= annotation_prepare_description(ann.value) -%>
 							</div>
 							<% if mine?(ann) and (show_modify_options == true) %>
 								<p class="actions">

@@ -31,6 +31,7 @@ class ServicesController < ApplicationController
   def show
     @latest_version = @service.latest_version
     @latest_version_instance = @latest_version.service_versionified
+    @latest_deployment = @service.latest_deployment
     
     @all_service_version_instances = @service.service_version_instances
     @all_service_types = @service.service_types

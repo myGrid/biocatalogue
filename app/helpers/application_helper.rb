@@ -462,7 +462,7 @@ module ApplicationHelper
     end
   end
 
-  def annotation_prepare_description(desc, do_strip_tags, truncate_length, do_auto_link)
+  def annotation_prepare_description(desc, do_strip_tags=false, truncate_length=nil, do_auto_link=true)
     return '' if desc.nil?
 
     desc = strip_tags(desc) if do_strip_tags

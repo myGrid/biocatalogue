@@ -74,7 +74,7 @@
     <h3>Overview</h3>
 		
 		<!-- Left column -->
-		<div style="float: left; width: 67%;">
+		<div class="service_properties" style="float: left; width: 67%;">
 			<% if false %>
 			<p>
 			  <b>Unique code:</b>
@@ -121,13 +121,39 @@
 			</p>
 			
 			<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_overview_metadata", 
-				 	 			 :locals => { :service_version_instance =>  @latest_version_instance } %>
+				 	 			 :locals => { :service_version_instance => @latest_version_instance } %>
 			
-			<%= render :partial => "annotations/documentation_urls",
-								 :locals => { :annotatable => @latest_version_instance } -%>
-
-			<%= render :partial => "annotations/descriptions",
-								 :locals => { :annotatable => @latest_version_instance } -%>
+			<div class="property">
+				<%= render :partial => "annotations/documentation_urls",
+									 :locals => { :annotatable => @latest_version_instance } -%>
+			</div>
+			
+			<div class="property">
+				<%= render :partial => "annotations/descriptions",
+									 :locals => { :annotatable => @latest_version_instance } -%>
+			</div>
+			
+			<div class="property">					 
+				<%= render :partial => "annotations/costs",
+									 :locals => { :annotatable => @latest_deployment } -%>
+			</div>
+			
+			<div class="property">					 
+				<%= render :partial => "annotations/licenses",
+									 :locals => { :annotatable => @latest_deployment } -%>
+			</div>
+			
+			<div class="property">					 
+				<%= render :partial => "annotations/contacts",
+									 :locals => { :annotatable => @service } -%>
+			</div>
+			
+			<% if false %>
+			<div class="property">			 
+				<%= render :partial => "annotations/other_annotations",
+								 	 :locals => { :annotatable => @service } -%>
+			</div>
+			<% end %>
 		</div>
 		
 		<!-- Right column -->

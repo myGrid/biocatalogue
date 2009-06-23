@@ -70,12 +70,16 @@ BOT_IGNORE_LIST = "Googlebot",
 
 
 # List of annotation attributes that are considered "known" or important in the system
-KNOWN_ANNOTATION_ATTRIBUTES = [ "tag",
+KNOWN_ANNOTATION_ATTRIBUTES = [ "category",
+                                "tag",
                                 "description",
                                 "name",
                                 "example",
                                 "documentation_url",
-                                "rating.documentation" ].freeze
+                                "rating.documentation",
+                                "cost",
+                                "license",
+                                "contact" ].freeze
 
 
 # ================================
