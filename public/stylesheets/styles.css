@@ -615,7 +615,7 @@ body.sidebar-right #footer {
 
 #wrapper #container #action_icons {
 	position: absolute;
-	top: 15px;
+	top: 14px;
 	right: 10px;
 	z-index: 3;
 	vertical-align: middle;
@@ -1252,12 +1252,7 @@ a.service_location_flag {
 	margin-left: 1em;
 	line-height: 1.0;
 	vertical-align: middle;
-	padding: 2px 3px;
-}
-
-a.service_location_flag:hover {
-	color: #FFF;
-	background-color: #999;
+	padding: 0px;
 }
 
 .operation_box {
