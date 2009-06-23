@@ -34,6 +34,7 @@ Rails::Initializer.run do |config|
   config.gem 'oauth', :version => '0.3.4'
   config.gem 'mash', :version => '0.0.3'
   config.gem 'httparty', :version => '0.4.3'
+  config.gem 'crack', :version => '0.1.2'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
