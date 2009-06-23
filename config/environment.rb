@@ -30,6 +30,7 @@ Rails::Initializer.run do |config|
   config.gem 'mperham-memcache-client', :version => '>= 1.7.4', :lib => 'memcache', :source => "http://gems.github.com"
   config.gem 'onyx-cache-money', :version => '>=0.2.6.1', :lib => 'cache_money', :source => "http://gems.github.com"
   config.gem 'geokit'
+  config.gem 'jnunemaker-twitter', :version => '>=0.6.11', :lib => 'twitter', :source => "http://gems.github.com"
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
