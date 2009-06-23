@@ -156,7 +156,6 @@ ActiveRecord::Schema.define(:version => 20090613195338) do
   end
 
   add_index "rest_method_parameters", ["rest_method_id", "http_cycle"], :name => "index_rest_method_parameters_on_rest_method_id_and_http_cycle"
-  add_index "rest_method_parameters", ["rest_method_id"], :name => "index_rest_method_parameters_on_rest_method_id"
   add_index "rest_method_parameters", ["rest_parameter_id"], :name => "rest_method_params_param_id_index"
 
   create_table "rest_method_representations", :force => true do |t|
