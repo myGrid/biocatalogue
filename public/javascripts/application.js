@@ -152,3 +152,20 @@ function removeServiceCategory(key) {
 }
 
 /* END code for service categories in service submission form */
+
+
+function disableIfBlank(value_input_field_id, el_to_disable_id) {
+	var value_input_field = $(value_input_field_id);
+	var el_to_disable = $(el_to_disable_id);
+	
+	if (value_input_field && el_to_disable) {
+		if (value_input_field.value == null || value_input_field.value == '') {
+			el_to_disable.setAttribute('disabled', 'disabled'); 
+		} else {
+			if (el_to_disable.hasAttribute('disabled')) { 
+          el_to_disable.removeAttribute('disabled');
+      }
+		}
+	}
+}
+
