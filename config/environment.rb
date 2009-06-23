@@ -29,12 +29,13 @@ Rails::Initializer.run do |config|
   config.gem 'soap4r', :version => '1.5.8'
   config.gem 'mperham-memcache-client', :version => '>= 1.7.4', :lib => 'memcache', :source => "http://gems.github.com"
   config.gem 'onyx-cache-money', :version => '>=0.2.6.1', :lib => 'cache_money', :source => "http://gems.github.com"
-  config.gem 'geokit'
+  config.gem 'geokit', :version => '>= 1.3.2'
   config.gem 'jnunemaker-twitter', :version => '>=0.6.11', :lib => 'twitter', :source => "http://gems.github.com"
   config.gem 'oauth', :version => '0.3.4'
   config.gem 'mash', :version => '0.0.3'
   config.gem 'httparty', :version => '0.4.3'
   config.gem 'crack', :version => '0.1.2'
+  config.gem 'json', :version => '1.1.6'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
