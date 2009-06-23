@@ -148,7 +148,7 @@ class ServicesController < ApplicationController
     
     # Filters
     
-    conditions, joins = BioCatalogue::Filtering.generate_conditions_and_joins_from_filters(@current_filters)
+    conditions, joins = BioCatalogue::Filtering.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
     
     @filter_message = "The services index has been filtered using the selected filters on the left..." unless @current_filters.blank?
     

@@ -2423,3 +2423,12 @@ ul.categories li span.main:hover {
 	margin-bottom: 1em;
 }
 
+#search_within {
+	margin-bottom: 1.5em;
+}
+
+#search_within .rcontain {
+	padding: 0.2em 1.5em;
+	text-align: right;
+}
+

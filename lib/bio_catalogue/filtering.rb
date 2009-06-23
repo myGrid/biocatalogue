@@ -255,7 +255,7 @@ module BioCatalogue
     
     # Returns:
     #   [ conditions, joins ] for use in an ActiveRecord .find method (or .paginate).
-    def self.generate_conditions_and_joins_from_filters(filters)
+    def self.generate_conditions_and_joins_from_filters(filters, search_query=nil)
       conditions = { }
       joins = [ ]
       
@@ -277,6 +277,7 @@ module BioCatalogue
       service_ids_tags_ops = [ ]
       service_ids_tags_ins = [ ]
       service_ids_tags_outs = [ ]
+      service_ids_search_query = [ ]
       
       unless filters.blank?
         filters.each do |filter_type, filter_values|
@@ -334,6 +335,13 @@ module BioCatalogue
         end
       end
       
+      # Take into account search query if present
+      unless search_query.blank?
+        search_query = Search.preprocess_query(search_query)
+        search_results = Search.search(search_query, "services")
+        service_ids_search_query = search_results.all_item_ids("services")
+      end
+      
       # Need to go through the various service IDs found for the different criterion 
       # and add to the conditions collection (if common ones are found).
       # This ANDs the service IDs (ie: uses only the service IDs that match all criterion).
@@ -345,13 +353,15 @@ module BioCatalogue
       service_ids_tags_ops = [ 0 ] if service_ids_tags_ops.empty? and filters.has_key?(:tag_ops)
       service_ids_tags_ins = [ 0 ] if service_ids_tags_ins.empty? and filters.has_key?(:tag_ins)
       service_ids_tags_outs = [ 0 ] if service_ids_tags_outs.empty? and filters.has_key?(:tag_outs)
+      service_ids_search_query = [ 0 ] if service_ids_search_query.empty? and !search_query.blank?
       
-      Rails.logger.info "*** service_ids_categories = #{service_ids_categories.inspect}"
-      Rails.logger.info "*** service_ids_submitters = #{service_ids_submitters.inspect}"
-      Rails.logger.info "*** service_ids_tags_s = #{service_ids_tags_s.inspect}"
-      Rails.logger.info "*** service_ids_tags_ops = #{service_ids_tags_ops.inspect}"
-      Rails.logger.info "*** service_ids_tags_ins = #{service_ids_tags_ins.inspect}"
-      Rails.logger.info "*** service_ids_tags_outs = #{service_ids_tags_outs.inspect}"
+      Util.say "*** service_ids_categories = #{service_ids_categories.inspect}"
+      Util.say "*** service_ids_submitters = #{service_ids_submitters.inspect}"
+      Util.say "*** service_ids_tags_s = #{service_ids_tags_s.inspect}"
+      Util.say "*** service_ids_tags_ops = #{service_ids_tags_ops.inspect}"
+      Util.say "*** service_ids_tags_ins = #{service_ids_tags_ins.inspect}"
+      Util.say "*** service_ids_tags_outs = #{service_ids_tags_outs.inspect}"
+      Util.say "*** service_ids_search_query = #{service_ids_tags_outs.inspect}"
       
       service_id_arrays_to_process = [ ]
       service_id_arrays_to_process << service_ids_categories unless service_ids_categories.blank?
@@ -360,6 +370,7 @@ module BioCatalogue
       service_id_arrays_to_process << service_ids_tags_ops unless service_ids_tags_ops.blank?
       service_id_arrays_to_process << service_ids_tags_ins unless service_ids_tags_ins.blank?
       service_id_arrays_to_process << service_ids_tags_outs unless service_ids_tags_outs.blank?
+      service_id_arrays_to_process << service_ids_search_query unless service_ids_search_query.blank?
  
       final_service_ids = nil
       
@@ -371,7 +382,7 @@ module BioCatalogue
         end
       end
       
-      Rails.logger.info "*** final_service_ids (after combining service id arrays) = #{final_service_ids.inspect}"
+      Util.say "*** final_service_ids (after combining service id arrays) = #{final_service_ids.inspect}"
       
       unless final_service_ids.nil?
         # Remove the dummy value of 0 in case it is in there
@@ -385,9 +396,10 @@ module BioCatalogue
                                        filters.has_key?(:tag_s) or
                                        filters.has_key?(:tag_ops) or 
                                        filters.has_key?(:tag_ins) or 
-                                       filters.has_key?(:tag_outs))
+                                       filters.has_key?(:tag_outs) or 
+                                       !search_query.blank?)
         
-        Rails.logger.info "*** final_service_ids (after cleanup) = #{final_service_ids.inspect}"
+        Util.say "*** final_service_ids (after cleanup) = #{final_service_ids.inspect}"
         
         conditions[:id] = final_service_ids unless final_service_ids.blank?
       end
@@ -428,6 +440,25 @@ module BioCatalogue
       filter_options_splitted[-1] = filter_options_splitted[-1][0...-1] 
       
       return filter_options_splitted
+    end
+    
+    # Converts a list of values (or one value) into a string that can be used as the value for a query parameter.
+    def self.values_to_query_parameter_text(values)
+      return "" if values.blank?
+      
+      text = ""
+      
+      values = [ values ].flatten
+      
+      values.each do |v|
+        if text.blank?
+          text = "[#{v}]"
+        else
+          text << ",[#{v}]"
+        end
+      end
+      
+      return text
     end
     
     protected
