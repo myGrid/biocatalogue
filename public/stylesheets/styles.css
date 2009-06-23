@@ -1138,7 +1138,7 @@ body.sidebar-right #login_box {
 	color: #333333;
 	padding: .4em .6em;
 	width: 25em;
-	margin-bottom: 1em;
+	margin-bottom: 0.5em;
 	text-align: center; 
 }
 
@@ -2448,11 +2448,11 @@ ul.categories li span.main:hover {
 }
 
 #search_within {
-	margin-bottom: 1.5em;
+	margin-bottom: 1em;
 }
 
 #search_within .rcontain {
-	padding: 0.2em 1.5em;
+	padding: 0 1.5em;
 	text-align: right;
 }
 
@@ -2460,4 +2460,47 @@ ul.categories li span.main:hover {
 .service_properties .property {
 	margin: 0;
 	margin-top: 1.5em;
+}
+
+#filter_message {
+	text-align: left; 
+	font-size: 93%;
+	margin-bottom: 0.8em;
+	color: #333333;
+	/**border: 1px solid #DDD; 
+	background: #FFFFCC; 
+	padding: 0.4em 0.6em; */
+	line-height: 1.5;
+}
+
+#filter_message .rcontain {
+	padding: 1px 0.8em;
+}
+
+#filter_message .rtop,
+#filter_message .contain,
+#filter_message .rbottom {
+	margin: 0;
+}
+
+#filter_message .rtop,
+#filter_message .rbottom {
+	height: 4px;
+	line-height: 1.0;
+}
+
+#filter_message * {
+	vertical-align: middle;
+}
+
+#subscribe_results_link {
+	float: right;
+	text-decoration: none; 
+	vertical-align: middle;
+	font-weight: bold;
+	margin-left: 2em;
+}
+
+#subscribe_results_link img {
+	margin-right: 0.4em;
 }

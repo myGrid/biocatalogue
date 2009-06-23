@@ -16,6 +16,8 @@ class ServicesController < ApplicationController
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
+  before_filter :setup_for_feed, :only => [ :index ]
+  
   # GET /services
   # GET /services.xml
   def index
@@ -151,7 +153,7 @@ class ServicesController < ApplicationController
     
     conditions, joins = BioCatalogue::Filtering.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
     
-    @filter_message = "The services index has been filtered using the selected filters on the left..." unless @current_filters.blank?
+    @filter_message = "The services index has been filtered" unless @current_filters.blank?
     
     # For atom feed we need to show 20 items instead
     page_size = (params[:format] == 'atom' ? 20 : PAGE_ITEMS_SIZE)
@@ -170,6 +172,24 @@ class ServicesController < ApplicationController
   def check_if_user_wants_to_categorise
     if !logged_in? and params.has_key?(:categorise)
       flash.now[:notice] = "Please login or register to categorise this service"
+    end
+  end
+  
+  def setup_for_feed
+    if params[:format] == 'atom'
+      # Remove page param
+      params.delete(:page)
+      
+      # Set page title
+      t = "BioCatalogue.org - "
+      
+      if !@current_filter.blank?
+        t << "Services - Filtered Results"
+      else
+        t << "Latest Services"
+      end
+      
+      @feed_title = t
     end
   end
  

@@ -18,11 +18,7 @@
 
 <div style="margin-top: 1em;">
 
-	<% unless @filter_message.blank? %>
-		<p class="box_info_standout" style="text-align: center; padding: 0.3em 0.5em;">
-			<%= h(@filter_message) -%>
-		</p>
-	<% end %>
+	<%= render :partial => 'index_filter_message' %>
 	
 	<div>
 	
