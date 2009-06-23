@@ -1234,12 +1234,18 @@ body.sidebar-right #login_box {
 	vertical-align: baseline;
 }
 
-.service_type_badge {
+a.service_type_badge {
 	font-size: 85%;
 	font-weight: bold;
 	background-color: #FFF;
 	border: 1px solid #DDD;
 	padding: 2px 3px;
+	text-decoration: none;
+}
+
+a.service_type_badge:hover {
+	color: #FFF;
+	background-color: #666;
 }
 
 .operation_box {

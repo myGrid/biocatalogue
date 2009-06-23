@@ -22,7 +22,7 @@ module ServicesHelper
 
     unless service_types.blank?
       service_types.each do |s_type|
-        html = html + content_tag(:span, s_type, :class => "service_type_badge", :style => "vertical-align: middle; margin-left: 1.5em;")
+        html << link_to(s_type, generate_include_filter_url(:t, s_type), :class => "service_type_badge", :style => "vertical-align: middle; margin-left: 1.5em;")
       end
     end
 
