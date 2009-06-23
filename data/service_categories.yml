@@ -12,9 +12,9 @@
 
 Sequence Analysis [1]:
   Protein Sequence Analysis [2]:
-    Sequence Alignment [3]:
-      - Multiple Alignment [4]
-      - Pairwise Alignment [5]
+    Protein Sequence Alignment [3]:
+      - Protein Multiple Alignment [4]
+      - Protein Pairwise Alignment [5]
     Sequence Similarity [6]:
     Structure Prediction [7]:
       - Secondary Structure [8]
@@ -24,9 +24,9 @@ Sequence Analysis [1]:
       - Motifs [12]
       - Repeats [13]
   Nucleotide Sequence Analysis [14]:
-    Sequence Alignment [15]:
-      - Multiple Alignment [16]
-      - Pairwise Alignment [17]
+    Nucleotide Sequence Alignment [15]:
+      - Nucleotide Multiple Alignment [16]
+      - Nucleotide Pairwise Alignment [17]
     Sequence Similarity [18]:
     Gene Prediction [19]:
     Promoter Prediction [20]:
