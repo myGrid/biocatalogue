@@ -9,7 +9,9 @@
 %>
 
 <% if ENABLE_BOOKMARKING_WIDGET %>
-	<%= addthis_bookmark_button -%>
+	<%= addthis_share_button -%>
+	<% if false %>
 	&nbsp;&nbsp;&nbsp;
 	<%= addthis_email_button -%>
+	<% end %>
 <% end %>
