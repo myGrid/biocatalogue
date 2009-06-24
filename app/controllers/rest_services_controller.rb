@@ -55,6 +55,7 @@ class RestServicesController < ApplicationController
   # POST /rest_services.xml
   def create
     endpoint = params[:endpoint] || ""
+    endpoint = "http://" + endpoint unless endpoint.blank?
     endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
     
     if endpoint.blank?
