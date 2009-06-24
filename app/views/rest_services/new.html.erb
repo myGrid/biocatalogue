@@ -27,7 +27,7 @@
 		
 		<p class="step_text">1. Specify the URL of the endpoint of the REST service (ie: the base URL):</p>
 		
-		<p><%= text_field_tag "endpoint", params[:endpoint], :style => "width: 100%;" -%></p>
+		<p><%= text_field_tag "endpoint", params[:endpoint] || "http://", :style => "width: 100%;" -%></p>
 		
 		<div class="box_info_standout" style="font-size: 100%; width: 582px; padding: 7px 10px;">
 			<b>Note:</b> please do not specify parameterised URLs or URLs to specific functionality. Only provide the base URL to the REST service.
