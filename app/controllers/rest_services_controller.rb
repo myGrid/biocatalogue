@@ -79,7 +79,7 @@ class RestServicesController < ApplicationController
         main_name = params[:rest_service][:name]
         name_annotations << params[:rest_service][:name] if !main_name.blank? && !existing_service.name.downcase.eql?(main_name.downcase)
         
-        name_annotations << annotations_data[:name] if !annotations_data[:name].blank? || !existing_service.name.downcase.eql?(annotations_data[:name].downcase)
+        name_annotations << annotations_data[:name] if !annotations_data[:name].blank? and !existing_service.name.downcase.eql?(annotations_data[:name].downcase)
         
         annotations_data[:name] = name_annotations
         
