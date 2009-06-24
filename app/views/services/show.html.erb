@@ -83,8 +83,31 @@
 			<% end %>
 			
 			<% if is_soaplab_service?(@service)%>
-				<%= render :partial => "soaplab_servers/about_soaplab"%>
-			<%end%>			
+				<div class="box_info_standout" style="text-align:center;">
+					This looks like a <b>SOAPlab</b> service. We are working on providing better support and documentation for SOAPlab services.
+					<br/>
+					<b>
+						<%= link_to_function "Click here for more info and guidance on how to use this service" + expand_image, visual_effect(:toggle_blind, "about_soaplab", :duration => 0.3), :style => "text-decoration:none;" %>
+					</b>
+					<div id="about_soaplab" style="display:none;">
+						<%= render :partial => "soaplab_servers/about_soaplab" -%>
+					</div>
+				</div>
+			<% end %>
+			
+			<% if is_biomoby_service?(@service)%>
+				<div class="box_info_standout" style="text-align:center;">
+					This looks like a <b>BioMoby</b> service. We are working on providing better support and documentation for BioMoby services.
+					<br/>
+					<b>
+						<%= link_to_function "Click here for more info and guidance on how to use this service" + expand_image, visual_effect(:toggle_blind, "about_biomoby", :duration => 0.3), :style => "text-decoration:none;" %>
+					</b>
+					<div id="about_biomoby" style="display:none;">
+						<%= render :partial => "services/about_biomoby" -%>
+					</div>
+				</div>
+			<% end %>
+				
 			<p>
 				<b>Provider:</b>
 				<br/>

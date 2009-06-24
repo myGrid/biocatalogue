@@ -1,6 +1,6 @@
 # BioCatalogue: app/helpers/application_helper.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -599,14 +599,19 @@ module ApplicationHelper
   # services. Checks for 'soaplab' in wsdl url
   def is_soaplab_service?(service)
     service.service_version_instances_by_type('soap').each do |soap|
-      if soap.wsdl_location.split('/').include?('soaplab')
-        return true
-      end
+      return true if soap.wsdl_location=~ /soaplab/
     end
     return false
   end
 
-
+  # Hack: helper method fo check if the service is a biomoby
+  # service. Checks for 'biomoby' in wsdl url
+  def is_biomoby_service?(service)
+    service.service_version_instances_by_type('soap').each do |soap|
+      return true if soap.wsdl_location =~ /biomoby/
+    end
+    return false
+  end
   
   def render_breadcrumbs_after_home
     render :partial => "breadcrumbs" if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb'))

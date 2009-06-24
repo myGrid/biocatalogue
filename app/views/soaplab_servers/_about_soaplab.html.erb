@@ -1,21 +1,31 @@
-<div>
-	
-		<b>About SOAPlab</b>
+<%
+
+# BioCatalogue: app/views/soaplab_servers/_about_soaplab.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div style="padding: 1em 1.5em; text-align: left;">
 	<p>
-		Soaplab services are command line applications, wrapped as SOAP services.
-		All Soaplab services have the same operation names as they all share a
-		generic interface. To use a soaplab service you might need additional
-		metadata which are currently not displayed in the BioCatalogue. 
+		<b>About SOAPlab</b>
+	</p>
+	<p>
+		SOAPlab services are command line applications, wrapped as SOAP services.
+		All SOAPlab services have the same operation names as they all share a
+		generic interface. To use a SOAPlab service you might need additional
+		information which are currently not available in the BioCatalogue. 
 	</p>
 	<p>
 		Future releases of the BioCatalogue will provide improved support for
-		SOAPLab services especially with regard to metadata coverage for the
+		SOAPlab services especially with regard to metadata coverage for these
 		services.
 	</p>
-	
-	Further documentation on soaplab services can be found on
-	<%= link_to('EBI SOAPlab', "http://www.ebi.ac.uk/soaplab", :popup => true) %> server pages and on
-	<%= link_to('sourceforge', "http://emboss.sourceforge.net/apps/release/6.0/emboss/apps/index.html", :popup => true) -%>
-	 for EMBOSS soaplab services.
-	
+	<p>
+		Further documentation is available on the
+		<%= link_to('EBI SOAPlab server pages', "http://www.ebi.ac.uk/soaplab", :popup => true) %> and on
+		<%= link_to('sourceforge for EMBOSS soaplab services', "http://emboss.sourceforge.net/apps/release/6.0/emboss/apps/index.html", :popup => true) -%>.
+	</p>
 </div>
