@@ -110,6 +110,8 @@ class AutoTagger
   
   def run
     
+    puts ""
+    puts ""
     puts "=> Booting Auto Tagger process. Running on #{@options[:environment]} database." 
     
     if @options[:test]

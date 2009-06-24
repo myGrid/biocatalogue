@@ -212,6 +212,8 @@ class SeekDaImporter
   
   def run
     
+    puts ""
+    puts ""
     puts "=> Booting SeekDa to BioCatalogue import process. Running on #{@options[:environment]} database." 
     
     if @options[:test]

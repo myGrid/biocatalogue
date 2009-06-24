@@ -171,6 +171,8 @@ class SeekDaCleaner
   
   def run
     
+    puts ""
+    puts ""
     puts "=> Booting SeekDa cleanup process. Running on #{@options[:environment]} database." 
     
     if @options[:test]

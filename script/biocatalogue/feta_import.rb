@@ -9,6 +9,7 @@
 # Usage: feta_import [options]
 #    -s, --source=source              The source directory for the Feta files that need to be imported.
 #                                     Default: {app_root}/feta
+#
 #    -e, --environment=name           Specifies the environment to run this import script under (test|development|production).
 #                                     Default: development
 #
@@ -79,7 +80,7 @@ class FetaImporter
   
   def initialize(args)
     @options = {
-      :source      => "feta",
+      :source      => File.join(File.dirname(__FILE__), '..', '..', 'feta'),
       :environment => (ENV['RAILS_ENV'] || "development").dup,
     }
     
@@ -115,6 +116,9 @@ class FetaImporter
   end
   
   def run
+    
+    puts ""
+    puts ""
     puts "=> Booting Feta to BioCatalogue import process. Running on #{@options[:environment]} database." 
     puts "=> Feta files will be loaded from: #{@options[:source]}"
     
