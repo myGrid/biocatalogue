@@ -37,6 +37,7 @@ Rails::Initializer.run do |config|
   config.gem 'crack', :version => '0.1.2'
   config.gem 'json', :version => '1.1.6'
   config.gem 'ruby-hmac', :version => '>= 0.3.2', :lib => 'hmac'
+  config.gem 'rubaidh-google_analytics', :lib => 'rubaidh/google_analytics', :source => 'http://gems.github.com'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.

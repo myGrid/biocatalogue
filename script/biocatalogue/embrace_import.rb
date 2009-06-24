@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
 
-# This script tags certain services with certain tags, based on a set of rules.
-# E.g.: services that have "http://biomoby.org/services" in their WSDL location(s) should be tagged with "BioMoby".
+# This script imports the data from the EMBRACE directory (which should be in the {RAILS_ROOT}/data/embrace) directory.
 #
 #
-# Usage: auto_tagger [options]
+# Usage: embrace_import [options]
 #
-#    -e, --environment=name           Specifies the environment to run this script under (test|development|production).
+#    -e, --environment=name           Specifies the environment to run this import script under (test|development|production).
 #                                     Default: development
 #
 #    -h, --help                       Show this help message.
@@ -16,20 +15,20 @@
 # 
 # Examples of running this script:
 #
-#  ruby auto_tagger.rb                <- runs the script on the development database.
+#  ruby embrace_import.rb                <- runs the script on the development database.
 #
-#  ruby auto_tagger.rb -e production  <- runs the script on the production database.
+#  ruby embrace_import.rb -e production  <- runs the script on the production database.
 #
-#  ruby auto_tagger.rb -t             <- runs the script on the development database, in test mode (so no data is written to the db).
+#  ruby embrace_import.rb -t             <- runs the script on the development database, in test mode (so no data is written to the db).
 #
-#  ruby auto_tagger.rb -h             <- displays help text for this script.  
+#  ruby embrace_import.rb -h             <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/auto_tagger_{current_time}.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/embrace_import_{current_time}.log' so you won't see any normal output in the console.
 #
 #
 # Depedencies:
-# - Rails (v2.2.2)
+# - Rails (v2.3.2)
 
 require 'rubygems'
 require 'optparse'
@@ -63,9 +62,17 @@ class Counter
   end
 end
 
-class AutoTagger
+class EmbraceData
   
-  attr_accessor :options, :biocat_agent, :rules
+  include Singleton
+
+  def intialize
+  
+end
+
+class EmbraceImporter
+  
+  attr_accessor :options, :data, :registry
   
   def initialize(args)
     @options = {
@@ -74,7 +81,7 @@ class AutoTagger
     
     args.options do |opts|
       opts.on("-e", "--environment=name", String,
-              "Specifies the environment to run this cleanup script under (test|development|production).",
+              "Specifies the environment to run this script under (test|development|production).",
               "Default: development") { |v| @options[:environment] = v }
     
       opts.separator ""
@@ -86,6 +93,9 @@ class AutoTagger
       opts.parse!
     end
     
+    # Load up the data
+    @data = EmbraceData.instance
+    
     # Start the Rails app
     
     ENV["RAILS_ENV"] = @options[:environment]
@@ -93,24 +103,20 @@ class AutoTagger
     
     require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
     
-    # Get or create the BioCatalogue agent, which we will be using as the annotation source...
-    @biocat_agent = Agent.find_by_name("biocatalogue")
+    # Get or create the EMBRACE Registry registry object, which we will be using as the annotation and submitter source...
+    @registry = Registry.find_by_name("embrace")
     
-    if @biocat_agent.nil?
-      @biocat_agent = Agent.create(:name => "biocatalogue",
-                                   :display_name => "BioCatalogue")
+    if @registry.nil?
+      @registry = Registry.create(:name => "embrace",
+                                  :display_name => "The EMBRACE Registry",
+                                  :homepage => "http://www.embraceregistry.net/")
     end
-    
-    # Set up rules
-    
-    @rules = { }
-    @rules[:wsdl_location] = { "http://biomoby.org/services%" => "BioMoby" }
     
   end
   
   def run
     
-    puts "=> Booting Auto Tagger process. Running on #{@options[:environment]} database." 
+    puts "=> Booting EMBRACE import process. Running on #{@options[:environment]} database." 
     
     if @options[:test]
       puts ""
@@ -126,37 +132,13 @@ class AutoTagger
     stats["total_annotations_failed"] = Counter.new
     
     begin
-      Service.transaction do
-        
-        @rules.each do |rule_key, rule_specs|
+      
+      # First the users...
+      
+      User.transaction do
         
           puts ""
-          puts ">> Processing rule: #{rule_key}"
-        
-          case rule_key
-            when :wsdl_location
-              
-              rule_specs.each do |text, tag_name|
-              
-                puts ""
-                puts "> Processing services that have a WSDL location of '#{text}' (will add tag '#{tag_name}')"
-              
-                soap_services = SoapService.find(:all, :conditions => [ "wsdl_location LIKE ?", text ])
-                
-                soap_services.each do |ss|
-                  service = ss.service
-                  
-                  puts "INFO: adding tag '#{tag_name}' to service '#{service.name}' (ID: #{service.id})"
-                  
-                  create_annotation(service, "Tag", tag_name, stats)
-                end
-              
-              end
-              
-            else
-              puts ""
-              puts ">> NO PROCESSING LOGIC FOR RULE: '#{rule_key.to_s}'"
-          end
+          puts ">> Processing user #{rule_key}"
         
         end
         
@@ -210,8 +192,8 @@ class AutoTagger
     ann = Annotation.new(:attribute_name => attribute,
                          :value => value,
                          :value_type => value_type,
-                         :source_type => @biocat_agent.class.name,
-                         :source_id => @biocat_agent.id,
+                         :source_type => @registry.class.name,
+                         :source_id => @registry.id,
                          :annotatable_type => annotatable_type,
                          :annotatable_id => annotatable.id)
 
@@ -243,11 +225,11 @@ class AutoTagger
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/auto_tagger_{current_time}.log' ..."
-$stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "auto_tagger_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
+puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/embrace_import_{current_time}.log' ..."
+$stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "embrace_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 
-puts Benchmark.measure { AutoTagger.new(ARGV.clone).run }
+#puts Benchmark.measure { EmbraceImporter.new(ARGV.clone).run }
 
 # Reset $stdout
 $stdout = STDOUT

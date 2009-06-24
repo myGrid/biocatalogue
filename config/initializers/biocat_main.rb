@@ -45,6 +45,13 @@ BioCatalogue::Categorising.load_data
 # Set addthis.com username for bookmarking widgets
 Jaap3::Addthis::CONFIG[:publisher] = ADDTHIS_USERNAME if ENABLE_BOOKMARKING_WIDGET
 
+# Set Google Analytics code
+if ENABLE_GOOGLE_ANALYTICS
+  Rubaidh::GoogleAnalytics.tracker_id = GOOGLE_ANALYTICS_TRACKER_ID
+else
+  Rubaidh::GoogleAnalytics.tracker_id = nil
+end
+
 # Set global pagination per_page parameter in all models.
 PAGE_ITEMS_SIZE = 10
 class ActiveRecord::Base

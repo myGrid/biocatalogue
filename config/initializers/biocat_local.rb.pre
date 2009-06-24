@@ -90,3 +90,8 @@ TWITTER_ACCOUNT_PASSWORD = "password"
 # Addthis.com bookmarking widget integration:
 ENABLE_BOOKMARKING_WIDGET = false
 ADDTHIS_USERNAME = "my_username"
+
+
+# Google Analytics:
+ENABLE_GOOGLE_ANALYTICS = false
+GOOGLE_ANALYTICS_TRACKER_ID = 'xyz'

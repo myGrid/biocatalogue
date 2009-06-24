@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
-name: mperham-memcache-client
+name: rubaidh-google_analytics
 version: !ruby/object:Gem::Version 
-  version: 1.7.4
+  version: 1.1.4
 platform: ruby
 authors: []
 
@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-06-09 00:00:00 +01:00
+date: 2009-06-24 00:00:00 +01:00
 default_executable: 
 dependencies: []
 
@@ -23,25 +23,14 @@ extra_rdoc_files: []
 
 files: 
 - lib
-- lib/memcache_util.rb
-- lib/memcache.rb
-- lib/continuum_native.rb
+- lib/rubaidh.rb
+- lib/rubaidh
 has_rdoc: false
 homepage: 
 post_install_message: 
 rdoc_options: []
 
 require_paths: 
-- bin
-- bin
-- bin
-- bin
-- bin
-- bin
-- bin
-- bin
-- bin
-- bin
 - bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
