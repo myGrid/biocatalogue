@@ -15,7 +15,7 @@
 <% else %>
 	<% t "#{@type.titleize} &#45; Results for '#{h(@query)}'" -%>
 	<% if all_search %>
-		<h1>Search Results <span class="faded">(for all things in the BioCatalogue)</span></h1>
+		<h1>Search Results</h1>
 	<% else %>
 		<h1>Search Results <span class="faded">(for <%= @type.titleize -%>)</span></h1>
 	<% end%>
