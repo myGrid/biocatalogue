@@ -29,7 +29,7 @@
 #  ruby seekda_import.rb -h                               <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to 'log/seekda_import_{current_time}.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/seekda_import_{current_time}.log' so you won't see any normal output in the console.
 #
 #
 # Depedencies:
@@ -545,8 +545,8 @@ class SeekDaImporter
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: 'log/seekda_import_{current_time}.log' ..."
-$stdout = File.new("log/seekda_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log", "w")
+puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/seekda_import_{current_time}.log' ..."
+$stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "seekda_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 
 # Redirect warnings from libxml-ruby

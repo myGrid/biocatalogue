@@ -25,7 +25,7 @@
 #  ruby auto_tagger.rb -h             <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to 'log/auto_tagger_{current_time}.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/auto_tagger_{current_time}.log' so you won't see any normal output in the console.
 #
 #
 # Depedencies:
@@ -243,8 +243,8 @@ class AutoTagger
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: 'log/auto_tagger_{current_time}.log' ..."
-$stdout = File.new("log/auto_tagger_#{Time.now.strftime('%Y%m%d-%H%M')}.log", "w")
+puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/auto_tagger_{current_time}.log' ..."
+$stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "auto_tagger_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 
 puts Benchmark.measure { AutoTagger.new(ARGV.clone).run }
