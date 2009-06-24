@@ -594,6 +594,17 @@ module ApplicationHelper
       return "Unchecked"
     end
   end
+  
+  # Hack: helper method fo check if the service is a soaplab
+  # services. Checks for 'soaplab' in wsdl url
+  def is_soaplab_service?(service)
+    service.service_version_instances_by_type('soap').each do |soap|
+      if soap.wsdl_location.split('/').include?('soaplab')
+        return true
+      end
+    end
+    return false
+  end
 
 
   

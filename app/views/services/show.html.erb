@@ -82,6 +82,9 @@
 			</p>
 			<% end %>
 			
+			<% if is_soaplab_service?(@service)%>
+				<%= render :partial => "soaplab_servers/about_soaplab"%>
+			<%end%>			
 			<p>
 				<b>Provider:</b>
 				<br/>
