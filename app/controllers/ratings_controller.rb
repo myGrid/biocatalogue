@@ -21,7 +21,7 @@ class RatingsController < ApplicationController
       anns = Annotation.find(:all, 
                              :conditions => { :annotatable_type => annotatable.class.name,
                                               :annotatable_id => annotatable.id,
-                                              :attribute_id => AnnotationAttribute.find_by_name(category).id, 
+                                              :attribute_id => AnnotationAttribute.find_or_create_by_name(category).id, 
                                               :source_type => current_user.class.name,
                                               :source_id => current_user.id })
       
@@ -29,7 +29,7 @@ class RatingsController < ApplicationController
         # Create a new one
         ann = Annotation.new(:annotatable_type => annotatable.class.name,
                              :annotatable_id => annotatable.id,
-                             :attribute_id => AnnotationAttribute.find_by_name(category).id,
+                             :attribute_id => AnnotationAttribute.find_or_create_by_name(category).id,
                              :value => rating,
                              :source_type => current_user.class.name, 
                              :source_id => current_user.id)
