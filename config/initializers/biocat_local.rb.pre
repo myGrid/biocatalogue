@@ -60,7 +60,8 @@ ExceptionNotifier.exception_recipients = %w(joe@example.com bill@example.com)
 
 
 # Enable or disable the cache-money plugin, which caches AR models in memcached.
-# This setting may be useful in instances when cache-money is not working as required/
+# This setting may be useful in instances when cache-money is not working as required.
+# NOTE: this doesn't currently work so please disable it until the forseeable future.
 ENABLE_CACHE_MONEY = false
 
 
