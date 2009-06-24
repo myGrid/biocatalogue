@@ -17,15 +17,16 @@
 											 params[:q], 
 											 :id => "action_bar_search_field", 
 											 :size => 28, 
-											 :autocomplete => "off",
-											 :onkeyup => "disableIfBlank('action_bar_search_field', 'action_bar_search_type_dropdown');" -%>
+											 :autocomplete => "off" -%>
 		
+		<% if false %>
 		<%= select_tag :t, 
 									 options_for_select(BioCatalogue::Search::VALID_SEARCH_TYPES_INCL_ALL.collect { |t| [t.titleize, t] }, 
 									 params[:t]),
 									 :disabled => true,
 									 :id => "action_bar_search_type_dropdown",
 									 :style => "width: 140px; font-size: 85%; vertical-align: middle;" %>
+		<% end %>
 		
 		<div class="auto_complete" id="action_bar_search_auto_complete" style="display:inline;"></div>
 		
