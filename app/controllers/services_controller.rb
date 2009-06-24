@@ -183,7 +183,7 @@ class ServicesController < ApplicationController
       # Set page title
       t = "BioCatalogue.org - "
       
-      if !@current_filter.blank?
+      if !@current_filters.blank?
         t << "Services - Filtered Results"
       else
         t << "Latest Services"
