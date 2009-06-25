@@ -683,7 +683,7 @@ ul.breadcrumb_list li {
  * Primary navigation
  */
 ul.primary-links {
-  margin: .75em 0 0 0;
+  margin: 0;
   padding: 0;
   float: right;
   position: relative;
@@ -698,7 +698,6 @@ ul.primary-links li {
   float: left;  
   list-style-type: none;
   list-style-image: none;
-	text-align: m
 }
 
 ul.primary-links li.separator {
@@ -821,7 +820,7 @@ span.clear {
 #wrapper #container #header #login_links {
 	clear: both;
 	float: right;
-	padding: 1.4em 0 0 0;
+	padding: 2.1em 0 0 0;
 	margin-bottom: 0;
 	position: relative;
 	z-index: 4;
