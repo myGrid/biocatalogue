@@ -14,6 +14,7 @@
 	<% form_for(@user) do |f| %>
 	  <%= f.error_messages %>
 		<fieldset>
+		<fieldset>
 		  <legend>Account email address</legend>
 		  <p>
 		    <%= f.label :email, "Email" %>
@@ -31,6 +32,11 @@
 		</fieldset>
 		<fieldset>
 		  <legend>Profile info</legend>
+			<p>
+		    <%= f.label :display_name, "Your display name" %>
+				<br />
+		    <%= f.text_field :display_name %>
+		  </p>
 		  <p>
 		    <%= f.label :public_email, "Your public email address <span class='faded'>(so people can contact you)</span>" %><br />
 		    <%= f.text_field :public_email, :size => 45 %>
