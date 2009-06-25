@@ -131,7 +131,7 @@ class EmbraceData
         processed_services_data[s_id] = {
           :wsdl_url => de_ws_service['wsdl_url'],
           :das_url => de_ws_service['das_url'],
-          :rest_url => de_ws_service['das_url'],
+          :rest_url => de_ws_service['rest_url'],
           :user_id => de_ws_service['uid'],
           :annotations => {
             :name => de_ws_service['title'],
