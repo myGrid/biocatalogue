@@ -16,13 +16,13 @@
 # 
 # Examples of running this script:
 #
-#  ruby seekda_import.rb                <- runs the script on the development database.
+#  ruby seekda_cleanup.rb                <- runs the script on the development database.
 #
-#  ruby seekda_import.rb -e production  <- runs the script on the production database.
+#  ruby seekda_cleanup.rb -e production  <- runs the script on the production database.
 #
-#  ruby seekda_import.rb -t             <- runs the script on the development database, in test mode (so no data is written to the db).
+#  ruby seekda_cleanup.rb -t             <- runs the script on the development database, in test mode (so no data is written to the db).
 #
-#  ruby seekda_import.rb -h             <- displays help text for this script.  
+#  ruby seekda_cleanup.rb -h             <- displays help text for this script.  
 #
 #
 # NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/seekda_cleanup_{current_time}.log' so you won't see any normal output in the console.
