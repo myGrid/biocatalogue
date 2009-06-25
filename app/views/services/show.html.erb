@@ -51,7 +51,7 @@
 							<br/><br/>
 							
 							<%= link_to "View the comments on this service", 
-													service_url(@service, :anchor => "#disqus_thread"),
+													service_url(@service, :anchor => "disqus_thread"),
 													:style => "font-size: 85%;" -%>
 						</td>
 					</tr>
@@ -215,11 +215,10 @@
 		<h4>Availability Checks</h4> 
 		<hr/>
 		
-		<div id="tab-monitoring" class="tabbertab">
 		  <% @service.service_deployments.each  do |dep|  -%>
 			<table>
 				<tr>
-					<td><%= service_test_status_symbol(dep.latest_endpoint_status, "Endpoint")%> </td>
+					<td style="padding-right: 1em;"><%= service_test_status_symbol(dep.latest_endpoint_status, "Endpoint")%> </td>
 					<td> <%= link_to(h("Service Endpoint"),  dep.endpoint, :popup => true) -%> <p/> <%= service_test_status_message(dep.latest_endpoint_status) -%></td>		
 				</tr>
 			</table>
