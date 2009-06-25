@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/users/show.html.erb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -27,15 +27,38 @@
 				</span>
 			<% end %>
     </p>
+		
+		<p>
+      <b>Email address:</b>
+			<% unless @user.public_email.blank? %>
+				<%= mail_to @user.public_email, nil, {  :encode => "hex", :replace_at => " [at] " } -%>
+				<span style="color: #999; margin-left: 1em; font-size: 85%;">
+					[ <%= link_to 'change', edit_user_path(@user) %> ]
+				</span>
+			<% else %>
+				<span class="none_text">Not specified</span>
+				<span style="color: #999; margin-left: 1em; font-size: 85%;">
+					[ <%= link_to 'add', edit_user_path(@user) %> ]
+				</span>
+			<% end %>
+    </p>
     
     <p>
       <b>Affiliation:</b>
-      <%=h @user.affiliation %>
+			<% unless @user.affiliation.blank? %>
+      	<%= h @user.affiliation %>
+			<% else %>
+				<span class="none_text">Not specified</span>
+			<% end %>
     </p>
     
     <p>
       <b>Country:</b>
-      <%=h @user.country %>
+			<% unless @user.country.blank? %>
+      	<%= h @user.country %>
+			<% else %>
+				<span class="none_text">Not specified</span>
+			<% end %>
     </p>
 		
 		<% if mine? @user %>
@@ -43,8 +66,8 @@
 				<p style="font-size: 85%; margin-bottom: 1em;">Note: the information here is private and cannot be seen by anyone else.</p>
 				
 				<p>
-		      <b>Email:</b>
-		      <%=h @user.email %>
+		      <b>Account email address:</b>
+		      <%= h @user.email %>
 					<span style="color: #999; margin-left: 1em; font-size: 85%;">
 						[ <%= link_to 'change', edit_user_path(@user) %> ]
 					</span>

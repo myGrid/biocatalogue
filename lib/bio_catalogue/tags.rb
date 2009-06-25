@@ -7,6 +7,9 @@
 module BioCatalogue
   module Tags
     
+    TAG_NAMESPACES = { "http://www.mygrid.org.uk/ontology" => "mygrid-domain", 
+                       "http://www.mygrid.org.uk/mygrid-moby-service" => "mygrid-service" }.freeze
+    
     # ==============================
     # IMPORTANT - Tags data structure
     # ------------------------------
@@ -154,18 +157,27 @@ module BioCatalogue
       return tag_name.starts_with?("<") && tag_name.ends_with?(">") && tag_name.include?("#") 
     end
     
-    # Splits a tag name into 2 parts (base identifier URI and term keyword) IF it is an ontology term URI.
+    # Splits a tag name into 2 parts (namespace [based on the base identifier URI]
+    # and term keyword) IF it is an ontology term URI.
     #
-    # Returns an Array where the first item is the base identifier URL and the second is the term keyword.
+    # Returns an Array where the first item is the namespace and the second is the term keyword.
     # 
     # NOTE (1): the chevrons (< >) will be removed from the resulting split.
     # NOTE (2): it is assumed that the term keyword is the word(s) after a hash ('#')
     def self.split_ontology_term_uri(tag_name)
+      namespace = ""
+      term_keyword = ""
       if self.is_ontology_term_uri?(tag_name)
-        return tag_name.gsub(/[<>]/, "").split("#")
+        base_uri, term_keyword = tag_name.gsub(/[<>]/, "").split("#")
+        if TAG_NAMESPACES.has_key?(base_uri.downcase)
+          namespace = TAG_NAMESPACES[base_uri]
+        else
+          term_keyword = tag_name
+        end
       else
-        return [ "", tag_name ]
+        term_keyword = tag_name
       end
+      return [ namespace, term_keyword ]
     end
     
     # Given a tag name, this generates the appropriate URL to show the tag results for that tag name.
@@ -173,8 +185,8 @@ module BioCatalogue
       url = ""
       
       if BioCatalogue::Tags.is_ontology_term_uri?(tag_name)
-        base_identifier_uri, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
-        url = "/tags/#{URI::escape(keyword)}?#{base_identifier_uri.to_query("identifier_uri")}"
+        namespace, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
+        url = "/tags/#{URI::escape(keyword)}?#{namespace.to_query("namespace")}"
       else
         url = "/tags/#{URI::escape(tag_name)}"
       end
@@ -189,9 +201,16 @@ module BioCatalogue
       
       tag_name = URI::unescape(params[:tag_keyword])
     
-      # Check for base identifier URI
-      if params[:identifier_uri]
-        tag_name = "<#{URI::unescape(params[:identifier_uri])}##{tag_name}>"
+      # Check for namespace
+      unless (namespace = params[:namespace]).blank?
+        namespace = namespace.downcase
+        identifier_uri = ''
+        if TAG_NAMESPACES.values.include?(namespace)
+          TAG_NAMESPACES.each do |k,v|
+            identifier_uri = k if v == namespace
+          end
+          tag_name = "<#{URI::unescape(identifier_uri)}##{tag_name}>"
+        end
       end
       
       return tag_name

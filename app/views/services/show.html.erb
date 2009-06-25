@@ -166,12 +166,12 @@
 			
 			<div class="property">					 
 				<%= render :partial => "annotations/licenses",
-									 :locals => { :annotatable => @latest_deployment } -%>
+									 :locals => { :annotatable => @latest_version_instance } -%>
 			</div>
 			
 			<div class="property">					 
 				<%= render :partial => "annotations/contacts",
-									 :locals => { :annotatable => @service } -%>
+									 :locals => { :annotatable => @latest_deployment } -%>
 			</div>
 			
 			<% if false %>

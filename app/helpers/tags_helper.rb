@@ -8,8 +8,9 @@ module TagsHelper
   include ApplicationHelper
   
   def help_text_for_tag_clouds
-    "Tags in orange are from ontologies / controlled vocabularies. <br/><br/>
-    Tags in blue are regular keyword based tags."
+    "Some of the tags in this tag cloud may be from ontologies, in which case they will be prepended with a namespace. <br/><br/>
+    e.g.: mygrid:DDBJ comes from the myGrid ontology. <br/><br/>
+    Hover over the tags to get more info."
   end
   
   # Generates a tag cloud from a list of annotations that are tags. 
@@ -108,17 +109,17 @@ module TagsHelper
                   
                   # Special processing for ontological term URIs...
                   if BioCatalogue::Tags.is_ontology_term_uri?(tag_name)
-                    base_identifier_uri, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
+                    namespace, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
                     
-                    inner_html = h(keyword)
+                    inner_html = "<span class='namespace'>#{h(namespace)}:</span><span>#{h(keyword)}</span>"
                     title_text = "Full tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
-                    css_class = "ontology_term"
                   # Otherwise, regular tags...
                   else
                     inner_html = h(tag_name)
                     title_text = "Tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
-                    css_class = ""
                   end
+                  
+                  css_class = ''
                   
                   # The URL is generated specially...
                   a_href = BioCatalogue::Tags.generate_tag_show_uri(tag_name)

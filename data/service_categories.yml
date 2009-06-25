@@ -15,7 +15,7 @@ Sequence Analysis [1]:
     Protein Sequence Alignment [3]:
       - Protein Multiple Alignment [4]
       - Protein Pairwise Alignment [5]
-    Sequence Similarity [6]:
+    Protein Sequence Similarity [6]:
     Structure Prediction [7]:
       - Secondary Structure [8]
       - Tertiary Structure [9]
@@ -27,7 +27,7 @@ Sequence Analysis [1]:
     Nucleotide Sequence Alignment [15]:
       - Nucleotide Multiple Alignment [16]
       - Nucleotide Pairwise Alignment [17]
-    Sequence Similarity [18]:
+    Nucleotide Sequence Similarity [18]:
     Gene Prediction [19]:
     Promoter Prediction [20]:
     Transcription Factors [21]:

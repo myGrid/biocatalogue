@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
   validates_confirmation_of   :password, :if => :password_required?
   validates_confirmation_of   :email
   validates_uniqueness_of     :email, :case_sensitive => false
-  validates_email_veracity_of :email
+  validates_email_veracity_of :email, :public_email
 
   attr_protected  :id, :salt, :crypted_password, :activated_at, :security_token, :role_id
   attr_accessor   :password
