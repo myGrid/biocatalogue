@@ -80,7 +80,7 @@ module BioCatalogue
       def self.check_url_status(url)
         puts "checking url #{url}"
         status = {:action => 'http_head'}
-        data = %x[curl -I --max-time 20 #{url}]
+        data = %x[curl -I --max-time 20 -X GET #{url}]
   
         pieces = data.split
         if pieces[1] =='200' and pieces[2] =='OK'   # status OK
