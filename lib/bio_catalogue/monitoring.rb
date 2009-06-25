@@ -103,7 +103,7 @@ module BioCatalogue
         data = %x[curl --max-time 20 --header "Content-Type: text/xml" --data "<?xml version="1.0"?>" #{endpoint}]
   
         pieces = data.split
-        if pieces[0] == '<?xml'
+        if pieces[0] == '<?xml'||'<soap:Envelope'
           status.merge!({:result=> 0, :message => data})
         else
           status.merge!({:result=> 1, :message => data})
