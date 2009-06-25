@@ -1895,6 +1895,11 @@ span.namespace,
 	font-size: 10px;
 }
 
+span.ontology_term,
+.tag_cloud li a.ontology_term {
+	color: #6600CC;
+}
+
 /* END tag cloud styles */
 
 /* BEGIN Section Boxes (usually for inner sidebars) */

@@ -7,8 +7,8 @@
 module BioCatalogue
   module Tags
     
-    TAG_NAMESPACES = { "http://www.mygrid.org.uk/ontology" => "mygrid-domain", 
-                       "http://www.mygrid.org.uk/mygrid-moby-service" => "mygrid-service" }.freeze
+    TAG_NAMESPACES = { "http://www.mygrid.org.uk/ontology" => "mygrid-domain-ontology", 
+                       "http://www.mygrid.org.uk/mygrid-moby-service" => "mygrid-service-ontology" }.freeze
     
     # ==============================
     # IMPORTANT - Tags data structure

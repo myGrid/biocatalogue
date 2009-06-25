@@ -8,9 +8,11 @@ module TagsHelper
   include ApplicationHelper
   
   def help_text_for_tag_clouds
-    "Some of the tags in this tag cloud may be from ontologies, in which case they will be prepended with a namespace. <br/><br/>
-    e.g.: mygrid:DDBJ comes from the myGrid ontology. <br/><br/>
-    Hover over the tags to get more info."
+#    "Some of the tags in this tag cloud may be from ontologies, in which case they will be prepended with a namespace. <br/><br/>
+#    e.g.: mygrid:DDBJ comes from the myGrid ontology. <br/><br/>
+#    Hover over the tags to get more info."
+    "Tags in purple are from ontologies / controlled vocabularies. <br/><br/>
+    Tags in blue are regular keyword based tags."
   end
   
   # Generates a tag cloud from a list of annotations that are tags. 
@@ -111,15 +113,16 @@ module TagsHelper
                   if BioCatalogue::Tags.is_ontology_term_uri?(tag_name)
                     namespace, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
                     
-                    inner_html = "<span class='namespace'>#{h(namespace)}:</span><span>#{h(keyword)}</span>"
-                    title_text = "Full tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
+                    #inner_html = "<span class='namespace'>#{h(namespace)}:</span><span>#{h(keyword)}</span>"
+                    inner_html = h(keyword)
+                    title_text = "Full tag: #{h(tag_name)} <br/> Namespace: #{namespace} <br/> Frequency: #{freq} times"
+                    css_class = 'ontology_term'
                   # Otherwise, regular tags...
                   else
                     inner_html = h(tag_name)
                     title_text = "Tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
+                    css_class = ''
                   end
-                  
-                  css_class = ''
                   
                   # The URL is generated specially...
                   a_href = BioCatalogue::Tags.generate_tag_show_uri(tag_name)
