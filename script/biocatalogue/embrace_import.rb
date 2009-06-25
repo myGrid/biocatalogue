@@ -423,57 +423,67 @@ class EmbraceImporter
   def process_soap_service(service, stats)
     stats["total_services_were_soap"].increment
     
-    # Normalize WSDL URL
-    wsdl_url = Addressable::URI.parse(service[:wsdl_url]).normalize.to_s
+    begin
     
-    soap_service = nil
-    service_ok = true
-
-    # Check if the service exists in the database and if not create it.
-    #
-    # NOTE: since we know that the duplication check for Soap Services currently 
-    # doesn't take into account the endpoint, we can just provide a blank string for that. 
-    if (existing_service = SoapService.check_duplicate(wsdl_url, "")).nil?
-      # Doesn't exist, so new SoapService needs to be created...
+      # Normalize WSDL URL
+      wsdl_url = Addressable::URI.parse(service[:wsdl_url]).normalize.to_s
       
-      soap_service = SoapService.new(:wsdl_location => wsdl_url)
-      new_service_success, s_data = soap_service.populate
-      
-      if new_service_success
-        new_service_success = soap_service.submit_service(s_data["endpoint"], @registry_source, { })
+      soap_service = nil
+      service_ok = true
+  
+      # Check if the service exists in the database and if not create it.
+      #
+      # NOTE: since we know that the duplication check for Soap Services currently 
+      # doesn't take into account the endpoint, we can just provide a blank string for that. 
+      if (existing_service = SoapService.check_duplicate(wsdl_url, "")).nil?
+        # Doesn't exist, so new SoapService needs to be created...
+        
+        soap_service = SoapService.new(:wsdl_location => wsdl_url)
+        new_service_success, s_data = soap_service.populate
         
         if new_service_success
-          puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
-          stats["ids_of_services_new"] << soap_service.service.id
+          new_service_success = soap_service.submit_service(s_data["endpoint"], @registry_source, { })
+          
+          if new_service_success
+            puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
+            stats["ids_of_services_new"] << soap_service.service.id
+          else
+            puts "ERROR: failed to carry out submit_service of SoapService object with WSDL URL '#{wsdl_url}' (ie: db has not been populated with the SoapService and associated objects). Check the relevant Rails log file for more info."
+            service_ok = false
+          end
         else
-          puts "ERROR: failed to carry out submit_service of SoapService object with WSDL URL '#{wsdl_url}' (ie: db has not been populated with the SoapService and associated objects). Check the relevant Rails log file for more info."
+          puts "ERROR: failed to populate SoapService object from WSDL URL '#{wsdl_url}'. Error messages: #{soap_service.errors.full_messages.to_sentence}"
           service_ok = false
         end
       else
-        puts "ERROR: failed to populate SoapService object from WSDL URL '#{wsdl_url}'. Error messages: #{soap_service.errors.full_messages.to_sentence}"
-        service_ok = false
-      end
-    else
-      # Exists, so get the relevant SoapService object...
-      
-      puts "INFO: existing matching service found (ID: #{existing_service.id}, WSDL URL: '#{wsdl_url}')."
-      
-      unless stats["ids_of_services_new"].include?(existing_service.id) or stats["ids_of_services_updated"].include?(existing_service.id) 
-        stats["ids_of_services_updated"] << existing_service.id
-      end
-      
-      existing_service.service_versions.each do |s_v|
-        if (s_v.service_versionified_type == "SoapService") && ((s_v_i = s_v.service_versionified).wsdl_location.downcase == wsdl_url.downcase)
-          soap_service = s_v_i
+        # Exists, so get the relevant SoapService object...
+        
+        puts "INFO: existing matching service found (ID: #{existing_service.id}, WSDL URL: '#{wsdl_url}')."
+        
+        unless stats["ids_of_services_new"].include?(existing_service.id) or stats["ids_of_services_updated"].include?(existing_service.id) 
+          stats["ids_of_services_updated"] << existing_service.id
+        end
+        
+        existing_service.service_versions.each do |s_v|
+          if (s_v.service_versionified_type == "SoapService") && ((s_v_i = s_v.service_versionified).wsdl_location.downcase == wsdl_url.downcase)
+            soap_service = s_v_i
+          end
         end
       end
-    end
+      
+      # Continue adding any annotations etc
+      if service_ok and !soap_service.nil?
+        soap_service.process_annotations_data(service[:annotations].dup, @registry_source)
+      else
+        stats["total_services_failed_to_create"].increment
+      end
     
-    # Continue adding any annotations etc
-    if service_ok and !soap_service.nil?
-      soap_service.process_annotations_data(service[:annotations].dup, @registry_source)
-    else
+    rescue Exception => ex
       stats["total_services_failed_to_create"].increment
+      puts ""
+      puts "> ERROR: exception whilst processing SOAP service. Exception:"
+      puts ex.message
+      puts ex.backtrace.join("\n")
     end
     
   end
@@ -481,52 +491,62 @@ class EmbraceImporter
   def process_rest_service(service, stats)
     stats["total_services_were_rest"].increment
     
-    endpoint = Addressable::URI.parse(service[:rest_url]).normalize.to_s unless endpoint.blank?
+    begin
     
-    rest_service = nil
-    service_ok = true
-    
-    if (existing_service = RestService.check_duplicate(endpoint)).nil?
+      endpoint = Addressable::URI.parse(service[:rest_url]).normalize.to_s unless endpoint.blank?
       
-      # Doesn't exist, so new RestService needs to be created...
+      rest_service = nil
+      service_ok = true
       
-      rest_service = RestService.new
-      rest_service.name = service[:annotations][:name]
-      service[:annotations].delete(:name)
-      
-      new_service_success = rest_service.submit_service(endpoint, @registry_source, { })
-      
-      if new_service_success
-        puts "INFO: new service (ID: #{rest_service.service(true).id}, Endpoint URL: '#{endpoint}') successfully created!"
-        stats["ids_of_services_new"] << rest_service.service.id
-      else
-        puts "ERROR: failed to carry out submit_service of RestService object with endpoint URL '#{endpoint}' (ie: db has not been populated with the RestService and associated objects). Check the relevant Rails log file for more info."
-        service_ok = false
-      end
-    
-    else
-    
-      # Exists, so get the relevant RestService object...
-      
-      puts "INFO: existing matching service found (ID: #{existing_service.id}, Endpoint URL: '#{endpoint}')."
-      
-      unless stats["ids_of_services_new"].include?(existing_service.service.id) or stats["ids_of_services_updated"].include?(existing_service.id) 
-        stats["ids_of_services_updated"] << existing_service.service.id
-      end
-      
-      existing_service.service_versions.each do |s_v|
-        if (s_v.service_versionified_type == "RestService")
-          rest_service = s_v_i
+      if (existing_service = RestService.check_duplicate(endpoint)).nil?
+        
+        # Doesn't exist, so new RestService needs to be created...
+        
+        rest_service = RestService.new
+        rest_service.name = service[:annotations][:name]
+        service[:annotations].delete(:name)
+        
+        new_service_success = rest_service.submit_service(endpoint, @registry_source, { })
+        
+        if new_service_success
+          puts "INFO: new service (ID: #{rest_service.service(true).id}, Endpoint URL: '#{endpoint}') successfully created!"
+          stats["ids_of_services_new"] << rest_service.service.id
+        else
+          puts "ERROR: failed to carry out submit_service of RestService object with endpoint URL '#{endpoint}' (ie: db has not been populated with the RestService and associated objects). Check the relevant Rails log file for more info."
+          service_ok = false
         end
+      
+      else
+      
+        # Exists, so get the relevant RestService object...
+        
+        puts "INFO: existing matching service found (ID: #{existing_service.id}, Endpoint URL: '#{endpoint}')."
+        
+        unless stats["ids_of_services_new"].include?(existing_service.service.id) or stats["ids_of_services_updated"].include?(existing_service.id) 
+          stats["ids_of_services_updated"] << existing_service.service.id
+        end
+        
+        existing_service.service_versions.each do |s_v|
+          if (s_v.service_versionified_type == "RestService")
+            rest_service = s_v_i
+          end
+        end
+        
       end
       
-    end
+      # Continue adding any annotations etc
+      if service_ok and !rest_service.nil?
+        rest_service.process_annotations_data(service[:annotations].dup, @registry_source)
+      else
+        stats["total_services_failed_to_create"].increment
+      end
     
-    # Continue adding any annotations etc
-    if service_ok and !rest_service.nil?
-      rest_service.process_annotations_data(service[:annotations].dup, @registry_source)
-    else
+    rescue Exception => ex
       stats["total_services_failed_to_create"].increment
+      puts ""
+      puts "> ERROR: exception whilst processing SOAP service. Exception:"
+      puts ex.message
+      puts ex.backtrace.join("\n")
     end
     
   end
