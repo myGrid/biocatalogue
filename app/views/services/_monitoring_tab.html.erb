@@ -1,0 +1,145 @@
+<%
+
+# BioCatalogue: app/views/services/_monitoring_tab.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div id="tab-monitoring" class="tabbertab">
+	
+	<h3>Monitoring</h3>
+	
+	<div style="text-align: right;">
+		<table style="text-align: right;">
+			<tr>
+				<td style="vertical-align: middle; padding-right: 0.6em;">
+					<b>Overall status:</b>
+				</td>
+				<td style="vertical-align: middle;">
+					<%= service_latest_status_symbol(@service) -%>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div id="monitoring_inner_tabs" class="tabber" style="margin-top: 1.2em;">
+
+		<div id="tab-availability" class="tabbertab">
+			
+			<h3>Availability Checks</h3>
+			
+			<div class="monitoring_section">
+				
+				<% @service.service_deployments.each do |dep|  -%>
+			
+					<table>
+						<tr>
+							<td style="padding-right: 1em;"><%= service_test_status_symbol(dep.latest_endpoint_status, "Endpoint")%> </td>
+							<td>
+								<b><%= link_to(h("Service Endpoint"),  dep.endpoint, :popup => true) -%></b>
+								<p><%= service_test_status_message(dep.latest_endpoint_status) -%></p>
+							</td>		
+						</tr>
+					</table>
+					
+					<p>
+				    <b>Recent History</b>
+					</p>
+					
+					<div class="box_indented_with_bar">
+						<ul>
+							<% unless (end_hist = dep.endpoint_recent_history.reject{|h| h.result == -1}).blank? %>
+					    	<% end_hist.each do |hist| %>
+									<li>
+										<%= service_test_status_symbol(hist,"Endpoint", true) %> 
+							    	<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
+									</li>
+						  	<% end %>
+							<% else %>
+								<li class="none_text">No previous checks</li>
+							<% end %>
+						</ul>
+					</div>
+				
+			  <% end %>
+				
+			</div>
+			
+			<div class="monitoring_section">
+				
+				<% @service.service_version_instances_by_type('soap').each do |soap|  %>
+			
+					<table>
+						<tr>
+				 			<td style="padding-right: 1em;"><%= service_test_status_symbol(soap.latest_wsdl_location_status, "WSDL Location")%> </td>
+							<td>
+								<b><%= link_to(h("WSDL Location"), soap.wsdl_location, :popup => true) -%></b> 
+								<p><%= service_test_status_message(soap.latest_wsdl_location_status) -%></p>
+							</td>
+						</tr>
+					</table>
+					
+					<p>
+				  	<b>Recent History</b>
+					</p>
+					
+					<div class="box_indented_with_bar">
+						<ul>
+							<% unless (wsdl_hist = soap.wsdl_location_recent_history.reject{|h| h.result == -1}).blank? %>
+								<% wsdl_hist.each  do |hist| %>
+									<% unless hist.result == -1  %>
+										<li>
+											<%= service_test_status_symbol(hist,"Wsdl Location", true)  %> 
+									    <%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
+										</li>
+									<% end %>
+								<% end %>
+							<% else %>
+								<li class="none_text">No previous checks</li>
+							<% end %>
+						</ul>
+					</div>
+					
+				<% end %>
+				
+			</div>
+			
+		</div>
+
+		<div id="tab-testscripts" class="tabbertab">
+			
+			<h3>Test Scripts</h3>
+			
+			<p style="color: red; font-weight: bold;">
+				Coming soon!
+			</p>
+			
+			<% if false %>
+	
+				<h4>Tests for this Service</h4>
+			 
+				<% if @service.service_tests.empty? -%>  <br/>
+				  None <br/>
+				<% else -%>
+					<% @service.service_tests.each do |test| -%>  <br/>
+						<%= test.name -%>  <br/>
+					<% end %>
+				<% end -%>
+			
+			
+			 	<% if mine?(@service) -%>
+					<div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
+						<%= render :partial => 'shared/service_test', :locals => {:service_tests => @service} -%>
+					</div>
+				<% end %>
+			
+			<% end %>
+			
+		</div>
+	
+	</div>
+	
+</div>

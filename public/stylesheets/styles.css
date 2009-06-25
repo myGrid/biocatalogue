@@ -1282,6 +1282,13 @@ a.service_location_flag {
 	background-color: #F7F7F7;
 }
 
+.monitoring_section {
+	margin-bottom: 1.5em; 
+	padding: 0.7em 0.7em 0.3em 0.7em; 
+	border: 1px solid #DDE;
+	background-color: #F7F7F7;
+}
+
 .simple_list {
 	padding: 0;
 	margin: 0;
