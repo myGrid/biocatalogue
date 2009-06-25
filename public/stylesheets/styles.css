@@ -1282,8 +1282,8 @@ a.service_location_flag {
 }
 
 .monitoring_section {
-	margin-bottom: 1.5em; 
-	padding: 0.7em 0.7em 0.3em 0.7em; 
+	margin-bottom: 1em; 
+	padding: 0.7em 1em;
 	border: 1px solid #DDE;
 	background-color: #F7F7F7;
 }
