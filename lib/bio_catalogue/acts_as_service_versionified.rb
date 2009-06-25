@@ -130,16 +130,19 @@ module BioCatalogue
         annotations_data = BioCatalogue::Annotations.preprocess_annotations_data(annotations_data)
         
         # Split into seperate annotation data sets
-        
+
+        service_version_annotations = { }              # Annotations just for the service_version object
         service_version_instance_annotations = { }     # Annotations just for the soap_service object
         service_container_annotations = { }            # Annotations just for the parent service container object
         
         # Process
         
         annotations_data.each do |attrib, value|
-          case attrib.downcase.to_s
+          case attrib.to_s.downcase
             when "tag", "category", "name"
               service_container_annotations[attrib] = value
+            when "version"
+              service_version_annotations[attrib] = value
             else
               # By default, annotations are allocated to the service version instance
               service_version_instance_annotations[attrib] = value
@@ -147,7 +150,7 @@ module BioCatalogue
         end
         
         # Create annotations
-        
+        self.service_version(true).create_annotations(service_version_annotations, actual_submitter) unless service_version_annotations.blank?
         self.create_annotations(service_version_instance_annotations, actual_submitter) unless service_version_instance_annotations.blank?
         self.service(true).create_annotations(service_container_annotations, actual_submitter) unless service_container_annotations.blank?
       end

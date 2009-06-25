@@ -123,7 +123,7 @@ module BioCatalogue
           if @controller.nil?
             @controller = ActionController::Base.new
             @controller.request = ActionController::TestRequest.new
-            @controller.request.host = (BASE_HOST || SITE_BASE_HOST)
+            @controller.request.host = (defined?(BASE_HOST) ? BASE_HOST : SITE_BASE_HOST)
             @controller.instance_eval do
               @url = ActionController::UrlRewriter.new(request, {})
             end

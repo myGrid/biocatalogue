@@ -165,11 +165,8 @@ module BioCatalogue
     # Fields with a nil value will be removed.
     #
     # The following attribute specific processing is applied:
-    #   - for :tags -
+    #   - for :tags, 'tags', :categories, 'categories', :names, 'names' -
     #       it will transform { :tags => "test1, test2, test3" } into { :tag => [ "test1", "test2", "test3" ] } 
-    #
-    # NOTE: for preprocessing to work on attributes, the keys MUST be symbols, NOT strings.
-    #       Keys with strings will still be returned back but no preprocessing will occur on them.
     def self.preprocess_annotations_data(annotations_data)
       # Remove fields that have a nil value
       annotations_data.keys.each do |attrib|
@@ -182,16 +179,34 @@ module BioCatalogue
         annotations_data.delete(:tags)
       end
       
+      # 'tags' to 'tag'
+      if annotations_data.has_key?('tags')
+        annotations_data['tag'] = annotations_data['tags'].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
+        annotations_data.delete('tags')
+      end
+      
       # :categories to :category
       if annotations_data.has_key?(:categories)
         annotations_data[:category] = annotations_data[:categories].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
         annotations_data.delete(:categories)
       end
       
+      # 'categories' to 'category'
+      if annotations_data.has_key?('categories')
+        annotations_data['category'] = annotations_data['categories'].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
+        annotations_data.delete('categories')
+      end
+      
       # :names to :name
       if annotations_data.has_key?(:names)
         annotations_data[:name] = annotations_data[:names].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
         annotations_data.delete(:names)
+      end
+      
+      # 'names' to 'name'
+      if annotations_data.has_key?('names')
+        annotations_data['name'] = annotations_data['names'].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
+        annotations_data.delete('names')
       end
       
       return annotations_data
