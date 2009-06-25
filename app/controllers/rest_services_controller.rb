@@ -98,7 +98,7 @@ class RestServicesController < ApplicationController
         @rest_service.name = params[:rest_service][:name]
         
         respond_to do |format|
-          if @rest_service.submit_service(endpoint, current_user, params[:annotations].clone)
+          if @rest_service.submit_service(endpoint, current_user, params[:annotations].dup)
             flash[:notice] = 'Service was successfully submitted.'
             format.html { redirect_to(@rest_service.service(true)) }
             
