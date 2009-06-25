@@ -115,7 +115,7 @@ module TagsHelper
                     
                     #inner_html = "<span class='namespace'>#{h(namespace)}:</span><span>#{h(keyword)}</span>"
                     inner_html = h(keyword)
-                    title_text = "Full tag: #{h(tag_name)} <br/> Namespace: #{namespace} <br/> Frequency: #{freq} times"
+                    title_text = "Full tag: #{h(tag_name)} <br/> From: #{namespace} <br/> Frequency: #{freq} times"
                     css_class = 'ontology_term'
                   # Otherwise, regular tags...
                   else
