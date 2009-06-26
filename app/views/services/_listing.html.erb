@@ -16,11 +16,19 @@
 				<table style="width: 100%;">
 					<tr>
 						<td>
-							<p class="name_box">
-								<span class="name"><%= link_to(h(service.name), service_path(service)) -%></span>
-								<%= service_type_badges(service.service_types) -%>
-								<%= service_location_flags(service) -%>
-							</p>
+							<table class="name_box">
+								<tr>
+									<td>
+										<span class="name"><%= link_to(h(service.name), service_path(service)) -%></span>
+									</td>
+									<td>
+										<span><%= service_type_badges(service.service_types) -%></span>
+									</td>
+									<td>
+										<span><%= service_location_flags(service) -%></span>
+									</td>
+								</tr>
+							</table>
 						</td>
 						<td style="text-align: right; padding-top: 10px;">
 							<%= render :partial => 'services/stats_bar', :locals => { :service => service } -%>
