@@ -135,6 +135,7 @@ class EmbraceData
           :user_id => de_ws_service['uid'],
           :annotations => {
             :name => de_ws_service['title'],
+            :description => CGI.unescapeHTML(de_ws_service['description']),
             :documentation_url => de_ws_service['url'],
             :version => de_ws_service['version'],
           }
