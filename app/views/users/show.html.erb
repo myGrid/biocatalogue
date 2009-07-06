@@ -32,14 +32,18 @@
       <b>Email address:</b>
 			<% unless @user.public_email.blank? %>
 				<%= mail_to @user.public_email, nil, {  :encode => "hex", :replace_at => " [at] " } -%>
-				<span style="color: #999; margin-left: 1em; font-size: 85%;">
-					[ <%= link_to 'change', edit_user_path(@user) %> ]
-				</span>
+				<% if mine?(@user) %>
+					<span style="color: #999; margin-left: 1em; font-size: 85%;">
+						[ <%= link_to 'change', edit_user_path(@user) %> ]
+					</span>
+				<% end %>
 			<% else %>
 				<span class="none_text">Not specified</span>
-				<span style="color: #999; margin-left: 1em; font-size: 85%;">
-					[ <%= link_to 'add', edit_user_path(@user) %> ]
-				</span>
+				<% if mine?(@user) %>
+					<span style="color: #999; margin-left: 1em; font-size: 85%;">
+						[ <%= link_to 'set a public email address', edit_user_path(@user) %> ]
+					</span>
+				<% end %>
 			<% end %>
     </p>
     
