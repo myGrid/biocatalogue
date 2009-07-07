@@ -35,7 +35,6 @@ Rails::Initializer.run do |config|
   config.gem 'mash', :version => '0.0.3'
   config.gem 'httparty', :version => '0.4.3'
   config.gem 'crack', :version => '0.1.2'
-  config.gem 'json', :version => '1.1.6'
   config.gem 'ruby-hmac', :version => '>= 0.3.2', :lib => 'hmac'
   config.gem 'rubaidh-google_analytics', :lib => 'rubaidh/google_analytics', :source => 'http://gems.github.com'
 
