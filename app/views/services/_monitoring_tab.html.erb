@@ -37,7 +37,7 @@
 			
 					<table>
 						<tr>
-							<td style="padding-right: 1em;"><%= service_test_status_symbol(dep.latest_endpoint_status, "Endpoint")%> </td>
+							<td style="padding-right: 1em;"><%= service_test_status_symbol(dep.latest_endpoint_status, text_on_status_icon(dep.latest_endpoint_status, "Endpoint"))%> </td>
 							<td>
 								<b><%= link_to(h("Service Endpoint"),  dep.endpoint, :popup => true) -%></b>
 								<p><%= service_test_status_message(dep.latest_endpoint_status) -%></p>
@@ -74,7 +74,7 @@
 			
 					<table>
 						<tr>
-				 			<td style="padding-right: 1em;"><%= service_test_status_symbol(soap.latest_wsdl_location_status, "WSDL Location")%> </td>
+				 			<td style="padding-right: 1em;"><%= service_test_status_symbol(soap.latest_wsdl_location_status, text_on_status_icon(soap.latest_wsdl_location_status, "Wsdl Location"))%> </td>
 							<td>
 								<b><%= link_to(h("WSDL Location"), soap.wsdl_location, :popup => true) -%></b> 
 								<p><%= service_test_status_message(soap.latest_wsdl_location_status) -%></p>

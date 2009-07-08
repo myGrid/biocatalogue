@@ -533,18 +533,18 @@ module ApplicationHelper
     
     # overall status of the service is the status of this one test
     if stats.length == 1
-      return service_test_status_symbol(stats[0], 'Service')
+      return service_test_status_symbol(stats[0], text_on_status_icon(stats[0], 'Service'))
     end
     
     # check if any of the test for this service returned a non
     # zero status, meaning something was not ok. If so, just return the warning symbol
     stats.each{ |r| 
       if r.result != 0 
-        return service_test_status_symbol(r, 'Service')
+        return service_test_status_symbol(r, text_on_status_icon(r, 'Service'))
       end }
     
     # every test was fine. Just return the status of the first one
-    return service_test_status_symbol(stats[0], 'Service')
+    return service_test_status_symbol(stats[0], text_on_status_icon(stats[0], 'Service'))
     
   end
   
@@ -595,7 +595,36 @@ module ApplicationHelper
     end
   end
   
-  # Hack: helper method fo check if the service is a soaplab
+  # text to add to status icon. This text is shown on hovering over the icon
+  def text_on_status_icon(status, attribute)
+    if status.result == 0
+      texts = {"Service" => "All checks were OK for this Service. See details on the monitoring tab.",
+               "Endpoint" => "Endpoint is available. Check done - for SOAP service, generate soapfault, for REST, access endpoint",
+               "Wsdl Location" => "Wsdl was found to be accessible"
+                          }
+                          
+      return texts[attribute]
+    end
+    if status.result == 1
+      texts = {"Service" => "Some checks were not OK for this Service. See details on the monitoring tab.",
+               "Endpoint" => "We could not verify the status of this endpoint",
+               "Wsdl Location" => "We could not confirm the accessibility of this WSDL"
+                          }
+                          
+      return texts[attribute]
+    end
+    
+    texts = {"Service" => "Service",
+             "Endpoint" => "Endpoint",
+               "Wsdl Location" => "WSDL Location"
+                          }
+                          
+    return texts[attribute]
+    
+  end
+  
+  
+  # Hack: helper method to check if the service is a soaplab
   # services. Checks for 'soaplab' in wsdl url
   def is_soaplab_service?(service)
     service.service_version_instances_by_type('soap').each do |soap|
@@ -604,7 +633,7 @@ module ApplicationHelper
     return false
   end
 
-  # Hack: helper method fo check if the service is a biomoby
+  # Hack: helper method to check if the service is a biomoby
   # service. Checks for 'biomoby' in wsdl url
   def is_biomoby_service?(service)
     service.service_version_instances_by_type('soap').each do |soap|
