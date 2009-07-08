@@ -9,7 +9,7 @@ module BioCatalogue
     class CheckUrlStatus
       def perform
           # check the status of a url using curl
-          BioCatalogue::Monitoring::CheckUrlStatus.run
+          BioCatalogue::Monitoring::CheckUrlStatus.run :all => true
         end
       end    
   end

@@ -96,7 +96,23 @@ module BioCatalogue
 
       # Generate a soap fault by sending a non-intrusive xml to the service endpoint
       # then parse the soap message to see if the service implements soap correctly
-      #curl --header "Content-Type: text/xml" --data "<?xml version="1.0"?>...." http://opendap.co-ops.nos.noaa.gov/axis/services/Predictions
+      #
+      # Example
+      # curl --header "Content-Type: text/xml" --data "<?xml version="1.0"?>...." \
+      #                                   http://opendap.co-ops.nos.noaa.gov/axis/services/Predictions
+      #
+      # Response :
+      # <?xml version="1.0" encoding="UTF-8"?><soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      # <soapenv:Body>
+      # <soapenv:Fault>
+      # <faultcode xmlns:ns1="http://xml.apache.org/axis/">ns1:Client.NoSOAPAction</faultcode>
+      # <faultstring>no SOAPAction header!</faultstring>
+      # <detail>
+      # <ns2:hostname xmlns:ns2="http://xml.apache.org/axis/">opendap.co-ops.nos.noaa.gov</ns2:hostname>
+      # </detail>
+      # </soapenv:Fault>
+      # </soapenv:Body>
+
       def self.generate_soap_fault(endpoint)
         puts "checking endpoint #{endpoint}"
         status = {:action => 'soap_fault'}
@@ -125,10 +141,50 @@ module BioCatalogue
         end
       end
 
-
-      def self.run
-    
-        UrlMonitor.find(:all).each do |monitor|
+      
+      # check the status of urls ( endpoints & wsdl locations) 
+      # Examples
+      # To run on all the services in the database
+      #     BioCatalogue::Monitoring::CheckUrlStatus.run :all => true
+      # To run on specific services in the db
+      #     BioCatalogue::Monitoring::CheckUrlStatus.run :service_ids => [1,2,3]
+      def self.run (*params)
+        options = params.extract_options!.symbolize_keys
+        options[:service_ids] ||= options.include?(:service_ids)
+        options[:all] ||= options.include?(:all)
+        
+        if options[:service_ids] and options[:all]
+          puts "Seems we have a configuration problem"
+          puts "Do not know what to do! Please either tell me what ids to check or tell me to check all, NOT both"
+          return
+        end
+        
+         if not options[:service_ids] and not options[:all]
+          puts "Please run"
+          puts "BioCatalogue::Monitoring::CheckUrlStatus.run :all => true"
+          puts "to run monitoring on all the services OR"
+          puts "BioCatalogue::Monitoring::CheckUrlStatus.run :service_ids => [some, service, ids]"
+          puts "to run monitoring on the specified ids"
+          return
+        end
+        
+        if options[:all]
+          monitors = UrlMonitor.find(:all)
+        elsif options[:service_ids]
+          monitors = []
+          services = Service.find(options[:service_ids])
+          services.each{ |s| 
+                          s.service_deployments.each{|dep| monitors.concat(dep.url_monitors)}
+                          s.service_version_instances_by_type('soap').each{ |instance|
+                                  monitors.concat(instance.url_monitors)
+                                }
+                                
+                        }
+          
+        end
+        
+        monitors.each do |monitor|
+        #UrlMonitor.find(:all).each do |monitor|
           # get all the attributes of the services to be monitors
           # and run the checks agains them
           result = {}
