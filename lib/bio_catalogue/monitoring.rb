@@ -87,6 +87,8 @@ module BioCatalogue
           status.merge!({:result=> 0, :message => data})
         elsif pieces[1] =='302'                     # redirect means OK
           status.merge!({:result=> 0, :message => data})
+        elsif pieces[1] =='400'                     # bad request means endpoint is available but needs curation
+          status.merge!({:result=> 0, :message => data})
         else 
           status.merge!({:result=> 1, :message => data})
         end
