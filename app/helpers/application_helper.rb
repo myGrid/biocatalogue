@@ -606,7 +606,7 @@ module ApplicationHelper
       return texts[attribute]
     end
     if status.result == 1
-      texts = {"Service" => "Some checks were not OK for this Service.<br/> There were some issues with the <b> #{status.monitor.property}</b><br/> See details on the monitoring tab ",
+      texts = {"Service" => "Some checks were not OK for this Service.<br/> There were some issues with the <b> #{status.monitorable.property}</b><br/> See details on the monitoring tab ",
                "Endpoint" => "We could not verify the status of this endpoint",
                "Wsdl Location" => "We could not confirm the accessibility of this WSDL"
                           }

@@ -18,5 +18,9 @@ class TestResult < ActiveRecord::Base
   # is being monitored given the monitorable class name and id 
   def self.find_monitorable(monitorable_str, monitorable_id)
     monitorable_str.constantize.find(monitorable_id)
+  end 
+  
+  def monitorable
+    TestResult.find_monitorable(self.test_type, self.test_id)
   end
 end
