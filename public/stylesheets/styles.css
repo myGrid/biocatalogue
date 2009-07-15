@@ -275,6 +275,10 @@ img, a img {
 	color: #666;
 }
 
+.container_middled * {
+	vertical-align: middle;
+}
+
 a:link.login, a:visited.login {
 	padding-left: 2px;
 	padding-right: 20px;
@@ -1189,23 +1193,11 @@ body.sidebar-right #login_box {
 	vertical-align: middle;
 }
 
-.listing_item table.name_box {
-	margin-bottom: 0;
-	line-height: 28px;
-}
-
-.listing_item table.name_box td {
-	vertical-align: middle;
-}
-
-.listing_item table.name_box td * {
-	vertical-align: middle;
-}
-
 .listing_item .name {
 	font-size: 138.5%;
 	font-weight: bold;
 	vertical-align: baseline;
+	line-height: 1.8;
 }
 
 .listing_item .desc {
@@ -1248,6 +1240,7 @@ a.service_type_badge {
 	border: 1px solid #DDD;
 	padding: 2px 3px;
 	text-decoration: none;
+	line-height: 1.0;
 }
 
 a.service_type_badge:hover {
@@ -1260,6 +1253,7 @@ a.service_location_flag {
 	line-height: 1.0;
 	vertical-align: middle;
 	padding: 0px;
+	line-height: 1.0;
 }
 
 .operation_box {
