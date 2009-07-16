@@ -42,8 +42,11 @@ BioCatalogue::CacheHelper.setup_caches
 # Load the up categories data into the DB if required
 BioCatalogue::Categorising.load_data
 
-# Set addthis.com username for bookmarking widgets
-Jaap3::Addthis::CONFIG[:publisher] = ADDTHIS_USERNAME if ENABLE_BOOKMARKING_WIDGET
+# Configure addthis.com widget
+if ENABLE_BOOKMARKING_WIDGET
+  Jaap3::Addthis::CONFIG[:publisher] = ADDTHIS_USERNAME 
+  Jaap3::Addthis::DEFAULT_OPTIONS[:secure] = true
+end
 
 # Set Google Analytics code
 if ENABLE_GOOGLE_ANALYTICS
