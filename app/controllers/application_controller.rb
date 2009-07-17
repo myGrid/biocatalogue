@@ -33,11 +33,11 @@ class ApplicationController < ActionController::Base
   
   # Mainly for the Exception Notification plugin:
   self.rails_error_classes = { 
-    ActiveRecord::RecordNotFound => "400",
+    ActiveRecord::RecordNotFound => "404",
     ::ActionController::UnknownController => "404",
-    ::ActionController::UnknownAction => "501",
-    ::ActionController::RoutingError => "404",
-    ::ActionView::MissingTemplate => "404",
+    ::ActionController::UnknownAction => "400",
+    ::ActionController::RoutingError => "400",
+    ::ActionView::MissingTemplate => "400",
     ::ActionView::TemplateError => "500"
   }
 
