@@ -15,7 +15,7 @@
 %>
 				
 <li class="<%= category_li_class -%>" style="<%= category_li_style -%>">
-	<%  benchmark "Category filter number_of_services_for_category call" do %>
+	<%  benchmark "Rendered filtering/_filter_option_category_item/number_of_services_for_category_method" do %>
 		<% filter = { 'name' => category.id, 'count' => BioCatalogue::Categorising.number_of_services_for_category(category) } %>
 	<% end %>
 	

@@ -33,76 +33,84 @@
 			
 			<div class="monitoring_section">
 				
-				<% @service.service_deployments.each do |dep|  -%>
-			
-					<table>
-						<tr>
-							<td style="padding-right: 1em;"><%= service_test_status_symbol(dep.latest_endpoint_status, text_on_status_icon(dep.latest_endpoint_status, "Endpoint"))%> </td>
-							<td>
-								<b><%= link_to(h("Service Endpoint"),  dep.endpoint, :popup => true) -%></b>
-								<p><%= service_test_status_message(dep.latest_endpoint_status) -%></p>
-							</td>		
-						</tr>
-					</table>
-					
-					<p>
-				    <b>Recent History</b>
-					</p>
-					
-					<div class="box_indented_with_bar">
-						<ul>
-							<% unless (end_hist = dep.endpoint_recent_history.reject{|h| h.result == -1}).blank? %>
-					    	<% end_hist.each do |hist| %>
-									<li>
-										<%= service_test_status_symbol(hist,"Endpoint", true) %> 
-							    	<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
-									</li>
-						  	<% end %>
-							<% else %>
-								<li class="none_text">No previous checks</li>
-							<% end %>
-						</ul>
-					</div>
+				<%  benchmark "Rendered services/_monitoring_tab/endpoints" do %>
 				
-			  <% end %>
+					<% @service.service_deployments.each do |dep|  -%>
+				
+						<table>
+							<tr>
+								<td style="padding-right: 1em;"><%= service_test_status_symbol(dep.latest_endpoint_status, text_on_status_icon(dep.latest_endpoint_status, "Endpoint"))%> </td>
+								<td>
+									<b><%= link_to(h("Service Endpoint"),  dep.endpoint, :popup => true) -%></b>
+									<p><%= service_test_status_message(dep.latest_endpoint_status) -%></p>
+								</td>		
+							</tr>
+						</table>
+						
+						<p>
+					    <b>Recent History</b>
+						</p>
+						
+						<div class="box_indented_with_bar">
+							<ul>
+								<% unless (end_hist = dep.endpoint_recent_history).blank? %>
+						    	<% end_hist.each do |hist| %>
+										<li>
+											<%= service_test_status_symbol(hist,"Endpoint", true) %> 
+								    	<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
+										</li>
+							  	<% end %>
+								<% else %>
+									<li class="none_text">No previous checks</li>
+								<% end %>
+							</ul>
+						</div>
+					
+				  <% end %>
+				
+				<% end %>
 				
 			</div>
 			
 			<div class="monitoring_section">
 				
-				<% @service.service_version_instances_by_type('soap').each do |soap|  %>
-			
-					<table>
-						<tr>
-				 			<td style="padding-right: 1em;"><%= service_test_status_symbol(soap.latest_wsdl_location_status, text_on_status_icon(soap.latest_wsdl_location_status, "Wsdl Location"))%> </td>
-							<td>
-								<b><%= link_to(h("WSDL Location"), soap.wsdl_location, :popup => true) -%></b> 
-								<p><%= service_test_status_message(soap.latest_wsdl_location_status) -%></p>
-							</td>
-						</tr>
-					</table>
-					
-					<p>
-				  	<b>Recent History</b>
-					</p>
-					
-					<div class="box_indented_with_bar">
-						<ul>
-							<% unless (wsdl_hist = soap.wsdl_location_recent_history.reject{|h| h.result == -1}).blank? %>
-								<% wsdl_hist.each  do |hist| %>
-									<% unless hist.result == -1  %>
-										<li>
-											<%= service_test_status_symbol(hist,"Wsdl Location", true)  %> 
-									    <%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
-										</li>
+				<%  benchmark "Rendered services/_monitoring_tab/wsdl_locations" do %>
+				
+					<% @service.service_version_instances_by_type('soap').each do |soap|  %>
+				
+						<table>
+							<tr>
+					 			<td style="padding-right: 1em;"><%= service_test_status_symbol(soap.latest_wsdl_location_status, text_on_status_icon(soap.latest_wsdl_location_status, "Wsdl Location"))%> </td>
+								<td>
+									<b><%= link_to(h("WSDL Location"), soap.wsdl_location, :popup => true) -%></b> 
+									<p><%= service_test_status_message(soap.latest_wsdl_location_status) -%></p>
+								</td>
+							</tr>
+						</table>
+						
+						<p>
+					  	<b>Recent History</b>
+						</p>
+						
+						<div class="box_indented_with_bar">
+							<ul>
+								<% unless (wsdl_hist = soap.wsdl_location_recent_history).blank? %>
+									<% wsdl_hist.each  do |hist| %>
+										<% unless hist.result == -1  %>
+											<li>
+												<%= service_test_status_symbol(hist,"Wsdl Location", true)  %> 
+										    <%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
+											</li>
+										<% end %>
 									<% end %>
+								<% else %>
+									<li class="none_text">No previous checks</li>
 								<% end %>
-							<% else %>
-								<li class="none_text">No previous checks</li>
-							<% end %>
-						</ul>
-					</div>
-					
+							</ul>
+						</div>
+						
+					<% end %>
+				
 				<% end %>
 				
 			</div>

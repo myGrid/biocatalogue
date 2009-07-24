@@ -203,38 +203,28 @@ class SoapService < ActiveRecord::Base
  
  
   def latest_wsdl_location_status
-    monitor = UrlMonitor.find(:first, 
-                              :conditions => ["parent_id= ? AND parent_type= ?", self.id, self.class.to_s ],
-                              :order => "created_at DESC" )
+    result = nil
+    
+    monitor = UrlMonitor.entry_for(self.class.name, self.id, "wsdl_location")
                               
-    if monitor.nil?
-      return TestResult.new(:result => -1)
+    unless monitor.nil?
+      results = TestResult.results_for(monitor.class.name, monitor.id, 1)
+      result = results.first unless results.empty?
     end
     
-    result = TestResult.find(:first,
-                               :conditions => ["test_id= ? AND test_type= ?", monitor.id, monitor.class.to_s ],
-                               :order => "created_at DESC" )
-    return result || TestResult.new(:result => -1 )
-    
+    return result || TestResult.new_with_unknown_status
   end
   
   def wsdl_location_recent_history
+    results = [ ] 
     
-    monitor = UrlMonitor.find(:first,
-                              :conditions => ["parent_id= ? AND parent_type= ?", self.id, self.class.to_s ],
-                              :order => "created_at DESC" )
-    if monitor.nil?
-      return [TestResult.new(:result => -1)]
+    monitor = UrlMonitor.entry_for(self.class.name, self.id, "wsdl_location")
+                              
+    unless monitor.nil?
+      results = TestResult.results_for(monitor.class.name, monitor.id)
     end
     
-    
-    if TestResult.find(:all).length > 0
-      results = TestResult.find(:all,
-                      :conditions => ["test_id= ? AND test_type= ?", monitor.id, monitor.class.to_s ],
-                      :order => "created_at DESC" ).first(5)
-    end
-    
-    return results || [TestResult.new(:result => -1)]
+    return results
   end
    
   protected
