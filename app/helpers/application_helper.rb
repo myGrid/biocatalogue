@@ -598,9 +598,9 @@ module ApplicationHelper
   # text to add to status icon. This text is shown on hovering over the icon
   def text_on_status_icon(status, attribute)
     if status.result == 0
-      texts = {"Service" => "All checks were OK for this Service.<br/>",
-               "Endpoint" => "Endpoint was available.<br/>",
-               "Wsdl Location" => "Wsdl was found to be accessible.<br/>"
+      texts = {"Service" => "All checks were OK for this Service ",
+               "Endpoint" => "Endpoint was available ",
+               "Wsdl Location" => "Wsdl was found to be accessible "
                           }
                           
       return texts[attribute]
