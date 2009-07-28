@@ -56,7 +56,7 @@
 				<% end %>
 				
 				<% cache(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service.id) do -%>
-					<div style="margin-top: 0.8em; font-size: 77%;">
+					<div style="margin-top: 0.8em; font-size: 85%;">
 						<%= render :partial => "annotations/descriptions",
 									:locals => { :annotatable => service_version_instance,
 										:show_header => false,
