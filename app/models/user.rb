@@ -52,6 +52,10 @@ class User < ActiveRecord::Base
 
     u && u.activated? && u.authenticated?(password) ? u : nil
   end
+  
+  def self.count_activated
+    User.count(:conditions => "users.activated_at IS NOT NULL")
+  end
 
   def authenticated?(password)
     crypted_password == encrypt(password)

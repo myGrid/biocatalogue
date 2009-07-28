@@ -56,7 +56,7 @@ module ApplicationHelper
         "eye_faded.png"
       when :annotations
         "note.png"
-      when :user, :annotation_source_user
+      when :user, :member, :annotation_source_member
         "user.png"
       when :registry, :annotation_source_registry
         "world_link.png"
@@ -156,12 +156,32 @@ module ApplicationHelper
 
   #==================
   
+  def sign_up_benefits_text
+    output = ""
+    
+    output << content_tag(:p, :style => "font-weight: bold;") do
+      "You get the following benefits by signing up for an account on the BioCatalogue:"
+    end
+    
+    output << content_tag(:ul, :class => "simple_list") do
+      "<li>Submit your own services</li>" +
+      "<li>Annotate (describe, tag etc) and curate your services as well as any other services in the catalogue</li>" +
+      "<li>Rate services</li>" +
+      "<li>Favourite the services you use the most or like</li>" +
+      "<li>Contact other members of the catalogue as well as service providers (coming soon)</li>"
+    end
+    
+    return output
+  end
+  
   def controller_visible_name(controller_name)
     return "" if controller_name.blank?
     
     case controller_name.downcase
       when "stats"
         return "System Statistics"
+      when "users"
+        return "Members"
       else
         return controller_name.humanize.titleize
     end
@@ -205,13 +225,14 @@ module ApplicationHelper
     output = ""
     
     c = submitter.class.name
+    c = "Member" if c == "User"
     
     output << '<span class="submitter_info">'
       
     output << image_tag(icon_filename_for(c.underscore.to_sym), :alt => "", :title => tooltip_title_attrib(c), :style => icon_style)
   
     output << case c
-      when "User"
+      when "Member"
         user_link_with_flag(submitter)
       else
         link_to(display_name(submitter), submitter) 
@@ -444,15 +465,23 @@ module ApplicationHelper
   def annotation_source_icon(source_type, style='margin-right: 0.3em;')
     return '' if source_type.nil?
     
-    filename = case source_type
+    filename = ""
+    title_attrib = ""
+    
+    case source_type
       when "ServiceProvider"
         style = 'margin-left: 0.2em; margin-right: 0.1em;'
-        icon_filename_for(:annotation_source_provider_document)
+        filename = icon_filename_for(:annotation_source_provider_document)
+        title_attrib = tooltip_title_attrib("Provider's description doc")
+      when "User"
+        filename = icon_filename_for(:annotation_source_member)
+        title_attrib = tooltip_title_attrib("Member")
       else
-        icon_filename_for("annotation_source_#{source_type.underscore}".to_sym)
+        filename = icon_filename_for("annotation_source_#{source_type.underscore}".to_sym)
+        title_attrib = tooltip_title_attrib(source_type)
     end
     
-    return image_tag(filename, :alt => "", :title => tooltip_title_attrib(source_type), :style => style)
+    return image_tag(filename, :alt => "", :title => title_attrib, :style => style)
   end
 
   def annotation_source_text(annotation, style='')
@@ -482,7 +511,7 @@ module ApplicationHelper
   
   # ========================================
   # Code to help with remembering which tab
-  # the  user was in after redirects etc.
+  # the user was in after redirects etc.
   # ----------------------------------------
 
   # Note: the implementation of this method means that when it is used

@@ -8,9 +8,12 @@
 
 %>
 
-<% t "Registered Users" -%>
+<% t "Index" -%>
 
-<h1>Registered Users on BioCatalogue</h1>
+<h1>
+	Members of the BioCatalogue
+	<%= help_icon_with_tooltip("<b>Members</b> are registered users of the BioCatalogue.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' below.<br/><br/>#{sign_up_benefits_text}") -%>
+</h1>
 
 <p style="margin: 1.5em 0;">
 	<span class="green_box">Don't have an account yet : <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>

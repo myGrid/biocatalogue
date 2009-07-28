@@ -22,9 +22,9 @@
 				<%= image_tag(icon_filename_for(:annotation_source_provider_document), :alt => "Total number of annotations from the provider's definition / description document.") -%>
 			<% end %>
 			
-			<% content_tag(:span, :class => "annotation_source_user", :title => tooltip_title_attrib("Total number of user submitted annotations."))  do %>
+			<% content_tag(:span, :class => "annotation_source_member", :title => tooltip_title_attrib("Total number of annotations submitted by members of the BioCatalogue."))  do %>
 				<%= counts[:users] -%>
-				<%= image_tag(icon_filename_for(:annotation_source_user), :alt => "Total number of user submitted annotations.") -%>
+				<%= image_tag(icon_filename_for(:annotation_source_member), :alt => "Total number of annotations submitted by members of the BioCatalogue.") -%>
 			<% end %>
 			
 			<% content_tag(:span, :class => "annotation_source_registry end", :title => tooltip_title_attrib("Total number of annotations sourced from other registries."))  do %>
