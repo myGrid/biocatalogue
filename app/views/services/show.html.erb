@@ -160,18 +160,33 @@
 			</div>
 			
 			<div class="property">					 
-				<%= render :partial => "annotations/costs",
-									 :locals => { :annotatable => @latest_deployment } -%>
-			</div>
-			
-			<div class="property">					 
 				<%= render :partial => "annotations/licenses",
 									 :locals => { :annotatable => @latest_version_instance } -%>
 			</div>
 			
 			<div class="property">					 
+				<%= render :partial => "annotations/costs",
+									 :locals => { :annotatable => @latest_deployment } -%>
+			</div>
+			
+			<div class="property">					 
+				<%= render :partial => "annotations/usage_conditions",
+									 :locals => { :annotatable => @latest_deployment } -%>
+			</div>			
+			
+			<div class="property">					 
 				<%= render :partial => "annotations/contacts",
 									 :locals => { :annotatable => @latest_deployment } -%>
+			</div>
+			
+			<div class="property">					 
+				<%= render :partial => "annotations/publications",
+									 :locals => { :annotatable => @latest_version_instance } -%>
+			</div>
+			
+			<div class="property">					 
+				<%= render :partial => "annotations/citations",
+									 :locals => { :annotatable => @latest_version_instance } -%>
 			</div>
 			
 			<% if false %>
