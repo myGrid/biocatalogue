@@ -1214,6 +1214,16 @@ body.sidebar-right #login_box {
 	margin-top: 0.6em;
 }
 
+.listing_item .detail_simple {
+	color: #333333;
+	font-size: 93%;
+	margin-top: 0.6em;
+}
+
+.listing_item .detail_simple * {
+	vertical-align: baseline;
+}
+
 .listing_item .extra_detail_box {
 	color: #333333;
 	font-size: 85%;
