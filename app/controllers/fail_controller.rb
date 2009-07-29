@@ -10,7 +10,7 @@ class FailController < ApplicationController
   def index
     case params[:http_code]
       when "404"
-        raise ActionController::RoutingError, "test"
+        raise ActiveRecord::RecordNotFound.new
       when "500"
         x = nil
         x.hello_world
