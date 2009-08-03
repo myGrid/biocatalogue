@@ -16,16 +16,16 @@
 			
 			<%= annotation_add_by_popup_link annotatable,
 			     :attribute_name => "citation",
-					 :link_text => "Add cost info",
+					 :link_text => "Add a citation",
 			     :tooltip_text => "Click to add a citation for this service. This should be in a common citation format (such as Bibtex, MLA, APA etc).",
 			     :style => "margin-left: 1em;" -%>
 
 		</div>
 		
 		<div class="box_annotations">
-			<% cost_annotations = annotatable.annotations_with_attribute("citation") %>
-			<% unless cost_annotations.empty? %>
-				<% cost_annotations.each do |ann| %>
+			<% citation_annotations = annotatable.annotations_with_attribute("citation") %>
+			<% unless citation_annotations.empty? %>
+				<% citation_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>

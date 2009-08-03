@@ -23,9 +23,9 @@
 		</div>
 		
 		<div class="box_annotations">
-			<% cost_annotations = annotatable.annotations_with_attribute("usage_condition") %>
-			<% unless cost_annotations.empty? %>
-				<% cost_annotations.each do |ann| %>
+			<% usage_annotations = annotatable.annotations_with_attribute("usage_condition") %>
+			<% unless usage_annotations.empty? %>
+				<% usage_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
