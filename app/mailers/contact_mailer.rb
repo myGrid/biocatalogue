@@ -5,13 +5,13 @@
 # See license.txt for details
 
 class ContactMailer < ApplicationMailer
-  def feedback(name, subject, content)
+  def feedback(name, msg_subject, content)
     recipients FEEDBACK_EMAIL_ADDRESS
     from SENDER_EMAIL_ADDRESS
     subject "BioCatalogue feedback from #{name}"
     
-    body :name => name, 
-         :subject => subject, 
+    body :name => name,
+         :msg_subject => msg_subject, 
          :content => content
   end
 end
