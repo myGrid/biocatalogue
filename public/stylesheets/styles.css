@@ -1258,6 +1258,16 @@ a.service_type_badge:hover {
 	background-color: #999;
 }
 
+.service_type_badge_special {
+	font-size: 85%;
+	font-weight: bold;
+	background-color: #FFEFEF;
+	border: 1px solid #DDD;
+	padding: 2px 3px;
+	text-decoration: none;
+	line-height: 1.0;
+}
+
 a.service_location_flag {
 	margin-left: 1em;
 	line-height: 1.0;

@@ -22,7 +22,11 @@ module ServicesHelper
 
     unless service_types.blank?
       service_types.each do |s_type|
-        html << link_to(s_type, services_path(:t => "[#{s_type}]"), :class => "service_type_badge", :style => "vertical-align: middle; margin-left: 1.5em;")
+        if s_type == "SOAPLAB"
+          html << content_tag(:span, s_type, :class => "service_type_badge_special", :style => "vertical-align: middle; margin-left: 1.5em;")
+        else
+          html << link_to(s_type, services_path(:t => "[#{s_type}]"), :class => "service_type_badge", :style => "vertical-align: middle; margin-left: 1.5em;")  
+        end
       end
     end
 
