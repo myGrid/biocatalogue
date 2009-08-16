@@ -38,6 +38,8 @@ class ServicesController < ApplicationController
     @all_service_version_instances = @service.service_version_instances
     @all_service_types = @service.service_types
     
+    @soaplab_service = @service.soaplab_server
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @service }
@@ -167,7 +169,6 @@ class ServicesController < ApplicationController
   
   def find_service
     @service = Service.find(params[:id])
-    @service.nil? ? @soaplab_service = nil : @soaplab_service = @service.soaplab_server
   end
   
   def check_if_user_wants_to_categorise
