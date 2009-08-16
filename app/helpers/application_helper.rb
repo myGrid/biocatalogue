@@ -649,7 +649,6 @@ module ApplicationHelper
                           }
                           
     return texts[attribute]
-    
   end
   
   

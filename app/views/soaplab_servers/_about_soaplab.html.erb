@@ -10,22 +10,32 @@
 
 <div style="padding: 1em 1.5em; text-align: left;">
 	<p>
-		<b>About SOAPlab</b>
+		<b>About Soaplab</b>
 	</p>
 	<p>
-		SOAPlab services are command line applications, wrapped as SOAP services.
-		All SOAPlab services have the same operation names as they all share a
-		generic interface. To use a SOAPlab service you might need additional
-		information which are currently not available in the BioCatalogue. 
+		Soaplab services are command line applications, wrapped as SOAP services, and served from a Soaplab server.
+		All Soaplab services have the same generic set of SOAP operations (depending on the Soaplab version)
+		as they all share a standardised interface. To use a Soaplab service you might need additional
+		information which is currently not available in the BioCatalogue.
+	</p>
+	<p>
+		Certain tools, like the <%= link_to('Taverna workflow workbench', "http://taverna.org.uk/", :popup => true) %>, 
+		provide automatic support for the Soaplab way of executing these services.
+		In some cases you will need to use the <b>Soaplab Server Endpoint</b> rather than the WSDL location in these tools.
+		<br/> 
+		More information on Soaplab clients is available <%= link_to('here', "http://www.ebi.ac.uk/Tools/webservices/soaplab/guide", :popup => true) %>.
 	</p>
 	<p>
 		Future releases of the BioCatalogue will provide improved support for
-		SOAPlab services especially with regard to metadata coverage for these
-		services.
+		Soaplab services, including harvesting more metadata about the service 
+		such as what input options are available to the service. We are also 
+		working on a more Soaplab specific view of the service's functionality
+		and allowing people to annotate the Soaplab specific parts.
 	</p>
 	<p>
-		Further documentation is available on the
-		<%= link_to('EBI SOAPlab server pages', "http://www.ebi.ac.uk/soaplab", :popup => true) %> and on
-		<%= link_to('sourceforge for EMBOSS soaplab services', "http://emboss.sourceforge.net/apps/release/6.0/emboss/apps/index.html", :popup => true) -%>.
+		Further documentation on Soaplab services is available on the
+		<%= link_to('Soaplab client guide page', "http://www.ebi.ac.uk/Tools/webservices/soaplab/guide", :popup => true) %>,
+		<%= link_to('EBI Soaplab server pages', "http://www.ebi.ac.uk/soaplab", :popup => true) %> and on
+		<%= link_to('sourceforge site for EMBOSS Soaplab services', "http://emboss.sourceforge.net/apps/release/6.0/emboss/apps/index.html", :popup => true) -%>.
 	</p>
 </div>

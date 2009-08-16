@@ -167,6 +167,7 @@ class ServicesController < ApplicationController
   
   def find_service
     @service = Service.find(params[:id])
+    @service.nil? ? @soaplab_service = nil : @soaplab_service = @service.soaplab_server
   end
   
   def check_if_user_wants_to_categorise

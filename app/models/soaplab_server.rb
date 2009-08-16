@@ -138,6 +138,9 @@ class SoaplabServer < ActiveRecord::Base
     end
   end
   
+  # FIXME!!! Please do not load all the objects into memory!!!!!!
+  # Use a finder such as:
+  # SoapService.find(:all, :conditions => { :wsdl_location => wsdls })
   def find_services_in_catalogue(wsdls =[])
     services = Service.find(:all)
     services.collect!{ |service| 
@@ -153,7 +156,9 @@ class SoaplabServer < ActiveRecord::Base
   def create_relationships(wsdls=[])
     services = find_services_in_catalogue(wsdls)
     services.each{ |service|
-    group_name = service.latest_version.service_versionified.wsdl_location.split('/')[-1].split('.')[0]
+    
+    # FIXME: is the following line needed??
+    #group_name = service.latest_version.service_versionified.wsdl_location.split('/')[-1].split('.')[0]
     
     relationship = Relationship.new(:subject_type => service.class.to_s,
                                     :subject_id   => service.id, 
@@ -190,7 +195,6 @@ class SoaplabServer < ActiveRecord::Base
     }   
   end
   
-  
   # based on the url passed, determine how to call the 
   # soaplab interface methods
   def services_factory(url= self.location)
@@ -204,10 +208,11 @@ class SoaplabServer < ActiveRecord::Base
     server_data
   end
   
+  # TODO and FIXME: make this more efficient and correct by using a single, targeted finder to get all the appropriate relationships.
+  # Right now this assumes that all relationships on the SoaplabServer are for the related Services. This might not be the case! 
   def services
     rels = self.relationships
     Service.find(rels.collect{ |r| r.subject_id})
   end
-  
    
 end

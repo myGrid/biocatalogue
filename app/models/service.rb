@@ -75,7 +75,9 @@ class Service < ActiveRecord::Base
   
   # Gets an array of all the service types that this service has (as part of it's versions).
   def service_types
-    self.service_versions.collect{|sv| sv.service_versionified.service_type_name}.uniq
+    types = self.service_versions.collect{|sv| sv.service_versionified.service_type_name}.uniq
+    types << "SOAPLAB" unless self.soaplab_server.nil?
+    return types
   end
   
   def description
@@ -146,6 +148,21 @@ class Service < ActiveRecord::Base
     end
     
     return services
+  end
+  
+  # IF this is Service is part of a Soaplab Server then this method returns that SoaplabServer entry.
+  # Otherwise it returns nil, which indicates that this Service is not part of a Soaplab Server.
+  def soaplab_server
+    rel = Relationship.find(:first, 
+                            :conditions => { :subject_type => "Service", 
+                                             :subject_id => self.id, 
+                                             :predicate => "BioCatalogue:memberOf", 
+                                             :object_type => "SoaplabServer" })
+    if rel.nil?
+      return nil
+    else
+      return rel.object
+    end
   end
   
 protected
