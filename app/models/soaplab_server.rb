@@ -138,17 +138,10 @@ class SoaplabServer < ActiveRecord::Base
     end
   end
   
-  # FIXME!!! Please do not load all the objects into memory!!!!!!
-  # Use a finder such as:
-  # SoapService.find(:all, :conditions => { :wsdl_location => wsdls })
+  # find all the services in catalogue for this server
+  # given the list of wsdls
   def find_services_in_catalogue(wsdls =[])
-    services = Service.find(:all)
-    services.collect!{ |service| 
-          if wsdls.include?(service.latest_version.service_versionified.wsdl_location)
-            service
-          end
-          }
-     return services.compact
+    return SoapService.find_all_by_wsdl_location(wsdls).collect{ |ss| ss.service }
   end
  
   # the relationship table maps services to a soaplab instance 
@@ -156,9 +149,6 @@ class SoaplabServer < ActiveRecord::Base
   def create_relationships(wsdls=[])
     services = find_services_in_catalogue(wsdls)
     services.each{ |service|
-    
-    # FIXME: is the following line needed??
-    #group_name = service.latest_version.service_versionified.wsdl_location.split('/')[-1].split('.')[0]
     
     relationship = Relationship.new(:subject_type => service.class.to_s,
                                     :subject_id   => service.id, 
@@ -186,7 +176,7 @@ class SoaplabServer < ActiveRecord::Base
     end
   end
   
-  #TODO: Handlers different deployments of the service
+  #TODO: Handlers for different deployments of the service
   def create_tags(services, current_user)
     services.each{ |service|
     provider = service.providers.first if service.providers.length == 1
@@ -208,11 +198,18 @@ class SoaplabServer < ActiveRecord::Base
     server_data
   end
   
-  # TODO and FIXME: make this more efficient and correct by using a single, targeted finder to get all the appropriate relationships.
-  # Right now this assumes that all relationships on the SoaplabServer are for the related Services. This might not be the case! 
+  # find related objects which are services 
   def services
-    rels = self.relationships
-    Service.find(rels.collect{ |r| r.subject_id})
+    related_objects_by_type("Service")
+  end
+  
+  # find a class of objects that are related to the soaplab server
+  # e.g. to get all services we would do :  related_services = related_objects_by_type("Service")
+  def related_objects_by_type(related_str)
+    rels = Relationship.find(:all, :conditions => ["subject_type = ? and object_type = ? and object_id =? ", 
+                                                    related_str, self.class.name, self.id] )
+    
+    related_str.constantize.find(rels.collect{ |r| r.subject_id})
   end
    
 end
