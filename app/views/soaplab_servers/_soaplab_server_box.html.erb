@@ -14,31 +14,31 @@
 		<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 		<div class="content">
 			<p class="heading">
-				<span style="color: #990000;">This is a Soaplab Service!</span>
+				<span style="color: #990000;">This is a SoapLab Service!</span>
 			</p>
 			
 			<div style="text-align: left; font-size: 93%;">
 				<p>
-					This service is part of a <b>Soaplab Server</b>.
+					This service is part of a <b>SoapLab Server</b>.
 					See the dropdown section on the left to find out more information.
 				</p>
 				
 				<p>
-					The Soaplab server endpoint is:
+					The SoapLab server endpoint is:
 					<br/>
-					<%= link_to(h(@soaplab_service.location), @soaplab_service.location, :popup => true) -%>
+					<%# FIXME: link_to(h(@soaplab_service.location), @soaplab_service.location, :popup => true) -%>
 				</p>
 				
 				<p>
 					<b>For <%= link_to('Taverna', "http://taverna.org.uk/", :popup => true) %> users:</b>
 					<ul class="simple_list">
-						<li>This service might already be available under the <i>Service Panel</i></li>
-						<li>You can add it using the <b>Soaplab Server Endpoint</b> (rather than the WSDL location)</li>
+						<li>This service might already be available in the <i>Service Panel</i></li>
+						<li>If not, you can add it using the <b>SoapLab Server Endpoint</b> (rather than the WSDL location)</li>
 					</ul>
 				</p>
 				
 				<p>
-					More information on developing your own Soaplab clients 
+					More information on developing your own SoapLab clients 
 					is available <%= link_to('here', "http://www.ebi.ac.uk/Tools/webservices/soaplab/guide", :popup => true) %>
 				</p>
 			</div>

@@ -13,3 +13,19 @@
 	<br/>
 	<%= link_to(h(service_version_instance.wsdl_location), service_version_instance.wsdl_location, :popup => true) -%>
 </p>
+
+<% unless !defined?(@soaplab_service) or @soaplab_service.nil? %>
+			
+	<p>
+		<b>Soaplab Server Endpoint:</b>
+		<br/>
+		<%# FIXME: link_to(h(@soaplab_service.location), @soaplab_service.location, :popup => true) -%>
+	</p>
+	
+	<p>
+		<b>Soaplab Server WSDL:</b>
+		<br/>
+		<%= link_to(h(@soaplab_service.location), @soaplab_service.location, :popup => true) -%>
+	</p>
+
+<% end %>

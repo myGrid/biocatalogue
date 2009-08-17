@@ -83,11 +83,8 @@
 			
 			<% if !@soaplab_service.nil? or is_soaplab_service?(@service) %>
 				<div class="box_info_standout" style="text-align:center;">
-					This looks like a <b>Soaplab</b> service. We are working on providing better support and documentation for Soaplab services.
-					<br/>
-					<b>
-						<%= link_to_function "Click here for more info and guidance on how to use this service" + expand_image, visual_effect(:toggle_blind, "about_soaplab", :duration => 0.3), :style => "text-decoration:none;" %>
-					</b>
+					This looks like a <b>SoapLab</b> service.
+					<%= link_to_function "Click here for more info and guidance on how to use this service" + expand_image, visual_effect(:toggle_blind, "about_soaplab", :duration => 0.3), :style => "text-decoration:none;" %>
 					<div id="about_soaplab" style="display:none;">
 						<%= render :partial => "soaplab_servers/about_soaplab" -%>
 					</div>
@@ -145,16 +142,6 @@
 				<% end %>
 			</p>
 			
-			<% unless @soaplab_service.nil? -%>
-			
-				<p>
-					<b>Soaplab Server Endpoint:</b>
-					<br/>
-					<%= link_to(h(@soaplab_service.location), @soaplab_service.location, :popup => true) -%>
-				</p>
-			
-			<% end %>
-			
 			<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_overview_metadata", 
 				 	 			 :locals => { :service_version_instance => @latest_version_instance } %>
 			
@@ -209,7 +196,7 @@
 		<!-- Right column -->
 		<div style="float: right; width: 30%;">
 		
-			<%= render :partial => "services/soaplab_server_box" -%>
+			<%= render :partial => "soaplab_servers/soaplab_server_box" -%>
 				
 			<%= render :partial => "annotations/tags_box",
 								 :locals => { :annotatable => @service } -%>

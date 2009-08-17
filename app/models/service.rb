@@ -76,7 +76,7 @@ class Service < ActiveRecord::Base
   # Gets an array of all the service types that this service has (as part of it's versions).
   def service_types
     types = self.service_versions.collect{|sv| sv.service_versionified.service_type_name}.uniq
-    types << "SOAPLAB" unless self.soaplab_server.nil?
+    types << "SoapLab" unless self.soaplab_server.nil?
     return types
   end
   
