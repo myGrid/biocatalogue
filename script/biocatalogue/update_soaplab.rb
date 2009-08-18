@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# BioCatalogue: /update_soaplab_server_relationships.rb
+# BioCatalogue: script/biocatalogue/update_soaplab.rb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -9,6 +9,8 @@
 
 require 'benchmark'
 require 'optparse'
+require 'soap/wsdlDriver'
+require 'ftools'
 
 
 class UpdateSoaplabServerRelationships
@@ -50,7 +52,7 @@ attr_accessor :options
   # server instance througth the relationship mechanism. Update the 
   # the relationship table and tag these services with 'soaplab' and their
   # 'group name' where they are not already tagged.
-  def update_relationships(url)
+  def update_soaplab_server(url)
     soaplab = SoaplabServer.find_by_location(url)
     data    = soaplab.services_factory().values.flatten
     wsdls_from_server  = data.collect{ |item| item["location"]}
@@ -60,7 +62,7 @@ attr_accessor :options
     wsdls_to_add    = registered_wsdls - wsdls_from_relationships 
     submitter       = nil
     unless soaplab.services.empty?
-      submitter       = User.find(soaplab.services.first.submitter_id)
+      submitter = User.find(soaplab.services.first.submitter_id)
     end
     
     
@@ -75,6 +77,14 @@ attr_accessor :options
       end
       soaplab.create_relationships(wsdls_to_add)
       create_tags_if_not_exist(services_to_add, submitter)
+    end
+    if soaplab.endpoint.nil?
+      proxy_info       = set_endpoint(url)
+      unless proxy_info.empty?
+        soaplab.endpoint = proxy_info[0] 
+        soaplab.name     = proxy_info[1]
+        soaplab.save
+      end
     end
   end
   
@@ -93,6 +103,15 @@ attr_accessor :options
       end
     end
   end
+  
+  def get_endpoint_and_name(wsdl)
+    proxy = nil
+    proxy = SOAP::WSDLDriverFactory.new(wsdl).create_rpc_driver
+    unless proxy.nil?
+      return File.split(proxy.endpoint_url)
+    end
+    return []
+  end
 
 
   def update( *params)
@@ -102,13 +121,14 @@ attr_accessor :options
       options[:all] ||= options.include?(:all)
       
       if options[:server]
-        update_relationships options[:server] 
+        update_soaplab_server options[:server] 
       elsif options[:all]
         SoaplabServer.find(:all).each do |sls|
-          update_relationships sls.location
+          update_soaplab_server sls.location
         end
       else
         puts "No valid option configured"
+
       end
     rescue Exception => ex
       puts ""
