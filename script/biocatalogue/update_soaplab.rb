@@ -42,7 +42,7 @@ attr_accessor :options
     ENV["RAILS_ENV"] = @options[:environment]
     RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
     
-    require File.dirname(__FILE__) + '/config/environment'
+    require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
     
   end
   
@@ -116,8 +116,8 @@ end
 
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: update_soaplab_server_relationships.log ..."
-$stdout = File.new("update_soaplab_server_relationships.log", "w")
+puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/update_soaplab_{current_time}.log' ..."
+$stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "update_soaplab_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 
 #puts Benchmark.measure { UpdateSoaplabServerRelationships.new(ARGV.clone).update :server => "http://bioinformatics.istge.it:8080/axis/services/AnalysisFactory?wsdl" }
