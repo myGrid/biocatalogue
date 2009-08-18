@@ -82,7 +82,7 @@ attr_accessor :options
     
     services.each do |service|
       begin
-        soaplab.create_tags([service], submitter)
+        soaplab.create_tags([service], user)
         puts "success... tags created!"
       rescue ActiveRecord::RecordInvalid => ex
         puts "Exception in creating tags...record invalid or may already exist"
