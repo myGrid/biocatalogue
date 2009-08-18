@@ -96,19 +96,28 @@ attr_accessor :options
 
 
   def update( *params)
-    options = params.extract_options!.symbolize_keys
-    options[:server] ||= options.include?(:server)
-    options[:all] ||= options.include?(:all)
-    
-    if options[:server]
-      update_relationships options[:server] 
-    elsif options[:all]
-      SoaplabServer.find(:all).each do |sls|
-        update_relationships sls.location
+    begin
+      options = params.extract_options!.symbolize_keys
+      options[:server] ||= options.include?(:server)
+      options[:all] ||= options.include?(:all)
+      
+      if options[:server]
+        update_relationships options[:server] 
+      elsif options[:all]
+        SoaplabServer.find(:all).each do |sls|
+          update_relationships sls.location
+        end
+      else
+        puts "No valid option configured"
       end
-    else
-      puts "No valid option configured"
+    rescue Exception => ex
+      puts ""
+      puts ">> ERROR: exception occured. Exception:"
+      puts ex.message
+      puts ex.backtrace.join("\n")
     end
+
+    
   end
 
 
