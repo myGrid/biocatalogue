@@ -132,7 +132,7 @@ attr_accessor :options
       end
     rescue Exception => ex
       puts ""
-      puts ">> ERROR: exception occured. Exception:"
+      puts ">> ERROR: exception occured. Exception: #{ex.class.name} - "
       puts ex.message
       puts ex.backtrace.join("\n")
     end
