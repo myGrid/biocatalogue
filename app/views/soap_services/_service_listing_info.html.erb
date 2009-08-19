@@ -12,7 +12,7 @@
 	
 	<% unless (soaplab_server = service_version_instance.service.soaplab_server).nil? %>
 		<b>Soaplab Server Endpoint:</b>
-		<%# FIXME: link_to(h(soaplab_server.location), soaplab_server.location, :popup => true) -%>
+		<%= link_to(h(soaplab_server.endpoint), soaplab_server.endpoint, :popup => true) -%>
 		|
 	<% end %>
 	

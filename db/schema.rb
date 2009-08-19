@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090624232931) do
+ActiveRecord::Schema.define(:version => 20090818133359) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -368,6 +368,7 @@ ActiveRecord::Schema.define(:version => 20090624232931) do
     t.string   "location"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "endpoint"
   end
 
   add_index "soaplab_servers", ["location"], :name => "soaplab_servers_location_index"
