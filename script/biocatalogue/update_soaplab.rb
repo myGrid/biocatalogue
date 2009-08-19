@@ -91,7 +91,7 @@ attr_accessor :options
       create_tags_if_not_exist(services_to_add, submitter)
     end
     if soaplab.endpoint.nil?
-      proxy_info       = set_endpoint(url)
+      proxy_info       = get_endpoint_and_name(url)
       unless proxy_info.empty?
         soaplab.endpoint = proxy_info[0] 
         soaplab.name     = proxy_info[1]
