@@ -35,7 +35,11 @@
 		The BioCatalogue project is funded by the <a target="_blank" href="http://www.bbsrc.ac.uk/">BBSRC</a> (BB/F01046X/1, BB/F010540/1)
 	</p>
 	
-	<p style="margin-top: 1.5em;">
+	<p style="margin-top: 1em;">
+		<%= link_to(image_tag('bbsrc_logo.png', :alt => "BBSRC"), "http://www.bbsrc.ac.uk/", :target => "_blank") -%>
+	</p>
+	
+	<p style="margin-top: 2em;">
 		<%= render :partial => "widgets/twitter", :locals => { :link_type => :big } -%>
 	</p>
 	
@@ -44,4 +48,5 @@
 		<%= link_to "The University of Manchester", "http://www.manchester.ac.uk/", :target => '_blank' %> and the
 		<%= link_to("European Bioinformatics Institute (EMBL-EBI)", "http://www.ebi.ac.uk/", :target => "_blank") -%>
 	</p>
+	
 </div>
