@@ -6,11 +6,12 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-
+#require 'soap4r'
 require 'benchmark'
 require 'optparse'
-require 'soap/wsdlDriver'
+#require 'soap/wsdlDriver'
 require 'ftools'
+
 
 
 class UpdateSoaplabServerRelationships
@@ -45,6 +46,17 @@ attr_accessor :options
     RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
     
     require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
+    
+    # add the path to the gems in vendor/gems so that 
+    # the soapr4 gem which is required for this script to work
+    # will be found. Other wise the script will throw some SOAP exception due
+    # to use of the soap4r library packaged with ruby
+    Gem.path << "#{RAILS_ROOT}/vendor/gems" if defined?(RAILS_ROOT)
+    Gem.source_index.refresh!
+    
+    # load up soap4r gem and the wsdl driver
+    gem 'soap4r'
+    require 'soap/wsdlDriver'
     
   end
   
