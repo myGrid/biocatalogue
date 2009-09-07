@@ -17,7 +17,7 @@
 <% unless !defined?(@soaplab_service) or @soaplab_service.nil? %>
 
 	<p>
-	<b>Soaplab Server Endpoint:</b>
+		<b>Soaplab Server Base URL:</b>
 		<br/>
 		<%= link_to(h(@soaplab_service.endpoint), @soaplab_service.endpoint, :popup => true) -%>
 	</p>

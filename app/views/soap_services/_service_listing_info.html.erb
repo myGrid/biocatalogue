@@ -11,7 +11,7 @@
 <div class="extra_detail_box">
 	
 	<% unless (soaplab_server = service_version_instance.service.soaplab_server).nil? %>
-		<b>Soaplab Server Endpoint:</b>
+		<b>Soaplab Server Base URL:</b>
 		<%= link_to(h(soaplab_server.endpoint), soaplab_server.endpoint, :popup => true) -%>
 		|
 	<% end %>
