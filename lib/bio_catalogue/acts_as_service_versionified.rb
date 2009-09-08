@@ -131,6 +131,8 @@ module BioCatalogue
         wsdl_geoloc = BioCatalogue::Util.url_location_lookup(endpoint)
         city, country = BioCatalogue::Util.city_and_country_from_geoloc(wsdl_geoloc)
         
+        provider_name = Addressable::URI.parse(endpoint).host.gsub(".", "-")
+        
         # Create the associated service, service_version and service_deployment objects.
         # We can assume here that this is the submission of a completely new service in BioCatalogue.
         
@@ -148,7 +150,7 @@ module BioCatalogue
                                                                                :city => city,
                                                                                :country => country)
         
-        new_service_deployment.provider = ServiceProvider.find_or_create_by_name(Addressable::URI.parse(endpoint).host)
+        new_service_deployment.provider = ServiceProvider.find_or_create_by_name(provider_name)
         new_service_deployment.service = new_service
         new_service_deployment.submitter = actual_submitter
                                                       
