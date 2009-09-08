@@ -16,12 +16,12 @@ class SessionsController < ApplicationController
     user = User.authenticate(params[:login], params[:password])
     if user
       session[:user_id] = user.id
-      flash[:notice] = "Welcome #{user.display_name} !"
+      flash[:notice] = "Welcome #{user.display_name}!"
 
       session[:original_uri].blank? ? redirect_to(home_url) : redirect_to(session[:original_uri])
       session[:original_uri] = nil
     else
-      flash[:error] = "Invalid email/password combination !"
+      flash[:error] = "Unable to log you in. The login email or password you used may be incorrect, or your account might not be activated yet."
       params[:password] = nil
       render :action => :new
     end
