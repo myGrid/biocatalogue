@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# BioCatalogue: script/biocatalogue/update_soaplab.rb
+# BioCatalogue: script/biocatalogue/update_soaplab_sep09.rb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
