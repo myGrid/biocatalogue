@@ -154,7 +154,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_original_uri
-    unless controller_name.downcase == 'sessions' or action_name.downcase == 'activate_account'
+    unless controller_name.downcase == 'sessions' or 
+           action_name.downcase == 'activate_account' or 
+           action_name.downcase == 'ignore_last'
       session[:original_uri] = request.request_uri if not logged_in?
     end
   end
