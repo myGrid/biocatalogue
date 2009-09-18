@@ -79,9 +79,24 @@
 			<textarea id="feedback_content" name="content" rows="8" style="width: 99%;"><%= params[:content] %></textarea>
 			
 		  <br/><br/>
-			<center>
-				<%= recaptcha_tags(:ssl => true) -%>
-			</center>
+		  Message length: <span id="feedback_length">0</span>
+		  <%= hidden_field_tag :hidden_feedback_length %>
+
+		  <script type="text/javascript">
+		    message = document.getElementById("feedback_content");
+		    message_length = document.getElementById("feedback_length");
+		    hidden_message_length = document.getElementById("hidden_feedback_length");
+		    if (message && message_length && hidden_message_length) {
+		      message.onkeyup = window.onload = function() {message_length.innerHTML = message.value.length;hidden_message_length.value = message.value.length;}
+		    }
+		  </script>
+		  <br /><br />
+		  <center>
+		    <strong>Please, enter the same number as the message length shown above</strong>&nbsp;<%= help_icon_with_tooltip("This step is to ensure that this message<br />is not computer generated.") -%>
+		    <br/>
+		    <%= text_field_tag :length_check, "", :size => 6 %>
+		  </center>
+
 			<br/>
 		
     	<center><%= submit_tag "Submit", :disable_with => "Submitting&hellip;" %></center>
