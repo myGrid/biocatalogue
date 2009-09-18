@@ -80,14 +80,12 @@
 			
 		  <br/><br/>
 		  Message length: <span id="feedback_length">0</span>
-		  <%= hidden_field_tag :hidden_feedback_length %>
 
 		  <script type="text/javascript">
 		    message = document.getElementById("feedback_content");
 		    message_length = document.getElementById("feedback_length");
-		    hidden_message_length = document.getElementById("hidden_feedback_length");
-		    if (message && message_length && hidden_message_length) {
-		      message.onkeyup = window.onload = function() {message_length.innerHTML = message.value.length;hidden_message_length.value = message.value.length;}
+		    if (message && message_length) {
+		      message.onkeyup = window.onload = function() {message_length.innerHTML = message.value.length;}
 		    }
 		  </script>
 		  <br /><br />

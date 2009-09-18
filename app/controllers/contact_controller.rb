@@ -16,7 +16,7 @@ class ContactController < ApplicationController
     from_user = params[:from] || current_user.try(:display_name) || "no name specified"
     from_user += ' (' + (params[:email] || current_user.try(:email) || 'no email specified') + ')'
 
-    if params[:hidden_feedback_length] == params[:length_check]
+    if params[:content].length == params[:length_check].to_i
       ContactMailer.deliver_feedback(from_user, params[:subject], params[:content])
 
       respond_to do |format|
