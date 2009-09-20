@@ -12,13 +12,20 @@ module BioCatalogue
     # Goes through the service_categories data and loads them all up into the db 
     # if not already in, or loads new categories or updates existing categories.
     def self.load_data
+      unless Category.table_exists?
+        msg = "WARNING: cannot load categories data - categories table doesn't exist in the db. Running db:migrate may solve this."
+        Rails.logger.warn(msg)
+        puts(msg)
+        return
+      end
+      
       begin
         Category.transaction do
           categories_data = YAML.load(IO.read(File.join(Rails.root, 'data', 'service_categories.yml')))
           process_node(categories_data)
         end
       rescue Exception => ex
-        msg = "Could not load up Categories data. Error message: #{ex.message}. Running db:migrate might solve this problem."
+        msg = "ERROR: Could not load up Categories data. Error message: #{ex.message}."
         Rails.logger.error(msg)
         puts(msg)
       end
