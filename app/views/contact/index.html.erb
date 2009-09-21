@@ -79,18 +79,18 @@
 			<textarea id="feedback_content" name="content" rows="8" style="width: 99%;"><%= params[:content] %></textarea>
 			
 		  <br/><br/>
-		  Message length: <span id="feedback_length">0</span>
+		  <span style="padding:0.2em; background-color: #ffbb7f;">Security number: <span id="feedback_length" style="font-weight: bold;">0</span></span>
 
 		  <script type="text/javascript">
 		    message = document.getElementById("feedback_content");
 		    message_length = document.getElementById("feedback_length");
 		    if (message && message_length) {
-		      message.onkeyup = window.onload = function() {message_length.innerHTML = message.value.length;}
+		      message.onkeyup = window.onload = function() {message_length.innerHTML = message.value.split(/[biocat]/).length;}
 		    }
 		  </script>
 		  <br /><br />
 		  <center>
-		    <strong>Please, enter the same number as the message length shown above</strong>&nbsp;<%= help_icon_with_tooltip("This step is to ensure that this message<br />is not computer generated.") -%>
+		    <strong>Please, enter the security number (shown above) to validate your message</strong>&nbsp;<%= help_icon_with_tooltip("This step is to ensure that this message<br />is not computer generated.") -%>
 		    <br/>
 		    <%= text_field_tag :length_check, "", :size => 6 %>
 		  </center>
