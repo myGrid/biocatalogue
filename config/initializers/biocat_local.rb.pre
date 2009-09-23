@@ -96,3 +96,7 @@ ADDTHIS_USERNAME = "my_username"
 # Google Analytics:
 ENABLE_GOOGLE_ANALYTICS = false
 GOOGLE_ANALYTICS_TRACKER_ID = 'xyz'
+
+# WSDLUtils base URI
+# E.g. WSDLUTILS_BASE_URI = 'http://localhost/WSDLUtils/WSDLUtils.php'
+WSDLUTILS_BASE_URI = 'base_uri_to_the_embrace_WSDLUtils_package'

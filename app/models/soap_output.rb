@@ -16,6 +16,8 @@ class SoapOutput < ActiveRecord::Base
   
   belongs_to :soap_operation
   
+  serialize :computational_type_details
+  
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :description, :computational_type ])
   end

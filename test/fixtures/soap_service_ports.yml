@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  protocol: MyString
+  style: MyString
+  location: MyString
+  soap_service_id: 1
+
+two:
+  name: MyString
+  protocol: MyString
+  style: MyString
+  location: MyString
+  soap_service_id: 2

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090818133359) do
+ActiveRecord::Schema.define(:version => 20090908153713) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -321,6 +321,7 @@ ActiveRecord::Schema.define(:version => 20090818133359) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
+    t.text     "computational_type_details", :limit => 16777215
   end
 
   add_index "soap_inputs", ["soap_operation_id"], :name => "index_soap_inputs_on_soap_operation_id"
@@ -333,6 +334,7 @@ ActiveRecord::Schema.define(:version => 20090818133359) do
     t.datetime "updated_at"
     t.string   "parameter_order"
     t.string   "parent_port_type"
+    t.integer  "soap_service_port_id"
   end
 
   add_index "soap_operations", ["soap_service_id"], :name => "index_soap_operations_on_soap_service_id"
@@ -346,9 +348,20 @@ ActiveRecord::Schema.define(:version => 20090818133359) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
+    t.text     "computational_type_details", :limit => 16777215
   end
 
   add_index "soap_outputs", ["soap_operation_id"], :name => "index_soap_outputs_on_soap_operation_id"
+
+  create_table "soap_service_ports", :force => true do |t|
+    t.string   "name"
+    t.string   "protocol"
+    t.string   "style"
+    t.string   "location"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "soap_service_id"
+  end
 
   create_table "soap_services", :force => true do |t|
     t.string   "name"

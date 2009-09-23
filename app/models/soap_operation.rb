@@ -15,6 +15,7 @@ class SoapOperation < ActiveRecord::Base
   acts_as_annotatable
   
   belongs_to :soap_service
+  belongs_to :soap_service_port
   
   has_many :soap_inputs, :dependent => :destroy
   has_many :soap_outputs, :dependent => :destroy
@@ -26,4 +27,5 @@ class SoapOperation < ActiveRecord::Base
   if USE_EVENT_LOG
     acts_as_activity_logged(:models => { :referenced => { :model => :soap_service } })
   end
+  
 end

@@ -17,6 +17,7 @@ require 'net/smtp'
 # Some of these need to be preloaded...
 require 'bio_catalogue/acts_as_service_versionified'
 require 'bio_catalogue/has_submitter'
+require 'bio_catalogue/wsdl_utils_parser_client'
 
 # Require additional libraries
 require 'array'

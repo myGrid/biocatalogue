@@ -32,6 +32,9 @@ class SoapService < ActiveRecord::Base
            :as => :parent,
            :dependent => :destroy
   
+  has_many :soap_service_ports,
+            :dependent => :destroy
+  
   # This is to protect some fields that should
   # only get their data from the WSDL doc.
   attr_protected :name, 
@@ -41,7 +44,8 @@ class SoapService < ActiveRecord::Base
   
   validates_presence_of :name
 
-  validates_associated :soap_operations
+  validates_associated :soap_operations, 
+                       :soap_service_ports
   
   validates_url_format_of :wsdl_location,
                           :allow_nil => false,
@@ -150,7 +154,8 @@ class SoapService < ActiveRecord::Base
     end
     
     if success
-      service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
+      #service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
+      service_info, err_msgs, wsdl_file_contents = BioCatalogue::WSDLUtils::WSDLParser.parse(self.wsdl_location)
       
       unless err_msgs.empty?
         errors.add_to_base("Error occurred whilst processing the WSDL file. Error(s): #{err_msgs.to_sentence}.")
@@ -163,7 +168,8 @@ class SoapService < ActiveRecord::Base
         self.name         = service_info['name']
         self.description  = service_info['description']
         
-        self.build_soap_objects(service_info)
+        #self.build_soap_objects(service_info)
+        self.build_soap_service_ports(service_info, build_soap_objects(service_info))
         
         data["endpoint"] = service_info["end_point"]
       end
@@ -259,6 +265,22 @@ class SoapService < ActiveRecord::Base
     end
     
     return soap_ops_built
+  end
+  
+  # build the ports for this service
+  # A set of operations are bound to a port
+  
+  def build_soap_service_ports(service_info, built_soap_ops)
+    built_ports = []
+    ports = service_info["ports"]
+    ports.each  do |port|
+      built_port =  soap_service_ports.build(port)
+      p_ops      = built_soap_ops.collect{|op|  op if op.parent_port_type == built_port.name}
+      built_port.soap_operations = p_ops
+      #built_ports << soap_service_ports.build(port)
+      built_ports << built_port
+    end
+    return built_ports
   end
   
 end

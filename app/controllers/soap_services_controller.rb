@@ -4,6 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
+
 class SoapServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy, :bulk_new, :bulk_create ]
@@ -148,7 +149,7 @@ class SoapServicesController < ApplicationController
         "If this problem persists, please <a href='/contact'>contact us</a>."
       
       begin
-        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
+        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WSDLUtils::WSDLParser.parse(@soap_service.wsdl_location)
         
         # Check for a duplicate
         @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["end_point"])
