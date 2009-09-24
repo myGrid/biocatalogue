@@ -8,7 +8,7 @@
 
 %>
 
-<% ops = service_version_instance.soap_operations %>
+<% ops = service_version_instance.soap_operations.sort {|a,b| a.name.downcase <=> b.name.downcase} %>
 
 <div id="tab-operations" class="tabbertab">
   <h3>Operations (<%= ops.length -%>)</h3>
