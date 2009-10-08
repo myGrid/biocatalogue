@@ -13,7 +13,7 @@ module BioCatalogue
     # (returned as symbols).
     # 
     # This should be in sync with the groups of metadata returned by the metadata_counts_for_service
-    # below (excluding :total, ofcourse).
+    # below (excluding :all, ofcourse).
     def self.metadata_sources
       [ :users, :registries, :providers ]
     end
@@ -55,7 +55,7 @@ module BioCatalogue
     # but related concepts.
     #
     # The following keys are available in the hash (see metadata_sources method above):
-    #  :total       - the total number of metadata pieces on this service (incl those in the db tables AND the Annotations plugin).
+    #  :all         - the total number of metadata pieces on this service (incl those in the db tables AND the Annotations plugin).
     #  :users       - the total number of annotations provided by users.
     #  :registries  - the total number of annotations that came from other registries.
     #  :providers   - the total number of annotations that came from the service providers (eg: from the service description docs).
@@ -103,8 +103,8 @@ module BioCatalogue
         
         counts[:providers] = providers_count
         
-        # :total
-        counts[:total] = counts.values.sum
+        # :all
+        counts[:all] = counts.values.sum
         
         # Finally write it to the cache...
         Rails.cache.write(cache_key, counts, :expires_in => METADATA_COUNTS_DATA_CACHE_TIME)
@@ -224,6 +224,25 @@ module BioCatalogue
       end
       
       return ratings_config
+    end
+    
+    # Given a list of Annotations, this method will return hash of Annotations grouped by attribute name.
+    def self.group_by_attribute_names(annotations)
+      grouped = { }
+      
+      return grouped if annotations.blank?
+      
+      annotations.each do |ann|
+        
+        if grouped.has_key?(ann.attribute_name)
+          grouped[ann.attribute_name] << ann          
+        else
+          grouped[ann.attribute_name] = [ ann ]
+        end
+        
+      end
+      
+      return grouped
     end
     
   end

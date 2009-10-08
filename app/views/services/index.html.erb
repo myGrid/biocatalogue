@@ -32,8 +32,12 @@
 			<div style="margin-top: 5px;">
 				<%= render :partial => "index_search_within" -%>
 			
-				<span class="inline-block" style="float:right; margin-left: 2em;">
+				<span class="inline-block" style="float:right; margin-left: 2em; text-align: right;">
 					<%= render :partial => 'index_sortby' %>
+					<br/>
+					<%= render :partial => "shared/listing_type_switcher", 
+										 :locals => { :base_url_lambda => lambda { |extra_params| services_url(extra_params) },
+																	:style => "margin-top: 1em;" } -%>
 				</span>
 				
 				<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>

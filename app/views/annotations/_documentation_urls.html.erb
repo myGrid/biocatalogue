@@ -8,17 +8,15 @@
 
 %>
 
+<%
+	attribute_name = "documentation_url"
+	main_div_id = "documentation_urls_#{rand(10000000)}"
+%>
+
 <% unless annotatable.nil? %>
-	<div class="annotations_container">
+	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
 		  <b>Documentation URL(s):</b>
-			
-			<%= annotation_add_by_popup_link annotatable,
-			     :attribute_name => "documentation_url",
-					 :link_text => "Add a documentation URL",
-			     :tooltip_text => "Click to add a URL to further documentation",
-			     :style => "margin-left: 1em;" -%>
-
 		</div>
 		
 		<div class="box_annotations">
@@ -38,7 +36,7 @@
 				<% end %>
 			<% end %>
 			
-			<% doc_url_annotations = annotatable.annotations_with_attribute("documentation_url") %>
+			<% doc_url_annotations = annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.created_at <=> b.created_at} %>
 			<% unless doc_url_annotations.empty? %>
 				<% doc_url_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
@@ -58,9 +56,25 @@
 				<% end %>
 			<% else %>
 				<% if annotatable.documentation_url.blank? %>
-					<span class="none_text">none</span>
+					<span class="none_text">None</span>
 				<% end %>
 			<% end %>
 		</div>
+		
+		<% if logged_in? %>
+			
+			<%= render :partial => "annotations/common/default_add_box",
+								 :locals => { :partial_from => "documentation_urls",
+															:annotatable => annotatable,
+															:attribute_name => attribute_name,
+															:text_area_default_text => "Add a URL to further documentation...",
+															:main_div_id => main_div_id,
+															:text_area_initial_height => 16 } -%>
+		
+		<% else %>
+			<div class="login_link_box">
+				<small><%= link_to("Login to add a documentation URL", login_path) -%></small>
+			</div>
+		<% end %>
 	</div>
 <% end %>

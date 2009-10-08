@@ -14,34 +14,36 @@ class SearchController < ApplicationController
   
   after_filter :remember_search, :only => [ :show ]
   
+  before_filter :set_listing_type, :only => [ :show ]
+  
   def show
     
     if @query.blank?
 
       respond_to do |format|
         format.html # show.html.erb
-        format.xml { render :layout => false  } # show.xml.builder
+        format.xml  # show.xml.builder
       end
       
     else
       begin
-        # Either peform an 'all' search or redirect to the appropriate type's search action
-        if BioCatalogue::Search::ALL_TYPES_SYNONYMS.include?(@type)
+        # Either peform an 'all' search or redirect to the appropriate scope's search action
+        if BioCatalogue::Search::ALL_SCOPE_SYNONYMS.include?(@scope)
           @results = BioCatalogue::Search.search_all(@query)
         else
-          @results = BioCatalogue::Search.search(@query, @type)
+          @results = BioCatalogue::Search.search(@query, @scope)
         end
         raise "nil @results object returned" if @results.nil?
       rescue Exception => ex
         flash.now[:error] = "Sorry, search didn't work this time. Try with different keyword(s). Please <a href='/contact'>report this</a> if it continues for other searches."
-        logger.error("Search failed for query: '#{@query}'. Search has still been logged in the activity log. Exception:")
+        logger.error("Search failed for query: '#{@query}'. Exception:")
         logger.error(ex.message)
         logger.error(ex.backtrace.join("\n"))
       end
       
       respond_to do |format|
         format.html # show.html.erb
-        format.xml { render :layout => false } # show.xml.builder
+        format.xml  # show.xml.builder
       end
     
     end
@@ -92,27 +94,32 @@ class SearchController < ApplicationController
         return false
       end
 
-      # Query is fine...
+      # Query is fine
       @query = query
-
-      type = params[:t]
-
-      if type.blank?
-        type = "all"
+      
+      # Now, the scope...
+      
+      scope = params[:scope]
+      
+      # Normalise scope
+      if scope.blank?
+        scope = BioCatalogue::Search::ALL_SCOPE_SYNONYMS[0]
       else
-        type = type.strip.downcase
+        scope = scope.strip.downcase
+        scope = BioCatalogue::Search::ALL_SCOPE_SYNONYMS[0] if BioCatalogue::Search::ALL_SCOPE_SYNONYMS[1..-1].include?(scope)
+        
+        # Reset params[:scope] in case it is accessed again
+        params[:scope] = scope 
       end
 
-      all_valid_types = BioCatalogue::Search::VALID_SEARCH_TYPES + BioCatalogue::Search::ALL_TYPES_SYNONYMS
-
-      # Check that a valid type has been provided
-      unless all_valid_types.include?(type)
-        error_to_home("'#{type}' is an invalid search type")
+      # Check that a valid scope has been provided
+      unless BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
+        error_to_home("'#{scope}' is an invalid search scope")
         return false
       end
 
-      # Type is fine...
-      @type = type
+      # Scope is fine
+      @scope = scope
 
       @results = nil
 
@@ -121,6 +128,23 @@ class SearchController < ApplicationController
 
   def remember_search
     session[:last_search] = request.url if defined?(@results) and !@results.nil? and @results.total > 0
+  end
+  
+  def set_listing_type
+    @allowed_listing_types ||= [ "simple", "detailed" ]
+    
+    default_type = :simple
+    session_key = "search_#{action_name}_listing_type"
+    
+    if !params[:listing].blank? and @allowed_listing_types.include?(params[:listing].downcase)
+      @listing_type = params[:listing].downcase.to_sym
+      session[session_key] = params[:listing].downcase
+    elsif !session[session_key].blank?
+      @listing_type = session[session_key].to_sym
+    else
+      @listing_type = default_type
+      session[session_key] = default_type.to_s 
+    end
   end
 
 end

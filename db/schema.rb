@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090908153713) do
+ActiveRecord::Schema.define(:version => 20091006171715) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -21,8 +21,17 @@ ActiveRecord::Schema.define(:version => 20090908153713) do
     t.integer  "referenced_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.binary   "data",                   :limit => 16777215
+    t.text     "data",                   :limit => 16777215
+    t.string   "format"
+    t.string   "http_referer"
+    t.string   "user_agent"
   end
+
+  add_index "activity_logs", ["action"], :name => "act_logs_action_index"
+  add_index "activity_logs", ["activity_loggable_type", "activity_loggable_id"], :name => "act_logs_act_loggable_index"
+  add_index "activity_logs", ["culprit_type", "culprit_id"], :name => "act_logs_culprit_index"
+  add_index "activity_logs", ["format"], :name => "act_logs_format_index"
+  add_index "activity_logs", ["referenced_type", "referenced_id"], :name => "act_logs_referenced_index"
 
   create_table "agents", :force => true do |t|
     t.string   "name"
@@ -433,6 +442,8 @@ ActiveRecord::Schema.define(:version => 20090908153713) do
     t.datetime "updated_at"
     t.string   "public_email"
     t.boolean  "receive_notifications", :default => false
+    t.string   "identifier"
+    t.datetime "last_active"
   end
 
   add_index "users", ["display_name"], :name => "users_display_name_index"

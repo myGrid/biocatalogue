@@ -3,7 +3,7 @@
 	<!-- xmlns:moz="http://www.mozilla.org/2006/browser/search/"> -->
 	<ShortName>BioCatalogue</ShortName>
 	<Description>The Life Science Web Services Registry</Description>
-	<Contact>biocatalogue-support@rubyforge.org</Contact>
+	<Contact>contact@biocatalogue.org</Contact>
 	<Image height="16" width="16" type="image/x-icon">SERVER_BASE_URL/images/biocat_icon.png</Image>
 	<Url type="text/html" method="GET" template="SERVER_BASE_URL/search?q={searchTerms}"/>
 	<Attribution>

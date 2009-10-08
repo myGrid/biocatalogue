@@ -12,18 +12,20 @@ class ServicesController < ApplicationController
   
   before_filter :find_services, :only => [ :index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary ]
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
   before_filter :setup_for_feed, :only => [ :index ]
+  
+  before_filter :set_listing_type, :only => [ :index ]
   
   # GET /services
   # GET /services.xml
   def index
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @services }
+      format.xml  # index.xml.builder
       format.atom
     end
   end
@@ -42,7 +44,7 @@ class ServicesController < ApplicationController
     
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @service }
+      format.xml  # show.xml.builder
     end
   end
 
@@ -53,7 +55,7 @@ class ServicesController < ApplicationController
     
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @service }
+      format.xml
     end
   end
 
@@ -117,12 +119,24 @@ class ServicesController < ApplicationController
       format.html { redirect_to(service_url(@service)) }
     end
   end
+  
+  def filters
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # filters.xml.builder
+    end
+  end
+  
+  def summary
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # summary.xml.builder
+    end
+  end
  
   protected
   
   def find_services
-    
-    # TODO: move most of the logic below into the new lib/filtering.rb library.
     
     # Sorting
     
@@ -192,6 +206,23 @@ class ServicesController < ApplicationController
       end
       
       @feed_title = t
+    end
+  end
+  
+  def set_listing_type
+    @allowed_listing_types ||= [ "simple", "detailed" ]
+    
+    default_type = :detailed
+    session_key = "services_#{action_name}_listing_type"
+    
+    if !params[:listing].blank? and @allowed_listing_types.include?(params[:listing].downcase)
+      @listing_type = params[:listing].downcase.to_sym
+      session[session_key] = params[:listing].downcase
+    elsif !session[session_key].blank?
+      @listing_type = session[session_key].to_sym
+    else
+      @listing_type = default_type
+      session[session_key] = default_type.to_s 
     end
   end
  

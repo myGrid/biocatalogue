@@ -22,6 +22,7 @@ module BioCatalogue
     
     UNKNOWN_TEXT = "(unknown)".freeze
     
+    # TODO: Implement then add :tag (Tags)
     FILTER_KEYS = [ :cat, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ].freeze
     
     TAG_FILTER_KEYS = [ :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs ].freeze
@@ -35,7 +36,7 @@ module BioCatalogue
         when :p
           "Service Providers"
         when :su
-          "Submitters (Users)"
+          "Submitters (Members)"
         when :sr
           "Submitters (Registries)"
         when :tag
@@ -58,21 +59,51 @@ module BioCatalogue
     # ======================
     # Filter options finders
     # ----------------------
+
+    def self.get_filters_for_filter_type(filter_type, limit=nil)
+      case filter_type
+        when :cat
+          get_filters_for_categories
+        when :t
+          get_filters_for_service_types(limit)
+        when :p
+          get_filters_for_service_providers(limit)
+        when :su
+          get_filters_for_submitters_users(limit)
+        when :sr
+          get_filters_for_submitters_registries(limit)
+        when :tag
+          get_filters_for_all_tags(limit)
+        when :tag_s
+          get_filters_for_service_tags(limit)
+        when :tag_ops
+          get_filters_for_soap_operation_tags(limit)
+        when :tag_ins
+          get_filters_for_soap_input_tags(limit)
+        when :tag_outs
+          get_filters_for_soap_output_tags(limit)
+        when :c
+          get_filters_for_countries(limit)
+        else
+          [ ]
+      end
+    end
     
-    # TODO: potentially for the future...
-    # Gets an alphabetically sorted list of the categories, as a tree.
+    # Gets an ordered list of the categories, as a tree of hashes.
+    #
     # Example return data:
-    # [ { "name" => "x", "count" => "5", "children" => [ [ { "name" => "xx", "count" => "4" }, { "name" => "xy", "count" => "11" }, ... ] ] }, { "name" => "y", "count" => "11", "children" => [ ] }, ... ]
-    #def self.get_filters_for_categories
-    #  [ { "name" => "x", "count" => "5", "children" => [ [ { "name" => "xx", "count" => "4" }, { "name" => "xy", "count" => "11" } ] ] }, { "name" => "y", "count" => "11", "children" => [ ] } ]
-    #end
+    # [ { "id" => "4", "name" => "x", "count" => "5", "children" => [ { "id" => "8", "name" => "xx", "count" => "4" }, { "id" => "10", "name" => "xy", "count" => "11" }, ... ] }, { "id" => "120", "name" => "y", "count" => "11", "children" => [ ] }, ... ]
+    def self.get_filters_for_categories
+      return build_categories_filters(Category.root_categories)
+    end
     
     # Gets an ordered list of all the service providers and their counts of services.
+    #
     # Example return data:
-    # [ { "name" => "ebi.ac.uk", "count" => "12" }, { "name" => "example.com", "count" => "11" }, ... ]
+    # [ { "id" => "5", "name" => "ebi.ac.uk", "count" => "12" }, { "id" => "89", "name" => "example.com", "count" => "11" }, ... ]
     def self.get_filters_for_service_providers(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
-      sql = "SELECT service_providers.name AS name, COUNT(*) AS count 
+      sql = "SELECT service_providers.id AS id, service_providers.name AS name, COUNT(*) AS count 
             FROM service_providers 
             INNER JOIN service_deployments ON service_providers.id = service_deployments.service_provider_id 
             INNER JOIN services ON services.id = service_deployments.service_id 
@@ -88,8 +119,9 @@ module BioCatalogue
     end
     
     # Gets an ordered list of all the different service types and their counts of services.
+    #
     # Example return data:
-    # [ { "name" => "SOAP", "count" => "102" }, { "name" => "REST", "count" => "11" }, ... ]
+    # [ { "id" => "SOAP", "name" => "SOAP", "count" => "102" }, { "id" => "REST", "name" => "REST", "count" => "11" }, ... ]
     def self.get_filters_for_service_types(limit=nil)
       filters = { }
       
@@ -110,18 +142,21 @@ module BioCatalogue
       # Need to "massage" the returned data...
       
       filters.each do |f|
-        f["name"] = f["name"].constantize.new.service_type_name
+        t = f["name"].constantize.new.service_type_name
+        f["name"] = t
+        f["id"] = t
       end
       
       return filters
     end
     
     # Gets an ordered list of all the submitters that are Users and their counts of services.
+    #
     # Example return data:
-    # [ { "name" => "John", "count" => "181" }, { "name" => "Paula", "count" => "11" }  ... ]
+    # [ { "id" => "78", "name" => "John", "count" => "181" }, { "id" => "998", "name" => "Paula", "count" => "11" }  ... ]
     def self.get_filters_for_submitters_users(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
-      sql = "SELECT users.display_name AS name, COUNT(*) AS count 
+      sql = "SELECT users.id AS id, users.display_name AS name, COUNT(*) AS count 
             FROM users 
             INNER JOIN services ON services.submitter_type = 'User' AND services.submitter_id = users.id 
             GROUP BY users.id
@@ -136,11 +171,12 @@ module BioCatalogue
     end
     
     # Gets an ordered list of all the submitters that are Registries and their counts of services.
+    #
     # Example return data:
-    # [ { "name" => "Feta", "count" => "181" }, { "name" => "Seekda", "count" => "11" }  ... ]
+    # [ { "id" => "73", "name" => "Feta", "count" => "181" }, { "id" => "3", "name" => "Seekda", "count" => "11" }  ... ]
     def self.get_filters_for_submitters_registries(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
-      sql = "SELECT registries.display_name AS name, COUNT(*) AS count 
+      sql = "SELECT registries.id AS id, registries.display_name AS name, COUNT(*) AS count 
             FROM registries 
             INNER JOIN services ON services.submitter_type = 'Registry' AND services.submitter_id = registries.id 
             GROUP BY registries.id
@@ -155,11 +191,12 @@ module BioCatalogue
     end
     
     # Gets an ordered list of all the countries (the service deployments are in) and their counts of services.
+    #
     # Example return data:
-    # [ { "name" => "England", "count" => "18" }, { "name" => "Germany", "count" => "5" }, { "name" => "(unknown)", "count" => "3" }  ... ]
+    # [ { "id" => England", "name" => "England", "count" => "18" }, { "id" => "Germany", "name" => "Germany", "count" => "5" }, { "id" => "(unknown), "name" => "(unknown)", "count" => "3" }  ... ]
     def self.get_filters_for_countries(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
-      sql = "SELECT service_deployments.country AS name, COUNT(*) AS count 
+      sql = "SELECT service_deployments.country AS id, service_deployments.country AS name, COUNT(*) AS count 
             FROM service_deployments 
             INNER JOIN services ON services.id = service_deployments.service_id 
             GROUP BY service_deployments.country
@@ -172,43 +209,56 @@ module BioCatalogue
        
       items = ActiveRecord::Base.connection.select_all(sql)
       
-      # IGNORE: Need to replace the blank name with "(unknown)" (for services that don't have a country set)...
-      # ... no easy way to get this to work right now so delete the empty value for now...
+      # Need to replace the blank name with "(unknown)" (for services that don't have a country set)
       items.each do |item|
         if item['name'].blank?
           item['name'] = UNKNOWN_TEXT
+          item['id'] = UNKNOWN_TEXT
         end
       end
       
       return items
     end
     
+    # Gets an ordered list of all the tags on everything.
+    #
+    # Example return data:
+    # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
+    def self.get_filters_for_all_tags(limit=nil)
+      service_models = Mapper::SERVICE_STRUCTURE_MODELS.map{|m| m.to_s}
+      get_filters_for_tags_by_service_models(service_models, limit)
+    end
+    
     # Gets an ordered list of all the tags on Services, ServiceVersions, 
     # ServiceDeployments and any root service type Models (eg: SoapService).
+    #
     # Example return data:
-    # [ { "name" => "blast", "count" => "500" }, { "name" => "bio", "count" => "110" }  ... ]
+    # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
     def self.get_filters_for_service_tags(limit=nil)
       service_models = [ "Service", "ServiceVersion", "ServiceDeployment" ] + Mapper::SERVICE_TYPE_ROOT_MODELS.map{|m| m.to_s}
       get_filters_for_tags_by_service_models(service_models, limit)
     end
     
     # Gets an ordered list of all the tags on SoapOperations.
+    #
     # Example return data:
-    # [ { "name" => "blast", "count" => "500" }, { "name" => "bio", "count" => "110" }  ... ]
+    # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
     def self.get_filters_for_soap_operation_tags(limit=nil)
       get_filters_for_tags_by_service_models([ "SoapOperation" ], limit)
     end
     
     # Gets an ordered list of all the tags on SoapInputs.
+    #
     # Example return data:
-    # [ { "name" => "blast", "count" => "500" }, { "name" => "bio", "count" => "110" }  ... ]
+    # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
     def self.get_filters_for_soap_input_tags(limit=nil)
       get_filters_for_tags_by_service_models([ "SoapInput" ], limit)
     end
     
     # Gets an ordered list of all the tags on SoapOutputs.
+    #
     # Example return data:
-    # [ { "name" => "blast", "count" => "500" }, { "name" => "bio", "count" => "110" }  ... ]
+    # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
     def self.get_filters_for_soap_output_tags(limit=nil)
       get_filters_for_tags_by_service_models([ "SoapOutput" ], limit)
     end
@@ -259,6 +309,8 @@ module BioCatalogue
       conditions = { }
       joins = [ ]
       
+      return [ conditions, joins ] if filters.blank? and search_query.blank?
+      
       # Replace the unknown filter with nil
       filters.each do |k,v|
         v.each do |f|
@@ -273,6 +325,7 @@ module BioCatalogue
       
       service_ids_categories = [ ]
       service_ids_submitters = [ ]
+      service_ids_all_tags = [ ]
       service_ids_tags_s = [ ]
       service_ids_tags_ops = [ ]
       service_ids_tags_ins = [ ]
@@ -321,6 +374,9 @@ module BioCatalogue
                 service_ids_submitters.concat(get_service_ids_with_submitter_users(filter_values))
               when :sr
                 service_ids_submitters.concat(get_service_ids_with_submitter_registries(filter_values))
+              when :tag
+                service_models = Mapper::SERVICE_STRUCTURE_MODELS.map{|m| m.to_s}
+                service_ids_all_tags = get_service_ids_with_tag_on_service_models(service_models, filter_values)
               when :tag_s
                 service_models = [ "Service", "ServiceVersion", "ServiceDeployment" ] + Mapper::SERVICE_TYPE_ROOT_MODELS.map{|m| m.to_s}
                 service_ids_tags_s = get_service_ids_with_tag_on_service_models(service_models, filter_values)
@@ -339,7 +395,7 @@ module BioCatalogue
       unless search_query.blank?
         search_query = Search.preprocess_query(search_query)
         search_results = Search.search(search_query, "services")
-        service_ids_search_query = search_results.all_item_ids("services")
+        service_ids_search_query = search_results.item_ids_for("services")
       end
       
       # Need to go through the various service IDs found for the different criterion 
@@ -349,7 +405,8 @@ module BioCatalogue
       # To carry out this process properly, we set a dummy value of 0 to any array that returned NO service IDs.
       service_ids_categories = [ 0 ] if service_ids_categories.empty? and filters.has_key?(:cat)
       service_ids_submitters = [ 0 ] if service_ids_submitters.empty? and (filters.has_key?(:su) or filters.has_key?(:sr))
-      service_ids_tags_ops = [ 0 ] if service_ids_tags_s.empty? and filters.has_key?(:tag_s)
+      service_ids_all_tags = [ 0 ] if service_ids_all_tags.empty? and filters.has_key?(:tag)
+      service_ids_tags_s = [ 0 ] if service_ids_tags_s.empty? and filters.has_key?(:tag_s)
       service_ids_tags_ops = [ 0 ] if service_ids_tags_ops.empty? and filters.has_key?(:tag_ops)
       service_ids_tags_ins = [ 0 ] if service_ids_tags_ins.empty? and filters.has_key?(:tag_ins)
       service_ids_tags_outs = [ 0 ] if service_ids_tags_outs.empty? and filters.has_key?(:tag_outs)
@@ -357,6 +414,7 @@ module BioCatalogue
       
       Util.say "*** service_ids_categories = #{service_ids_categories.inspect}"
       Util.say "*** service_ids_submitters = #{service_ids_submitters.inspect}"
+      Util.say "*** service_ids_all_tags = #{service_ids_all_tags.inspect}"
       Util.say "*** service_ids_tags_s = #{service_ids_tags_s.inspect}"
       Util.say "*** service_ids_tags_ops = #{service_ids_tags_ops.inspect}"
       Util.say "*** service_ids_tags_ins = #{service_ids_tags_ins.inspect}"
@@ -366,6 +424,7 @@ module BioCatalogue
       service_id_arrays_to_process = [ ]
       service_id_arrays_to_process << service_ids_categories unless service_ids_categories.blank?
       service_id_arrays_to_process << service_ids_submitters unless service_ids_submitters.blank?
+      service_id_arrays_to_process << service_ids_all_tags unless service_ids_all_tags.blank?
       service_id_arrays_to_process << service_ids_tags_s unless service_ids_tags_s.blank?
       service_id_arrays_to_process << service_ids_tags_ops unless service_ids_tags_ops.blank?
       service_id_arrays_to_process << service_ids_tags_ins unless service_ids_tags_ins.blank?
@@ -393,6 +452,7 @@ module BioCatalogue
                                       (filters.has_key?(:cat) or
                                        filters.has_key?(:su) or 
                                        filters.has_key?(:sr) or 
+                                       filters.has_key?(:tag) or
                                        filters.has_key?(:tag_s) or
                                        filters.has_key?(:tag_ops) or 
                                        filters.has_key?(:tag_ins) or 
@@ -407,9 +467,11 @@ module BioCatalogue
       return [ conditions, joins ]
     end
     
-    # Converts the params from a URL query string into a more structured filters collection.
+    # Converts the params from a URL query string into a more structured filters collection, where:
+    # { filter_key => [ ids_of_filter_values ] }
+    #
     # Example return value:
-    #   { :t => [ "SOAP" ], :p => [ "ebi.ac.uk", "ddbj.jp" ], :c => [ "USA", "(unknown)" ] }
+    #   { :t => [ "SOAP" ], :p => [ "67", "23" ], :c => [ "USA", "(unknown)" ] }
     #
     # Note: irrelevant query parameters will be ignored and left untouched.
     def self.convert_params_to_filters(params)
@@ -463,12 +525,36 @@ module BioCatalogue
     
     protected
     
+    def self.build_categories_filters(categories)
+      return [ ] if categories.blank?
+      
+      filters_list = [ ]
+      
+      categories.each do |category|
+      
+        filter = { }
+        filter['id'] = category.id.to_s
+        filter['name'] = category.name
+        filter['count'] = BioCatalogue::Categorising.number_of_services_for_category(category)
+        filter['children'] = [ ]
+        
+        if category.has_children?
+          filter['children'] = build_categories_filters(category.children)
+        end
+        
+        filters_list << filter
+        
+      end
+      
+      return filters_list
+    end
+    
     # Gets an ordered list of all the tags on a particular set of models.
     # The counts that are returned reflect the number of services that match 
     # (taking into account mapping of service substructure objects to the parent service).
     # 
     # Example return data:
-    # [ { "name" => "blast", "count" => "500" }, { "name" => "bio", "count" => "110" }  ... ]
+    # [ { "id" => "bio", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
     def self.get_filters_for_tags_by_service_models(model_names, limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = [ "SELECT annotations.value AS name, annotations.annotatable_id AS id, annotations.annotatable_type AS type
@@ -498,13 +584,13 @@ module BioCatalogue
         grouped_tags.each do |k,v|
           if k.downcase == tag_name.downcase
             found = true
-            grouped_tags[k] << "#{item['type']}:#{item['id']}"
+            grouped_tags[k] << BioCatalogue::Mapper.compound_id_for(item['type'], item['id'])
           end
         end
         
         unless found
           grouped_tags[tag_name] = [ ] if grouped_tags[tag_name].nil?
-          grouped_tags[tag_name] << "#{item['type']}:#{item['id']}"
+          grouped_tags[tag_name] << BioCatalogue::Mapper.compound_id_for(item['type'], item['id'])
         end
           
       end
@@ -514,7 +600,7 @@ module BioCatalogue
       grouped_tags.each do |tag_name, op_ids|
         service_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(op_ids, "Service")
         service_ids.uniq!
-        filters << { 'name' => tag_name, 'count' => service_ids.length.to_s }
+        filters << { 'id' => tag_name, 'name' => tag_name, 'count' => service_ids.length.to_s }
       end
       
       filters.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }
@@ -537,7 +623,7 @@ module BioCatalogue
       sql = [ "SELECT services.id
               FROM services 
               INNER JOIN users ON services.submitter_type = 'User' AND services.submitter_id = users.id 
-              WHERE users.display_name IN (?)",
+              WHERE users.id IN (?)",
               user_display_names ]
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
@@ -550,7 +636,7 @@ module BioCatalogue
       sql = [ "SELECT services.id
               FROM services 
               INNER JOIN registries ON services.submitter_type = 'Registry' AND services.submitter_id = registries.id 
-              WHERE registries.display_name IN (?)",
+              WHERE registries.id IN (?)",
               registry_display_names ]
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
@@ -569,7 +655,7 @@ module BioCatalogue
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
-      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| "#{r['type']}:#{r['id']}" }, "Service").uniq     
+      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "Service").uniq     
     end
    
   end

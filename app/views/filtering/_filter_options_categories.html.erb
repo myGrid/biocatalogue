@@ -23,9 +23,9 @@
 			filters_all_cookie_current_value = get_filters_all_cookie_value(filter_type)
 			hidden_items_class = "filters_hidden_#{filter_type}"
 		%>
-		
+      <% @cat_array = Array.new %>		
 		<ul class="top_level">
-			<% Category.tree.each do |category| %>
+			<% Category.root_categories.each do |category| %>
 				<%= render :partial => 'filtering/filter_option_category_item',
 									 :locals => { :category => category,
 																:filter_type => filter_type,
@@ -35,9 +35,17 @@
 			<% end %>
 		</ul>
 		
-		<p class="more_less_links" style="margin-top: 1.2em;">
-			<%= render_show_hide_filters_links(filter_type, hidden_items_class) -%>
-		</p>
+		<p class="more_less_links" style="margin-top: 1.2em; overflow: hidden;">
+      <%= link_to_function 'Expand all' + expand_image("0.5em"), {:id => "expand_all_link", :style => "float:left;"} do |page|  
+            page << "categoryToggleAll(#{@cat_array.inspect}, true);"
+            page << "$(\"expand_all_link\").ancestors()[0].ancestors()[0].scrollTo();"
+          end %>
+
+      <%= link_to_function 'Collapse all' + collapse_image("0.5em"), {:id => "collapse_all_link", :style => "float:right;"} do |page| 
+            page << "categoryToggleAll(#{@cat_array.inspect}, false);"
+            page << "$(\"collapse_all_link\").ancestors()[0].ancestors()[0].scrollTo();"
+          end %>
+    </p>
 		
 	<% end %>
 		

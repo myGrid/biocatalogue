@@ -35,13 +35,15 @@ class ApplicationController < ActionController::Base
   self.rails_error_classes = { 
     ActiveRecord::RecordNotFound => "404",
     ::ActionController::UnknownController => "404",
-    ::ActionController::UnknownAction => "400",
-    ::ActionController::RoutingError => "400",
-    ::ActionView::MissingTemplate => "400",
+    ::ActionController::UnknownAction => "404",
+    ::ActionController::RoutingError => "404",
+    ::ActionView::MissingTemplate => "500",
     ::ActionView::TemplateError => "500"
   }
 
   helper :all # include all helpers, all the time
+  
+  helper_method :render_to_string
 
   # See ActionController::Base for details
   # Uncomment this to filter the contents of submitted sensitive data parameters
@@ -52,21 +54,22 @@ class ApplicationController < ActionController::Base
 
   layout "application_wide"
 
-  before_filter :set_original_uri
-
+  before_filter :set_previous_url
+  before_filter :set_page
+  before_filter :update_last_active
   prepend_before_filter :initialise_use_tab_cookie_in_session
-
+  
+  before_filter :set_up_log_event_core_data
   after_filter :log_event
-
+  
   def login_required
     respond_to do |format|
       format.html do
         if session[:user_id]
           @current_user = User.find(session[:user_id])
         else
-          #session[:original_uri] = request.request_uri
-          flash[:notice] = "Please log in"
-          redirect_to new_session_url
+          flash[:notice] = "Please sign in to continue"
+          redirect_to login_url
         end
       end
       format.xml  do
@@ -107,9 +110,8 @@ class ApplicationController < ActionController::Base
   # in the datatbase: assign 'role_id' to 1
   def check_admin?
     unless logged_in? && !current_user.nil? && current_user.role_id == 1
-      #session[:original_uri] = request.request_uri
       flash[:error] = "<b>Action denied.</b><p>This action is restricted to Administrators.</p>"
-      redirect_to new_session_url
+      redirect_to login_url
     end
   end
   helper_method :check_admin?
@@ -153,14 +155,23 @@ class ApplicationController < ActionController::Base
     raise ActionController::UnknownAction.new
   end
 
-  def set_original_uri
-    unless controller_name.downcase == 'sessions' or 
-           action_name.downcase == 'activate_account' or 
-           action_name.downcase == 'ignore_last'
-      session[:original_uri] = request.request_uri if not logged_in?
+  def set_previous_url
+    unless (controller_name.downcase == 'sessions') or 
+      ([ 'activate_account', 'rpx_merge', 'ignore_last' ].include?(action_name.downcase))
+      session[:previous_url] = request.request_uri unless is_non_html_request?
     end
   end
 
+  def set_page
+    page = (params[:page] || 1).to_i
+    if page < 1
+      error_to_home("A wrong page number has been specified in the URL")
+      return false
+    else
+      @page = page
+    end
+  end
+  
   # Generic method to raise / proceed from errors. Redirects to home.
   # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
   def error_to_home(msg)
@@ -178,7 +189,7 @@ class ApplicationController < ActionController::Base
     flash[:error] = msg
 
     respond_to do |format|
-      format.html { redirect_to(session[:original_uri].blank? ? home_url : :back) }
+      format.html { redirect_to(session[:previous_url].blank? ? home_url : session[:previous_url]) }
       format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
     end
   end
@@ -192,6 +203,10 @@ class ApplicationController < ActionController::Base
     end
 
     return false
+  end
+  
+  def is_non_html_request?
+    return (!params[:format].nil? and params[:format] != "html" and params[:format] != "htm")
   end
   
   def parse_current_filters
@@ -228,25 +243,27 @@ class ApplicationController < ActionController::Base
   end
 
   # ========================================
-
+  
+  def set_up_log_event_core_data
+    if USE_EVENT_LOG and !is_request_from_bot?
+      format = ((params[:format].blank? or params[:format].downcase == "htm") ? "html" : params[:format].downcase)
+      @log_event_core_data = { :format => format, :user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] }
+    end
+  end
 
   # Used to record certain events that are of importance...
   def log_event
-    # Note: currently the following are logged seperately:
-    # - searches
 
     if USE_EVENT_LOG and !is_request_from_bot?
 
       c = controller_name.downcase
       a = action_name.downcase
-
-      core_data = { :http_user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] }
-      
+        
       # Search
       if c == "search"
         if a == "show"
-          if !@query.blank? and !@type.blank? and (params[:page].blank? or params[:page] == "1")
-            ActivityLog.create(:action => "search", :culprit => current_user, :data => core_data.update({ :query => @query, :type =>  @type }))
+          if !@query.blank? and !@scope.blank? and @page == 1
+            ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @scope }))
           end
         end
       end
@@ -254,10 +271,21 @@ class ApplicationController < ActionController::Base
       if c == "services"
         # View service
         if a == "show"
-          ActivityLog.create(:action => "view",
+          ActivityLog.create(@log_event_core_data.merge(:action => "view",
                              :culprit => current_user,
-                             :activity_loggable => @service,
-                             :data => core_data)
+                             :activity_loggable => @service))
+        end
+        
+        # View index of services
+        if a == "index"
+          ActivityLog.create(@log_event_core_data.merge(:action => "view_services_index",
+                             :culprit => current_user,
+                             :data => { :query => params[:q], :filters => @current_filters }))
+        
+          # Log a search as well, if a search query was specified. 
+          unless params[:q].blank?
+            ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => params[:q], :type =>  "services", :filters => @current_filters }))
+          end
         end
       end
       
@@ -265,10 +293,9 @@ class ApplicationController < ActionController::Base
         # View user profile
         if a == "show"
           if current_user.try(:id) != @user.id
-            ActivityLog.create(:action => "view",
+            ActivityLog.create(@log_event_core_data.merge(:action => "view",
                                :culprit => current_user,
-                               :activity_loggable => @user,
-                               :data => core_data)
+                               :activity_loggable => @user))
           end
         end
       end
@@ -276,24 +303,28 @@ class ApplicationController < ActionController::Base
       if c == "registries"
         # View registry profile
         if a == "show"
-          ActivityLog.create(:action => "view",
+          ActivityLog.create(@log_event_core_data.merge(:action => "view",
                              :culprit => current_user,
-                             :activity_loggable => @registry,
-                             :data => core_data)
+                             :activity_loggable => @registry))
         end
       end
       
       if c == "service_providers"
         # View service provider profile
         if a == "show"
-          ActivityLog.create(:action => "view",
+          ActivityLog.create(@log_event_core_data.merge(:action => "view",
                              :culprit => current_user,
-                             :activity_loggable => @service_provider,
-                             :data => core_data)
+                             :activity_loggable => @service_provider))
         end
       end
 
     end
   end
 
+  def update_last_active
+    if logged_in?
+      current_user.update_last_active(Time.now())
+    end
+  end
+  
 end

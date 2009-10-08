@@ -34,6 +34,8 @@ module BioCatalogue
     #   ... ]
     # ==============================
     
+
+
     # Retrieves the IDs of all the services that have the specified tag (on any part of the substructure).
     def self.get_service_ids_for_tag(tag_name)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
@@ -45,7 +47,7 @@ module BioCatalogue
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
       
-      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| "#{r['type']}:#{r['id'].to_s}" }, "Service").uniq 
+      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "Service").uniq 
     end
 
     # Takes in a set of annotations and returns a collection of tags
@@ -66,13 +68,13 @@ module BioCatalogue
             if t["name"].downcase == ann.value.downcase
               found = true
               t["count"] = t["count"] + 1
-              t["submitters"] << "#{ann.source_type}:#{ann.source_id}"
+              t["submitters"] << BioCatalogue::Mapper.compound_id_for(ann.source_type, ann.source_id)
             end
           end
           
           # If it wasn't found, add it in the tags collection.
           unless found
-            tags << { "name" => ann.value, "count" => 1, "submitters" => [ "#{ann.source_type}:#{ann.source_id}" ] }
+            tags << { "name" => ann.value, "count" => 1, "submitters" => [ BioCatalogue::Mapper.compound_id_for(ann.source_type, ann.source_id) ] }
           end
         end
       end
@@ -197,10 +199,12 @@ module BioCatalogue
     # This method works out the exact tag name from the parameters provided 
     # (these should be the params hash that ActionController generates from query string data and POST data).
     def self.get_tag_name_from_params(params)
-      tag_name  = ""
+      tag_name = ""
       
       tag_name = URI::unescape(params[:tag_keyword])
-    
+      
+      return tag_name if tag_name.blank?
+      
       # Check for namespace
       unless (namespace = params[:namespace]).blank?
         namespace = namespace.downcase

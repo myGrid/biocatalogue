@@ -17,7 +17,7 @@ module BioCatalogue
     # BioCatalogue::Annotations.metadata_counts_for_service
     #
     # Returns: Integer
-    def total_metadata_on_services(type=:total)
+    def total_metadata_on_services(type=:all)
       self.metadata_counts_per_service.values.map{|v| v[type]}.sum
     end
 
@@ -25,7 +25,7 @@ module BioCatalogue
     # BioCatalogue::Annotations.metadata_counts_for_service
     #
     # Returns: Float
-    def avg_metadata_per_service(type=:total)
+    def avg_metadata_per_service(type=:all)
       self.metadata_counts_per_service.values.map{|v| v[type]}.mean.round
     end
     
@@ -33,7 +33,7 @@ module BioCatalogue
     # BioCatalogue::Annotations.metadata_counts_for_service
     #
     # Returns: Hash - { :count => max_metadata_count, :services => [ list of Services that have this count ] }
-    def max_metadata_on_services(type=:total)
+    def max_metadata_on_services(type=:all)
       result = { }
       max = self.metadata_counts_per_service.values.map{|v| v[type]}.max
       result[:count] = max
@@ -45,7 +45,7 @@ module BioCatalogue
     # BioCatalogue::Annotations.metadata_counts_for_service
     #
     # Returns: Hash - { :count => min_metadata_count, :services => [ list of Services that have this count ] }
-    def min_metadata_on_services(type=:total)
+    def min_metadata_on_services(type=:all)
       result = { }
       min = self.metadata_counts_per_service.values.map{|v| v[type]}.min
       result[:count] = min

@@ -54,7 +54,7 @@
 								<% values.each do |value| %>
 									
 									<% 
-										 filter = { "name" => value }
+										 filter = { "id" => value, "name" => display_name_for_filter(filter_type, value) }
 										 filter_items_count += 1
 									%>
 									

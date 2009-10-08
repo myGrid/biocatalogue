@@ -23,7 +23,7 @@ module CategoriesHelper
   def get_categories_select_options
     options = [ ]
     
-    category_tree = Category.tree
+    category_tree = Category.root_categories
     
     category_tree.each do |category|
       options = options + process_category_for_select_options(category)

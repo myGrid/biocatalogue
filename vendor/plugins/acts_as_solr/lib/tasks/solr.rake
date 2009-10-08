@@ -74,7 +74,7 @@ namespace :solr do
     optimize            = env_to_bool('OPTIMIZE',     true)
     start_server        = env_to_bool('START_SERVER', false)
     clear_first         = env_to_bool('CLEAR',       true)
-    batch_size          = ENV['BATCH'].to_i.nonzero? || 300
+    batch_size          = ENV['BATCH'].to_i.nonzero? || 100
     debug_output        = env_to_bool("DEBUG", false)
 
     RAILS_DEFAULT_LOGGER.level = ActiveSupport::BufferedLogger::INFO unless debug_output
@@ -106,7 +106,10 @@ namespace :solr do
       
       puts "Rebuilding index for #{model}..."
       model.rebuild_solr_index(batch_size)
-
+      
+      # Sleep for a bit to give Solr a chance to process... 
+      sleep 2
+      
     end 
 
     if models.empty?

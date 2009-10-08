@@ -8,34 +8,32 @@
 
 %>
 
+<% t "Sign In" -%>
+
+<h1>
+	Sign In to the BioCatalogue
+	<%= info_icon_with_tooltip(account_sign_in_options_info) -%>
+</h1>
+
 <% if logged_in? %>
 
-	<h1>You are already logged in...</h1>
+	<b>You are already signed in...</b>
+	
+	<br/>
+	
+	<p><%= link_to("Click here to sign out", logout_url, :class => "red_arrow", :method => :delete) -%></p>
 
 <% else %>
 
-	<% form_tag session_path do -%>
-	<fieldset>
-		<p>
-			<label for="login" class="required">Email address:</label> <br/>
-			<%= text_field_tag :login, params[:login] %>
-		</p>
-		<p>
-			<label for="password" class="required">Password</label> <br/>
-			<%= password_field_tag :password, params[:password] %>
-		</p>
-		<p>
-			<%= submit_tag 'Log in' %>
-		</p>
-		
-		<p style="padding-top: 1em;">
-			<span class="green_box"><%= link_to 'Forgot your password?', forgot_password_url -%></span>
-		</p>
-		
-		<p style="padding-top: 1em;">
-			<span class="green_box">Don't have an account yet? <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></span>
-		</p>
-	</fieldset>
-	<% end -%>
-
+	<%= render :partial => "shared/login_form" -%>
+	
+	<% unless !ENABLE_RPX or params.has_key?(:hide_rpx) %>
+		<div style="float: left; margin-left: 3em; margin-top: 1em; max-width: 600px; line-height: 1.6;">
+			<%= render :partial => "shared/rpx_signin.html.erb",
+								 :locals => { :redirect_to_url => params[:redirect_to] } -%>
+		</div>
+	<% end %>
+	
+	<span class="clear"></span>
+	
 <% end %>

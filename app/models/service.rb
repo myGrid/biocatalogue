@@ -73,6 +73,12 @@ class Service < ActiveRecord::Base
     self.service_versions.collect{|sv| sv.service_versionified}    
   end
   
+  def service_version_instances_by_type(type_model_name)
+    type_model_name.constantize.find(:all,
+                                     :conditions => { :service_versions => { :service_id => self.id } },
+                                     :joins => [ :service_version ])
+  end
+  
   # Gets an array of all the service types that this service has (as part of it's versions).
   def service_types
     types = self.service_versions.collect{|sv| sv.service_versionified.service_type_name}.uniq
@@ -84,18 +90,25 @@ class Service < ActiveRecord::Base
     self.latest_version.service_versionified.description
   end
   
+  def preferred_description
+    # Either the description from the service description doc, 
+    # or the last description annotation.
+    
+    desc = self.description
+    
+    if desc.blank?
+      desc_anns = self.latest_version.service_versionified.annotations_with_attribute("description")
+      unless desc_anns.empty?
+        desc = desc_anns.first.value
+      end
+    end
+    
+    return desc
+  end
+  
   # Gets an array of all the ServiceProviders
   def providers
     self.service_deployments.collect{|sd| sd.provider}.uniq
-  end
-  
-  def service_version_instances_by_type(type)
-    
-    types = {'soap' => 'SoapService',
-             'rest' => 'RestService'}
-             
-    instances = service_version_instances
-    return  instances.delete_if{ |instance| instance.class.to_s != types[type] } || []
   end
   
   def views_count
@@ -108,7 +121,7 @@ class Service < ActiveRecord::Base
   end
   
   # Currently finds all services that have same (or parent) categories as this service.
-  def similar_services
+  def similar_services(limit=10)
     services = [ ]
     
     # NOTE: this query has only been tested to work with MySQL 5.0.x
@@ -144,7 +157,7 @@ class Service < ActiveRecord::Base
       
       service_ids = service_ids.uniq.reject{|i| i == self.id}
       
-      services = Service.find(:all, :conditions => { :id => service_ids })
+      services = Service.find(:all, :conditions => { :id => service_ids[0...limit] })
     end
     
     return services

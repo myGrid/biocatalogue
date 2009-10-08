@@ -1,0 +1,44 @@
+<%
+
+# BioCatalogue: app/views/shared/_login_form.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%
+	# Set defaults for optional parameters to this partial...
+	show_other_links = true unless local_assigns.has_key?(:show_other_links)
+	redirect_to_url = nil unless local_assigns.has_key?(:redirect_to_url)
+
+	form_post_url = (redirect_to_url.blank? ? session_path : session_path(:redirect_to => redirect_to_url))
+%>
+
+<div class="box_form login_form" style="float: left; width: 350px;">
+	<% form_tag form_post_url do %>
+		<span>
+			<%= text_field_tag :login, params[:login], :class => 'login_field' %>
+    	<label for="login">Email address:</label>
+		</span>
+		<span>
+			<%= password_field_tag :password, params[:password], :class => 'login_field' -%>
+			<label for="password">Password:</label>
+		</span>
+		
+		<%= submit_tag 'Sign in', :disable_with => "Signing in...", :class => "sign_in_button" -%>
+		
+		<span class="clear"></span>
+	<% end %>
+	
+	<% if show_other_links %>
+		<br/>
+		<div class="other_links">
+	  	<ul>
+		  	<li><%= link_to 'Sign up for an account', signup_url, :id => "signup_link", :class => "signup" -%></li>
+				<li><%= link_to 'Forgot your password?', forgot_password_url, :id => "forgot_pwd" -%></li>
+			</ul>
+		</div>
+	<% end %>
+</div>

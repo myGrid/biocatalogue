@@ -177,7 +177,7 @@ module BioCatalogue
           services = Service.find(options[:service_ids])
           services.each{ |s| 
                           s.service_deployments.each{|dep| monitors.concat(dep.url_monitors)}
-                          s.service_version_instances_by_type('soap').each{ |instance|
+                          s.service_version_instances_by_type('SoapService').each{ |instance|
                                   monitors.concat(instance.url_monitors)
                                 }
                                 

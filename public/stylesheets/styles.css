@@ -112,6 +112,9 @@ h4 {
 }
 
 h5 {
+	margin: 0.8em 0 0.5em 0;
+	padding-bottom: 0.3em;
+	border-bottom: 1px solid #CCC;
 }
 
 h6 {
@@ -407,8 +410,8 @@ a:hover.change_pwd {
 	display:-moz-inline-box;
 	display: inline-block;
 	color: #333333;
-	border: 1px solid #EED799; 
-	background: #FFFFCC; 
+	border: 1px solid #99CCFF;
+	background-color: #EEF6FF;
 	padding: 0.2em 0.4em;
 }
 
@@ -843,77 +846,70 @@ body.sidebar-right #wrapper #container #header #login_links {
 
 #login_box {
 	position: absolute;
-	/*top: 9em;
-	right: 2em;*/
-	top: 0.5em;
-	right: 0.5em;
-	/*display: none;*/
-	/*background: url(../images/orange_dot_bkgd.gif);*/
+	top: 3px;
+	right: 3px;
 	background-color: #e9f7cc;
-	border: 1px solid #cccccc;
-	width: 225px;
-	height: 130px;
-	font-size: 100%;
+	border: 2px solid #CCC;
+	width: 320px;
+	height: auto;
 	margin: 0 0 auto auto;
 	z-index: 4;
+	padding: 7px;
 }
 
 body.sidebar-right #login_box {
 	margin-right: 210px;
-	top: 0.5em;
+	top: 3px;
 	right: -15.6em;
 }
 
-#login_box a img {
-	float: right;
-	width: 15px;
-	height: 15px;
-}
-
 #login_box form {
-	clear: both;
-	margin: 2px 5px auto 5px;
-	/*margin-right: 5px;
-	margin-left: 5px;*/
+	margin: 10px 0 1.5em 0;
 }
 
 #login_box span label {
 	float: left;
 	font-weight: bold;
+	padding-top: 0.2em;
 }
 
 #login_box span input.small_login {
 	clear: both;
 	float: right;
-	height: 1.2em;
-	font-size: 100%;
-	width: 10em;
-	background-color: #feffcf;
+	height: 1.4em;
+	line-height: 1.4;
+	width: 200px;
+	/*background-color: #feffcf;*/
+	margin-bottom: 5px;
 }
 
 #login_box input.small_submit_button {
 	clear: both;
 	float: right;
 	position: relative;
-	top: 10px;
+	top: 5px;
+	width: 80px;
 }
 
-#login_box #forgot_pwd {
-	clear: both;
-	float: left;
-	position: relative;
-	top: -12px;
-	font-size: 85%;
-	font-weight: bold;
-	white-space: nowrap;
-	text-decoration: underline;
+#login_box .rpx {
+	margin: 0;
+	padding: 0.8em 0;
+	border-top: 1px dotted #CCC;
+	text-align: center;
+	line-height: 1.8;
 }
 
-#login_box #forgot_pwd:hover { background-color: #feffcf; }
-
-#sign_up {
+#login_box_other_links {
 	clear: both;
-	font-size: 85%;
+	font-size: 93%;
+	width: 100%;
+	padding-top: 1.2em;
+	border-top: 1px dotted #CCC;
+	text-align: right;
+}
+
+#login_box_other_links li {
+	margin-bottom: 0.7em;
 }
 
 /* END Login box styles */
@@ -965,12 +961,14 @@ body.sidebar-right #login_box {
 /* BEGIN css tooltips/boxovers */
 
 .boxoverTooltipHeader {
+	z-index: 100000;
 	display: none;
 	border: 0;
 	height: 0;
 }
 
 .boxoverTooltipBody {
+	z-index: 100000;
 	border: solid 1px Gray;
 	color: #000000;
 	background-color: #FFFF66;
@@ -983,12 +981,14 @@ body.sidebar-right #login_box {
 }
 
 .boxoverInfoHeader {
+	z-index: 100000;
 	display: none;
 	border: 0;
 	height: 0;
 }
 
 .boxoverInfoBody {
+	z-index: 100000;
 	border: solid 1px Gray;
 	color: #333333;
 	padding: 0.3em 0.6em;
@@ -1198,6 +1198,13 @@ body.sidebar-right #login_box {
 	font-weight: bold;
 	vertical-align: baseline;
 	line-height: 1.8;
+}
+
+.listing_item .simple_listing .name {
+	font-size: 123.1%;
+	font-weight: bold;
+	vertical-align: baseline;
+	line-height: 1.6;
 }
 
 .listing_item .desc {
@@ -1568,9 +1575,9 @@ ul.tabbernav li.tabberactive a:hover
 #errorExplanation {
 	width: 400px;
 	border: 2px solid #ffaaaa;
-	padding: 0.5em;
-	margin-bottom: 1.5em;
+	margin: 1.5em 0;
 	background-color: #f5f5f5;
+	padding-bottom: 1em;
 }
 
 #errorExplanation h2 {
@@ -1592,7 +1599,7 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 #errorExplanation ul {
-        padding-left: 2em;
+	padding-left: 2em;
 }
 
 #errorExplanation ul li {
@@ -1635,13 +1642,9 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .box_currentuser_specific {
-	padding: 0.5em 0.8em;
+	padding: 1em 1.5em;
 	border: 1px solid #99CCFF;
 	background-color: #EEF6FF;
-}
-
-.box_currentuser_specific p {
-	margin: 0;
 }
 
 .box_currentuser_specific * {
@@ -1657,6 +1660,15 @@ ul.tabbernav li.tabberactive a:hover
 
 .box_form fieldset {
 	border: 1px solid #cccccc;
+}
+
+.box_form fieldset legend {
+	font-size: 108%;
+	color: #660000;
+}
+
+.box_form hr {
+	background: #CCC;
 }
 
 /* BEGIN annotations styles */
@@ -1699,6 +1711,7 @@ ul.tabbernav li.tabberactive a:hover
 
 .box_annotations div.text {
 	padding: 0.1em 0.5em 0.2em 0.5em;
+  overflow-x: auto;
 }
 
 .box_annotations div.text p {
@@ -1715,6 +1728,37 @@ ul.tabbernav li.tabberactive a:hover
 	font-size: 85%;
 	color: #666;
 	text-align: right;
+}
+
+.annotations_container .add_box {
+	margin-top: 0.5em;
+	text-align: center;
+}
+
+.annotations_container .add_box form {
+	text-align: center;
+}
+
+.annotations_container .add_box form div {
+	width: 100%;
+	text-align: center;
+}
+.annotations_container .add_box form textarea {
+	width: 99%;
+}
+
+.annotations_container .add_box .submit_button_div {
+	margin-top: 0.4em;
+	text-align: right; 
+}
+
+.annotations_container .add_box .submit_button_div input {
+	width: 80px;
+}
+
+.annotations_container .login_link_box {
+	text-align: right;
+	margin-top: 0.7em;
 }
 
 .annotation_source_text {
@@ -1870,12 +1914,12 @@ ul.tabbernav li.tabberactive a:hover
 
 a.button_slim {
 	font-weight: bold;
-	line-height: 1.8;
+	line-height: 1.6;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
 	background-color: #EEF6FF;
 	vertical-align: middle;
-	padding: 1px 4px;
+	padding: 0.1em 0.5em;
 	display:-moz-inline-block;
 	display:-moz-inline-box;
 	display: inline-block;	
@@ -2264,42 +2308,50 @@ div.filters li.category_root .container a {
 }
 
 div.filters li.sub_category .container a {
-	border-left: 1px dotted #CCC;
-	padding-left: 0.5em;
+	/*border-left: 1px dotted #CCC;*/
+	margin-left: 0.2em;
 }
 
 /* END filtering styles */
 
 /* BEGIN autocomplete styles */
 
+
 div.auto_complete {
-  width: 300px; 
-  background: #fff;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #999;
+  margin-top: -2px;
+  padding: 0px;
 	z-index: 10000;
-	font-size: 93%;
+	font-size: 85%;
 	font-weight: normal;
-	vertical-align: baseline;
-} 
+}
 
 div.auto_complete * {
 	vertical-align: baseline;
 }
 
-div.auto_complete ul { 
-  border: 1px solid #999; 
-  margin: 0px; 
-  padding: 0px; 
-  width: 100%; 
+div.auto_complete ul {
   list-style-type: none;
-} 
+  margin: 0px;
+  padding: 0px;
+}
 
-div.auto_complete ul li { 
-  margin: 0px; 
-  padding: 3px; 
-	border-bottom: 1px solid #DDD;
-	text-align: left;
+div.auto_complete ul li.selected {
+  background-color: #ffb;
+}
+
+div.auto_complete ul li {
+  text-align: left;
+  list-style-type: none;
+  display: block;
+  margin: 0;
+  padding: 3px;
+  border-bottom: 1px solid #DDD;
 	cursor: pointer;
-} 
+	overflow: hidden;
+}
 
 div.auto_complete ul li.selected { 
   background-color: #ffb; 
@@ -2406,8 +2458,8 @@ p.more_less_links a {
 /* BEGIN categories styles */
 
 .categories_box {
-	font-size: 93%;
-	line-height: 18px;
+	font-size: 85%;
+	line-height: 16px;
 }
 
 ul.categories {
@@ -2429,7 +2481,7 @@ ul.categories li span.main {
 	background-color: #FFC;
 	margin-bottom: 0.4em;
 	margin-right: 0.5em;
-	padding: 0 5px;
+	padding: 0 3px;
 	border-top: 1px solid #DEDEDE;
 	border-left: 1px solid #DEDEDE;
 	border-right: 1px solid #999;
@@ -2437,7 +2489,7 @@ ul.categories li span.main {
 }
 
 ul.categories li span.main a.category {
-	line-height: 1.8;
+	line-height: 1.6;
 	text-decoration: none;
 	vertical-align: middle;
 }
@@ -2541,3 +2593,68 @@ ul.categories li span.main:hover {
 #subscribe_results_link img {
 	margin-right: 0.4em;
 }
+
+/* Style for default texts in inputs */ 
+.ex {
+	color: #999;	
+}
+
+/* BEGIN login page styles */
+
+.login_form {
+	padding: 1.2em 0.8em;	
+}
+
+.login_form label {
+	float: left;
+	font-weight: bold;
+	margin-bottom: 1em;
+}
+
+.login_form input.login_field {
+	clear: both;
+	float: right;
+	height: 1.4em;
+	line-height: 1.4;
+	width: 220px;
+	margin-bottom: 1em;
+}
+
+.login_form input.sign_in_button {
+	clear: both;
+	float: right;
+	width: 80px;
+}
+
+.login_form .other_links {
+	clear: both;
+	width: 100%;
+	padding-top: 1.2em;
+	border-top: 1px dotted #CCC;
+	text-align: right;
+}
+
+.login_form .other_links li {
+	margin-bottom: 0.7em;
+}
+
+/* END login page styles */
+
+img.account_provider_logo {
+	margin: 0 2px;
+}
+
+.side_link {
+	color: #999; 
+	margin-left: 3em; 
+	font-size: 85%;
+}
+
+.side_link a {
+	color: #999;
+}
+
+.toolbar {
+	float: right;
+}
+

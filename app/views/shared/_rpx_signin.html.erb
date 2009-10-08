@@ -1,0 +1,68 @@
+<%
+
+# BioCatalogue: app/views/shared/_rpx_signin.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div class="box_info_standout" style="line-height: 1.5; padding: 1.5em 1.4em;">
+	
+	<div style="text-align: center; margin-bottom: 1em;">
+		<%= rpx_accounts_provider_logos_with_link -%>
+	</div>
+	
+	<div style="font-size: 123.1%;">
+		If you already have an
+		<%= list_of_rpx_accounts -%> 
+		account then:
+		<ul class="simple_list" style="margin-top: 1em;">
+			<li>
+				<%= RPXNow.popup_code('click here to sign in', RPX_REALM, rpx_token_sessions_url) -%> OR
+			</li>
+			<li>
+				you can add it to your existing BioCatalogue account
+				<% if logged_in? %>
+					<%= link_to("here", edit_user_path(current_user, :anchor => "external_account")) -%>
+				<% else %>
+					by editing your profile
+				<% end %>
+			</li>
+		</ul>
+	</div>	
+	
+	<p style="text-align: right; margin-bottom: 0;">
+		<%= link_to_function "More info" + expand_image, visual_effect(:toggle_blind, "rpx_more_info_box", :duration => 0.3), :style => "text-decoration:none;" %>
+	</p>
+	
+	<div id="rpx_more_info_box" style="margin-top: 1em; display: none;">
+	
+		<h4>General</h4>
+		
+		<p>
+			Instead of signing up for (or signing in with) a BioCatalogue specific account,
+			you can use an existing "single sign-on" account that you may have from
+			a number of popular providers. You will be redirected to an external service (RPX)
+			which will handle the login to your external account. After that a new account on 
+			the BioCatalogue will automatically be created (if required) and you will be signed in. 
+			Note that we DO NOT store any password information from your external accounts.
+		</p>
+		
+		<h4>OpenID</h4>
+		
+		<p>
+			OpenID is a distributed identity system which gives you single sign-on 
+			anywhere that OpenID is supported. If you already have an OpenID account
+			you can sign in using the link above and your BioCatalogue account will automatically be created 
+			(note that many other accounts, like AOL, AIM, LiveJournal, Wordpress, may already be OpenID enabled so you can use that too).
+		</p>
+		
+		<p>
+			Don't have an OpenID? Get one from <%= link_to 'myOpenID', "https://www.myopenid.com/" %> or 
+			<%= link_to 'other providers', "http://openiddirectory.com/openid-providers-c-1.html" %>.
+		</p>
+	</div>
+	
+</div>

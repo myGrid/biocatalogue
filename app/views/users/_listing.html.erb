@@ -13,9 +13,15 @@
 		<div class="listing_item">
 			<p class="name">
 				<%= link_to(h(user.display_name), user_path(user)) -%>
+
 				<%= flag_icon_from_country(user.country, :class => "framed") -%>
 			</p>
-			
+      <% unless user.last_active.nil? %>
+        <span class="ago">
+          last active 
+          <%= distance_of_time_in_words_to_now(user.last_active) -%> ago 
+        </span>
+      <% end %>
 			<p class="detail_simple">
 				<b>Affiliation:</b>
 				<% unless user.affiliation.blank? %>

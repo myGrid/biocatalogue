@@ -46,6 +46,9 @@ module TagsHelper
   #   :allow_delete - if set to true then delete links will be placed next to each tag that the current user is allowed to delete.
   #     default: false
   #   :annotatable - required for the :allow_delete option. The current annotatable object that the tags apply to.
+  #
+  # NOTE: The delete AJAX functionality depends on the parent container for the tag cloud having
+  # an ID of "#{annotatable.class.name}_#{annotatable.id}_tag_cloud"
   def generate_tag_cloud(tags, cloud_type, *args)
     return "" if tags.blank?
     
@@ -143,18 +146,18 @@ module TagsHelper
                     annotatable = options[:annotatable]
                     
                     # The delete AJAX functionality depends on the parent container for the tag clouds having
-                    # and ID of "#{annotatable.class.name}_#{annotatable.id}_tags"
+                    # an ID of "#{annotatable.class.name}_#{annotatable.id}_tag_cloud"
                     
                     link_to_remote(delete_icon_faded_with_hover,
-                                  :url => "#{destroy_tag_url(:tag => tag_name)}&annotatable_type=#{annotatable.class.name}&annotatable_id=#{annotatable.id}",
+                                  :url => "#{tag_url(0, :tag_name => tag_name, :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id)}",
                                   :method => :delete,
-                                  :update => { :success => "#{annotatable.class.name}_#{annotatable.id}_tags", :failure => '' },
+                                  :update => { :success => "#{annotatable.class.name}_#{annotatable.id}_tag_cloud", :failure => '' },
                                   :loading => "Element.show('tags_spinner')",
                                   :complete => "Element.hide('tags_spinner')", 
                                   :success => "new Effect.Highlight('#{annotatable.class.name}_#{annotatable.id}_tags', { duration: 0.5 });",
                                   :failure => "Element.hide('tags_spinner'); alert('Sorry, an error has occurred.');",
                                   :html => { :title => tooltip_title_attrib("Delete this tag (you created it)"), :style => "margin-left:0.4em;" },
-                                  :confirm => "Are you sure you want to delete this tag?" )
+                                  :confirm => "Are you sure you want to delete this tag?")
                   end
                   
                 end

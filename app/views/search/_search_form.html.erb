@@ -21,7 +21,7 @@
 					:url => search_auto_complete_url,
 					:min_chars => 3 -%>
 					
-			<%= select_tag :t, options_for_select(BioCatalogue::Search::VALID_SEARCH_TYPES_INCL_ALL.collect { |t| [t.titleize, t] }, @type), :style => "width: 140px; font-size: 93%; vertical-align: middle;" %>
+			<%= select_tag :scope, options_for_select(BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.collect { |t| [t.titleize, t] }, @scope), :style => "width: 140px; font-size: 93%; vertical-align: middle;" %>
 								
 		  <%= submit_tag '', :class => "search_button" -%>
 		<% end %>

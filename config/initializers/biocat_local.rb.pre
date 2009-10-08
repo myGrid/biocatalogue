@@ -97,6 +97,19 @@ ADDTHIS_USERNAME = "my_username"
 ENABLE_GOOGLE_ANALYTICS = false
 GOOGLE_ANALYTICS_TRACKER_ID = 'xyz'
 
+
 # WSDLUtils base URI
 # E.g. WSDLUTILS_BASE_URI = 'http://localhost/WSDLUtils/WSDLUtils.php'
 WSDLUTILS_BASE_URI = 'base_uri_to_the_embrace_WSDLUtils_package'
+
+
+# ====================================================
+# Configure local settings for the RPX Single Sign-On 
+# (for OpenID, Twitter, Facebook, etc logins - see https://rpxnow.com/)
+# ----------------------------------------------------
+
+ENABLE_RPX = false
+RPX_REALM = 'myapp'
+RPX_API_KEY = 'xyz'
+
+# ====================================================

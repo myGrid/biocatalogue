@@ -42,6 +42,12 @@
 		<%# Only show tag filters if explicitly asked %>
 		<% if show_tag_filters? %>
 		
+			<!-- Tags -->												
+			<% tags_filters = BioCatalogue::Filtering.get_filters_for_all_tags %>
+			<%= render :partial => "filtering/filter_options_generic", 
+								 :locals => { :filters => tags_filters,
+															:filter_type => :tag } -%>
+		
 			<!-- Tags (on Services) -->												
 			<% operations_tags_filters = BioCatalogue::Filtering.get_filters_for_service_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 

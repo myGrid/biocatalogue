@@ -225,6 +225,9 @@ module ActsAsSolr #:nodoc:
           iteration_time = Time.now - iteration_start         
           logger.info "#{Process.pid}: #{items_processed} items for #{self.name} have been batch added to index in #{'%.3f' % time_so_far}s at #{'%.3f' % (items_processed / time_so_far)} items/sec (#{'%.3f' % (items.size / iteration_time)} items/sec for the last batch). Last id: #{last_id}"
           offset += items.size
+          
+          # Sleep for a bit to give Solr a chance to process... 
+          sleep 0.5
         end while items.nil? || items.size > 0
       else
         items = finder.call(self, {})

@@ -5,6 +5,8 @@ javascripts:
   - effects
   - dragdrop
   - controls
+  - textInputWithDefaultText
+  - texpand
   - application
   - tabber
   - boxover

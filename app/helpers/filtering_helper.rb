@@ -16,10 +16,10 @@ module FilteringHelper
     " will retrieve all SOAP services that are from ebi.ac.uk and example.com and located in United Kingdom"
   end
   
-  def get_text_to_display_for_filter_value(filter_type, filter_value)
-    return "" if filter_value.blank?
+  def get_text_to_display_for_filter_name(filter_type, filter_name, truncate_length)
+    return "" if filter_name.blank?
     
-    text = filter_value
+    text = filter_name
     
     is_ontology_term = false
     
@@ -30,13 +30,7 @@ module FilteringHelper
       is_ontology_term = true unless base_uri.blank?
     end
     
-    # Special processing for categories
-    if filter_type == :cat
-      c = Category.find_by_id(filter_value)
-      text = (c.nil? ? "(Invalid category!)" : c.name)
-    end
-    
-    text = truncate(h(text), :length => 32)
+    text = truncate(h(text), :length => truncate_length)
     
     if is_ontology_term
       text = content_tag(:span, text, :class => 'ontology_term')
@@ -45,17 +39,12 @@ module FilteringHelper
     return text
   end
   
-  def get_tooltip_text_for_filter_value(filter_type, filter_value, is_selected=false)
+  def get_tooltip_text_for_filter_value(filter_type, filter_id, filter_name, is_selected=false)
     case filter_type
       when :cat
-        c = Category.find_by_id(filter_value)
-        if c.nil?
-          return "(Invalid category!)"
-        else
-          return (is_selected ? BioCatalogue::Categorising.category_hierachy_text(c) : "<b>#{h(c.name)}</b>")
-        end
+        return (is_selected ? BioCatalogue::Categorising.category_hierachy_text(Category.find_by_id(filter_id)) : "<b>#{h(filter_name)}</b>")
       else
-        return h(h(filter_value))
+        return h(h(filter_name))
     end
   end
   
@@ -76,7 +65,7 @@ module FilteringHelper
     less_text = ""
     case filter_type_query_key
       when :cat
-        more_text = "Show subcategories"
+        more_text = "Show all subcategories"
         less_text = "Show top level categories only"
       else
         more_text = "Show all"
@@ -111,6 +100,9 @@ module FilteringHelper
   
   def generate_include_filter_url(filter_type, filter_value, format=nil)
     new_params = BioCatalogue::Filtering.add_filter_to_params(params, filter_type, filter_value)
+    
+    # Remove special params
+    new_params = BioCatalogue::Util.remove_rails_special_params_from(new_params)
 
     unless format.nil?
       if format == :html
@@ -125,6 +117,9 @@ module FilteringHelper
 
   def generate_exclude_filter_url(filter_type, filter_value, format=nil)
     new_params = BioCatalogue::Filtering.remove_filter_from_params(params, filter_type, filter_value)
+    
+    # Remove special params
+    new_params = BioCatalogue::Util.remove_rails_special_params_from(new_params)
     
     unless format.nil?
       if format == :html
@@ -160,6 +155,29 @@ module FilteringHelper
     grouped << submitters unless submitters.blank?
     
     return grouped
+  end
+  
+  def display_name_for_filter(filter_type, filter_id)
+    name = filter_id
+    
+    unless [ :t, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ].include?(filter_type)
+      name = case filter_type
+        when :cat
+          c = Category.find_by_id(filter_id)
+          (c.nil? ? "(unknown category)" : c.name)
+        when :p
+          s = ServiceProvider.find_by_id(filter_id)
+          (s.nil? ? "(unknown provider)" : display_name(s))
+        when :su
+          u = User.find_by_id(filter_id)
+          (u.nil? ? "(unknown user)" : display_name(u))
+        when :sr
+          r = Registry.find_by_id(filter_id)
+          (r.nil? ? "(unknown registry)" : display_name(r))
+      end
+    end
+    
+    return name
   end
   
   def generate_sort_url(sort_by, sort_order)

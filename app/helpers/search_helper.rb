@@ -10,16 +10,13 @@ module SearchHelper
     'Please specify a search query...<br/>Examples: "blast" "blast AND ebi" "blast OR ebi"'
   end
   
+  # For a list of integer IDs
   def search_item_ids_to_objects(item_ids, result_type)
-    items = [ ]
-    
-    return items if item_ids.blank? or result_type.blank?
-    
-    model = result_type.classify.constantize
-    
-    items = model.find(:all, :conditions => { :id => item_ids })
-    
-    return items
+    BioCatalogue::Mapper.item_ids_to_model_objects(item_ids, result_type)
+  end
+  
+  def search_item_compound_ids_to_objects(item_compound_ids)
+    BioCatalogue::Mapper.compound_ids_to_model_objects(item_compound_ids)
   end
   
 end

@@ -20,15 +20,15 @@
 											 :autocomplete => "off" -%>
 		
 		<% if false %>
-		<%= select_tag :t, 
-									 options_for_select(BioCatalogue::Search::VALID_SEARCH_TYPES_INCL_ALL.collect { |t| [t.titleize, t] }, 
-									 params[:t]),
+		<%= select_tag :scope, 
+									 options_for_select(BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.collect { |t| [t.titleize, t] }, 
+									 params[:scope]),
 									 :disabled => true,
 									 :id => "action_bar_search_type_dropdown",
 									 :style => "width: 140px; font-size: 85%; vertical-align: middle;" %>
 		<% end %>
 		
-		<div class="auto_complete" id="action_bar_search_auto_complete" style="display:inline;"></div>
+		<div class="auto_complete" id="action_bar_search_auto_complete"></div>
 		
 		<%= auto_complete_field "action_bar_search_field",
 				:update => "action_bar_search_auto_complete",

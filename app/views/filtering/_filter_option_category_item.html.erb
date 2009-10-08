@@ -12,21 +12,34 @@
   category_li_class = level > 0 ? 'sub_category' : 'category_root'
 	category_li_style = "margin-left: #{level*1}em;"
 	filter = { }
+
+	cat_expanded = (cookies["category_state"].nil? ? false : cookies["category_state"][category.id,1] == 't')
 %>
 				
 <li class="<%= category_li_class -%>" style="<%= category_li_style -%>">
 	<%  benchmark "Rendered filtering/_filter_option_category_item/number_of_services_for_category_method" do %>
-		<% filter = { 'name' => category.id, 'count' => BioCatalogue::Categorising.number_of_services_for_category(category) } %>
+		<% filter = { 'id' => category.id, 'name' => category.name, 'count' => BioCatalogue::Categorising.number_of_services_for_category(category) } %>
 	<% end %>
 	
+	<% if category.has_children? %>
+    <% @cat_array << category.id.to_s %>
+		<%= link_to_function (cat_expanded ? image_tag("minus.png", :alt => "Collapse") : image_tag("plus.png", :alt => "Expand")), 
+												 "categoryToggle(#{category.id});", 
+												 :class => "active", 
+												 :style => "float: left; vertical-align: middle; margin-right: 0.4em;",
+												 :id => "toggle_category_#{category.id}" -%>
+	<% else %>
+		<%= image_tag "grey_box_icon.png", :style => "float: left; vertical-align: middle; margin-right: 0.4em;" -%>	
+	<% end %>
+
 	<%= render :partial => 'filtering/filter_option_item',
 						 :locals => { :filter => filter,
-													:filter_type => filter_type } -%>
+													:filter_type => filter_type,
+													:truncate_length => 26 } -%>
 </li>
 
 <% if category.has_children? %>
-
-	<ul class="<%= hidden_items_class -%>" style="<%= (filters_all_cookie_current_value == 'true' ? '' : 'display:none;') -%>">
+	<ul id="category_<%= category.id -%>_children" class="<%= hidden_items_class -%>" style="<%= (cat_expanded ? '' : 'display:none;') -%>">
 		<% category.children.each do |child| %>
 			<%= render :partial => 'filtering/filter_option_category_item',
 								 :locals => { :category => child,

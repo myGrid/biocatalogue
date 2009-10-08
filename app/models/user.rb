@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
     is_cached :repository => $cache
     index :email
   end
+
+  include RPXNow::UserIntegration
   
   acts_as_trashable
 
@@ -30,16 +32,21 @@ class User < ActiveRecord::Base
                  :if => proc{|u| u.activated?})
   end
 
-  validates_presence_of       :email
   validates_presence_of       :password, :if => :password_required?
   validates_presence_of       :password_confirmation, :if => :password_required?
   validates_confirmation_of   :password, :if => :password_required?
-  validates_confirmation_of   :email
-  validates_uniqueness_of     :email, :case_sensitive => false
+  
+  validates_presence_of       :email, :if => :email_required?
+  validates_confirmation_of   :email, :if => :email_required?
+  validates_uniqueness_of     :email, :case_sensitive => false, :if => :email_required?
   validates_email_veracity_of :email, :public_email
+  
+  # TODO: this, with allow/ignore nil - validates_uniqueness_of :identifier, :case_sensitive => false
 
-  attr_protected  :id, :salt, :crypted_password, :activated_at, :security_token, :role_id
+  attr_protected  :id, :salt, :crypted_password, :activated_at, :security_token, :role_id, :identifier
+  
   attr_accessor   :password
+  
   before_save     :encrypt_password
   before_create   :generate_activation_code,
                   :generate_default_display_name
@@ -80,7 +87,11 @@ class User < ActiveRecord::Base
   end
 
   def password_required?
-    crypted_password.blank? || !password.blank?
+    (crypted_password.blank? || !password.blank?) && self.identifier.blank?
+  end
+  
+  def email_required?
+    self.identifier.blank?
   end
 
   def annotation_source_name
@@ -111,6 +122,33 @@ class User < ActiveRecord::Base
       logger.error(ex)
       return false
     end
+  end
+  
+  def allow_merge?
+    (self.services.count == 0) && (self.annotations.count == 0)
+  end
+  
+  def update_last_active time
+    class << self
+      def record_timestamps; false; end
+    end
+    self.last_active = time
+    self.send(:update_without_callbacks)
+    class << self
+      remove_method :record_timestamps
+    end
+  end
+  
+  def annotated_service_ids
+    service_ids = self.annotations.collect do |a|
+      BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(a.annotatable_type, a.annotatable_id), "Service")      
+    end
+    service_ids.uniq
+  end
+  
+  #Possibly redundant:
+  def annotated_services    
+    BioCatalogue::Mapper.item_ids_to_model_objects(self.annotated_service_ids, "Service")    
   end
 
   private
@@ -150,6 +188,8 @@ class User < ActiveRecord::Base
 
   # Generate a default display name when creating a user for the 1st time
   def generate_default_display_name
-    self.display_name = self.email.split("@")[0] if self.display_name.blank?
+    if self.display_name.blank?
+      self.display_name = (email.blank? ? "[no name]" : self.email.split("@")[0])
+    end
   end
 end

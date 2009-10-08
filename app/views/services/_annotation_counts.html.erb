@@ -13,7 +13,7 @@
 	<% rounded "#DDD", "#333", "100%" do %>
 		<div class="annotations_counts_box">
 			<% content_tag(:span, :class => "total", :title => tooltip_title_attrib("Overall number of annotations on this service, including tags, aliases, descriptions, etc on the service, it's operations, inputs, outputs and so on."))  do %>
-				Annotations: <%= counts[:total] -%>
+				Annotations: <%= counts[:all] -%>
 				<%= image_tag(icon_filename_for(:annotations), :alt => "Overall number of annotations on this service, including tags, aliases, descriptions, etc on the service, it's operations, inputs, outputs and so on.") -%>
 			<% end %>
 			

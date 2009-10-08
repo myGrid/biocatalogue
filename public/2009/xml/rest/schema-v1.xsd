@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.biocatalogue.org/2009/xml/rest"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.biocatalogue.org/2009/xml/rest"
+	elementFormDefault="qualified" xmlns:dc="http://purl.org/dc/elements/1.1/">
+
+	<xsd:simpleType name="SearchScopeUrlValue">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="all"></xsd:enumeration>
+			<xsd:enumeration value="service_providers"></xsd:enumeration>
+			<xsd:enumeration value="services"></xsd:enumeration>
+			<xsd:enumeration value="users"></xsd:enumeration>
+			<xsd:enumeration value="registries"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:element name="search" type="Search"></xsd:element>
+
+	<xsd:complexType name="Search">
+		<xsd:sequence>
+			<xsd:element name="parameters" type="SearchParameters"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="statistics" type="SearchStatistics"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="results" type="SearchResults"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="related" type="SearchRelatedLinks"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="resource" type="xsd:anyURI"
+			use="required">
+		</xsd:attribute>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="SearchParameters">
+		<xsd:sequence>
+
+			<xsd:element name="query" type="SearchQuery" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+			<xsd:element name="scope" type="SearchScopeParameter"
+				maxOccurs="unbounded" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="page" type="xsd:positiveInteger"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+
+	<xsd:simpleType name="SearchQuery">
+		<xsd:restriction base="xsd:string"></xsd:restriction>
+	</xsd:simpleType>
+
+
+
+	<xsd:complexType name="SearchStatistics">
+		<xsd:complexContent>
+			<xsd:extension base="CollectionCoreStatistics">
+				<xsd:sequence>
+					<xsd:element name="scopedCount"
+						maxOccurs="unbounded" minOccurs="0">
+						<xsd:complexType>
+							<xsd:simpleContent>
+								<xsd:extension
+									base="xsd:nonNegativeInteger">
+									<xsd:attribute name="scope"
+										type="SearchScopeName">
+									</xsd:attribute>
+								</xsd:extension>
+							</xsd:simpleContent>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:element name="api">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="documentation" maxOccurs="1"
+					minOccurs="1">
+					<xsd:complexType>
+						<xsd:simpleContent>
+							<xsd:extension base="xsd:anyURI">
+								<xsd:attribute name="href"
+									type="xsd:string">
+								</xsd:attribute>
+							</xsd:extension>
+						</xsd:simpleContent>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="resources" maxOccurs="1"
+					minOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="services"
+								type="ResourceLink">
+							</xsd:element>
+							<xsd:element name="servicesFilters"
+								type="ResourceLink">
+							</xsd:element>
+							<xsd:element name="search"
+								type="ResourceLink">
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="resource" type="xsd:anyURI"
+				use="required">
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="SearchRelatedLinks">
+		<xsd:complexContent>
+			<xsd:extension base="CollectionCoreRelatedLinks">
+				<xsd:sequence>
+					<xsd:element name="scopedSearch" type="ScopedSearch"
+						maxOccurs="unbounded" minOccurs="0">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="CollectionCoreRelatedLinks">
+		<xsd:sequence>
+			<xsd:element name="previous" type="ResourceLink"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="next" type="ResourceLink" maxOccurs="1"
+				minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ResourceLink">
+		<xsd:attribute name="resource" type="xsd:anyURI"
+			use="required">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="ScopedSearch">
+		<xsd:complexContent>
+			<xsd:extension base="ResourceLink">
+				<xsd:attribute name="scope" type="SearchScopeName"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:simpleType name="SearchScopeName">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="All"></xsd:enumeration>
+			<xsd:enumeration value="Services"></xsd:enumeration>
+			<xsd:enumeration value="Service Providers"></xsd:enumeration>
+			<xsd:enumeration value="Users"></xsd:enumeration>
+			<xsd:enumeration value="Registries"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="SearchScopeParameter">
+		<xsd:simpleContent>
+			<xsd:extension base="SearchScopeName">
+				<xsd:attribute name="urlValue"
+					type="SearchScopeUrlValue" use="required">
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="SearchResults">
+		<xsd:sequence>
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element name="service" type="Service"
+					maxOccurs="unbounded" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="serviceProvider"
+					type="ServiceProvider" maxOccurs="unbounded" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="user" type="User"
+					maxOccurs="unbounded" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="registry" type="Registry"
+					maxOccurs="unbounded" minOccurs="0">
+				</xsd:element>
+			</xsd:choice>
+
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="service" type="Service"></xsd:element>
+
+	<xsd:complexType name="Service">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="resource" type="xsd:anyURI"
+			use="required">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="serviceProvider" type="ServiceProvider"></xsd:element>
+
+	<xsd:complexType name="ServiceProvider">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="resource" type="xsd:anyURI"
+			use="required">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="user" type="User"></xsd:element>
+
+	<xsd:complexType name="User">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="resource" type="xsd:anyURI"
+			use="required">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="registry" type="Registry"></xsd:element>
+
+	<xsd:complexType name="Registry">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="resource" type="xsd:anyURI"
+			use="required">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="services" type="Services"></xsd:element>
+
+	<xsd:complexType name="Services">
+		<xsd:sequence>
+			<xsd:element name="parameters" type="ServicesParameters"></xsd:element>
+			<xsd:element name="statistics" type="ServicesStatistics"></xsd:element>
+			<xsd:element name="results" type="ServicesResults"></xsd:element>
+			<xsd:element name="related" type="ServicesRelatedLinks"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="resource" type="xsd:anyURI"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="ServicesParameters">
+		<xsd:sequence>
+			<xsd:element name="page" type="xsd:positiveInteger"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="filters" type="Filters" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+			<xsd:element name="query" type="SearchQuery" maxOccurs="1"
+				minOccurs="1">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ServicesStatistics">
+		<xsd:complexContent>
+			<xsd:extension base="CollectionCoreStatistics"></xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="ServicesResults">
+		<xsd:sequence>
+			<xsd:element name="service" type="Service"
+				maxOccurs="unbounded" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ServicesRelatedLinks">
+		<xsd:complexContent>
+			<xsd:extension base="CollectionCoreRelatedLinks">
+				<xsd:sequence>
+					<xsd:element name="filters" type="ResourceLink"></xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="Filters">
+		<xsd:sequence>
+			<xsd:element name="filterType" type="FilterType"
+				maxOccurs="unbounded" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="resource" type="xsd:anyURI"
+			use="optional">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="filters" type="Filters"></xsd:element>
+
+	<xsd:complexType name="FilterType">
+		<xsd:sequence>
+			<xsd:element name="filter" type="Filter"
+				maxOccurs="unbounded" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="FilterTypeName"
+			use="required">
+		</xsd:attribute>
+		<xsd:attribute name="urlKey" type="FilterTypeUrlKey"
+			use="required">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:simpleType name="FilterTypeName">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="Service Types"></xsd:enumeration>
+			<xsd:enumeration value="Service Categories"></xsd:enumeration>
+			<xsd:enumeration value="Service Providers"></xsd:enumeration>
+			<xsd:enumeration value="Submitters (Registries)"></xsd:enumeration>
+			<xsd:enumeration value="Submitters (Members)"></xsd:enumeration>
+			<xsd:enumeration value="Countries"></xsd:enumeration>
+			<xsd:enumeration value="Tags"></xsd:enumeration>
+			<xsd:enumeration value="Tags (on Services)"></xsd:enumeration>
+			<xsd:enumeration value="Tags (on Operations)"></xsd:enumeration>
+			<xsd:enumeration value="Tags (on Inputs)"></xsd:enumeration>
+			<xsd:enumeration value="Tags (on Outputs)"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="FilterTypeUrlKey">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="cat"></xsd:enumeration>
+			<xsd:enumeration value="t"></xsd:enumeration>
+			<xsd:enumeration value="p"></xsd:enumeration>
+			<xsd:enumeration value="su"></xsd:enumeration>
+			<xsd:enumeration value="sr"></xsd:enumeration>
+			<xsd:enumeration value="tag"></xsd:enumeration>
+			<xsd:enumeration value="tag_s"></xsd:enumeration>
+			<xsd:enumeration value="tag_ops"></xsd:enumeration>
+			<xsd:enumeration value="tag_ins"></xsd:enumeration>
+			<xsd:enumeration value="tag_outs"></xsd:enumeration>
+			<xsd:enumeration value="c"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="Filter">
+		<xsd:sequence>
+			<xsd:element name="filter" type="Filter"
+				maxOccurs="unbounded" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="urlValue" type="xsd:string"
+			use="required">
+		</xsd:attribute>
+		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="count" type="xsd:nonNegativeInteger"
+			use="optional">
+		</xsd:attribute>
+		<xsd:attribute name="resource" type="xsd:anyURI"
+			use="optional">
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="CollectionCoreStatistics">
+		<xsd:sequence>
+			<xsd:element name="totalPages" type="xsd:nonNegativeInteger"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+			<xsd:element name="totalCount" type="xsd:nonNegativeInteger"
+				maxOccurs="1" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

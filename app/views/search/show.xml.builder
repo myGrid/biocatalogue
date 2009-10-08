@@ -1,11 +1,96 @@
-xml.instruct!(:xml)
-xml.tag!("search-results") {
-  @results.each { |type, res|
-    type = type.underscore.dasherize
-    xml.tag!(type.pluralize) {
-      res.each { |item|
-        xml << item.to_xml(:skip_instruct => true)
-      }
-    }
-  }
-}
+# BioCatalogue: app/views/search/show.xml.builder
+#
+# Copyright (c) 2008-2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+total_pages = (@results.total.to_f / PAGE_ITEMS_SIZE.to_f).ceil
+
+# <?xml>
+xml.instruct! :xml
+
+# <search>
+xml.tag! "search", 
+         { :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search", :params => params) }, 
+         BioCatalogue::RestApi::Builder.root_attributes do
+  
+  # <parameters>
+  xml.parameters do
+    
+    # <query>
+    xml.query @query
+    
+    # <scope>
+    xml.scope @scope.titleize, :urlValue => @scope
+    
+    # <page>
+    xml.page  @page
+    
+  end
+  
+  # <statistics>
+  xml.statistics do
+    
+    # <totalPages>
+    xml.totalPages total_pages
+    
+    # <itemCounts>
+    xml.itemCounts do 
+      
+      # <total>
+      xml.total @results.total
+      
+      # <scoped> *
+      @results.result_scopes.each do |result_scope|
+        xml.scoped @results.count_for(result_scope), :scope => result_scope.titleize
+      end
+      
+    end
+    
+  end
+  
+  # <results>
+  xml.results do
+    
+    paged_item_compound_ids = @results.paged_all_item_ids(@page, PAGE_ITEMS_SIZE)
+    items = search_item_compound_ids_to_objects(paged_item_compound_ids)
+    
+    items.each do |item|
+      xml.tag! item.class.name.camelize(:lower), :resource => BioCatalogue::RestApi::Resources.uri_for_object(item) do
+        xml.name display_name(item)
+      end
+    end
+    
+  end
+  
+  # <related>
+  xml.related do
+    
+    params_clone = BioCatalogue::Util.duplicate_params(params)
+    
+    # <previous>
+    unless @page == 1
+      xml.previous :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search", :params => params_clone.update(:page => (@page - 1)))
+    end
+    
+    # <next>
+    unless total_pages == 0 or total_pages == @page 
+      xml.next :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search", :params => params_clone.update(:page => (@page + 1)))
+    end
+    
+    # <searches>
+    xml.searches do 
+      
+      # <scoped> *
+      BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.each do |result_scope|
+        unless result_scope == @scope
+          xml.scoped :scope => result_scope.titleize,
+                     :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search", :params => params_clone.update(:scope => result_scope).reject{|k,v| k.to_s.downcase == "page" })
+        end
+      end      
+      
+    end
+    
+  end
+  
+end

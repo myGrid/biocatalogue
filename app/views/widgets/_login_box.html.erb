@@ -9,21 +9,43 @@
 %>
 
 <div id="login_box" style="display:none;">
-	<%= link_to image_tag("close.gif", :alt => "Close login box"), "#", :onclick => "closeLoginBox('login_box', 'login_link');" %>				
+	<div style="text-align:right;">
+		<%= link_to image_tag("close.gif", :alt => "Close login box"), "#", :onclick => "closeLoginBox('login_box', 'login_link'); return false;" %>
+	</div>
+	
 	<% form_tag session_path do %>
-      <span>
-        <%= text_field_tag :login, params[:login], { :size => 15, :class => 'small_login' } %>
-        <label for="login">Email:</label>
-      </span>
-	  <br />			
-      <span>
-        <%= password_field_tag :password, params[:password], { :size => 15, :class => 'small_login' } %>
-        <label for="password">Password:</label>
-      </span>
-      <%= submit_tag "Sign in", { :class => 'small_submit_button' } %>
-	  <br />
-	  <!--<a id="forgot_pwd" href="#">Forgot your<br />password ?</a>-->
-	  <%= link_to 'Forgot your<br />password ?', "/forgot_password", :id => "forgot_pwd" -%>
-	  <div id="sign_up">Don't have an account ? <%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%></div>
-    <% end %>
+    <span>
+      <%= text_field_tag :login, params[:login], :class => 'small_login' %>
+      <label for="login">Email:</label>
+    </span>
+  	<br/>			
+    <span>
+      <%= password_field_tag :password, params[:password], :class => 'small_login' %>
+      <label for="password">Password:</label>
+    </span>
+    
+		<%= submit_tag "Sign in", :disable_with => "Signing in...", :class => 'small_submit_button' %>
+		
+		<span class="clear"></span>
+	<% end %>
+		
+	<% if ENABLE_RPX %>
+		<p class="rpx">
+			<span style="padding: 0.7em 0 0.4em 0;">
+				<%= rpx_accounts_provider_logos_with_link -%>
+			</span>
+			<br/>
+			<%= RPXNow.popup_code('Sign in using <b>OpenID, Facebook, Twitter, etc</b>', RPX_REALM, rpx_token_sessions_url) -%>
+			<br/>
+			<span class="faded" style="font-size: 93%;">Even if you don't already have an account here</span>
+		</p>
+	<% end %>
+	
+  <div id="login_box_other_links">
+  	<ul>
+	  	<li><%= link_to 'Sign up for an account', signup_url, :id => "signup_link", :class => "signup" -%></li>
+			<li><%= link_to 'Forgot your password?', forgot_password_url, :id => "forgot_pwd" -%></li>
+		</ul>
+	</div>
+  
 </div>

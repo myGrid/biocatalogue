@@ -4,7 +4,15 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
+BioCatalogue::Util.say("Running in #{RAILS_ENV} mode...")
 BioCatalogue::Util.say("Configuring the BioCatalogue application...")
+
+# Set up loggers to STDOUT if in script/console 
+# (so now things like SQL queries etc are shown in the console instead of the development/production/etc logs).
+if "irb" == $0
+  BioCatalogue::Util.say "Setting up IRB to log SQL queries etc"
+  ActiveRecord::Base.logger = Logger.new(STDOUT)
+end
 
 # This is not loaded in Rails 2.3 anymore (apparently).
 require 'net/smtp'
@@ -54,6 +62,11 @@ if ENABLE_GOOGLE_ANALYTICS
   Rubaidh::GoogleAnalytics.tracker_id = GOOGLE_ANALYTICS_TRACKER_ID
 else
   Rubaidh::GoogleAnalytics.tracker_id = nil
+end
+
+# Set RPX API key (for OpenID, Twitter, Facebook, etc logins - see https://rpxnow.com/)
+if ENABLE_RPX
+  RPXNow.api_key = RPX_API_KEY
 end
 
 # Set global pagination per_page parameter in all models.

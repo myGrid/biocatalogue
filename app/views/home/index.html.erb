@@ -19,7 +19,7 @@
 				  BioCatalogue currently has
 				  <strong><%= link_to pluralize(Service.count, "service"), services_path -%></strong> and
 				  <strong><%= link_to pluralize(User.count_activated, "member"), users_url -%></strong>
-					<%= help_icon_with_tooltip("<b>Members</b> are registered users of the BioCatalogue.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' towards the top right. <br/><br/>#{sign_up_benefits_text}") -%>
+					<%= info_icon_with_tooltip("<b>Members</b> are registered users of the BioCatalogue.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' towards the top right. <br/><br/>#{sign_up_benefits_text}") -%>
 				<% end %>
       </center>
       <p class="home_heading">BioCatalogue: providing a curated catalogue<br />of Life Science Web Services.</p>

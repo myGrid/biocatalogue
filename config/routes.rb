@@ -6,6 +6,9 @@
 
 ActionController::Routing::Routes.draw do |map|
   
+  # API additional routes:
+  map.api_show '/api.:format', :controller => "api", :action => "show"
+  
   # To test error messages
   map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index'
   
@@ -22,26 +25,30 @@ ActionController::Routing::Routes.draw do |map|
 
   # Routes from the annotations plugin + extensions
   Annotations.map_routes(map,
-                         { :new_popup => :post },
+                         { :new_popup => :post,
+                           :create_inline => :post },
                          { :edit_popup => :post })
 
   # Tags (ordering is important!)
-  map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
-  map.tags_auto_complete '/tags/auto_complete', :controller => 'tags', :action => 'auto_complete', :conditions => { :method => :get }
-  map.tag_show '/tags/:tag_keyword', :controller => 'tags', :action => 'show', :conditions => { :method => :get }
-  map.destroy_tag '/tags', :controller => 'tags', :action => 'destroy', :conditions => { :method => :delete }
+#  map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
+#  map.tags_auto_complete '/tags/auto_complete', :controller => 'tags', :action => 'auto_complete', :conditions => { :method => :get }
+#  map.tag_show '/tags/:tag_keyword', :controller => 'tags', :action => 'show', :conditions => { :method => :get }
+#  map.destroy_tag '/tags', :controller => 'tags', :action => 'destroy', :conditions => { :method => :delete }
+  
+  map.resources :tags,
+                :only => [ :index, :show, :destroy ],
+                :collection => { :auto_complete => :get }
 
   # Ratings
   map.create_rating '/ratings', :controller => 'ratings', :action => 'create', :conditions => { :method => :post }
   map.destroy_rating '/ratings', :controller => 'ratings', :action => 'destroy', :conditions => { :method => :delete }
   
   # Search (ordering is important!)
-  map.search '/search', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }
   map.search_auto_complete '/search/auto_complete', :controller => 'search', :action => 'auto_complete', :conditions => { :method => :get }
   map.ignore_last_search '/search/ignore_last', :controller => 'search', :action => 'ignore_last', :conditions => { :method => :post }
   map.connect '/search/:q', :controller => 'search', :action => 'show', :conditions => { :method => :get }
-#  map.connect '/search.:format', :controller => 'search', :action => 'show'      # doesnt work in rails 2.3 for some reason
-#  map.connect '/search.:format/:q', :controller => 'search', :action => 'show'     # doesnt work in rails 2.3 for some reason
+  map.search '/search.:format', :controller => 'search', :action => 'show', :conditions => { :method => :get }
+  map.search '/search', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }
 
   map.resources :service_providers
 
@@ -49,12 +56,23 @@ ActionController::Routing::Routes.draw do |map|
 
   #map.resources :service_versions
 
-  map.resources :users, :collection => { :activate_account => :get }, :member => { :change_password => [:get, :post] }
+  map.resources :users, 
+                :collection => { :activate_account => :get,
+                                 :rpx_merge_setup => :get,
+                                 :rpx_merge => :post }, 
+                :member => { :change_password => [ :get, :post ],
+                             :rpx_update => [ :get, :post ] }
+                
   map.resource :session
 
+  if ENABLE_RPX
+    map.rpx_token_sessions '/sessions/rpx_token', :controller => 'sessions', :action => 'rpx_token'
+  end
+  
   map.register '/register', :controller => 'users', :action => 'new'
   map.signup '/signup', :controller => 'users', :action => 'new'
   map.login '/login', :controller => 'sessions', :action => 'new'
+  map.signin '/signin', :controller => 'sessions', :action => 'new'
   map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
   map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil
   map.forgot_password '/forgot_password', :controller => 'users', :action => 'forgot_password'
@@ -74,12 +92,15 @@ ActionController::Routing::Routes.draw do |map|
   #map.resources :soap_outputs
 
   map.resources :soaplab_servers,
-                 :collection => { :load_wsdl => :post}
+                :collection => { :load_wsdl => :post}
 
   map.resources :services,
-                :member => { :categorise => :post }
+                :collection => { :filters => :get },
+                :member => { :categorise => :post,
+                             :summary => :get }
   
-  map.resources :service_tests, :collection => {:add_test => :post }
+  map.resources :service_tests, 
+                :collection => {:add_test => :post }
 
   # Root of website
   map.root :controller => 'home', :action => 'index'

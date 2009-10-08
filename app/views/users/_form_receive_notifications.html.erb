@@ -8,21 +8,14 @@
 
 %>
 
-<center>
-	<table>
-		<tr>
-			<td style="padding-right: 1em; vertical-align: middle;"><%= form.check_box :receive_notifications %></td>
-			<td style="vertical-align: middle;">
-				<%= form.label :receive_notifications, "I would like to receive email notifications" %>
-		    <%= link_to_function help_icon_with_tooltip("By ticking this box you agree to receiving emails from us. We promise not to spam you!") + expand_image,
-												 		 visual_effect(:toggle_blind, "notifications_help", :duration => 0.3) %>
-			</td>
-		</tr>
-	</table>
-</center>
+<p>
+	<%= form.check_box :receive_notifications %>
+	<%= form.label :receive_notifications, "I would like to receive email notifications" %>
+</p>
 
-<div id="notifications_help" class="box_info_standout" style="display: none;  margin-top: 0.6em;">
-  By ticking this box you may receive email notifications from us.
+<div class="box_info_standout" style="margin-top: 0.6em; font-size: 93%;">
+  By ticking this box you agree to receiving emails from us.
 	This may be announcements, maintenance notices and so on.  
-	In the future this will also include email notifications for any services you have subscribed to, and notifications when users message you. 
+	In the future this will also include email notifications for 
+	any services you have subscribed to, and notifications when users message you. 
 </div>

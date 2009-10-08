@@ -10,17 +10,27 @@
 
 <h1>Sign up to the BioCatalogue website</h1>
 
-<div class="box_info_standout" style="float: right; font-size: 108%; padding: 0.7em 1.2em; max-width: 600px;">
-	<%= sign_up_benefits_text -%>
+<div style="float: right; width: 53%; line-height: 1.6;">
+
+	<% if ENABLE_RPX %>
+		<div style="margin-bottom: 1.5em;">
+			<%= render :partial => "shared/rpx_signin.html.erb" -%>
+		</div>
+	<% end %>
+	
+	<div class="box_info_standout" style="font-size: 108%; padding: 0.7em 1.2em;">
+		<%= sign_up_benefits_text -%>	
+	</div>
+	
 </div>
 
-<div class="box_form" style="width: 500px;">
+<div class="box_form" style="width: 40%;">
 
 	<% form_for(@user) do |f| %>
 	
 	  <%= f.error_messages %>
 		<fieldset>
-		  <legend>Email</legend>
+		  <legend>Email Address</legend>
 		  <p>
 		    <%= f.label :email, "Your email address" %>
 				<span class="required">*</span>
@@ -50,7 +60,11 @@
 		  </p>
 		</fieldset>
 		<fieldset>
-		  <legend>Some information about you</legend>
+		  <legend>Some Information About You</legend>
+			<p>
+		    <%= f.label :display_name, "Your name" %><br />
+		    <%= f.text_field :display_name %>
+		  </p>
 			<p>
 		    <%= f.label :public_email, "Your public email address <span class='faded'>(so people can contact you)</span>" %><br />
 		    <%= f.text_field :public_email, :size => 45 %>
@@ -65,12 +79,13 @@
 		  </p>
 		</fieldset>
 		
-		<br/>
-		
-		<%= render :partial => 'form_receive_notifications', :locals => { :form => f }  -%>
+		<fieldset>
+  		<legend>Notifications</legend>
+			<%= render :partial => 'form_receive_notifications', :locals => { :form => f }  -%>
+		</fieldset>
 		
 		<p class="center">
-			By clicking 'submit' you agree to our <%= link_to "terms of use", "/termsofuse", :target => '_blank' -%> 
+			By clicking 'Sign up' you agree to our <%= link_to "terms of use", "/termsofuse", :target => '_blank' -%> 
 		</p>
 		
 		<p class="center">

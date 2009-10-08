@@ -8,29 +8,123 @@
 
 %>
 
-<h1>Editing my profile</h1>
+<h1>Edit Account or Profile</h1>
 
-<div class="box_form" style="width: 500px;">
-	<% form_for(@user) do |f| %>
-	  <%= f.error_messages %>
-		<fieldset>
-		  <legend>Account email address</legend>
+<%= link_to 'Back to User Profile', @user, :class => "red_arrow_left" %>
+
+<br/>
+
+<%= error_messages_for :user %>
+
+<div class="box_form" style="width: 46%; float: left;">
+	<h2 class="center">
+		Account
+		<%= info_icon_with_tooltip(account_sign_in_options_info) -%>
+	</h2>
+	
+	<fieldset>
+	  <legend>BioCatalogue Account</legend>
+		
+		<% form_for(:user, @updated_user, :url => { :action => "update" }, :html => { :method => :put }) do |f| %>
+			<h4>Email address</h4>
+			
+			<p class="field">
+				<b>Current:</b>
+				<% unless @user.email.blank? %>
+					<%= h @user.email %>
+				<% else %>
+					<span class="none_text">Not set</span>
+				<% end %>
+			</p>
+			
 		  <p>
-		    <%= f.label :email, "Email" %>
-				<span class="required">*</span>
+		    <%= f.label :email, "New email address" %>
 				<br />
 		    <%= f.text_field :email %>
 		  </p>  
-			<% if false %>
 			<p>
 		    <%= f.label :email_confirmation, "Confirm your new email address" %>
 				<br />
 		    <%= f.text_field :email_confirmation %>
 		  </p>
+			
+			<p>
+		    <%= f.submit "Update", :disable_with => "Updating..." %>
+		  </p>
+		<% end %>
+		
+		<hr/>
+		
+		<% form_for(:user, @updated_user, :url => { :action => "update" }, :html => { :method => :put }) do |f| %>
+			<h4>Password</h4>
+			
+			<% if @user.crypted_password.blank? %>
+			<p class="field">
+				<b>Note:</b> you currently do not have a password set.
+			</p>
 			<% end %>
-		</fieldset>
+			
+		  <p>
+		    <%= f.label :password, "New password" %>
+				<br />
+		    <%= f.password_field :password %>
+		  </p>
+		  <p>
+		    <%= f.label :password_confirmation, "Confirm new password" %>
+				<br />
+		    <%= f.password_field :password_confirmation %>
+		  </p>
+			
+			<p>
+		    <%= f.submit "Update", :disable_with => "Updating..." %>
+		  </p>
+		<% end %>
+	</fieldset>
+	
+	<% if ENABLE_RPX %>
+		<a name="external_account"></a>
 		<fieldset>
-		  <legend>Profile info</legend>
+		  <legend>External Account</legend>
+			<h4>
+				External account identifier
+				<%= external_account_field_help_icon -%>
+			</h4>
+			
+			<p class="field">
+				<b>Current:</b>
+				<% unless @user.identifier.blank? %>
+					<%= h @user.identifier %>
+				<% else %>
+					<span class="none_text">Not set</span>
+				<% end %>
+			</p>
+			
+			<p>
+				<%= RPXNow.popup_code("Click here to set an external account (OpenID, Facebook, etc.)", RPX_REALM, rpx_update_user_url(@user)) -%>
+			</p>
+		</fieldset>
+	<% end %>
+		
+	<% form_for(@user) do |f| %>
+		<fieldset>
+  		<legend>Notifications</legend>
+			
+			<%= render :partial => 'form_receive_notifications', :locals => { :form => f } -%>
+		
+			<p>
+		    <%= f.submit "Update", :disable_with => "Updating..." %>
+		  </p>
+		</fieldset>
+	<% end %>
+</div>
+
+<div class="box_form" style="width: 46%; float: right;">
+	<h2 class="center">Profile</h2>
+	
+	<% form_for(@user) do |f| %>
+		<fieldset>
+		  <legend>General</legend>
+			
 			<p>
 		    <%= f.label :display_name, "Your display name" %>
 				<br />
@@ -48,16 +142,28 @@
 		    <%= f.label :country %><br />
 		    <%= f.country_select :country, ["United Kingdom"], { :prompt => "- Please select a country -" } %>
 		  </p>
+			
+			<p>
+		    <%= f.submit "Update", :disable_with => "Updating..." %>
+		  </p>
 		</fieldset>
+	<% end %>
 		
-		<br/>
-		
-		<%= render :partial => 'form_receive_notifications', :locals => { :form => f } -%>
-		
-		<p class="center">
-	    <%= f.submit "Update", :disable_with => "Updating..." %>
-	  </p>
+	<% form_for(@user) do |f| %>
+		<fieldset>
+		  <legend>Link to myExperiment Profile</legend>
+			
+			<span style="font-weight: bold; color: red;">Coming Soon... </span>
+			
+			<% if false %>
+			<p>
+		    <%= f.submit "Update", :disable_with => "Updating..." %>
+		  </p>
+			<% end %>
+		</fieldset>		
 	<% end %>
 </div>
+
+<span class="clear"></span>
 
 <%= link_to 'Back to User Profile', @user, :class => "red_arrow_left" %>

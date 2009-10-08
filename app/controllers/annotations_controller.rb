@@ -40,19 +40,48 @@ class AnnotationsController < ApplicationController
       @separator = params[:separator].nil? ? '' : params[:separator]
   
       respond_to do |format|
-        format.js { render :layout => false } # new_popup.html.erb
+        format.js { render :layout => false }
       end
     end
   end
   
   def edit_popup
-    # Call an available before filter method (in plugin's controller).
+    login_required
+    
+    # Call an available before filter method (it's in plugin's controller).
     # If this fails, it will throw an exception that ActionController will catch,
     # so we don't need to check the success of it.
     find_annotation
     
     respond_to do |format|
-      format.js { render :layout => false } # edit_popup.html.erb
+      format.js { render :layout => false }
+    end
+  end
+  
+  def create_inline
+    login_required
+    
+    # Call an available before filter method (it's in plugin's controller).
+    # If this fails, it will throw an exception that ActionController will catch,
+    # so we don't need to check the success of it.
+    find_annotatable
+    
+    # Set source as the current logged in user
+    params[:annotation][:source_type] = current_user.class.name
+    params[:annotation][:source_id] = current_user.id
+    
+    # Do we create multiple annotations or a single annotation?
+    if params[:multiple]
+      success, annotations, errors = Annotation.create_multiple(params[:annotation], params[:separator])
+    else
+      annotation = Annotation.new(params[:annotation])
+      annotation.annotatable = @annotatable
+      annotation.save!    # This will raise an exception if it fails
+    end
+    
+    respond_to do |format|
+      format.html { redirect_to @annotatable }
+      format.js { render :partial => "annotations/#{params[:partial]}", :locals => { :annotatable => @annotatable } } 
     end
   end
   

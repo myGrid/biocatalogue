@@ -1,0 +1,71 @@
+<%
+
+# BioCatalogue: app/views/users/rpx_merge_setup.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% t "Merge Accounts" %>
+
+<h1>Merge Accounts</h1>
+
+<% if @rpx_login_required %>
+	
+	<%= render :partial => "shared/login_form",
+						 :locals => { :show_other_links => false,
+													:redirect_to_url => rpx_merge_setup_users_url(:token => params[:token]) } -%>
+	
+<% else %>
+
+	<% if @rpx_user.allow_merge? %>
+	
+		<p>
+			Please note: this page is only valid for a few minutes.
+		</p>
+	
+		<div class="box_form" style="width: 500px;">
+			<% form_tag :action => "rpx_merge" do %>
+			
+				<%= hidden_field_tag :token, params[:token] -%>
+				
+				<p>
+					Are you sure you want to merge the following accounts:
+					<br/><br/>
+					<b>New account</b> that has the external account identifier of: <br/><%= h @rpx_data[:identifier] -%>
+					<br/><br/>
+					into
+					<br/><br/>
+					<b>Existing BioCatalogue account</b> that has the email address: <br/><%= h current_user.email -%>
+				</p>
+				
+				<p class="box_info_standout" style="font-size: 93%;">
+					Note: only the info about the external account identifier will be merged into the existing account. 
+					After merging you will have one single account and member profile, but you'll be able to sign in 
+					using either the external account (<%= list_of_rpx_accounts -%>) or the <b>original email address and password</b> you signed up with.
+					If you don't merge then you will have two accounts and member profiles in the BioCatalogue.
+				</p>
+				
+				<p class="center">
+			    <%= submit_tag "Yes, merge", :disable_with => "Merging..." %>
+			  </p>
+			
+			<% end %>
+			
+			<center>
+				<%= button_to  "No, cancel", home_url, :method => :get -%>
+			</center>
+		</div>
+	
+	<% else %>
+	
+		<p style="color: red; font-weight: bold;">
+			Unfortunately you cannot merge these accounts as your new account already has some content submitted.
+			Please <%= link_to "contact us for further assistance", contact_url -%>
+		</p>
+	
+	<% end %>
+
+<% end %>

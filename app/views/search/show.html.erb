@@ -8,16 +8,16 @@
 
 %>
 
-<% all_search = BioCatalogue::Search::ALL_TYPES_SYNONYMS.include?(@type) %>
+<% all_search = BioCatalogue::Search::ALL_SCOPE_SYNONYMS.include?(@scope) %>
 
 <% if @query.blank? %>
 	<h1>Search</h1>
 <% else %>
-	<% t "#{@type.titleize} &#45; Results for '#{h(@query)}'" -%>
+	<% t "#{@scope.titleize} &#45; Results for '#{h(@query)}'" -%>
 	<% if all_search %>
 		<h1>Search Results</h1>
 	<% else %>
-		<h1>Search Results <span class="faded">(for <%= @type.titleize -%>)</span></h1>
+		<h1>Search Results <span class="faded">(for <%= @scope.titleize -%>)</span></h1>
 	<% end%>
 <% end %>
 
@@ -56,19 +56,19 @@
 		<% if all_search %>
 		
 			<div id="search_results" class="tabber">
-				<% @results.result_types.each do |result_type| %>
+				<% @results.result_scopes.each do |result_scope| %>
 				
 					<% 
-						 visible_result_type = result_type.titleize
-						 items = search_item_ids_to_objects(@results.item_ids(result_type, 1), result_type)
-						 count = @results.count(result_type)
+						 visible_result_scope = result_scope.titleize
+						 items = search_item_ids_to_objects(@results.paged_item_ids_for(result_scope, 1, PAGE_ITEMS_SIZE), result_scope)
+						 count = @results.count_for(result_scope)
 						 more_items = count > PAGE_ITEMS_SIZE 
 					%>
 					
 					<% unless items.empty? %>
-						<div id='<%= "tab-#{result_type}" -%>' class="tabbertab">
+						<div id='<%= "tab-#{result_scope}" -%>' class="tabbertab">
 							<% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}"  %>
-					    <h3><%= "#{visible_result_type} (#{count_text})" -%></h3>
+					    <h3><%= "#{visible_result_scope} (#{count_text})" -%></h3>
 							
 							<% if more_items %>
 								<table style="width:100%; margin: 0 0 1.5em 0;">
@@ -77,17 +77,21 @@
 											<%= "Showing the top #{items.length} items out of #{count} in total" -%>
 										</td>
 										<td style="text-align: right;">
-											<%= link_to("Click here to see all #{visible_result_type} for '#{h(@query)}'", search_url(:q => @query, :t => result_type, :page => 2)) -%>
+											<%= link_to("See all #{visible_result_scope} for '#{h(@query)}'", 
+																	search_url(:q => @query, :scope => result_scope, :page => 2),
+																	:class => "button_slim") -%>
 										</td>
 									</tr>
 								</table>
 							<% end %>
 							
-							<%= render :partial => "#{result_type}/listing", :locals => { :items => items } %>
+							<%= render :partial => "#{result_scope}/listing", :locals => { :items => items } %>
 							
 							<% if more_items %>
 								<p style="text-align: right;">
-									<%= link_to("Click here to see all #{visible_result_type} for '#{h(@query)}'", search_url(:q => @query, :t => result_type, :page => 2)) -%>
+									<%= link_to("See all #{visible_result_scope} for '#{h(@query)}'", 
+															search_url(:q => @query, :scope => result_scope, :page => 2),
+															:class => "button_slim") -%>
 								</p>
 							<% end %>
 					  </div>
@@ -101,15 +105,15 @@
 		<% else %>
 		
 			<% 
-				 result_type = @type
-				 item_ids = @results.item_ids(result_type, params[:page])
-				 items = search_item_ids_to_objects(item_ids, result_type)
+				 result_scope = @scope
+				 item_ids = @results.paged_item_ids_for(result_scope, @page, PAGE_ITEMS_SIZE)
+				 items = search_item_ids_to_objects(item_ids, result_scope)
 			%>
 			
-			<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => item_ids, :entry_name => @type.gsub('_', ' ').singularize } %>
+			<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => item_ids, :entry_name => @scope.gsub('_', ' ').singularize } %>
 			
 			<div id="search_results" style="margin: 2em 0;">
-				<%= render :partial => "#{@type}/listing", :locals => { :items => items } %>
+				<%= render :partial => "#{@scope}/listing", :locals => { :items => items } %>
 			</div>
 				
 			<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => item_ids } %>

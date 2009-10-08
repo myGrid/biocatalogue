@@ -25,9 +25,70 @@ module BioCatalogue
     end
 
     # ===============
+
+    def self.compound_id_for(model_name, model_id)
+      return "" if model_name.blank? or model_id.nil?
+      return "#{model_name}:#{model_id.to_s}"
+    end
+    
+    def self.compound_id_for_model_object(obj)
+      return "" unless obj.kind_of?(ActiveRecord::Base)
+      return "#{obj.class.name}:#{obj.id.to_s}"
+    end
+    
+    # Given a compound ID (eg: "ServiceDeployment:3"), this method will split it into it's constituent parts.
+    # Returns an array with the first value being the model name (or model class if _constantize_model_name_ is set to true)
+    # and the second part the integer ID of the object.
+    def self.split_compound_id(compound_id, constantize_model_name=false)
+      return [ ] if compound_id.nil?
+      
+      model = nil
+      id = nil
+      
+      model, id = compound_id.split(':')
+      
+      model = model.constantize if constantize_model_name
+      
+      id = id.to_i
+      
+      return [ model, id ]
+    end
+    
+    # Given a list of IDs, returns back the model objects as specified by model_name.
+    # This respects the ordering in the items_ids list.
+    def self.item_ids_to_model_objects(item_ids, model_name)
+      items = [ ]
+    
+      return items if item_ids.blank? or model_name.blank?
+      
+      model = model_name.classify.constantize
+      
+      items_temp = model.find(:all, :conditions => { :id => item_ids })
+      
+      # Order back to the same ordering as the initial item_ids list
+      item_ids.each do |i|
+        items.concat items_temp.select{|x| x.id == i }
+      end
+      
+      return items
+    end
+    
+    def self.compound_ids_to_model_objects(compound_ids)
+      items = [ ]
+    
+      return items if compound_ids.blank?
+      
+      compound_ids.each do |c|
+        model, id = Mapper.split_compound_id(c, true)
+        item = model.find(:first, :conditions => { :id => id })
+        items << item unless item.nil?
+      end
+      
+      return items
+    end
     
     # Processes a list of compound IDs (format: "{model_name}:{id}") to build a list of 
-    # the IDs of the associated objects (of the model_name provided).
+    # the IDs of the *associated* objects of the model_name specified.
     #
     # E.g.: if there is "SoapOperation:203", then the ancestor Service ID will be retrieved.
     #
@@ -50,14 +111,12 @@ module BioCatalogue
       return associated_model_object_ids
     end
     
-    # E.g.: if the compound_id is "SoapOperation:203", then the ancestor Service ID will be returned.
+    # E.g.: if the compound_id is "SoapOperation:203", then the ancestor Service ID will be returned, if model_name is specified as "Service".
     def self.map_compound_id_to_associated_model_object_id(compound_id, model_name)
       associated_model_object_id = nil
       
-      source_model_name, source_id = compound_id.split(':')
+      source_model_name, source_id = split_compound_id(compound_id)
       
-      source_id = source_id.to_i
-        
       if source_model_name == model_name
         associated_model_object_id = source_id
       else

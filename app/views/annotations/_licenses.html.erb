@@ -8,24 +8,22 @@
 
 %>
 
+<%
+	attribute_name = "license"
+	main_div_id = "licenses_#{rand(10000000)}"
+%>
+
 <% unless annotatable.nil? %>
-	<div class="annotations_container">
+	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
 		  <b>License(s):</b>
 			<%= info_icon_with_tooltip("What are the license(s) that people using this service have to adhere to? For now you can mention the specific license(s) and/or provide URL(s).") -%>
-			
-			<%= annotation_add_by_popup_link annotatable,
-			     :attribute_name => "license",
-					 :link_text => "Add license",
-			     :tooltip_text => "Click to add info on the licensing restrictions. For now you can mention the specific license(s), describe restrictions and/or provide URL(s).",
-			     :style => "margin-left: 1em;" -%>
-
 		</div>
 		
 		<div class="box_annotations">
-			<% license_annotations = annotatable.annotations_with_attribute("license") %>
-			<% unless license_annotations.empty? %>
-				<% license_annotations.each do |ann| %>
+			<% licenses_annotations = annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.created_at <=> b.created_at} %>
+			<% unless licenses_annotations.empty? %>
+				<% licenses_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
@@ -42,8 +40,23 @@
 					<% end %>
 				<% end %>
 			<% else %>
-				<span class="none_text">none</span>
+				<span class="none_text">None</span>
 			<% end %>
 		</div>
+		
+		<% if logged_in? %>
+			
+			<%= render :partial => "annotations/common/default_add_box",
+								 :locals => { :partial_from => "licenses",
+															:annotatable => annotatable,
+															:attribute_name => attribute_name,
+															:text_area_default_text => "Add info on the licensing restrictions (mention a specific license, describe restrictions or provide a URL)...",
+															:main_div_id => main_div_id } -%>
+		
+		<% else %>
+			<div class="login_link_box">
+				<small><%= link_to("Login to add license info", login_path) -%></small>
+			</div>
+		<% end %>
 	</div>
 <% end %>
