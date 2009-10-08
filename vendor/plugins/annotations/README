@@ -1,9 +1,0 @@
-Annotations
-===========
-
-Allows for annotations to be added to multiple and different models.
-
-KNOWN ISSUES:
-=============
-
-- Will not work with sqlite and sqlite3 databases. Furthermore, not tested with Postgres.

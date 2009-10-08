@@ -1,0 +1,6 @@
+= Running Tests
+
+To run the tests for this plugin:
+* ensure the gem 'plugin_test_helper' is installed (only tested with v0.3.0).
+* ensure database 'annotations_plugin_test' exists on a local mysql server installation (with default ports) and username 'root' with blank password.
+* run: rake test:plugins PLUGIN=annotations

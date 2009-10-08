@@ -1,4 +1,4 @@
-class AnnotationsMigration < ActiveRecord::Migration
+class AnnotationsMigrationV1 < ActiveRecord::Migration
   def self.up
     create_table :annotations, :force => true do |t|
       t.string    :source_type,         :null => false
