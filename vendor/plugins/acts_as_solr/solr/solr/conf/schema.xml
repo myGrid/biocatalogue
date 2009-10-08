@@ -108,6 +108,8 @@
    <dynamicField name="*_s_mv" type="string" indexed="true" stored="false" multiValued="true"/>
    <dynamicField name="*_zh_text" type="text_zh" indexed="true" stored="false" multiValued="true"/>
    <dynamicField name="*_display" type="text" indexed="false" stored="true" multiValued="true"/>
+	 
+	 <dynamicField name="*_r_id" type="integer" indexed="true" stored="true" />
  </fields>
 
  <uniqueKey>id</uniqueKey>

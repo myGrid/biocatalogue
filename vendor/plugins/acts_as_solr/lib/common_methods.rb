@@ -24,6 +24,8 @@ module ActsAsSolr #:nodoc:
             return "facet"
           when :text
             return "t"
+          when :r_id
+            return "r_id"
         else
           raise "Unknown field_type symbol: #{field_type}"
         end

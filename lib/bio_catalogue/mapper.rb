@@ -7,6 +7,8 @@
 # Helper module to provide mapping functionality for models etc.
 # E.g.: to map a given SoapOperation's ID to it's ancestor Service ID.
 
+# NOTE that these mappings are from a search point of view.
+
 module BioCatalogue
   module Mapper
     
@@ -15,6 +17,13 @@ module BioCatalogue
     SERVICE_STRUCTURE_MODELS = [ Service, ServiceVersion, ServiceDeployment,
                                  SoapService, SoapOperation, SoapInput, SoapOutput,
                                  RestService, RestResource, RestMethod, RestParameter, RestRepresentation, RestMethodParameter, RestMethodRepresentation ].freeze
+    
+    # This is used to define what models can't be mapped to other models.
+    @@not_mappable = {
+      "ServiceProvider" => SERVICE_STRUCTURE_MODELS.collect {|s| s.name } + [ "User", "Registry" ],
+      "User" => SERVICE_STRUCTURE_MODELS.collect {|s| s.name } + [ "ServiceProvider", "Registry" ],
+      "Registry" => SERVICE_STRUCTURE_MODELS.collect {|s| s.name } + [ "ServiceProvider", "User" ]
+    }.freeze
     
     # ===============
     # Caching helpers
@@ -113,9 +122,12 @@ module BioCatalogue
     
     # E.g.: if the compound_id is "SoapOperation:203", then the ancestor Service ID will be returned, if model_name is specified as "Service".
     def self.map_compound_id_to_associated_model_object_id(compound_id, model_name)
-      associated_model_object_id = nil
-      
       source_model_name, source_id = split_compound_id(compound_id)
+      
+      # First check if we can do this mapping...
+      return nil if @@not_mappable[model_name] and @@not_mappable[model_name].include?(source_model_name)
+      
+      associated_model_object_id = nil
       
       if source_model_name == model_name
         associated_model_object_id = source_id
@@ -127,9 +139,21 @@ module BioCatalogue
         
         if cached_value.nil?
           # It's not in the cache so get the value and store it in the cache...
-          new_value = case model_name.to_s
-            when "Service"
-              BioCatalogue::Mapper.get_ancestor_service_id(source_model_name, source_id)
+          
+          new_value = nil
+          
+          # Special case for Annotations:
+          if source_model_name == "Annotation"
+            ann = Annotation.find(source_id)
+            new_value = ann.annotatable_id if ann.annotatable_type == model_name
+          end
+          
+          # If nothing was found yet, carry on...
+          if new_value.nil?
+            new_value = case model_name.to_s
+              when "Service"
+                Mapper.get_ancestor_service_id(source_model_name, source_id)
+            end
           end
           
           if new_value.blank?

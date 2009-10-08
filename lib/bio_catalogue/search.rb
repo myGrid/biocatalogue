@@ -15,13 +15,11 @@ module BioCatalogue
     VALID_SEARCH_SCOPES_INCL_ALL = ([ ALL_SCOPE_SYNONYMS[0] ] + VALID_SEARCH_SCOPES).freeze
     
     # As new models are indexed (and therefore need to be searched on) add them here.
-    @@models_for_search_scopes = { ALL_SCOPE_SYNONYMS[0] => Mapper::SERVICE_STRUCTURE_MODELS + [ ServiceProvider, User, Registry, Annotation ],
-                                   "services" => Mapper::SERVICE_STRUCTURE_MODELS + [ Annotation ],
-                                   "service_providers" => [ ServiceProvider, Annotation ],
-                                   "users" => [ User, Annotation ],
-                                   "registries" => [ Registry, Annotation ]}.freeze
+    @@models_for_search = (Mapper::SERVICE_STRUCTURE_MODELS + [ ServiceProvider, User, Registry, Annotation ]).freeze
     
     @@search_query_suggestions_file_path = File.join(Rails.root, 'data', 'search_query_suggestions.txt')
+    
+    @@limit = 10000
     
     def self.on?
       return ENABLE_SEARCH
@@ -114,40 +112,29 @@ module BioCatalogue
       return query
     end
     
-    def self.search_all(query)
-      query = self.preprocess_query(query)
-      
-      limit = 5000
-      
-      models = @@models_for_search_scopes[ALL_SCOPE_SYNONYMS[0]]
-      search_result_docs = models.first.multi_solr_search(query, :limit => limit, :models => models[1...models.length], :results_format => :ids).docs
-        
-      return Results.new(search_result_docs, VALID_SEARCH_SCOPES)
-    end
-    
     def self.search(query, scope)
-      return self.search_all(query) if ALL_SCOPE_SYNONYMS.include?(scope.downcase)
-      return nil unless VALID_SEARCH_SCOPES.include?(scope.downcase)
+      scope = scope.downcase
+        
+      return nil unless VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
       
       query = self.preprocess_query(query)
       
-      limit = 2000
+      search_result_docs = @@models_for_search.first.multi_solr_search(query, 
+        :limit => @@limit, 
+        :models => @@models_for_search[1...@@models_for_search.length], 
+        :results_format => :ids, 
+        :additional_fields => { :associated_service_id => :r_id,
+                                :associated_service_provider_id => :r_id,
+                                :associated_user_id => :r_id, 
+                                :associated_registry_id => :r_id }).docs
       
-      models = @@models_for_search_scopes[scope]
-      
-      search_result_docs = [ ]
-      
-      unless models.blank?
-        if models.length == 1
-          # Only one model to look for...
-          search_result_docs = models.first.find_id_by_solr(query).docs
-        else
-          # Multiple models to search for, to collect results for the scope requested...
-          search_result_docs = models.first.multi_solr_search(query, :limit => limit, :models => models[1...models.length], :results_format => :ids).docs
-        end
+      scopes_for_results = if ALL_SCOPE_SYNONYMS.include?(scope)
+        VALID_SEARCH_SCOPES
+      else
+        [ scope ]
       end
       
-      return Results.new(search_result_docs, [ scope ])
+      return Results.new(search_result_docs, scopes_for_results)
     end
     
     # =======================
@@ -252,17 +239,30 @@ module BioCatalogue
       
       protected
       
-      # This method will take the original IDs that were given by the search engine
+      # This method will take the original data that was given by the search engine
       # and map, process and group them into the IDs for the overall and grouped results.
       def process_original_ids
         
-        # Take the original (raw) set of compound IDs and map to compound IDs of all objects required according to the scopes specified.
+        # Take the original (raw) set of data and either get the required ID from the data or map to compound IDs of 
+        # all objects required according to the scopes specified.
         # Ordering is important and must be taken into account here!
         
-        @original_ids.each do |compound_id|
+        @original_search_docs.each do |doc|
           @result_scopes.each do |result_scope|
             result_model_name = @internal_scopes_to_and_from_model_names_map[result_scope]
-            id = Mapper.map_compound_id_to_associated_model_object_id(compound_id, result_model_name)
+            
+#            puts ""
+#            puts doc.inspect
+#            puts ""
+            
+            # This will first look for the presence of the ID in the original doc,
+            # in the form of "associated_{object_type}_id}.
+            # If not present it will use the Mapper to get it.
+            field_key = "associated_#{result_model_name.underscore}_id"
+            if (id = doc[field_key]).blank?
+              id = Mapper.map_compound_id_to_associated_model_object_id(doc['id'], result_model_name)
+            end
+            
             @overall_results_ids << BioCatalogue::Mapper.compound_id_for(result_model_name, id) unless id.nil? 
           end
         end

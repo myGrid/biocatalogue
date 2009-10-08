@@ -32,7 +32,8 @@ class RestService < ActiveRecord::Base
                           :message => 'is not valid'
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :interface_doc_url, :documentation_url, :service_type_name ])
+    acts_as_solr(:fields => [ :name, :description, :interface_doc_url, :documentation_url, :service_type_name,
+                              { :associated_service_id => :r_id } ])
   end
   
   if USE_EVENT_LOG
@@ -115,5 +116,11 @@ class RestService < ActiveRecord::Base
     end
     
     return success
+  end
+  
+  protected
+  
+  def associated_service_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end
 end

@@ -18,7 +18,7 @@ class SoaplabServer < ActiveRecord::Base
   
   acts_as_annotatable
   
-  has_many :relationships, :as => :object, :dependent =>:destroy
+  has_many :relationships, :as => :object, :dependent => :destroy
 
   validates_presence_of :location
   validates_uniqueness_of :location, :message => " for this server seems to exist in BioCatalogue"
@@ -26,7 +26,7 @@ class SoaplabServer < ActiveRecord::Base
                           :allow_nil => false
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :location ] )
+    acts_as_solr(:fields => [ :location ])
   end
 
   # save the soap services from this server in

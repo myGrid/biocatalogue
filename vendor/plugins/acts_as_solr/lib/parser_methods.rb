@@ -4,7 +4,7 @@ module ActsAsSolr #:nodoc:
     
     # Method used by mostly all the ClassMethods when doing a search
     def parse_query(query=nil, options={}, models=nil)
-      valid_options = [:offset, :limit, :facets, :models, :results_format, :order, :scores, :operator, :include, :lazy]
+      valid_options = [:offset, :limit, :facets, :models, :results_format, :order, :scores, :operator, :include, :lazy, :additional_fields]
       query_options = {}
 
       return nil if (query.nil? || query.strip == '')
@@ -61,15 +61,16 @@ module ActsAsSolr #:nodoc:
           end          
         end
         
-        if models.nil?
-          # TODO: use a filter query for type, allowing Solr to cache it individually
-          models = "AND #{solr_type_condition}"
-          field_list = solr_configuration[:primary_key_field]
-        else
-          field_list = "id"
-        end
+#        if models.empty?
+#          # TODO: use a filter query for type, allowing Solr to cache it individually
+#          models = "AND #{solr_type_condition}"
+#          field_list = solr_configuration[:primary_key_field]
+#        else
+#          field_list = "id"
+#        end
         
-        query_options[:field_list] = [field_list, 'score']
+#        query_options[:field_list] = [field_list, 'score']
+        
         # UPDATED by Jits, for BioCatalogue (2009-05-12):
         # The processing of field names within queries (to add an "_t") should only be done if the query doesn't start and end with double quotation marks.
         # This is required to search for things like URLs, that have strings like "http:" in them.

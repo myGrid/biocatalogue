@@ -27,12 +27,7 @@ class SearchController < ApplicationController
       
     else
       begin
-        # Either peform an 'all' search or redirect to the appropriate scope's search action
-        if BioCatalogue::Search::ALL_SCOPE_SYNONYMS.include?(@scope)
-          @results = BioCatalogue::Search.search_all(@query)
-        else
-          @results = BioCatalogue::Search.search(@query, @scope)
-        end
+        @results = BioCatalogue::Search.search(@query, @scope)
         raise "nil @results object returned" if @results.nil?
       rescue Exception => ex
         flash.now[:error] = "Sorry, search didn't work this time. Try with different keyword(s). Please <a href='/contact'>report this</a> if it continues for other searches."

@@ -28,7 +28,11 @@ class Annotation < ActiveRecord::Base
   end
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :value_for_solr ] )
+    acts_as_solr(:fields => [ :value_for_solr, 
+                              { :associated_service_id => :r_id },
+                              { :associated_service_provider_id => :r_id },
+                              { :associated_user_id => :r_id }, 
+                              { :associated_registry_id => :r_id } ])
   end
   
   protected
@@ -53,5 +57,21 @@ class Annotation < ActiveRecord::Base
       end
     end
     return true
+  end
+  
+  def associated_service_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+  
+  def associated_service_provider_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "ServiceProvider")
+  end
+  
+  def associated_user_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "User")
+  end
+  
+  def associated_registry_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Registry")
   end
 end

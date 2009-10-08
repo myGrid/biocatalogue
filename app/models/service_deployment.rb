@@ -40,7 +40,8 @@ class ServiceDeployment < ActiveRecord::Base
   before_save :check_service_id
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name, :provider_name ])
+    acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name, :provider_name, 
+                              { :associated_service_id => :r_id } ])
   end
   
   if USE_EVENT_LOG
@@ -98,6 +99,10 @@ protected
       end
     end
     return true
+  end
+  
+  def associated_service_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end
   
 end

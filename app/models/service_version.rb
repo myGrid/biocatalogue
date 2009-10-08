@@ -30,11 +30,18 @@ class ServiceVersion < ActiveRecord::Base
   validates_presence_of :version, :version_display_text
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :version_display_text, :submitter_name ] )
+    acts_as_solr(:fields => [ :version_display_text, :submitter_name,
+                              { :associated_service_id => :r_id } ] )
   end
   
   if USE_EVENT_LOG
     acts_as_activity_logged(:models => { :culprit => { :model => :submitter },
                                          :referenced => { :model => :service } })
+  end
+  
+  protected
+  
+  def associated_service_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end
 end

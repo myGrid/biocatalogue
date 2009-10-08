@@ -146,7 +146,10 @@ module ActsAsSolr #:nodoc:
     #            => 1.21321397
     #            books.records.last.solr_score
     #            => 0.12321548
-    # 
+    # additional_fields:: (Only applicable if results_format is :ids) This specifies a hash of additional fields (and their corresponding types)
+    #                     that should be returned together with the IDs. These fields will be returned together with the "id" in a hash.
+    #                     NOTE: this only works for fields that are specifically stored in SOLR.
+    #                     Example config setting: [ { :book_id => :r_id, :author_id => :r_id } ]
     def multi_solr_search(query, options = {})
       models = multi_model_suffix(options)
       options.update(:results_format => :objects) unless options[:results_format]
@@ -171,14 +174,49 @@ module ActsAsSolr #:nodoc:
           result << k[0].constantize.find_by_id(k[1])
         end
       elsif options[:results_format] == :ids
-        data.hits.each{|doc| result << {"id" => doc.values.pop.to_s}}
+        result = process_results_for_compound_ids_only(data, options)
       end
       result
     end
     
+    # Added by Jits, on 20091008, to cater for additional fields.
+    def process_results_for_compound_ids_only(data, options)
+      results = [ ]
+      
+      additional_fields_names = { }
+          
+      if options[:additional_fields]
+        options[:additional_fields].each do |k,v|
+          additional_fields_names[k] = "#{k}_#{get_solr_field_type(v)}"
+        end
+      end
+      
+#      puts ""
+#      puts data.inspect
+#      puts ""
+      
+      data.hits.each do |doc| 
+#        puts ""
+#        puts doc.inspect
+#        puts ""
+        
+        result_data_item = { }
+        result_data_item["id"] = doc['id'].first.to_s
+
+        # Process any additional field requirements
+        additional_fields_names.each do |k,v|
+          result_data_item[k.to_s] = doc[v].first.to_s if doc.has_key?(v)
+        end
+        
+        results << result_data_item
+      end
+      
+      return results
+    end
+    
     def multi_model_suffix(options)
       models = "AND (#{solr_configuration[:type_field]}:#{self.name}"
-      models << " OR " + options[:models].collect {|m| "#{solr_configuration[:type_field]}:" + m.to_s}.join(" OR ") if options[:models].is_a?(Array)
+      models << " OR " + options[:models].collect {|m| "#{solr_configuration[:type_field]}:" + m.to_s}.join(" OR ") if options[:models].is_a?(Array) && !options[:models].empty?
       models << ")"
     end
     
