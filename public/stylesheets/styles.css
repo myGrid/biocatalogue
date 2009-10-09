@@ -1919,6 +1919,9 @@ a.button_slim {
 	line-height: 1.6;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
+	background-image: url('/images/button_slim_bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
 	background-color: #EEF6FF;
 	vertical-align: middle;
 	padding: 0.1em 0.5em;
@@ -1928,6 +1931,7 @@ a.button_slim {
 }
 
 a.button_slim:hover {
+	background-image: none;
 	background-color: #0099FF;
 	color: #F5F5F5;
 }
