@@ -26,13 +26,7 @@
 					<table style="width: 100%;">
 						<tr>
 							<td>
-								<span class="name"><%= link_to(h(service.name), service_path(service)) -%></span>
-								<span>
-									<%= service_type_badges(service.service_types) -%>
-								</span>
-								<span>
-									<%= service_location_flags(service) -%>
-								</span>
+								<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
 							</td>
 							<td style="text-align: right; width: 450px; vertical-align: top;">
 								<span class="inline-block" style="padding-right: 2em; padding-top: 0.8em;">
@@ -131,14 +125,10 @@
 						<table style="width: 100%;">
 							<tr>
 								<td>
-									<span class="name"><%= link_to(h(service.name), service_path(service)) -%></span>
-									<span>
-										<%= service_type_badges(service.service_types) -%>
-									</span>
-									<span>
-										<%= service_location_flags(service) -%>
-									</span>
+									<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
+									
 									<br/>
+									
 									<% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
 										<div style="margin-top: 0.8em;">
 											<%= render :partial => "annotations/categories", 

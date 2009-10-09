@@ -40,7 +40,7 @@ module ServicesHelper
 
     service.service_deployments.each do |s_d|
       unless s_d.country.blank?
-        html << link_to(flag_icon_from_country(s_d.country, :text => s_d.location, :style => 'vertical-align: middle;'), 
+        html << link_to(flag_icon_from_country(s_d.country, :text => s_d.location, :style => 'vertical-align: middle; margin-left: 0.5em;'), 
                         services_path(:c => "[#{s_d.country}]"), 
                         :class => "service_location_flag")
       end
