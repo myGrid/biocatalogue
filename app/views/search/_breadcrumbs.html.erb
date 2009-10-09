@@ -16,7 +16,9 @@
 	<% if @query.blank? %>
 		<li><span>Please specify a search query...</span></li>
 	<% else %>
-		<li><span><%= "#{@scope.titleize} <span style='vertical-align:middle;'><b>&#187;</b></span> Results for '#{h(@query)}'" -%></span></li>
+		<li><span><%= @scope.titleize -%></span></li>
+		<li><b>&#187;</b></li> 
+		<li><span><%= "Results for '#{h(@query)}'" -%></span></li>
 	<% end %>
 	
 <% else -%>
