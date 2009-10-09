@@ -117,7 +117,7 @@
 				</div>
 				<p style="margin-top: 0.7em;">
 					<%= render_select_tag_for_category_options_on_service_submission("categories_selector", false, "width: 400px;") -%>
-					<b><a href="#" onclick="javascript:addServiceCategory('categories_selector'); return false;" class="button_slim" style="margin-left: 0.6em; padding: 0.2em 0.4em;">Add to list</a></b>
+					<b><a href="#" onclick="javascript:addServiceCategory('categories_selector'); return false;" class="button_slim" style="margin-left: 0.6em; padding: 0.2em 0.4em;"><span>Add to list</span></a></b>
 				</p>
 				<p style="text-align: center;">
 			    <%= f.submit "Submit", :disable_with => "Submitting..." -%>

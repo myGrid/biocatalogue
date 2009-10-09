@@ -127,8 +127,6 @@
 								<td>
 									<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
 									
-									<br/>
-									
 									<% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
 										<div style="margin-top: 0.8em;">
 											<%= render :partial => "annotations/categories", 

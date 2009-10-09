@@ -15,7 +15,7 @@
 <br/>
 
 <div class="toolbar">
-  <%= link_to(image_tag(icon_filename_for(:user_edit)) + 'Edit Account or Profile', edit_user_path(@user), :class => "button_slim") %>
+  <%= link_to(image_tag(icon_filename_for(:user_edit)) + content_tag(:span, ' Edit Account or Profile'), edit_user_path(@user), :class => "button_slim") %>
 </div>
 
 <div id="user-tabs" class="tabber">
@@ -169,7 +169,7 @@
 				
 				<p style="text-align: right; margin: -1.5em 0 2em 0;">
 					<% if mine?(f) -%>
-						<%= link_to(image_tag(icon_filename_for(:delete), :style => 'vertical-align: middle;') + " <span style='vertical-align: middle;'>Remove from favourites</span>",
+						<%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, " Remove from favourites"),
 	               				favourite_path(f),
 	               				:method => :delete,
 	               				:confirm => "Are you sure you want to remove this service from your favourites?",

@@ -14,8 +14,8 @@
 %>
 
 <% if @listing_type == :simple %>
-	<%= link_to "Switch to Detailed View", base_url_lambda.call({ :listing => :detailed }), :class => "button_slim", :style => "#{style}" -%>
+	<%= link_to content_tag(:span, "Switch to Detailed View"), base_url_lambda.call({ :listing => :detailed }), :class => "button_slim", :style => "#{style}" -%>
 <% elsif @listing_type == :detailed %>
-	<%= link_to "Switch to Simple View", base_url_lambda.call({ :listing => :simple }), :class => "button_slim", :style => "#{style}"  -%>
+	<%= link_to content_tag(:span, "Switch to Simple View"), base_url_lambda.call({ :listing => :simple }), :class => "button_slim", :style => "#{style}"  -%>
 <% end %>
 

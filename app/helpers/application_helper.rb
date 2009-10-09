@@ -88,6 +88,8 @@ module ApplicationHelper
         "add_tag_inactive.gif"
       when :user_edit
         "user_edit.gif"
+      when :arrow_forward
+        "red_arrow.gif"
       else
         ''
     end

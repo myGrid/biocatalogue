@@ -219,7 +219,7 @@ module FilteringHelper
     
     url = services_path(params_dup)
     
-    output << link_to(text, url, :class => "button_slim", :style => "font-size: 93%;", :title => tooltip_title_attrib(tooltip_text))
+    output << link_to(content_tag(:span, "#{text} "), url, :class => "button_slim", :style => "font-size: 93%;", :title => tooltip_title_attrib(tooltip_text))
     
     return output
   end
