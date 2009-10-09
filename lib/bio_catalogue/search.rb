@@ -112,7 +112,7 @@ module BioCatalogue
       return query
     end
     
-    def self.search(query, scope)
+    def self.search(query, scope=ALL_SCOPE_SYNONYMS[0])
       scope = scope.downcase
         
       return nil unless VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
