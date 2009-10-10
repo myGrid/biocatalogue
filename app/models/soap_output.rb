@@ -19,7 +19,7 @@ class SoapOutput < ActiveRecord::Base
   serialize :computational_type_details
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :computational_type,
+    acts_as_solr(:fields => [ :name, :description, :computational_type, :computational_type_details_for_solr,
                               { :associated_service_id => :r_id } ])
   end
   
@@ -31,5 +31,9 @@ class SoapOutput < ActiveRecord::Base
   
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+  
+  def computational_type_details_for_solr
+    BioCatalogue::Util.all_values_from_hash(self.computational_type_details).collect {|i| i.downcase}.uniq.to_sentence(:words_connector => ' ', :last_word_connector => ' ', :two_words_connector => ' ')
   end
 end

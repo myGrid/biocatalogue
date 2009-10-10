@@ -217,5 +217,25 @@ module BioCatalogue
       puts msg
       Rails.logger.info msg
     end
+    
+    # Utility method to get all the 'values' from a Hash as a single list.
+    # This takes into account inner Hashes and inner Arrays. 
+    def self.all_values_from_hash(h)
+      values = [ ]
+      
+      return values if h.blank? or !h.is_a?(Hash)
+      
+      h.each do |k,v|
+        if v.is_a?(Hash)
+          values.concat(all_values_from_hash(v))
+        elsif v.is_a?(Array)
+          values.concat(v)
+        else
+          values << v.to_s
+        end
+      end
+      
+      return values
+    end
   end
 end
