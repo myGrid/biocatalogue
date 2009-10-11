@@ -209,10 +209,6 @@ class ApplicationController < ActionController::Base
     return (!params[:format].nil? and params[:format] != "html" and params[:format] != "htm")
   end
   
-  def parse_current_filters
-    @current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
-  end
-
   # ========================================
   # Code to help with remembering which tab
   # the user was in after redirects etc.

@@ -10,6 +10,8 @@ class ServicesController < ApplicationController
   
   before_filter :parse_current_filters, :only => [ :index ]
   
+  before_filter :parse_sort_params, :only => [ :index ]
+  
   before_filter :find_services, :only => [ :index ]
   
   before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary ]
@@ -141,28 +143,25 @@ class ServicesController < ApplicationController
     # Sorting
     
     order = 'services.created_at DESC'
+    order_field = nil
+    order_direction = nil
     
-    if !params[:sortby].blank? and !params[:sortorder].blank?
-      order_field = nil
-      order_direction = nil
-      
-      case params[:sortby].downcase
-        when 'created'
-          order_field = "services.created_at"
-        when 'updated'
-          order_field = "services.updated_at"
-      end
-      
-      case params[:sortorder].downcase
-        when 'asc'
-          order_direction = 'ASC'
-        when 'desc'
-          order_direction = "DESC"
-      end
-      
-      unless order_field.blank? or order_direction.nil?
-        order = "#{order_field} #{order_direction}"
-      end
+    case @sortby
+      when 'created'
+        order_field = "services.created_at"
+      when 'updated'
+        order_field = "services.updated_at"
+    end
+    
+    case @sortorder
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "#{order_field} #{order_direction}"
     end
     
     # Filters
@@ -224,6 +223,15 @@ class ServicesController < ApplicationController
       @listing_type = default_type
       session[session_key] = default_type.to_s 
     end
+  end
+  
+  def parse_current_filters
+    @current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
+  end
+  
+  def parse_sort_params
+    @sortby = (params[:sortby].try(:downcase) || "created")
+    @sortorder = (params[:sortorder].try(:downcase) || "desc")
   end
  
 end
