@@ -8,7 +8,7 @@
 xml.instruct! :xml
 
 # <services>
-xml.tag! "api", { :resource => request.url }, BioCatalogue::RestApi::Builder.root_attributes do
+xml.tag! "api", { :resource => BioCatalogue::RestApi::Resources.uri_for_collection("/") }, BioCatalogue::RestApi::Builder.root_attributes do
   
   # <documentation>
   xml.documentation :href => "http://www.example.com"
