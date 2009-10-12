@@ -359,7 +359,7 @@ module BioCatalogue
                 
                 unless providers.blank?
                   conditions[:service_deployments] = { } if conditions[:service_deployments].blank?
-                  conditions[:service_deployments][:service_providers] = { :name => providers }
+                  conditions[:service_deployments][:service_providers] = { :id => providers }
                   joins << [ { :service_deployments => :provider } ]
                 end
               when :c
