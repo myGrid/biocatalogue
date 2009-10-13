@@ -6,9 +6,6 @@
 
 ActionController::Routing::Routes.draw do |map|
   
-  # API additional routes:
-  map.api_show '/', :controller => "api", :action => "show", :requirements => { :format => "xml" }
-  
   # To test error messages
   map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index'
   
