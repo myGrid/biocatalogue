@@ -4,18 +4,10 @@ one:
   name: MyString
   wsdl_location: MyString
   description: MyText
-  wsdl_file: 
-  version: MyString
-  web_service_id: 1
-  provider_id: 1
   documentation_url: MyString
 
 two:
   name: MyString
   wsdl_location: MyString
   description: MyText
-  wsdl_file: 
-  version: MyString
-  web_service_id: 1
-  provider_id: 1
   documentation_url: MyString
