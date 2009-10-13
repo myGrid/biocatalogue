@@ -16,6 +16,8 @@ class UsersController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [ :rpx_update ]
   
   before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update ]
+  
+  before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
 
   # GET /users
   # GET /users.xml
