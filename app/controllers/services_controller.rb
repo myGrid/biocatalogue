@@ -230,8 +230,19 @@ class ServicesController < ApplicationController
   end
   
   def parse_sort_params
-    @sortby = (params[:sortby].try(:downcase) || "created")
-    @sortorder = (params[:sortorder].try(:downcase) || "desc")
+    sortby_allowed = [ "created", "updated" ]
+    @sortby = if params[:sortBy] && sortby_allowed.include?(params[:sortBy].downcase)
+      params[:sortBy].downcase
+    else
+      "created"
+    end
+    
+    sortorder_allowed = [ "asc", "desc" ]
+    @sortorder = if params[:sortOrder] && sortorder_allowed.include?(params[:sortOrder].downcase)
+      params[:sortOrder].downcase
+    else
+      "desc"
+    end
   end
  
 end

@@ -182,8 +182,8 @@ module FilteringHelper
   
   def generate_sort_url(sort_by, sort_order)
     params_dup = BioCatalogue::Util.duplicate_params(params)
-    params_dup[:sortby] = sort_by.downcase
-    params_dup[:sortorder] = sort_order.downcase
+    params_dup[:sortBy] = sort_by.downcase
+    params_dup[:sortOrder] = sort_order.downcase
       
     # Reset page param
     params_dup.delete(:page)
@@ -192,7 +192,7 @@ module FilteringHelper
   end
   
   def is_sort_selected(sort_by, sort_order)
-    return params[:sortby] == sort_by.downcase && params[:sortorder] == sort_order.downcase
+    return params[:sortBy] == sort_by.downcase && params[:sortOrder] == sort_order.downcase
   end
   
   def show_tag_filters?

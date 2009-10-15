@@ -9,34 +9,34 @@ xml.instruct! :xml
 
 # <service>
 xml.tag! "service", 
-         { :resource => BioCatalogue::RestApi::Resources.uri_for_object(@service, :params => params) }, 
-         BioCatalogue::RestApi::Builder.root_attributes do
+         xlink_attributes(uri_for_object(@service, :params => params)), 
+         xml_root_attributes do
   
   # <name>
   xml.name display_name(@service)
   
   # <submitter>
   xml.submitter @service.submitter_name,
-                :resource => BioCatalogue::RestApi::Resources.uri_for_object(@service.submitter), 
+                xlink_attributes(uri_for_object(@service.submitter), :title => xlink_title(@service.submitter)), 
                 :sourceType => @service.submitter_type
   
   # <createdAt>
   xml.createdAt @service.created_at.iso8601
   
   # <deployments>
-  xml.deployments :resource => BioCatalogue::RestApi::Resources.uri_for_object(@service, :sub_path => "deployments") do
+  xml.deployments xlink_attributes(uri_for_object(@service, :sub_path => "deployments")) do
     
     @service.service_deployments.each do |service_deployment|
       
       # <deployment>
-      xml.deployment :resource => BioCatalogue::RestApi::Resources.uri_for_object(service_deployment) do
+      xml.deployment xlink_attributes(uri_for_object(service_deployment)) do
         
         # <endpoint>
         xml.endpoint service_deployment.endpoint
         
         # <provider>
         xml.provider service_deployment.provider.name, 
-                     :resource => BioCatalogue::RestApi::Resources.uri_for_object(service_deployment.provider)
+                     xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider))
         
         # <location>
         xml.location do 
@@ -46,7 +46,7 @@ xml.tag! "service",
         
         # <submitter>
         xml.submitter service_deployment.submitter_name,
-                      :resource => BioCatalogue::RestApi::Resources.uri_for_object(service_deployment.submitter), 
+                      xlink_attributes(uri_for_object(service_deployment.submitter), :title => xlink_title(service_deployment.submitter)), 
                       :sourceType => service_deployment.submitter_type
         
       end
@@ -56,23 +56,23 @@ xml.tag! "service",
   end
   
   # <versions>
-  xml.versions :resource => BioCatalogue::RestApi::Resources.uri_for_object(@service, :sub_path => "versions") do 
+  xml.versions xlink_attributes(uri_for_object(@service, :sub_path => "versions")) do 
     
     @service.service_versions.each do |service_version|
       
       # <version>
-      xml.version :resource => BioCatalogue::RestApi::Resources.uri_for_object(service_version),
+      xml.version xlink_attributes(uri_for_object(service_version)),
                   :versionNumber => service_version.version,
                   :versionDisplayText => service_version.version_display_text do 
         
         # <instance>
         xml.instance nil, 
-                     :resource => BioCatalogue::RestApi::Resources.uri_for_object(service_version.service_versionified),
+                     xlink_attributes(uri_for_object(service_version.service_versionified), :title => xlink_title(service_version.service_versionified)),
                      :serviceType => service_version.service_versionified.service_type_name
         
         # <submitter>
         xml.submitter service_version.submitter_name,
-                      :resource => BioCatalogue::RestApi::Resources.uri_for_object(service_version.submitter), 
+                      xlink_attributes(uri_for_object(service_version.submitter), :title => xlink_title(service_version.submitter)), 
                       :sourceType => service_version.submitter_type
         
       end
@@ -82,7 +82,7 @@ xml.tag! "service",
   end
   
   # <annotations>
-  xml.annotations :resource => BioCatalogue::RestApi::Resources.uri_for_object(@service, :sub_path => "annotations") do
+  xml.annotations xlink_attributes(uri_for_object(@service, :sub_path => "annotations")) do
     
     BioCatalogue::Annotations.group_by_attribute_names(@service.annotations).each do |attribute_name, annotations|
     
@@ -90,7 +90,7 @@ xml.tag! "service",
       
       annotations.each do |ann|
         
-        xml.annotation :resource => BioCatalogue::RestApi::Resources.uri_for_object(ann), :version => ann.version  do 
+        xml.annotation xlink_attributes(uri_for_object(ann)), :version => ann.version  do 
           
           # <attribute>
           xml.attribute nil, :name => attribute_name
@@ -102,7 +102,7 @@ xml.tag! "service",
              
           # <source>
           xml.source ann.source.annotation_source_name,
-                     :resource => BioCatalogue::RestApi::Resources.uri_for_object(ann.source), 
+                     xlink_attributes(uri_for_object(ann.source), :title => xlink_title(ann.source)),
                      :sourceType => ann.source_type
           
           # <createdAt>
@@ -123,7 +123,7 @@ xml.tag! "service",
   xml.related do
     
     # <summary>
-    xml.summary :resource => BioCatalogue::RestApi::Resources.uri_for_object(@service, :sub_path => "summary")
+    xml.summary xlink_attributes(uri_for_object(@service, :sub_path => "summary"), :title => xlink_title("Summary view of Service - #{@service.name}"))
     
   end
   

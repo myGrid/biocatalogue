@@ -242,7 +242,7 @@ class ApplicationController < ActionController::Base
   
   def set_up_log_event_core_data
     if USE_EVENT_LOG and !is_request_from_bot?
-      format = ((params[:format].blank? or params[:format].downcase == "htm") ? "html" : params[:format].downcase)
+      format = ((params[:format].blank? or params[:format].downcase == "htm") ? "html" : params[:format].to_s.downcase)
       @log_event_core_data = { :format => format, :user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] }
     end
   end

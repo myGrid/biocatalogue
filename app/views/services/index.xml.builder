@@ -12,8 +12,8 @@ xml.instruct! :xml
 
 # <services>
 xml.tag! "services", 
-         { :resource => BioCatalogue::RestApi::Resources.uri_for_collection("services", :params => params) }, 
-         BioCatalogue::RestApi::Builder.root_attributes do
+         xlink_attributes(uri_for_collection("services", :params => params)), 
+         xml_root_attributes do
   
   # <parameters>
   xml.parameters do
@@ -46,6 +46,11 @@ xml.tag! "services",
     # <query>
     xml.query params[:q]
     
+    # <sortBy>
+    xml.sortBy @sortby
+    
+    # <sortOrder>
+    xml.sortOrder @sortorder
   end
   
   # <statistics>
@@ -69,8 +74,7 @@ xml.tag! "services",
     
     # <service> *
     @services.each do |service|
-      xml.service :resource => BioCatalogue::RestApi::Resources.uri_for_object(service) do
-        # <name>
+      xml.service xlink_attributes(uri_for_object(service), :title => xlink_title(service)) do
         xml.name display_name(service)
       end
     end
@@ -84,16 +88,19 @@ xml.tag! "services",
     
     # <previous>
     unless @page == 1
-      xml.previous :resource => BioCatalogue::RestApi::Resources.uri_for_collection("services", :params => params_clone.update(:page => (@page - 1)))
+      xml.previous previous_link_xml_attributes(uri_for_collection("services", :params => params_clone.merge(:page => (@page - 1))))
     end
     
     # <next>
     unless total_pages == 0 or total_pages == @page 
-      xml.next :resource => BioCatalogue::RestApi::Resources.uri_for_collection("services", :params => params_clone.update(:page => (@page + 1)))
+      xml.next next_link_xml_attributes(uri_for_collection("services", :params => params_clone.merge(:page => (@page + 1))))
     end
     
     # <filters>
-    xml.filters :resource => BioCatalogue::RestApi::Resources.uri_for_collection("services/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" })
+    xml.filters xlink_attributes(uri_for_collection("services/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
+                                 :title => xlink_title("Filters for the services index"))
+    
+    # <sorted> *
     
   end
   

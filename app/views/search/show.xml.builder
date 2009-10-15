@@ -11,8 +11,8 @@ xml.instruct! :xml
 
 # <search>
 xml.tag! "search", 
-         { :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search", :params => params) }, 
-         BioCatalogue::RestApi::Builder.root_attributes do
+         xlink_attributes(uri_for_collection("search", :params => params)), 
+         xml_root_attributes do
   
   # <parameters>
   xml.parameters do
@@ -56,7 +56,7 @@ xml.tag! "search",
     items = search_item_compound_ids_to_objects(paged_item_compound_ids)
     
     items.each do |item|
-      xml.tag! item.class.name.camelize(:lower), :resource => BioCatalogue::RestApi::Resources.uri_for_object(item) do
+      xml.tag! item.class.name.camelize(:lower), xlink_attributes(uri_for_object(item), :title => xlink_title(item)) do 
         xml.name display_name(item)
       end
     end
@@ -70,12 +70,12 @@ xml.tag! "search",
     
     # <previous>
     unless @page == 1
-      xml.previous :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search", :params => params_clone.update(:page => (@page - 1)))
+      xml.previous previous_link_xml_attributes(uri_for_collection("search", :params => params_clone.merge(:page => (@page - 1))))
     end
     
     # <next>
     unless total_pages == 0 or total_pages == @page 
-      xml.next :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search", :params => params_clone.update(:page => (@page + 1)))
+      xml.next next_link_xml_attributes(uri_for_collection("search", :params => params_clone.merge(:page => (@page + 1))))
     end
     
     # <searches>
@@ -84,8 +84,10 @@ xml.tag! "search",
       # <scoped> *
       BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.each do |result_scope|
         unless result_scope == @scope
-          xml.scoped :scope => result_scope.titleize,
-                     :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search", :params => params_clone.update(:scope => result_scope).reject{|k,v| k.to_s.downcase == "page" })
+          xml.scoped "", 
+                     { :scope => result_scope.titleize },
+                     xlink_attributes(uri_for_collection("search", :params => params_clone.merge(:scope => result_scope).reject{|k,v| k.to_s.downcase == "page" }), 
+                                      :title => xlink_title("Search results for #{result_scope.titleize.downcase}"))
         end
       end      
       

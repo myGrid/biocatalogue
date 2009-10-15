@@ -266,6 +266,7 @@ module ApplicationHelper
   def display_name(item)
     %w{ display_name title name }.each do |w|
       return eval("h(item.#{w})") if item.respond_to?(w)
+      return item[w] if item.is_a?(Hash) && item.has_key?(w) 
     end
     return "#{item.class.name}_#{id}"
   end

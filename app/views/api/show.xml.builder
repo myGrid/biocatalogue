@@ -8,22 +8,25 @@
 xml.instruct! :xml
 
 # <services>
-xml.tag! "api", { :resource => BioCatalogue::RestApi::Resources.uri_for_collection("/") }, BioCatalogue::RestApi::Builder.root_attributes do
+xml.tag! "biocatalogue", xlink_attributes(uri_for_collection("/")), xml_root_attributes do
   
   # <documentation>
-  xml.documentation :href => "http://www.example.com"
+  xml.documentation "xlink:href" => "http://www.example.com"
   
   # <resources>
   xml.resources do
     
     # <services>
-    xml.services :resource => BioCatalogue::RestApi::Resources.uri_for_collection("services")
+    xml.services xlink_attributes(uri_for_collection("services"),
+                                  :title => xlink_title("Services index"))
     
     # <servicesFilters>
-    xml.servicesFilters :resource => BioCatalogue::RestApi::Resources.uri_for_collection("services/filters")
+    xml.servicesFilters xlink_attributes(uri_for_collection("services/filters"),
+                                         :title => xlink_title("Filters for the services index"))
     
     # <search>
-    xml.search :resource => BioCatalogue::RestApi::Resources.uri_for_collection("search")
+    xml.search xlink_attributes(uri_for_collection("search"),
+                                :title => xlink_title("Search everything in the BioCatalogue"))
     
   end
   

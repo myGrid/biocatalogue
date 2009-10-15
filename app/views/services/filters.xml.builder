@@ -9,8 +9,8 @@ xml.instruct! :xml
 
 # <filters>
 xml.tag! "filters", 
-         { :resource => BioCatalogue::RestApi::Resources.uri_for_collection("services/filters", :params => params) }, 
-         BioCatalogue::RestApi::Builder.root_attributes do
+         xlink_attributes(uri_for_collection("services/filters", :params => params)), 
+         xml_root_attributes do
   
   BioCatalogue::Filtering::FILTER_KEYS.each do |filter_key|
     

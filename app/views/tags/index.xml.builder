@@ -9,8 +9,8 @@ xml.instruct! :xml
 
 # <services>
 xml.tag! "tags", 
-         { :resource => BioCatalogue::RestApi::Resources.uri_for_collection("tags", :params => params) }, 
-         BioCatalogue::RestApi::Builder.root_attributes do
+         xlink_attributes(uri_for_collection("tags", :params => params)), 
+         xml_root_attributes do
   
   # <parameters>
   xml.parameters do
@@ -38,7 +38,9 @@ xml.tag! "tags",
     
     # <tag> *
     @tags.each do |t|
-      xml.tag t['name'], :count => t['count'] 
+      xml.tag t['name'], 
+              xlink_attributes(BioCatalogue::Tags.generate_tag_show_uri(t['name']), :title => xlink_title(t, "Tag")),
+              { :totalItemsCount => t['count'] } 
     end
     
   end
