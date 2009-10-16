@@ -17,6 +17,22 @@ xml.tag! "service",
   # <summary>
   xml.summary xlink_attributes(uri_for_object(@service, :sub_path => "summary")) do 
     
+    # <counts>
+    xml.counts do
+      
+      # <deployments>
+      xml.deployments @service.service_deployments.count
+      
+      # <versions>
+      xml.versions @service.service_versions.count
+      
+      # <metadata> *
+      metadata_counts_for_service(@service).each do |m_type, m_count|
+        xml.metadata m_count, :by => m_type
+      end
+      
+    end
+    
     # <names>
     xml.names do 
       
@@ -52,8 +68,9 @@ xml.tag! "service",
     xml.providers do
       # <provider> *
       @service.service_deployments.each do |service_deployment|
-        xml.provider service_deployment.provider.name, 
-                     xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider))
+        xml.provider xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider)) do
+          xml.name service_deployment.provider.name   
+        end
       end
     end
     
@@ -65,30 +82,14 @@ xml.tag! "service",
       end
     end
     
-    # <wsdls>
     unless (soap_services = @service.service_version_instances_by_type("SoapService")).blank?
+      # <wsdls>
       xml.wsdls do 
         # <wsdl> *
         soap_services.each do |soap_service|
           xml.wsdl soap_service.wsdl_location
         end
       end
-    end
-    
-    # <counts>
-    xml.counts do
-      
-      # <deployments>
-      xml.deployments @service.service_deployments.count
-      
-      # <versions>
-      xml.versions @service.service_versions.count
-      
-      # <metadata> *
-      metadata_counts_for_service(@service).each do |m_type, m_count|
-        xml.metadata m_count, :by => m_type
-      end
-      
     end
     
     # <descriptions>
