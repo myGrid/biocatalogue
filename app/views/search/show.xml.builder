@@ -87,7 +87,7 @@ xml.tag! "search",
           xml.scoped "", 
                      { :scope => result_scope.titleize },
                      xlink_attributes(uri_for_collection("search", :params => params_clone.merge(:scope => result_scope).reject{|k,v| k.to_s.downcase == "page" }), 
-                                      :title => xlink_title("Search results for #{result_scope.titleize.downcase}"))
+                                      :title => xlink_title("Search results for #{result_scope.titleize}"))
         end
       end      
       
