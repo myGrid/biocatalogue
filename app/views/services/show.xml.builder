@@ -12,17 +12,7 @@ xml.tag! "service",
          xlink_attributes(uri_for_object(@service, :params => params)), 
          xml_root_attributes do
   
-  # <name>
-  xml.name display_name(@service)
-  
-  # <submitter>
-  xml.submitter xlink_attributes(uri_for_object(@service.submitter), :title => xlink_title(@service.submitter)), 
-                :submitterType => @service.submitter_type do
-    xml.name @service.submitter_name
-  end
-  
-  # <created>
-  dcterms_xml_tags(xml, :created => @service.created_at)
+  render :partial => "core_elements", :locals => { :parent_xml => xml }
   
   # <deployments>
   xml.deployments xlink_attributes(uri_for_object(@service, :sub_path => "deployments")) do

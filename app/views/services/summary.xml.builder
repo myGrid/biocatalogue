@@ -12,16 +12,7 @@ xml.tag! "service",
          xlink_attributes(uri_for_object(@service, :params => params)), 
          xml_root_attributes do
   
-  # <name>
-  xml.name display_name(@service)
-  
-  # <submitter>
-  xml.submitter @service.submitter_name,
-                xlink_attributes(uri_for_object(@service.submitter), :title => xlink_title(@service.submitter)), 
-                :sourceType => @service.submitter_type
-  
-  # <createdAt>
-  xml.createdAt @service.created_at.iso8601
+  render :partial => "core_elements", :locals => { :parent_xml => xml }
   
   # <summary>
   xml.summary xlink_attributes(uri_for_object(@service, :sub_path => "summary")) do 
@@ -129,6 +120,11 @@ xml.tag! "service",
         end
       end
     end
+    
+  end
+  
+  # <related>
+  xml.related do
     
   end
   
