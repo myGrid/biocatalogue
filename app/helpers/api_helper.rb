@@ -12,7 +12,8 @@ module ApiHelper
     { "xmlns" => "http://www.biocatalogue.org/2009/xml/rest",
       "xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
       "xsi:schemaLocation" => "http://www.biocatalogue.org/2009/xml/rest " + URI.join(SITE_BASE_HOST, "2009/xml/rest/schema-v1.xsd").to_s,
-      "xmlns:xlink" => "http://www.w3.org/1999/xlink" }
+      "xmlns:xlink" => "http://www.w3.org/1999/xlink",
+      "xmlns:dcterms" => "http://purl.org/dc/terms/" }
   end
   
   def uri_for_collection(resource_name, *args)
@@ -86,7 +87,6 @@ module ApiHelper
   def xlink_attributes(resource_uri, *args)
     attribs = { }
     
-     # Do options the Rails Way ;-)
     attribs_in = args.extract_options!
     
     attribs["xlink:href"] = resource_uri
@@ -108,6 +108,21 @@ module ApiHelper
         else
           return "#{item_type_name} - #{display_name(item)}"
         end
+    end
+  end
+  
+  def dcterms_xml_tags(builder, *args)
+    attribs_in = args.extract_options!
+    
+    attribs_in.each do |k,v|
+      # Certain fields need some more processing...
+      
+      # Dates
+      if [ :created, :modified ].include?(k)
+        v = v.iso8601
+      end
+      
+      builder.tag! "dcterms:#{k}", v 
     end
   end
   

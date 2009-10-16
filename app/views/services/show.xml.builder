@@ -16,12 +16,13 @@ xml.tag! "service",
   xml.name display_name(@service)
   
   # <submitter>
-  xml.submitter @service.submitter_name,
-                xlink_attributes(uri_for_object(@service.submitter), :title => xlink_title(@service.submitter)), 
-                :sourceType => @service.submitter_type
+  xml.submitter xlink_attributes(uri_for_object(@service.submitter), :title => xlink_title(@service.submitter)), 
+                :submitterType => @service.submitter_type do
+    xml.name @service.submitter_name
+  end
   
-  # <createdAt>
-  xml.createdAt @service.created_at.iso8601
+  # <created>
+  dcterms_xml_tags(xml, :created => @service.created_at)
   
   # <deployments>
   xml.deployments xlink_attributes(uri_for_object(@service, :sub_path => "deployments")) do
@@ -35,8 +36,9 @@ xml.tag! "service",
         xml.endpoint service_deployment.endpoint
         
         # <provider>
-        xml.provider service_deployment.provider.name, 
-                     xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider))
+        xml.provider xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider)) do
+          xml.name service_deployment.provider.name   
+        end
         
         # <location>
         xml.location do 
@@ -45,9 +47,10 @@ xml.tag! "service",
         end
         
         # <submitter>
-        xml.submitter service_deployment.submitter_name,
-                      xlink_attributes(uri_for_object(service_deployment.submitter), :title => xlink_title(service_deployment.submitter)), 
-                      :sourceType => service_deployment.submitter_type
+        xml.submitter xlink_attributes(uri_for_object(service_deployment.submitter), :title => xlink_title(service_deployment.submitter)), 
+                      :submitterType => service_deployment.submitter_type do
+          xml.name service_deployment.submitter_name
+        end
         
       end
       
@@ -63,17 +66,19 @@ xml.tag! "service",
       # <version>
       xml.version xlink_attributes(uri_for_object(service_version)),
                   :versionNumber => service_version.version,
-                  :versionDisplayText => service_version.version_display_text do 
+                  :versionNumberDisplayText => service_version.version_display_text do 
         
         # <instance>
-        xml.instance nil, 
-                     xlink_attributes(uri_for_object(service_version.service_versionified), :title => xlink_title(service_version.service_versionified)),
-                     :serviceType => service_version.service_versionified.service_type_name
+        xml.instance xlink_attributes(uri_for_object(service_version.service_versionified), :title => xlink_title(service_version.service_versionified)),
+                     :serviceType => service_version.service_versionified.service_type_name do
+          xml.name service_version.service_versionified.name
+        end
         
         # <submitter>
-        xml.submitter service_version.submitter_name,
-                      xlink_attributes(uri_for_object(service_version.submitter), :title => xlink_title(service_version.submitter)), 
-                      :sourceType => service_version.submitter_type
+        xml.submitter xlink_attributes(uri_for_object(service_version.submitter), :title => xlink_title(service_version.submitter)), 
+                      :submitterType => service_version.submitter_type do
+          xml.name service_version.submitter_name
+        end
         
       end
       
@@ -93,7 +98,8 @@ xml.tag! "service",
         xml.annotation xlink_attributes(uri_for_object(ann)), :version => ann.version  do 
           
           # <attribute>
-          xml.attribute nil, :name => attribute_name
+          xml.attribute xlink_attributes(uri_for_object(ann.attribute)),
+                        :name => attribute_name
           
           # <value>
           xml.value :type => ann.value_type do
@@ -101,15 +107,14 @@ xml.tag! "service",
           end
              
           # <source>
-          xml.source ann.source.annotation_source_name,
-                     xlink_attributes(uri_for_object(ann.source), :title => xlink_title(ann.source)),
-                     :sourceType => ann.source_type
+          xml.source xlink_attributes(uri_for_object(ann.source), :title => xlink_title(ann.source)),
+                     :sourceType => ann.source_type do
+            xml.name ann.source.annotation_source_name
+          end
           
-          # <createdAt>
-          xml.createdAt ann.created_at.iso8601
-          
-          # <updatedAt>
-          xml.updatedAt ann.updated_at.iso8601
+          # <created>
+          # <modified>
+          dcterms_xml_tags(xml, :created => ann.created_at, :modified => ann.updated_at)
           
         end
         

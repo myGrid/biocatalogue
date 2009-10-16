@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema targetNamespace="http://www.biocatalogue.org/2009/xml/rest"
+	xml:lang="en"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns="http://www.biocatalogue.org/2009/xml/rest"
-	elementFormDefault="qualified" xmlns:xlink="http://www.w3.org/1999/xlink">
-
-	<xsd:import schemaLocation="http://www.w3.org/1999/xlink.xsd" namespace="http://www.w3.org/1999/xlink"></xsd:import>
+	elementFormDefault="qualified" 
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:dcterms="http://purl.org/dc/terms/">
+	
+    <xsd:include schemaLocation=""></xsd:include>
+    <xsd:import namespace="http://purl.org/dc/elements/1.1/" schemaLocation="dc.xsd" />
+	<xsd:import namespace="http://purl.org/dc/terms/" schemaLocation="dcterms.xsd" />
+	<xsd:import namespace="http://www.w3.org/1999/xlink" schemaLocation="http://www.w3.org/1999/xlink.xsd" />
+	
 	<xsd:simpleType name="SearchScopeUrlValue">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="all"></xsd:enumeration>
@@ -187,8 +195,61 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"></xsd:element>
+					<xsd:element name="name" type="xsd:string"
+						minOccurs="1" maxOccurs="1">
+					</xsd:element>
+					<xsd:element name="submitter" type="Submitter"
+						minOccurs="0" maxOccurs="1">
+					</xsd:element>
+					<xsd:element ref="dcterms:created" minOccurs="0"
+						maxOccurs="1">
+					</xsd:element>
+					<xsd:element name="deployments" minOccurs="0"
+						maxOccurs="1">
+						<xsd:complexType>
+							<xsd:complexContent>
+								<xsd:extension base="ResourceLink">
+									<xsd:sequence>
+										<xsd:element name="deployment"
+											type="ServiceDeployment" minOccurs="1"
+											maxOccurs="unbounded">
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="versions" minOccurs="0"
+						maxOccurs="1">
+						<xsd:complexType>
+							<xsd:complexContent>
+								<xsd:extension base="ResourceLink">
+									<xsd:sequence>
+										<xsd:element name="version"
+											type="ServiceVersion" minOccurs="1" maxOccurs="unbounded">
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="annotations" minOccurs="0"
+						maxOccurs="1">
+						<xsd:complexType>
+							<xsd:complexContent>
+								<xsd:extension base="ResourceLink">
+									<xsd:sequence>
+										<xsd:element name="annotation"
+											type="Annotation" minOccurs="0" maxOccurs="unbounded">
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="related" type="ServiceRelatedLinks" minOccurs="1" maxOccurs="1"></xsd:element>
 				</xsd:sequence>
+
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -481,5 +542,162 @@
     			<xsd:attribute name="totalItemsCount" type="xsd:nonNegativeInteger" use="optional"></xsd:attribute>
     		</xsd:extension>
     	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="SubmitterType">
+    	<xsd:restriction base="xsd:string">
+    		<xsd:enumeration value="User"></xsd:enumeration>
+    		<xsd:enumeration value="Registry"></xsd:enumeration>
+    	</xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AnnotationSourceType">
+    	<xsd:restriction base="xsd:string">
+    		<xsd:enumeration value="User"></xsd:enumeration>
+    		<xsd:enumeration value="ServiceProvider"></xsd:enumeration>
+    		<xsd:enumeration value="Registry"></xsd:enumeration>
+    	</xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Submitter">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:sequence>
+    				<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"></xsd:element>
+    			</xsd:sequence>
+    			<xsd:attribute name="submitterType"
+    				type="SubmitterType">
+    			</xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ServiceDeployment">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:sequence>
+    				<xsd:element name="endpoint" type="xsd:string"
+    					minOccurs="1" maxOccurs="1">
+    				</xsd:element>
+    				<xsd:element name="provider" type="ServiceProvider"
+    					minOccurs="0" maxOccurs="1">
+    				</xsd:element>
+    				<xsd:element name="location" minOccurs="0"
+    					maxOccurs="1">
+    					<xsd:complexType>
+    						<xsd:sequence>
+    							<xsd:element name="city"
+    								type="xsd:string" minOccurs="0" maxOccurs="1">
+    							</xsd:element>
+    							<xsd:element name="country"
+    								type="xsd:string" minOccurs="0" maxOccurs="1">
+    							</xsd:element>
+    						</xsd:sequence>
+    					</xsd:complexType>
+    				</xsd:element>
+    				<xsd:element name="submitter" type="Submitter"
+    					minOccurs="0" maxOccurs="1">
+    				</xsd:element>
+    			</xsd:sequence>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ServiceVersion">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:sequence>
+    				<xsd:element name="instance" type="ServiceVersionInstance" minOccurs="0" maxOccurs="1"></xsd:element>
+    				<xsd:element name="submitter" type="Submitter"
+    					minOccurs="0" maxOccurs="1">
+    				</xsd:element>
+    			</xsd:sequence>
+    			<xsd:attribute name="versionNumber" type="xsd:string"></xsd:attribute>
+    			<xsd:attribute name="versionNumberDisplayText" type="xsd:string"></xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="ServiceVersionInstance">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:sequence>
+    				<xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"></xsd:element>
+    			</xsd:sequence>
+    			<xsd:attribute name="serviceType"
+    				type="ServiceVersionServiceType">
+    			</xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="ServiceVersionServiceType">
+    	<xsd:restriction base="xsd:string">
+    		<xsd:enumeration value="SOAP"></xsd:enumeration>
+    		<xsd:enumeration value="REST"></xsd:enumeration>
+    	</xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Annotation">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:sequence>
+    				<xsd:element name="attribute"
+    					type="AnnotationAttribute" minOccurs="1" maxOccurs="1">
+    				</xsd:element>
+    				<xsd:element name="value" type="AnnotationValue"
+    					minOccurs="1" maxOccurs="1">
+    				</xsd:element>
+    				<xsd:element name="source" type="AnnotationSource"
+    					minOccurs="0" maxOccurs="1">
+    				</xsd:element>
+    				<xsd:element ref="dcterms:created" minOccurs="0"
+    					maxOccurs="1">
+    				</xsd:element>
+    				<xsd:element ref="dcterms:modified" minOccurs="0" maxOccurs="1"></xsd:element>
+    			</xsd:sequence>
+    			<xsd:attribute name="version"
+    				type="xsd:nonNegativeInteger">
+    			</xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AnnotationAttribute">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AnnotationValue">
+    	<xsd:simpleContent>
+    		<xsd:extension base="xsd:string">
+    			<xsd:attribute name="type" type="xsd:string"
+    				use="required">
+    			</xsd:attribute>
+    		</xsd:extension>
+    	</xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AnnotationSource">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:sequence>
+    				<xsd:element name="name" type="xsd:string"></xsd:element>
+    			</xsd:sequence>
+    			<xsd:attribute name="sourceType"
+    				type="AnnotationSourceType">
+    			</xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="ServiceRelatedLinks">
+    	<xsd:sequence>
+    		<xsd:element name="summary" type="ResourceLink" minOccurs="0" maxOccurs="1"></xsd:element>
+    	</xsd:sequence>
     </xsd:complexType>
 </xsd:schema>
