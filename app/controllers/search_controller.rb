@@ -122,7 +122,9 @@ class SearchController < ApplicationController
   end
 
   def remember_search
-    session[:last_search] = request.url if defined?(@results) and !@results.nil? and @results.total > 0
+    unless is_non_html_request?
+      session[:last_search] = request.url if defined?(@results) and !@results.nil? and @results.total > 0
+    end
   end
   
   def set_listing_type
