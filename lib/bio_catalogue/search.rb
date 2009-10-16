@@ -248,22 +248,22 @@ module BioCatalogue
         # Ordering is important and must be taken into account here!
         
         @original_search_docs.each do |doc|
-          @result_scopes.each do |result_scope|
-            result_model_name = @internal_scopes_to_and_from_model_names_map[result_scope]
-            
-#            puts ""
-#            puts doc.inspect
-#            puts ""
-            
-            # This will first look for the presence of the ID in the original doc,
-            # in the form of "associated_{object_type}_id}.
-            # If not present it will use the Mapper to get it.
-            field_key = "associated_#{result_model_name.underscore}_id"
-            if (id = doc[field_key]).blank?
-              id = Mapper.map_compound_id_to_associated_model_object_id(doc['id'], result_model_name)
+          doc_model_name = Mapper.split_compound_id(doc['id']).first
+          
+          @result_scopes.map {|r| @internal_scopes_to_and_from_model_names_map[r]}.each do |result_model_name|
+            if doc_model_name == result_model_name
+              @overall_results_ids << doc['id']
+            else
+              # This will first look for the presence of the ID in the original doc,
+              # in the form of "associated_{object_type}_id}.
+              # If not present it will use the Mapper to get it.
+              id = doc["associated_#{result_model_name.underscore}_id"]
+              if SEARCH_PERFORM_POST_SOLR_MAPPINGS && id.blank?
+                id = Mapper.map_compound_id_to_associated_model_object_id(doc['id'], result_model_name)
+              end
+              
+              @overall_results_ids << Mapper.compound_id_for(result_model_name, id) unless id.nil? 
             end
-            
-            @overall_results_ids << BioCatalogue::Mapper.compound_id_for(result_model_name, id) unless id.nil? 
           end
         end
         

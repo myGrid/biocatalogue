@@ -113,3 +113,10 @@ RPX_REALM = 'myapp'
 RPX_API_KEY = 'xyz'
 
 # ====================================================
+
+
+# Setting to determine whether mappings (eg: "give me the relevant service provider that might be related to this annotation") 
+# are carried out after getting the raw results from Solr.
+# If set to true, this may cause search to be slower but has the best chance of returning all relevant results.
+# If set to false, it is crucial that all relevant associated object IDs are indexed together with the items, in Solr.
+SEARCH_PERFORM_POST_SOLR_MAPPINGS = false
