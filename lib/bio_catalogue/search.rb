@@ -123,10 +123,7 @@ module BioCatalogue
         :limit => @@limit, 
         :models => @@models_for_search[1...@@models_for_search.length], 
         :results_format => :ids, 
-        :additional_fields => { :associated_service_id => :r_id,
-                                :associated_service_provider_id => :r_id,
-                                :associated_user_id => :r_id, 
-                                :associated_registry_id => :r_id }).docs
+        :incl_all_fields => true).docs
       
       scopes_for_results = if ALL_SCOPE_SYNONYMS.include?(scope)
         VALID_SEARCH_SCOPES
@@ -255,9 +252,10 @@ module BioCatalogue
               @overall_results_ids << doc['id']
             else
               # This will first look for the presence of the ID in the original doc,
-              # in the form of "associated_{object_type}_id}.
+              # in the form of "associated_{object_type}_id_r_id" (the "_r_id" part is due to the way 
+              # the field type is stored in Solr by the acts_as_solr plugin).
               # If not present it will use the Mapper to get it.
-              id = doc["associated_#{result_model_name.underscore}_id"]
+              id = doc["associated_#{result_model_name.underscore}_id_r_id"]
               if SEARCH_PERFORM_POST_SOLR_MAPPINGS && id.blank?
                 id = Mapper.map_compound_id_to_associated_model_object_id(doc['id'], result_model_name)
               end
