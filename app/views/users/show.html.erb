@@ -14,9 +14,11 @@
 
 <br/>
 
-<div class="toolbar">
-  <%= link_to(image_tag(icon_filename_for(:user_edit)) + content_tag(:span, ' Edit Account or Profile'), edit_user_path(@user), :class => "button_slim") %>
-</div>
+<% if mine? @user %>
+	<div class="toolbar">
+	  <%= link_to(image_tag(icon_filename_for(:user_edit)) + content_tag(:span, ' Edit Account or Profile'), edit_user_path(@user), :class => "button_slim") %>
+	</div>
+<% end %>
 
 <div id="user-tabs" class="tabber">
 	
