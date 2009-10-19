@@ -133,7 +133,7 @@ class ApplicationController < ActionController::Base
     when "User"
       return c_id == thing.id
     when "Annotation"
-      return thing.source == current_user
+      return c_id = thing.source_id
     when "Service"
       return c_id == thing.submitter_id.to_i
     when "Favourite"

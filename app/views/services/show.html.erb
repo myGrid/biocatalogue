@@ -66,6 +66,15 @@
 	</tr>
 </table>
 
+<% if mine? @service %>
+	<div class="toolbar">
+	  <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
+								service_path(@service), 
+								:class => "button_slim", 
+								:method => :delete, 
+								:confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
+	</div>
+<% end %>
 
 <div id="service-tabs" class="tabber" style="margin-top: 1.5em;">
 	

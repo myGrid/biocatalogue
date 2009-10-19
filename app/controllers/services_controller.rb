@@ -6,7 +6,7 @@
 
 class ServicesController < ApplicationController
   
-  before_filter :disable_action, :only => [ :edit, :update, :destroy ]
+  before_filter :disable_action, :only => [ :edit, :update ]
   
   before_filter :parse_current_filters, :only => [ :index ]
   
@@ -21,6 +21,9 @@ class ServicesController < ApplicationController
   before_filter :setup_for_feed, :only => [ :index ]
   
   before_filter :set_listing_type, :only => [ :index ]
+  
+  before_filter :login_required, :only => [ :destroy ]
+  before_filter :authorise, :only => [ :destroy ]
   
   # GET /services
   # GET /services.xml
@@ -94,11 +97,15 @@ class ServicesController < ApplicationController
   # DELETE /services/1
   # DELETE /services/1.xml
   def destroy
-    @service.destroy
-
     respond_to do |format|
-      format.html { redirect_to(services_url) }
-      format.xml  { head :ok }
+      if @service.destroy
+        flash[:notice] = "Service '#{@service.name}' has been deleted"
+        format.html { redirect_to services_url }
+        format.xml  { head :ok }
+      else
+        flash[:error] = "Failed to delete service '#{@service.name}'"
+        format.html { redirect_to service_url(@service) }
+      end
     end
   end
   
@@ -242,6 +249,12 @@ class ServicesController < ApplicationController
       params[:sortOrder].downcase
     else
       "desc"
+    end
+  end
+  
+  def authorise
+    unless mine?(@service)
+      error_to_back_or_home("You are not allowed to perform this action")
     end
   end
  
