@@ -8,9 +8,9 @@
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	xmlns:dcterms="http://purl.org/dc/terms/">
 	
-    <xsd:import namespace="http://purl.org/dc/elements/1.1/" schemaLocation="dc.xsd" />
+  <xsd:import namespace="http://purl.org/dc/elements/1.1/" schemaLocation="dc.xsd" />
 	<xsd:import namespace="http://purl.org/dc/terms/" schemaLocation="dcterms.xsd" />
-	<xsd:import namespace="http://www.w3.org/1999/xlink" schemaLocation="http://www.w3.org/1999/xlink.xsd" />
+	<xsd:import namespace="http://www.w3.org/1999/xlink" schemaLocation="xlink.xsd" />
 	
 	<xsd:simpleType name="SearchScopeUrlValue">
 		<xsd:restriction base="xsd:string">
