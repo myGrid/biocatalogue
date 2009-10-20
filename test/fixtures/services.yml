@@ -1,7 +1,10 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  unique_code: MyString
+fixtures :rest_services
 
-two:
+one:
+  id: 1
   unique_code: MyString
+  name: MyString
+  submitter_id: 1
+  submitter_type: User

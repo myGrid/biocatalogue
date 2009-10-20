@@ -1,11 +1,11 @@
 require 'test_helper'
 
 class RestServicesControllerTest < ActionController::TestCase
-  test "should get index" do
+#  test "should get index" do
 #    get :index
-    assert_response :success
+#    assert_response :success
 #    assert_not_nil assigns(:rest_services)
-  end
+#  end
 
   test "should get new" do
 #    get :new
