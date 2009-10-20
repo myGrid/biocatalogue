@@ -1879,9 +1879,12 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .buttons li {
-	display: inline;
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;	
 	margin: 0;
 	margin-left: 8px;
+	line-height: 2.0;
 }
 
 .buttons li.first {
@@ -1897,18 +1900,15 @@ ul.tabbernav li.tabberactive a:hover
 
 .buttons li a {
 	width: 100%;
-	padding: 0.1em 0.5em;
+	padding: 6px 0.5em;
+	line-height: 2.0;
 	font-weight: bold;
-	line-height: 1.6;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
 	background-image: url('/images/button_slim_bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #EEF6FF;
-	display:-moz-inline-block;
-	display:-moz-inline-box;
-	display: inline-block;	
 }
 
 .buttons li a:hover {
