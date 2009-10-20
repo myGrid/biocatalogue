@@ -27,5 +27,10 @@ namespace :biocatalogue do
       Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateSearchQuerySuggestions.new)
     end
     
+    desc 'Submits a job to refresh the stats data used in the /statistics page'
+    task :refresh_stats => :environment do
+      BioCatalogue::Stats.submit_job_to_refresh_stats
+    end
+    
   end
 end

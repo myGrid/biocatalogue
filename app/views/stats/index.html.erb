@@ -7,211 +7,267 @@
 # See license.txt for details
 
 %>
-<div id="stats_page">
+
+<% t "All Statistics" %>
+
+<h1>Statistics</h1>
+
+<% if @stats.nil? %>
+
+	<p style="font-weight: bold;">
+		Stats are being generated...
+	</p>
 	
-	<!-- Left column -->
-	<div class="left_column">
-		
-		<h1>Statistics</h1>
-	
-		<p><b>Last calculated: <%= Time.now.to_s -%></b> (click on the refresh button to the right to calculate latest stats)</p>
-	
-		<% benchmark "Statistics - General" do %>
-		
-			<a name="general"></a>
-		
-			<h4>General</h4>
-			
-			<div class="box_indented_with_bar">
-				
-				<p>
-					<b>Services:</b>
-					<%= @stats.total_for_model Service -%>
-				</p>
-				
-				<p>
-					<b>Service Versions:</b>
-					<%= @stats.total_for_model ServiceVersion -%>
-				</p>
-					
-				<p>
-					<b>Service Deployments:</b>
-					<%= @stats.total_for_model ServiceDeployment -%>
-				</p>
-				
-				<p>
-					<b>SOAP Services:</b>
-					<%= @stats.total_for_model SoapService -%>
-				</p>
-						
-				<p>
-					<b>SOAP Operations:</b>
-					<%= @stats.total_for_model SoapOperation -%>
-				</p>
-							
-				<p>
-					<b>SOAP Inputs:</b>
-					<%= @stats.total_for_model SoapInput -%>
-				</p>
-								
-				<p>
-					<b>Soap Outputs:</b>
-					<%= @stats.total_for_model SoapOutput -%>
-				</p>
-							
-				<p>
-					<b>REST Services:</b>
-					<%= @stats.total_for_model RestService -%>
-				</p>
-						
-				<p>
-					<b>SOAPLAB Servers:</b>
-					<%= @stats.total_for_model SoaplabServer -%>
-				</p>
-					
-				<p>
-					<b>Users:</b>
-					<%= @stats.total_for_model User -%>
-				</p>
-				
-				<p>
-					<b>Service Providers:</b>
-					<%= @stats.total_for_model ServiceProvider -%>
-				</p>
-				
-				<p>
-					<b>Annotations*:</b>
-					<%= @stats.total_for_model Annotation -%>
-				</p>
-				
-				<p class="box_info_standout">
-					<b>*</b> These are ONLY the annotations stored within the generic Annotations mechanism and 
-					do not include the initial metadata (from WSDL for SOAP) that is stored directly in database 
-					tables for the entities.
-				</p>
-				
-				<p>
-					<b>Activity Log Entries:</b>
-					<%= @stats.total_for_model ActivityLog -%>
-				</p>
-				
-			</div>
-		
-		<% end %>
-		
+	<p>
+		This page will automatically refresh every 60 seconds until the stats data is available.
 		<br/>
+		<small class="faded">JavaScript needs to be enabled for the auto refresh to work.</small>
+	</p>
+	
+	<script language="JavaScript"> 
+		// CREDITS: 
+		// Automatic Page Refresher by Peter Gehrig and Urs Dudli www.24fun.com 
+		// Permission given to use the script provided that this notice remains as is. 
+		// Additional scripts can be found at http://www.hypergurl.com 
+		// Configure refresh interval (in seconds) var refreshinterval=5 
+		// Shall the coundown be displayed inside your status bar? Say "yes" or "no" below: var displaycountdown="yes"
+		var displaycountdown="yes"
+		// Do not edit the code below 
+		var starttime;
+		var nowtime; 
+		var reloadseconds=0; 
+		var secondssinceloaded=0; 
+		function starttime() { 
+			starttime=new Date();
+			starttime=starttime.getTime();
+			countdown(); 
+		} 
+		function countdown() { 
+			nowtime= new Date();
+			nowtime=nowtime.getTime();
+			secondssinceloaded=(nowtime-starttime)/1000;
+			reloadseconds=Math.round(refreshinterval-secondssinceloaded);
+			if (refreshinterval>=secondssinceloaded) { 
+				var timer=setTimeout("countdown()",1000) 
+				if (displaycountdown=="yes") { 
+					window.status="Page refreshing in "+reloadseconds+ " seconds";
+				} 
+			} else { 
+				clearTimeout(timer); 
+				window.location.reload(true);
+			} 
+		} 
+		window.onload=starttime;
+	</script>
+
+<% else %>
+
+	<div id="stats_page">
 		
-		<% benchmark "Statistics - Metadata" do %>
+		<!-- Left column -->
+		<div class="left_column">
 		
-			<a name="metadata"></a>
+			<p><b>Last calculated: <%= @stats.created_at.to_s -%></b> (click on the refresh button to the right to calculate latest stats)</p>
+		
+			<% benchmark "Statistics - General" do %>
 			
-			<h4>Metadata *</h4>
+				<a name="general"></a>
 			
-			<div class="box_indented_with_bar">
-				
-				<p class="box_info_standout">
-					<b>*</b> These include all the annotations stored via the generic Annotations mechanism AND 
-					the initial metadata (from WSDL for SOAP) that is stored directly in database tables for the entities.
-				</p>
-				
-				<% BioCatalogue::Annotations.metadata_sources.each do |type| %>
-					
-					<a name="metadata_<%= type.to_s -%>"></a>
-					
-					<p><b>By <%= type.to_s.titleize -%></b></p>
-					
-					<div class="box_indented_with_bar">
-						
-						<%= render :partial => 'metadata_stats_for_type', :locals => { :type => type } -%>
-						
-					</div>
-				
-				<% end %>
-				
-				<a name="metadata_all"></a>
-				
-				<p><b>By ALL metadata sources:</b></p>
+				<h4>General</h4>
 				
 				<div class="box_indented_with_bar">
 					
-					<%= render :partial => 'metadata_stats_for_type', :locals => { :type => :all } -%>
+					<p>
+						<b>Services:</b>
+						<%= @stats.total_for_model Service -%>
+					</p>
+					
+					<p>
+						<b>Service Versions:</b>
+						<%= @stats.total_for_model ServiceVersion -%>
+					</p>
+						
+					<p>
+						<b>Service Deployments:</b>
+						<%= @stats.total_for_model ServiceDeployment -%>
+					</p>
+					
+					<p>
+						<b>SOAP Services:</b>
+						<%= @stats.total_for_model SoapService -%>
+					</p>
+							
+					<p>
+						<b>SOAP Operations:</b>
+						<%= @stats.total_for_model SoapOperation -%>
+					</p>
+								
+					<p>
+						<b>SOAP Inputs:</b>
+						<%= @stats.total_for_model SoapInput -%>
+					</p>
+									
+					<p>
+						<b>Soap Outputs:</b>
+						<%= @stats.total_for_model SoapOutput -%>
+					</p>
+								
+					<p>
+						<b>REST Services:</b>
+						<%= @stats.total_for_model RestService -%>
+					</p>
+							
+					<p>
+						<b>SOAPLAB Servers:</b>
+						<%= @stats.total_for_model SoaplabServer -%>
+					</p>
+						
+					<p>
+						<b>Users:</b>
+						<%= @stats.total_for_model User -%>
+					</p>
+					
+					<p>
+						<b>Service Providers:</b>
+						<%= @stats.total_for_model ServiceProvider -%>
+					</p>
+					
+					<p>
+						<b>Annotations*:</b>
+						<%= @stats.total_for_model Annotation -%>
+					</p>
+					
+					<p class="box_info_standout">
+						<b>*</b> These are ONLY the annotations stored within the generic Annotations mechanism and 
+						do not include the initial metadata (from WSDL for SOAP) that is stored directly in database 
+						tables for the entities.
+					</p>
+					
+					<p>
+						<b>Activity Log Entries:</b>
+						<%= @stats.total_for_model ActivityLog -%>
+					</p>
 					
 				</div>
-						
-			</div>
-		
-		<% end %>
-		
-		<br/>
-		
-		<% benchmark "Statistics - Search" do %>
-		
-			<a name="search"></a>
-		
-			<h4>Search</h4>
 			
-			<div class="box_indented_with_bar">
+			<% end %>
+			
+			<br/>
+			
+			<% benchmark "Statistics - Metadata" do %>
+			
+				<a name="metadata"></a>
 				
-				<p>
-					<b>Total:</b>
-					<%= @stats.total_searches_non_unique -%>
-				</p>
+				<h4>Metadata *</h4>
 				
-				<p>
-					<b>Total unique queries:</b>
-					<%= @stats.total_searches_unique -%>
-				</p>
-				
-				<p>
-					<b>Queries:</b>
-				</p>
-				
-				<table class="biocat_table">
-					<tr>
-						<th>Query:</th>
-						<th>Frequency:</th>
-					</tr>
+				<div class="box_indented_with_bar">
 					
-					<% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
-						<tr>
-							<td><%= h(query) -%></td>
-							<td style="text-align:center;"><%= frequency -%></td>
-						</tr>
+					<p class="box_info_standout">
+						<b>*</b> These include all the annotations stored via the generic Annotations mechanism AND 
+						the initial metadata (from WSDL for SOAP) that is stored directly in database tables for the entities.
+					</p>
+					
+					<% BioCatalogue::Annotations.metadata_sources.each do |type| %>
+						
+						<a name="metadata_<%= type.to_s -%>"></a>
+						
+						<p><b>By <%= type.to_s.titleize -%></b></p>
+						
+						<div class="box_indented_with_bar">
+							
+							<%= render :partial => 'metadata_stats_for_type', :locals => { :type => type } -%>
+							
+						</div>
+					
 					<% end %>
-				</table>
+					
+					<a name="metadata_all"></a>
+					
+					<p><b>By ALL metadata sources:</b></p>
+					
+					<div class="box_indented_with_bar">
+						
+						<%= render :partial => 'metadata_stats_for_type', :locals => { :type => :all } -%>
+						
+					</div>
+							
+				</div>
+			
+			<% end %>
+			
+			<br/>
+			
+			<% benchmark "Statistics - Search" do %>
+			
+				<a name="search"></a>
+			
+				<h4>Search</h4>
 				
-			</div>
-		
-		<% end %>
-		
-	</div>
-	
-	<!-- Right column -->
-	<div class="right_column">
-		<ul class="buttons" style="text-align: right;">
-			<li class="first">
-				<%= link_to(refresh_image + " Refresh", refresh_stats_path, :method => :post) -%>
-			</li>
-		</ul>
-		
-		<div class="box_info" style="position: fixed;">
-			<ul class="contents">
-				<li><a href="#general">General</a></li>
-				<li>
-					<a href="#metadata">Metadata</a>
-					<br/>
-					<ul>
-						<% BioCatalogue::Annotations.metadata_sources.each do |type| %>
-							<li><a href="#metadata_<%= type.to_s -%>">By <%= type.to_s.titleize -%></a></li>
+				<div class="box_indented_with_bar">
+					
+					<p>
+						<b>Total:</b>
+						<%= @stats.total_searches_non_unique -%>
+					</p>
+					
+					<p>
+						<b>Total unique queries:</b>
+						<%= @stats.total_searches_unique -%>
+					</p>
+					
+					<p>
+						<b>Queries:</b>
+					</p>
+					
+					<table class="biocat_table">
+						<tr>
+							<th>Query:</th>
+							<th>Frequency:</th>
+						</tr>
+						
+						<% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
+							<tr>
+								<td><%= h(query) -%></td>
+								<td style="text-align:center;"><%= frequency -%></td>
+							</tr>
 						<% end %>
-						<li><a href="#metadata_all">By ALL metadata sources</a></li>
-					</ul>
-				</li>
-				<li><a href="#search">Search</a></li>
-			</ul>
+					</table>
+					
+				</div>
+			
+			<% end %>
+			
 		</div>
+		
+		<!-- Right column -->
+		<div class="right_column">
+			<ul class="buttons" style="text-align: right;">
+				<li class="first">
+					<%= link_to(refresh_image + " Refresh", refresh_stats_path, :method => :post) -%>
+				</li>
+			</ul>
+			
+			<div class="box_info" style="position: fixed;">
+				<ul class="contents">
+					<li><a href="#general">General</a></li>
+					<li>
+						<a href="#metadata">Metadata</a>
+						<br/>
+						<ul>
+							<% BioCatalogue::Annotations.metadata_sources.each do |type| %>
+								<li><a href="#metadata_<%= type.to_s -%>">By <%= type.to_s.titleize -%></a></li>
+							<% end %>
+							<li><a href="#metadata_all">By ALL metadata sources</a></li>
+						</ul>
+					</li>
+					<li><a href="#search">Search</a></li>
+				</ul>
+			</div>
+		</div>
+		
+		<span class="clear"></span>
+		
 	</div>
-	
-	<span class="clear"></span>
-	
-</div>
+
+<% end %>
+

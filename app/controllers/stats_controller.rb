@@ -5,19 +5,22 @@
 # See license.txt for details.
 
 class StatsController < ApplicationController
-  caches_page :index
   
   def index
-    @stats = BioCatalogue::Stats.new
+    @stats = BioCatalogue::Stats.get_last_stats
     
     respond_to do |format|
-      format.html # index.rhtml
+      format.html
     end
   end
   
   def refresh
-    expire_page :action => "index"
-    sleep 2
-    redirect_to :action => "index"
+    BioCatalogue::Stats.submit_job_to_refresh_stats
+    
+    respond_to do |format|
+      flash[:notice] = "Latest statistics are now being generated. Please refresh this page after a few minutes..."
+      format.html { redirect_to stats_index_url }
+    end
   end
+  
 end
