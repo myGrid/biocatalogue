@@ -44,11 +44,11 @@ module BioCatalogue
           end
           doc = REXML::Document.new(xml) unless xml.nil?
         rescue Exception => ex
-          Rails.logger.error("Could not get output from WSDLUtils")
-          Rails.logger.error(ex.backtrace)
+          Rails.logger.error("Error whilst getting output from WSDLUtils service. Exception: #{ex.class.name} - #{ex.message}")
+          Rails.logger.error(ex.backtrace.join("\n"))
           return nil
         end
-      return doc || nil
+        return doc || nil
       end
       
       
@@ -133,8 +133,12 @@ module BioCatalogue
           end
         end
       rescue Exceptions => ex
-          Rails.logger.error(ex.backtrace)
-          error_messages << ex.backtrace
+          Rails.logger.error("Error whilst parsing WSDL. Exception: #{ex.class.name} - #{ex.message}")
+          Rails.logger.error(ex.backtrace.join("\n"))
+            
+          error_messages << ex.message
+          
+          service_info = nil
           wsdl_file_contents = nil
         end
         

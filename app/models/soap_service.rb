@@ -158,6 +158,11 @@ class SoapService < ActiveRecord::Base
       #service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
       service_info, err_msgs, wsdl_file_contents = BioCatalogue::WSDLUtils::WSDLParser.parse(self.wsdl_location)
       
+      if service_info.nil?
+        errors.add_to_base("Failed to parse the WSDL file.")
+        success = false
+      end
+      
       unless err_msgs.empty?
         errors.add_to_base("Error occurred whilst processing the WSDL file. Error(s): #{err_msgs.to_sentence}.")
         success = false

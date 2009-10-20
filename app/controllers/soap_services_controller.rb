@@ -146,7 +146,7 @@ class SoapServicesController < ApplicationController
       
       err_text = "Failed to load the WSDL URL provided.<br/>" +
         "Please check that it points to a valid WSDL file.<br/>" +
-        "If this problem persists, please <a href='/contact'>contact us</a>."
+        "If this problem persists, please <a href='/contact'>contact us</a>"
       
       begin
         @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WSDLUtils::WSDLParser.parse(@soap_service.wsdl_location)
@@ -154,16 +154,20 @@ class SoapServicesController < ApplicationController
         # Check for a duplicate
         @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["end_point"])
         
-        # Only continue if no duplicate was found
-        if @existing_service.nil?
-          if err_msgs.empty?
-            @error_message = nil
-            
-            # Try and find location of the service from the url of the WSDL.
-            @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@soap_service.wsdl_location)
-          else
-            @error_message = err_text
+        # Only continue we have valid wsdl_indo or if no duplicate was found
+        if @wsdl_info and !@wsdl_info.blank?
+          if @existing_service.nil?
+            if err_msgs.empty?
+              @error_message = nil
+              
+              # Try and find location of the service from the url of the WSDL.
+              @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@soap_service.wsdl_location)
+            else
+              @error_message = err_text
+            end
           end
+        else
+          @error_message = err_text
         end
       rescue Exception => ex
         @error_message = err_text
