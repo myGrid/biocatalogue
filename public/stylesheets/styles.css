@@ -1897,15 +1897,22 @@ ul.tabbernav li.tabberactive a:hover
 
 .buttons li a {
 	width: 100%;
-	padding: 0.5em 0.5em;
-	*padding: 0.2em 0.5em;
-	line-height: 1.0;
+	padding: 0.1em 0.5em;
+	font-weight: bold;
+	line-height: 1.6;
 	text-decoration: none;
 	border: 1px solid #BBBBBB;
+	background-image: url('/images/button_slim_bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
 	background-color: #EEF6FF;
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;	
 }
 
 .buttons li a:hover {
+	background-image: none;
 	background-color: #0099FF;
 	color: #F5F5F5;
 }
@@ -2375,7 +2382,7 @@ div.auto_complete ul strong.highlight {
 /* BEGIN stats page styles */
 
 #stats_page {
-	margin: 0 3em;	
+	margin: 0 2em;	
 }
 
 #stats_page p {

@@ -62,12 +62,15 @@
 
 <% else %>
 
+	<p>
+		<b>Last calculated:</b> <%= @stats.created_at.to_s -%>
+		<%= link_to(refresh_image + " Refresh", refresh_stats_path, :class => "button_slim", :method => :post, :style => "margin-left: 3em;") -%>
+	</p>
+
 	<div id="stats_page">
 		
 		<!-- Left column -->
 		<div class="left_column">
-		
-			<p><b>Last calculated: <%= @stats.created_at.to_s -%></b> (click on the refresh button to the right to calculate latest stats)</p>
 		
 			<% benchmark "Statistics - General" do %>
 			
@@ -241,11 +244,6 @@
 		
 		<!-- Right column -->
 		<div class="right_column">
-			<ul class="buttons" style="text-align: right;">
-				<li class="first">
-					<%= link_to(refresh_image + " Refresh", refresh_stats_path, :method => :post) -%>
-				</li>
-			</ul>
 			
 			<div class="box_info" style="position: fixed;">
 				<ul class="contents">
