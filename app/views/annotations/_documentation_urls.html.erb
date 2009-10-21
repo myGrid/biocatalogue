@@ -30,7 +30,7 @@
 							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(annotatable.created_at)} ago)" -%></span>
 						</span>
 						<div>
-							<%= auto_link(h(desc), :link => :all, :href_options => { :target => '_blank' }) -%>
+							<%= auto_link(h(desc), :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) -%>
 						</div>
 					</div>
 				<% end %>
