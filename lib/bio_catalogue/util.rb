@@ -229,7 +229,25 @@ module BioCatalogue
         if v.is_a?(Hash)
           values.concat(all_values_from_hash(v))
         elsif v.is_a?(Array)
-          values.concat(v)
+          values.concat(all_values_from_array(v))
+        else
+          values << v.to_s
+        end
+      end
+      
+      return values
+    end
+    
+    def self.all_values_from_array(a)
+      values = [ ]
+      
+      return values if a.blank? or !a.is_a?(Array)
+      
+      a.each do |v|
+        if v.is_a?(Hash)
+          values.concat(all_values_from_hash(v))
+        elsif v.is_a?(Array)
+          values.concat(all_values_from_array(v))
         else
           values << v.to_s
         end
