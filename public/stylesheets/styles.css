@@ -2671,3 +2671,28 @@ img.account_provider_logo {
 	float: right;
 }
 
+.computational_type_details {
+	font-size: 93%;
+	line-height: 1.2;
+}
+
+.computational_type_details ul {
+	margin-bottom: 0;
+	margin-left: 2em;
+	margin-top: 0;
+	padding: 0;
+}
+
+.computational_type_details ul li {
+	list-style-type: circle;
+}
+
+.computational_type_details ul li img {
+	padding-left: 0.5em;
+}
+
+.computational_type_details ul li .type_keyword {
+	color: #999;
+	padding-left: 0.5em;
+}
+

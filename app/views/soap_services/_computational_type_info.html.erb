@@ -1,0 +1,44 @@
+<%
+
+# BioCatalogue: app/views/soap_services/_computational_type_info.html.erb
+#
+# Copyright (c) 2008-2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% unless thing.nil? %>
+	<div class="annotations_container">
+		<div style="margin-top: 1em;">
+		  <b>Computational Type:</b>
+		</div>
+		
+		<div class="box_annotations">
+			<% if (details = thing.computational_type_details).blank? or thing.computational_type.blank? %>
+				<span class="none_text">unknown</span>
+			<% else %>
+				<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+					<div class="text">
+						<span class="annotation_source_text annotation_source_provider">
+							<span>from </span>
+							<%= annotation_source_icon("ServiceProvider") -%>
+							<span><b>provider's description doc</b></span>
+							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(thing.updated_at)} ago)" -%></span>
+						</span>
+						<div class="computational_type_details">
+							<% if details.blank? %>
+								<%= h(input.computational_type) -%>
+							<% else %>
+								<%= render_computational_type_details(details) -%>
+							<% end %>
+						</div>
+					</div>
+				<% end %>
+			<% end %>
+		</div>
+		
+	</div>
+<% end %>
+
+

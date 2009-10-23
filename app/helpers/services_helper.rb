@@ -48,4 +48,52 @@ module ServicesHelper
 
     return html
   end
+  
+  def render_computational_type_details(details_hash)
+    return "" if details_hash.blank?
+    return details_hash.to_s if (!details_hash.is_a?(Hash) and !details_hash.is_a?(Array))
+    
+    logger.info("computational type details class = #{details_hash.class.name}")
+    
+    return render_computational_type_details_entries([ details_hash['type'] ].flatten)
+  end
+  
+  protected
+  
+  def render_computational_type_details_entries(entries)
+    html = ''
+    
+    return html if entries.empty?
+    
+    html << content_tag(:ul) do
+      x = ''
+      entries.each do |entry|
+        x << render_computational_type_details_entry(entry)
+      end
+      x
+    end
+    
+    return html
+  end
+  
+  def render_computational_type_details_entry(entry)
+    html = ''
+    
+    return html if entry.blank?
+    
+    html << content_tag(:li) do
+      x = entry['name']
+      if entry['documentation']
+        x << info_icon_with_tooltip(white_list(simple_format(entry['documentation'])))
+      end
+      if entry['type'] and !entry['type'].blank?
+        x << content_tag(:span, "type:", :class => "type_keyword")
+        x << render_computational_type_details_entries([ entry['type'] ].flatten)
+      end
+      x
+    end
+    
+    return html
+  end
+  
 end

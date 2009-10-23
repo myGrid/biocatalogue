@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/soap_services/_show_service_tabs.html.erb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -60,7 +60,7 @@
 						
 						<div>
 							<%= render :partial => "annotations/other_annotations",
-							 		 			 :locals => { :annotatable => operation } -%>
+							 		 			 :locals => { :annotatable => operation, :show_add => false } -%>
 						</div>
 						
 					</div>
@@ -90,23 +90,18 @@
 											 	 		 :locals => { :annotatable => input } -%>
 								</div>
 									 
-								<div>
-									<b>Computational Type:</b>
-									<% unless input.computational_type.blank? %>
-										<%= h(input.computational_type) -%>
-									<% else %>
-										<span class="none_text">unknown</span>
-									<% end %>
-								</div> 
-							 
 								<%= render :partial => "annotations/descriptions",
 								 	 				 :locals => { :annotatable => input } -%>
 													 
 								<%= render :partial => "annotations/examples",
 								 	 				 :locals => { :annotatable => input } -%>
-													 
+								
+								<%= render :partial => "soap_services/computational_type_info",
+								 	 				 :locals => { :thing => input } -%>
+								
 								<%= render :partial => "annotations/other_annotations",
-							 		 		 		 :locals => { :annotatable => input } -%>
+							 		 		 		 :locals => { :annotatable => input, :show_add => false } -%>
+								
 							</div>
 							<div style="float: right; width: 24%; font-size: 85%;">
 								<%= render :partial => "annotations/tags_box",
@@ -134,23 +129,17 @@
 											 	 		 :locals => { :annotatable => output } -%>
 								</div>
 								
-								<div>
-									<b>Computational Type:</b>
-									<% unless output.computational_type.blank? %>
-										<%= h(output.computational_type) -%>
-									<% else %>
-										<span class="none_text">unknown</span>
-									<% end %>
-								</div> 
-													 
 								<%= render :partial => "annotations/descriptions",
 								 	 				 :locals => { :annotatable => output } -%>
 													 
 								<%= render :partial => "annotations/examples",
 								 	 				 :locals => { :annotatable => output } -%>
-													 
+								
+								<%= render :partial => "soap_services/computational_type_info",
+								 	 				 :locals => { :thing => output } -%>
+								
 								<%= render :partial => "annotations/other_annotations",
-							 		 		 		 :locals => { :annotatable => output } -%>
+							 		 		 		 :locals => { :annotatable => output, :show_add => false } -%>
 							</div>
 							<div style="float: right; width: 24%; font-size: 85%;">
 								<%= render :partial => "annotations/tags_box",

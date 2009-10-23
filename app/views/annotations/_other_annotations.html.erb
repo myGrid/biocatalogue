@@ -10,6 +10,7 @@
 
 <%# Set defaults for optional parameters to this partial... %>
 <% show_header = true unless local_assigns.has_key?(:show_header) %>
+<% show_add = true unless local_assigns.has_key?(:show_add) %>
 <% show_modify_options = true unless local_assigns.has_key?(:show_modify_options) %>
 <% show_none_text = true unless local_assigns.has_key?(:show_none_text) %>
 
@@ -23,11 +24,13 @@
 					<%= help_icon_with_tooltip("This is a \"catch all\" for all annotations that do not fit into any specific known classes/categories/attributes.<br/><br/>Some of these annotations may be intended for machine use (so won't necessarily be easily readable).<br/><br/>BioCatalogue may in the future choose to move some of these annotations to other parts of the UI if deemed appropriate.") -%>
 				</span>
 				
-				<%= annotation_add_by_popup_link annotatable,
-						 :link_text => "Add a new annotation",
-				     :tooltip_text => "Click to add a new annotation",
-				     :style => "margin-left: 1em;"
-				-%>
+				<% if show_add %>
+					<%= annotation_add_by_popup_link annotatable,
+							 :link_text => "Add a new annotation",
+					     :tooltip_text => "Click to add a new annotation",
+					     :style => "margin-left: 1em;"
+					-%>
+				<% end %>
 	
 			</div>
 		<% end %>

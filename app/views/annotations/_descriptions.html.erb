@@ -36,7 +36,7 @@
 							<span>from </span>
 							<%= annotation_source_icon("ServiceProvider") -%>
 							<span><b>provider's description doc</b></span>
-							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(annotatable.created_at)} ago)" -%></span>
+							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(annotatable.updated_at)} ago)" -%></span>
 						</span>
 						<div>
 							<%= annotation_prepare_description(desc, 
