@@ -57,6 +57,7 @@ module BioCatalogue
       end
       
       def load_data
+        load_model_totals
         load_metadata_counts_per_service
         load_metadata_counts_grouped_by_counts
         load_searches_all
@@ -65,7 +66,7 @@ module BioCatalogue
       
       # Returns: Integer
       def total_for_model(model)
-        model.count
+        @model_totals[model]
       end
       
       # The 'type' should be one of the types available in the results hash of 
@@ -125,6 +126,14 @@ module BioCatalogue
       end
       
       protected
+      
+      def load_model_totals
+        @model_totals = { }
+        [ Service, ServiceVersion, ServiceDeployment, SoapService, SoapOperation, SoapInput, SoapOutput,
+          RestService, SoaplabServer, User, ServiceProvider, Annotation, ActivityLog ].each do |m|
+          @model_totals[m] = m.count
+        end
+      end
       
       # Maintains a hash for all service metadat counts where:
       # { service_id => metadata_counts_hash (as per return value of BioCatalogue::Annotations.metadata_counts_for_service) }

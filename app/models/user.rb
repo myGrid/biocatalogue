@@ -31,6 +31,8 @@ class User < ActiveRecord::Base
     acts_as_solr(:fields => [ :display_name, :affiliation, :country ],
                  :if => proc{|u| u.activated?})
   end
+  
+  default_scope :conditions => "activated_at IS NOT NULL"
 
   validates_presence_of       :password, :if => :password_required?
   validates_presence_of       :password_confirmation, :if => :password_required?
