@@ -1285,6 +1285,15 @@ a.service_location_flag {
 	line-height: 1.0;
 }
 
+.operations_contents_box {
+	padding: 0.5em 0.6em; 
+	border: 1px solid #CCC; 
+	line-height: 1.5; 
+	background-color: #F3F3F3; 
+	font-weight: bold; 
+	font-size: 108%;
+}
+
 .operation_box {
 	margin: 2em 0;
 	line-height: 1.5;

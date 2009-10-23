@@ -14,7 +14,7 @@
   <h3>Operations (<%= ops.length -%>)</h3>
 	
 	<a name='operations_index'></a>
-	<div style="padding: 1em 0.6em; border: 1px solid #CCC; line-height: 1.5; background-color: #F3F3F3; font-weight: bold; font-size: 108%;">
+	<div class="operations_contents_box">
 		<% ops.each do |operation| %>
 			<span style="margin: 0 0.4em;">
 				<%= content_tag(:a, h(operation.name), :href => "#soap_operation_#{operation.id}") -%>
