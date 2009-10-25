@@ -62,173 +62,225 @@
 
 <% else %>
 
-	<p>
-		<b>Last calculated:</b> <%= @stats.created_at.to_s -%>
-		<%= link_to(refresh_image + " Refresh", refresh_stats_path, :class => "button_slim", :method => :post, :style => "margin-left: 3em;") -%>
-	</p>
-
+	<table class="box_info_standout" style="width: 450px;">
+		<tr>
+			<td style="vertical-align:middle;"><b>Last calculated:</b> <%= @stats.created_at.to_s -%></td>
+			<td style="text-align:right;"><%= link_to(refresh_image + " Refresh", refresh_stats_path, :class => "button_slim", :method => :post, :style => "margin-left: 3em;") -%></td>
+		</tr>
+	</table>
+		
 	<div id="stats_page">
 		
-		<!-- Left column -->
-		<div class="left_column">
+		<div id="stats-tabs" class="tabber">
+	
+  		<div id="tab-general" class="tabbertab">
+  			
+				<h3>General</h3>
 		
-			<% benchmark "Statistics - General" do %>
-			
-				<a name="general"></a>
-			
-				<h4 style="margin-top: 0.5em">General</h4>
+				<% benchmark "Statistics - General" do %>
 				
-				<table class="biocat_table">
-					<tr>
-						<th></th>
-						<th>Total:</th>
-						<th>Last 7 days:</th>
-						<th>Last 30 days:</th>
-						<th>Last 90 days:</th>
-						<th>Last 180 days:</th>
-					</tr>
-					
-					<% BioCatalogue::Stats::MODELS.each do |m| %>
+					<table class="biocat_table">
 						<tr>
-							<td>
-								<b><%= m.name.titleize.pluralize -%></b>
-							</td>
-							<td class="value center">
-								<%= number_with_delimiter(@stats.total_for_model(m)) -%>
-							</td>
-							<td class="value center">
-								<%= number_with_delimiter(@stats.total_for_model(m, :last_7)) -%>
-							</td>
-							<td class="value center">
-								<%= number_with_delimiter(@stats.total_for_model(m, :last_30)) -%>
-							</td>
-							<td class="value center">
-								<%= number_with_delimiter(@stats.total_for_model(m, :last_90)) -%>
-							</td>
-							<td class="value center">
-								<%= number_with_delimiter(@stats.total_for_model(m, :last_180)) -%>
-							</td>
+							<th></th>
+							<th>Total:</th>
+							<th>Last 7 days:</th>
+							<th>Last 30 days:</th>
+							<th>Last 90 days:</th>
+							<th>Last 180 days:</th>
 						</tr>
-					<% end %>
-				</table>
-				
-				<br/>
+						
+						<% BioCatalogue::Stats::MODELS.each do |m| %>
+							<tr>
+								<td>
+									<b><%= m.name.titleize.pluralize -%></b>
+								</td>
+								<td class="value center">
+									<%= number_with_delimiter(@stats.total_for_model(m)) -%>
+								</td>
+								<td class="value center">
+									<%= number_with_delimiter(@stats.total_for_model(m, :last_7)) -%>
+								</td>
+								<td class="value center">
+									<%= number_with_delimiter(@stats.total_for_model(m, :last_30)) -%>
+								</td>
+								<td class="value center">
+									<%= number_with_delimiter(@stats.total_for_model(m, :last_90)) -%>
+								</td>
+								<td class="value center">
+									<%= number_with_delimiter(@stats.total_for_model(m, :last_180)) -%>
+								</td>
+							</tr>
+						<% end %>
+					</table>
 					
-				<p class="box_info_standout">
-					NOTE: the Annotations count above is only for the metadata stored within the generic Annotations mechanism and 
-					does not include metadata from service description docs (like from WSDLs for SOAP services). To see all metadata counts go to the 
-					<a href="#metadata">Metadata</a> section.
-				</p>
-			
-			<% end %>
-			
-			<br/>
-			
-			<% benchmark "Statistics - Metadata" do %>
-			
-				<a name="metadata"></a>
+					<br/>
+						
+					<p class="box_info_standout">
+						NOTE: the Annotations count above is only for the metadata stored within the generic Annotations mechanism and 
+						does not include metadata from service description docs (like from WSDLs for SOAP services). To see all metadata counts go to the 
+						<a href="#metadata">Metadata</a> tab.
+					</p>
 				
-				<h4>Metadata *</h4>
-				
-				<p class="box_info_standout">
-					<b>*</b> These include all the annotations stored via the generic Annotations mechanism AND 
-					metadata from service description docs (like from WSDLs for SOAP services).
-				</p>
-				
-				<br/>
-				
-				<table class="biocat_table">
-					<tr>
-						<th></th>
-						<th>Total on services:</th>
-						<th>Average per service:</th>
-						<th>Max no. on services:</th>
-						<th>Min no. on services:</th>
-					</tr>
-					
-					<% BioCatalogue::Annotations.metadata_sources.concat([ :all ]).each do |type| %>
-						<%= render :partial => 'metadata_stats_for_type', :locals => { :type => type } -%>
-					<% end %>
-				</table>
-				
-			<% end %>
-			
-			<br/>
-			
-			<% benchmark "Statistics - Search" do %>
-			
-				<a name="search"></a>
-			
-				<h4>Search</h4>
-				
-				<p>
-					<b>Total:</b>
-					<%= @stats.total_searches_non_unique -%>
-				</p>
-				
-				<p>
-					<b>Total unique queries:</b>
-					<%= @stats.total_searches_unique -%>
-				</p>
-				
-				<p>
-					<b>Queries Breakdown:</b>
-				
-					<% if @stats.search_queries_with_frequencies_sorted_descending.length > 10 %>
-						<span style="padding-left: 2em;">
-							<%= render_show_hide_more_search_queries_links -%>
-						</span>
-					<% end %>
-				</p>
-				
-				<table class="biocat_table">
-					<tr>
-						<th>Query:</th>
-						<th>Frequency:</th>
-					</tr>
-					
-					<% search_queries_count = 0 %>
-					<% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
-						<% 
-							search_queries_count += 1
-							row_class = (search_queries_count > 10 ? "search_query_hidden" : "")
-							show_row = row_class.blank?
-						%>
-						<tr class="<%= row_class -%>" style="<%= show_row ? "" : "display: none;" -%>">
-							<td><%= h(query) -%></td>
-							<td class="value center"><%= frequency -%></td>
-						</tr>
-					<% end %>
-				</table>
-					
-			<% end %>
-			
-		</div>
+				<% end %>
 		
-		<!-- Right column -->
-		<div class="right_column">
-			
-			<div class="box_info" style="position: fixed;">
-				<ul class="contents">
-					<li><a href="#general">General</a></li>
-					<li>
-						<a href="#metadata">Metadata</a>
-						<br/>
-						<ul>
-							<% BioCatalogue::Annotations.metadata_sources.each do |type| %>
-								<li><a href="#metadata_<%= type.to_s -%>">By <%= type.to_s.titleize -%></a></li>
-							<% end %>
-							<li><a href="#metadata_all">By ALL metadata sources</a></li>
-						</ul>
-					</li>
-					<li><a href="#search">Search</a></li>
-				</ul>
 			</div>
-		</div>
 		
-		<span class="clear"></span>
+			<div id="tab-metadata" class="tabbertab">
+				
+				<h3>Metadata</h3>
 		
+				<% benchmark "Statistics - Metadata" do %>
+					
+					<p class="box_info_standout">
+						<b>NOTE:</b> these include all the annotations stored via the generic Annotations mechanism AND 
+						metadata from service description docs (like from WSDLs for SOAP services).
+					</p>
+					
+					<br/>
+					
+					<table class="biocat_table">
+						<tr>
+							<th></th>
+							<th>Total on services:</th>
+							<th>Average per service:</th>
+							<th>Max no. on services:</th>
+							<th>Min no. on services:</th>
+						</tr>
+						
+						<% BioCatalogue::Annotations.metadata_sources.concat([ :all ]).each do |type| %>
+							<%= render :partial => 'metadata_stats_for_type', :locals => { :type => type } -%>
+						<% end %>
+					</table>
+					
+					<br />
+					
+					<h5>Breakdown by Services</h5>
+					
+					<% if false %>
+					<p>
+						<%= link_to_function("show " + expand_image, visual_effect(:toggle_blind, "services_metadata_breakdown", :duration => 0.3), :class => "expand_link") %>
+					</p>
+					<% end %>
+					
+					<div id="services_metadata_breakdown">
+					
+						<p><span class="faded">(Click on column headers to sort. Note: this might take some time to process.)</span></p>
+						
+						<table class="biocat_table sortable">
+							<thead>
+								<tr>
+									<th>Service:</th>
+									<% BioCatalogue::Annotations.metadata_sources.concat([ :all ]).each do |type| %>
+										<th class="number">By <%= metadata_source_type_title_text(type) -%>:</th>
+									<% end %>
+								</tr>
+							</thead>
+							
+							<% sorted_service_ids = get_sorted_list_of_service_ids_from_metadata_counts(@stats.metadata_counts_per_service) %>
+							
+							<tbody>					
+								<% sorted_service_ids.each do |s_id| %>
+									<tr>
+										<td>
+											<% service = Service.find_by_id(s_id) %>
+											<% if service %>
+												<%= link_to(h(service.name), service, :popup => true) -%>
+											<% else %>
+												(unknown service)
+											<% end %>
+										</td>
+										<% BioCatalogue::Annotations.metadata_sources.concat([ :all ]).each do |type| %>
+											<td class="value center">
+												<%= @stats.metadata_counts_per_service[s_id][type] -%>
+											</td>
+										<% end %>			
+									</tr>
+								<% end %>
+							</tbody>
+						</table>
+					
+					</div>
+					
+				<% end %>
+		
+			</div>
+
+			<div id="tab-categories" class="tabbertab">
+				
+				<h3>Service Categories</h3>
+		
+				<% benchmark "Statistics - Service Categories" do %>
+				
+					<p style="font-size: 123.1%; font-weight: bold; color: red;">Coming Soon!</p>
+					
+				<% end %>
+		
+			</div>
+			
+			<div id="tab-tags" class="tabbertab">
+				
+				<h3>Tags</h3>
+		
+				<% benchmark "Statistics - Tags" do %>
+				
+					
+				<% end %>
+		
+			</div>
+
+			<div id="tab-search" class="tabbertab">
+				
+				<h3>Search</h3>
+							
+				<% benchmark "Statistics - Search" do %>
+				
+					<p>
+						<b>Total:</b>
+						<%= @stats.total_searches_non_unique -%>
+					</p>
+					
+					<p>
+						<b>Total unique queries:</b>
+						<%= @stats.total_searches_unique -%>
+					</p>
+					
+					<h5>
+						Queries Breakdown
+					
+						<% if @stats.search_queries_with_frequencies_sorted_descending.length > 10 %>
+							<span style="padding-left: 2em;">
+								<%= render_show_hide_more_stats_links("search_queries", "search_query_hidden") -%>
+							</span>
+						<% end %>
+					</h5>
+					
+					<table class="biocat_table">
+						<tr>
+							<th>Query:</th>
+							<th>Frequency:</th>
+						</tr>
+						
+						<% search_queries_count = 0 %>
+						<% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
+							<% 
+								search_queries_count += 1
+								row_class = (search_queries_count > 10 ? "search_query_hidden" : "")
+								show_row = row_class.blank?
+							%>
+							<tr class="<%= row_class -%>" style="<%= show_row ? "" : "display: none;" -%>">
+								<td><%= h(query) -%></td>
+								<td class="value center"><%= frequency -%></td>
+							</tr>
+						<% end %>
+					</table>
+						
+				<% end %>
+			
+			</div>
+			
 	</div>
 
 <% end %>
 
+
+<%= render :partial => 'shared/tabber_startup' -%>

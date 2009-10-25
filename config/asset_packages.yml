@@ -11,6 +11,7 @@ javascripts:
   - tabber
   - boxover
   - redbox
+  - tablekit
 stylesheets: 
 - base:
   - reset-fonts

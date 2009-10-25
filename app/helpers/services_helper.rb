@@ -96,4 +96,14 @@ module ServicesHelper
     return html
   end
   
+  def get_sorted_list_of_service_ids_from_metadata_counts(service_metadata_counts)
+    results = [ ]
+    
+    return results if service_metadata_counts.blank?
+    
+    results = service_metadata_counts.keys.sort { |a,b| service_metadata_counts[b][:all] <=> service_metadata_counts[a][:all] }
+    
+    return results
+  end
+  
 end

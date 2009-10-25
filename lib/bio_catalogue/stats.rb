@@ -66,6 +66,10 @@ module BioCatalogue
         @model_totals[model][span]    
       end
       
+      def metadata_counts_per_service
+        @metadata_counts_per_service
+      end
+      
       # The 'type' should be one of the types available in the results hash of 
       # BioCatalogue::Annotations.metadata_counts_for_service
       #

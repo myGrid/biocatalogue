@@ -39,7 +39,7 @@
 		<br/>
 		|
 		<% max_met[:services].each do |s| %>
-			<%= link_to(h(s.name), s) -%>
+			<%= link_to(h(s.name), s, :popup => true) -%>
 			|
 		<% end %>
 	</td>
@@ -51,7 +51,7 @@
 		<br/>
 		|
 		<% min_met[:services].each do |s| %>
-			<%= link_to(h(s.name), s) -%>
+			<%= link_to(h(s.name), s, :popup => true) -%>
 			|
 		<% end %>
 	</td>
