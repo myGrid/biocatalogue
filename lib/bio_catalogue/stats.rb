@@ -59,6 +59,7 @@ module BioCatalogue
         load_metadata_counts_grouped_by_counts
         load_searches_all
         load_searches_grouped_by_frequency
+        load_tags
       end
       
       # Returns: Integer
@@ -126,6 +127,22 @@ module BioCatalogue
         @searches_grouped_by_frequency.to_a.sort{|a,b| b[1] <=> a[1]}
       end
       
+      def total_taggings
+        @taggings_count
+      end
+      
+      def total_tags_unique
+        @tags.keys.length
+      end
+      
+      def tags_with_counts
+        @tags
+      end
+      
+      def tags_with_counts_sorted_descending
+        @tags.to_a.sort{|a,b| b[1][:all] <=> a[1][:all]}
+      end
+      
       protected
       
       def load_model_totals
@@ -180,6 +197,26 @@ module BioCatalogue
         end
         
         @searches_grouped_by_frequency
+      end
+      
+      def load_tags
+        @taggings_count = Annotation.count(:conditions => { :annotation_attributes => { :name => "tag" } }, :joins => :attribute)
+        
+        @tags = { }
+        tags1 = BioCatalogue::Tags.get_tags
+        tags2 = BioCatalogue::Filtering.get_filters_for_all_tags
+        
+        tags1.each do |t|
+          @tags[t['name']] = { :all => t['count'] }
+        end
+        
+        tags2.each do |t|
+          if @tags.has_key?(t['name'])
+            @tags[t['name']].store(:services, t['count'])
+          else
+            @tags[t['name']] = { :services => t['count'] }
+          end
+        end
       end
       
     end
