@@ -8,42 +8,51 @@
 
 %>
 
-<p>
-	<b>Total on services:</b>
-	<%= @stats.total_metadata_on_services(type) -%>
-</p>
+<tr>
+	<td>
+		<a name="metadata_<%= type.to_s -%>"></a>
+		<b>By <%= metadata_source_type_title_text(type) -%></b>
+	</td>
+	<td class="value center">
+		<%= number_with_delimiter(@stats.total_metadata_on_services(type)) -%>
+	</td>
+	<td class="value center">
+		<%= number_with_delimiter(@stats.avg_metadata_per_service(type)) -%>
+	</td>
+	<td class="value center">
+		<% max_met = @stats.max_metadata_on_services(type) -%>
+		<%= number_with_delimiter(max_met[:count]) -%>
+		<br/>
+		<%= link_to_function("show services" + expand_image, visual_effect(:toggle_blind, "metadata_#{type}_max_services", :duration => 0.3), :class => "expand_link") %>
+	</td>
+	<td class="value center">
+		<% min_met = @stats.min_metadata_on_services(type) -%>
+		<%= number_with_delimiter(min_met[:count]) -%>
+		<br/>
+		<%= link_to_function("show services" + expand_image, visual_effect(:toggle_blind, "metadata_#{type}_min_services", :duration => 0.3), :class => "expand_link") %>
+	</td>
+</tr>
 
-<p>
-	<b>Average no. per service:</b>
-	<%= @stats.avg_metadata_per_service(type) -%>
-</p>
+<tr id='<%= "metadata_#{type}_max_services"-%>' class="inner services" style="display: none;">
+	<td colspan='5'>
+		<b>Service(s) with the max no. of metadata, by <%= metadata_source_type_title_text(type) -%>:</b>
+		<br/>
+		|
+		<% max_met[:services].each do |s| %>
+			<%= link_to(h(s.name), s) -%>
+			|
+		<% end %>
+	</td>
+</tr>
 
-<% max_met = @stats.max_metadata_on_services(type) -%>
-<p>
-	<b>Max no. on services:</b>
-	<%= max_met[:count] -%>
-	<span style="margin-left: 2em;">
-		(<%= link_to_function("services" + expand_image, visual_effect(:toggle_blind, "metadata_#{type}_max_services", :duration => 0.3)) %>)
-	</span>
-	<br/>
-</p>
-<ul id='<%= "metadata_#{type}_max_services" -%>' class="services" style="display: none;">
-	<% max_met[:services].each do |s| %>
-		<li><%= link_to(h(s.name), s) -%></li>
-	<% end %>
-</ul>
-
-<% min_met = @stats.min_metadata_on_services(type) -%>
-<p>
-	<b>Min no. on services:</b>
-	<%= min_met[:count] -%>
-	<span style="margin-left: 2em;">
-		(<%= link_to_function("services" + expand_image, visual_effect(:toggle_blind, "metadata_#{type}_min_services", :duration => 0.3)) %>)
-	</span>
-	<br/>
-</p>
-<ul id='<%= "metadata_#{type}_min_services" -%>' class="services" style="display: none;">
-	<% min_met[:services].each do |s| %>
-		<li><%= link_to(h(s.name), s) -%></li>
-	<% end %>
-</ul>
+<tr id='<%= "metadata_#{type}_min_services"-%>' class="inner services" style="display: none;">
+	<td colspan='5'>
+		<b>Service(s) with the min no. of metadata, by <%= metadata_source_type_title_text(type) -%>:</b>
+		<br/>
+		|
+		<% min_met[:services].each do |s| %>
+			<%= link_to(h(s.name), s) -%>
+			|
+		<% end %>
+	</td>
+</tr>

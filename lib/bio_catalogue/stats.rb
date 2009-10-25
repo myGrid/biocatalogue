@@ -9,18 +9,15 @@
 module BioCatalogue
   module Stats
     
+    MODELS = [ Service, ServiceVersion, ServiceDeployment, SoapService, SoapOperation, SoapInput, SoapOutput,
+               RestService, SoaplabServer, User, ServiceProvider, Annotation, ActivityLog ].freeze
+    
     @@cache_key = "stats"
   
-    def self.get_last_stats(recalculate=false)
+    def self.get_last_stats
       stats = nil
       
-      cache_key = @@cache_key
-      
-      if recalculate
-        Rails.cache.delete(cache_key)
-      end
-      
-      cached_stats = Rails.cache.read(cache_key)
+      cached_stats = Rails.cache.read(@@cache_key)
       
       if cached_stats.nil?
         # No stats in cache so send in a request to generate tasks as a background job
@@ -65,8 +62,8 @@ module BioCatalogue
       end
       
       # Returns: Integer
-      def total_for_model(model)
-        @model_totals[model]
+      def total_for_model(model, span=:all)
+        @model_totals[model][span]    
       end
       
       # The 'type' should be one of the types available in the results hash of 
@@ -93,7 +90,7 @@ module BioCatalogue
         result = { }
         max = @metadata_counts_per_service.values.map{|v| v[type]}.max
         result[:count] = max
-        result[:services] = @metadata_counts_grouped_by_counts[type][max].map{|s_id| Service.find(s_id)}
+        result[:services] = @metadata_counts_grouped_by_counts[type][max].map{|s_id| Service.find_by_id(s_id)}.reject{|s| s.blank?}
         result
       end
       
@@ -105,7 +102,7 @@ module BioCatalogue
         result = { }
         min = @metadata_counts_per_service.values.map{|v| v[type]}.min
         result[:count] = min
-        result[:services] = @metadata_counts_grouped_by_counts[type][min].map{|s_id| Service.find(s_id)}
+        result[:services] = @metadata_counts_grouped_by_counts[type][min].map{|s_id| Service.find_by_id(s_id)}.reject{|s| s.blank?}
         result
       end
       
@@ -129,9 +126,13 @@ module BioCatalogue
       
       def load_model_totals
         @model_totals = { }
-        [ Service, ServiceVersion, ServiceDeployment, SoapService, SoapOperation, SoapInput, SoapOutput,
-          RestService, SoaplabServer, User, ServiceProvider, Annotation, ActivityLog ].each do |m|
-          @model_totals[m] = m.count
+        MODELS.each do |m|
+          @model_totals[m] = { }
+          @model_totals[m][:all] = m.count
+          @model_totals[m][:last_7] = m.count(:conditions => [ "created_at >= ?", Time.now.ago(7.days)])
+          @model_totals[m][:last_30] = m.count(:conditions => [ "created_at >= ?", Time.now.ago(30.days)])
+          @model_totals[m][:last_90] = m.count(:conditions => [ "created_at >= ?", Time.now.ago(90.days)])
+          @model_totals[m][:last_180] = m.count(:conditions => [ "created_at >= ?", Time.now.ago(180.days)])
         end
       end
       
@@ -162,7 +163,7 @@ module BioCatalogue
       
       # Maintains a non unique list of all the searches carried out.
       def load_searches_all
-        @searches_all = ActivityLog.find_all_by_action('search').map{|s| s.data[:query]}
+        @searches_all = ActivityLog.find_all_by_action('search').map{|s| s.data[:query]}.reject{|s| s.blank?}
       end
       
       # Maintains a hash of all the searches carried out and the frequency of each. 

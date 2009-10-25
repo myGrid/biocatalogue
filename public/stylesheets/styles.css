@@ -1514,20 +1514,23 @@ ul.tabbernav li.tabberactive a:hover
 
 /* BEGIN tables styles */
 .biocat_table {
-	border: 1px solid #cccccc;
+	border: 1px solid #DDD;
+	border-collapse: collapse;
+	line-height: 1.5;
+	color: #333333;
+}
+
+.biocat_table th,
+.biocat_table td {
+	padding: 0.2em 0.7em;
+	vertical-align: middle;
+	border: 1px solid #DDD;
 }
 
 .biocat_table th {
 	font-weight: bold;
-	white-space: nowrap;
-	vertical-align: middle;
-	color: #333333;
-	height: 1.8em;
 	background: url(../images/box_title_bkgd_green_14.gif) repeat-x;
 	background-position: bottom;
-	padding-left: 6px;
-	padding-right: 6px;
-	border-right: 1px solid #cccccc;
 }
 
 .biocat_table th.center {
@@ -1544,10 +1547,12 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .biocat_table td {
-	white-space: nowrap;
-	padding: 3px 6px 3px 6px;
-	border-left: 1px solid #cccccc;
-	border-right: 1px solid #cccccc;
+	
+}
+
+.biocat_table tr.inner,
+.biocat_table td.inner {
+	background-color: #EED;
 }
 
 .biocat_table td.center {
@@ -2401,7 +2406,10 @@ div.auto_complete ul strong.highlight {
 #stats_page h4 {
 	padding: 0.2em 0.6em;
 	background-color: #EEE;
+	margin: 0;
 	margin-top: 1.5em;
+	margin-bottom: 1em;
+	font-size: 123.1%;
 }
 
 #stats_page .left_column {
@@ -2419,14 +2427,19 @@ div.auto_complete ul strong.highlight {
 }
 
 #stats_page .box_info_standout {
-	width: 550px;
+	width: 98%;
+	font-size: 93%;
+}
+
+#stats_page .expand_link {
+	text-decoration: none;
 	font-size: 85%;
+	color: #888;
 }
 
 #stats_page .services {
-	margin: 0.5em 0 0.5em 1.5em;
-	line-height: 1.5;
-	font-size: 85%;
+	line-height: 1.7;
+	font-size: 93%;
 }
 
 #stats_page ul.contents {
@@ -2439,6 +2452,10 @@ div.auto_complete ul strong.highlight {
 
 #stats_page ul.contents li ul {
 	margin-left: 1em;
+}
+
+#stats_page .value {
+	font-size: 116%;
 }
 
 /* END stats page styles */
