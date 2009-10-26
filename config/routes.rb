@@ -43,7 +43,7 @@ ActionController::Routing::Routes.draw do |map|
   # Search (ordering is important!)
   map.search_auto_complete '/search/auto_complete', :controller => 'search', :action => 'auto_complete', :conditions => { :method => :get }
   map.ignore_last_search '/search/ignore_last', :controller => 'search', :action => 'ignore_last', :conditions => { :method => :post }
-  map.connect '/search/:q', :controller => 'search', :action => 'show', :conditions => { :method => :get }
+  #map.connect '/search/:q', :controller => 'search', :action => 'show', :conditions => { :method => :get }
   map.search '/search.:format', :controller => 'search', :action => 'show', :conditions => { :method => :get }
   map.search '/search', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }
 
