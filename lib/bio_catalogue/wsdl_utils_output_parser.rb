@@ -15,20 +15,7 @@
 # 'documentation' tags are mapped to the 'description' keys of the resulting hash
 # e.g operation['description'] = text between the documentation tags for an operation
 
-
 require 'pp'
-
-# This is a work-around for when rexml/formatter package is not available like ruby 1.8.5 
-# In the case the element.write method is used to convert element to its string equivalent
-
-use_formatters = true
-begin
-  require 'rexml/formatters/default'
-rescue LoadError => ex
-  use_formatters = false
-  puts "could not load rexml/formatters/default"
-  #puts ex.backtrace
-end
 
 module BioCatalogue
   module WSDLParser
@@ -166,10 +153,20 @@ module BioCatalogue
       
       attr_accessor :message_element
       attr_accessor :message_type
+      attr_accessor :use_formatters
       
       def initialize(message_element, message_type)
-        @message_element = message_element
+        @message_element  = message_element
         @message_type     = message_type
+        @use_formatters   = true
+        
+        begin
+          require 'rexml/formatters/default'
+        rescue LoadError => ex
+          @use_formatters = false
+          Rails.logger.error("could not load rexml/formatters/default")
+          Rails.logger.error(ex.backtrace)
+        end
       end
       
       # the number of inputs = the number of message parts
@@ -188,7 +185,11 @@ module BioCatalogue
               # complex type
               if type.has_elements?
                 type_details = ''
-                if use_formatters
+                
+                # when rexml/formatter package is not available like ruby 1.8.5 
+                # use element.write method is used to 
+                # convert element to its string equivalent
+                if @use_formatters
                   REXML::Formatters::Default.new().write(type, type_details)
                 else
                   type.write(type_details)
