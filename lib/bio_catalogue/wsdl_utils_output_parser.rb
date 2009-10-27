@@ -27,7 +27,7 @@ begin
 rescue LoadError => ex
   use_formatters = false
   puts "could not load rexml/formatters/default"
-  puts ex.backtrace
+  #puts ex.backtrace
 end
 
 module BioCatalogue
