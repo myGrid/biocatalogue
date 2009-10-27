@@ -30,10 +30,12 @@ xml.tag! "service",
           xml.name service_deployment.provider.name   
         end
         
-        # <location>
-        xml.location do 
-          xml.city service_deployment.city
-          xml.country service_deployment.country
+        if service_deployment.has_location_info?
+          # <location>
+          xml.location do 
+            xml.city service_deployment.city
+            xml.country service_deployment.country
+          end
         end
         
         # <submitter>
@@ -111,6 +113,16 @@ xml.tag! "service",
       end
     
     end
+    
+  end
+  
+  # <monitoring>
+  xml.monitoring do
+    
+    # <overall>
+    
+    # <tests>
+    
     
   end
   

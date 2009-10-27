@@ -49,6 +49,10 @@ class ServiceDeployment < ActiveRecord::Base
                                          :referenced => { :model => :service } })
   end
   
+  def has_location_info?
+    !self.city.blank? || !self.country.blank?
+  end
+  
   def location
     if self.city.blank? and self.country.blank?
       return nil

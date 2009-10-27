@@ -92,6 +92,16 @@ xml.tag! "service",
       end
     end
     
+    # <locations>
+    xml.locations do
+      # <location> *
+      @service.service_deployments.each do |service_deployment|
+        if service_deployment.has_location_info?
+          xml.location :city => service_deployment.city, :country => service_deployment.country  
+        end
+      end
+    end
+    
     # <descriptions>
     xml.descriptions do 
       # <description> *
