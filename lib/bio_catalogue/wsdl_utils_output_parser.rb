@@ -24,9 +24,10 @@ require 'pp'
 use_formatters = true
 begin
   require 'rexml/formatters/default'
-rescue 
-  puts "could not load rexml/formatters/default"
+rescue LoadError => ex
   use_formatters = false
+  puts "could not load rexml/formatters/default"
+  puts ex.backtrace
 end
 
 module BioCatalogue
