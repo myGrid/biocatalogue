@@ -282,7 +282,7 @@ class SoapService < ActiveRecord::Base
     ports.each  do |port|
       built_port =  soap_service_ports.build(port)
       p_ops      = built_soap_ops.collect{|op|  op if op.parent_port_type == built_port.name}
-      built_port.soap_operations = p_ops
+      built_port.soap_operations = p_ops.compact
       #built_ports << soap_service_ports.build(port)
       built_ports << built_port
     end
