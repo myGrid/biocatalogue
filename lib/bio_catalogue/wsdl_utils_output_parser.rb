@@ -17,7 +17,17 @@
 
 
 require 'pp'
-require 'rexml/formatters/default'
+
+# This is a work-around for when rexml/formatter package is not available like ruby 1.8.5 
+# In the case the element.write method is used to convert element to its string equivalent
+
+use_formatters = true
+begin
+  require 'rexml/formatters/default'
+rescue 
+  puts "could not load rexml/formatters/default"
+  use_formatters = false
+end
 
 module BioCatalogue
   module WSDLParser
@@ -177,7 +187,11 @@ module BioCatalogue
               # complex type
               if type.has_elements?
                 type_details = ''
-                REXML::Formatters::Default.new().write(type, type_details)
+                if use_formatters
+                  REXML::Formatters::Default.new().write(type, type_details)
+                else
+                  type.write(type_details)
+                end
                 part_data["computational_type_details"]= Hash.from_xml(type_details)
               end
             end
