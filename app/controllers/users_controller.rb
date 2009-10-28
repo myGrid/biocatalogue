@@ -261,12 +261,12 @@ class UsersController < ApplicationController
   private
   
   def find_user
-    @user = User.find(params[:id])
+    @user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")
   end
 
   def check_user_rights
-    user = User.find(params[:id])
-    unless mine?(user)
+    find_user if !defined?(@user) or @user.nil?
+    unless mine?(@user)
       respond_to do |format|
         flash[:error] = "You don't have the rights to perform this action."
         format.html { redirect_to :users }
