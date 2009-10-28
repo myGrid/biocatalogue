@@ -90,8 +90,7 @@
 		  </script>
 		  <br /><br />
 		  <center>
-		    <strong>Please, enter the security number (shown above) to validate your message</strong>&nbsp;<%= help_icon_with_tooltip("This step is to ensure that this message<br />is not computer generated.") -%>
-		    <br/>
+		    <strong>Please enter the security number (shown above) to validate your message</strong>&nbsp;<%= help_icon_with_tooltip("This is to prevent bots from spamming us with automatically generated messages.") -%>
 		    <%= text_field_tag :length_check, "", :size => 6 %>
 		  </center>
 

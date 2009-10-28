@@ -16,7 +16,7 @@ class ContactController < ApplicationController
     from_user = params[:from] || current_user.try(:display_name) || "no name specified"
     from_user += ' (' + (params[:email] || current_user.try(:email) || 'no email specified') + ')'
 
-    if params[:content].split(/[biocat]/, -1).length == params[:length_check].to_i
+    if !params[:content].blank? and (params[:content].split(/[biocat]/, -1).length == params[:length_check].to_i)
       ContactMailer.deliver_feedback(from_user, params[:subject], params[:content])
 
       respond_to do |format|
@@ -25,7 +25,7 @@ class ContactController < ApplicationController
       end
     else
       respond_to do |format|
-        flash[:error] = 'Your message has not been submitted. The message length was not entered correctly.'
+        flash[:error] = 'Failed to submit your message. Either there was an empty message or the security number you typed in is incorrect.'
         format.html { render :action => :index }
       end
     end
