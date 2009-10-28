@@ -8,7 +8,7 @@
 
 %>
 
-<% similar_services = @service.similar_services %>
+<% similar_services = @service.similar_services(100) %>
 
 <div class="box_section">
 	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
@@ -21,13 +21,26 @@
 		<% unless similar_services.empty? %>
 			<div>
 				<ul class="items">
+					<% count = 0 %>
 					<% similar_services.each do |s| %>
-						<li>
+						<% 
+							count += 1
+							row_class = (count > 10 ? "similar_services_hidden" : "")
+							show_row = row_class.blank?
+						%>
+						<li class="<%= row_class -%>" style="<%= show_row ? "" : "display: none;" -%>">
 							<%= link_to(h(s.name), service_url(s)) -%>
 						</li>
 					<% end %>
 				</ul>
 			</div>
+			
+			<%# ... make available the option to show all, if there are more. %>
+			<% if similar_services.length > 10 %>
+				<p class="more_less_links" style="margin-top: 0.8em;">
+					<%= generic_render_show_hide_more_links("similar_services", "similar_services_hidden", 10) -%>
+				</p>
+			<% end %>
 		<% else %>
 			<p class="none_text">None</p>
 		<% end %>
