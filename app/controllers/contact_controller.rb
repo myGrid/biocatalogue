@@ -25,7 +25,7 @@ class ContactController < ApplicationController
       end
     else
       respond_to do |format|
-        flash[:error] = 'Failed to submit your message. Either there was an empty message or the security number you typed in is incorrect.'
+        flash.now[:error] = 'Failed to submit your message. Either there was an empty message or the security number you typed in is incorrect.'
         format.html { render :action => :index }
       end
     end
