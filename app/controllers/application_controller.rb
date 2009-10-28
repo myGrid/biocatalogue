@@ -129,14 +129,14 @@ class ApplicationController < ActionController::Base
 
     c_id = current_user.id.to_i
 
-    case thing.class.to_s
-    when "User"
+    case thing
+    when User
       return c_id == thing.id
-    when "Annotation"
-      return c_id = thing.source_id
-    when "Service"
+    when Annotation
+      return thing.source == current_user
+    when Service
       return c_id == thing.submitter_id.to_i
-    when "Favourite"
+    when Favourite
       return c_id == thing.user_id
     else
       return false
