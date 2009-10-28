@@ -73,6 +73,7 @@ ActionController::Routing::Routes.draw do |map|
   map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
   map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil
   map.forgot_password '/forgot_password', :controller => 'users', :action => 'forgot_password'
+  map.request_reset_password '/request_reset_password', :controller => 'users', :action => 'request_reset_password'
   map.reset_password '/reset_password/:security_token', :controller => 'users', :action => 'reset_password', :security_token => nil
   map.submit_feedback '/contact', :controller => 'contact', :action => 'create', :conditions => { :method => :post }
   map.contact '/contact', :controller => 'contact', :action => 'index', :conditions => { :method => :get }

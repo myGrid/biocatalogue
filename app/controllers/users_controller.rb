@@ -131,17 +131,20 @@ class UsersController < ApplicationController
   end
 
   def request_reset_password
-    if @user = User.find_by_email(params[:user][:email])
-      @user.generate_security_token!
-      UserMailer.deliver_reset_password(@user, base_host)
-      return
+    respond_to do |format|
+      if @user = User.find_by_email(params[:user][:email], :conditions => "activated_at IS NOT NULL")
+        @user.generate_security_token!
+        UserMailer.deliver_reset_password(@user, base_host)
+        format.html # request_reset_password.html.erb
+      else
+        flash[:error] = "No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact the <a href=\"/contact\">BioCatalogue Support</a>"
+        format.html { redirect_to forgot_password_url }
+      end
     end
-    flash[:error] = "<div class=\"flash_header\">Could not find the user.</div><div class=\"flash_body\">No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
-    flash[:notice] = nil
   end
 
   def reset_password
-    if params[:security_token] != nil && @user = User.find_by_security_token(params[:security_token], :conditions => "activated_at is not null")
+    if params[:security_token] != nil && @user = User.find_by_security_token(params[:security_token], :conditions => "activated_at IS NOT NULL")
       if request.post?
         if @user.reset_password!(params[:user][:password], params[:user][:password_confirmation])
           flash[:notice] = "<div class=\"flash_header\">New password accepted.</div><div class=\"flash_body\">Please log in with your new password.</div>"
@@ -153,7 +156,7 @@ class UsersController < ApplicationController
         end
       end
     else
-      flash[:error] = "<div class=\"flash_header\">Could not find the user.</div><div class=\"flash_body\">No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
+      flash[:error] = "No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact the <a href=\"/contact\">BioCatalogue Support</a>"
       flash[:notice] = nil
     end
   end
