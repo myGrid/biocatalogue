@@ -155,6 +155,14 @@ module BioCatalogue
           @model_totals[m][:last_90] = m.count(:conditions => [ "created_at >= ?", Time.now.ago(90.days)])
           @model_totals[m][:last_180] = m.count(:conditions => [ "created_at >= ?", Time.now.ago(180.days)])
         end
+        
+        # Override for Users - need to take into account only activate users...
+        @model_totals[User] = { }
+        @model_totals[User][:all] = User.count(:conditions => "activated_at IS NOT NULL")
+        @model_totals[User][:last_7] = User.count(:conditions => [ "activated_at IS NOT NULL AND created_at >= ?", Time.now.ago(7.days)])
+        @model_totals[User][:last_30] = User.count(:conditions => [ "activated_at IS NOT NULL AND created_at >= ?", Time.now.ago(30.days)])
+        @model_totals[User][:last_90] = User.count(:conditions => [ "activated_at IS NOT NULL AND created_at >= ?", Time.now.ago(90.days)])
+        @model_totals[User][:last_180] = User.count(:conditions => [ "activated_at IS NOT NULL AND created_at >= ?", Time.now.ago(180.days)])
       end
       
       # Maintains a hash for all service metadat counts where:
