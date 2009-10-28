@@ -76,7 +76,7 @@
 										<% end %>
 									</td>
 									<td style="text-align: right;">
-										<%= render :partial => "listing_type_switcher_link", :locals => { :result_scope => result_scope, :style => "margin-right: 1.5em;" } -%>
+										<%= render :partial => "listing_type_switcher_link", :locals => { :result_scope => result_scope, :style => (more_items ? "margin-right: 1.5em;" : "") } -%>
 										
 										<% if more_items %>
 											<%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)), 
