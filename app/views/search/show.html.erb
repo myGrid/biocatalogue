@@ -68,20 +68,24 @@
 							<% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}"  %>
 					    <h3><%= "#{visible_result_scope} (#{count_text})" -%></h3>
 							
-							<% if more_items %>
-								<table style="width:100%; margin: 0 0 1.5em 0;">
-									<tr>
-										<td style="color: #555;">
+							<table style="width:100%; margin: 0 0 1.5em 0;">
+								<tr>
+									<td style="color: #555;">
+										<% if more_items %>
 											<%= "Showing the top #{items.length} items out of #{count} in total" -%>
-										</td>
-										<td style="text-align: right;">
+										<% end %>
+									</td>
+									<td style="text-align: right;">
+										<%= render :partial => "listing_type_switcher_link", :locals => { :result_scope => result_scope, :style => "margin-right: 1.5em;" } -%>
+										
+										<% if more_items %>
 											<%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)), 
 																	search_url(:q => @query, :scope => result_scope, :page => 2),
 																	:class => "button_slim") -%>
-										</td>
-									</tr>
-								</table>
-							<% end %>
+										<% end %>
+									</td>
+								</tr>
+							</table>
 							
 							<%= render :partial => "#{result_scope}/listing", :locals => { :items => items } %>
 							
@@ -92,6 +96,7 @@
 																	:class => "button_slim") -%>
 								</p>
 							<% end %>
+							
 					  </div>
 					<% end %>
 					
@@ -107,6 +112,10 @@
 				 item_ids = @results.paged_item_ids_for(result_scope, @page, PAGE_ITEMS_SIZE)
 				 items = search_item_ids_to_objects(item_ids, result_scope)
 			%>
+			
+			<span class="inline-block" style="float:right; margin-left: 2em; margin-top: 2em; text-align: right;">
+				<%= render :partial => "listing_type_switcher_link", :locals => { :result_scope => result_scope } -%>
+			</span>
 			
 			<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => item_ids, :entry_name => @scope.gsub('_', ' ').singularize } %>
 			
