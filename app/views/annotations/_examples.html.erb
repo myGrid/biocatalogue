@@ -25,9 +25,14 @@
 				<% examples_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
-							<%= annotation_source_text(ann) -%>
-							<div style="font-family: monospace; font-size: 100%;">
-								<%= annotation_prepare_description(ann.value) -%>
+							<div>
+								<%= annotation_source_text(ann) -%>
+								<span>
+									<%= link_to(image_tag(icon_filename_for(:open_in_new_window)), download_annotation_url(ann), :popup => true, :title => tooltip_title_attrib("Open this example data in a new window so you can easily save or copy and paste it")) -%>
+								</span>
+							</div>
+							<div style="margin-top: 0.6em;">
+								<pre><%= annotation_prepare_description(ann.value, false, nil, false, false) -%></pre>
 							</div>
 							<% if mine?(ann) %>
 								<p class="actions">

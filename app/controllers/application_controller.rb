@@ -313,6 +313,15 @@ class ApplicationController < ActionController::Base
                              :activity_loggable => @service_provider))
         end
       end
+      
+      if c == "annotations"
+        # Download annotation
+        if a == "download"
+          ActivityLog.create(@log_event_core_data.merge(:action => "download",
+                             :culprit => current_user,
+                             :activity_loggable => @annotation))
+        end
+      end
 
     end
   end

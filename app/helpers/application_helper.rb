@@ -90,6 +90,10 @@ module ApplicationHelper
         "user_edit.gif"
       when :arrow_forward
         "red_arrow.gif"
+      when :download
+        "arrow-down_16.png"
+      when :open_in_new_window
+        "page_go.png"
       else
         ''
     end

@@ -232,12 +232,12 @@ module AnnotationsHelper
     end
   end
 
-  def annotation_prepare_description(desc, do_strip_tags=false, truncate_length=nil, do_auto_link=true)
+  def annotation_prepare_description(desc, do_strip_tags=false, truncate_length=nil, do_auto_link=true, do_simple_format=!do_strip_tags)
     return '' if desc.nil?
 
     desc = strip_tags(desc) if do_strip_tags
     desc = truncate(desc, :length => truncate_length) unless truncate_length.nil?
-    desc = simple_format(desc) unless do_strip_tags
+    desc = simple_format(desc) if do_simple_format
     desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if do_auto_link
     desc = white_list(desc)
 

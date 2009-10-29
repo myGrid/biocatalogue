@@ -85,4 +85,13 @@ class AnnotationsController < ApplicationController
     end
   end
   
+  def download
+    # Call an available before filter method (it's in plugin's controller).
+    # If this fails, it will throw an exception that ActionController will catch,
+    # so we don't need to check the success of it.
+    find_annotation
+    
+    send_data(@annotation.value, :type => "text/plain", :disposition => 'inline')
+  end
+  
 end

@@ -24,7 +24,8 @@ ActionController::Routing::Routes.draw do |map|
   Annotations.map_routes(map,
                          { :new_popup => :post,
                            :create_inline => :post },
-                         { :edit_popup => :post })
+                         { :edit_popup => :post,
+                           :download => :get })
 
   # Tags (ordering is important!)
 #  map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
