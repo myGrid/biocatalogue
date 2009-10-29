@@ -33,15 +33,12 @@ xml.tag! "service",
       
     end
     
-    # <names>
-    xml.names do 
+    # <alternativeNames>
+    xml.alternativeNames do 
       
-      # <name>
-      xml.name @service.name
-      
-      # <name> *
+      # <alternativeName> *
       all_name_annotations_for_service(@service).each do |ann|
-        xml.name ann.value
+        xml.alternativeName ann.value
       end
       
     end
