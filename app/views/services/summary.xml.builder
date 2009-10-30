@@ -18,8 +18,6 @@ xml.tag! "service",
   render :partial => "services/api/summary", :locals => { :parent_xml => xml, :service => @service }
   
   # <related>
-  xml.related do
-    
-  end
+  render :partial => "services/api/related_links_for_service", :locals => { :parent_xml => xml, :service => @service }
   
 end

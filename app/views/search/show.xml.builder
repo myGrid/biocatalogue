@@ -62,7 +62,6 @@ xml.tag! "search",
         else
           xml.name display_name(item)
         end
-        
       end
     end
     

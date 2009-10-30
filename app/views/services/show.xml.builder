@@ -27,12 +27,7 @@ xml.tag! "service",
   render :partial => "services/api/monitoring", :locals => { :parent_xml => xml, :service => @service }
   
   # <related>
-  xml.related do
-    
-    # <summary>
-    xml.summary xlink_attributes(uri_for_object(@service, :sub_path => "summary"), :title => xlink_title("Summary view of Service - #{display_name(@service)}"))
-    
-  end
+  render :partial => "services/api/related_links_for_service", :locals => { :parent_xml => xml, :service => @service }
   
 end
 

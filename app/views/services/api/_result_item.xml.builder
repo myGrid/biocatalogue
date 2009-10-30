@@ -12,9 +12,4 @@ if @api_params[:include_elements].include?("summary")
 end
 
 # <related>
-parent_xml.related do
-  
-  # <summary>
-  parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summary"), :title => xlink_title("Summary view of Service - #{display_name(service)}"))
-  
-end
+render :partial => "services/api/related_links_for_service", :locals => { :parent_xml => parent_xml, :service => service }
