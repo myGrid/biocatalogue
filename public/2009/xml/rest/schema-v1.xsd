@@ -323,24 +323,6 @@
 												</xsd:sequence>
 											</xsd:complexType>
 										</xsd:element>
-										<xsd:element name="locations"
-											minOccurs="1" maxOccurs="1">
-											<xsd:complexType>
-												<xsd:sequence>
-													<xsd:element
-														name="location" minOccurs="0" maxOccurs="unbounded">
-														<xsd:complexType>
-															<xsd:attribute
-																name="city" type="xsd:string">
-															</xsd:attribute>
-															<xsd:attribute
-																name="country" type="xsd:string">
-															</xsd:attribute>
-														</xsd:complexType>
-													</xsd:element>
-												</xsd:sequence>
-											</xsd:complexType>
-										</xsd:element>
 										<xsd:element name="wsdls"
 											minOccurs="0" maxOccurs="1">
 											<xsd:complexType>
@@ -352,7 +334,21 @@
 												</xsd:sequence>
 											</xsd:complexType>
 										</xsd:element>
-										<xsd:element name="descriptions"
+                                        <xsd:element name="locations" minOccurs="1" maxOccurs="1">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="location" minOccurs="0" maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:attribute name="city" type="xsd:string">
+															</xsd:attribute>
+															<xsd:attribute name="country" type="xsd:string">
+															</xsd:attribute>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+                                        <xsd:element name="descriptions"
 											minOccurs="1" maxOccurs="1">
 											<xsd:complexType>
 												<xsd:sequence>
