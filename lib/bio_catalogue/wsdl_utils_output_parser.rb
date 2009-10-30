@@ -165,7 +165,7 @@ module BioCatalogue
         rescue LoadError => ex
           @use_formatters = false
           Rails.logger.error("could not load rexml/formatters/default")
-          Rails.logger.error(ex.backtrace)
+          Rails.logger.error(ex.backtrace.join("\n"))
         end
       end
       

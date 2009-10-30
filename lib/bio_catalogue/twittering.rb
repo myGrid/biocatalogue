@@ -25,11 +25,11 @@ module BioCatalogue
         }
       rescue TimeoutError
         Rails.logger.error("Tweeting timed out! Exception: #{ex.message}")
-        Rails.logger.error(ex.backtrace)
+        Rails.logger.error(ex.backtrace.join("\n"))
         return true
       rescue Exception => ex
         Rails.logger.error("Failed to tweet! Exception: #{ex.class.name} - #{ex.message}")
-        Rails.logger.error(ex.backtrace)
+        Rails.logger.error(ex.backtrace.join("\n"))
         return false
       end
     end

@@ -217,7 +217,7 @@ class UsersController < ApplicationController
           redirect_to(current_user)
         rescue Exception => ex
           logger.error "Failed to merge new RPX based account with an existing BioCatalogue account. Exception: #{ex.class.name} - #{ex.message}"
-          logger.error ex.backtrace
+          logger.error ex.backtrace.join("\n")
           error_to_home("Sorry, something went wrong. Please contact us for further assistance.")
         end
       end
@@ -250,7 +250,7 @@ class UsersController < ApplicationController
           end
         rescue Exception => ex
           logger.error "Failed to update RPX identifier. Exception: #{ex.class.name} - #{ex.message}"
-          logger.error ex.backtrace
+          logger.error ex.backtrace.join("\n")
           
           flash.now[:error] = "Sorry, something went wrong. Please try again. If this problem persists we would appreciate it if you contacted us."
           format.html { render :action => "edit" }

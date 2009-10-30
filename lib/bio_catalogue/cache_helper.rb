@@ -91,7 +91,7 @@ module BioCatalogue
           
           rescue Exception => ex
             Rails.logger.error("Error whilst setting up caches. Exception: #{ex.class.name} - #{ex.message}")
-            Rails.logger.error(ex.backtrace)
+            Rails.logger.error(ex.backtrace.join("\n"))
           end
           
         else

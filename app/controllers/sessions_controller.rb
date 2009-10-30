@@ -58,7 +58,7 @@ class SessionsController < ApplicationController
         end
       rescue Exception => ex
         logger.error "Failed to process RPX token. Exception: #{ex.class.name} - #{ex.message}"
-        logger.error ex.backtrace
+        logger.error ex.backtrace.join("\n")
         error_to_back_or_home("Sorry, something went wrong. Please try again. If this problem persists we would appreciate it if you contacted us.")
       end
     else
