@@ -117,8 +117,21 @@ module BioCatalogue
     
     # Gets the annotations on a Service and its ServiceVersions, ServiceDeployments 
     # and service version instances (eg SoapService and/or RestService)
-    def self.annotations_for_service
+    def self.annotations_for_service(service)
+      annotations = [ ]
       
+      annotations.concat(service.annotations)
+      
+      service.service_deployments.each do |s_d|
+        annotations.concat(s_d.annotations)
+      end
+      
+      service.service_versions.each do |s_v|
+        annotations.concat(s_v.annotations)
+        annotations.concat(s_v.service_versionified.annotations)
+      end
+      
+      return annotations
     end
     
     # Gets the annotations (of a specified attribute) on a Service and its 

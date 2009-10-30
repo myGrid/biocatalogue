@@ -96,7 +96,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :services,
                 :collection => { :filters => :get },
                 :member => { :categorise => :post,
-                             :summary => :get }
+                             :summary => :get,
+                             :annotations => :get }
   
   map.resources :service_tests, 
                 :collection => {:add_test => :post }

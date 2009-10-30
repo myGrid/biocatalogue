@@ -14,7 +14,7 @@ class ServicesController < ApplicationController
   
   before_filter :find_services, :only => [ :index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations ]
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
@@ -140,6 +140,13 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # summary.xml.builder
+    end
+  end
+  
+  def annotations
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # annotations.xml.builder
     end
   end
  
