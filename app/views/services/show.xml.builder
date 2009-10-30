@@ -30,7 +30,7 @@ xml.tag! "service",
   xml.related do
     
     # <summary>
-    xml.summary xlink_attributes(uri_for_object(@service, :sub_path => "summary"), :title => xlink_title("Summary view of Service - #{@service.name}"))
+    xml.summary xlink_attributes(uri_for_object(@service, :sub_path => "summary"), :title => xlink_title("Summary view of Service - #{display_name(@service)}"))
     
   end
   

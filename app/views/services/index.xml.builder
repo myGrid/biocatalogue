@@ -75,22 +75,7 @@ xml.tag! "services",
     # <service> *
     @services.each do |service|
       xml.service xlink_attributes(uri_for_object(service), :title => xlink_title(service)) do
-        
-        render :partial => "services/api/core_elements", :locals => { :parent_xml => xml, :service => service }
-        
-        # <summary>
-        if @api_params[:include_elements].include?("summary")
-          render :partial => "services/api/summary", :locals => { :parent_xml => xml, :service => service }
-        end
-        
-        # <related>
-        xml.related do
-          
-          # <summary>
-          xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summary"), :title => xlink_title("Summary view of Service - #{service.name}"))
-          
-        end
-        
+        render :partial => "services/api/result_item", :locals => { :parent_xml => xml, :service => service }
       end
     end
     
