@@ -10,15 +10,15 @@ parent_xml.related do
   parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summary"), :title => xlink_title("Summary view of Service - #{display_name(service)}"))
   
   # <annotations>
-  parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "annotations"), :title => xlink_title("All annotations for Service - #{display_name(service)}"))
+  parent_xml.annotations xlink_attributes(uri_for_object(service, :sub_path => "annotations"), :title => xlink_title("All annotations for Service - #{display_name(service)}"))
   
   # <deployments>
-  parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "deployments"), :title => xlink_title("All deployments for Service - #{display_name(service)}"))
+  parent_xml.deployments xlink_attributes(uri_for_object(service, :sub_path => "deployments"), :title => xlink_title("All deployments for Service - #{display_name(service)}"))
   
   # <versions>
-  parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "versions"), :title => xlink_title("All versions for Service - #{display_name(service)}"))
+  parent_xml.versions xlink_attributes(uri_for_object(service, :sub_path => "versions"), :title => xlink_title("All versions for Service - #{display_name(service)}"))
   
   # <monitoring>
-  parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "monitoring"), :title => xlink_title("Monitoring results for Service - #{display_name(service)}"))
+  parent_xml.monitoring xlink_attributes(uri_for_object(service, :sub_path => "monitoring"), :title => xlink_title("Monitoring results for Service - #{display_name(service)}"))
   
 end
