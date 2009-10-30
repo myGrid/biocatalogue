@@ -14,7 +14,7 @@ module ServicesHelper
   end
   
   def all_name_annotations_for_service(service)
-    BioCatalogue::Annotations.all_name_annotations_for_service(service)
+    BioCatalogue::Annotations.annotations_for_service_by_attribute(service, "name")
   end
   
   def service_type_badges(service_types)

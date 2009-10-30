@@ -115,19 +115,26 @@ module BioCatalogue
       return counts
     end
     
-    # Gets all the name annotations for a specified service
-    def self.all_name_annotations_for_service(service)
+    # Gets the annotations on a Service and its ServiceVersions, ServiceDeployments 
+    # and service version instances (eg SoapService and/or RestService)
+    def self.annotations_for_service
+      
+    end
+    
+    # Gets the annotations (of a specified attribute) on a Service and its 
+    # ServiceVersions, ServiceDeployments and service version instances (eg SoapService and/or RestService)
+    def self.annotations_for_service_by_attribute(service, attribute)
       annotations = [ ]
       
-      annotations.concat(service.annotations_with_attribute("name"))
+      annotations.concat(service.annotations_with_attribute(attribute))
       
       service.service_deployments.each do |s_d|
-        annotations.concat(s_d.annotations_with_attribute("name"))
+        annotations.concat(s_d.annotations_with_attribute(attribute))
       end
       
       service.service_versions.each do |s_v|
-        annotations.concat(s_v.annotations_with_attribute("name"))
-        annotations.concat(s_v.service_versionified.annotations_with_attribute("name"))
+        annotations.concat(s_v.annotations_with_attribute(attribute))
+        annotations.concat(s_v.service_versionified.annotations_with_attribute(attribute))
       end
       
       return annotations
@@ -135,22 +142,14 @@ module BioCatalogue
     
     # This method gets the tag annotation objects for the specific annotatable object.
     # It applies special finder rules. E.g: for a Service, it also gets the tags for it's
-    # ServiceDeployment, ServiceVersion and service versionified objects.
+    # ServiceDeployments, ServiceVersions and service version instances.
     def self.get_tag_annotations_for_annotatable(annotatable)
       tag_annotations = [ ]
       
-      tag_annotations = annotatable.annotations_with_attribute("tag")
-      
-      # Any specific processing...
-      if annotatable.class.name == "Service"
-        annotatable.service_deployments.each do |s_d|
-          tag_annotations.concat(s_d.annotations_with_attribute("tag"))
-        end
-        
-        annotatable.service_versions.each do |s_v|
-          tag_annotations.concat(s_v.annotations_with_attribute("tag"))
-          tag_annotations.concat(s_v.service_versionified.annotations_with_attribute("tag"))
-        end
+      if annotatable.is_a? Service
+        tag_annotations = annotations_for_service_by_attribute(annotatable, "tag")
+      else
+        tag_annotations = annotatable.annotations_with_attribute("tag")
       end
     
       return tag_annotations
