@@ -19,7 +19,7 @@ xml.tag! "services",
   xml.parameters do
     
     # <page>
-    xml.page @page
+    xml.page @page, :urlKey => "page"
     
     # <filters>
     xml.filters do
@@ -44,13 +44,13 @@ xml.tag! "services",
     end
     
     # <query>
-    xml.query params[:q]
+    xml.query params[:q], :urlKey => "q"
     
     # <sortBy>
-    xml.sortBy @sortby
+    xml.sortBy display_text_for_sortby(@sortby), :urlKey => "sortBy", :urlValue => @sortby
     
     # <sortOrder>
-    xml.sortOrder @sortorder
+    xml.sortOrder display_text_for_sortorder(@sortorder), :urlKey => "sortOrder", :urlValue => @sortorder
   end
   
   # <statistics>

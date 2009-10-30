@@ -640,4 +640,24 @@ module ApplicationHelper
     return html
   end
   
+  def display_text_for_sortby(sortby)
+    case sortby
+      when "created"
+        "Created At Date"
+      when "updated"
+        "Last Updated At Date"
+      else
+        ""
+    end
+  end
+  
+  def display_text_for_sortorder(sortorder)
+    case sortorder
+      when "asc"
+        "Ascending"
+      when "desc"
+        "Descending"
+    end
+  end
+  
 end

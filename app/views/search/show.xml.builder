@@ -18,13 +18,13 @@ xml.tag! "search",
   xml.parameters do
     
     # <query>
-    xml.query @query
+    xml.query @query, :urlKey => "q"
     
     # <scope>
-    xml.scope @scope.titleize, :urlValue => @scope
+    xml.scope @scope.titleize, :urlKey => "scope", :urlValue => @scope
     
     # <page>
-    xml.page  @page
+    xml.page  @page, :urlKey => "page"
     
   end
   
