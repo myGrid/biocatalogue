@@ -56,6 +56,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_previous_url
   before_filter :set_page
+  before_filter :set_api_params
   before_filter :update_last_active
   prepend_before_filter :initialise_use_tab_cookie_in_session
   
@@ -169,6 +170,16 @@ class ApplicationController < ActionController::Base
       return false
     else
       @page = page
+    end
+  end
+  
+  def set_api_params
+    @api_params = { }
+    
+    # include_elements
+    @api_params[:include_elements] = [ ]
+    unless params[:include].blank?
+       @api_params[:include_elements] = params[:include].split(',').map{|s| s.strip.downcase}
     end
   end
   
