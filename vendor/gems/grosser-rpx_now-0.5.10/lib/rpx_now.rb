@@ -205,10 +205,10 @@ EOF
       proxy_uri = URI.parse("") 
       case HTTP_PROXY
         when URI
-          HTTP_PROXY
+          proxy_uri = HTTP_PROXY
         else
           begin
-            URI.parse(HTTP_PROXY)
+            proxy_uri = URI.parse(HTTP_PROXY)
           rescue
             Rails.logger.warn("Proxy setting (HTTP_PROXY) cannot be parsed into a URI. It may be malformed. This will default to trying to connect without a proxy.")
           end
