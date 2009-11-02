@@ -9,7 +9,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  user.email
     from        "biocatalogue-support@rubyforge.org"
-    subject     "Please activate your new account"
+    subject     "[BioCatalogue] Please activate your new account"
     body        :user => user,
                 :base_url => base_url
   end
@@ -18,7 +18,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  user.email
     from        "biocatalogue-support@rubyforge.org"
-    subject     "Resetting your password - Step 2"
+    subject     "[BioCatalogue] Resetting your password - Step 2"
     body        :user => user,
                 :base_url => base_url
   end

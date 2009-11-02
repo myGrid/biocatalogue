@@ -8,13 +8,17 @@
 
 %>
 
-Please, click on the following link to activate your account.
-<br />
+Hi <%= @user.display_name -%>,
 
+Thank you for registering for an account on the BioCatalogue.
 
-<%= link_to "Activate my account",
-            :only_path => false,
+Please click on the following link to activate your account (you might need to copy/paste it into your browser):
+
+<%= url_for :only_path => false,
             :host => @base_url,
             :controller => 'users',
             :action => 'activate_account',
             :security_token => @user.security_token %>
+
+- The BioCatalogue Team
+<%= SITE_BASE_HOST -%>
