@@ -4,7 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-parent_xml.monitoring do
+parent_xml.monitoring xlink_attributes(uri_for_object(service, :sub_path => "monitoring")) do
     
   # <overall>
   
