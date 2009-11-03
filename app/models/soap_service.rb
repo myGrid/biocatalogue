@@ -157,7 +157,10 @@ class SoapService < ActiveRecord::Base
     if success
       #service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
       service_info, err_msgs, wsdl_file_contents = BioCatalogue::WSDLUtils::WSDLParser.parse(self.wsdl_location)
-      
+      if service_info.empty?
+        logger.info("Trying the old parser, BioCatalogue::WsdlParser, because the BioCatalogue::WSDLUtils::WSDLParser failed ")
+        service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
+      end
       if service_info.nil?
         errors.add_to_base("Failed to parse the WSDL file.")
         success = false
@@ -277,6 +280,9 @@ class SoapService < ActiveRecord::Base
   # A set of operations are bound to a port
   
   def build_soap_service_ports(service_info, built_soap_ops)
+    if service_info["ports"].nil?
+      return []
+    end
     built_ports = []
     ports = service_info["ports"]
     ports.each  do |port|

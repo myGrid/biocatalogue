@@ -149,8 +149,12 @@ class SoapServicesController < ApplicationController
         "If this problem persists, please <a href='/contact'>contact us</a>"
       
       begin
-        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WSDLUtils::WSDLParser.parse(@soap_service.wsdl_location)
         
+        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WSDLUtils::WSDLParser.parse(@soap_service.wsdl_location)
+        #try the old parser if new on fails
+        if @wsdl_info.empty?
+          @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
+        end
         # Check for a duplicate
         @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["end_point"])
         
