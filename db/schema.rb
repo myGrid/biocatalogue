@@ -405,6 +405,8 @@ ActiveRecord::Schema.define(:version => 20091006171715) do
     t.datetime "updated_at"
   end
 
+  add_index "test_results", ["test_type", "test_id"], :name => "test_results_test_index"
+
   create_table "trash_records", :force => true do |t|
     t.string   "trashable_type"
     t.integer  "trashable_id"

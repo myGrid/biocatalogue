@@ -1,4 +1,4 @@
-# BioCatalogue: lib/tasks/clean_db_for_dev.rake
+# BioCatalogue: lib/tasks/remove_expired_sessions.rake
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
