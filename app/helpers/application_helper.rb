@@ -272,7 +272,7 @@ module ApplicationHelper
       return eval("h(item.#{w})") if item.respond_to?(w)
       return item[w] if item.is_a?(Hash) && item.has_key?(w) 
     end
-    return "#{item.class.name}_#{id}"
+    return "#{item.class.name}_#{item.id}"
   end
   
   def separator_symbol_to_text(symbol, pluralize_text=false, show_symbol_after=true)
