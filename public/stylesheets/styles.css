@@ -1867,21 +1867,27 @@ ul.tabbernav li.tabberactive a:hover
 
 /* BEGIN terms of use page styles */
 
-#terms_of_use h3 {
+#terms_of_use {
+	margin: 0 3em;
+}
+
+#terms_of_use h3,
+#terms_of_use h4 {
 	margin-bottom: 1em;
 }
 
 #terms_of_use ul, #terms_of_use ol {
 	padding-left: 3em;
+	line-height: 1.4;
 }
 
 #terms_of_use ul li  {
-	padding-bottom: 1em;
+	padding-bottom: 0.8em;
 	list-style: square;
 }
 
 #terms_of_use ol li {
-	padding-bottom: 1em;
+	padding-bottom: 0.8em;
 	list-style: decimal;
 }
 /* END terms of use page styles */
