@@ -78,7 +78,7 @@ class EmbraceData
   
   attr_accessor :users, :services
 
-  def initialize(source_path, test_mode)
+  def initialize(source_path, test_mode=false)
     
     puts ""
     puts ""
@@ -101,19 +101,27 @@ class EmbraceData
     
     processed_users_data = { }
     
-    raw_users_data['embrace']['de_users'].each do |de_users|
-      unless de_users['mail'].blank? or user_email_excludes.include?(de_users['mail'])
-        processed_users_data[de_users['uid']] = {
-          :display_name => de_users['name'],
-          :email => de_users['mail'],
-          :activated_at => Time.now
-        }
+    raw_users_data['resultset']['row'].each do |row|
+      user = row['field']
+
+      # Only take activated users
+      if user[12] == "1"
+        id = user[0].to_i
+        email = user[3]
+        name = user[1]
+        
+        unless email.blank? or user_email_excludes.include?(email.downcase)
+          processed_users_data[id] = {
+            :display_name => name,
+            :email => email,
+          }
+        end
       end
     end
     
     @users = processed_users_data
     
-    puts "> #{@users.length} users found (#{raw_users_data['embrace']['de_users'].length} in XML file)"
+    puts "> #{@users.length} users found (#{raw_users_data['resultset']['row'].length} in XML file)"
     
     
     # Services
@@ -125,19 +133,31 @@ class EmbraceData
     
     processed_services_data = { }
     
-    raw_services_data['embrace']['de_ws_service'].each do |de_ws_service|
-      s_id = de_ws_service['nid']
-      unless processed_services_data.has_key?(s_id)
-        processed_services_data[s_id] = {
-          :wsdl_url => de_ws_service['wsdl_url'],
-          :das_url => de_ws_service['das_url'],
-          :rest_url => de_ws_service['rest_url'],
-          :user_id => de_ws_service['uid'],
+    raw_services_data['resultset']['row'].each do |row|
+      service = row['field']
+      
+      id = service[0].to_i
+      wsdl_url = (service[7].is_a?(String) ? service[7] : nil)
+      das_url = (service[8].is_a?(String) ? service[8] : nil)
+      rest_url = (service[9].is_a?(String) ? service[9] : nil)
+      user_id = service[13].to_i
+      
+      name = (service[2].is_a?(String) ? service[2] : nil)
+      description = (service[3].is_a?(String) ? CGI.unescapeHTML(service[3]) : nil)
+      documentation_url = (service[6].is_a?(String) ? service[6] : nil)
+      version = (service[1].is_a?(String) ? service[1] : nil)
+      
+      unless processed_services_data.has_key?(id)
+        processed_services_data[id] = {
+          :wsdl_url => wsdl_url,
+          :das_url => das_url,
+          :rest_url => rest_url,
+          :user_id => user_id,
           :annotations => {
-            :name => de_ws_service['title'],
-            :description => CGI.unescapeHTML(de_ws_service['description']),
-            :documentation_url => de_ws_service['url'],
-            :version => de_ws_service['version'],
+            :name => name,
+            :description => description,
+            :documentation_url => documentation_url,
+            :version => version,
           }
         }
       end
@@ -145,7 +165,7 @@ class EmbraceData
     
     @services = processed_services_data
     
-    puts "> #{@services.length} services found (#{raw_services_data['embrace']['de_ws_service'].length} in XML file)"
+    puts "> #{@services.length} services found (#{raw_services_data['resultset']['row'].length} in XML file)"
     
     
     # Tags (need to be added to services)
@@ -157,13 +177,16 @@ class EmbraceData
     
     tags_count = 0
     
-    raw_tags_data['embrace']['de_term_data'].each do |de_term|
-      s_id = de_term['nid']
+    raw_tags_data['resultset']['row'].each do |row|
+      tag = row['field']
+      
+      s_id = tag[1].to_i
       s = @services[s_id]
+      
       if s.blank?
-        puts "> ERROR: tag has a service ID that wasn't found in the services data - service ID is #{s_id}"
+        puts "> ERROR: tag has a service ID that wasn't found in the services data - the EMBRACE service ID is #{s_id}"
       else
-        tag_name = de_term['tagname']
+        tag_name = tag[2]
         unless tag_excludes.include?(tag_name.downcase)
           if s[:annotations].has_key?(:tag)
             s[:annotations][:tag] << tag_name
@@ -176,15 +199,23 @@ class EmbraceData
       end
     end
     
-    puts "> #{tags_count} tags added to services data (#{raw_tags_data['embrace']['de_term_data'].length} found in XML file)"
+    puts "> #{tags_count} tags added to services data (#{raw_tags_data['resultset']['row'].length} found in XML file)"
     
-    # If test mode, only have 5 users and 5 services
+    puts ""
+    puts "@users = "
+    puts @users.inspect
+    
+    puts ""
+    puts "@services = "
+    puts @services.inspect
+    
+    # If test mode, only have 10 users and 10 services
     if test_mode
-      @users.keys[5..-1].each do |k|
+      @users.keys[10..-1].each do |k|
         @users.delete(k)
       end
       
-      @services.keys[5..-1].each do |k|
+      @services.keys[10..-1].each do |k|
         @services.delete(k)
       end
     end
@@ -267,46 +298,66 @@ class EmbraceImporter
     stats["total_annotations_new"] = Counter.new
     stats["total_annotations_already_exist"] = Counter.new
     stats["total_annotations_failed"] = Counter.new
+    stats["total_annotations_deleted"] = Counter.new
     stats["ids_of_services_new"] = [ ]
     stats["ids_of_services_updated"] = [ ]
     
-    # IGNORE FOR NOW...
     # First the users...
-#    begin
-#      User.transaction do
-#        
-#        @data.users.each do |user_id, user|
-#        
-#          puts ""
-#          puts ">> Processing user '#{user[:display_name]}' (ID: #{user_id})"
-#          
-#          existing = User.find_by_email(user[:email])
-#          
-#          if existing
-#            puts "> INFO: User already exists in the DB"
-#            stats["ids_of_users_existing"] << existing.id
-#          else
-#            u = User.new(user)
-#            if u.save(false)
-#              puts "> INFO: new user added to DB!"
-#              stats["ids_of_users_new"] << u.id
-#            else
-#              puts "> ERROR: failed to save new user. Error(s): #{u.errors.full_messages.to_sentence}"
-#            end
-#          end
-#        end
-#        
-#        if @options[:test]
-#          raise "You asked me to test, so I am rolling back your transaction so nothing is stored in the db..."
-#        end
-#        
-#      end
-#    rescue Exception => ex
-#      puts ""
-#      puts ">> ERROR: exception occured and transaction has been rolled back. Exception:"
-#      puts ex.message
-#      puts ex.backtrace.join("\n")
-#    end
+    begin
+      User.transaction do
+        
+        @data.users.each do |user_id, user|
+        
+          puts ""
+          puts ">> Processing user '#{user[:display_name]}' (ID: #{user_id})"
+          
+          existing = User.find_by_email(user[:email])
+          
+          if existing
+            puts "> INFO: User already exists in the DB"
+            stats["ids_of_users_existing"] << existing.id
+            
+            Relationship.create(:subject => existing, :predicate => "BioCatalogue:alsoIn", :object => @registry_source)
+            Relationship.create(:subject => existing, :predicate => "BioCatalogue:hasEmbraceId", :object => user_id)
+          else
+            u = User.new
+            
+            u.email = user[:email]
+            u.email_confirmation = user[:email]
+            
+            temp_password = rand(100000000000000)
+            u.password = temp_password
+            u.password_confirmation = temp_password
+            
+            u.display_name = user[:display_name]
+            u.receive_notifications = true
+            
+            if u.save
+              u.activate!
+              UserMailer.deliver_reset_password(u, "www.biocatalogue.org")
+              
+              puts "> INFO: new user added to DB and a reset password email has been sent"
+              stats["ids_of_users_new"] << u.id
+              
+              Relationship.create(:subject => u, :predicate => "BioCatalogue:origin", :object => @registry_source)
+              Relationship.create(:subject => u, :predicate => "BioCatalogue:hasEmbraceId", :object => user_id)
+            else
+              puts "> ERROR: failed to save new user. Error(s): #{u.errors.full_messages.to_sentence}"
+            end
+          end
+        end
+        
+        if @options[:test]
+          raise "You asked me to test, so I am rolling back your transaction so nothing is stored in the db..."
+        end
+        
+      end
+    rescue Exception => ex
+      puts ""
+      puts ">> ERROR: exception occured and transaction has been rolled back. Exception:"
+      puts ex.message
+      puts ex.backtrace.join("\n")
+    end
     
     # Then the services...
     begin
@@ -545,11 +596,17 @@ class EmbraceImporter
     rescue Exception => ex
       stats["total_services_failed_to_create"].increment
       puts ""
-      puts "> ERROR: exception whilst processing SOAP service. Exception:"
+      puts "> ERROR: exception whilst processing REST service. Exception:"
       puts ex.message
       puts ex.backtrace.join("\n")
     end
     
+  end
+  
+  def sync_annotations(service)
+    
+    
+    # TODO: add a Relationship object saying that the annotation originated from the EMBRACE regsitry
   end
   
 end
@@ -559,7 +616,10 @@ puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/embrace_impor
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "embrace_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 
-puts Benchmark.measure { EmbraceImporter.new(ARGV.clone).run }
+# puts Benchmark.measure { EmbraceImporter.new(ARGV.clone).run }
+
+require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
+EmbraceData.new("embrace")
 
 # Reset $stdout
 $stdout = STDOUT
