@@ -471,7 +471,7 @@ module ApplicationHelper
       end
       
       # Name aliases
-      name_annotations = annotations_for_service_by_attribute(service, "name")
+      name_annotations = BioCatalogue::Annotations.annotations_for_service_by_attribute(service, "name")
       unless name_annotations.blank?
         output << content_tag(:p) do
           x = "<b>Alternate names / aliases:</b> "
