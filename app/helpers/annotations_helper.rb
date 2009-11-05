@@ -14,7 +14,7 @@ module AnnotationsHelper
   
   def annotation_add_box_background_color
     "#e9ecff"
-  end
+  end     
   
   # This method is used to generate an icon and/or link that will popup up an in page dialog box for the user to add an annotation (or mutliple annotations at once).
   #

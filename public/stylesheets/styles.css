@@ -1720,11 +1720,11 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .box_annotations .rcontain {
-	padding: 2px;
+	padding: 0;
 }
 
 .box_annotations div.text {
-	padding: 0.1em 0.5em 0.2em 0.5em;
+	padding: 0 0.7em;
   overflow-x: auto;
 }
 
@@ -1738,15 +1738,20 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .box_annotations .actions {
-	margin: 0.5em 0 0 0; 
+	margin: 0.4em 0 0 0; 
 	font-size: 85%;
 	color: #666;
 	text-align: right;
 }
 
 .annotations_container .add_box {
-	margin-top: 0.5em;
+	margin-top: 5px;
+	padding: 0;
 	text-align: center;
+}
+
+.annotations_container .add_box .rcontain {
+	padding: 0 3px;
 }
 
 .annotations_container .add_box form {
@@ -1782,6 +1787,7 @@ ul.tabbernav li.tabberactive a:hover
 	font-size: 85%;
 	padding: 0.1em 0.5em;
 	line-height: 1.3;
+	margin-left: 1.5em;
 }
 
 .annotation_source_text * {
@@ -2581,7 +2587,7 @@ ul.categories li span.main:hover {
 .service_properties p,
 .service_properties .property {
 	margin: 0;
-	margin-top: 1.5em;
+	margin-top: 1.8em;
 }
 
 #filter_message {
