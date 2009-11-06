@@ -19,7 +19,7 @@ class ServicesControllerTest < ActionController::TestCase
   end
 
   def test_should_show_service
-    get :show, :id => 1
+    get :show, :id => Service.first.id
     assert_response :success
   end
 

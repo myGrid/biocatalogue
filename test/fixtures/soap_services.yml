@@ -1,13 +1,7 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  name: MyString
-  wsdl_location: MyString
-  description: MyText
-  documentation_url: MyString
-
-two:
-  name: MyString
-  wsdl_location: MyString
-  description: MyText
-  documentation_url: MyString
+shopping_service_soap_deployment:
+  name: Shopping Service
+  wsdl_location: http://ez-shop.example.com/shopping_service/wsdl
+  description: A shopping service
+  documentation_url: http://ez-shop.example.com/shopping_service/doc

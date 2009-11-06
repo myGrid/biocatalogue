@@ -1,10 +1,21 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  id: 1
-  service_id: 1
-  service_version_id: 1
-  endpoint: MyString
-  service_provider_id: 1
-  submitter_id: 1
+shopping_service_deployment1:
+  service: shopping_service
+  service_version: shopping_service_version1
+  endpoint: http://ez-shop.example.com/shopping_service
+  provider: ez_shop
+  submitter: john
   submitter_type: User
+  city: Manchester
+  country: United Kingdom
+  
+cinemaquery_deployment1:
+  service: cinemaquery
+  service_version: cinemaquery_version1
+  endpoint: http://cinedirect.example.com/cinemaquery
+  provider: cine_direct
+  submitter: hans
+  submitter_type: User
+  city: Bochum
+  country: Germany

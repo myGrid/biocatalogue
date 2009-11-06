@@ -1,10 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-fixtures :rest_services
-
-one:
-  id: 1
-  unique_code: MyString
-  name: MyString
-  submitter_id: 1
+#an online shopping soap service
+shopping_service:
+  name: Shopping Service
+  submitter: john
+  submitter_type: User
+  
+#a cinema showing times query rest service
+cinemaquery:
+  name: cinemaquery
+  submitter: hans
   submitter_type: User

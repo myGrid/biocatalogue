@@ -1,11 +1,21 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+  
+shopping_service_find_item_input:
+  name: itemName
+  description: the name of the product you wish to find
+  soap_operation: shopping_service_find_item
 
-one:
-  name: MyString
-  description: MyText
-  soap_operation_id: 1
-
-two:
-  name: MyString
-  description: MyText
-  soap_operation_id: 1
+shopping_service_buy_items_input1:
+  name: itemIDList
+  description: A list of item IDs to be purchased
+  soap_operation: shopping_service_buy_items
+  
+shopping_service_buy_items_input2:
+  name: address
+  description: Address to send items to
+  soap_operation: shopping_service_buy_items
+  
+shopping_service_buy_items_input3:
+  name: ccNumber
+  description: The number of the credit card to be charged for the purchase
+  soap_operation: shopping_service_buy_items

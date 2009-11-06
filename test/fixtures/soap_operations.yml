@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  name: MyString
-  description: MyText
-  soap_service_id: 1
-
-two:
-  name: MyString
-  description: MyText
-  soap_service_id: 1
+  
+shopping_service_find_item:
+  name: findItem
+  description: Search the "shelves" for given item, returning the products ID
+  soap_service: shopping_service_soap_deployment
+  
+shopping_service_buy_items:
+  name: buyItems
+  description: Takes a list of item IDs and purchases them
+  soap_service: shopping_service_soap_deployment

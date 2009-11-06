@@ -1,23 +1,26 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  id: 1
+  
+admin:
+  display_name: admin
+  role_id: 1
   crypted_password: MyString
   salt: MyString
-  openid_url: MyString
   activated_at: 2008-09-10 15:42:06
-  role_id: 1
-  email: MyString
-  affiliation: MyText
-  country: MyString
+  email: admin@example.com    
+  country: United Kingdom
 
-two:
-  id: 2
+john:
+  display_name: john.wayne
   crypted_password: MyString
   salt: MyString
-  openid_url: MyString
-  activated_at: 2008-09-10 15:42:06
-  role_id: 1
-  email: MyString
-  affiliation: MyText
-  country: MyString
+  activated_at: 2008-09-10 15:42:07
+  email: john.wayne@example.com    
+  country: United States
+  
+hans:
+  display_name: hans.gruber
+  crypted_password: MyString
+  salt: MyString
+  activated_at: 2008-09-10 16:42:07
+  email: hans.gruber@example.com    
+  country: Germany

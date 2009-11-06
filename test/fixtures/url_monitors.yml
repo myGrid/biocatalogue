@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  parent_id: 1
-  parent_type: MyString
-  property: MyString
+shopping_service_wsdl_url_monitor:
+  parent: shopping_service_soap_deployment
+  parent_type: SoapService
+  property: wsdl_location
 
-two:
-  parent_id: 1
-  parent_type: MyString
-  property: MyString
+shopping_service_endpoint_url_monitor:
+  parent: shopping_service_deployment
+  parent_type: ServiceDeployment
+  property: endpoint

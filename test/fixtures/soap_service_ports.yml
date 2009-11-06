@@ -1,15 +1,8 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  name: MyString
+shopping_service_port:
+  name: Shopping Service Port
   protocol: MyString
   style: MyString
-  location: MyString
-  soap_service_id: 1
-
-two:
-  name: MyString
-  protocol: MyString
-  style: MyString
-  location: MyString
-  soap_service_id: 2
+  location: http://ez-shop.example.com/shopping_service
+  soap_service: shopping_service_soap_deployment

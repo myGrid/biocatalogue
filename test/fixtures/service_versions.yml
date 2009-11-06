@@ -1,11 +1,18 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  id: 1
-  service_id: 1
-  service_versionified_id: 1
+shopping_service_version1:
+  service: shopping_service
+  service_versionified: shopping_service_soap_deployment
+  service_versionified_type: SoapService
+  version: 1
+  submitter: john  
+  submitter_type: User
+  
+cinemaquery_version1:
+  service: cinemaquery
+  service_versionified: cinemaquery_rest_deployment
   service_versionified_type: RestService
   version: 1
-  version_display_text: 1
-  submitter_id: 1
+  submitter: hans  
   submitter_type: User
+  

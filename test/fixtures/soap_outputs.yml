@@ -1,11 +1,12 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  name: MyString
-  description: MyText
-  soap_operation_id: 1
-
-two:
-  name: MyString
-  description: MyText
-  soap_operation_id: 1
+  
+shopping_service_find_item_output:
+  name: itemID
+  description: the ID of the found item. ID of 0 means item not found.
+  soap_operation: shopping_service_find_item
+  
+shopping_service_buy_items_output:
+  name: purchaseConfirmation
+  description: Confirmation of your purchase
+  soap_operation: shopping_service_buy_items
+  
