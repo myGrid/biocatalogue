@@ -318,7 +318,7 @@ class EmbraceImporter
             stats["ids_of_users_existing"] << existing.id
             
             Relationship.create(:subject => existing, :predicate => "BioCatalogue:alsoIn", :object => @registry_source)
-            Relationship.create(:subject => existing, :predicate => "BioCatalogue:hasEmbraceId", :object => user_id)
+            # FIXME: user_id can't be set as Object... maybe use Annotation? Relationship.create(:subject => existing, :predicate => "BioCatalogue:hasEmbraceId", :object => user_id)
           else
             u = User.new
             
@@ -340,7 +340,7 @@ class EmbraceImporter
               stats["ids_of_users_new"] << u.id
               
               Relationship.create(:subject => u, :predicate => "BioCatalogue:origin", :object => @registry_source)
-              Relationship.create(:subject => u, :predicate => "BioCatalogue:hasEmbraceId", :object => user_id)
+              # FIXME: user_id can't be set as Object... maybe use Annotation?  Relationship.create(:subject => u, :predicate => "BioCatalogue:hasEmbraceId", :object => user_id)
             else
               puts "> ERROR: failed to save new user. Error(s): #{u.errors.full_messages.to_sentence}"
             end
