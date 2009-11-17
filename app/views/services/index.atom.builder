@@ -10,7 +10,7 @@ atom_feed(:url => services_url(:format => :atom), :schema_date => "2009") do |fe
 
   for service in @services
     feed.entry(service) do |entry|
-      entry.title(service.name)
+      entry.title(display_name(service))
       entry.content(service_body_for_feed(service), :type => 'html')
 
       entry.author do |author|

@@ -22,6 +22,8 @@ class Annotation < ActiveRecord::Base
   
   validate :check_category_annotation
   
+  after_save :process_post_save_custom_logic
+  
   if USE_EVENT_LOG
     acts_as_activity_logged :models => { :culprit => { :model => :source },
                                          :referenced => { :model => :annotatable } }
@@ -73,5 +75,21 @@ class Annotation < ActiveRecord::Base
   
   def associated_registry_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Registry")
+  end
+  
+  def process_post_save_custom_logic
+    if self.attribute_name.downcase == 'display_name'
+      # Find all other similar annotations that have the 'display_name' attribute and "downgrade" them to 'alternative_name'
+      self.annotatable.annotations_with_attribute('display_name').each do |ann|
+        if ann.id != self.id
+          # These annotations are read only so fetch again to modify...
+          ann2 = Annotation.find_by_id(ann.id)
+          if ann2
+            ann2.attribute_name = "alternative_name"
+            ann2.save
+          end
+        end
+      end
+    end
   end
 end

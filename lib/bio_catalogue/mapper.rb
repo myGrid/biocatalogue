@@ -12,11 +12,15 @@
 module BioCatalogue
   module Mapper
     
-    SERVICE_TYPE_ROOT_MODELS = [ SoapService, RestService ]
+    SERVICE_TYPE_ROOT_MODELS = [ SoapService, RestService ].freeze
     
     SERVICE_STRUCTURE_MODELS = [ Service, ServiceVersion, ServiceDeployment,
                                  SoapService, SoapOperation, SoapInput, SoapOutput,
                                  RestService, RestResource, RestMethod, RestParameter, RestRepresentation, RestMethodParameter, RestMethodRepresentation ].freeze
+    
+    SOAP_SERVICE_STRUCTURE_MODELS = [ SoapService, SoapOperation, SoapInput, SoapOutput, ].freeze
+    
+    REST_SERVICE_STRUCTURE_MODELS = [ RestService, RestResource, RestMethod, RestParameter, RestRepresentation, RestMethodParameter, RestMethodRepresentation ].freeze
     
     # This is used to define what models can't be mapped to other models.
     @@not_mappable = {
@@ -122,6 +126,8 @@ module BioCatalogue
     
     # E.g.: if the compound_id is "SoapOperation:203", then the ancestor Service ID will be returned, if model_name is specified as "Service".
     def self.map_compound_id_to_associated_model_object_id(compound_id, model_name)
+      return nil if compound_id.blank? or model_name.blank?
+      
       source_model_name, source_id = split_compound_id(compound_id)
       
       # First check if we can do this mapping...
@@ -171,6 +177,13 @@ module BioCatalogue
       end
       
       return associated_model_object_id
+    end
+    
+    # A convenience method that uses the Mapper#map_compound_id_to_associated_model_object_id
+    # to directly return the relevant associated object (or nil).
+    # NOTE: currently only works for Service as the 'model_name'
+    def self.map_object_to_associated_model_object(object, model_name)
+      model_name.constantize.find_by_id(map_compound_id_to_associated_model_object_id(compound_id_for_model_object(object), model_name))
     end
     
     protected

@@ -148,7 +148,7 @@ module TagsHelper
                     # The delete AJAX functionality depends on the parent container for the tag clouds having
                     # an ID of "#{annotatable.class.name}_#{annotatable.id}_tag_cloud"
                     
-                    link_to_remote(delete_icon_faded_with_hover,
+                    link_to_remote(icon_faded_with_hover(:delete),
                                   :url => "#{tag_url(0, :tag_name => tag_name, :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id)}",
                                   :method => :delete,
                                   :update => { :success => "#{annotatable.class.name}_#{annotatable.id}_tag_cloud", :failure => '' },

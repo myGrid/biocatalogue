@@ -29,7 +29,7 @@
 							show_row = row_class.blank?
 						%>
 						<li class="<%= row_class -%>" style="<%= show_row ? "" : "display: none;" -%>">
-							<%= link_to(h(s.name), service_url(s)) -%>
+							<%= link_to(display_name(s), service_url(s)) -%>
 						</li>
 					<% end %>
 				</ul>

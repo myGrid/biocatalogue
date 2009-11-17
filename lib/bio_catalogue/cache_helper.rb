@@ -149,10 +149,6 @@ module BioCatalogue
         expire_fragment(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service_id)
       end
       
-      def expire_name_aliases_in_service_listing(service_id)
-        expire_fragment(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service_id)
-      end
-      
       def expire_descriptions_in_service_listing(service_id)
         expire_fragment(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service_id)
       end

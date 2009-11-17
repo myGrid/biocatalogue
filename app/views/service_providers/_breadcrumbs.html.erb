@@ -14,7 +14,7 @@
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" -%>
-    <li><span><%= h(@service_provider.name) -%></span></li>
+    <li><span><%= display_name(@service_provider) -%></span></li>
   <% else -%>
     <!-- no breadcrumb -->
   <% end -%>

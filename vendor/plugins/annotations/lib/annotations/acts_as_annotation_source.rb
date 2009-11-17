@@ -57,10 +57,10 @@ module Annotations
         end
         
         def annotation_source_name
-          %w{ display_name title name }.each do |w|
+          %w{ preferred_name display_name title name }.each do |w|
             return eval("self.#{w}") if self.respond_to?(w)
           end
-          return "#{self.class.name}_#{id}"
+          return "#{self.class.name}_#{self.id}"
         end
       end
       

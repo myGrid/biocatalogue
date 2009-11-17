@@ -90,7 +90,7 @@ class SoapServicesController < ApplicationController
               # TODO: should this return the top level Service resource or SoapService? 
               format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
             else
-              flash[:error] = 'An error has occurred with the submission. Please <a href="/contact">contact us</a> to report this. Thank you.'
+              flash.now[:error] = 'An error has occurred with the submission. Please <a href="/contact">contact us</a> to report this. Thank you.'
               format.html { render :action => "new" }
               format.xml  { render :xml => '', :status => 500 }
             end
@@ -152,7 +152,7 @@ class SoapServicesController < ApplicationController
         
         @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WSDLUtils::WSDLParser.parse(@soap_service.wsdl_location)
         #try the old parser if new on fails
-        if @wsdl_info.empty?
+        if @wsdl_info.blank?
           @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
         end
         # Check for a duplicate

@@ -8,7 +8,7 @@
 
 %>
 
-<% t "#{h @service.name} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.map{|p| p.name}.to_sentence)}]" -%>
+<% t "#{display_name(@service)} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.map{|p| display_name(p)}.to_sentence)}]" -%>
 
 <table style="width: 100%;">
 	<tr>
@@ -16,7 +16,7 @@
 			
 			<h1 style="margin-top: 0.2em;">
 				Service: 
-				<span class="orange_highlight"><%= h @service.name -%></span>
+				<span class="orange_highlight"><%= display_name(@service) -%></span>
 				<%= service_type_badges(@service.service_types) -%>
 				<%= service_location_flags(@service) -%>
 			</h1>
@@ -24,7 +24,7 @@
 			<div style="margin-top: 0.7em">
 				<%= render :partial => "annotations/name_aliases",
 									 :locals => { :annotatable => @service,
-																:name_annotations => all_name_annotations_for_service(@service) } -%>
+																:name_annotations => all_alternative_name_annotations_for_service(@service) } -%>
 			</div>
 				
 			<div style="margin-top: 1em; margin-bottom: 0.3em;">
@@ -66,7 +66,7 @@
 	</tr>
 </table>
 
-<% if mine? @service %>
+<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
 	<div class="toolbar">
 	  <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
 								service_path(@service), 
@@ -117,7 +117,7 @@
 				<b>Provider:</b>
 				<br/>
 				<% @service.providers.each do |provider| %>
-					<%= link_to(h(provider.name), service_provider_path(provider)) %>
+					<%= link_to(display_name(provider), service_provider_path(provider)) %>
 					<br/>
 				<% end %>
 			</p>

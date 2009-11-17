@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/soap_service.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -18,8 +18,6 @@ class SoapService < ActiveRecord::Base
   acts_as_annotatable
   
   belongs_to :wsdl_file,
-             :foreign_key => "wsdl_file_id",
-             :class_name => "ContentBlob",
              :validate => true,
              :readonly => true,
              :dependent => :destroy
@@ -50,7 +48,7 @@ class SoapService < ActiveRecord::Base
   validates_url_format_of :wsdl_location,
                           :allow_nil => false,
                           :message => 'is not valid'
-   
+ 
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :description, :documentation_url, :wsdl_location, :service_type_name,
                               { :associated_service_id => :r_id } ] )
@@ -157,7 +155,7 @@ class SoapService < ActiveRecord::Base
     if success
       #service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
       service_info, err_msgs, wsdl_file_contents = BioCatalogue::WSDLUtils::WSDLParser.parse(self.wsdl_location)
-      if service_info.empty?
+      if service_info.blank?
         logger.info("Trying the old parser, BioCatalogue::WsdlParser, because the BioCatalogue::WSDLUtils::WSDLParser failed ")
         service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
       end
@@ -172,7 +170,8 @@ class SoapService < ActiveRecord::Base
       end
       
       if success
-        self.wsdl_file = ContentBlob.new(:data => wsdl_file_contents)
+        c_blob = ContentBlob.create(:data => wsdl_file_contents)
+        self.wsdl_file = WsdlFile.new(:location => self.wsdl_location, :content_blob_id => c_blob.id)
         
         self.name         = service_info['name']
         self.description  = service_info['description']

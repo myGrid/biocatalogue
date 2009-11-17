@@ -59,7 +59,7 @@ class RestServicesController < ApplicationController
     endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
     
     if endpoint.blank?
-      flash[:error] = "Please provide a valid endpoint URL"
+      flash.now[:error] = "Please provide a valid endpoint URL"
       respond_to do |format|
         format.html { render :action => "new" }
         format.xml  { render :xml => '', :status => 406 }
@@ -73,16 +73,16 @@ class RestServicesController < ApplicationController
 
         annotations_data = params[:annotations].clone
         
-        # Special case for name annotations...
+        # Special case for alternative name annotations...
         
         name_annotations = [ ]
         
         main_name = params[:rest_service][:name]
         name_annotations << params[:rest_service][:name] if !main_name.blank? && !existing_service.name.downcase.eql?(main_name.downcase)
         
-        name_annotations << annotations_data[:name] if !annotations_data[:name].blank? and !existing_service.name.downcase.eql?(annotations_data[:name].downcase)
+        name_annotations << annotations_data[:alternative_name] if !annotations_data[:alternative_name].blank? and !existing_service.name.downcase.eql?(annotations_data[:alternative_name].downcase)
         
-        annotations_data[:name] = name_annotations
+        annotations_data[:alternative_name] = name_annotations
         
         # Now create them...  
         existing_service.latest_version.service_versionified.process_annotations_data(annotations_data, current_user)
@@ -107,7 +107,7 @@ class RestServicesController < ApplicationController
           else
             err_text = "An error has occurred with the submission.<br/>" +
               "Please <a href='/contact'>contact us</a> if you need assistance with this."
-            flash[:error] = err_text
+            flash.now[:error] = err_text
             format.html { render :action => "new" }
             format.xml  { render :xml => '', :status => 500 }
           end

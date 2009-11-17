@@ -16,7 +16,7 @@
 <% unless annotatable.nil? %>
 	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
-		  <b>Example(s):</b>
+		  <b>Example Data:</b>
 		</div>
 		
 		<div class="box_annotations">
@@ -34,12 +34,8 @@
 							<div style="margin-top: 0.7em;">
 								<pre><%= annotation_prepare_description(ann.value, false, nil, false, false) -%></pre>
 							</div>
-							<% if mine?(ann) %>
-								<p class="actions">
-									<span><%= annotation_edit_by_popup_link(ann) -%></span>
-									<span style="margin-left: 1em;"><%= link_to("delete", annotation_path(ann), :method => :delete, :confirm => "Are you sure you want to delete this example data?", :style => 'vertical-align: middle;')-%></span>
-								</p>
-							<% end %>
+							<%= render :partial => "annotations/common/default_modify_options",
+												 :locals => { :annotation => ann, :ann_type => "example data" } -%>
 						</div>
 					<% end %>
 				<% end %>

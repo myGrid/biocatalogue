@@ -26,7 +26,7 @@ parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summar
   parent_xml.alternativeNames do 
     
     # <alternativeName> *
-    all_name_annotations_for_service(service).each do |ann|
+    all_alternative_name_annotations_for_service(service).each do |ann|
       parent_xml.alternativeName ann.value
     end
     

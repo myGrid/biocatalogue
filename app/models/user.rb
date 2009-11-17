@@ -150,6 +150,14 @@ class User < ActiveRecord::Base
   def annotated_services    
     BioCatalogue::Mapper.item_ids_to_model_objects(self.annotated_service_ids, "Service")    
   end
+  
+  def is_admin?
+    [ 1 ].include? self.role_id
+  end
+  
+  def is_curator?
+    [ 1, 2 ].include? self.role_id  
+  end
 
   private
 

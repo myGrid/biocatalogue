@@ -967,9 +967,9 @@ body.sidebar-right #login_box {
 
 .boxoverTooltipBody {
 	z-index: 100000;
-	border: solid 1px Gray;
+	border: solid 1px #CCC;
 	color: #000000;
-	background-color: #FFFF66;
+	background-color: #FFF99F;
 	font-size: 93%;
 	font-weight: normal;
 	padding: 0.3em 0.6em;
@@ -1815,6 +1815,10 @@ ul.tabbernav li.tabberactive a:hover
 	margin: 0.3em 0 0.2em 0;
 	margin-left: 1em;
 	line-height: 1.6;
+}
+
+.aliases * {
+	line-height: 1.2;
 }
 
 .annotations_counts_outer_box {

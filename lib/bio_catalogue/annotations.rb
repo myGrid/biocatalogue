@@ -1,4 +1,4 @@
-# BioCatalogue: lib/bio_catalogue/anotations.rb
+# BioCatalogue: lib/bio_catalogue/annotations.rb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -177,7 +177,7 @@ module BioCatalogue
     # Fields with a nil value will be removed.
     #
     # The following attribute specific processing is applied:
-    #   - for :tags, 'tags', :categories, 'categories', :names, 'names' -
+    #   - for :tags, 'tags', :categories, 'categories', :alternative_names, 'alternative_names' -
     #       it will transform { :tags => "test1, test2, test3" } into { :tag => [ "test1", "test2", "test3" ] } 
     def self.preprocess_annotations_data(annotations_data)
       # Remove fields that have a nil value
@@ -209,16 +209,16 @@ module BioCatalogue
         annotations_data.delete('categories')
       end
       
-      # :names to :name
-      if annotations_data.has_key?(:names)
-        annotations_data[:name] = annotations_data[:names].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
-        annotations_data.delete(:names)
+      # :alternative_names to :alternative_name
+      if annotations_data.has_key?(:alternative_names)
+        annotations_data[:alternative_name] = annotations_data[:alternative_names].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
+        annotations_data.delete(:alternative_names)
       end
       
-      # 'names' to 'name'
-      if annotations_data.has_key?('names')
-        annotations_data['name'] = annotations_data['names'].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
-        annotations_data.delete('names')
+      # 'alternative_names' to 'alternative_name'
+      if annotations_data.has_key?('alternative_names')
+        annotations_data['alternative_name'] = annotations_data['alternative_names'].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
+        annotations_data.delete('alternative_names')
       end
       
       return annotations_data

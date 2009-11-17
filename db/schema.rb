@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091006171715) do
+ActiveRecord::Schema.define(:version => 20091116162348) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -143,13 +143,15 @@ ActiveRecord::Schema.define(:version => 20091006171715) do
   add_index "registries", ["name"], :name => "registries_name_index"
 
   create_table "relationships", :force => true do |t|
-    t.string   "subject_type", :null => false
-    t.integer  "subject_id",   :null => false
-    t.string   "predicate",    :null => false
-    t.string   "object_type",  :null => false
-    t.integer  "object_id",    :null => false
+    t.string   "subject_type",       :null => false
+    t.integer  "subject_id",         :null => false
+    t.string   "predicate",          :null => false
+    t.string   "object_type",        :null => false
+    t.integer  "object_id",          :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "subject_field_name"
+    t.string   "object_field_name"
   end
 
   add_index "relationships", ["object_type", "object_id"], :name => "relationships_object_index"
@@ -405,8 +407,6 @@ ActiveRecord::Schema.define(:version => 20091006171715) do
     t.datetime "updated_at"
   end
 
-  add_index "test_results", ["test_type", "test_id"], :name => "test_results_test_index"
-
   create_table "trash_records", :force => true do |t|
     t.string   "trashable_type"
     t.integer  "trashable_id"
@@ -448,5 +448,12 @@ ActiveRecord::Schema.define(:version => 20091006171715) do
 
   add_index "users", ["display_name"], :name => "users_display_name_index"
   add_index "users", ["email"], :name => "users_email_index"
+
+  create_table "wsdl_files", :force => true do |t|
+    t.string   "location"
+    t.integer  "content_blob_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

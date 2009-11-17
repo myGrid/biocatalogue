@@ -144,6 +144,16 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :mine?
+  
+  def display_name(item)
+    # NOTE: the order below matters!
+    %w{ preferred_name display_name title name }.each do |w|
+      return eval("CGI.escapeHTML(item.#{w})") if item.respond_to?(w)
+      return item[w] if item.is_a?(Hash) && item.has_key?(w) 
+    end
+    return "#{item.class.name}_#{item.id}"
+  end
+  helper_method :display_name
 
   # Returns the host url and its port
   def base_host
@@ -185,23 +195,35 @@ class ApplicationController < ActionController::Base
   
   # Generic method to raise / proceed from errors. Redirects to home.
   # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
-  def error_to_home(msg)
+  def error_to_home(msg, forbidden)
     flash[:error] = msg
+    
+    # TODO: return either a 401 or 403 depending on authentication
 
     respond_to do |format|
       format.html { redirect_to home_url }
-      format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
+      if forbidden
+        format.xml  { head :forbidden }
+      else
+        format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
+      end
     end
   end
 
   # Generic method to raise / proceed from errors. Redirects to the previous page or if not available, to home.
   # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
-  def error_to_back_or_home(msg)
+  def error_to_back_or_home(msg, forbidden=false)
     flash[:error] = msg
-
+    
+    # TODO: return either a 401 or 403 depending on authentication
+    
     respond_to do |format|
       format.html { redirect_to(session[:previous_url].blank? ? home_url : session[:previous_url]) }
-      format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
+      if forbidden
+        format.xml  { head :forbidden }
+      else
+        format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
+      end
     end
   end
 

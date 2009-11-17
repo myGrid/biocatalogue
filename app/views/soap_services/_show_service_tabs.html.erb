@@ -17,7 +17,7 @@
 	<div class="operations_contents_box">
 		<% ops.each do |operation| %>
 			<span style="margin: 0 0.4em;">
-				<%= content_tag(:a, h(operation.name), :href => "#soap_operation_#{operation.id}") -%>
+				<%= content_tag(:a, display_name(operation), :href => "#soap_operation_#{operation.id}") -%>
 			</span>
 		<% end %>
 	</div>
@@ -32,7 +32,7 @@
 				
 				<p class="operation_heading">
 					<b>Operation:</b>
-					<span class="operation_name"><%= h operation.name -%></span>
+					<span class="operation_name"><%= display_name(operation) -%></span>
 				</p>
 				
 				<div>
@@ -40,7 +40,8 @@
 						
 						<div style="margin-top: 0.3em; margin-bottom: 2em;">
 							<%= render :partial => "annotations/name_aliases",
-											 	 :locals => { :annotatable => operation } -%>
+											 	 :locals => { :annotatable => operation,
+																			:show_promote_option => false } -%>
 						</div>
 						
 						<div>
@@ -82,12 +83,13 @@
 							<div style="float: left; width: 73%;">
 								<div style="margin-bottom: 0.6em;">
 									<b>Input:</b>
-									<span class="operation_name"><%= h input.name -%></span>
+									<span class="operation_name"><%= display_name(input) -%></span>
 								</div>
 								
 								<div style="margin-bottom: 1em;">
 									<%= render :partial => "annotations/name_aliases",
-											 	 		 :locals => { :annotatable => input } -%>
+											 	 		 :locals => { :annotatable => input,
+																					:show_promote_option => false } -%>
 								</div>
 									 
 								<%= render :partial => "annotations/descriptions",
@@ -121,12 +123,13 @@
 							<div style="float: left; width: 73%;">
 								<div style="margin-bottom: 0.6em;">
 									<b>Output:</b>
-									<span class="operation_name"><%= h output.name -%></span>
+									<span class="operation_name"><%= display_name(output) -%></span>
 								</div>
 								
 								<div style="margin-bottom: 1em;">
 									<%= render :partial => "annotations/name_aliases",
-											 	 		 :locals => { :annotatable => output } -%>
+											 	 		 :locals => { :annotatable => output,
+																					:show_promote_option => false } -%>
 								</div>
 								
 								<%= render :partial => "annotations/descriptions",

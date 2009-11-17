@@ -255,5 +255,20 @@ module BioCatalogue
       
       return values
     end
+    
+    def find_wsdl_file_for(obj)
+      return nil unless BioCatalogue::Mapper::SOAP_SERVICE_STRUCTURE_MODELS.include?(obj.class)
+      
+      case obj
+        when SoapService
+          return obj.wsdl_file
+        when SoapOperation
+          return obj.soap_service.wsdl_file
+        when SoapInput, SoapOutput
+          return obj.soap_operation.soap_service.wsdl_file
+        else
+          return nil
+      end
+    end
   end
 end

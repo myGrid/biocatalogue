@@ -8,9 +8,9 @@
 
 %>
 
-<% t "#{h @user.display_name}" -%>
+<% t "#{display_name(@user)}" -%>
 
-<h1>Member: <span class="orange_highlight"><%=h @user.display_name %></span></h1>
+<h1>Member: <span class="orange_highlight"><%= display_name(@user) %></span></h1>
 
 <br/>
 
@@ -36,7 +36,7 @@
 					</span>
 				<% end %>
 				<br/>
-	      <%=h @user.display_name %>
+	      <%= display_name(@user) %>
 	    </p>
 			
 			<p>

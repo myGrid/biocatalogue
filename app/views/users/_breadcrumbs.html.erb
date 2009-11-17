@@ -14,15 +14,15 @@
   <li><b>&#187;</b></li>
   
   <% case controller.action_name.to_s; when "show" -%>
-    <li><span><%= h(@user.display_name) -%></span></li>
+    <li><span><%= display_name(@user) -%></span></li>
   <% when "new" -%>
     <li><span>Sign Up</span></li>
 	<% when "edit" -%>
-		<li><span><%= link_to h(@user.display_name), user_path(@user) -%></span></li>
+		<li><span><%= link_to display_name(@user), user_path(@user) -%></span></li>
 		<li><b>&#187;</b></li>
     <li><span>Edit Profile</span></li>
 	<% when "change_password" -%>
-		<li><span><%= link_to h(@user.display_name), user_path(@user) -%></span></li>
+		<li><span><%= link_to display_name(@user), user_path(@user) -%></span></li>
 		<li><b>&#187;</b></li>
     <li><span>Change Password</span></li>
   <% else -%>

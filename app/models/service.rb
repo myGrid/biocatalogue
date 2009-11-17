@@ -32,6 +32,8 @@ class Service < ActiveRecord::Base
            :dependent => :destroy
   
   has_submitter
+  
+  virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
            
   before_validation_on_create :generate_unique_code
   

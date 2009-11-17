@@ -50,10 +50,10 @@ module Favourites
         # Provides a default implementation to get the display name for 
         # an favouritable object, that can be overrided.
         def favouritable_name
-          %w{ display_name title name }.each do |w|
+          %w{ preferred_name display_name title name }.each do |w|
             return eval("self.#{w}") if self.respond_to?(w)
           end
-          return "#{self.class.name}_#{id}"
+          return "#{self.class.name}_#{self.id}"
         end
         
         # Helper method to get latest favourites

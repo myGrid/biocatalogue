@@ -13,7 +13,7 @@ xml.rss "version" => "2.0" do
    xml.description("All BioCatalogue Soap Services ")
    @soap_services.each do |service|
      xml.item do
-       xml.title(service.name)
+       xml.title(display_name(service))
        xml.description(service.description)
        xml.link(formatted_soap_service_url(service, :html))
        xml.pubDate(service.created_at.to_s(:rfc822))

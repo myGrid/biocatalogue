@@ -8,9 +8,9 @@
 
 %>
 
-<% t "#{h @service_provider.name}" -%>
+<% t "#{display_name(@service_provider)}" -%>
 
-<h1>Service Provider: <%= h(@service_provider.name) -%></h1>
+<h1>Service Provider: <%= display_name(@service_provider) -%></h1>
 
 <div class="tabber">
 	

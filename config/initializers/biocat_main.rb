@@ -26,6 +26,8 @@ require 'net/smtp'
 require 'bio_catalogue/acts_as_service_versionified'
 require 'bio_catalogue/has_submitter'
 require 'bio_catalogue/wsdl_utils_parser_client'
+require 'bio_catalogue/annotations'
+require 'bio_catalogue/annotations/extensions'
 
 # Require additional libraries
 require 'array'

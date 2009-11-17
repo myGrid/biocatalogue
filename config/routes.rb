@@ -25,7 +25,8 @@ ActionController::Routing::Routes.draw do |map|
                          { :new_popup => :post,
                            :create_inline => :post },
                          { :edit_popup => :post,
-                           :download => :get })
+                           :download => :get,
+                           :change_attribute => :post })
 
   # Tags (ordering is important!)
 #  map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }

@@ -27,7 +27,7 @@ class Registry < ActiveRecord::Base
   end
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :display_name, :description, :homepage ] )
+    acts_as_solr(:fields => [ :name, :display_name, :description, :homepage ] )
   end
   
   def annotation_source_name

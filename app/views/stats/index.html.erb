@@ -184,7 +184,7 @@
 										<td>
 											<% service = Service.find_by_id(s_id) %>
 											<% if service %>
-												<%= link_to(h(service.name), service, :popup => true) -%>
+												<%= link_to(display_name(service), service, :popup => true) -%>
 											<% else %>
 												(unknown service)
 											<% end %>

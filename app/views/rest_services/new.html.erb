@@ -53,7 +53,7 @@
 				What is the <b>official</b> or <b>common name</b> of this REST service?
 				<span class="required">*</span>
 				<br/>
-				<%= text_field_tag "rest_service[name]", params[:rest_service] ? params[:rest_service][:name] : "", :style => "width: 99%;" %>
+				<%= text_field_tag "rest_service[name]", (params[:rest_service] ? params[:rest_service][:name] : ""), :style => "width: 99%;" %>
 			</p>
 			
 			<%= render :partial => 'annotations/service_submission_fields' -%>

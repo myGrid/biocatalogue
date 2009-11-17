@@ -12,7 +12,7 @@
 	<% items.each do |user| %>
 		<div class="listing_item">
 			<p class="name">
-				<%= link_to(h(user.display_name), user_path(user)) -%>
+				<%= link_to(display_name(user), user_path(user)) -%>
 
 				<%= flag_icon_from_country(user.country, :class => "framed") -%>
 			</p>

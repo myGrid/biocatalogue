@@ -126,13 +126,13 @@ module BioCatalogue
             wsdl_file_contents  = open(wsdl.strip(), :proxy => HTTP_PROXY).read
           end
         
-        wsdl_doc = get_wsdl_doc(get_parsed_wsdl(wsdl))
-        unless wsdl_doc.nil?
-          wsdl_doc.elements.each("service") do |service|
-            service_info = BioCatalogue::WSDLParser::Service.new(service).parse
+          wsdl_doc = get_wsdl_doc(get_parsed_wsdl(wsdl))
+          unless wsdl_doc.nil?
+            wsdl_doc.elements.each("service") do |service|
+              service_info = BioCatalogue::WSDLParser::Service.new(service).parse
+            end
           end
-        end
-      rescue Exceptions => ex
+        rescue Exception => ex
           Rails.logger.error("Error whilst parsing WSDL. Exception: #{ex.class.name} - #{ex.message}")
           Rails.logger.error(ex.backtrace.join("\n"))
             

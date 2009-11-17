@@ -13,8 +13,8 @@ module ServicesHelper
     BioCatalogue::Annotations.total_number_of_annotations_for_service(service, source_type)
   end
   
-  def all_name_annotations_for_service(service)
-    BioCatalogue::Annotations.annotations_for_service_by_attribute(service, "name")
+  def all_alternative_name_annotations_for_service(service)
+    BioCatalogue::Annotations.annotations_for_service_by_attribute(service, "alternative_name")
   end
   
   def service_type_badges(service_types)

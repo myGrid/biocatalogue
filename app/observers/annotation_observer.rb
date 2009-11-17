@@ -51,7 +51,7 @@ class AnnotationObserver < ActiveRecord::Observer
     end
     
     # Name aliases
-    if attrib_name == "name"
+    if attrib_name == "alternative_name"
       # ... in service listing
       model_names = [ "Service", "ServiceDeployment", "ServiceVersion" ] + BioCatalogue::Mapper::SERVICE_TYPE_ROOT_MODELS.map{|t| t.name}
       if model_names.include?(annotation.annotatable_type)

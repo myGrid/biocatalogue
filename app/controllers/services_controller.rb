@@ -260,7 +260,7 @@ class ServicesController < ApplicationController
   end
   
   def authorise
-    unless mine?(@service)
+    unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)
       error_to_back_or_home("You are not allowed to perform this action")
     end
   end

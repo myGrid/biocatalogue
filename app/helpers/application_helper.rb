@@ -31,9 +31,11 @@ module ApplicationHelper
       when :delete
         "delete.png"
       when :delete_faded
-        "delete_faded_darker.png"
-      when :delete_faded_plus
         "delete_faded.png"
+      when :promote
+        "promote.png"
+      when :promote_faded
+        "promote_faded.png"
       when :refresh
         "refresh.gif"
       when :expand
@@ -99,10 +101,10 @@ module ApplicationHelper
     end
   end
   
-  def delete_icon_faded_with_hover
-    image_tag(icon_filename_for(:delete_faded_plus), :mouseover => icon_filename_for(:delete), :style => "vertical-align:middle;")
+  def icon_faded_with_hover(type)
+    image_tag(icon_filename_for("#{type.to_s}_faded".to_sym), :mouseover => icon_filename_for(type), :style => "vertical-align:middle;")
   end
-
+  
   def refresh_image
     image_tag icon_filename_for(:refresh), :style => "vertical-align: middle;", :alt => "Refresh"
   end
@@ -264,15 +266,7 @@ module ApplicationHelper
   end
   
   def user_link_with_flag(user)
-    link_to(h(user.display_name), user_path(user), :style => "vertical-align: baseline") + flag_icon_from_country(user.country, :style => "vertical-align: middle; margin: 0 0.4em;")
-  end
-  
-  def display_name(item)
-    %w{ display_name title name }.each do |w|
-      return eval("h(item.#{w})") if item.respond_to?(w)
-      return item[w] if item.is_a?(Hash) && item.has_key?(w) 
-    end
-    return "#{item.class.name}_#{item.id}"
+    link_to(display_name(user), user_path(user), :style => "vertical-align: baseline") + flag_icon_from_country(user.country, :style => "vertical-align: middle; margin: 0 0.4em;")
   end
   
   def separator_symbol_to_text(symbol, pluralize_text=false, show_symbol_after=true)
@@ -470,11 +464,11 @@ module ApplicationHelper
         x
       end
       
-      # Name aliases
-      name_annotations = BioCatalogue::Annotations.annotations_for_service_by_attribute(service, "name")
+      # Alternative names
+      name_annotations = BioCatalogue::Annotations.annotations_for_service_by_attribute(service, "alternative_name")
       unless name_annotations.blank?
         output << content_tag(:p) do
-          x = "<b>Alternate names / aliases:</b> "
+          x = "<b>Alternate names:</b> "
           x << name_annotations.map{|a| a.value}.to_sentence(:last_word_connector => ', ', :two_words_connector => ', ' )
           x
         end
@@ -508,7 +502,7 @@ module ApplicationHelper
       output << content_tag(:p) do
         x = "<b>Provider:</b> "
         service.providers.each do |provider|
-          x << link_to(h(provider.name), service_provider_path(provider))
+          x << link_to(display_name(provider), service_provider_path(provider))
         end
         x
       end

@@ -11,12 +11,12 @@
 <%# Set defaults for optional parameters to this partial... %>
 <% fields_disabled = false unless local_assigns.has_key?(:fields_disabled) %>
 
-<!-- Name alias -->
+<!-- Alternative names-->
 <p class="high_linespaced form_field_section">
-	Add <b>alternate names / aliases</b> (separated by commas):
+	Add <b>alternative names</b> for this service (separated by commas):
 	<%= info_icon_with_tooltip("These are alternative names that this service might be known as. They will be shown next to the main name of this service.") -%>
 	<br/>
-	<%= text_field_tag "annotations[names]", params[:annotations][:names], :disabled => fields_disabled, :style => "width: 99%;" %>
+	<%= text_field_tag "annotations[alternative_names]", params[:annotations][:alternative_names], :disabled => fields_disabled, :style => "width: 99%;" %>
 </p>
 
 <!-- Documentation URL -->

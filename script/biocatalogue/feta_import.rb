@@ -272,7 +272,7 @@ class FetaImporter
       
       puts ""
       puts ">> XML file '#{path}' found. Processing..."
-      puts "INFO: 2nd level folder name = '#{second_level_folder_name}' (this will be stored as a name annotation [ie: a name alias])" unless second_level_folder_name.blank?
+      puts "INFO: 2nd level folder name = '#{second_level_folder_name}' (this will be stored as an alternative name annotation [ie: a name alias])" unless second_level_folder_name.blank?
       
       begin
         success = true
@@ -361,7 +361,7 @@ class FetaImporter
                   if second_level_folder_name == soap_service.name
                     puts "INFO: 2nd level folder name is the same as the actual service name, so not creating an annotation for this."
                   else
-                    create_annotation(soap_service, "name", second_level_folder_name, stats)  
+                    create_annotation(soap_service, "alternative_name", second_level_folder_name, stats)  
                   end
                 end
                 
@@ -478,8 +478,8 @@ class FetaImporter
     else
       # If a name alias was in the <parameterName> then store it as an annotation
       unless param_name_split[1].blank?
-        puts "INFO: <parameterName> has a name alias embedded within it so storing this as a 'name' annotation (ie: name alias) on the SoapInput/SoapOutput."
-        create_annotation(parameter, "name", param_name_split[1], stats)  
+        puts "INFO: <parameterName> has a name alias embedded within it so storing this as an 'alternative_name' annotation (ie: name alias) on the SoapInput/SoapOutput."
+        create_annotation(parameter, "alternative_name", param_name_split[1], stats)  
       end
       
       # <parameterDescription>
