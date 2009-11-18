@@ -57,12 +57,22 @@ class SoaplabServersController < ApplicationController
   # POST /soaplab_servers
   # POST /soaplab_servers.xml
   def create
-    @soaplab_server = SoaplabServer.new(params[:soaplab_server])
-
+    existing_server = SoaplabServer.find_by_location(params[:soaplab_server][:location])
+    
+    if existing_server.nil?
+      @soaplab_server = SoaplabServer.new(params[:soaplab_server]) 
+    else
+      @soaplab_server = existing_server
+    end
+    
     respond_to do |format|
       if @soaplab_server.save
-        new_wsdl_urls, existing_services, error_urls = @soaplab_server.save_services(current_user)
-        flash[:notice] = 'SoaplabServer was successfully created.'
+        Delayed::Job.enqueue BioCatalogue::Jobs::SubmitSoaplabServices.new(@soaplab_server, current_user)
+        if existing_server
+          flash[:notice] = 'This Soaplab server is known to BioCatalogue. Any additional services will be registered.'
+        else
+          flash[:notice] = 'Your request for the submission of a Soaplab server was successfully received. Please check in short while to view the services'
+        end
         format.html { redirect_to(@soaplab_server) }
         format.xml  { render :xml => @soaplab_server, :status => :created, :location => @soaplab_server }
       else
