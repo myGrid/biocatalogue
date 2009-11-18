@@ -94,17 +94,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 153.9%;
+  font-size: 138.5%;
   color: #000033;
   margin: 0.5em 0;
+	padding: 0.2em 0.5em;
+	/*border-bottom: 1px solid #DDD;*/
+	background-color: #E9F7CC;
+	text-align: center;
 }
 
 h2 {
-  font-size: 138.5%;
+  font-size: 123.1%;
 }
 
 h3 {
-  font-size: 123.1%;
+  font-size: 116%;
 }
 
 h4 {
@@ -589,7 +593,7 @@ body.sidebar-right #footer {
 }
 
 #wrapper #container #content {
-	margin-top: 2em;
+	margin-top: 1.2em;
 }
 
 #wrapper #container #action_bar {
@@ -1416,7 +1420,7 @@ ul.tabbernav
 	margin: 0;
 	border-bottom: 1px solid #CCC;
 	font-weight: bold;
-	font-size: 123.1%;
+	font-size: 116%;
 	line-height: 24px;
 	padding-bottom: 1px;
 }
@@ -1704,11 +1708,11 @@ ul.tabbernav li.tabberactive a:hover
 	display: none;
 }
 
-.annotations_container:hover .inactive {
+.annotations_container .add_option:hover .inactive {
 	display: none;
 }
 
-.annotations_container:hover .active {
+.annotations_container .add_option:hover .active {
 	display:-moz-inline-block;
 	display:-moz-inline-box;
 	display: inline-block;
@@ -2501,7 +2505,6 @@ p.more_less_links a {
 /* BEGIN categories styles */
 
 .categories_box {
-	font-size: 85%;
 	line-height: 16px;
 }
 
@@ -2515,6 +2518,7 @@ ul.categories {
 
 ul.categories li {
 	display: inline;
+	font-size: 85%;
 }
 
 ul.categories li span.main {
@@ -2524,7 +2528,7 @@ ul.categories li span.main {
 	background-color: #FFC;
 	margin-bottom: 0.4em;
 	margin-right: 0.5em;
-	padding: 0 3px;
+	padding: 1px 4px;
 	border-top: 1px solid #DEDEDE;
 	border-left: 1px solid #DEDEDE;
 	border-right: 1px solid #999;

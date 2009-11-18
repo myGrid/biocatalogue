@@ -43,8 +43,8 @@
 																				annotation_path(category_annotation), 
 																				:method => :delete, 
 																				:confirm => "Are you sure you want to delete this category?", 
-																				:style => 'vertical-align: middle;',
-																				:title => tooltip_title_attrib("Delete this category (that you added)")) -%>
+																				:style => 'vertical-align: baseline;',
+																				:title => tooltip_title_attrib("Delete this category")) -%>
 													</span>
 												<% end %>
 											<% end %>
@@ -66,35 +66,37 @@
 				</td>
 				
 				<% if show_add_option %>
-					<td style="width: 160px;">
-					
-						<% if logged_in? %>
+					<td style="width: 160px; vertical-align: top; padding-top: 3px; padding-left: 5px;">
 						
-							<%= content_tag(:span, 
-			                        image_tag('add_annotation.gif', :style => 'vertical-align:middle;margin-right:0.3em;'), 
-			                        :class => "inactive", 
-			                        :style => "vertical-align: middle;") -%>
-															
-							<% link_text = image_tag('add_annotation_hover.gif', :style => 'vertical-align:middle;margin-right:0.3em;') + 
-														 content_tag(:span, "Add categories", :style => "vertical-align: middle; text-decoration: underline;") %>
-							<%= link_to_function(link_text + expand_image, 
-																	 visual_effect(:toggle_slide, "add_service_category_box", :duration => 0.3),
-																	 :class => "active",
-																	 :style => "text-decoration: none;") %>
-						
-						<% else %>
-						
-							<%= content_tag(:span, 
-			                        image_tag('add_annotation_inactive.gif', :style => 'vertical-align:middle;margin-right:0.3em;'), 
-			                        :class => "inactive", 
-			                        :style => "vertical-align: middle;") -%>
-															
-							<% link_to(login_path, :class => "active", :style => "text-decoration: none; vertical-align: middle;", :title => tooltip_title_attrib("Log in to categorise")) do -%>
-								<%= image_tag('add_annotation_inactive.gif', :style => 'vertical-align:middle;margin-right:0.2em;') %>
-								<%= content_tag(:span, "Log in to categorise", :style => "vertical-align: middle; text-decoration: underline;") -%>
-							<% end %>
+						<span class="add_option" style="vertical-align: middle;">
+							<% if logged_in? %>
 							
-						<% end %>
+								<%= content_tag(:span, 
+				                        image_tag('add_annotation_inactive.png', :style => 'vertical-align:middle;margin-right:0.3em;'), 
+				                        :class => "inactive", 
+				                        :style => "vertical-align: middle;") -%>
+																
+								<% link_text = image_tag('add_annotation_hover.png', :style => 'vertical-align:middle;margin-right:0.3em;') + 
+															 content_tag(:span, "Add categories", :style => "vertical-align: middle; text-decoration: underline;") %>
+								<%= link_to_function(link_text + expand_image, 
+																		 visual_effect(:toggle_slide, "add_service_category_box", :duration => 0.3),
+																		 :class => "active",
+																		 :style => "text-decoration: none; vertical-align: middle;") %>
+							
+							<% else %>
+							
+								<%= content_tag(:span, 
+				                        image_tag('add_annotation_inactive.png', :style => 'vertical-align:middle;margin-right:0.3em;'), 
+				                        :class => "inactive", 
+				                        :style => "vertical-align: middle;") -%>
+																
+								<% link_to(login_path, :class => "active", :style => "text-decoration: none; vertical-align: middle;", :title => tooltip_title_attrib("Log in to categorise")) do -%>
+									<%= image_tag('add_annotation_inactive.png', :style => 'vertical-align:middle;margin-right:0.2em;') %>
+									<%= content_tag(:span, "Log in to categorise", :style => "vertical-align: middle; text-decoration: underline;") -%>
+								<% end %>
+								
+							<% end %>
+						</span>
 					
 					</td>
 				<% end %>

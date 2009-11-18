@@ -20,7 +20,7 @@
 		<% form_for :annotation, @annotation, :url => annotation_url(@annotation), :html => { :method => :put } do |f| %>
 		
 			<div class="box_info_standout">
-				<%= "You are editing an annotation you previously made, for #{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name)}." -%>
+				<%= "You are editing an annotation you previously made, for #{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name)}" -%>
 			</div>
 			
 			<p style="margin-bottom: 0.4em;">

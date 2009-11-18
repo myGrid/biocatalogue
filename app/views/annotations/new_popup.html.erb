@@ -13,9 +13,9 @@
 		<%= link_to_close_redbox image_tag("close.gif"), :style => "float:right; margin-left:0.5em; vertical-align:middle;" -%>
 		<span style="vertical-align:middle;">
 			<% if @multiple %>
-				Add Multiple Annotations - <%=  h(@annotation.attribute_name.pluralize) -%> 
+				Add Annotations - <%=  h(@annotation.attribute_name.humanize.pluralize) -%> 
 			<% else %>
-				Add Annotation - <%=  h(@annotation.attribute_name) -%>
+				Add Annotation - <%=  h(@annotation.attribute_name.humanize) -%>
 			<% end %>
 		</span>
 	</div>

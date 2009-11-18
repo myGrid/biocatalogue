@@ -32,11 +32,11 @@ module AnnotationsHelper
   #  :show_icon - specifies whether to show an icon or not to the left of the link text.
   #    default: true
   #  :icon_filename - the filename of the icon to use when in logged in (in the /public/images directory).
-  #    default: 'add_annotation.gif'
+  #    default: 'add_annotation.png'
   #  :icon_hover_filename - the filename of the icon to use for the mouseover event (in the /public/images directory).
-  #    default: 'add_annotation_hover.gif'
+  #    default: 'add_annotation_hover.png'
   #  :icon_inactive_filename - the filename of the icon to use when not logged in (in the /public/images directory).
-  #    default: 'add_annotation_inactive.gif'
+  #    default: 'add_annotation_inactive.png'
   #  :show_not_logged_in_text - specifies whether to display some text (and an icon) when a user is not logged in, in place of the normal icon/text (will display something like: "log in to add description", where "log in" links to the login page).
   #    default: true
   #  :only_show_on_hover - specifies whether the add link (or log in link) should be hidden by default and only shown on hover. NOTE: this will only work when the link is inside a container with the class "annotations_container".
@@ -45,6 +45,8 @@ module AnnotationsHelper
   #    default: false
   #  :multiple_separator - the seperator character(s) that will be used to seperate out multiple annotations from one value text.
   #    default: ','
+  #
+  # NOTE: for the hover over to work, the output of this needs to be wrapped in an element with the class 'add_option'.
   def annotation_add_by_popup_link(annotatable, *args)
     # Do options the Rails Way ;-)
     options = args.extract_options!
@@ -55,9 +57,9 @@ module AnnotationsHelper
                            :class => nil,
                            :link_text => '',
                            :show_icon => true,
-                           :icon_filename => 'add_annotation.gif',
-                           :icon_hover_filename => 'add_annotation_hover.gif',
-                           :icon_inactive_filename => 'add_annotation_inactive.gif',
+                           :icon_filename => 'add_annotation.png',
+                           :icon_hover_filename => 'add_annotation_hover.png',
+                           :icon_inactive_filename => 'add_annotation_inactive.png',
                            :show_not_logged_in_text => true,
                            :only_show_on_hover => true,
                            :multiple => false,
@@ -92,7 +94,7 @@ module AnnotationsHelper
       # Add the greyed out inactive bit if required
       if options[:only_show_on_hover] == true
         inactive_span = content_tag(:span, 
-                                    image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.3em;'), 
+                                    image_tag(options[:icon_inactive_filename], :style => 'vertical-align:middle;margin-right:0.3em;'), 
                                     :class => "inactive #{options[:class]}", 
                                     :style => "vertical-align: middle; #{options[:style]}")
         
@@ -170,10 +172,9 @@ module AnnotationsHelper
     return '' if annotatable.nil?
 
     if attribute_name.blank?
-      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>."
+      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
     else
-      #return "You are adding a <b>#{attribute_name}</b> for the #{annotatable.class.name.titleize}: <b/>#{annotatable.annotatable_name}</b>"
-      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>."
+      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
     end
 
   end
@@ -184,7 +185,7 @@ module AnnotationsHelper
     if attribute_name.blank?
       label = "Value"
     else
-      label = h(attribute_name)
+      label = h(attribute_name.humanize)
     end
 
     # Pluralise if necessary...
