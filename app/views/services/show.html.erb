@@ -24,9 +24,22 @@
 	<tr>
 		<td style="vertical-align: top;">
 			<div>
-				<%= render :partial => "annotations/name_aliases",
-									 :locals => { :annotatable => @service,
-																:name_annotations => all_alternative_name_annotations_for_service(@service) } -%>
+				<% unless @service.display_name == @service.name -%>
+					<span style="vertical-align: middle;">
+						<% if @latest_version_instance.class == SoapService %>
+							<b>Specified Name (from WSDL): </b>
+						<% elsif @latest_version_instance.class == RestService %>
+							<b>Specified Name (by submitter): </b>
+						<% end %>
+						<%= h(@service.name) -%>
+					</span>
+					<span class="faded" style="vertical-align: middle; margin-left: 1em;"> | </span>
+				<% end %>
+				<span class="inline-block">
+					<%= render :partial => "annotations/name_aliases",
+										 :locals => { :annotatable => @service,
+																	:name_annotations => all_alternative_name_annotations_for_service(@service) } -%>
+				</span>
 			</div>
 				
 			<div style="margin-top: 1em; margin-bottom: 0.3em;">
@@ -142,7 +155,7 @@
 			<p>
 				<b>Endpoint:</b>
 				<br/>
-				<% @latest_version.service_deployments.each do |s_d| -%>
+				<% @service.service_deployments.each do |s_d| -%>
 					<%= link_to(h(s_d.endpoint), s_d.endpoint, :popup => true) -%>
 				<% end %>
 			</p>
