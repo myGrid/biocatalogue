@@ -62,6 +62,8 @@ module ApplicationHelper
         "eye.png"
       when :views_none
         "eye_faded.png"
+      when :service
+        "service.png"
       when :annotations
         "note.png"
       when :user, :member, :annotation_source_member
@@ -99,6 +101,13 @@ module ApplicationHelper
       else
         ''
     end
+  end
+  
+  def generic_icon_for(thing, style='', tooltip_text=nil)
+    opts = { }
+    opts[:style] = "vertical-align: middle; #{style}"
+    opts[:title] = tooltip_title_attrib(tooltip_text) unless tooltip_text.blank?
+    return image_tag icon_filename_for(thing), opts
   end
   
   def icon_faded_with_hover(type)

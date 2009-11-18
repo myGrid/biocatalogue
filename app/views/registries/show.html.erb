@@ -11,7 +11,8 @@
 <% t "#{display_name(@registry)}" -%>
 
 <h1>
-	Registry: <span><%= display_name(@registry) %></span>
+	<%= generic_icon_for(:registry, 'margin-right: 0.3em;', "External Registry") -%> 
+	<span><%= display_name(@registry) %></span>
 	<%= info_icon_with_tooltip("This is an external registry that we connect to and harvest metadata from") -%>
 </h1>
 

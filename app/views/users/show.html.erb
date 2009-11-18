@@ -10,8 +10,9 @@
 
 <% t "#{display_name(@user)}" -%>
 
-<h1>Member: <span><%= display_name(@user) %></span></h1>
-
+<h1>
+	<%= generic_icon_for(:member, 'margin-right: 0.3em;', "Member of the BioCatalogue") -%>
+	<span><%= display_name(@user) %></span></h1>
 <br/>
 
 <% if mine? @user %>

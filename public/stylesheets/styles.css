@@ -96,9 +96,11 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   font-size: 138.5%;
   color: #000033;
-  margin: 0.5em 0;
+  margin-bottom: 0.7em;
 	padding: 0.2em 0.5em;
-	/*border-bottom: 1px solid #DDD;*/
+	background-image: url('/images/h1-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
 	background-color: #E9F7CC;
 	text-align: center;
 }
@@ -1438,7 +1440,10 @@ ul.tabbernav li a
 	margin-right: 4px;
 	border: 1px solid #CCC;
 	border-bottom: none;
-	background: #E9F7CC;
+	background-image: url('/images/tab-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #E9F7CC;
 	text-decoration: none;
 }
 
@@ -1453,15 +1458,15 @@ ul.tabbernav li a:hover
 
 ul.tabbernav li.tabberactive a
 {
-	background-color: #fff;
+	background: #fff;
 	border-bottom: 1px solid #fff;
 }
 
 ul.tabbernav li.tabberactive a:hover
 {
 	color: #000;
-	background: white;
-	border-bottom: 1px solid white;
+	background: #fff;
+	border-bottom: 1px solid #fff;
 }
 
 /*--------------------------------------------------
@@ -1816,7 +1821,7 @@ ul.tabbernav li.tabberactive a:hover
 
 .aliases {
 	font-size: 100%;
-	margin: 0.3em 0 0.2em 0;
+	margin: 0.1em 0 0.2em 0;
 	margin-left: 1em;
 	line-height: 1.6;
 }
@@ -2767,3 +2772,4 @@ div.resize-handle {
 }
 
 /* END tablekit specific styles */
+

@@ -10,17 +10,20 @@
 
 <% t "#{display_name(@service)} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.map{|p| display_name(p)}.to_sentence)}]" -%>
 
+<h1>
+	<span style="float:right; font-size: 85%; padding-top: 0.2em;">
+		<%= render :partial => 'services/stats_bar', :locals => { :service => @service } -%>
+	</span>
+  <%= generic_icon_for(:service, 'margin-right: 0.3em;', "Web Service") -%>
+	<span style="vertical-align: middle;"><%= display_name(@service) -%></span>
+	<%= service_type_badges(@service.service_types) -%>
+	<%= service_location_flags(@service) -%>
+</h1>
+			
 <table style="width: 100%;">
 	<tr>
-		<td>
-			
-			<h1 style="margin-top: 0.2em;">
-				<span style="vertical-align: middle;">Service: <%= display_name(@service) -%></span>
-				<%= service_type_badges(@service.service_types) -%>
-				<%= service_location_flags(@service) -%>
-			</h1>
-			
-			<div style="margin-top: 0.7em">
+		<td style="vertical-align: top;">
+			<div>
 				<%= render :partial => "annotations/name_aliases",
 									 :locals => { :annotatable => @service,
 																:name_annotations => all_alternative_name_annotations_for_service(@service) } -%>
@@ -30,19 +33,11 @@
 				<%= render :partial => "annotations/categories", 
 									 :locals => { :service => @service } -%>
 			</div>
-		
 		</td>
 		<td style="text-align: right; width: 315px;">
 			<div style="text-align: right;">
-				<table style="width: 315px; margin-bottom: 1em;">
+				<table style="width: 185px; margin-bottom: 1em;">
 					<tr>
-						<td style="text-align: right; vertical-align: middle; padding-right: 30px; width: 130px;">
-							<%= render :partial => 'services/stats_bar', :locals => { :service => @service } -%>
-						</td>
-						<td style="text-align: right; padding-right: 25px; width: 50px;">
-							<%= service_latest_status_symbol(@service) -%>
-						</td>
-						
 						<td style="text-align: right; width: 80px;">
 							<%= link_to("permalink", service_url(@service), :style => "font-size: 85%;") -%>
 					
@@ -52,11 +47,8 @@
 													service_url(@service, :anchor => "disqus_thread"),
 													:style => "font-size: 85%;" -%>
 						</td>
-					</tr>
-					<tr>
-						<td colspan=3 style="text-align: right; padding-top: 1em;">
-							<%= render :partial => "services/annotation_counts",
-												 :locals => { :service => @service } -%>
+						<td style="text-align: right; padding-left: 25px; width: 50px;">
+							<%= service_latest_status_symbol(@service) -%>
 						</td>
 					</tr>
 				</table>
@@ -65,15 +57,20 @@
 	</tr>
 </table>
 
-<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
-	<div class="toolbar">
-	  <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
-								service_path(@service), 
-								:class => "button_slim", 
-								:method => :delete, 
-								:confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
-	</div>
-<% end %>
+<div class="toolbar">
+	<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+  <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
+							service_path(@service), 
+							:class => "button_slim",
+							:method => :delete, 
+							:confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
+	<% end %>
+	
+	<span class="inline-block" style="vertical-align: middle; margin-left: 2em; margin-bottom: 0.3em;">
+		<%= render :partial => "services/annotation_counts",
+							 :locals => { :service => @service } -%>
+	</span>
+</div>
 
 <div id="service-tabs" class="tabber" style="margin-top: 1.5em;">
 	
@@ -112,7 +109,7 @@
 				</div>
 			<% end %>
 				
-			<p>
+			<p style="margin-top: 0.5em;">
 				<b>Provider:</b>
 				<br/>
 				<% @service.providers.each do |provider| %>

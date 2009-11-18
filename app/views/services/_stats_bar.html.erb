@@ -12,7 +12,7 @@
 	
 	<% 
 		views_count = service.views_count
-		tooltip_text = (views_count == 0 ? "This service hasn't been viewed yet" : "This service has been viewed #{pluralize(views_count, "time")}")
+		tooltip_text = (views_count == 0 ? "This service hasn't been <b>viewed</b> yet" : "This service has been <b>viewed</b> #{pluralize(views_count, "time")}")
 	%>
 	<% content_tag(:span, :class => "each", :title => tooltip_title_attrib(tooltip_text)) do %>
 		<% if views_count > 0 %>
@@ -27,7 +27,7 @@
 	
 	<% 
 		favourites_count = service.favourites.count
-		tooltip_text = (views_count == 0 ? "This service hasn't been favourited yet" : "This service has been favourited #{pluralize(favourites_count, "time")}")
+		tooltip_text = (views_count == 0 ? "This service hasn't been <b>favourited</b> yet" : "This service has been <b>favourited</b> #{pluralize(favourites_count, "time")}")
 	%>
 	<% content_tag(:span, :class => "each", :title => tooltip_title_attrib(tooltip_text)) do %>
 		<% if favourites_count > 0 %>
