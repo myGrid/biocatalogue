@@ -181,7 +181,7 @@ class SoaplabServer < ActiveRecord::Base
     services.each{ |service|
     provider = service.providers.first if service.providers.length == 1
     group_name, name = service.latest_version.service_versionified.wsdl_location.split('/')[-1].split('.')
-    create_annotations([{'tag' =>'soaplab'}, {'tag'=> group_name}, {'alternative_name'=> name.split('?')[0]}], provider, service )
+    create_annotations([{'tag' =>'soaplab'}, {'tag'=> group_name}, {'display_name'=> name.split('?')[0]}], provider, service )
     }   
   end
   
