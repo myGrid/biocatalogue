@@ -30,10 +30,8 @@
 							<div>
 								<%= annotation_prepare_description(ann.value) -%>
 							</div>
-							<% if show_modify_options %>
-								<%= render :partial => "annotations/common/default_modify_options",
-													 :locals => { :annotation => ann, :ann_type => "usage condition info" } -%>
-							<% end %>
+							<%= render :partial => "annotations/common/default_modify_options",
+												 :locals => { :annotation => ann, :ann_type => "usage condition info" } -%>
 						</div>
 					<% end %>
 				<% end %>
