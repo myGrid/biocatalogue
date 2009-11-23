@@ -115,7 +115,14 @@ module BioCatalogue
         sql += " LIMIT #{limit}"
       end
        
-      return ActiveRecord::Base.connection.select_all(sql)
+      items = ActiveRecord::Base.connection.select_all(sql)
+      
+      # Need to replace the name with the preferred display name for that provider
+      items.each do |item|
+        #TODO: need to figure out a way of setting here the preferred display_name, without loading all providers again!  item['name'] = UNKNOWN_TEXT
+      end
+      
+      return items
     end
     
     # Gets an ordered list of all the different service types and their counts of services.

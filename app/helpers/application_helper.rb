@@ -68,14 +68,16 @@ module ApplicationHelper
         "note.png"
       when :user, :member, :annotation_source_member
         "user.png"
-      when :registry, :annotation_source_registry
-        "world_link.png"
-      when :provider_document, :annotation_source_provider_document
-        "page_white_code.png"
-      when :agent, :annotation_source_agent
-        "server_connect.png"
       when :curator, :annotation_source_curator
         "user_suit.png"
+      when :provider, :annotation_source_provider
+        "group_gear.png"
+      when :provider_document, :annotation_source_provider_document
+        "page_white_code.png"
+      when :registry, :annotation_source_registry
+        "world_link.png"
+      when :agent, :annotation_source_agent
+        "server_connect.png"
       when :twitter
         "twitter_icon.png"
       when :twitter_follow

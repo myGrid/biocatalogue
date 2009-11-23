@@ -9,77 +9,84 @@
 %>
 
 <%
-	tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable)
+	cloud_div_id = (local_assigns.has_key?(:annotatable) && !annotatable.nil? ? "#{annotatable.class.name}_#{annotatable.id}_tag_cloud" : "tag_cloud_#{rand(10000000)}") 
 	main_div_id = "tags_#{rand(10000000)}"
+
+	# Set defaults for optional parameters to this partial...
+	header_title = "Tags" unless (local_assigns.has_key?(:header_title) and !header_title.nil?)
+	show_add = true unless local_assigns.has_key?(:show_add)
+	tags = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable) unless local_assigns.has_key?(:tags)
 %>
 
 <div id="<%= main_div_id -%>" class="annotations_container">
 	<p class="heading">
-		Tags
-		<span class="faded">(<%= tag_annotations.length -%>)</span>
+		<%= header_title -%>
+		<span class="faded">(<%= tags.length -%>)</span>
 	</p>
 	
-	<div id='<%= "#{annotatable.class.name}_#{annotatable.id}_tag_cloud" -%>' class="center">
+	<div id='<%= cloud_div_id -%>' class="center">
 		<%= render :partial => 'annotations/tags_box_inner_tag_cloud', 
-							 :locals => { :tag_annotations => tag_annotations,
+							 :locals => { :tags => tags,
 														:annotatable => annotatable } -%>
 	</div>
 	
-	<div style="padding-top: 0.7em;">
+	<% if show_add %>
 		<% if logged_in? %>
-		
-			<%
-				text_area_id = "text_area_#{rand(10000000)}"
-				submit_button_div_id = "submit_button_div_#{rand(10000000)}"
-				spinner_id = "spinner_#{rand(10000000)}"
-				tags_auto_complete_id = "tags_auto_complete_#{rand(10000000)}"
-			%>
+			<div style="padding-top: 0.7em;">
 			
-			<div class="add_box">
-				<% form_remote_tag(:url => create_inline_annotations_url(:multiple => true, :separator => ',', :partial => "tags_box_inner"), 
-												   :update => { :success => main_div_id }, 
-											 		 :success => "new Effect.Highlight('#{main_div_id}', { duration: 1.0 });",
-													 :failure => "alert('Sorry, an error has occurred whilst submitting. If this error persists we would be very grateful if you notified us.');", 
-													 :loading => "Element.show('#{spinner_id}')",
-		           						 :complete => "Element.hide('#{spinner_id}')") do %>
+				<%
+					text_area_id = "text_area_#{rand(10000000)}"
+					submit_button_div_id = "submit_button_div_#{rand(10000000)}"
+					spinner_id = "spinner_#{rand(10000000)}"
+					tags_auto_complete_id = "tags_auto_complete_#{rand(10000000)}"
+				%>
 				
-			    <%= hidden_field_tag "annotation[annotatable_type]", annotatable.class.name -%>
-			    <%= hidden_field_tag "annotation[annotatable_id]", annotatable.id -%>
-			    <%= hidden_field_tag "annotation[attribute_name]", "tag" -%>
+				<div class="add_box">
+					<% form_remote_tag(:url => create_inline_annotations_url(:multiple => true, :separator => ',', :partial => "tags_box_inner"), 
+													   :update => { :success => main_div_id }, 
+												 		 :success => "new Effect.Highlight('#{main_div_id}', { duration: 1.0 });",
+														 :failure => "alert('Sorry, an error has occurred whilst submitting. If this error persists we would be very grateful if you notified us.');", 
+														 :loading => "Element.show('#{spinner_id}')",
+			           						 :complete => "Element.hide('#{spinner_id}')") do %>
 					
-					<div>
-			    	<%= text_area_tag "annotation[value]", 
-															"Add tags (comma separated)...",
-															:id => text_area_id,
-															:rows => 1,
-															:onfocus => "$('#{submit_button_div_id}').show();" -%>
-															
-						<div class="auto_complete" id="<%= tags_auto_complete_id -%>"></div>
-						<%= auto_complete_field text_area_id,
-								:update => tags_auto_complete_id,
-								:url => auto_complete_tags_url,
-								:tokens => ',',
-								:indicator => spinner_id -%>
-					</div>
+				    <%= hidden_field_tag "annotation[annotatable_type]", annotatable.class.name -%>
+				    <%= hidden_field_tag "annotation[annotatable_id]", annotatable.id -%>
+				    <%= hidden_field_tag "annotation[attribute_name]", "tag" -%>
+						
+						<div>
+				    	<%= text_area_tag "annotation[value]", 
+																"Add tags (comma separated)...",
+																:id => text_area_id,
+																:rows => 1,
+																:onfocus => "$('#{submit_button_div_id}').show();" -%>
+																
+							<div class="auto_complete" id="<%= tags_auto_complete_id -%>"></div>
+							<%= auto_complete_field text_area_id,
+									:update => tags_auto_complete_id,
+									:url => auto_complete_tags_url,
+									:tokens => ',',
+									:indicator => spinner_id -%>
+						</div>
+						
+						<div class="submit_button_div" id="<%= submit_button_div_id -%>" style="display: none;">
+							<%= image_tag icon_filename_for(:spinner), :id => spinner_id, :style => "display: none; vertical-align: middle; margin-right: 1em;" -%>
+				    	<%= submit_tag "Add" -%>
+						</div>
+						
+						<script type="text/javascript">
+							<%= default_add_box_js_for_textarea(text_area_id, 16) -%>
+						</script>
 					
-					<div class="submit_button_div" id="<%= submit_button_div_id -%>" style="display: none;">
-						<%= image_tag icon_filename_for(:spinner), :id => spinner_id, :style => "display: none; vertical-align: middle; margin-right: 1em;" -%>
-			    	<%= submit_tag "Add" -%>
-					</div>
-					
-					<script type="text/javascript">
-						<%= default_add_box_js_for_textarea(text_area_id, 16) -%>
-					</script>
-				
-				<% end %>
+					<% end %>
+				</div>
 			</div>
-		
 		<% else %>
 			<div class="footer">
 				<%= image_tag(icon_filename_for(:tag_add_inactive), :alt => "Tag", :style => "vertical-align: middle;") %>
 				<small><%= link_to("Login to add tags", login_path) -%></small>
 			</div>
 		<% end %>
-	</div>
+	<% end %>
+	
 </div>
 

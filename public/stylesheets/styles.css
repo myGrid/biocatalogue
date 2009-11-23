@@ -2601,8 +2601,8 @@ ul.categories li span.main:hover {
 	text-align: right;
 }
 
-.service_properties p,
-.service_properties .property {
+.properties p,
+.properties .property {
 	margin: 0;
 	margin-top: 1.8em;
 }

@@ -8,11 +8,22 @@
 
 %>
 
+<%
+	# Set defaults for optional parameters to this partial...
+	annotatable = nil unless local_assigns.has_key?(:annotatable)
+	header_title = "Tags" unless local_assigns.has_key?(:header_title)
+	show_add = true unless local_assigns.has_key?(:show_add)
+	tags = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable) unless local_assigns.has_key?(:tags)
+%>
+
 <div class="box_section">
 	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 	<div class="content">
 		<%= render :partial => "annotations/tags_box_inner",
-							 :locals => { :annotatable => annotatable } -%>
+							 :locals => { :annotatable => annotatable,
+														:tags => tags,
+														:header_title => header_title,
+														:show_add => show_add } -%>
 	</div>
 	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>

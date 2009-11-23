@@ -36,7 +36,7 @@
 		<% end %>
 		
 		<div class="box_annotations">
-			<% other_annotations = annotatable.all_annotations_excluding_attributes(KNOWN_ANNOTATION_ATTRIBUTES) %>
+			<% other_annotations = annotatable.all_annotations_excluding_attributes(BioCatalogue::Annotations::KNOWN_ANNOTATION_ATTRIBUTES[:services]) %>
 			<% unless other_annotations.empty? %>
 				<% other_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>

@@ -33,6 +33,16 @@ class Service < ActiveRecord::Base
   
   has_submitter
   
+  # Custom association for just the 'tag' annotations.
+  # This is so that it can be included in eager loading elsewhere.
+  has_many :tag_annotations,
+           :class_name => "Annotation",
+           :as => :annotatable,
+           :finder_sql => 'SELECT * 
+                          FROM annotations 
+                          INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
+                          WHERE annotation_attributes.name = "tag" AND annotations.annotatable_type = "Service" AND annotations.annotatable_id = #{self.id}'
+  
   virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
            
   before_validation_on_create :generate_unique_code
@@ -79,7 +89,7 @@ class Service < ActiveRecord::Base
     type_model_name.constantize.find(:all,
                                      :conditions => { :service_versions => { :service_id => self.id } },
                                      :joins => [ :service_version ])
-  end
+  end 
   
   # Gets an array of all the service types that this service has (as part of it's versions).
   def service_types

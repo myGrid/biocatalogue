@@ -47,7 +47,7 @@ module TagsHelper
   #     default: false
   #   :annotatable - required for the :allow_delete option. The current annotatable object that the tags apply to.
   #
-  # NOTE: The delete AJAX functionality depends on the parent container for the tag cloud having
+  # IMPORTANT NOTE: The delete AJAX functionality depends on the parent container for the tag cloud having
   # an ID of "#{annotatable.class.name}_#{annotatable.id}_tag_cloud"
   def generate_tag_cloud(tags, cloud_type, *args)
     return "" if tags.blank?
@@ -141,7 +141,7 @@ module TagsHelper
                      options[:allow_delete] and 
                      !options[:annotatable].nil? and 
                      !submitters.nil? and 
-                     submitters.include?("User:#{current_user.id}") then
+                     (submitters.include?("User:#{current_user.id}") or current_user.is_curator?) then
                      
                     annotatable = options[:annotatable]
                     
@@ -156,7 +156,7 @@ module TagsHelper
                                   :complete => "Element.hide('tags_spinner')", 
                                   :success => "new Effect.Highlight('#{annotatable.class.name}_#{annotatable.id}_tags', { duration: 0.5 });",
                                   :failure => "Element.hide('tags_spinner'); alert('Sorry, an error has occurred.');",
-                                  :html => { :title => tooltip_title_attrib("Delete this tag (you created it)"), :style => "margin-left:0.4em;" },
+                                  :html => { :title => tooltip_title_attrib("Delete this tag"), :style => "margin-left:0.4em;" },
                                   :confirm => "Are you sure you want to delete this tag?")
                   end
                   

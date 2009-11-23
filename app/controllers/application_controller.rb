@@ -146,12 +146,7 @@ class ApplicationController < ActionController::Base
   helper_method :mine?
   
   def display_name(item)
-    # NOTE: the order below matters!
-    %w{ preferred_name display_name title name }.each do |w|
-      return eval("CGI.escapeHTML(item.#{w})") if item.respond_to?(w)
-      return item[w] if item.is_a?(Hash) && item.has_key?(w) 
-    end
-    return "#{item.class.name}_#{item.id}"
+    BioCatalogue::Util.display_name(item)
   end
   helper_method :display_name
 

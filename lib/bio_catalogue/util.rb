@@ -256,7 +256,7 @@ module BioCatalogue
       return values
     end
     
-    def find_wsdl_file_for(obj)
+    def self.find_wsdl_file_for(obj)
       return nil unless BioCatalogue::Mapper::SOAP_SERVICE_STRUCTURE_MODELS.include?(obj.class)
       
       case obj
@@ -270,5 +270,15 @@ module BioCatalogue
           return nil
       end
     end
+    
+    def self.display_name(item)
+      # NOTE: the order below matters!
+      %w{ preferred_name display_name title name }.each do |w|
+        return eval("CGI.escapeHTML(item.#{w})") if item.respond_to?(w)
+        return item[w] if item.is_a?(Hash) && item.has_key?(w) 
+      end
+      return "#{item.class.name}_#{item.id}"  
+    end
+    
   end
 end

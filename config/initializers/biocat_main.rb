@@ -95,20 +95,6 @@ BOT_IGNORE_LIST = "Googlebot",
                   "Disqus"
 
 
-# List of annotation attributes that are considered "known" or important in the system
-KNOWN_ANNOTATION_ATTRIBUTES = [ "category",
-                                "tag",
-                                "description",
-                                "display_name",
-                                "alternative_name",
-                                "example",
-                                "documentation_url",
-                                "rating.documentation",
-                                "cost",
-                                "license",
-                                "contact" ].freeze
-
-
 # ================================
 # Configure the Annotations plugin
 # --------------------------------

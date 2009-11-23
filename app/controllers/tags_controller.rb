@@ -62,7 +62,7 @@ class TagsController < ApplicationController
     
     respond_to do |format|
       format.html { render :partial => 'annotations/tags_box_inner_tag_cloud', 
-                           :locals => { :tag_annotations => BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable),
+                           :locals => { :tags => BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable),
                                         :annotatable => annotatable } }
     end
   end

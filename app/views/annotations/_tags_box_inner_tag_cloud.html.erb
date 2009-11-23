@@ -8,12 +8,19 @@
 
 %>
 
-<% unless tag_annotations.empty? %>
-	<%= generate_tag_cloud_from_annotations(tag_annotations, 
-																					:weighted, 
-																					:max_font => 14, 
-																					:allow_delete => true, 
-																					:annotatable => annotatable) -%>
+<% unless tags.empty? %>
+	<% if tags.first.is_a? Annotation %>
+		<%= generate_tag_cloud_from_annotations(tags, 
+																						:weighted, 
+																						:max_font => 14, 
+																						:allow_delete => true, 
+																						:annotatable => annotatable) -%>
+	<% else %>
+		<%= generate_tag_cloud(tags, 
+													 :weighted, 
+													 :max_font => 14, 
+													 :allow_delete => false) -%>
+	<% end %>
 <% else %>
 	<span class="none_text">none</span>
 <% end %>
