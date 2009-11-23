@@ -32,5 +32,10 @@ namespace :biocatalogue do
       BioCatalogue::Stats.submit_job_to_refresh_stats
     end
     
+    desc 'Submits a job to fully update annotation properties'
+    task :update_annotation_properties_full => :environment do
+      Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateAnnotationPropertiesFull.new)
+    end
+    
   end
 end

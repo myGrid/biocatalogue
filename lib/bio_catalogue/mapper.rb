@@ -125,6 +125,7 @@ module BioCatalogue
     end
     
     # E.g.: if the compound_id is "SoapOperation:203", then the ancestor Service ID will be returned, if model_name is specified as "Service".
+    # NOTE: only works for getting associated Services OR the annotatable of an Annotation.
     def self.map_compound_id_to_associated_model_object_id(compound_id, model_name)
       return nil if compound_id.blank? or model_name.blank?
       

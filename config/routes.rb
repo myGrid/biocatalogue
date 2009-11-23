@@ -48,6 +48,8 @@ ActionController::Routing::Routes.draw do |map|
   #map.connect '/search/:q', :controller => 'search', :action => 'show', :conditions => { :method => :get }
   map.search '/search.:format', :controller => 'search', :action => 'show', :conditions => { :method => :get }
   map.search '/search', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }
+  map.search_by_data '/search/by_data.:format', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :get, :post ] }
+  map.search_by_data '/search/by_data', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :post, :get ] }
 
   map.resources :service_providers
 

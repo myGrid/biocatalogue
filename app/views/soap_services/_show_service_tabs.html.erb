@@ -79,6 +79,7 @@
 				<b>Inputs:</b>
 				<div class="box_indented_with_bar" style="margin: 1em 0 0 1.5em;">
 					<% operation.soap_inputs.each do |input| %>
+						<a id='<%= "soap_input_#{input.id}" -%>' name='<%= "soap_input_#{input.id}" -%>'></a>
 						<div class="port">
 							<div style="float: left; width: 73%;">
 								<div style="margin-bottom: 0.6em;">
@@ -119,6 +120,7 @@
 				<b>Outputs:</b>
 				<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1.5em;">
 					<% operation.soap_outputs.each do |output| %>
+						<a id='<%= "soap_output_#{output.id}" -%>' name='<%= "soap_output_#{output.id}" -%>'></a>
 						<div class="port">
 							<div style="float: left; width: 73%;">
 								<div style="margin-bottom: 0.6em;">

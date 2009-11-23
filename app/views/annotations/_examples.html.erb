@@ -10,40 +10,45 @@
 
 <%
 	attribute_name = "example"
+	examples_annotations = (local_assigns.has_key?(:annotations) ? annotations : annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.created_at <=> b.created_at})
 	main_div_id = "examples_#{rand(10000000)}"
+
+	show_header = true unless local_assigns.has_key?(:show_header)
+	show_add_box = true unless local_assigns.has_key?(:show_add_box)
 %>
 
-<% unless annotatable.nil? %>
-	<div id="<%= main_div_id -%>" class="annotations_container">
+<div id="<%= main_div_id -%>" class="annotations_container">
+	<% if show_header %>
 		<div style="margin-top: 1em;">
 		  <b>Example Data:</b>
 		</div>
+	<% end %>
 		
-		<div class="box_annotations">
-			<% examples_annotations = annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.created_at <=> b.created_at} %>
-			<% unless examples_annotations.empty? %>
-				<% examples_annotations.each do |ann| %>
-					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
-						<div class="text">
-							<div style="padding-bottom: 0.3em; border-bottom: 1px dotted #CCC;">
-								<%= annotation_source_text(ann) -%>
-								<span>
-									<%= link_to(image_tag(icon_filename_for(:open_in_new_window)), download_annotation_url(ann), :popup => true, :title => tooltip_title_attrib("Open this example data in a new window so you can easily save or copy and paste it")) -%>
-								</span>
-							</div>
-							<div style="margin-top: 0.7em;">
-								<pre><%= annotation_prepare_description(ann.value, false, nil, false, false) -%></pre>
-							</div>
-							<%= render :partial => "annotations/common/default_modify_options",
-												 :locals => { :annotation => ann, :ann_type => "example data" } -%>
+	<div class="box_annotations">
+		<% unless examples_annotations.empty? %>
+			<% examples_annotations.each do |ann| %>
+				<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+					<div class="text">
+						<div style="padding-bottom: 0.3em; border-bottom: 1px dotted #CCC;">
+							<%= annotation_source_text(ann) -%>
+							<span>
+								<%= link_to(image_tag(icon_filename_for(:open_in_new_window)), download_annotation_url(ann), :popup => true, :title => tooltip_title_attrib("Open this example data in a new window so you can easily save or copy and paste it")) -%>
+							</span>
 						</div>
-					<% end %>
+						<div style="margin-top: 0.7em;">
+							<pre><%= annotation_prepare_description(ann.value, false, nil, false, false) -%></pre>
+						</div>
+						<%= render :partial => "annotations/common/default_modify_options",
+											 :locals => { :annotation => ann, :ann_type => "example data" } -%>
+					</div>
 				<% end %>
-			<% else %>
-				<span class="none_text">None</span>
 			<% end %>
-		</div>
-		
+		<% else %>
+			<span class="none_text">None</span>
+		<% end %>
+	</div>
+	
+	<% if show_add_box %>
 		<% if logged_in? %>
 			
 			<%= render :partial => "annotations/common/default_add_box",
@@ -58,5 +63,5 @@
 				<small><%= link_to("Login to add example data", login_path) -%></small>
 			</div>
 		<% end %>
-	</div>
-<% end %>
+	<% end %>
+</div>

@@ -8,7 +8,7 @@
 
 %>
 
-<% case controller.action_name.to_s; when "show" -%>
+<% case controller.action_name.downcase; when "show" -%>
   <li><%= link_to("Search", search_url) -%></li>
 	
 	<li><b>&#187;</b></li>
@@ -20,6 +20,10 @@
 		<li><b>&#187;</b></li> 
 		<li><span><%= "Results for '#{h(@query)}'" -%></span></li>
 	<% end %>
+	
+<% when "by_data" %>
+
+	<li><%= link_to("Search By Data", search_by_data_url) -%></li>
 	
 <% else -%>
   <!-- no breadcrumb -->

@@ -1,0 +1,77 @@
+<%
+
+# TODO: add copyright statement here
+
+%>
+
+<% t "Search By Data" %>
+
+<h1>Search By Data</h1>
+
+<div>
+	<div style="float: left; width: 38%;">
+		<% form_tag search_by_data_url  do %>
+			<p style="margin-top: 0;">
+				<%= text_area_tag "search_by_data[data]", (@query || "Add your input/output data here"), :id => "data_field", :size => "70x10", :style => "width: 99%;" -%>
+				<% unless @query %>
+					<script>
+						new DefaultTextInput($('data_field'));
+					</script>
+				<% end %>
+			</p>
+			
+			<p>
+				Maximum number of results:
+				<%= text_field_tag "search_by_data[limit]", value=@limit, :id => "limit_field", :maxlength => 3, :size => 3 -%>
+			</p>
+			
+			<p class="medium_linespaced">
+				Search data against:
+				<br/>
+        <%= radio_button_tag "search_by_data[search_type]", "input", @search_type.eql?("input") %>
+				Service Inputs
+				<br/>
+        <%= radio_button_tag "search_by_data[search_type]", "output", @search_type.eql?("output") %>
+				Service Outputs
+			</p>
+
+			<%= submit_tag '', :class => "search_button" -%>
+		<% end %>
+	</div>
+	<div style="float: right; width: 60%;">
+	
+		<div id="search_results">
+			<% if @results %>
+	      <% @results.all_items.each do |result| %>
+			    <% unless result.annotation.nil? %>
+						<div class="listing_item">
+							<span style="float: right;">
+								<%= service_latest_status_symbol(result.service) -%>
+							</span>
+							
+							<%= render :partial => "services/listing/name_section", :locals => { :service => result.service } -%>
+							
+							<br/>
+							
+							<p>
+								<b>Operation:</b>
+								<%= link_to(h(result.operation.name), service_url(result.service, :anchor => "soap_operation_#{result.operation.id}"), :popup => true) -%>
+								|
+								<b>Port:</b>
+								<%= link_to(h(result.port.name), service_url(result.service, :anchor => "#{result.port.class.name.underscore}_#{result.port.id}"), :popup => true) -%>
+							</p>
+							
+							<p><b>Example data matched:</b></p>
+							<%= render :partial => "annotations/examples", :locals => { :annotations => [ result.annotation ], :show_add_box => false, :show_header => false } -%>
+						</div>
+					<% end %>
+	      <% end %>
+			<% elsif !@query.nil? %>
+				<span class="faded">No results</span>
+			<% end %>
+		</div>
+		
+	</div>
+	<span class="clear"></span>
+</div>
+

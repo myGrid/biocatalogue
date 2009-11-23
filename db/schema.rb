@@ -50,6 +50,24 @@ ActiveRecord::Schema.define(:version => 20091116162348) do
 
   add_index "annotation_attributes", ["name"], :name => "index_annotation_attributes_on_name"
 
+  create_table "annotation_parsed_types", :force => true do |t|
+    t.integer  "annotation_id", :null => false
+    t.string   "parsed_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "annotation_properties", :force => true do |t|
+    t.integer  "annotation_id",                                              :null => false
+    t.string   "property_type",                                              :null => false
+    t.integer  "property_id",                                                :null => false
+    t.integer  "value",         :limit => 10, :precision => 10, :scale => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "annotation_properties", ["property_type", "property_id"], :name => "annotation_properties_property_index"
+
   create_table "annotation_value_seeds", :force => true do |t|
     t.integer  "attribute_id", :null => false
     t.string   "value",        :null => false
@@ -103,6 +121,14 @@ ActiveRecord::Schema.define(:version => 20091116162348) do
 
   create_table "content_blobs", :force => true do |t|
     t.binary   "data",       :limit => 2147483647
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "data_search_regexes", :force => true do |t|
+    t.string   "regex_name"
+    t.string   "regex_value", :null => false
+    t.string   "regex_type",  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

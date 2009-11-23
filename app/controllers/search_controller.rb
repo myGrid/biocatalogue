@@ -6,7 +6,7 @@
 
 class SearchController < ApplicationController
   
-  skip_before_filter :verify_authenticity_token, :only => [ :auto_complete ]
+  skip_before_filter :verify_authenticity_token, :only => [ :auto_complete, :by_data ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
   
@@ -62,6 +62,49 @@ class SearchController < ApplicationController
     render :inline => "<%= auto_complete_result @queries, 'name', @query_fragment %>", :layout => false
   end
   
+  def by_data
+    @results = nil
+    @query = nil
+    @search_type = "input"
+    @limit=20
+    
+    if request.post?
+      puts params.inspect
+      if !params[:search_by_data][:search_type].nil? && params[:search_by_data][:search_type].downcase == "output"
+        @search_type = "output"
+      end
+      if params[:search_by_data][:limit]!=nil and params[:search_by_data][:limit].match(/^\d+$/)
+        begin
+          limit=Integer(params[:search_by_data][:limit])
+          if limit>0
+            @limit=limit
+          end
+        rescue ArgumentError
+        end      
+      end
+      puts params[:search_by_data][:data]
+      unless params[:search_by_data][:data].blank?
+        if is_non_html_request? 
+          @query=cgi.unescape(params[:search_by_data][:data])
+        else
+          @query=params[:search_by_data][:data]
+        end
+
+        if @search_type == "input"
+          @results=BioCatalogue::SearchByData.get_matching_input_ports_for_data(@query,@limit)
+        elsif @search_type == "output"
+          @results=BioCatalogue::SearchByData.get_matching_output_ports_for_data(@query,@limit)
+        end
+      end
+    
+    end
+    
+    respond_to do |format|
+      format.html # by_data.html.erb
+      format.xml  # by_data.xml.builder
+    end
+  end
+
   
   protected
   

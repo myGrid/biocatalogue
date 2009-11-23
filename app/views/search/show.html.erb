@@ -92,8 +92,8 @@
 							<% if more_items %>
 								<p style="text-align: right;">
 									<%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)), 
-																	search_url(:q => @query, :scope => result_scope, :page => 2),
-																	:class => "button_slim") -%>
+															search_url(:q => @query, :scope => result_scope, :page => 2),
+															:class => "button_slim") -%>
 								</p>
 							<% end %>
 							

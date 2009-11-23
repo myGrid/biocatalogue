@@ -107,7 +107,7 @@ module ApplicationHelper
     opts = { }
     opts[:style] = "vertical-align: middle; #{style}"
     opts[:title] = tooltip_title_attrib(tooltip_text) unless tooltip_text.blank?
-    return image_tag icon_filename_for(thing), opts
+    return image_tag(icon_filename_for(thing), opts)
   end
   
   def icon_faded_with_hover(type)

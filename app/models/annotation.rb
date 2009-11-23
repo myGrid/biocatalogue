@@ -18,9 +18,17 @@ class Annotation < ActiveRecord::Base
 #    index [ :annotatable_type, :annotatable_id ], :limit => 5000, :buffer => 100
 #  end
 
+  #ralationship to list of its properties and their values
+  
+  has_many :annotation_properties, :dependent=>:destroy
+  has_one :annotation_parsed_type, :dependent=>:destroy
+  
+
   acts_as_trashable
   
   validate :check_category_annotation
+
+   
   
   after_save :process_post_save_custom_logic
   

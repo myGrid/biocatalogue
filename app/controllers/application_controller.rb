@@ -290,9 +290,17 @@ class ApplicationController < ActionController::Base
         
       # Search
       if c == "search"
+        # Standard keyword based search
         if a == "show"
           if !@query.blank? and !@scope.blank? and @page == 1
             ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @scope }))
+          end
+        end
+        
+        # Special "by data" search
+        if a == "by_data"
+          if !@query.blank?
+            ActivityLog.create(@log_event_core_data.merge(:action => "search_by_data", :culprit => current_user, :data => { :query => @query, :search_type =>  @search_type, :limit => @limit }))
           end
         end
       end
