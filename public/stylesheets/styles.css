@@ -104,6 +104,9 @@ h1 {
 	background-color: #E9F7CC;
 	text-align: center;
 	border: 1px solid #D7EFA4;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 }
 
 h2 {
