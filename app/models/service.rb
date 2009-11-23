@@ -12,7 +12,7 @@ class Service < ActiveRecord::Base
     index [ :submitter_type, :submitter_id ]
   end
   
-  after_commit_on_create :tweet_create
+  after_create :tweet_create
   
   acts_as_trashable
   
@@ -200,9 +200,8 @@ protected
   end
   
   def tweet_create
-    puts "I AM TWEETING!"
-    # TODO: use delayed_job to queue the tweeting
-    BioCatalogue::Twittering.post_service_created(self)
+    BioCatalogue::Util.say "Called Service#tweet_create to submit job to tweet"
+    Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(:service_create, :service_id => self.id), 0, 30.seconds.from_now)
   end
   
 end
