@@ -439,7 +439,7 @@ a:hover.change_pwd {
  * Layout
  */
 #header-region {
-  height: 0.75em;
+  height: 5px;
 }
 
 #wrapper {
@@ -453,8 +453,8 @@ a:hover.change_pwd {
 }
 
 #wrapper #container #header {
-    padding-top: 1.1em;
-    height: 5em;
+    padding-top: 8px;
+    height: 56px;
 }
 
 #wrapper #container #header #logo-floater {
@@ -607,13 +607,19 @@ body.sidebar-right #footer {
   top: 10px;
   left: 30px;
   z-index: 3;
-  font-size: 123.1%;
+  font-size: 108%;
 	font-weight: bolder;
+	vertical-align: middle;
+	color: #333;
+}
+
+#wrapper #container #action_bar .search_form {
 	vertical-align: middle;
 }
 
 #wrapper #container #action_bar #action_links {
 	padding-left: 15px;
+	vertical-align: middle;
 }
 
 #wrapper #container #action_bar #action_links  * {
@@ -621,11 +627,17 @@ body.sidebar-right #footer {
 }
 
 #wrapper #container #action_bar #action_links a {
-	padding-left: 15px;
-	padding-right: 14px;
+	padding-left: 11px;
+	padding-right: 10px;
 	background: transparent url(../images/green_separator.gif) no-repeat left;
-	vertical-align: middle;
+	vertical-align: baseline;
 	text-align: center;
+	text-decoration: none;
+}
+
+#wrapper #container #action_bar #action_links a .label {
+	text-decoration: underline;
+	vertical-align: baseline;
 }
 
 #wrapper #container #action_icons {
@@ -703,8 +715,8 @@ ul.primary-links {
   float: right;
   position: relative;
   z-index: 4;
-  font-size: 108%;
-  font-weight: bold;
+  font-size: 85%;
+  font-weight: bolder;
 }
 
 ul.primary-links li {
@@ -731,6 +743,10 @@ ul.primary-links li a, ul.primary-links li a:link, ul.primary-links li a:visited
 ul.primary-links li a:hover, ul.primary-links li a.active {
   color: #ff7400;
   /*background: transparent url(images/bg-navigation-item-hover.png) no-repeat 50% 0;*/
+}
+
+ul.primary-links li a.end {
+	margin-right: 0;
 }
 
 /**
@@ -835,12 +851,20 @@ span.clear {
 #wrapper #container #header #login_links {
 	clear: both;
 	float: right;
-	padding: 2.1em 0 0 0;
+	padding: 15px 0 0 0;
 	margin-bottom: 0;
 	position: relative;
 	z-index: 4;
 	color: #333;
-	font-size: 93%;
+	font-size: 85%;
+}
+
+#wrapper #container #header #login_links .inner {
+	background-color: #E9F7CC;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	padding: 5px 6px;
 }
 
 #wrapper #container #header #login_links .sep {

@@ -9,15 +9,17 @@
 %>
 
 <div id="login_links">
-	<% if logged_in? -%>
-		Welcome <%= link_to h(current_user.display_name), current_user, :id => "user_profile_link", :class => "" -%>
-		<span class="sep">|</span
-		<%= link_to "My Favourites", user_path(current_user, :anchor => 'favourites') -%>
-		<span class="sep">|</span>
-		<%= link_to 'Sign out', logout_url, :id => "logout_link", :class => "red_arrow", :method => :delete -%>
-	<% else -%>
-		<%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%>
-		<span class="sep">|</span>
-		<%= link_to 'Sign in', login_url, :id => "login_link", :class => "login", :onclick => "showLoginBox(this, 'login_box'); return false;" -%>
-	<% end -%>
+	<div class="inner">
+		<% if logged_in? -%>
+			Welcome <%= link_to h(current_user.display_name), current_user, :id => "user_profile_link", :class => "" -%>
+			<span class="sep">|</span>
+			<%= link_to "My Favourites", user_path(current_user, :anchor => 'favourites') -%>
+			<span class="sep">|</span>
+			<%= link_to 'Sign out', logout_url, :id => "logout_link", :class => "red_arrow", :method => :delete -%>
+		<% else -%>
+			<%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%>
+			<span class="sep">|</span>
+			<%= link_to 'Sign in', login_url, :id => "login_link", :class => "login", :onclick => "showLoginBox(this, 'login_box'); return false;" -%>
+		<% end %>
+	</div>
 </div>             

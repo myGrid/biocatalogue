@@ -26,6 +26,8 @@ module ApplicationHelper
   
   def icon_filename_for(thing)
     case thing
+      when :home
+        ""
       when :spinner
         "spinner.gif"
       when :delete
@@ -62,19 +64,19 @@ module ApplicationHelper
         "eye.png"
       when :views_none
         "eye_faded.png"
-      when :service
+      when :service, :services
         "service.png"
       when :annotations
         "note.png"
-      when :user, :member, :annotation_source_member
+      when :user, :member, :users, :members, :annotation_source_member
         "user.png"
-      when :curator, :annotation_source_curator
+      when :curator, :curators, :annotation_source_curator
         "user_suit.png"
-      when :provider, :annotation_source_provider
+      when :provider, :providers, :annotation_source_provider
         "group_gear.png"
       when :provider_document, :annotation_source_provider_document
         "page_white_code.png"
-      when :registry, :annotation_source_registry
+      when :registry, :registries, :annotation_source_registry
         "world_link.png"
       when :agent, :annotation_source_agent
         "server_connect.png"
