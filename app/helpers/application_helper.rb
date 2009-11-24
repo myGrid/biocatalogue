@@ -102,6 +102,8 @@ module ApplicationHelper
         "arrow-down_16.png"
       when :open_in_new_window
         "page_go.png"
+      when :dropdown
+        "dropdown.png"
       else
         ''
     end

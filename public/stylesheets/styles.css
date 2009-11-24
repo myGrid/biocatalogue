@@ -617,8 +617,20 @@ body.sidebar-right #footer {
 	vertical-align: middle;
 }
 
+#wrapper #container #action_bar #search_dropdown_button {
+	margin-left: 2px;
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
+	vertical-align: baseline;
+}
+
+#wrapper #container #action_bar #search_dropdown_button * {
+	vertical-align: middle;
+}
+
 #wrapper #container #action_bar #action_links {
-	padding-left: 15px;
+	padding-left: 5px;
 	vertical-align: middle;
 }
 

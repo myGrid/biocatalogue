@@ -39,6 +39,20 @@
 				
 	<% end %>
 	
+	<span id="search_dropdown_button">
+		<ul class="p7menubar">
+			<li>
+				<a href="#" class="trigger">
+					<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+				</a>
+				<ul>
+					<li><%= link_to "Search by Data", search_by_data_url -%></li>
+				</ul>
+			</li>
+		</ul>
+		<br class="clearit">
+	</span>
+	
 	<span id="action_links">
 		<%= link_to(content_tag(:span, "Home", :class => "label"), home_path) -%>
 		<%= link_to(generic_icon_for(:services, 'margin-right: 0.4em;') + content_tag(:span, "Services", :class => "label"), services_path) -%>

@@ -12,6 +12,7 @@ javascripts:
   - boxover
   - redbox
   - tablekit
+  - p7exp
 stylesheets: 
 - base:
   - reset-fonts
@@ -19,4 +20,5 @@ stylesheets:
   - redbox
   - rounded-corners
   - ratings
+  - p7exp
   
