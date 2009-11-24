@@ -11,15 +11,27 @@
 <% t "#{display_name(@user)}" -%>
 
 <h1>
+	<span class="header_right_bar">
+		<span class="actions_button">
+			<% if mine? @user %>
+				<ul class="p7menubar">
+					<li>
+						<a href="#" class="trigger">
+							<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+						</a>
+						<ul>
+							<li>
+								<%= link_to(image_tag(icon_filename_for(:user_edit)) + content_tag(:span, ' Edit Account or Profile'), edit_user_path(@user)) -%>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			<% end %>
+		</span>
+	</span>
 	<%= generic_icon_for(:member, 'margin-right: 0.3em;', "Member of the BioCatalogue") -%>
 	<span><%= display_name(@user) %></span></h1>
 <br/>
-
-<% if mine? @user %>
-	<div class="toolbar">
-	  <%= link_to(image_tag(icon_filename_for(:user_edit)) + content_tag(:span, ' Edit Account or Profile'), edit_user_path(@user), :class => "button_slim") %>
-	</div>
-<% end %>
 
 <div id="user-tabs" class="tabber">
 	

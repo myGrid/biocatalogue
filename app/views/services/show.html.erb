@@ -11,8 +11,29 @@
 <% t "#{display_name(@service)} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.map{|p| display_name(p)}.to_sentence)}]" -%>
 
 <h1>
-	<span style="float:right; font-size: 85%; padding-top: 0.2em;">
-		<%= render :partial => 'services/stats_bar', :locals => { :service => @service } -%>
+	<span class="header_right_bar">
+		<span style="vertical-align: middle;">
+			<%= render :partial => 'services/stats_bar', :locals => { :service => @service } -%>
+		</span>
+		<span class="actions_button">
+			<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+				<ul class="p7menubar">
+					<li>
+						<a href="#" class="trigger">
+							<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+						</a>
+						<ul>
+							<li>
+								<%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
+														service_path(@service), 
+														:method => :delete, 
+														:confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			<% end %>
+		</span>
 	</span>
   <%= generic_icon_for(:service, 'margin-right: 0.3em;', "Web Service") -%>
 	<span style="vertical-align: middle;"><%= display_name(@service) -%></span>
@@ -71,14 +92,6 @@
 </table>
 
 <div class="toolbar">
-	<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
-  <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
-							service_path(@service), 
-							:class => "button_slim",
-							:method => :delete, 
-							:confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
-	<% end %>
-	
 	<span class="inline-block" style="vertical-align: middle; margin-left: 2em; margin-bottom: 0.3em;">
 		<%= render :partial => "services/annotation_counts",
 							 :locals => { :service => @service } -%>

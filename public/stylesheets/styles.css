@@ -2601,6 +2601,7 @@ ul.categories li span.main:hover {
 .stats_bar {
 	color: #555;
 	font-weight: bold;
+	vertical-slign: middle;
 }
 
 .stats_bar * {
@@ -2609,6 +2610,10 @@ ul.categories li span.main:hover {
 
 .stats_bar img {
 	margin-right: 0.3em;
+}
+
+.stats_bar span.label {
+	vertical-align: baseline;
 }
 
 .stats_bar .each {
@@ -2813,3 +2818,24 @@ div.resize-handle {
 
 /* END tablekit specific styles */
 
+.header_right_bar {
+	float: right; 
+	font-size: 85%;
+	vertical-align: middle;
+}
+
+.header_right_bar .actions_button {
+	margin-left: 1.5em;
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
+	vertical-align: baseline;
+}
+
+.header_right_bar .actions_button * {
+	vertical-align: middle;
+}
+
+.header_right_bar .actions_button ul li li {
+	width: 12em;
+}

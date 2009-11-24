@@ -17,10 +17,10 @@
 	<% content_tag(:span, :class => "each", :title => tooltip_title_attrib(tooltip_text)) do %>
 		<% if views_count > 0 %>
 			<%= image_tag(icon_filename_for(:views), :alt => "Views") -%>
-			<span><%= views_count -%></span>
+			<span class="label"><%= views_count -%></span>
 		<% else %>
 			<%= image_tag(icon_filename_for(:views_none), :alt => "Views") -%>
-			<span>0</span>
+			<span class="label">0</span>
 		<% end %>
 	<% end %>
 	
@@ -32,10 +32,10 @@
 	<% content_tag(:span, :class => "each", :title => tooltip_title_attrib(tooltip_text)) do %>
 		<% if favourites_count > 0 %>
 			<%= image_tag(icon_filename_for(:favourites), :alt => "Favourites") -%>
-			<span><%= favourites_count -%></span>
+			<span class="label"><%= favourites_count -%></span>
 		<% else %>
 			<%= image_tag(icon_filename_for(:favourites_none), :alt => "Favourites") -%>
-			<span>0</span>
+			<span class="label">0</span>
 		<% end %>
 	<% end %>
 
