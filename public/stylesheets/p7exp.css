@@ -67,7 +67,7 @@ Font color is set to light gray.
 .p7menubar a {
 	display: block;
 	text-decoration: none;
-	padding: 4px 6px;
+	padding: 3px 6px;
 	vertical-align: middle;
 }
 /*
@@ -80,6 +80,7 @@ pointing arrow.
 .p7menubar a.trigger {
 	border: 1px solid transparent;
 	background: transparent;
+	font-weight: normal;
 }
 /*
 The Root-Level list items. Floating left allows

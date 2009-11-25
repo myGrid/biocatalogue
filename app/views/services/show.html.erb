@@ -15,11 +15,12 @@
 		<span style="vertical-align: middle;">
 			<%= render :partial => 'services/stats_bar', :locals => { :service => @service } -%>
 		</span>
-		<span class="actions_button">
-			<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+		<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+			<span class="actions_button">
 				<ul class="p7menubar">
 					<li>
 						<a href="#" class="trigger">
+							<span style="vertical-align: middle;">Actions</span>
 							<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
 						</a>
 						<ul>
@@ -32,8 +33,8 @@
 						</ul>
 					</li>
 				</ul>
-			<% end %>
-		</span>
+			</span>
+		<% end %>
 	</span>
   <%= generic_icon_for(:service, 'margin-right: 0.3em;', "Web Service") -%>
 	<span style="vertical-align: middle;"><%= display_name(@service) -%></span>

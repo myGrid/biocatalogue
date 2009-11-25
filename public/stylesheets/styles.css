@@ -599,7 +599,7 @@ body.sidebar-right #footer {
 }
 
 #wrapper #container #content {
-	margin-top: 1.2em;
+	margin-top: 1em;
 }
 
 #wrapper #container #action_bar {
@@ -1390,16 +1390,32 @@ ul.simple_list li {
 	text-align: center;
 	padding: 0;
 	margin: 0;
-	margin-top: 1em;
+	margin-bottom: 0.4em;
 }
 
 #home_content {
-	margin: 1em auto auto auto;
+	margin: 0;
+}
+
+#home_content .rcontain {
+	padding: 0.1em 0.4em;
 }
 
 #home_content em {
 	color: #ff7400;
 	font-weight: bold;
+}
+
+#home_content #left_column {
+	
+}
+
+#home_content #middle_column {
+	
+}
+
+#home_content #right_column {
+	
 }
 
 #key_points {
@@ -2611,7 +2627,7 @@ ul.categories li span.main:hover {
 }
 
 .stats_bar span.label {
-	vertical-align: baseline;
+	vertical-align: middle;
 }
 
 .stats_bar .each {
@@ -2818,7 +2834,7 @@ div.resize-handle {
 
 .header_right_bar {
 	float: right; 
-	font-size: 85%;
+	font-size: 77%;
 	vertical-align: middle;
 }
 
