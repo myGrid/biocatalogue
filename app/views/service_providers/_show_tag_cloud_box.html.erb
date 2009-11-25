@@ -8,11 +8,8 @@
 
 %>
 
-<% cache({ :controller => 'service_providers', :action => 'show', :part => 'tag_cloud' }, :expires_in => 15.minutes) do %>
-
-	<%= render :partial => "annotations/tags_box",
-						 :locals => { :tags => @service_provider.tags_from_services,
-												  :header_title => "#{info_icon_with_tooltip("These are all the tags that have been applied to all the services for this provider")} Tags from Services",
-												  :show_add => false } -%>
+<%= render :partial => "annotations/tags_box",
+					 :locals => { :tags => @service_provider.tags_from_services,
+											  :header_title => "#{info_icon_with_tooltip("These are all the tags that have been applied to all the services for this provider")} Tags from Services",
+											  :show_add => false } -%>
  
-<% end %>

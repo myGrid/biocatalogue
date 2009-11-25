@@ -31,7 +31,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
-      format.atom
+      format.atom # index.atom.builder
     end
   end
 
@@ -262,6 +262,7 @@ class ServicesController < ApplicationController
   def authorise
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)
       error_to_back_or_home("You are not allowed to perform this action")
+      return false
     end
   end
  

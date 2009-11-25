@@ -11,12 +11,13 @@
 <% t "#{display_name(@user)}" -%>
 
 <h1>
-	<span class="header_right_bar">
-		<span class="actions_button">
-			<% if mine? @user %>
+	<% if mine? @user %>
+		<span class="header_right_bar">
+			<span class="actions_button">
 				<ul class="p7menubar">
 					<li>
 						<a href="#" class="trigger">
+							<span style="vertical-align: middle;">Actions</span>
 							<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
 						</a>
 						<ul>
@@ -26,11 +27,13 @@
 						</ul>
 					</li>
 				</ul>
-			<% end %>
+			</span>
 		</span>
-	</span>
+	<% end %>
 	<%= generic_icon_for(:member, 'margin-right: 0.3em;', "Member of the BioCatalogue") -%>
-	<span><%= display_name(@user) %></span></h1>
+	<span><%= display_name(@user) %></span>
+</h1>
+
 <br/>
 
 <div id="user-tabs" class="tabber">

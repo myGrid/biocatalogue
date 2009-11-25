@@ -1,0 +1,27 @@
+<%
+
+# BioCatalogue: app/views/announcements/_breadcrumbs.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<li><%= link_to 'Announcements', announcements_path -%></li>
+
+<% if ["show", "new", "edit"].include? controller.action_name.downcase -%>
+  <li><b>&#187;</b></li>
+  
+  <% case controller.action_name.to_s; when "show" %>
+    <li><span><%= display_name(@announcement) -%></span></li>
+  <% when "new" %>
+    <li><span>New Announcement</span></li>
+  <% when "edit" %>
+		<li><%= link_to "#{display_name(@announcement)}", announcement_path(@announcement) -%></li>
+		<li><b>&#187;</b></li>
+    <li><span>Edit</span></li>
+  <% else %>
+    <!-- no breadcrumb -->
+  <% end %>
+<% end %>

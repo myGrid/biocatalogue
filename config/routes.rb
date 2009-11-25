@@ -5,7 +5,8 @@
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
-  
+  map.resources :announcements
+
   # To test error messages
   map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index'
   

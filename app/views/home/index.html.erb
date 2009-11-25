@@ -9,6 +9,136 @@
 %>
 
 <div id="home_content">
+	
+	<p id="home_heading">The BioCatalogue: providing a curated catalogue of Life Science Web Services</p>
+	
+	<div id="middle_column_wrapper">
+		<div id="middle_column">
+			
+			<div id="home-tabs" class="tabber">
+	
+			  <div id="tab-activity" class="tabbertab">
+			    <h3>Activity</h3>
+					
+					<div id="home_stats_bar">
+				    <center>
+				    	<% rounded "#E9F7CC", "#333", "auto" do %>
+							  The BioCatalogue currently has
+							  <strong><%= link_to pluralize(Service.count, "service"), services_path -%></strong>,
+								<strong><%= link_to pluralize(ServiceProvider.count, "service provider"), service_providers_path -%></strong> and
+							  <strong><%= link_to pluralize(User.count_activated, "member"), users_url -%></strong>
+								<%= info_icon_with_tooltip("<b>Members</b> are registered users of the BioCatalogue.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' towards the top right. <br/><br/>#{sign_up_benefits_text}") -%>
+							<% end %>
+				    </center>
+				  </div>
+				</div>
+				
+				<div id="tab-latest-services" class="tabbertab">
+			    <h3>Latest Services</h3>
+					
+					<%= render :partial => "services/listing", :locals => { :items => Service.latest, :listing_type => :simple } %>
+				</div>
+				
+				<div id="tab-our-goals" class="tabbertab">
+			    <h3>Our Goals</h3>
+					
+		      <ul id="key_points">
+						<li>Providing a <em>single registration point</em> for Web Service providers
+						  and a <em>single search site</em> for scientists and developers.</li>
+						<li>Providers, Expert curators and Users will provide oversight, monitor the catalogue 
+						  and provide <em>high quality annotations</em> for services.</li>
+						<li>BioCatalogue is a place where the <em>community</em> can find contacts and meet
+						  the experts and maintainers of these services.</li>
+		      </ul>
+				</div>
+				
+			</div>
+			
+		</div>
+	</div>
+	
+	<div id="left_column">
+		<div class="column_inner">
+			<%= image_tag "info_box_discover.png", :alt => "Info box on 'Discover'", :class => "info_image" -%>
+			<%= image_tag "info_box_register.png", :alt => "Info box on 'Register'", :class => "info_image" -%>
+			<%= image_tag "info_box_annotate.png", :alt => "Info box on 'Annotate'", :class => "info_image" -%>
+			<%= image_tag "info_box_monitor.png", :alt => "Info box on 'Monitor'", :class => "info_image" -%>
+		</div>
+	</div>
+	
+	<div id="right_column">
+		<div class="column_inner">
+			
+			<div class="section_box">
+				<h4>
+					<span style="float: right; margin-left: 0.3em;">
+						<%= feed_icon_tag "Site Announcements", announcements_path(:format => :atom) -%>
+					</span>
+					<%= generic_icon_for(:announcements, 'margin-right: 0.4em;') -%>
+					<span>Site Announcements</span>
+				</h4>
+				
+				<div class="section_content" style="font-size: 85%;">
+					<% unless (announcements = Announcement.latest).empty? %>
+						<% announcements.each do |a| %>
+							<p style="margin-bottom: 0.7em;">
+								<b><%= link_to display_name(a), a -%></b>
+								<br/>
+								By <%= link_to display_name(a.user), a.user -%>
+								<span class="ago">(<%= distance_of_time_in_words_to_now(a.created_at) -%> ago</span>
+							</p>
+						<% end %>
+					<% else %>
+						<p class="none_text">None</p>
+					<% end %>
+				</div>
+				
+				<div class="section_footer">
+					<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :announcements) %>
+						<b><%= link_to "New", new_announcement_url %></b>
+						|
+					<% end %>
+					<b><%= link_to "See All", announcements_url %></b>
+				</div>
+			</div>
+			
+			<div class="section_box">
+				<h4>
+					<%= generic_icon_for(:curators, 'margin-right: 0.4em;') -%>
+					<span>Top Curators</span>
+				</h4>
+				
+				<div class="section_content">
+					<% unless (top_curators = User.top_curators).empty? %>
+						<table id="top_curators">
+							<% top_curators.each do |u| %>
+								<% user = User.find(u['id'])%>
+								<% unless user.nil? %>
+									<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations to the BioCatalogue") -%>">
+										<td class="count">
+											<%= number_with_delimiter(u['count']) -%>
+										</td>
+										<td>
+											<%= user_link_with_flag user -%>
+										</td>
+									</tr>
+								<% end %>
+							<% end %>
+						</table>
+					<% else %>
+						<p class="none_text">None</p>
+					<% end %>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+		
+	<span class="clear"></span>
+	
+	<%= render :partial => 'shared/tabber_startup' -%>
+	
+	<br/><br/><br/><br/><br/><br/>
 
   <div style="float: right; width: 600px;">
 

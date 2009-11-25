@@ -64,6 +64,22 @@ class User < ActiveRecord::Base
   def self.count_activated
     User.count(:conditions => "users.activated_at IS NOT NULL")
   end
+  
+  # Returns an ordered Array of Hashes that provide the top curators info.
+  # E.g.:
+  #   [ { 'id' => '5', 'name' => 'John Doe', 'count' => '2445' }, { 'id' => '46', 'name' => 'Jill Doe', 'count' => '345' }, { 'id' => '50', 'name' => 'Jack Doe', 'count' => '210' } ]
+  # where "count" is the total number of annotations provided by that user.
+  def self.top_curators(limit=10)
+    # NOTE: this query has only been tested to work with MySQL 5.0.x
+    sql = "SELECT users.id AS id, users.display_name AS name, COUNT(*) AS count 
+            FROM users
+            INNER JOIN annotations ON annotations.source_type = 'User' AND annotations.source_id = users.id 
+            GROUP BY users.id
+            ORDER BY COUNT(*) DESC
+            LIMIT #{limit}"
+    
+    return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+  end
 
   def authenticated?(password)
     crypted_password == encrypt(password)

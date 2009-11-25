@@ -26,10 +26,14 @@ module ApplicationHelper
   
   def icon_filename_for(thing)
     case thing
-      when :home
-        ""
+      when :announcement, :announcements
+        "transmit.png"
       when :spinner
         "spinner.gif"
+      when :add
+        "add.png"
+      when :edit
+        "pencil.gif"
       when :delete
         "delete.png"
       when :delete_faded
@@ -144,6 +148,11 @@ module ApplicationHelper
                      :style => "vertical-align:middle;")
   end
   
+  def feed_icon_tag(title, url, style='')
+    alt_text = "Subscribe to #{title} feed"
+    link_to image_tag(icon_filename_for(:atom), :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0; #{style}"), url
+  end
+  
   def flag_icon_from_country(country, *args)
     return '' if country.blank?
     
@@ -192,6 +201,11 @@ module ApplicationHelper
   end
 
   #==================
+  
+  def datetime(dt)
+    return "" if dt.nil?
+    return dt.to_s(:datetime24)
+  end
   
   def sign_up_benefits_text
     output = ""
@@ -281,7 +295,7 @@ module ApplicationHelper
   end
   
   def user_link_with_flag(user)
-    link_to(display_name(user), user_path(user), :style => "vertical-align: baseline") + flag_icon_from_country(user.country, :style => "vertical-align: middle; margin: 0 0.4em;")
+    link_to(display_name(user), user_path(user), :style => "vertical-align: baseline") + flag_icon_from_country(user.country, :style => "vertical-align: middle; margin-left: 0.4em;")
   end
   
   def separator_symbol_to_text(symbol, pluralize_text=false, show_symbol_after=true)

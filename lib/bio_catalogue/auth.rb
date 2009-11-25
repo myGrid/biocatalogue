@@ -16,13 +16,18 @@ module BioCatalogue
       return true if user.is_curator?
       
       case thing
+        when :announcements
+          # Above check for is_curator? is enough
         when Annotation
           return true if thing.source == user
         when Service
           return true if thing.submitter_type == "User" && thing.submitter_id == user.id
         else
-          service = Mapper.map_object_to_associated_model_object(thing, "Service")
-          return true if !service.nil? && service.submitter_type == "User" && service.submitter_id == user.id
+          # Try to see if it belongs to a service and if so check that instead
+          if thing.is_a? ActiveRecord::Base
+            service = Mapper.map_object_to_associated_model_object(thing, "Service")
+            return true if !service.nil? && service.submitter_type == "User" && service.submitter_id == user.id
+          end
       end
       
       return false
