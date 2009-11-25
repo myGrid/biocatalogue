@@ -95,6 +95,9 @@
 									 
 								<%= render :partial => "annotations/descriptions",
 								 	 				 :locals => { :annotatable => input } -%>
+								
+								<%= render :partial => "annotations/formats",
+								 	 				 :locals => { :annotatable => input } -%>
 													 
 								<%= render :partial => "annotations/examples",
 								 	 				 :locals => { :annotatable => input } -%>
@@ -135,6 +138,9 @@
 								</div>
 								
 								<%= render :partial => "annotations/descriptions",
+								 	 				 :locals => { :annotatable => output } -%>
+													 
+							  <%= render :partial => "annotations/formats",
 								 	 				 :locals => { :annotatable => output } -%>
 													 
 								<%= render :partial => "annotations/examples",
