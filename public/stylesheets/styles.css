@@ -1394,8 +1394,6 @@ ul.simple_list li {
 }
 
 #home_content {
-	width: 950px;
-	/*padding-top: 1em;*/
 	margin: 1em auto auto auto;
 }
 
@@ -2838,4 +2836,8 @@ div.resize-handle {
 
 .header_right_bar .actions_button ul li li {
 	width: 12em;
+}
+
+.search_query_info_box {
+	font-size: 108%;
 }

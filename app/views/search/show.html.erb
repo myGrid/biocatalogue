@@ -21,12 +21,13 @@
 	<% end%>
 <% end %>
 
-<div>
-	
-	<% if false %>
-	<%= render :partial => 'search_form' %>
-	<% end %>
-	
+<div class="box_info_standout" style="float: right;">
+	Try our new 
+	<b><%= link_to "Search by Data", search_by_data_url -%></b>
+	feature - to search using your input/output data
+</div>
+
+<div class="search_query_info_box">
 	<% if @query.blank? %>
 		<p>
 			<%= search_provide_query_text -%>
@@ -40,7 +41,6 @@
 			</p>
 		<% end %>
 	<% end %>
-	
 </div>
 
 <% unless @query.blank? %>
