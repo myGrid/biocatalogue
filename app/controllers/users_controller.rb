@@ -72,7 +72,7 @@ class UsersController < ApplicationController
       if @user.save
         UserMailer.deliver_registration_notification(@user, base_host)
         #flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
-        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> as been sent to your address<br />in order to complete your registration.</div><div class=\"flash_body\">If you haven't received this email in the next few minutes,<br />please contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
+        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address<br />in order to complete your registration.</div><div class=\"flash_body\">If you haven't received this email in the next few minutes,<br />please contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
         format.html { redirect_to(@user) }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
       else
