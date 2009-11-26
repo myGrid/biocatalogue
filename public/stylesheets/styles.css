@@ -464,7 +464,7 @@ a:hover.change_pwd {
 
 /* With 2 columns, require a minimum width of 800px. */
 body.sidebar-right {
-  min-width: 850px;
+  min-width: 960px;
 }
 
 /* We must define 100% width to avoid the body being too narrow for near-empty pages */
