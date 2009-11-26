@@ -70,7 +70,7 @@ module ApplicationHelper
         "eye_faded.png"
       when :service, :services
         "service.png"
-      when :annotations
+      when :annotation, :annotations
         "note.png"
       when :user, :member, :users, :members, :annotation_source_member
         "user.png"
@@ -311,6 +311,36 @@ module ApplicationHelper
     text = "#{text} ('#{symbol}')" if show_symbol_after
 
     return text
+  end
+  
+  # This takes into account the various idosyncracies and the data model 
+  # to give you the best URL to something. 
+  def url_for_web_interface(item)
+    case item
+      when ServiceDeployment, ServiceVersion, SoapService, RestService
+        service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
+        return service_url(service_id) unless service_id.nil?
+      when SoapOperation, SoapInput, SoapOutput
+        service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
+        return service_url(service_id, :anchor => "#{item.class.name.underscore}_#{item.id}") unless service_id.nil?
+      else
+        return url_for(item)  
+    end
+  end
+  
+  # This takes into account the various idosyncracies and the data model 
+  # to give you the best link to something. 
+  def link_for_web_interface(item)
+    case item
+      when ServiceDeployment, ServiceVersion, SoapService, RestService
+        service = Service.find_by_id(BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service"))
+        return link_to(display_name(service), service_url(service)) unless service.nil?
+      when SoapOperation, SoapInput, SoapOutput
+        service = Service.find_by_id(BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service"))
+        return link_to(display_name(service), service_url(service, :anchor => "#{item.class.name.underscore}_#{item.id}")) unless service.nil?
+      else
+        return link_to(display_name(item), item)  
+    end 
   end
   
   

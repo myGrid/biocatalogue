@@ -2969,3 +2969,37 @@ div.resize-handle {
 	margin-top: 1.5em;
 }
 
+
+/* BEGIN activity feed styles */
+
+.activity_feed p.day_title {
+	font-weight: bold;
+	width: 100%;
+	text-align: left;
+	border-bottom: 1px solid #CCC;
+	padding-bottom: 2px;
+}
+
+.activity_feed table.day {
+	margin-top: 0.3em;
+	padding-left: 0.8em;
+	width: 100%;
+}
+
+.activity_feed table.day td {
+	font-size: 93%;
+	vertical-align: top;
+	line-height: 1.5;
+	padding: 0.3em 0;
+}
+
+.activity_feed span {
+	vertical-align: baseline;
+}
+
+.activity_feed_action {
+	font-weight: bold;
+	color: #990000;
+}
+
+/* END activity feed styles */

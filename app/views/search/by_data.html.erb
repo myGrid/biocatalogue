@@ -64,10 +64,10 @@
 							
 							<p>
 								<b>Operation:</b>
-								<%= link_to(h(result.operation.name), service_url(result.service, :anchor => "soap_operation_#{result.operation.id}"), :popup => true) -%>
+								<%= link_to(display_name(result.operation), url_for_web_interface(result.operation), :popup => true) -%>
 								|
 								<b>Port:</b>
-								<%= link_to(h(result.port.name), service_url(result.service, :anchor => "#{result.port.class.name.underscore}_#{result.port.id}"), :popup => true) -%>
+								<%= link_to(display_name(result.port), url_for_web_interface(result.port), :popup => true) -%>
 							</p>
 							
 							<p><b>Example data matched:</b></p>
