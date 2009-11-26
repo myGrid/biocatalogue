@@ -155,7 +155,7 @@ module ActivityFeedsHelper
           output << (link || display_name(annotatable))
           output << " - "
           output << content_tag(:div, :class => "box_annotations", :style => "margin-top: 0.1em;") do
-            rounded_html(annotation_text_item_background_color, "#333", "100%") do
+            rounded_html(annotation_text_item_background_color, "#333", "99%") do
               x = '<div class="text">'
               x << annotation_prepare_description(item.value, true, 100, false)
               x << '</div>'

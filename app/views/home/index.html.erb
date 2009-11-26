@@ -17,7 +17,7 @@
 			
 			<div id="home_stats_bar">
 		    <center>
-		    	<% rounded "#E9F7CC", "#333", "auto" do %>
+		    	<% rounded "#E9F7CC", "#333", "100%" do %>
 					  The BioCatalogue currently has
 					  <strong><%= link_to pluralize(Service.count, "service"), services_path -%></strong>,
 						<strong><%= link_to pluralize(ServiceProvider.count, "service provider"), service_providers_path -%></strong> and
@@ -60,10 +60,7 @@
 	
 	<div id="left_column">
 		<div class="column_inner">
-			<%= image_tag "info_box_discover.png", :alt => "Info box on 'Discover'", :class => "info_image" -%>
-			<%= image_tag "info_box_register.png", :alt => "Info box on 'Register'", :class => "info_image" -%>
-			<%= image_tag "info_box_annotate.png", :alt => "Info box on 'Annotate'", :class => "info_image" -%>
-			<%= image_tag "info_box_monitor.png", :alt => "Info box on 'Monitor'", :class => "info_image" -%>
+			<%= render :partial => "info_boxes" -%>
 		</div>
 	</div>
 	
