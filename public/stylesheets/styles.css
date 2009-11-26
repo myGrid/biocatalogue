@@ -464,7 +464,7 @@ a:hover.change_pwd {
 
 /* With 2 columns, require a minimum width of 800px. */
 body.sidebar-right {
-  min-width: 960px;
+  min-width: 850px;
 }
 
 /* We must define 100% width to avoid the body being too narrow for near-empty pages */
@@ -497,7 +497,7 @@ body.sidebar-right #squeeze {
   background: #fff url(../images/central_bar_big.png) repeat-x 50% 0;
   position: relative;
   /*min-width: 600px;*/
-  min-width: 900px;
+  min-width: 980px;
 }
 
 #wrapper #container #center .right-corner {
@@ -507,7 +507,7 @@ body.sidebar-right #squeeze {
   left: 5px;
   /*border: 1px #ff0000 solid;*/
   /*min-width: 600px;*/
-  min-width: 900px;
+  min-width: 980px;
 }
 
 #wrapper #container #center .right-corner .left-corner {
@@ -618,7 +618,6 @@ body.sidebar-right #footer {
 }
 
 #wrapper #container #action_bar #search_dropdown_button {
-	margin-left: 2px;
 	display:-moz-inline-block;
 	display:-moz-inline-box;
 	display: inline-block;
@@ -627,6 +626,10 @@ body.sidebar-right #footer {
 
 #wrapper #container #action_bar #search_dropdown_button * {
 	vertical-align: middle;
+}
+
+#wrapper #container #action_bar #search_dropdown_button ul li li {
+	width: 9em;
 }
 
 #wrapper #container #action_bar #action_links {
@@ -1406,6 +1409,7 @@ ul.simple_list li {
 	margin: auto; 
 	text-align: center; 
 	margin-bottom: 1.2em;
+	line-height: 1.6;
 }
 
 #home_content .rcontain {
@@ -1419,7 +1423,7 @@ ul.simple_list li {
 
 #home_content #left_column {
 	float: left;
-	width: 250px;
+	width: 220px;
 	margin-left: -100%;
 	padding; 0;
 }
@@ -1430,13 +1434,13 @@ ul.simple_list li {
 }
 
 #home_content #middle_column {
-	margin: 0 280px 0 280px;
+	margin: 0 230px 0 230px;
 }
 
 #home_content #right_column {
 	float: right;
-	width: 250px;
-	margin-left: -250px;
+	width: 220px;
+	margin-left: -220px;
 }
 
 #home_content .column_inner {
@@ -1512,10 +1516,16 @@ ul.simple_list li {
 	color: #333;
 }
 
+#home_content .liquid-round .center-content {
+	padding: 1px 0.4em;
+}
+
 #home_content .info_text_head {
 	font-style: italic;
 	text-align: center;
 	margin-bottom: 0.2em;
+	font-size: 93%;
+	font-weight: bold;
 }
 
 #home_content .info_text_label {
