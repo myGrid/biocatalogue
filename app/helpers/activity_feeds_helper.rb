@@ -17,7 +17,7 @@ module ActivityFeedsHelper
   def activity_entries_for_home
     results = [ ]
     
-    options = { :items_limit => 50,
+    options = { :items_limit => 30,
                 :days_limit => 60.days.ago }
               
     # Get relevant ActivityLog entries...
