@@ -29,7 +29,7 @@
 		<% end %>
 		
 		<div class="box_annotations">
-			<% unless (desc = annotatable.description).blank? %>
+			<% unless (desc = annotatable.try(:description)).blank? %>
 				<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 					<div class="text">
 						<span class="annotation_source_text annotation_source_provider">
@@ -68,7 +68,7 @@
 					<% end %>
 				<% end %>
 			<% else %>
-				<% if annotatable.description.blank? %>
+				<% if annotatable.try(:description).blank? %>
 					<span class="none_text" style="vertical-align: middle;">No info yet</span>
 				<% end %>
 			<% end %>
