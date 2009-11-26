@@ -141,7 +141,10 @@ module ActivityFeedsHelper
           output << link_to(display_name(source), source)
           output << content_tag(:span, " added", :class => "activity_feed_action")
           output << " a #{item.attribute_name.humanize.downcase} annotation to #{annotatable.class.name.titleize}: "
-          output << link_for_web_interface(annotatable)
+          
+          link = link_for_web_interface(annotatable)
+          
+          output << (link || display_name(annotatable))
           output << " - "
           output << content_tag(:div, :class => "box_annotations", :style => "margin-top: 0.1em;") do
             rounded_html(annotation_text_item_background_color, "#333", "100%") do
