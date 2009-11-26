@@ -1503,6 +1503,16 @@ ul.simple_list li {
 	color: #777;
 }
 
+#home_content .home_heading {
+	font-weight: bold;
+	font-size: 153.9%;
+	line-height: 1.5;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+	margin-bottom: 1em;
+}
+
 #key_points {
 	clear:both;
 	margin: 0 0 1em 0;

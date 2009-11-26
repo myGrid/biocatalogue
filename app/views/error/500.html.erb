@@ -8,8 +8,16 @@
 
 %>
 
-<center>
-  <h1>We're sorry, but something went wrong.</h1>
+<% if controller.controller_name.downcase == "home" and controller.action_name.downcase == "index" %>
 
-  <p>We've been notified about this issue and we'll take a look at it shortly.</p>
-</center>
+	<%= render :partial => "home/fallback_content" -%>
+
+<% else %>
+
+	<center>
+	  <h1>We're sorry, but something went wrong.</h1>
+	
+	  <p>We've been notified about this issue and we'll take a look at it shortly.</p>
+	</center>
+
+<% end %>

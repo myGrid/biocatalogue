@@ -105,6 +105,8 @@ module ActivityFeedsHelper
       results << { d => temp_results[d] }
     end
     
+    asdfsdg.segdweg
+    
     return results
   end
   
