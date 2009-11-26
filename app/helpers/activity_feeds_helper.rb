@@ -128,7 +128,8 @@ module ActivityFeedsHelper
         
         unless submitter.nil?
           output << link_to(display_name(submitter), submitter)
-          output << content_tag(:span, " registered a new Service: ", :class => "activity_feed_action")
+          output << content_tag(:span, " registered", :class => "activity_feed_action")
+          output << " a new Service: "
           output << link_to(display_name(item), item)
         end
         
@@ -138,9 +139,16 @@ module ActivityFeedsHelper
         source = get_object_via_cache(item.source_type, item.source_id, object_cache)
         
         unless item.attribute.nil? or annotatable.nil? or source.nil?
+          subject_name = case item.annotatable_type
+            when "Service", "ServiceDeployment", "ServiceVersion", "SoapService", "RestService"
+              "Service"
+            else
+              item.annotatable_type.titleize
+          end
+        
           output << link_to(display_name(source), source)
           output << content_tag(:span, " added", :class => "activity_feed_action")
-          output << " a #{item.attribute_name.humanize.downcase} annotation to #{annotatable.class.name.titleize}: "
+          output << " a #{item.attribute_name.humanize.downcase} annotation to #{subject_name}: "
           
           link = link_for_web_interface(annotatable)
           
