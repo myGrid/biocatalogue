@@ -100,7 +100,7 @@ module BioCatalogue
     # Gets an ordered list of all the service providers and their counts of services.
     #
     # Example return data:
-    # [ { "id" => "5", "name" => "ebi.ac.uk", "count" => "12" }, { "id" => "89", "name" => "example.com", "count" => "11" }, ... ]
+    # [ { "id" => "5", "name" => "EBI", "count" => "12" }, { "id" => "89", "name" => "example.com", "count" => "11" }, ... ]
     def self.get_filters_for_service_providers(limit=nil)
       # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = "SELECT service_providers.id AS id, service_providers.name AS name, COUNT(*) AS count 
@@ -117,9 +117,15 @@ module BioCatalogue
        
       items = ActiveRecord::Base.connection.select_all(sql)
       
-      # Need to replace the name with the preferred display name for that provider
+      # Need to replace the name with the preferred display name for that provider...
+      
+      providers_cache = { }
+      ServiceProvider.find_all_by_id(items.map { |i| i['id'] }).each do |sp|
+        providers_cache[sp.id.to_s] = sp
+      end
+      
       items.each do |item|
-        #TODO: need to figure out a way of setting here the preferred display_name, without loading all providers again!  item['name'] = UNKNOWN_TEXT
+        item['name'] = providers_cache[item['id']].display_name if providers_cache.has_key?(item['id'])
       end
       
       return items
