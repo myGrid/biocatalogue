@@ -1419,26 +1419,24 @@ ul.simple_list li {
 
 #home_content #left_column {
 	float: left;
-	width: 255px;
+	width: 250px;
 	margin-left: -100%;
 	padding; 0;
 }
 
 #home_content #middle_column_wrapper {
 	float: left;
-	width: 99%;
-	padding-top: 2px;
+	width: 100%;
 }
 
 #home_content #middle_column {
-	margin: 0 260px 0 270px;
+	margin: 0 280px 0 280px;
 }
 
 #home_content #right_column {
 	float: right;
 	width: 250px;
 	margin-left: -250px;
-	padding-top: 5px;
 }
 
 #home_content .column_inner {
@@ -1449,22 +1447,14 @@ ul.simple_list li {
 	margin-bottom: 1em;
 }
 
-#home_content .tabberlive {
-	margin-top: 5px;
-}
-
-#home_content ul.tabbernav {
-	font-size: 100%;
-}
-
 #home_content .section_box {
 	color: #333;
-	margin-bottom: 1.5em;
+	margin-bottom: 1em;
 	line-height: 1.7;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
-	background-color: #F5F5F5;
+	background-color: #f8fbed;
 	border: 1px solid #CCC;
 	padding: 0.8em 1em;
 }
@@ -1482,6 +1472,7 @@ ul.simple_list li {
 #home_content .section_box .section_footer {
 	font-size: 85%; 
 	text-align: center;
+	margin-top: 0.8em;
 }
 
 #home_content #top_curators tr.hover {
@@ -3017,22 +3008,28 @@ div.resize-handle {
 .activity_feed p.day_title {
 	font-weight: bold;
 	text-align: left;
-	border-bottom: 1px solid #CCC;
-	padding-bottom: 2px;
+	border-bottom: 1px solid #DDC;
+	padding-bottom: 1px;
 	width: 100%;
+	color: #666;
+	margin: 0.8em 0 0.5em 0;
 }
 
 .activity_feed table.day {
-	margin-top: 0.3em;
-	padding-left: 0.8em;
 	width: 100%;
 }
 
 .activity_feed table.day td {
-	font-size: 93%;
 	vertical-align: top;
 	line-height: 1.5;
-	padding: 0.3em 0;
+	padding: 0.4em 0;
+	text-align: left;
+}
+
+.activity_feed table.day td.icon {
+	padding-top: 0.5em; 
+	width: 20px; 
+	padding-right: 4px;
 }
 
 .activity_feed span {

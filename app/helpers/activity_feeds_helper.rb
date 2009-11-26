@@ -14,11 +14,17 @@ module ActivityFeedsHelper
   #   [ { "Today" => [ [ "text", :service, DateTime ], [ ... ], ... ] },
   #     { "Yesterday" => [ [ "text", :user, DateTime ], [ ... ], ... ] },
   #     { "4 weeks ago" => [ [ "text", :annotation, DateTime ], [ ... ], ... ] } ] 
-  def activity_entries_for_home
+  #
+  # Style can be :simple or :detailed
+  def activity_entries_for_home(style=:simple)
     results = [ ]
     
-    options = { :items_limit => 30,
-                :days_limit => 60.days.ago }
+    options = { :days_limit => 60.days.ago } 
+    if style == :simple
+      options[:items_limit] = 10
+    else
+      options[:items_limit] = 50
+    end
               
     # Get relevant ActivityLog entries...
     
@@ -27,17 +33,15 @@ module ActivityFeedsHelper
     # Users activated
     al_items.concat ActivityLog.find(:all,
       :conditions => [ "action = 'activate' AND activity_loggable_type = 'User' AND created_at >= ?", options[:days_limit] ],
-      :limit => options[:items_limit],
       :order => "created_at DESC")
     
     # Services and Annotations created
     al_items.concat ActivityLog.find(:all,
       :conditions => [ "action = 'create' AND activity_loggable_type IN ('Service','Annotation') AND created_at >= ?", options[:days_limit] ],
-      :limit => options[:items_limit],
       :order => "created_at DESC")
     
     # Reorder based on time
-    al_items.sort { |a,b| b.created_at <=> a.created_at }
+    al_items.sort! { |a,b| b.created_at <=> a.created_at }
     
     # Use only up to the limit and process these...
     al_items = al_items[0...options[:items_limit]]
@@ -85,8 +89,8 @@ module ActivityFeedsHelper
     # We need to consider ordering of the grouped events!
     
     days_order = [ ]
-    al_items.map { |a| a.created_at }.sort { |a,b| b <=> a }.each do |d|
-      c = classify_day(d)
+    al_items.map { |a| a.created_at }.each do |d|
+      c = classify_time_span(d, style)
       days_order << c unless days_order.include?(c)
     end
     
@@ -95,9 +99,9 @@ module ActivityFeedsHelper
     # Now prepare the entries    
     al_items.each do |al|
       if ["User", "Service", "Annotation"].include?(al.activity_loggable_type)
-        s = activity_feed_entry_for(get_object_via_cache(al.activity_loggable_type, al.activity_loggable_id, object_cache), object_cache)
+        s = activity_feed_entry_for(get_object_via_cache(al.activity_loggable_type, al.activity_loggable_id, object_cache), style, object_cache)
         data = [ s, al.activity_loggable_type.underscore.to_sym, al.created_at ]
-        temp_results[classify_day(al.created_at)] << data unless s.blank?
+        temp_results[classify_time_span(al.created_at, style)] << data unless s.blank?
       end
     end
     
@@ -110,7 +114,7 @@ module ActivityFeedsHelper
   
   protected
   
-  def activity_feed_entry_for(item, object_cache={})
+  def activity_feed_entry_for(item, style, object_cache={})
     return "" if item.nil?
       
     output = ""
@@ -153,13 +157,16 @@ module ActivityFeedsHelper
           link = link_for_web_interface(annotatable)
           
           output << (link || display_name(annotatable))
-          output << " - "
-          output << content_tag(:div, :class => "box_annotations", :style => "margin-top: 0.1em;") do
-            rounded_html(annotation_text_item_background_color, "#333", "99%") do
-              x = '<div class="text">'
-              x << annotation_prepare_description(item.value, true, 100, false)
-              x << '</div>'
-              x
+          
+          if style == :detailed
+            output << " - "
+            output << content_tag(:div, :class => "box_annotations", :style => "margin-top: 0.1em;") do
+              rounded_html(annotation_text_item_background_color, "#333", "99%") do
+                x = '<div class="text">'
+                x << annotation_prepare_description(item.value, true, 100, false)
+                x << '</div>'
+                x
+              end
             end
           end
         end
@@ -167,16 +174,6 @@ module ActivityFeedsHelper
     end
     
     return output
-  end
-  
-  def classify_day(dt)
-#    if dt > (Time.now - 1.day)
-#      return "Today"
-#    elsif dt > (Time.now - 2.days)
-#      return "Yesterday"
-#    else
-      return "#{distance_of_time_in_words_to_now(dt).capitalize} ago"
-#    end
   end
   
   def get_object_via_cache(obj_type, obj_id, object_cache)

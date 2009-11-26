@@ -83,6 +83,7 @@ ActionController::Routing::Routes.draw do |map|
   map.submit_feedback '/contact', :controller => 'contact', :action => 'create', :conditions => { :method => :post }
   map.contact '/contact', :controller => 'contact', :action => 'index', :conditions => { :method => :get }
   map.home '/', :controller => 'home', :action => 'index'
+  map.latest '/latest', :controller => 'home', :action => 'latest'
 
   map.resources :rest_services
 

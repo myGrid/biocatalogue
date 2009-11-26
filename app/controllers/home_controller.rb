@@ -14,4 +14,11 @@ class HomeController < ApplicationController
     end
   end
   
+  # GET /home/latest
+  def index
+    respond_to do |format|
+      format.html # latest.html.erb
+    end
+  end
+  
 end

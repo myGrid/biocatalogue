@@ -1,0 +1,26 @@
+<%
+
+# BioCatalogue: app/views/home/latest.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div id="home-tabs" class="tabber">
+	
+	<div id="tab-activity" class="tabbertab">
+    <h3>Latest Activity</h3>
+		<%= render :partial => 'activity', :locals => { :style => :detailed } -%>
+	</div>
+	
+	<div id="tab-services" class="tabbertab">
+    <h3>Latest Services</h3>
+		
+		<%= render :partial => "services/listing", :locals => { :items => Service.latest(20), :listing_type => :simple } -%>
+	</div>
+	
+</div>
+
+<%= render :partial => 'shared/tabber_startup' -%>

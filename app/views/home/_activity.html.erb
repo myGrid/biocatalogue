@@ -8,22 +8,45 @@
 
 %>
 
-<% unless (entries = activity_entries_for_home).empty? %>
-  <div class="activity_feed">
-  <% entries.each do |e| %>
-    <p class="day_title">
-			<%= e.keys.first -%>
-    </p>
-		<table class="day">
-      <% e[e.keys.first].each do |i| %>
-				<tr>
-					<td style="padding-top: 2px; width: 28px; padding-right: 10px;"><%= generic_icon_for(i[1]) -%></td>
-					<td style="text-align: left;"><%= i[0] -%></td>
-				</tr>
-      <% end %>
-		</table>
-  <% end %>
-  </div>
+<%
+	# Set defaults for optional parameters to this partial...
+	style = :simple unless local_assigns.has_key?(:style)
+%>
+
+<% unless (entries = activity_entries_for_home(style)).empty? %>
+	<% if style == :simple %>
+	  <div class="activity_feed">
+		  <% entries.each do |e| %>
+		    <p class="day_title">
+					<%= e.keys.first -%>
+		    </p>
+				<table class="day">
+		      <% e[e.keys.first].each do |i| %>
+						<tr>
+							<td class="icon"><%= generic_icon_for(i[1]) -%></td>
+							<td><%= i[0] -%></td>
+						</tr>
+		      <% end %>
+				</table>
+		  <% end %>
+	  </div>
+	<% elsif style == :detailed %>
+		<div class="activity_feed">
+		  <% entries.each do |e| %>
+		    <p class="day_title" style="font-size: 108%; margin-top: 1.3em; margin-bottom: 1em;">
+					<%= e.keys.first -%>
+		    </p>
+				<table class="day" style="margin-left: 1.2em;">
+		      <% e[e.keys.first].each do |i| %>
+						<tr>
+							<td class="icon" style="width: 28px; padding-right: 10px; padding-top: 0.6em;"><%= generic_icon_for(i[1]) -%></td>
+							<td style="padding-bottom: 0.6em;"><%= i[0] -%></td>
+						</tr>
+		      <% end %>
+				</table>
+		  <% end %>
+	  </div>
+	<% end %>
 <% else %>
   <p>No activity</p>
 <% end %>

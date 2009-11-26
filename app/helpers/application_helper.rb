@@ -26,6 +26,8 @@ module ApplicationHelper
   
   def icon_filename_for(thing)
     case thing
+      when :activity
+        "time.png"
       when :announcement, :announcements
         "transmit.png"
       when :spinner
@@ -710,6 +712,24 @@ module ApplicationHelper
         "Ascending"
       when "desc"
         "Descending"
+    end
+  end
+  
+  # Style can be :simple or :detailed
+  def classify_time_span(dt, style=:simple)
+    return "Unknown" if dt.nil?
+    
+    case style
+      when :simple
+        if dt > (Time.now - 1.week)
+          return "Last week"
+        else
+          return "Older"
+        end
+      when :detailed
+        return "#{distance_of_time_in_words_to_now(dt).capitalize} ago"
+      else
+        return "Unknown"
     end
   end
   
