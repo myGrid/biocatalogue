@@ -11,11 +11,11 @@ module ActivityFeedsHelper
   include ApplicationHelper
   
   # Returns something like:
-  #   { "Today" => [ [ "text", :service, DateTime ], [ ... ], ... ],
-  #     "Yesterday" => [ [ "text", :user, DateTime ], [ ... ], ... ],
-  #     "4 weeks ago" => [ [ "text", :annotation, DateTime ], [ ... ], ... ] } 
+  #   [ { "Today" => [ [ "text", :service, DateTime ], [ ... ], ... ] },
+  #     { "Yesterday" => [ [ "text", :user, DateTime ], [ ... ], ... ] },
+  #     { "4 weeks ago" => [ [ "text", :annotation, DateTime ], [ ... ], ... ] } ] 
   def activity_entries_for_home
-    results = Hash.new { |h,k| h[k] = [ ] }
+    results = [ ]
     
     options = { :items_limit => 50,
                 :days_limit => 60.days.ago }
@@ -82,13 +82,27 @@ module ActivityFeedsHelper
       end
     end
     
+    # We need to consider ordering of the grouped events!
+    
+    days_order = [ ]
+    al_items.map { |a| a.created_at }.sort { |a,b| b <=> a }.each do |d|
+      c = classify_day(d)
+      days_order << c unless days_order.include?(c)
+    end
+    
+    temp_results = Hash.new { |h,k| h[k] = [ ] }
+    
     # Now prepare the entries    
     al_items.each do |al|
       if ["User", "Service", "Annotation"].include?(al.activity_loggable_type)
         s = activity_feed_entry_for(get_object_via_cache(al.activity_loggable_type, al.activity_loggable_id, object_cache), object_cache)
         data = [ s, al.activity_loggable_type.underscore.to_sym, al.created_at ]
-        results[classify_day(al.created_at)] << data unless s.blank?
+        temp_results[classify_day(al.created_at)] << data unless s.blank?
       end
+    end
+    
+    days_order.each do |d|
+      results << { d => temp_results[d] }
     end
     
     return results
@@ -128,6 +142,7 @@ module ActivityFeedsHelper
           output << content_tag(:span, " added", :class => "activity_feed_action")
           output << " a #{item.attribute_name.humanize.downcase} annotation to #{annotatable.class.name.titleize}: "
           output << link_for_web_interface(annotatable)
+          output << " - "
           output << content_tag(:div, :class => "box_annotations", :style => "margin-top: 0.1em;") do
             rounded_html(annotation_text_item_background_color, "#333", "100%") do
               x = '<div class="text">'
@@ -144,13 +159,13 @@ module ActivityFeedsHelper
   end
   
   def classify_day(dt)
-    if dt > (Time.now - 1.day)
-      return "Today"
-    elsif dt > (Time.now - 2.days)
-      return "Yesterday"
-    else
+#    if dt > (Time.now - 1.day)
+#      return "Today"
+#    elsif dt > (Time.now - 2.days)
+#      return "Yesterday"
+#    else
       return "#{distance_of_time_in_words_to_now(dt).capitalize} ago"
-    end
+#    end
   end
   
   def get_object_via_cache(obj_type, obj_id, object_cache)

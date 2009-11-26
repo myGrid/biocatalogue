@@ -10,14 +10,14 @@
 
 <% unless (entries = activity_entries_for_home).empty? %>
   <div class="activity_feed">
-  <% entries.each do |day, day_entries| %>
+  <% entries.each do |e| %>
     <p class="day_title">
-			<%= day -%>
+			<%= e.keys.first -%>
     </p>
 		<table class="day">
-      <% day_entries.each do |i| %>
+      <% e[e.keys.first].each do |i| %>
 				<tr>
-					<td style="width: 28px; padding-right: 10px;"><%= generic_icon_for(i[1]) -%></td>
+					<td style="padding-top: 2px; width: 28px; padding-right: 10px;"><%= generic_icon_for(i[1]) -%></td>
 					<td style="text-align: left;"><%= i[0] -%></td>
 				</tr>
       <% end %>
