@@ -1,6 +1,6 @@
 class AddActivityLogsTable < ActiveRecord::Migration
   def self.up
-    create_table :activity_logs, :options => "DEFAULT CHARSET = utf8" do |t|
+    create_table :activity_logs do |t|
       t.column :action, :string
       t.column :activity_loggable_type, :string
       t.column :activity_loggable_id, :integer
