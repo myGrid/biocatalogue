@@ -721,8 +721,8 @@ module ApplicationHelper
     
     case style
       when :simple
-        if dt > (Time.now - 1.week)
-          return "Last week"
+        if dt > (Time.now - 7.days)
+          return "Last 7 days"
         else
           return "Older"
         end
