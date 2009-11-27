@@ -149,7 +149,23 @@ class ApplicationController < ActionController::Base
     BioCatalogue::Util.display_name(item)
   end
   helper_method :display_name
-
+  
+  # This takes into account the various idosyncracies and the data model 
+  # to give you the best URL to something. 
+  def url_for_web_interface(item)
+    case item
+      when Annotation, ServiceDeployment, ServiceVersion, SoapService, RestService
+        service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
+        return service_url(service_id) unless service_id.nil?
+      when SoapOperation, SoapInput, SoapOutput
+        service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
+        return service_url(service_id, :anchor => "#{item.class.name.underscore}_#{item.id}") unless service_id.nil?
+      else
+        return url_for(item)  
+    end
+  end
+  helper_method :url_for_web_interface
+  
   # Returns the host url and its port
   def base_host
     request.host_with_port

@@ -59,6 +59,24 @@ class AnnotationsController < ApplicationController
     end
   end
   
+  # PUT /annotations/1
+  # PUT /annotations/1.xml
+  def update
+    @annotation.value = params[:annotation][:value]
+    @annotation.version_creator_id = current_user.id
+    respond_to do |format|
+      if @annotation.save
+        flash[:notice] = 'Annotation was successfully updated.'
+        url_to_redirect_to = url_for_web_interface(@annotation.annotatable) || home_url
+        format.html { redirect_to url_to_redirect_to }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @annotation.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+  
   def create_inline
     # Set source as the current logged in user
     params[:annotation][:source_type] = current_user.class.name
@@ -74,7 +92,7 @@ class AnnotationsController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { redirect_to @annotatable }
+      format.html { render :partial => "annotations/#{params[:partial]}", :locals => { :annotatable => @annotatable } }
       format.js { render :partial => "annotations/#{params[:partial]}", :locals => { :annotatable => @annotatable } } 
     end
   end
