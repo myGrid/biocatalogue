@@ -15,7 +15,7 @@
 		</div>
 		
 		<div class="box_annotations">
-			<% if (details = thing.computational_type_details).blank? or thing.computational_type.blank? %>
+			<% if thing.computational_type_details.blank? and thing.computational_type.blank? %>
 				<span class="none_text">unknown</span>
 			<% else %>
 				<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
@@ -27,10 +27,10 @@
 							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(thing.updated_at)} ago)" -%></span>
 						</span>
 						<div class="computational_type_details">
-							<% if details.blank? %>
-								<%= h(input.computational_type) -%>
+							<% if thing.computational_type_details.blank? %>
+								<%= h(thing.computational_type) -%>
 							<% else %>
-								<%= render_computational_type_details(details) -%>
+								<%= render_computational_type_details(thing.computational_type_details) -%>
 							<% end %>
 						</div>
 					</div>

@@ -107,6 +107,7 @@ class SoapService < ActiveRecord::Base
       op.soap_outputs.each do |output|
         count += 1 unless output.description.blank?
         count += 1 unless output.computational_type.blank?
+        count += 1 unless output.computational_type_details.blank?
       end
     end
     

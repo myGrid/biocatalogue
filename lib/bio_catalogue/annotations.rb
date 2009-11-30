@@ -29,7 +29,9 @@ module BioCatalogue
     # This takes into account the entire service structure (ie: service container, 
     # service versions, service deployments, and the entire substructure of the service version instances). 
     #
-    # NOTE: this method ONLY takes into account annotations stored through the annotations plugin.
+    # IMPORTANT NOTE: this method ONLY takes into account annotations stored through the annotations plugin,
+    # so doesn't include the provider/submitter metadata directly in the database tables.
+    # Use #metadata_counts_for_service# to get counts that include the provider/submitter metadata directly in the database tables.
     def self.total_number_of_annotations_for_service(service, source_type="all")
       return 0 if service.nil?
       
@@ -103,8 +105,8 @@ module BioCatalogue
         providers_count = total_number_of_annotations_for_service(service, "ServiceProvider")
         
         # For now only the metadata of SoapServices comes from a service description doc (ie: from a service provider)
-        service.service_versions.each do |s_v|
-          providers_count += s_v.service_versionified.total_db_metadata_fields_count if s_v.service_versionified_type == "SoapService"
+        service.service_version_instances_by_type("SoapService").each do |si|
+          providers_count += si.total_db_metadata_fields_count
         end
         
         counts[:providers] = providers_count
