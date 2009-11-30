@@ -141,8 +141,14 @@ module ActivityFeedsHelper
         
         annotatable = get_object_via_cache(item.annotatable_type, item.annotatable_id, object_cache)
         source = get_object_via_cache(item.source_type, item.source_id, object_cache)
+        value_to_display = item.value
         
-        unless item.attribute.nil? or annotatable.nil? or source.nil?
+        # Special case for annotation values for certain kinds of attributes
+        if item.attribute_name.downcase == "category"
+          value_to_display = Category.find(item.value).try(:name)
+        end
+        
+        unless value_to_display.blank? or item.attribute.nil? or annotatable.nil? or source.nil?
           subject_name = case item.annotatable_type
             when "Service", "ServiceDeployment", "ServiceVersion", "SoapService", "RestService"
               "Service"
@@ -163,7 +169,7 @@ module ActivityFeedsHelper
             output << content_tag(:div, :class => "box_annotations", :style => "margin-top: 0.1em;") do
               rounded_html(annotation_text_item_background_color, "#333", "99%") do
                 x = '<div class="text">'
-                x << annotation_prepare_description(item.value, true, 100, false)
+                x << annotation_prepare_description(value_to_display, true, 100, false)
                 x << '</div>'
                 x
               end
