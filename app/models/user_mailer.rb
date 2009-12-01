@@ -6,7 +6,7 @@
 
 class UserMailer < ActionMailer::Base
   def registration_notification(user, base_url)
-    content_type "text/html"
+    content_type "text/plain"
     recipients  user.email
     from        "biocatalogue-support@rubyforge.org"
     subject     "[BioCatalogue] Please activate your new account"
@@ -15,7 +15,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def reset_password(user, base_url)
-    content_type "text/html"
+    content_type "text/plain"
     recipients  user.email
     from        "biocatalogue-support@rubyforge.org"
     subject     "[BioCatalogue] Resetting your password - Step 2"
