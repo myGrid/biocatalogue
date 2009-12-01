@@ -241,6 +241,7 @@ class ServicesController < ApplicationController
   
   def parse_current_filters
     @current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
+    puts "*** @current_filters = #{@current_filters.inspect}"
   end
   
   def parse_sort_params

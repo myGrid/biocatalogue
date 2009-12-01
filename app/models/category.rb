@@ -97,7 +97,7 @@ class Category < ActiveRecord::Base
     all.each do |cat|
       @@list[cat.id] = cat
       @@children[cat.id] ||= [ ]
-      @@children[(cat.parent_id || 0)] << @@list[cat.id] 
+      @@children[(cat.parent_id || 0)] << cat
     end
   end
  

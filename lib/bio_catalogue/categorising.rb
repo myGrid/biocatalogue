@@ -32,6 +32,8 @@ module BioCatalogue
     end
     
     def self.category_hierachy_text(category)
+      return "" if category.nil?
+      
       output = output_category_text(category, true)
       
       category_to_process = category
@@ -213,6 +215,7 @@ module BioCatalogue
     end
     
     def self.output_category_text(category, current=false)
+      return "" if category.nil?
       if current
         return "<b>#{CGI.escapeHTML(category.name)}</b>"
       else
