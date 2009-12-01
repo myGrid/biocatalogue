@@ -72,7 +72,7 @@ class UsersController < ApplicationController
       if @user.save
         UserMailer.deliver_registration_notification(@user, base_host)
         #flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
-        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you haven't received this email in the next few minutes, please contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
+        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you don't receive this email in the next few minutes, please contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
         format.html { redirect_to home_url }
         #format.xml  { render :xml => @user, :status => :created, :location => @user }
         format.xml { disable_action }
@@ -118,13 +118,13 @@ class UsersController < ApplicationController
       if user
         if user.activate!
           session[:previous_url] = "/users/#{user.id}"
-          flash[:notice] = "<div class=\"flash_header\">Account activated.</div><div class=\"flash_body\">You can log into your account now.</div>"
+          flash[:notice] = "<div class=\"flash_header\">Account activated</div><div class=\"flash_body\">You can log into your account now.</div>"
           ActivityLog.create(@log_event_core_data.merge(:action => "activate", :activity_loggable => user)) if USE_EVENT_LOG
           return
         end
       end
     end
-    flash[:error] = "<div class=\"flash_header\">Wrong activation code.</div><div class=\"flash_body\">Please check the activation link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
+    flash[:error] = "<div class=\"flash_header\">Wrong activation code</div><div class=\"flash_body\">Please check the activation link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
   end
 
   def forgot_password
