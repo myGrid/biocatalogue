@@ -10,7 +10,7 @@
 
 <%
 	attribute_name = "example"
-	examples_annotations = (local_assigns.has_key?(:annotations) ? annotations : annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.created_at <=> b.created_at})
+	examples_annotations = (local_assigns.has_key?(:annotations) ? annotations : annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.updated_at <=> b.updated_at})
 	main_div_id = "examples_#{rand(10000000)}"
 
 	show_header = true unless local_assigns.has_key?(:show_header)

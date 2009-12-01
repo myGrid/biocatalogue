@@ -20,7 +20,7 @@
 		</div>
 		
 		<div class="box_annotations">
-			<% websites_annotations = annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.created_at <=> b.created_at} %>
+			<% websites_annotations = annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.updated_at <=> b.updated_at} %>
 			<% unless websites_annotations.empty? %>
 				<% websites_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>

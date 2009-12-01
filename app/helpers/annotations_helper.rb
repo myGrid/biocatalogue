@@ -229,7 +229,7 @@ module AnnotationsHelper
       "<span>by </span>" +
       annotation_source_icon(annotation.source_type) +
       "#{link_to(h(annotation.source.annotation_source_name), annotation.source)} " +
-      "<span class='ago'>(#{distance_of_time_in_words_to_now(annotation.created_at)} ago)</span>"
+      "<span class='ago'>(#{distance_of_time_in_words_to_now(annotation.updated_at)} ago)</span>"
     end
   end
 
