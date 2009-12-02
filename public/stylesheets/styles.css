@@ -1395,6 +1395,10 @@ ul.simple_list li {
 	margin: 0;
 }
 
+#home_content h3 {
+	text-align: center;
+}
+
 #home_content #home_heading {
 	font-weight: bold;
 	font-size: 138.5%;
@@ -1425,7 +1429,7 @@ ul.simple_list li {
 	float: left;
 	width: 220px;
 	margin-left: -100%;
-	padding; 0;
+	padding: 0;
 }
 
 #home_content #middle_column_wrapper {
@@ -1539,6 +1543,12 @@ ul.simple_list li {
 	list-style: none;
 	font-size: 93%;
 	text-align: left;
+}
+
+#home_content .logo {
+	vertical-align: middle;
+	margin-right: 1.5em;
+	padding-bottom: 1em;
 }
 
 #key_points {
