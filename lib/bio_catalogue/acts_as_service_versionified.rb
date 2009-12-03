@@ -104,7 +104,7 @@ module BioCatalogue
         
         annotations_data.each do |attrib, value|
           case attrib.to_s.downcase
-            when "tag", "category", "name", "alternative_name"
+            when "tag", "category", "name", "alternative_name", "display_name"
               service_container_annotations[attrib] = value
             when "version"
               service_version_annotations[attrib] = value

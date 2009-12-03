@@ -15,7 +15,8 @@ class User < ActiveRecord::Base
   include RPXNow::UserIntegration
   
   acts_as_trashable
-
+  
+  acts_as_annotatable
   acts_as_annotation_source
   
   acts_as_favouriter

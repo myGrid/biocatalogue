@@ -106,7 +106,7 @@ class EmbraceData
 
       # Only take activated users
       if user[12] == "1"
-        id = user[0].to_i
+        id = user[0].to_s
         email = user[3]
         name = user[1]
         
@@ -136,11 +136,11 @@ class EmbraceData
     raw_services_data['resultset']['row'].each do |row|
       service = row['field']
       
-      id = service[0].to_i
+      id = service[0].to_s
       wsdl_url = (service[7].is_a?(String) ? service[7] : nil)
       das_url = (service[8].is_a?(String) ? service[8] : nil)
       rest_url = (service[9].is_a?(String) ? service[9] : nil)
-      user_id = service[13].to_i
+      user_id = service[13].to_s
       
       name = (service[2].is_a?(String) ? service[2] : nil)
       description = (service[3].is_a?(String) ? CGI.unescapeHTML(service[3]) : nil)
@@ -154,7 +154,7 @@ class EmbraceData
           :rest_url => rest_url,
           :user_id => user_id,
           :annotations => {
-            :name => name,
+            :alternative_name => name,
             :description => description,
             :documentation_url => documentation_url,
             :version => version,
@@ -180,7 +180,7 @@ class EmbraceData
     raw_tags_data['resultset']['row'].each do |row|
       tag = row['field']
       
-      s_id = tag[1].to_i
+      s_id = tag[1].to_s
       s = @services[s_id]
       
       if s.blank?
@@ -201,21 +201,17 @@ class EmbraceData
     
     puts "> #{tags_count} tags added to services data (#{raw_tags_data['resultset']['row'].length} found in XML file)"
     
-    puts ""
-    puts "@users = "
-    puts @users.inspect
+#    puts ""
+#    puts "@users = "
+#    puts @users.inspect
+#    
+#    puts ""
+#    puts "@services = "
+#    puts @services.inspect
     
-    puts ""
-    puts "@services = "
-    puts @services.inspect
-    
-    # If test mode, only have 10 users and 10 services
+    # If test mode, do only 5 services
     if test_mode
-      @users.keys[10..-1].each do |k|
-        @users.delete(k)
-      end
-      
-      @services.keys[10..-1].each do |k|
+      @services.keys[5..-1].each do |k|
         @services.delete(k)
       end
     end
@@ -226,7 +222,7 @@ end
 
 class EmbraceImporter
   
-  attr_accessor :options, :data, :registry_source
+  attr_accessor :options, :data, :registry_source, :biocat_agent
   
   def initialize(args)
     @options = {
@@ -262,11 +258,17 @@ class EmbraceImporter
     
     # Get or create the EMBRACE Registry registry object, which we will be using as the annotation and submitter source...
     @registry_source = Registry.find_by_name("embrace")
-    
     if @registry_source.nil?
       @registry_source = Registry.create(:name => "embrace",
                                         :display_name => "The EMBRACE Registry",
                                         :homepage => "http://www.embraceregistry.net/")
+    end
+    
+    # Get or create the BioCatalogue agent, which we will be using as the annotation source...
+    @biocat_agent = Agent.find_by_name("biocatalogue")
+    if @biocat_agent.nil?
+      @biocat_agent = Agent.create(:name => "biocatalogue",
+                                   :display_name => "BioCatalogue")
     end
     
   end
@@ -297,14 +299,19 @@ class EmbraceImporter
     stats["total_services_were_rest"] = Counter.new
     stats["total_annotations_new"] = Counter.new
     stats["total_annotations_already_exist"] = Counter.new
-    stats["total_annotations_failed"] = Counter.new
+    stats["total_annotations_failed_to_create"] = Counter.new
     stats["total_annotations_deleted"] = Counter.new
+    stats["total_annotations_updated"] = Counter.new
+    stats["total_annotations_failed_to_update"] = Counter.new
     stats["ids_of_services_new"] = [ ]
     stats["ids_of_services_updated"] = [ ]
     
-    # First the users...
+    
     begin
+      
       User.transaction do
+        
+        # First the users...
         
         @data.users.each do |user_id, user|
         
@@ -314,11 +321,11 @@ class EmbraceImporter
           existing = User.find_by_email(user[:email])
           
           if existing
-            puts "> INFO: User already exists in the DB"
+            puts "INFO: User already exists in the DB"
             stats["ids_of_users_existing"] << existing.id
             
             Relationship.create(:subject => existing, :predicate => "BioCatalogue:alsoIn", :object => @registry_source)
-            # FIXME: user_id can't be set as Object... maybe use Annotation? Relationship.create(:subject => existing, :predicate => "BioCatalogue:hasEmbraceId", :object => user_id)
+            existing.create_annotations({ "embrace_id" => user_id }, @biocat_agent)
           else
             u = User.new
             
@@ -336,47 +343,43 @@ class EmbraceImporter
               u.activate!
               UserMailer.deliver_reset_password(u, "www.biocatalogue.org")
               
-              puts "> INFO: new user added to DB and a reset password email has been sent"
+              puts "INFO: new user added to DB and a reset password email has been sent"
               stats["ids_of_users_new"] << u.id
               
               Relationship.create(:subject => u, :predicate => "BioCatalogue:origin", :object => @registry_source)
-              # FIXME: user_id can't be set as Object... maybe use Annotation?  Relationship.create(:subject => u, :predicate => "BioCatalogue:hasEmbraceId", :object => user_id)
+              u.create_annotations({ "embrace_id" => user_id }, @biocat_agent)
             else
-              puts "> ERROR: failed to save new user. Error(s): #{u.errors.full_messages.to_sentence}"
+              puts "ERROR: failed to save new user. Error(s): #{u.errors.full_messages.to_sentence}"
             end
           end
         end
         
-        if @options[:test]
-          raise "You asked me to test, so I am rolling back your transaction so nothing is stored in the db..."
-        end
-        
-      end
-    rescue Exception => ex
-      puts ""
-      puts ">> ERROR: exception occured and transaction has been rolled back. Exception:"
-      puts ex.message
-      puts ex.backtrace.join("\n")
-    end
-    
-    # Then the services...
-    begin
-      Service.transaction do
+        # Then the services...
         
         @data.services.each do |service_id, service|
         
           puts ""
-          puts ">> Processing service '#{service[:annotations][:name]}' (ID: #{service_id})"
+          puts ">> Processing service '#{service[:annotations][:alternative_name]}' (ID: #{service_id})"
           
-          if !service[:wsdl_url].nil?
-            puts "INFO: SOAP service. Processing..."
-            process_soap_service(service, stats)
-          elsif !service[:rest_url].nil?
-            puts "INFO: REST service. Processing..."
-            process_rest_service(service, stats)
-          elsif !service[:das_url].nil?
-            puts "WARNING: DAS service. Cannot add this to the DB."
+          submitter = nil
+          unless service[:user_id].nil? or @data.users[service[:user_id]].nil?
+            submitter = User.find_by_email(@data.users[service[:user_id]][:email])
+          end
+          
+          if submitter.nil?
             stats["total_services_failed_to_create"].increment
+            puts "ERROR: could not find submitter with Embrace ID: #{service[:user_id]}!"
+          else
+            if !service[:wsdl_url].nil?
+              puts "INFO: SOAP service. Processing..."
+              process_soap_service(service, submitter, stats)
+            elsif !service[:rest_url].nil?
+              puts "INFO: REST service. Processing..."
+              process_rest_service(service, submitter, stats)
+            elsif !service[:das_url].nil?
+              puts "WARNING: DAS service. Cannot add this to the DB."
+              stats["total_services_failed_to_create"].increment
+            end
           end
           
         end
@@ -424,6 +427,191 @@ class EmbraceImporter
     end
   end
   
+  def process_soap_service(service, submitter, stats)
+    stats["total_services_were_soap"].increment
+    
+    begin
+    
+      # Normalize WSDL URL
+      wsdl_url = Addressable::URI.parse(service[:wsdl_url]).normalize.to_s
+      
+      soap_service = nil
+      service_ok = true
+  
+      # Check if the service exists in the database and if not create it.
+      #
+      # NOTE: since we know that the duplication check for Soap Services currently 
+      # doesn't take into account the endpoint, we can just provide a blank string for that. 
+      if (existing_service = SoapService.check_duplicate(wsdl_url, "")).nil?
+        # Doesn't exist, so new SoapService needs to be created...
+        
+        soap_service = SoapService.new(:wsdl_location => wsdl_url)
+        new_service_success, s_data = soap_service.populate
+        
+        if new_service_success
+          new_service_success = soap_service.submit_service(s_data["endpoint"], submitter, { })
+          
+          if new_service_success
+            puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
+            stats["ids_of_services_new"] << soap_service.service.id
+          else
+            puts "ERROR: failed to carry out submit_service of SoapService object with WSDL URL '#{wsdl_url}' (ie: db has not been populated with the SoapService and associated objects). Check the relevant Rails log file for more info."
+            service_ok = false
+          end
+        else
+          puts "ERROR: failed to populate SoapService object from WSDL URL '#{wsdl_url}'. Error messages: #{soap_service.errors.full_messages.to_sentence}"
+          service_ok = false
+        end
+      else
+        # Exists, so update the submitters info and save, and then get the relevant SoapService object...
+                
+        puts "INFO: existing matching service found (ID: #{existing_service.id}, WSDL URL: '#{wsdl_url}')."
+        
+        unless stats["ids_of_services_new"].include?(existing_service.id) or stats["ids_of_services_updated"].include?(existing_service.id) 
+          stats["ids_of_services_updated"] << existing_service.id
+        end
+        
+        unless existing_service.update_service_structure_submitter(submitter)
+          puts "ERROR: failed to update the submitter of this service (ID: #{existing_service.id}) and it's child ServiceDeployments and ServiceVersions."
+        end
+        
+        existing_service.service_version_instances_by_type("SoapService").each do |si|
+          soap_service = si if si.wsdl_location.downcase == wsdl_url.downcase
+        end
+      end
+      
+      # Continue adding any annotations etc
+      if service_ok and !soap_service.nil?
+        sync_annotations(service, soap_service, submitter, stats)
+      else
+        stats["total_services_failed_to_create"].increment
+      end
+    
+    rescue Exception => ex
+      stats["total_services_failed_to_create"].increment
+      puts ""
+      puts "> ERROR: exception whilst processing SOAP service. Exception:"
+      puts ex.message
+      puts ex.backtrace.join("\n")
+    end
+    
+  end
+  
+  def process_rest_service(service, submitter, stats)
+    stats["total_services_were_rest"].increment
+    
+    begin
+    
+      endpoint = Addressable::URI.parse(service[:rest_url]).normalize.to_s unless endpoint.blank?
+      
+      rest_service = nil
+      service_ok = true
+      
+      if (existing_service = RestService.check_duplicate(endpoint)).nil?
+        # Doesn't exist, so new RestService needs to be created...
+        
+        rest_service = RestService.new
+        rest_service.name = service[:annotations][:alternative_name]
+        service[:annotations].delete(:alternative_name)
+        
+        new_service_success = rest_service.submit_service(endpoint, submitter, { })
+        
+        if new_service_success
+          puts "INFO: new service (ID: #{rest_service.service(true).id}, Endpoint URL: '#{endpoint}') successfully created!"
+          stats["ids_of_services_new"] << rest_service.service.id
+        else
+          puts "ERROR: failed to carry out submit_service of RestService object with endpoint URL '#{endpoint}' (ie: db has not been populated with the RestService and associated objects). Check the relevant Rails log file for more info."
+          service_ok = false
+        end
+      else
+        # Exists, so update the submitters and save, and then get the relevant RestService object...
+        
+        puts "INFO: existing matching service found (ID: #{existing_service.id}, Endpoint URL: '#{endpoint}')."
+        
+        unless stats["ids_of_services_new"].include?(existing_service.service.id) or stats["ids_of_services_updated"].include?(existing_service.id) 
+          stats["ids_of_services_updated"] << existing_service.service.id
+        end
+        
+        unless existing_service.update_service_structure_submitter(submitter)
+          puts "ERROR: failed to update the submitter of this service (ID: #{existing_service.id}) and it's child ServiceDeployments and ServiceVersions."
+        end
+        
+        existing_service.service_version_instances_by_type("RestService").each do |si|
+          rest_service = si
+        end
+      end
+      
+      # Continue adding any annotations etc
+      if service_ok and !rest_service.nil?
+        sync_annotations(service, rest_service, submitter, stats)
+      else
+        stats["total_services_failed_to_create"].increment
+      end
+    
+    rescue Exception => ex
+      stats["total_services_failed_to_create"].increment
+      puts ""
+      puts "> ERROR: exception whilst processing REST service. Exception:"
+      puts ex.message
+      puts ex.backtrace.join("\n")
+    end
+    
+  end
+  
+  def sync_annotations(service_data, service_instance_obj, submitter, stats)
+    service_data[:annotations].each do |attribute, value|
+      unless value.blank?
+        case attribute
+          when :alternative_name
+            sync_annotation(service_instance_obj.service, attribute, value, submitter, stats)
+          when :description, :documentation_url
+            sync_annotation(service_instance_obj, attribute, value, submitter, stats)
+          when :version
+            sync_annotation(service_instance_obj.service_version, attribute, value, submitter, stats)
+          when :tag
+            value.each do |v|
+              sync_annotation(service_instance_obj.service, attribute, v, submitter, stats)
+            end
+        end
+      end
+    end
+  end
+  
+  def sync_annotation(annotatable, attribute, value, original_submitter, stats)
+    annotation = nil
+    
+    # Check for an existing annotation made previously with the source being the EMBRACE Registry object
+    existing = annotatable.annotations.find(:first, 
+                                            :conditions => { :annotation_attributes => { :name => attribute.to_s }, 
+                                                             :value => value,
+                                                             :source_type => @registry_source.class.name,
+                                                             :source_id => @registry_source.id }, 
+                                            :joins => [ :attribute ])
+
+    if existing.nil?
+      puts "INFO: need to create new annotation"
+      annotation = create_annotation(original_submitter, annotatable, attribute, value, stats)
+    else
+      puts "INFO: need to update the source of an existing annotation that had the source set to the EMBRACE Registry"
+      
+      annotation = existing
+      
+      # Update the source of the annotation
+      annotation.source = original_submitter
+      if annotation.save
+        puts "INFO: annotation successfully updated!"
+        stats["total_annotations_updated"].increment
+      else
+        puts "WARNING: failed to update the source of annotation (ID: #{annotation.id})"
+        stats["total_annotations_failed_to_update"].increment
+      end
+    end
+    
+    unless annotation.nil?
+      Relationship.create(:subject => annotation, :predicate => "BioCatalogue:origin", :object => @registry_source)
+    end
+  end
+  
   def create_annotation(source, annotatable, attribute, value, stats, is_ontological_term=false)
     annotatable_type = annotatable.class.name
     source_type = source.class.name
@@ -450,18 +638,23 @@ class EmbraceImporter
       stats["total_annotations_new"].increment
       puts "INFO: annotation successfully created:"
       puts format_annotation_info(source_type, source.id, annotatable_type, annotatable.id, attribute, value, value_type)
+      
+      return ann
     else
       # Check if it failed because of duplicate...
       if ann.errors.full_messages.include?("This annotation already exists and is not allowed to be created again.")
         stats["total_annotations_already_exist"].increment
         puts "INFO: duplicate annotation detected so not storing it again. Annotation is:"
-        puts format_annotation_info(asource_type, source.id, nnotatable_type, annotatable.id, attribute, value,value_type)
+        puts format_annotation_info(source_type, source.id, annotatable_type, annotatable.id, attribute, value,value_type)
       else
-        stats["total_annotations_failed"].increment
+        stats["total_annotations_failed_to_create"].increment
         puts "ERROR: creation of annotation failed! Errors: #{ann.errors.full_messages.to_sentence}. Check Rails logs for more info. Annotation is:"
         puts format_annotation_info(source_type, source.id, annotatable_type, annotatable.id, attribute, value, value_type)
       end
+      
+      return nil
     end
+    
   end
   
   def format_annotation_info(source_type, source_id, annotatable_type, annotatable_id, attribute, value, value_type)
@@ -472,143 +665,6 @@ class EmbraceImporter
            "\tValue type: #{value_type}"
   end
   
-  def process_soap_service(service, stats)
-    stats["total_services_were_soap"].increment
-    
-    begin
-    
-      # Normalize WSDL URL
-      wsdl_url = Addressable::URI.parse(service[:wsdl_url]).normalize.to_s
-      
-      soap_service = nil
-      service_ok = true
-  
-      # Check if the service exists in the database and if not create it.
-      #
-      # NOTE: since we know that the duplication check for Soap Services currently 
-      # doesn't take into account the endpoint, we can just provide a blank string for that. 
-      if (existing_service = SoapService.check_duplicate(wsdl_url, "")).nil?
-        # Doesn't exist, so new SoapService needs to be created...
-        
-        soap_service = SoapService.new(:wsdl_location => wsdl_url)
-        new_service_success, s_data = soap_service.populate
-        
-        if new_service_success
-          new_service_success = soap_service.submit_service(s_data["endpoint"], @registry_source, { })
-          
-          if new_service_success
-            puts "INFO: new service (ID: #{soap_service.service(true).id}, WSDL URL: '#{wsdl_url}') successfully created!"
-            stats["ids_of_services_new"] << soap_service.service.id
-          else
-            puts "ERROR: failed to carry out submit_service of SoapService object with WSDL URL '#{wsdl_url}' (ie: db has not been populated with the SoapService and associated objects). Check the relevant Rails log file for more info."
-            service_ok = false
-          end
-        else
-          puts "ERROR: failed to populate SoapService object from WSDL URL '#{wsdl_url}'. Error messages: #{soap_service.errors.full_messages.to_sentence}"
-          service_ok = false
-        end
-      else
-        # Exists, so get the relevant SoapService object...
-        
-        puts "INFO: existing matching service found (ID: #{existing_service.id}, WSDL URL: '#{wsdl_url}')."
-        
-        unless stats["ids_of_services_new"].include?(existing_service.id) or stats["ids_of_services_updated"].include?(existing_service.id) 
-          stats["ids_of_services_updated"] << existing_service.id
-        end
-        
-        existing_service.service_versions.each do |s_v|
-          if (s_v.service_versionified_type == "SoapService") && ((s_v_i = s_v.service_versionified).wsdl_location.downcase == wsdl_url.downcase)
-            soap_service = s_v_i
-          end
-        end
-      end
-      
-      # Continue adding any annotations etc
-      if service_ok and !soap_service.nil?
-        soap_service.process_annotations_data(service[:annotations].dup, @registry_source)
-      else
-        stats["total_services_failed_to_create"].increment
-      end
-    
-    rescue Exception => ex
-      stats["total_services_failed_to_create"].increment
-      puts ""
-      puts "> ERROR: exception whilst processing SOAP service. Exception:"
-      puts ex.message
-      puts ex.backtrace.join("\n")
-    end
-    
-  end
-  
-  def process_rest_service(service, stats)
-    stats["total_services_were_rest"].increment
-    
-    begin
-    
-      endpoint = Addressable::URI.parse(service[:rest_url]).normalize.to_s unless endpoint.blank?
-      
-      rest_service = nil
-      service_ok = true
-      
-      if (existing_service = RestService.check_duplicate(endpoint)).nil?
-        
-        # Doesn't exist, so new RestService needs to be created...
-        
-        rest_service = RestService.new
-        rest_service.name = service[:annotations][:name]
-        service[:annotations].delete(:name)
-        
-        new_service_success = rest_service.submit_service(endpoint, @registry_source, { })
-        
-        if new_service_success
-          puts "INFO: new service (ID: #{rest_service.service(true).id}, Endpoint URL: '#{endpoint}') successfully created!"
-          stats["ids_of_services_new"] << rest_service.service.id
-        else
-          puts "ERROR: failed to carry out submit_service of RestService object with endpoint URL '#{endpoint}' (ie: db has not been populated with the RestService and associated objects). Check the relevant Rails log file for more info."
-          service_ok = false
-        end
-      
-      else
-      
-        # Exists, so get the relevant RestService object...
-        
-        puts "INFO: existing matching service found (ID: #{existing_service.id}, Endpoint URL: '#{endpoint}')."
-        
-        unless stats["ids_of_services_new"].include?(existing_service.service.id) or stats["ids_of_services_updated"].include?(existing_service.id) 
-          stats["ids_of_services_updated"] << existing_service.service.id
-        end
-        
-        existing_service.service_versions.each do |s_v|
-          if (s_v.service_versionified_type == "RestService")
-            rest_service = s_v_i
-          end
-        end
-        
-      end
-      
-      # Continue adding any annotations etc
-      if service_ok and !rest_service.nil?
-        rest_service.process_annotations_data(service[:annotations].dup, @registry_source)
-      else
-        stats["total_services_failed_to_create"].increment
-      end
-    
-    rescue Exception => ex
-      stats["total_services_failed_to_create"].increment
-      puts ""
-      puts "> ERROR: exception whilst processing REST service. Exception:"
-      puts ex.message
-      puts ex.backtrace.join("\n")
-    end
-    
-  end
-  
-  def sync_annotations(service)
-    
-    
-    # TODO: add a Relationship object saying that the annotation originated from the EMBRACE regsitry
-  end
-  
 end
 
 # Redirect $stdout to log file
@@ -616,10 +672,7 @@ puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/embrace_impor
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "embrace_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 
-# puts Benchmark.measure { EmbraceImporter.new(ARGV.clone).run }
-
-require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
-EmbraceData.new("embrace")
+puts Benchmark.measure { EmbraceImporter.new(ARGV.clone).run }
 
 # Reset $stdout
 $stdout = STDOUT

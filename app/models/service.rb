@@ -196,6 +196,36 @@ class Service < ActiveRecord::Base
     end
   end
   
+  # This updates the submitter as well as the submitter of this service as well 
+  # as all ServiceDeployment and ServiceVersions underneath it.
+  # NOTE: USE THIS WITH CAUTION AS YOU ARE ASSUMING THAT ONE SUBMITTER SUBMITTED EVERYTHING. 
+  def update_service_structure_submitter(new_submitter)
+    return false if new_submitter.nil?
+    
+    status = true
+    
+    unless self.submitter == new_submitter
+      self.submitter = new_submitter
+      status = status && self.save
+    end
+    
+    self.service_versions.each do |sv|
+      unless sv.submitter == new_submitter
+        sv.submitter = new_submitter
+        status = status && sv.save
+      end
+    end
+    
+    self.service_deployments.each do |sd|
+      unless sd.submitter == new_submitter
+        sd.submitter = new_submitter
+        status = status && sd.save
+      end
+    end
+    
+    return status
+  end
+  
 protected
   
   def generate_unique_code

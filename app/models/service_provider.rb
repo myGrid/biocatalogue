@@ -13,7 +13,6 @@ class ServiceProvider < ActiveRecord::Base
   acts_as_trashable
   
   acts_as_annotatable
-  
   acts_as_annotation_source
   
   virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
