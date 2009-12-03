@@ -110,6 +110,8 @@ module ApplicationHelper
         "page_go.png"
       when :dropdown
         "dropdown.png"
+      when :partners
+        "group_link.png"
       else
         ''
     end
