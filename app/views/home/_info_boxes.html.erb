@@ -13,25 +13,28 @@
 	<!-- DISCOVER -->
 	<div class="liquid-round" style="width: 230px; margin-bottom: 5px; float: left; margin-right: 10px;">
 	  <div class="top"><span></span></div>
-	  <div class="center-content" style="height: 14em;">
+	  <div class="center-content" style="height: 12em;">
 			<!-- CONTENT BEGIN -->
 			<p class="info_text_head">
 			  "Web Services are hard to find"
 			</p>
 			<p class="info_text_label">
-				<%= image_tag "label_discover.png" -%>
+				<%= link_to(image_tag("label_discover.png", :alt => "Discover Services"), services_path) -%>
 			</p>
 			<ul class="info_text_list">
 				<li>
 					Find the right Web Service
 				</li>
 				<li>
-					Easy and powerful search and filtering
+					Powerful search and filtering
 				</li>
 				<li>
-					Search across metadata by service providers, expert curators and the wider community
+					Information from providers and community
 				</li>
 			</ul>
+			<p style="text-align: center; margin-top: 0.5em;">
+				<b><%= link_to "More info", "http://www.biocatalogue.org/wiki/doku.php?id=public:help-internal-discover" -%></b>
+			</p>
 			<!-- CONTENT END -->
 	  </div>
 	  <div class="bottom"><span></span></div>
@@ -40,25 +43,28 @@
 	<!-- REGISTER -->
 	<div class="liquid-round" style="width: 230px; margin-bottom: 5px; float: left;">
 	  <div class="top"><span></span></div>
-	  <div class="center-content" style="height: 14em;">
+	  <div class="center-content" style="height: 12em;">
 			<!-- CONTENT BEGIN -->
 			<p class="info_text_head">
 			  "My Web Services are not visible"
 			</p>
 			<p class="info_text_label">
-				<%= image_tag "label_register.png" -%>
+				<%= link_to(image_tag("label_register.png", :alt => "Register Services"), new_service_path) -%>
 			</p>
 			<ul class="info_text_list">
 				<li>
-					Anyone can easily register Web Services
+					Easily register Web Services
 				</li>
 				<li>
-					Instantly available to the community, developers and search engines
+					Instantly available to everyone
 				</li>
 				<li>
-					Service providers can advertise, describe and monitor their services
+					Providers can advertise, describe and monitor their Services
 				</li>
 			</ul>
+			<p style="text-align: center; margin-top: 0.5em;">
+				<b><%= link_to "More info", "http://www.biocatalogue.org/wiki/doku.php?id=public:help-internal-register" -%></b>
+			</p>
 			<!-- CONTENT END -->
 	  </div>
 	  <div class="bottom"><span></span></div>
@@ -73,7 +79,7 @@
 	<!-- ANNOTATE -->
 	<div class="liquid-round" style="width: 230px; margin-bottom: 20px; float: left; margin-right: 10px;">
 	  <div class="top"><span></span></div>
-	  <div class="center-content" style="height: 14em;">
+	  <div class="center-content" style="height: 10.5em;">
 			<!-- CONTENT BEGIN -->
 			<p class="info_text_head">
 			  "Web Services are poorly described"
@@ -83,15 +89,18 @@
 			</p>
 			<ul class="info_text_list">
 				<li>
-					Anyone can describe, tag, recommend,  comment on and annotate services
+					Anyone can describe and annotate
 				</li>
 				<li>
-					Expert curators oversee the BioCatalogue
+					Ongoing expert curation
 				</li>
 				<li>
-					The wider community participates in this effort through social curation
+					Social curation by the community
 				</li>
 			</ul>
+			<p style="text-align: center; margin-top: 0.5em;">
+				<b><%= link_to "More info", "http://www.biocatalogue.org/wiki/doku.php?id=public:help-internal-annotate" -%></b>
+			</p>
 			<!-- CONTENT END -->
 	  </div>
 	  <div class="bottom"><span></span></div>
@@ -100,7 +109,7 @@
 	<!-- MONITOR -->
 	<div class="liquid-round" style="width: 230px; margin-bottom: 20px; float: left;">
 	  <div class="top"><span></span></div>
-	  <div class="center-content" style="height: 14em;">
+	  <div class="center-content" style="height: 10.5em;">
 			<!-- CONTENT BEGIN -->
 			<p class="info_text_head">
 			  "Web Services are volatile"
@@ -110,12 +119,18 @@
 			</p>
 			<ul class="info_text_list">		
 				<li>
-					Web Services change their location and capability, or become outdated
+					Services change and get outdated
 				</li>
 				<li>
-					The BioCatalogue monitors Web Services and records historical data on the availability, reliability and functionality of these services
+					BioCatalogue monitors Services
+				</li>
+				<li>
+					 Monitors availability and reliability
 				</li>
 			</ul>
+			<p style="text-align: center; margin-top: 0.5em;">
+				<b><%= link_to "More info", "http://www.biocatalogue.org/wiki/doku.php?id=public:help-internal-monitor" -%></b>
+			</p>
 			<!-- CONTENT END -->
 	  </div>
 	  <div class="bottom"><span></span></div>
