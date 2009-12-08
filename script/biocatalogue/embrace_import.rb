@@ -341,7 +341,10 @@ class EmbraceImporter
             
             if u.save
               u.activate!
-              UserMailer.deliver_reset_password(u, "www.biocatalogue.org")
+              
+              unless @options[:test]
+                UserMailer.deliver_reset_password(u, "www.biocatalogue.org")
+              end
               
               puts "INFO: new user added to DB and a reset password email has been sent"
               stats["ids_of_users_new"] << u.id
