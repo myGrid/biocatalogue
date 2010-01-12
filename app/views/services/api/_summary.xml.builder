@@ -22,99 +22,113 @@ parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summar
     
   end
   
-  # <alternativeNames>
-  parent_xml.alternativeNames do 
-    
-    # <alternativeName> *
-    all_alternative_name_annotations_for_service(service).each do |ann|
-      parent_xml.alternativeName ann.value
-    end
-    
+  # <alternativeName> *
+  all_alternative_name_annotations_for_service(service).each do |ann|
+    parent_xml.alternativeName ann.value
   end
   
-  # <serviceTypes>
-  parent_xml.serviceTypes do
-    service.service_types.each do |s_type|
-      # <serviceType>
-      parent_xml.serviceType s_type
-    end
+  # <serviceType> *
+  service.service_types.each do |s_type|
+    parent_xml.serviceType s_type
   end
   
-  # <categories>
-  parent_xml.categories do
-    # <category> *
-    service.annotations_with_attribute("category").each do |category_annotation|
-      unless (category = Category.find_by_id(category_annotation.value)).nil?
-        parent_xml.category category.name
-      end
+  # <category> *
+  service.annotations_with_attribute("category").each do |category_annotation|
+    unless (category = Category.find_by_id(category_annotation.value)).nil?
+      parent_xml.category category.name, xlink_attributes(uri_for_object(category))
     end
   end
   
-  # <providers>
-  parent_xml.providers do
-    # <provider> *
-    service.service_deployments.each do |service_deployment|
-      parent_xml.provider xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider)) do
-        parent_xml.name service_deployment.provider.name   
-      end
+  # <provider> *
+  service.service_deployments.each do |service_deployment|
+    parent_xml.provider xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider)) do
+      parent_xml.name service_deployment.provider.name   
     end
   end
   
-  # <endpoints>
-  parent_xml.endpoints do
-    # <endpoint> *
-    service.service_deployments.each do |service_deployment|
-      parent_xml.endpoint service_deployment.endpoint
-    end
+  # <endpoint> *
+  service.service_deployments.each do |service_deployment|
+    parent_xml.endpoint service_deployment.endpoint
   end
   
+  # <wsdl> *
   unless (soap_services = service.service_version_instances_by_type("SoapService")).blank?
-    # <wsdls>
-    parent_xml.wsdls do 
-      # <wsdl> *
-      soap_services.each do |soap_service|
-        parent_xml.wsdl soap_service.wsdl_location
-      end
+    soap_services.each do |soap_service|
+      parent_xml.wsdl soap_service.wsdl_location
     end
   end
   
-  # <locations>
-  parent_xml.locations do
-    # <location> *
-    service.service_deployments.each do |service_deployment|
-      if service_deployment.has_location_info?
-        parent_xml.location :city => service_deployment.city, :country => service_deployment.country  
-      end
+  # <location> *
+  service.service_deployments.each do |service_deployment|
+    if service_deployment.has_location_info?
+      parent_xml.location :city => service_deployment.city, :country => service_deployment.country  
     end
   end
   
-  # <descriptions>
-  parent_xml.descriptions do 
-    # <description> *
-    service.service_version_instances.each do |service_instance|
+  # <documentationUrl> *
+  service.service_version_instances.each do |service_instance|
+    service_instance.annotations_with_attribute("documentation_url").each do |ann|
+      parent_xml.documentationUrl ann.value 
+    end
+  end
+  
+  # <description> *
+  service.service_version_instances.each do |service_instance|
+  
+    unless (desc = service_instance.description).blank?
+      parent_xml.description desc
+    end
     
-      unless (desc = service_instance.description).blank?
-        parent_xml.description do
-          parent_xml.cdata!(desc)
-        end
-      end
+    service_instance.annotations_with_attribute("description").each do |ann|
+      parent_xml.description ann.value 
+    end
       
-      service_instance.annotations_with_attribute("description").each do |ann|
-        parent_xml.description do 
-          parent_xml.cdata!(ann.value)
-        end
-      end
-        
+  end
+  
+  # <tag> *
+  BioCatalogue::Annotations.get_tag_annotations_for_annotatable(service).each do |ann|
+    parent_xml.tag ann.value, xlink_attributes(BioCatalogue::Tags.generate_tag_show_uri(ann.value))
+  end
+  
+  # <cost> *
+  service.service_deployments.each do |service_deployment|
+    service_deployment.annotations_with_attribute("cost").each do |ann|
+      parent_xml.cost ann.value 
     end
   end
   
-  # <tags>
-  parent_xml.tags do
-    # <tag> *
-    BioCatalogue::Annotations.get_tag_annotations_for_annotatable(service).each do |ann|
-      parent_xml.tag do 
-        parent_xml.cdata!(ann.value)
-      end
+  # <license> *
+  service.service_version_instances.each do |service_instance|
+    service_instance.annotations_with_attribute("license").each do |ann|
+      parent_xml.license ann.value
+    end
+  end
+
+  # <usageCondition> *
+  service.service_deployments.each do |service_deployment|
+    service_deployment.annotations_with_attribute("usage_condition").each do |ann|
+      parent_xml.usageCondition ann.value 
+    end
+  end
+
+  # <contact> *
+  service.service_deployments.each do |service_deployment|
+    service_deployment.annotations_with_attribute("contact").each do |ann|
+      parent_xml.contact ann.value 
+    end
+  end
+  
+  # <publication> *
+  service.service_version_instances.each do |service_instance|
+    service_instance.annotations_with_attribute("publication").each do |ann|
+      parent_xml.publication ann.value 
+    end
+  end
+
+  # <citation> *
+  service.service_version_instances.each do |service_instance|
+    service_instance.annotations_with_attribute("citation").each do |ann|
+      parent_xml.citation ann.value 
     end
   end
   

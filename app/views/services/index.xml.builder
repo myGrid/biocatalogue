@@ -74,9 +74,7 @@ xml.tag! "services",
     
     # <service> *
     @services.each do |service|
-      xml.service xlink_attributes(uri_for_object(service), :title => xlink_title(service)) do
-        render :partial => "services/api/result_item", :locals => { :parent_xml => xml, :service => service }
-      end
+      render :partial => "services/api/result_item", :locals => { :parent_xml => xml, :service => service }
     end
     
   end

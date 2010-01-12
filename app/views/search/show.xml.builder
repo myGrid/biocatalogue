@@ -56,10 +56,10 @@ xml.tag! "search",
     items = search_item_compound_ids_to_objects(paged_item_compound_ids)
     
     items.each do |item|
-      xml.tag! item.class.name.camelize(:lower), xlink_attributes(uri_for_object(item), :title => xlink_title(item)) do 
-        if item.is_a? Service
-          render :partial => "services/api/result_item", :locals => { :parent_xml => xml, :service => item }
-        else
+      if item.is_a? Service
+        render :partial => "services/api/result_item", :locals => { :parent_xml => xml, :service => item }
+      else
+        xml.tag! item.class.name.camelize(:lower), xlink_attributes(uri_for_object(item), :title => xlink_title(item)) do 
           xml.name display_name(item)
         end
       end

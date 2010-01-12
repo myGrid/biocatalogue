@@ -23,9 +23,7 @@ parent_xml.annotations xlink_attributes(uri_for_object(service, :sub_path => "an
                              :name => attribute_name
         
         # <value>
-        parent_xml.value :type => ann.value_type do
-          parent_xml.cdata!(ann.value)
-        end
+        parent_xml.value ann.value, :type => ann.value_type
            
         # <source>
         parent_xml.source xlink_attributes(uri_for_object(ann.source), :title => xlink_title(ann.source)),

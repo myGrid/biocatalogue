@@ -14,6 +14,8 @@ ActionController::Routing::Routes.draw do |map|
   map.stats_index '/stats', :controller => 'stats', :action => 'index'
   map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh', :conditions => { :method => :post }
   
+  map.resources :categories
+  
   map.resources :registries
 
   map.resources :agents
@@ -102,7 +104,9 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { :filters => :get },
                 :member => { :categorise => :post,
                              :summary => :get,
-                             :annotations => :get }
+                             :annotations => :get,
+                             :deployments => :get,
+                             :versions => :get }
   
   map.resources :service_tests, 
                 :collection => {:add_test => :post }

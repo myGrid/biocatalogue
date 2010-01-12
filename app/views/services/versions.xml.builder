@@ -1,4 +1,4 @@
-# BioCatalogue: app/views/services/summary.xml.builder
+# BioCatalogue: app/views/services/versions.xml.builder
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -14,8 +14,8 @@ xml.tag! "service",
   
   render :partial => "services/api/core_elements", :locals => { :parent_xml => xml, :service => @service }
   
-  # <summary>
-  render :partial => "services/api/summary", :locals => { :parent_xml => xml, :service => @service }
+  # <versions>
+  render :partial => "services/api/versions", :locals => { :parent_xml => xml, :service => @service }
   
   # <related>
   render :partial => "services/api/related_links_for_service", :locals => { :parent_xml => xml, :service => @service }
