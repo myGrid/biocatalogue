@@ -134,26 +134,7 @@ module FilteringHelper
   end
   
   def display_name_for_filter(filter_type, filter_id)
-    name = filter_id
-    
-    unless [ :t, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ].include?(filter_type)
-      name = case filter_type
-        when :cat
-          c = Category.find_by_id(filter_id)
-          (c.nil? ? "(unknown category)" : c.name)
-        when :p
-          s = ServiceProvider.find_by_id(filter_id)
-          (s.nil? ? "(unknown provider)" : display_name(s))
-        when :su
-          u = User.find_by_id(filter_id)
-          (u.nil? ? "(unknown user)" : display_name(u))
-        when :sr
-          r = Registry.find_by_id(filter_id)
-          (r.nil? ? "(unknown registry)" : display_name(r))
-      end
-    end
-    
-    return name
+    return BioCatalogue::Filtering.display_name_for_filter(filter_type, filter_id)
   end
   
   def generate_sort_url(sort_by, sort_order)

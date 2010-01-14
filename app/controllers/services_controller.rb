@@ -20,6 +20,8 @@ class ServicesController < ApplicationController
   
   before_filter :setup_for_feed, :only => [ :index ]
   
+  before_filter :set_page_title_suffix, :only => [ :index ]
+  
   before_filter :set_listing_type, :only => [ :index ]
   
   before_filter :login_required, :only => [ :destroy ]
@@ -223,17 +225,18 @@ class ServicesController < ApplicationController
       # Remove page param
       params.delete(:page)
       
-      # Set page title
-      t = "BioCatalogue.org - "
-      
-      if !@current_filters.blank?
-        t << "Services - Filtered Results"
+      # Set feed title
+      @feed_title = "BioCatalogue.org - "
+      @feed_title << if (text = BioCatalogue::Filtering.filters_text_if_filters_present(@current_filters)).blank?
+        "Latest Services"
       else
-        t << "Latest Services"
+        "Services - #{text}"
       end
-      
-      @feed_title = t
     end
+  end
+  
+  def set_page_title_suffix
+    @page_title_suffix = (BioCatalogue::Filtering.filters_text_if_filters_present(@current_filters) || "Browse All Services")
   end
   
   def set_listing_type
@@ -280,5 +283,5 @@ class ServicesController < ApplicationController
       return false
     end
   end
- 
+  
 end

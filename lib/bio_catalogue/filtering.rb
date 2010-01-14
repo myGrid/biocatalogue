@@ -56,6 +56,47 @@ module BioCatalogue
       end
     end
     
+    def self.display_name_for_filter(filter_type, filter_id)
+      name = filter_id
+      
+      unless [ :t, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ].include?(filter_type)
+        name = case filter_type
+          when :cat
+            c = Category.find_by_id(filter_id)
+            (c.nil? ? "(unknown category)" : c.name)
+          when :p
+            s = ServiceProvider.find_by_id(filter_id)
+            (s.nil? ? "(unknown provider)" : BioCatalogue::Util.display_name(s))
+          when :su
+            u = User.find_by_id(filter_id)
+            (u.nil? ? "(unknown user)" : BioCatalogue::Util.display_name(u))
+          when :sr
+            r = Registry.find_by_id(filter_id)
+            (r.nil? ? "(unknown registry)" : BioCatalogue::Util.display_name(r))
+        end
+      end
+      
+      return name
+    end
+    
+    # Returns nil if no filters are present
+    def self.filters_text_if_filters_present(filters)
+      if filters.blank?
+        return nil
+      else
+        if filters.keys.length == 1
+          filters.each do |k,v|
+            filter_type_text = filter_type_to_display_name(k)
+            filter_type_text = filter_type_text.singularize if v.length == 1
+            return "Filtered by #{filter_type_text}: #{v.map { |s| display_name_for_filter(k, s) }.to_sentence}"
+          end
+        else
+          return "Filtered by multiple criteria"
+        end
+      end
+    end
+    
+    
     # ======================
     # Filter options finders
     # ----------------------
