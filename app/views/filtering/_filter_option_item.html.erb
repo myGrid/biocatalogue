@@ -18,7 +18,8 @@
 	text_tooltip = get_tooltip_text_for_filter_value(filter_type, filter["id"], filter["name"], selected)
 	count = filter['count']
 	
-	url = selected ? generate_exclude_filter_url(filter_type, filter["id"]) : generate_include_filter_url(filter_type, filter["id"]) 
+	url = (selected ? generate_exclude_filter_url(filter_type, filter["id"]) : generate_include_filter_url(filter_type, filter["id"]))
+	nofollow = (@current_filters.blank? ? false : true)
 %>
 
 <span class="container">
@@ -35,7 +36,7 @@
 		
 	<% else %>
 		
-		<% link_to(url, :class => (selected ? "selected" : nil), :title => tooltip_title_attrib(text_tooltip)) do -%>
+		<% link_to(url, :class => (selected ? "selected" : nil), :title => tooltip_title_attrib(text_tooltip), :rel => (nofollow ? "nofollow" : nil)) do -%>
 			
 			<% if selected %>
 				<span class="deselect">&nbsp</span>

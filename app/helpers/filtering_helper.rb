@@ -100,36 +100,12 @@ module FilteringHelper
   
   def generate_include_filter_url(filter_type, filter_value, format=nil)
     new_params = BioCatalogue::Filtering.add_filter_to_params(params, filter_type, filter_value)
-    
-    # Remove special params
-    new_params = BioCatalogue::Util.remove_rails_special_params_from(new_params)
-
-    unless format.nil?
-      if format == :html
-        new_params.delete(:format)
-      else
-        new_params[:format] = format unless format.nil?
-      end
-    end
-    
-    return services_url(new_params)
+    return generate_filter_url(new_params, format)
   end
 
   def generate_exclude_filter_url(filter_type, filter_value, format=nil)
     new_params = BioCatalogue::Filtering.remove_filter_from_params(params, filter_type, filter_value)
-    
-    # Remove special params
-    new_params = BioCatalogue::Util.remove_rails_special_params_from(new_params)
-    
-    unless format.nil?
-      if format == :html
-        new_params.delete(:format)
-      else
-        new_params[:format] = format unless format.nil?
-      end
-    end
-    
-    return services_url(new_params)
+    return generate_filter_url(new_params, format)
   end
   
   def is_filter_selected(filter_type, filter_value)
@@ -223,4 +199,22 @@ module FilteringHelper
     
     return output
   end
+  
+  protected
+  
+  def generate_filter_url(new_params, format)
+    # Remove special params
+    new_params_cleaned = BioCatalogue::Util.remove_rails_special_params_from(new_params)
+    
+    unless format.nil?
+      if format == :html
+        new_params_cleaned.delete(:format)
+      else
+        new_params_cleaned[:format] = format unless format.nil?
+      end
+    end
+    
+    return services_url(new_params_cleaned)
+  end
+  
 end
