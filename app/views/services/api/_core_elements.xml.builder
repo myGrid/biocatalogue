@@ -7,6 +7,9 @@
 # <name>
 parent_xml.name display_name(service)
 
+# <specifiedName>
+parent_xml.specifiedName service.name
+
 # <submitter>
 parent_xml.submitter xlink_attributes(uri_for_object(service.submitter), :title => xlink_title(service.submitter)), 
                      :submitterType => service.submitter_type do
