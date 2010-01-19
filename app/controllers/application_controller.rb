@@ -206,7 +206,7 @@ class ApplicationController < ActionController::Base
   
   # Generic method to raise / proceed from errors. Redirects to home.
   # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
-  def error_to_home(msg, forbidden)
+  def error_to_home(msg, forbidden=false)
     flash[:error] = msg
     
     # TODO: return either a 401 or 403 depending on authentication
