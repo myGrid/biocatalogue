@@ -178,8 +178,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_previous_url
-    unless (controller_name.downcase == 'sessions') or 
-      ([ 'activate_account', 'rpx_merge', 'ignore_last' ].include?(action_name.downcase))
+    unless controller_name.downcase == 'sessions' or 
+      is_non_html_request? or
+      [ 'activate_account', 'rpx_merge', 'ignore_last', 'auto_complete' ].include?(action_name.downcase)
       session[:previous_url] = request.request_uri unless is_non_html_request?
     end
   end
