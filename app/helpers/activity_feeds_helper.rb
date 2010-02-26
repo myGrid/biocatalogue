@@ -19,7 +19,7 @@ module ActivityFeedsHelper
   def activity_entries_for_home(style=:simple)
     results = [ ]
     
-    options = { :days_limit => 60.days.ago } 
+    options = { :days_limit => 30.days.ago } 
     if style == :simple
       options[:items_limit] = 10
     else
