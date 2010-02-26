@@ -1,4 +1,4 @@
-# BioCatalogue: lib/bio_catalogue/jobs/update_urls_to_monitor
+# BioCatalogue: lib/bio_catalogue/jobs/check_url_status
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.

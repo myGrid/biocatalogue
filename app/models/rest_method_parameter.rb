@@ -10,6 +10,19 @@ class RestMethodParameter < ActiveRecord::Base
     index :rest_method_id
     index :rest_parameter_id
     index [ :rest_method_id, :http_cycle ]
+    index [ :submitter_type, :submitter_id ]
+  end
+
+  has_submitter
+  
+  validates_existence_of :submitter # User must exist in the db beforehand.
+
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :submitter_name, { :associated_service_id => :r_id } ] )
+  end
+
+  if USE_EVENT_LOG
+    acts_as_activity_logged(:models => { :culprit => { :model => :submitter } })
   end
   
   acts_as_trashable
@@ -21,4 +34,15 @@ class RestMethodParameter < ActiveRecord::Base
   belongs_to :rest_method
   
   belongs_to :rest_parameter
+  
+  
+  # =========================================
+  
+  
+  protected
+  
+  def associated_service_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+
 end

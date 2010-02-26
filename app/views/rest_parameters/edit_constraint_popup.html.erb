@@ -1,0 +1,49 @@
+<%
+
+# BioCatalogue: app/views/rest_parameters/new_popup.html.erb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div class="redbox_contents" style="width:500px;">
+	<div class="head">
+		<%= link_to_close_redbox image_tag("close.gif"), :style => "float:right; margin-left:0.5em; vertical-align:middle;" -%>
+    <span style="vertical-align:middle;">Edit Constraint</span>
+	</div>
+	
+	<div class="body">
+    <% form_for :rest_parameter, :url => {:controller => "rest_parameters", 
+                                          :action => "update_constraint", 
+                                          :id => @rest_parameter.id, 
+                                          :rest_method_id => params[:rest_method_id] } do |f| %>
+    <%= f.error_messages %>
+
+    <div>
+      <div class="box_info_standout" style="font-size:100%" >
+        You are editing a constraint made for Rest Parameter: 
+        <b><%= @rest_parameter.name.sub(/UNIQUE_TO_METHOD_\d+\-/, '') -%></b>
+      </div>
+      
+      <!--PARAMS CAPTURE TEXT AREA-->
+      <p class="high_linespaced form_field_section">
+        <%= text_area_tag "new_constraint", @old_constraint, :size => "50x10", :style => "width: 99%;" %>
+        <%= hidden_field_tag "old_constraint", @old_constraint %>
+      </p>
+
+      <br/>
+      
+      <!--SUBMIT-->
+      <p style="margin-top: 1.5em; text-align: center;">
+        <%= f.submit "Update", :disable_with => "Submitting..." -%>
+				<%= button_to_function "Close", "RedBox.close()" -%>
+      </p>
+
+    </div>
+  
+  <% end %>
+  
+ 	</div>
+</div>

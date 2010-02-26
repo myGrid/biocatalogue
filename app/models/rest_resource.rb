@@ -9,8 +9,13 @@ class RestResource < ActiveRecord::Base
     is_cached :repository => $cache
     index :rest_service_id
     index :parent_resource_id
+    index [ :submitter_type, :submitter_id ]
   end
   
+  has_submitter
+  
+  validates_existence_of :submitter # User must exist in the db beforehand.
+
   acts_as_trashable
   
   acts_as_annotatable
@@ -29,10 +34,27 @@ class RestResource < ActiveRecord::Base
            :include => [ :rest_method_parameters, :rest_method_representations ]
            
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :path, :description ])
+    acts_as_solr(:fields => [ :path, :description, :submitter_name, { :associated_service_id => :r_id } ])
   end
   
   if USE_EVENT_LOG
-    acts_as_activity_logged(:models => { :referenced => { :model => :rest_service } })
+    acts_as_activity_logged(:models => {:referenced => { :model => :rest_service },
+                                        :culprit => { :model => :submitter }})
   end
+  
+  # For the given rest_service object, find duplicate entry based on 'resource_path'
+  def self.check_duplicate(rest_service, resource_path)
+    return rest_service.rest_resources(true).find_by_path(resource_path) # RestResource || nil
+  end
+  
+  
+  # =========================================
+  
+  
+  protected
+  
+  def associated_service_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+
 end

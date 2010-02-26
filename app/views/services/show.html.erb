@@ -167,9 +167,10 @@
 			</p>
 			
 			<p>
-				<b>Endpoint:</b>
+				<b>Base Endpoint:</b>
 				<br/>
 				<% @service.service_deployments.each do |s_d| -%>
+          <%= edit_base_endpoint_by_popup(s_d) unless @latest_version_instance.class.to_s == "RestService" -%>
 					<%= link_to(h(s_d.endpoint), s_d.endpoint, :popup => true) -%>
 				<% end %>
 			</p>
@@ -249,7 +250,7 @@
   
 	
 	<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_tabs", 
-					 	 :locals => { :service_version_instance =>  @latest_version_instance } %>
+					 	 :locals => { :service_version_instance =>  @latest_version_instance } unless @latest_version_instance.class.to_s == "RestService" %>
 
 	
   <%= render :partial => "services/monitoring_tab" -%>

@@ -38,6 +38,8 @@ Rails::Initializer.run do |config|
   config.gem 'ruby-hmac', :version => '>= 0.3.2', :lib => 'hmac'
   config.gem 'rubaidh-google_analytics', :lib => 'rubaidh/google_analytics', :source => 'http://gems.github.com'
   config.gem 'grosser-rpx_now', :version => '>= 0.5.10', :lib => 'rpx_now', :source => 'http://gems.github.com'
+  config.gem 'factory_girl', :version => '1.2.3', :source => "http://gemcutter.org"
+  config.gem 'mocha', :version => '0.9.8'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.

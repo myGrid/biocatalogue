@@ -82,36 +82,98 @@ module BioCatalogue
       return self.sort_tags_alphabetically(tags)
     end
     
+    def self.get_total_tags_count
+      # NOTE: this query has only been tested to work with MySQL 5.0.x and 5.1.x
+#      sql = "SELECT COUNT(DISTINCT annotations.value) AS count 
+#            FROM annotations 
+#            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
+#            WHERE annotation_attributes.name = 'tag'"
+      
+      sql = "SELECT COUNT(*) AS count 
+            FROM (SELECT DISTINCT annotations.value FROM annotations 
+            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
+            WHERE annotation_attributes.name = 'tag') x"
+            
+      ActiveRecord::Base.connection.select_one(sql)['count'].to_i
+    end
+    
+    def self.get_total_items_count_for_tag_name(tag_name)
+      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      sql = [ "SELECT COUNT(*) as count 
+              FROM (SELECT annotations.id FROM annotations 
+              INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
+              WHERE annotation_attributes.name = 'tag' AND annotations.value = ?) x",
+              "#{tag_name}" ]
+      
+      return ActiveRecord::Base.connection.select_one(ActiveRecord::Base.send(:sanitize_sql, sql))['count'].to_i
+    end
+    
     # This will return a set of tags found from the annotations in the database.
     # The return format is the general tag data structure described above, EXCLUDING the "submitters".
-    # NOTE (1): these are sorted by tag name.
-    def self.get_tags(limit=nil)
-      # NOTE: this query has only been tested to work with MySQL 5.0.x
+    #
+    # Default sort order is by counts of things.
+    #
+    # Supports limiting the results set AND pagination.
+    # For performance reasons it is advised to use both in conjunction 
+    # (so for example: "I just need the top 100 tags, paged")
+    #
+    # Options:
+    # - :limit (optional) - default: nil - sets the max number of tags to return (taking into account the sort criteria and any paging options specified).
+    # - :sort (optional) - default: :counts - specifies how to sort the results. Options are :name, :counts.
+    # - :page (optional) - default: nil - specified which page of results to get back.
+    # - :per_page (optional) - default: 10 - specifies the number of results to include per page of results.
+    def self.get_tags(*args)
+      options = args.extract_options!
+      # defaults:
+      options.reverse_merge!(:page => nil,
+                             :per_page => 10,
+                             :sort => :counts,
+                             :limit => nil)
+                           
+      # NOTE: this query has only been tested to work with MySQL 5.0.x and MySQL 5.1.x
       sql = "SELECT annotations.value AS name, COUNT(*) AS count 
             FROM annotations 
             INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
             WHERE annotation_attributes.name = 'tag' 
-            GROUP BY annotations.value 
-            ORDER BY COUNT(*) DESC"
+            GROUP BY annotations.value"
+            
+      # Does it need to be ordered?
+      # Currently only the :counts sorting option will use SQL based ordering (since :name needs to do some special stuff).
+      if options[:sort] == :counts 
+        sql += " ORDER BY COUNT(*) DESC"
+      end
       
-      # If limit has been provided then add that to query
-      # (this allows customisation of the size of the tag cloud, whilst keeping into account ranking of tags).
-      if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
-        sql += " LIMIT #{limit}"
+      # If limit has been provided then add that to query BUT only if sort is :counts (:name needs some special processing)
+      # This allows customisation of the size of the tag cloud, whilst keeping into account sorting of tags.
+      if options[:sort] == :counts && options[:limit] && options[:limit].is_a?(Fixnum) && options[:limit] > 0
+        sql += " LIMIT #{options[:limit]}"
       end
       
       results = ActiveRecord::Base.connection.select_all(sql)
       
-      results = results.each do |r|
-        r["count"] = r["count"].to_i
+      results.each { |r| r["count"] = r["count"].to_i }
+      
+      if options[:sort] == :name
+        results = self.sort_tags_alphabetically(results)
+        
+        # If a limit is specified then return accordingly
+        if options[:limit] && options[:limit].is_a?(Fixnum) && options[:limit] > 0
+          results = results[0...options[:limit]]
+        end
       end
-       
-      return self.sort_tags_alphabetically(results)
+      
+      # Now consider pagination, if required...
+      # NOTE: to improve performance here: ensure that a :limit => x is set (though for :name sort that won't help much)
+      if options[:page]
+        results = results.paginate(:page => options[:page], :per_page => options[:per_page])
+      end
+      
+      return results
     end
     
     # Returns an array of suggested tag names given the tag fragment.
     def self.get_tag_suggestions(tag_fragment, limit=nil)
-      # NOTE: this query has only been tested to work with MySQL 5.0.x
+      # NOTE: this query has only been tested to work with MySQL 5.0.x and 5.1.x
       sql = [ "SELECT annotations.value AS name
              FROM annotations 
              INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
@@ -143,7 +205,7 @@ module BioCatalogue
       end
     end
     
-    def self.sort_tags_by_frequency(tags)
+    def self.sort_tags_by_counts(tags)
       return nil if tags.nil?
       
       tags.sort do |a,b|
@@ -219,5 +281,6 @@ module BioCatalogue
       
       return tag_name
     end
+    
   end
 end

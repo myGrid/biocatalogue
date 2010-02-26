@@ -12,6 +12,9 @@ module BioCatalogue
     
     module ClassMethods
       def acts_as_service_versionified
+        
+        acts_as_annotatable
+        
         has_one :service_version, 
                 :as => :service_versionified
         
@@ -31,6 +34,7 @@ module BioCatalogue
           extend BioCatalogue::ActsAsServiceVersionified::SingletonMethods
         end
         include BioCatalogue::ActsAsServiceVersionified::InstanceMethods
+        
       end
     end
     
@@ -118,6 +122,36 @@ module BioCatalogue
         self.service_version(true).create_annotations(service_version_annotations, actual_submitter) unless service_version_annotations.blank?
         self.create_annotations(service_version_instance_annotations, actual_submitter) unless service_version_instance_annotations.blank?
         self.service(true).create_annotations(service_container_annotations, actual_submitter) unless service_container_annotations.blank?
+      end
+      
+      def preferred_description
+        # Either the description from the service description doc, 
+        # or the last description annotation.
+        
+        # TODO: need a better way! Taking into account curators, curator approval, etc
+        
+        desc = self.description
+        
+        if desc.blank?
+          desc = self.annotations_with_attribute("description").first.try(:value)
+        end
+        
+        return desc
+      end
+      
+      def preferred_documentation_url
+        # Either the doc url from the db table, 
+        # or the last doc url annotation.
+        
+        # TODO: need a better way! Taking into account curators, curator approval, etc
+        
+        doc_url = self.documentation_url
+        
+        if doc_url.blank?
+          doc_url = self.annotations_with_attribute("documentation_url").first.try(:value)
+        end
+        
+        return doc_url
       end
       
       protected

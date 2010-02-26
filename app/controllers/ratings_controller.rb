@@ -5,6 +5,9 @@
 # See license.txt for details
 
 class RatingsController < ApplicationController
+  
+  before_filter :disable_action_for_api
+  
   before_filter :login_required
   
   # POST /ratings
@@ -78,4 +81,5 @@ class RatingsController < ApplicationController
                                         :categories_config => BioCatalogue::Annotations.get_ratings_categories_config_for_model(annotatable.class.name)} }
     end
   end
+  
 end

@@ -18,6 +18,8 @@ class Annotation < ActiveRecord::Base
   belongs_to :version_creator, 
              :class_name => Annotations::Config.user_model_name
   
+  validates_associated :attribute
+
   validates_presence_of :source_type,
                         :source_id,
                         :annotatable_type,

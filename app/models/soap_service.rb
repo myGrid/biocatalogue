@@ -13,9 +13,7 @@ class SoapService < ActiveRecord::Base
   
   acts_as_trashable
   
-  acts_as_service_versionified
-  
-  acts_as_annotatable
+  acts_as_service_versionified  # This also mixes in acts_as_annotatable
   
   belongs_to :wsdl_file,
              :validate => true,
@@ -31,7 +29,7 @@ class SoapService < ActiveRecord::Base
            :dependent => :destroy
   
   has_many :soap_service_ports,
-            :dependent => :destroy
+           :dependent => :destroy
   
   # This is to protect some fields that should
   # only get their data from the WSDL doc.
@@ -223,7 +221,7 @@ class SoapService < ActiveRecord::Base
     monitor = UrlMonitor.entry_for(self.class.name, self.id, "wsdl_location")
                               
     unless monitor.nil?
-      results = TestResult.results_for(monitor.class.name, monitor.id, 1)
+      results = TestResult.results_for(monitor.service_test, 1)
       result = results.first unless results.empty?
     end
     
@@ -236,12 +234,12 @@ class SoapService < ActiveRecord::Base
     monitor = UrlMonitor.entry_for(self.class.name, self.id, "wsdl_location")
                               
     unless monitor.nil?
-      results = TestResult.results_for(monitor.class.name, monitor.id)
+      results = TestResult.results_for(monitor.service_test)
     end
     
     return results
   end
-   
+  
   protected
   
   # This builds the parts of the SOAP service 

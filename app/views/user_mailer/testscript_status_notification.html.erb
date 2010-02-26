@@ -1,0 +1,20 @@
+<%
+
+# BioCatalogue: app/views/user_mailer/reset_password.html.erb
+#
+# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+We have noticed that the status of your test <%= @test_script.name %> has changed. 
+Would be nice if you could check by going to the parent service 
+<br />
+
+<%= link_to "Test script status changed",
+            :only_path => false,
+            :host => @base_url,
+            :controller => 'services',
+            :action => 'show',
+            :id => @test_script.testable_id %>

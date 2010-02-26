@@ -6,6 +6,8 @@
 
 class SessionsController < ApplicationController
   
+  before_filter :disable_action_for_api
+  
   skip_before_filter :verify_authenticity_token, :only => [ :rpx_token ]
 
   def new

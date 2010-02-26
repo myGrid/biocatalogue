@@ -22,5 +22,16 @@ class UserMailer < ActionMailer::Base
     body        :user => user,
                 :base_url => base_url
   end
+  
+  def testscript_status_notification(user, base_url, testscript)
+    content_type "text/html"
+    recipients  user.email
+    from        "biocatalogue-support@rubyforge.org"
+    subject     "Your test script status changed "
+    body        :user => user,
+                :base_url => base_url,
+                :test_script => testscript
+    
+  end
 
 end

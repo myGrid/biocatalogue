@@ -28,18 +28,17 @@ module BioCatalogue
     def self.update_search_query_suggestions_file
       begin
         
+        search_synonyms = self.all_terms_from_pseudo_synonyms
+        
         latest_search_queries = ActivityLog.find_all_by_action("search").map{|a| a.data[:query]}.compact.uniq
         
-        categories = Category.all.map{|c| c.name}.uniq
+        categories = Category.all.map{|c| c.name}.compact
         
-        unless latest_search_queries.blank? and categories.blank?
+        tags = BioCatalogue::Tags.get_tags.map{|t| t['name'] unless BioCatalogue::Tags.is_ontology_term_uri?(t['name']) }.compact
+        
+        unless latest_search_queries.blank? and categories.blank? and tags.blank?
           
-          current_data = IO.read(@@search_query_suggestions_file_path)
-          
-          terms = current_data.split(/[\n]/).compact.map{|i| i.strip}
-          
-          # Add new terms
-          terms = terms + latest_search_queries + categories
+          terms = search_synonyms + latest_search_queries + categories + tags
           
           # Remove unwanted ones
           excludes = [ "*", "[object htmlcollection]", /^[*]/ ]
@@ -56,8 +55,8 @@ module BioCatalogue
             end
           end
           
-          # Remove duplicates
-          terms.uniq!
+          # Remove duplicates (case insensitive)
+          terms = BioCatalogue::Util.uniq_strings_case_insensitive(terms)
           
           # Sort
           terms = terms.sort { |a,b| a.to_s.downcase <=> b.to_s.downcase }
@@ -89,7 +88,7 @@ module BioCatalogue
         
         current_terms.each do |t|
           s = t.downcase
-          suggestions << t if s.match(query_fragment)          
+          suggestions << CGI.escapeHTML(t) if s.match(query_fragment)          
         end
         
       rescue Exception => ex
@@ -101,21 +100,22 @@ module BioCatalogue
       return suggestions.map{|s| { 'name' => s }}
     end
     
-    def self.preprocess_query(query)
-      # Check if the query was for a URL, in which case wrap it in quotation marks in order to get through the solr query parser.
-      if query.starts_with?("http://") or 
-         query.starts_with?("https://")
-        query = '"' + query
-        query = query + '"'
-      end
-      
-      return query
-    end
-    
+    # The main search method.
+    #
+    # 'scope' can be a string representing one of the search scopes from VALID_SEARCH_SCOPES_INCL_ALL
+    # OR an Array of different scopes required.
     def self.search(query, scope=ALL_SCOPE_SYNONYMS[0])
-      scope = scope.downcase
-        
-      return nil unless VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
+      return nil if query.blank? or scope.blank?
+      
+      if scope.is_a? Array
+        scope.map! { |s| s.downcase }
+        scope.each do |s|
+          return nil unless VALID_SEARCH_SCOPES_INCL_ALL.include?(s)
+        end
+      else
+        scope = scope.downcase 
+        return nil unless VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
+      end
       
       query = self.preprocess_query(query)
       
@@ -125,11 +125,21 @@ module BioCatalogue
         :results_format => :ids, 
         :incl_all_fields => true).docs
       
-      scopes_for_results = if ALL_SCOPE_SYNONYMS.include?(scope)
-        VALID_SEARCH_SCOPES
-      else
-        [ scope ]
+      scopes_for_results = nil
+      
+      if scope.is_a? Array 
+        scope.each do |s|
+          scopes_for_results = VALID_SEARCH_SCOPES if ALL_SCOPE_SYNONYMS.include?(s)
+        end
+        scopes_for_results = scope if scopes_for_results.nil?
+      else      
+        scopes_for_results = if ALL_SCOPE_SYNONYMS.include?(scope)
+          VALID_SEARCH_SCOPES
+        else
+          [ scope ]
+        end
       end
+      
       
       return Results.new(search_result_docs, scopes_for_results)
     end
@@ -327,6 +337,57 @@ module BioCatalogue
     end
     
     # =======================
+    
+    
+    protected
+    
+    # Special rules to preprocess ALL search queries. 
+    #
+    # Rules are:
+    # - For a query that begins with and ends with double quotes AND
+    #   that contains http:// or https:// - the WHOLE query is escaped.
+    def self.preprocess_query(query)
+      unless query.blank?
+        if query.starts_with?('"') and query.ends_with?('"')
+          
+          # Remove the double quotes for now...
+          query = query.slice(1...-1)
+          
+          if query.include?("http://") or query.include?("https://")
+            query = Solr::Util.query_parser_escape(query)
+          end
+          
+          # Add back the double quotes
+          query = '"' + query + '"'
+        end
+      end
+      
+      return query
+    end
+    
+    def self.all_terms_from_pseudo_synonyms
+      synonyms_out = [ ]
+      
+      filename = File.join(Rails.root, 'data', 'cleaned_up_pseudo_synonyms.txt')
+      synonynms_in = IO.read(filename)
+         
+      unless synonynms_in.nil? or synonynms_in == ''
+        synonynms_in.split(/[\n]/).map{|i| i.strip}.each do |line|
+          unless line.nil? or line == "\n" or line.strip == "" or line[0,1] == "#"
+            lhs_in, rhs_in = line.split("=>")
+            
+            lhs_in = lhs_in.split(',').compact.map{|i| i.strip}.reject{|i| i == ""}
+            rhs_in = rhs_in.split(',').compact.map{|i| i.strip}.reject{|i| i == ""}
+            
+            synonyms_out.concat(lhs_in + rhs_in)
+          end
+          
+        end
+        
+      end
+      
+      return synonyms_out.compact.uniq
+    end
     
   end
 end

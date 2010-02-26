@@ -8,29 +8,34 @@ require 'addressable/uri'
 
 class RestServicesController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :show, :edit, :update ]
+  before_filter :disable_action, :only => [ :index, :edit, :update, :destroy ]
+  before_filter :disable_action_for_api, :except => [ :show, :annotations, :deployments ]
   
-  before_filter :login_required, :except => [ :index, :show ]
+  before_filter :login_required, :except => [ :index, :show, :annotations, :deployments ]
+
+  before_filter :find_service_deployment, :only => [ :edit_base_endpoint_by_popup, :update_base_endpoint ]
+  
+  before_filter :authorise, :only => [ :edit_base_endpoint_by_popup, :update_base_endpoint ]
+  
+  before_filter :find_rest_service, :only => [ :show, :annotations, :deployments ]
   
   # GET /rest_services
   # GET /rest_services.xml
   def index
-    @rest_services = RestService.find(:all)
+    #@rest_services = RestService.find(:all)
 
     respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @rest_services }
+#      format.html { disable_action }
+#      format.xml  { render :xml => @rest_services }
     end
   end
 
   # GET /rest_services/1
   # GET /rest_services/1.xml
   def show
-    @rest_service = RestService.find(params[:id])
-
     respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @rest_service }
+      format.html { disable_action }
+      format.xml  # show.xml.builder
     end
   end
 
@@ -46,15 +51,12 @@ class RestServicesController < ApplicationController
     end
   end
 
-  # GET /rest_services/1/edit
-  def edit
-    @rest_service = RestService.find(params[:id])
-  end
-
   # POST /rest_services
   # POST /rest_services.xml
   def create
     endpoint = params[:endpoint] || ""
+    endpoint.chomp!
+    endpoint.strip!
     endpoint = "http://" + endpoint unless endpoint.blank? or endpoint.starts_with?("http://") or endpoint.starts_with?("https://")
     endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
     
@@ -99,7 +101,10 @@ class RestServicesController < ApplicationController
         
         respond_to do |format|
           if @rest_service.submit_service(endpoint, current_user, params[:annotations].dup)
-            flash[:notice] = 'Service was successfully submitted.'
+            success_msg = 'Service was successfully submitted.'
+#            success_msg += "  You may now add endpoints via the Endpoints tab."
+            
+            flash[:notice] = success_msg
             format.html { redirect_to(@rest_service.service(true)) }
             
             # TODO: should this return the top level Service resource or RestService? 
@@ -116,32 +121,86 @@ class RestServicesController < ApplicationController
     end
   end
 
-  # PUT /rest_services/1
-  # PUT /rest_services/1.xml
-  def update
-    @rest_service = RestService.find(params[:id])
-
+  def edit_base_endpoint_by_popup    
     respond_to do |format|
-      if @rest_service.update_attributes(params[:rest_service])
-        flash[:notice] = 'RestService was successfully updated.'
-        format.html { redirect_to(@rest_service) }
+      format.js { render :layout => false }
+    end
+  end
+
+  def update_base_endpoint
+    endpoint = params[:new_endpoint] || ""
+    endpoint.chomp!
+    endpoint.strip!
+    endpoint = "http://" + endpoint unless endpoint.blank? or endpoint.starts_with?("http://") or endpoint.starts_with?("https://")
+    
+    endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
+    
+    not_changed = params[:new_endpoint] == @service_deployment.endpoint
+    exists = !RestService.check_duplicate(endpoint).nil?
+    
+    if endpoint.blank? || not_changed || exists
+      flash[:error] = (not_changed || exists ?
+                      "The endpoint you are trying to submit already exists in the system" :
+                      "Please provide a valid endpoint URL")
+      
+      respond_to do |format|
+        format.html { redirect_to @service_deployment.service }
+        format.xml  { render :xml => '', :status => 406 }
+      end
+    else
+      @service_deployment.endpoint = endpoint
+      @service_deployment.save!
+    
+      respond_to do |format|
+        format.html { redirect_to @service_deployment.service }
         format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @rest_service.errors, :status => :unprocessable_entity }
       end
     end
+
   end
 
-  # DELETE /rest_services/1
-  # DELETE /rest_services/1.xml
-  def destroy
-    @rest_service = RestService.find(params[:id])
-    @rest_service.destroy
-
+  def annotations
     respond_to do |format|
-      format.html { redirect_to(rest_services_url) }
-      format.xml  { head :ok }
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:ars, @rest_service.id, "annotations", :xml)) }
+      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@rest_service.annotations).values.flatten.to_json }
     end
   end
+  
+  def deployments
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # deployments.xml.builder
+    end
+  end
+  
+  
+  # ========================================
+  
+  
+  protected
+  
+  def find_rest_service
+    @rest_service = RestService.find(params[:id])
+  end
+  
+  def authorise
+    unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_deployment)
+      error_to_back_or_home("You are not allowed to perform this action")
+      return false
+    end
+    
+    return true
+  end
+
+  
+  # ========================================
+  
+  
+  private
+  
+  def find_service_deployment
+    @service_deployment = ServiceDeployment.find(params[:service_deployment_id])
+  end
+
 end

@@ -1,0 +1,34 @@
+# Config file for the BioCatalogue test Harness
+
+# Path to the harness scripts
+harnessroot = /source/directory/of/the/harness/scripts
+
+# Path to directory where scripts have been imported
+# This is the directory from which they will be executed
+execution_root = /my/work/directory
+
+# Path to soapUI instance bin directory
+# The batch scripts in these directory should have
+# execute permission for the user running the scripts
+# Example : soapui_runner_dir = /Applications/eviware/soapUI-3.0.1.app/Contents/Resources/app/bin
+soapui_runner_dir = /path/to/soapui/bin/directory
+
+# Database Settings
+# This is the database from which scripts are imported
+# into the directory given by 'execution_root' above
+host     = <host>
+database = <database>
+user     = <db user>
+password = <password>
+port     = <port number>
+
+# URL to which results are submitted
+# Example : result_url = http://localhost:3000/test_results.xml
+result_url = http://myserver:port/test_results.xml
+
+# Authentication
+# Authenticate against the BioCatalogue instance to which results are submitted
+api_user = <user email>	
+api_pass = <user password>
+
+

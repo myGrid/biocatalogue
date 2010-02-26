@@ -1023,7 +1023,7 @@ body.sidebar-right #login_box {
 	padding: 0.3em 0.6em;
 	max-width: 500px;
 	text-align: left;
-	line-height: 1.4;
+	line-height: 1.8;
 }
 
 .boxoverInfoHeader {
@@ -1483,28 +1483,6 @@ ul.simple_list li {
 	margin-top: 0.8em;
 }
 
-#home_content #top_curators tr.hover {
-	background-color: #FFFFCC;
-}
-
-#home_content #top_curators {
-	margin: 0 auto;
-}
-
-#home_content #top_curators td {
-	vertical-align: middle;
-	padding-left: 4px;
-}
-
-#home_content #top_curators td.count {
-	font-size: 116%;
-	font-weight: bold;
-	padding-left: 0;
-	padding-right: 4px;
-	text-align: right;
-	color: #777;
-}
-
 #home_content .home_heading {
 	font-weight: bold;
 	font-size: 153.9%;
@@ -1577,6 +1555,51 @@ div.search_widget {
 
 div.search_widget * {
 	vertical-align: middle;
+}
+
+#top_curators {
+	margin: 0 auto;
+	line-height: 1.5;
+}
+
+#top_curators td {
+	vertical-align: middle;
+	padding: 2px 5px;
+}
+
+#top_curators td.count {
+	font-size: 116%;
+	font-weight: bold;
+	padding-left: 0;
+	text-align: right;
+	color: #777;
+}
+
+table.latest_contributors tbody tr:hover {
+	background-color: #FFFFCC;
+}
+
+table.latest_contributors {
+	margin: 0 auto;
+	line-height: 1.7;
+}
+
+table.latest_contributors th, td {
+	vertical-align: middle;
+	padding: 2px 5px;
+}
+
+table.latest_contributors th {
+	border-bottom: 1px solid #DDD;
+	padding-bottom: 6px;
+}
+
+table.latest_contributors td.count {
+	font-size: 116%;
+	font-weight: bold;
+	padding-left: 0;
+	text-align: right;
+	color: #777;
 }
 
 /* BEGIN Tabber tab styles */
@@ -3061,3 +3084,60 @@ div.resize-handle {
 }
 
 /* END activity feed styles */
+
+
+
+/* BEGIN styles for REST Services support */
+
+span.parameter_dropdown_title a {
+  display: inline-block;
+  min-width: 600px;
+  width: 83%;
+  line-height: 12px;
+  min-height: 20px;
+  text-decoration: none;
+}
+
+span.method_param_link_container a {
+  color: grey;
+  text-decoration: none;
+  float: right;
+  text-align: right;
+  font-size: 10px;
+  font-weight: normal;
+  line-height: 12px;  
+  background-repeat: no-repeat;
+  background-position-x: left;
+  margin: 0px 7px 0px 7px;
+}
+
+span.method_param_link_container a:hover {
+  color: red;
+  font-weight: bold;
+}
+
+a.method_param_delete_link {
+  width: 45px;
+  background-image: url(/images/delete_faded_darker.png);
+}
+
+a:hover.method_param_delete_link  {
+  background-image: url(/images/delete.png);
+}
+
+a.method_param_rename_link {
+  width: 60px;
+  background-image: url(/images/note_edit.png);
+}
+
+a.unlink_param_link {
+  width: 63px;
+  background-image: url(/images/link_break.png);
+}
+
+a.link_param_link {
+  width: 63px;
+  background-image: url(/images/link_add.png);
+}
+
+/* END styles for REST Services support */

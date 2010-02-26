@@ -18,9 +18,19 @@
 	
 	<div class="body">
 		<% form_for :annotation, @annotation, :url => annotation_url(@annotation), :html => { :method => :put } do |f| %>
-		
-			<div class="box_info_standout">
-				<%= "You are editing an annotation you previously made, for #{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name)}" -%>
+		  
+      <% display_annotatable = case @annotation.annotatable_type
+                               when "RestParameter"
+                                 "#{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name.sub(/UNIQUE_TO_METHOD_\d+\-/, ''))}"
+                               when "RestMethod"
+                                 "Endpoint: <b/>#{h(@annotation.annotatable.method_type)} #{h(resource_path_to_string(@annotation.annotatable.rest_resource.path))}"
+                               else
+                                 "#{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name)}"
+                               end
+      %>
+			
+      <div class="box_info_standout">
+				<%= "You are editing an annotation you previously made, for #{display_annotatable}" -%>
 			</div>
 			
 			<p style="margin-bottom: 0.4em;">

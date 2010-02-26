@@ -33,6 +33,10 @@ class ServiceProvider < ActiveRecord::Base
     acts_as_activity_logged
   end
   
+  def preferred_description
+    self.annotations_with_attribute('description').last.try(:value)
+  end
+  
   def tags_from_services
     services = Service.find(:all, 
                             :conditions => { :service_deployments => { :service_providers => { :id => self.id } } }, 

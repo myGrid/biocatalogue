@@ -23,7 +23,7 @@
 				<ul class="items">
 					<% favourites.each do |f| %>
 						<li>
-							<%= user_link_with_flag(f.user) -%>
+							<%= user_link_with_flag(:user => f.user) -%>
 							<% if mine?(f) -%>
 								<%= link_to(icon_faded_with_hover(:delete),
 	                   				favourite_path(f),

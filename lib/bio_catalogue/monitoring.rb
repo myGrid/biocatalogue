@@ -6,6 +6,9 @@
 
 module BioCatalogue
   module Monitoring
+    
+    INTERNAL_TEST_TYPES = [ 'TestScript', 'UrlMonitor' ].freeze
+    
     class MonitorUpdate
     
       def self.run
@@ -40,7 +43,10 @@ module BioCatalogue
               mon = UrlMonitor.new(:parent_id => dep.id, 
                               :parent_type => dep.class.to_s, 
                               :property => "endpoint")
-              if mon.save
+              service_test = ServiceTest.new(:service_id => dep.service.id,
+                                              :test_type => mon.class.name)
+              mon.service_test = service_test                         
+              if mon.save!
                 puts "Created new monitor for deployment id : #{dep.id}"
               end
           end
@@ -59,8 +65,10 @@ module BioCatalogue
               mon = UrlMonitor.new(:parent_id => ss.id, 
                               :parent_type => ss.class.to_s, 
                               :property => "wsdl_location")
-    
-              if mon.save
+              service_test = ServiceTest.new(:service_id => ss.service.id,
+                                              :test_type => mon.class.name)
+              mon.service_test = service_test
+              if mon.save!
                 puts "Created new monitor for soap service id : #{ss.id}"
               end
            end
@@ -202,11 +210,10 @@ module BioCatalogue
     
           # create a test result entry in the db to record
           # the current check for this URL/endpoint
-          tr = TestResult.new(:test_id => monitor.id,
-                        :test_type => monitor.class.to_s,
-                        :result => result[:result],
-                        :action => result[:action],
-                        :message => result[:message] )
+          tr = TestResult.new(:result => result[:result],
+                              :action => result[:action],
+                              :message => result[:message],
+                              :service_test_id => monitor.service_test.id)
           if tr.save!
             puts "Result for monitor id:  #{monitor.id} saved!"
           else

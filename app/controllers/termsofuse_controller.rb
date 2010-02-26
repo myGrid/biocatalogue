@@ -5,6 +5,8 @@
 # See license.txt for details.
 
 class TermsofuseController < ApplicationController
+  
+  before_filter :disable_action_for_api
 
   # GET /termsofuse
   def index

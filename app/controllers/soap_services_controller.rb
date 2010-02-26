@@ -1,38 +1,25 @@
 # BioCatalogue: app/controllers/soap_services_controller.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
 
 class SoapServicesController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy, :bulk_new, :bulk_create ]
+  before_filter :disable_action, :only => [ :index, :edit, :update, :destroy, :bulk_new, :bulk_create ]
+  before_filter :disable_action_for_api, :except => [ :show, :annotations, :operations, :deployments ]
   
-  before_filter :login_required, :except => [ :index, :show ]
+  before_filter :login_required, :except => [ :index, :show, :annotations, :operations, :deployments ]
   
-  # GET /soap_services
-  # GET /soap_services.xml
-  def index
-    @soap_services = SoapService.paginate :all, :page => params[:page], 
-                                                :order => "created_at DESC", 
-                                                :per_page => 10
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @soap_services }
-      format.rss  { render :rss => @soap_services, :layout => false}
-    end
-  end
-
+  before_filter :find_soap_service, :only => [ :show, :annotations, :operations, :deployments ]
+  
   # GET /soap_services/1
   # GET /soap_services/1.xml
   def show
-    @soap_service = SoapService.find(params[:id])
-
     respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @soap_service }
-      format.rss  { render :rss => @soap_service, :layout => false}
+      format.html { disable_action }
+      format.xml  # show.xml.builder
     end
   end
 
@@ -48,11 +35,6 @@ class SoapServicesController < ApplicationController
       # TODO: the xml template returned should only really have one field here - wsdl_location 
       format.xml  { render :xml => @soap_service }
     end
-  end
-
-  # GET /soap_services/1/edit
-  def edit
-    @soap_service = SoapService.find(params[:id])
   end
 
   # POST /soap_services
@@ -104,35 +86,6 @@ class SoapServicesController < ApplicationController
     
   end
 
-  # PUT /soap_services/1
-  # PUT /soap_services/1.xml
-  def update
-    @soap_service = SoapService.find(params[:id])
-
-    respond_to do |format|
-      if @soap_service.update_attributes(params[:soap_service])
-        flash[:notice] = 'SoapService was successfully updated.'
-        format.html { redirect_to(@soap_service) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /soap_services/1
-  # DELETE /soap_services/1.xml
-  def destroy
-    @soap_service = SoapService.find(params[:id])
-    @soap_service.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(soap_services_url) }
-      format.xml  { head :ok }
-    end
-  end
-  
   def load_wsdl
     params[:annotations] = { }
     
@@ -242,6 +195,33 @@ class SoapServicesController < ApplicationController
                                                 :order => "created_at DESC", 
                                                 :per_page => 10})   
   end
-   
+  
+  def annotations
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:ass, @soap_service.id, "annotations", :xml)) }
+      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@soap_service.annotations).values.flatten.to_json }
+    end
+  end
+  
+  def operations
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # operations.xml.builder
+    end
+  end
+  
+  def deployments
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # deployments.xml.builder
+    end
+  end
+  
+  protected
+  
+  def find_soap_service
+    @soap_service = SoapService.find(params[:id])
+  end
   
 end

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test_harness>
+<scripts> 
+	<script> 
+		<service_id>1 </service_id>
+		<test_id>1</test_id>
+		<executable> test_signalp.pl</executable>
+	</script>
+	
+	<script> 
+		<service_id> 2</service_id>
+		<test_id>7</test_id>
+		<executable> fdrawgram.pl</executable>
+	</script>
+	
+	<script> 
+		<service_id>3 </service_id>
+		<test_id> 1</test_id>
+		<executable> run_this_script.py</executable>
+	</script>
+	
+	<script> 
+		<service_id> 4</service_id>
+		<test_id>1 </test_id>
+		<executable> run_this_script.rb</executable>
+	</script>
+	
+	<script> 
+		<service_id> 5</service_id>
+		<test_id> 1</test_id>
+		<executable>run_this_script.pl</executable>
+	</script>
+	
+	<script> 
+		<service_id> 6</service_id>
+		<test_id> 1</test_id>
+		<executable> run_this_script.rb </executable>
+	</script>
+	
+	<script> 
+		<service_id> 7</service_id>
+		<test_id> 1</test_id>
+		<executable> run_this_script.rb </executable>
+	</script>
+	
+	<script> 
+		<service_id>1 </service_id>
+		<test_id>1</test_id>
+		<executable> test_signalp.pl</executable>
+	</script>
+	
+</scripts>
+
+<soapui>
+	<project> 
+		<service_id> 8</service_id>
+		<test_id> 1</test_id>
+		<executable> my_project_file.xml </executable>
+	</project>
+	
+	<project> 
+		<service_id> 9</service_id>
+		<test_id> 1</test_id>
+		<executable> my_project_file.xml </executable>
+	</project>
+	
+	<project> 
+		<service_id> 10</service_id>
+		<test_id> 1</test_id>
+		<executable> my_project_file.xml </executable>
+	</project>
+	
+	<project> 
+		<service_id> 11</service_id>
+		<test_id> 1</test_id>
+		<executable> my_project_file.xml </executable>
+	</project>
+	
+	<project> 
+		<service_id> 12</service_id>
+		<test_id> 1</test_id>
+		<executable> my_project_file.xml </executable>
+	</project>
+</soapui>
+
+</test_harness>
+	

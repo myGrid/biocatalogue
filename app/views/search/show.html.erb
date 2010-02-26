@@ -58,9 +58,9 @@
 				
 					<% 
 						 visible_result_scope = result_scope.titleize
-						 items = search_item_ids_to_objects(@results.paged_item_ids_for(result_scope, 1, PAGE_ITEMS_SIZE), result_scope)
+						 items = search_item_ids_to_objects(@results.paged_item_ids_for(result_scope, 1, @per_page), result_scope)
 						 count = @results.count_for(result_scope)
-						 more_items = count > PAGE_ITEMS_SIZE 
+						 more_items = count > @per_page 
 					%>
 					
 					<% unless items.empty? %>
@@ -109,7 +109,7 @@
 		
 			<% 
 				 result_scope = @scope
-				 item_ids = @results.paged_item_ids_for(result_scope, @page, PAGE_ITEMS_SIZE)
+				 item_ids = @results.paged_item_ids_for(result_scope, @page, @per_page)
 				 items = search_item_ids_to_objects(item_ids, result_scope)
 			%>
 			

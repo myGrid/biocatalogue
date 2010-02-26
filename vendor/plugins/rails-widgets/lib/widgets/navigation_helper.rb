@@ -11,12 +11,11 @@ module Widgets
       raise ArgumentError, "Missing name parameter in render_navigation call" unless name
       raise ArgumentError, "Missing block in render_navigation call" unless block_given?
       @_navigation = Navigation.new(name, opts)
-      @_binding = proc.binding # the binding of calling page
       instance_eval(&proc)
-      out @_navigation.render_css('navigation') if @_navigation.generate_css?
-      out tag('div',@_navigation.html ,true)
+      concat @_navigation.render_css('navigation') if @_navigation.generate_css?
+      concat tag('div',@_navigation.html ,true)
       render_navigation_items
-      out '</div>'
+      concat '</div>'
       nil
     end
 
@@ -31,7 +30,7 @@ module Widgets
     def render_navigation_items
       return if @_navigation.items.empty?
 
-      out "<ul>\n"
+      concat "<ul>\n"
       @_navigation.items.each_with_index do |item,index|
         if item.disabled?
           item.html[:class] = 'disabled'
@@ -39,20 +38,21 @@ module Widgets
           item.html[:class] = 'active'
         end
 
-        out '<li>'
+        concat '<li>'
         if item.disabled?
-          out content_tag('span', item.name, item.html)
+          concat content_tag('span', item.name, item.html)
         else
-          out link_to(item.name, item.link, item.html)
+          if !item.function.blank?
+            concat link_to_function(item.name, item.function, item.html)
+          else
+            concat link_to(item.name, item.link, item.html)
+          end
         end
-        out @_navigation.separator unless index == @_navigation.items.size - 1
-        out "</li>\n"
+        concat @_navigation.separator unless index == @_navigation.items.size - 1
+        concat "</li>\n"
       end
-      out '</ul>'
+      concat '</ul>'
     end
-
-    def out(string); concat string, @_binding; end
-
   end
 end
 

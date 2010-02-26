@@ -6,16 +6,16 @@
 
 class HomeController < ApplicationController
   
-  # GET /home
+  before_filter :disable_action_for_api, :except => [ :index ]
+  
   def index
     respond_to do |format|
       format.html # index.html.erb
-      format.xml { render "api/show" }
+      format.xml { redirect_to api_url(:format => :xml), :status => 303 }
     end
   end
   
-  # GET /home/latest
-  def index
+  def latest
     respond_to do |format|
       format.html # latest.html.erb
     end

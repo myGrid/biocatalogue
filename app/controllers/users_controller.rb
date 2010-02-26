@@ -7,44 +7,47 @@
 class UsersController < ApplicationController
 
   before_filter :disable_action, :only => [ :destroy ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services ]
 
-  before_filter :login_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup ]
+  before_filter :login_required, :except => [ :index, :new, :create, :edit, :update, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, :services ]
   before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password ]
   
   before_filter :initialise_updated_user, :only => [ :edit, :update ]
   
   skip_before_filter :verify_authenticity_token, :only => [ :rpx_update ]
   
-  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update ]
+  before_filter :parse_sort_params, :only => [ :index ]
+  
+  before_filter :find_users, :only => [ :index ]
+  
+  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
 
   # GET /users
   # GET /users.xml
   def index
-    @users = User.paginate(:page => params[:page],
-                           :conditions => "activated_at IS NOT NULL",
-                           :order => 'activated_at DESC')
-
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @users }
+      format.xml  # index.xml.builder
     end
   end
 
   # GET /users/1
   # GET /users/1.xml
   def show
-    @users_services = @user.services.paginate(:page => params[:page],
-                                              :order => "created_at DESC")
-                                              
-    users_annotated_service_ids = @user.annotated_service_ids 
-    @users_paged_annotated_services_ids = users_annotated_service_ids.paginate(:page => params[:page], :per_page => PAGE_ITEMS_SIZE)
-    @users_paged_annotated_services = BioCatalogue::Mapper.item_ids_to_model_objects(@users_paged_annotated_services_ids, "Service")
+    unless is_api_request?
+      @users_services = @user.services.paginate(:page => @page,
+                                                :order => "created_at DESC")
+                                                
+      users_annotated_service_ids = @user.annotated_service_ids 
+      @users_paged_annotated_services_ids = users_annotated_service_ids.paginate(:page => @page, :per_page => @per_page)
+      @users_paged_annotated_services = BioCatalogue::Mapper.item_ids_to_model_objects(@users_paged_annotated_services_ids, "Service")
+    end
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @user }
+      format.xml  # show.xml.builder
     end
   end
 
@@ -99,18 +102,6 @@ class UsersController < ApplicationController
       end
     end
   end
-
-  # DELETE /users/1
-  # DELETE /users/1.xml
-#  def destroy
-#    @user = User.find(params[:id])
-#    @user.destroy
-#    session.delete
-#    respond_to do |format|
-#      format.html { redirect_to(users_url) }
-#      format.xml  { head :ok }
-#    end
-#  end
 
   def activate_account
     unless params[:security_token] == nil
@@ -179,6 +170,7 @@ class UsersController < ApplicationController
     if ENABLE_RPX
       if params[:token].blank? || (data = RPXNow.user_data(params[:token])).blank? || (rpx_user = User.find_by_identifier(data[:identifier])).nil?
         error_to_home("Unable to complete the merging of accounts")
+        return
       else
         # This action is used for 2 different parts of the workflow:
         # 1) initial stage, where we get the user to log into the existing account.
@@ -206,6 +198,7 @@ class UsersController < ApplicationController
     if ENABLE_RPX
       if params[:token].blank? || (data = RPXNow.user_data(params[:token])).blank? || (rpx_user = User.find_by_identifier(data[:identifier])).nil? || !rpx_user.allow_merge?
         error_to_home("Unable to complete the merging of accounts")
+        return
       else
         begin
           current_user.identifier = rpx_user.identifier
@@ -220,6 +213,7 @@ class UsersController < ApplicationController
           logger.error "Failed to merge new RPX based account with an existing BioCatalogue account. Exception: #{ex.class.name} - #{ex.message}"
           logger.error ex.backtrace.join("\n")
           error_to_home("Sorry, something went wrong. Please contact us for further assistance.")
+          return
         end
       end
     else
@@ -262,7 +256,69 @@ class UsersController < ApplicationController
     end
   end
   
+  def annotations_by
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:sou, @user.id, "annotations", :xml)) }
+      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@user.annotations_by).values.flatten.to_json }
+    end
+  end
+  
+  def services
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:su, params[:id], "services", :xml)) }
+    end
+  end
+  
   private
+  
+  def parse_sort_params
+    sort_by_allowed = [ "activated" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "activated"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+  
+  def find_users
+    
+    # Sorting
+    
+    order = 'users.activated_at DESC'
+    order_field = nil
+    order_direction = nil
+    
+    case @sort_by
+      when 'activated'
+        order_field = "activated_at"
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "users.#{order_field} #{order_direction}"
+    end
+    
+    @users = User.paginate(:page => @page,
+                           :per_page => @per_page,
+                           :conditions => "activated_at IS NOT NULL",
+                           :order => order)
+  
+  end
   
   def find_user
     @user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")

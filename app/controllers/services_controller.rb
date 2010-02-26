@@ -7,6 +7,7 @@
 class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :versions, :monitoring ]
   
   before_filter :parse_current_filters, :only => [ :index ]
   
@@ -14,7 +15,7 @@ class ServicesController < ApplicationController
   
   before_filter :find_services, :only => [ :index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :versions ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :versions, :monitoring ]
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
@@ -148,7 +149,8 @@ class ServicesController < ApplicationController
   def annotations
     respond_to do |format|
       format.html { disable_action }
-      format.xml # annotations.xml.builder
+      format.xml { redirect_to(generate_include_filter_url(:as, @service.id, "annotations", :xml)) }
+      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@service.annotations).values.flatten.to_json }
     end
   end
   
@@ -165,8 +167,31 @@ class ServicesController < ApplicationController
       format.xml # versions.xml.builder
     end
   end
+  
+  def monitoring
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # monitoring.xml.builder
+    end
+  end
  
   protected
+  
+  def parse_sort_params
+    sort_by_allowed = [ "created" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
   
   def find_services
     
@@ -176,14 +201,12 @@ class ServicesController < ApplicationController
     order_field = nil
     order_direction = nil
     
-    case @sortby
+    case @sort_by
       when 'created'
-        order_field = "services.created_at"
-      when 'updated'
-        order_field = "services.updated_at"
+        order_field = "created_at"
     end
     
-    case @sortorder
+    case @sort_order
       when 'asc'
         order_direction = 'ASC'
       when 'desc'
@@ -191,20 +214,17 @@ class ServicesController < ApplicationController
     end
     
     unless order_field.blank? or order_direction.nil?
-      order = "#{order_field} #{order_direction}"
+      order = "services.#{order_field} #{order_direction}"
     end
     
-    # Filters
+    # Filtering
     
-    conditions, joins = BioCatalogue::Filtering.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
+    conditions, joins = BioCatalogue::Filtering::Services.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
     
     @filter_message = "The services index has been filtered" unless @current_filters.blank?
     
-    # For atom feed we need to show 20 items instead
-    page_size = (params[:format] == 'atom' ? 20 : PAGE_ITEMS_SIZE)
-    
-    @services = Service.paginate(:page => params[:page],
-                                 :per_page => page_size,
+    @services = Service.paginate(:page => @page,
+                                 :per_page => @per_page,
                                  :order => order,
                                  :conditions => conditions,
                                  :joins => joins)
@@ -221,7 +241,7 @@ class ServicesController < ApplicationController
   end
   
   def setup_for_feed
-    if params[:format] == 'atom'
+    if self.request.format == :atom
       # Remove page param
       params.delete(:page)
       
@@ -256,32 +276,13 @@ class ServicesController < ApplicationController
     end
   end
   
-  def parse_current_filters
-    @current_filters = BioCatalogue::Filtering.convert_params_to_filters(params)
-    puts "*** @current_filters = #{@current_filters.inspect}"
-  end
-  
-  def parse_sort_params
-    sortby_allowed = [ "created", "updated" ]
-    @sortby = if params[:sortBy] && sortby_allowed.include?(params[:sortBy].downcase)
-      params[:sortBy].downcase
-    else
-      "created"
-    end
-    
-    sortorder_allowed = [ "asc", "desc" ]
-    @sortorder = if params[:sortOrder] && sortorder_allowed.include?(params[:sortOrder].downcase)
-      params[:sortOrder].downcase
-    else
-      "desc"
-    end
-  end
-  
   def authorise
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)
       error_to_back_or_home("You are not allowed to perform this action")
       return false
     end
+    
+    return true
   end
   
 end

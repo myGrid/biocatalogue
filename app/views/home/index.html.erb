@@ -182,29 +182,30 @@
 			<div class="section_box">
 				<h4>
 					<%= generic_icon_for(:curators, 'margin-right: 0.4em;') -%>
-					<span>Top Curators</span>
+					<span>Top Contributors</span>
 				</h4>
 				
 				<div class="section_content">
 					<% unless (top_curators = User.top_curators).empty? %>
 						<table id="top_curators">
 							<% top_curators.each do |u| %>
-								<% user = User.find(u['id'])%>
-								<% unless user.nil? %>
-									<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations to the BioCatalogue") -%>">
-										<td class="count">
-											<%= number_with_delimiter(u['count']) -%>
-										</td>
-										<td>
-											<%= user_link_with_flag user -%>
-										</td>
-									</tr>
-								<% end %>
+								<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations to the BioCatalogue") -%>">
+									<td class="count">
+										<%= number_with_delimiter(u['count']) -%>
+									</td>
+									<td>
+										<%= user_link_with_flag(:id => u['id'], :display_name => u['name'], :country => u['country']) -%>
+									</td>
+								</tr>
 							<% end %>
 						</table>
 					<% else %>
 						<p class="none_text">None</p>
 					<% end %>
+				</div>
+				
+				<div class="section_footer">
+					<b><%= link_to "More", latest_url(:anchor => "contributors") %></b>
 				</div>
 			</div>
 			

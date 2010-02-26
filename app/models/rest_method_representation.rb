@@ -10,14 +10,27 @@ class RestMethodRepresentation < ActiveRecord::Base
     index :rest_method_id
     index :rest_representation_id
     index [ :rest_method_id, :http_cycle ]
+    index [ :submitter_type, :submitter_id ]
   end
   
   acts_as_trashable
-  
+
   validates_presence_of :rest_method_id,
                         :rest_representation_id,
                         :http_cycle
-  
+
+  has_submitter
+
+  validates_existence_of :submitter # User must exist in the db beforehand.
+
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :submitter_name ] )
+  end
+
+  if USE_EVENT_LOG
+    acts_as_activity_logged(:models => { :culprit => { :model => :submitter } })
+  end
+
   belongs_to :rest_method
   
   belongs_to :rest_representation

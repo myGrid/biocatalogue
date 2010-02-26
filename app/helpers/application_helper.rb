@@ -15,6 +15,8 @@ require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/helpers/appl
 # ---
 
 module ApplicationHelper
+  
+  EXCLUDED_FLAG_CODES = [ "IM", "BL", "GG", "JE", "AQ", "MF" ].freeze
 
   def markaby(&block)
     Markaby::Builder.new({}, self, &block)
@@ -117,10 +119,11 @@ module ApplicationHelper
     end
   end
   
-  def generic_icon_for(thing, style='', tooltip_text=nil)
+  def generic_icon_for(thing, style='', tooltip_text=thing.to_s.titleize)
     opts = { }
     opts[:style] = "vertical-align: middle; #{style}"
     opts[:title] = tooltip_title_attrib(tooltip_text) unless tooltip_text.blank?
+    opts[:alt] = (tooltip_text.blank? ? thing.to_s.titleize : tooltip_text)
     return image_tag(icon_filename_for(thing), opts)
   end
   
@@ -132,12 +135,22 @@ module ApplicationHelper
     image_tag icon_filename_for(:refresh), :style => "vertical-align: middle;", :alt => "Refresh"
   end
   
-  def expand_image(margin_left="0.3em")
-    image_tag icon_filename_for(:expand), :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Expand'
+  def expand_image(margin_left="0.3em", float="")
+    float = "" unless %w{ inherit left right none }.include?(float.downcase.strip)
+    
+    style = (float.empty? ? "margin-left: #{margin_left}; vertical-align: middle;" :
+                            "float: #{float}; margin-right: 5px; vertical-align: middle;")
+    
+    image_tag icon_filename_for(:expand), :style => style, :alt => 'Expand'
   end
   
-  def collapse_image(margin_left="0.3em")
-    image_tag icon_filename_for(:collapse), :style => "margin-left: #{margin_left}; vertical-align: middle;", :alt => 'Collapse'
+  def collapse_image(margin_left="0.3em", float="")
+    float = "" unless %w{ inherit left right none }.include?(float.downcase.strip)
+    
+    style = (float.empty? ? "margin-left: #{margin_left}; vertical-align: middle;" :
+                            "float: #{float}; margin-right: 5px; vertical-align: middle;")
+
+    image_tag icon_filename_for(:collapse), :style => style, :alt => 'Collapse'
   end
   
   def help_icon_with_tooltip(help_text, delay=200)
@@ -170,7 +183,7 @@ module ApplicationHelper
     code = ''
 
     if country.downcase == "great britain"
-      code = "gb"
+      code = "GB"
     elsif ["england", "wales", "scotland"].include?(country.downcase)
       code = country
     elsif country.length > 2
@@ -189,6 +202,8 @@ module ApplicationHelper
   end
 
   def flag_icon_from_country_code(code, *args)
+    return "" if EXCLUDED_FLAG_CODES.include? code
+    
     # Do options the Rails Way ;-)
     options = args.extract_options!
     # defaults:
@@ -196,12 +211,18 @@ module ApplicationHelper
                            :class => "flag",
                            :style => "margin-left: 0.5em; vertical-align: middle;")
                            
-    code = "GB" if code.upcase == "UK"
     text = (options[:text].nil? ? h(CountryCodes.country(code.upcase)) : h(options[:text].to_s))
-    return image_tag("flags/#{code.downcase}.png",
+    return image_tag(flag_icon_path(code),
               :title => tooltip_title_attrib(text),
               :class => options[:class],
               :style => "#{options[:style]}")
+  end
+  
+  def flag_icon_path(code)
+    return "" if EXCLUDED_FLAG_CODES.include? code
+    return "" if code.blank?
+    code = "GB" if code.upcase == "UK"
+    image_path("flags/#{code.downcase}.png")
   end
 
   #==================
@@ -288,7 +309,7 @@ module ApplicationHelper
   
     output << case c
       when "Member"
-        user_link_with_flag(submitter)
+        user_link_with_flag(:user => submitter)
       else
         link_to(display_name(submitter), submitter) 
     end
@@ -298,8 +319,29 @@ module ApplicationHelper
     return output
   end
   
-  def user_link_with_flag(user)
-    link_to(display_name(user), user_path(user), :style => "vertical-align: baseline") + flag_icon_from_country(user.country, :style => "vertical-align: middle; margin-left: 0.4em;")
+  # Generate a link to a user's profile
+  # Either provide a :user => user OR 
+  # :id => id, :display_name => display_name, :country => country. 
+  def user_link_with_flag(*args)
+    # Do options the Rails Way ;-)
+    options = args.extract_options!
+    # defaults:
+    options.reverse_merge!(:user => nil,
+                           :id => nil,
+                           :display_name => nil,
+                           :country => nil)
+    
+    # Check that we have the basic minimum to process...
+    if options[:user].blank? and (options[:id].blank? or options[:display_name].blank?)
+      logger.error "ApplicationHelper#user_link_with_flag called with invalid options"
+      return ""
+    else
+      if options[:user]
+        return link_to(display_name(options[:user]), user_path(options[:user]), :style => "vertical-align: baseline") + flag_icon_from_country(options[:user].country, :style => "vertical-align: middle; margin-left: 0.4em;")
+      else
+        return link_to(options[:display_name], options[:id], :style => "vertical-align: baseline") + flag_icon_from_country(options[:country], :style => "vertical-align: middle; margin-left: 0.4em;")
+      end
+    end
   end
   
   def separator_symbol_to_text(symbol, pluralize_text=false, show_symbol_after=true)
@@ -324,9 +366,12 @@ module ApplicationHelper
       when ServiceDeployment, ServiceVersion, SoapService, RestService
         service = Service.find_by_id(BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service"))
         return link_to(display_name(service), service_url(service)) unless service.nil?
-      when SoapOperation, SoapInput, SoapOutput
+      when SoapOperation, SoapInput, SoapOutput, RestMethod
         service = Service.find_by_id(BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service"))
         return link_to(display_name(service), service_url(service, :anchor => "#{item.class.name.underscore}_#{item.id}")) unless service.nil?
+      when RestParameter, RestRepresentation
+        service = Service.find_by_id(BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service"))
+        return link_to(display_name(service), service_url(service, :anchor => "endpoints")) unless service.nil?
       else
         return link_to(display_name(item), item)  
     end 
@@ -369,111 +414,66 @@ module ApplicationHelper
     
     return '' if service.nil?
     
-    if DISABLE_STATUS_CHECK 
-      return ''
+    if ENABLE_STATUS_DISPLAY 
+      return status_symbol(service.latest_status)
     end
-    
-    stats = []
-   
-    service.service_deployments.each do |dep|
-      stats << dep.latest_endpoint_status
-    end
-    
-    service.service_version_instances_by_type('SoapService').each do |soap|
-      stats << soap.latest_wsdl_location_status
-    end
-    
-    # overall status of the service is the status of this one test
-    if stats.length == 1
-      return service_test_status_symbol(stats[0], text_on_status_icon(stats[0], 'Service'))
-    end
-    
-    # check if any of the test for this service returned a non
-    # zero status, meaning something was not ok. If so, just return the warning symbol
-    stats.each{ |r| 
-      if r.result != 0 
-        return service_test_status_symbol(r, text_on_status_icon(r, 'Service'))
-      end }
-    
-    # every test was fine. Just return the status of the first one
-    return service_test_status_symbol(stats[0], text_on_status_icon(stats[0], 'Service'))
-    
+    return ''
   end
   
-  #return a symbol according to the status of a test
-  def service_test_status_symbol(tresult, attribute, history = false)
-    status = "Unchecked"
-    if tresult.result == 0
-      status = "Online"
-    elsif tresult.result == 1
-      status = "Unknown"
-#    elsif tresult.result == -1
-#      status = "Unchecked"
+  def service_test_status_symbol(service_test)
+    
+    return '' if service_test.nil?
+    
+    if ENABLE_STATUS_DISPLAY 
+      return status_symbol(service_test.latest_status)
     end
+    return ''
     
-    #tooltip_text = "#{attribute} status: <b>#{status}</b>"
-    tooltip_text = "#{attribute} : " 
-    tooltip_text = tooltip_text + status if status.downcase == "unchecked"
-    tooltip_text = tooltip_text + " (last checked #{distance_of_time_in_words_to_now(tresult.created_at)} ago)" unless status.downcase == "unchecked"
-    
-    if history
-      return image_tag(onlooker_format(status, 
-                                     :online_img => "/images/small-tick-sphere-50.png", 
-                                     :offline_img => "/images/small-pling-sphere-50.png", 
-                                     :unknown_img => "/images/small-pling-sphere-50.png", 
-                                     :default_img => "/images/small-query-sphere-50.png"),
-                                     :alt => status, 
-                                     :title => tooltip_title_attrib(tooltip_text))
-    end
-    
-    
-    return image_tag(onlooker_format(status, 
-                                     :online_img => "/images/tick-sphere-50.png", 
-                                     :offline_img => "/images/pling-sphere-50.png", 
-                                     :unknown_img => "/images/pling-sphere-50.png", 
-                                     :default_img => "/images/query-sphere-50.png"),
-                                     :alt => status, 
-                                     :title => tooltip_title_attrib(tooltip_text))
+#    #stat = tresult.service_test.latest_status
+#    stat = BioCatalogue::MonitoringStatus::TestStatus.new(tresult)
+#    tooltip_text = "#{attribute}  "  
+#    tooltip_text = tooltip_text + " (last checked #{distance_of_time_in_words_to_now(tresult.created_at)} ago)" unless stat.status_label.downcase == "unchecked"
+#    if history
+#      return image_tag(stat.history_symbol_url, :alt => stat.message, :title => tooltip_title_attrib(tooltip_text))
+#    end
+#    return image_tag(stat.symbol_url, :alt => stat.message, :title => tooltip_title_attrib(tooltip_text))
+  end
 
+  def test_result_status_symbol(test_result)
+    
+    return '' if test_result.nil?
+    
+    if ENABLE_STATUS_DISPLAY 
+      return status_symbol(test_result.status, true)
+    end
+    return ''
   end
   
-  def service_test_status_message(tresult)
-    if tresult.result == 0
-      return "Available :  #{distance_of_time_in_words_to_now(tresult.created_at)} ago "
-    elsif tresult.result == 1
-      return "Could not verify status :  #{distance_of_time_in_words_to_now(tresult.created_at)} ago "
+  
+  def status_symbol(status, history=false)
+    last_checked_text = if status.last_checked.blank?
+      ""
     else
-      return "Unchecked"
-    end
-  end
-  
-  # text to add to status icon. This text is shown on hovering over the icon
-  def text_on_status_icon(status, attribute)
-    if status.result == 0
-      texts = {"Service" => "All checks were OK for this Service ",
-               "Endpoint" => "Endpoint was available ",
-               "Wsdl Location" => "Wsdl was found to be accessible "
-                          }
-                          
-      return texts[attribute]
-    end
-    if status.result == 1
-      texts = {"Service" => "Some checks were not OK for this Service. Could not confirm that <b> #{status.monitorable.property}</b> was available ",
-               "Endpoint" => "We could not verify the status of this endpoint",
-               "Wsdl Location" => "We could not confirm the accessibility of this WSDL"
-                          }
-                          
-      return texts[attribute]
+      "<br/><span style='color:#666'>" + (history ? "Checked: " : "Last checked: ") + "#{distance_of_time_in_words_to_now(status.last_checked)} ago</span>"
     end
     
-    texts = {"Service" => "Service",
-             "Endpoint" => "Endpoint",
-               "Wsdl Location" => "WSDL Location"
-                          }
-                          
-    return texts[attribute]
+    
+    
+    tooltip_text = if history
+      "Status: "
+    else
+      "Monitoring status: "
+    end + "<b>#{status.label}</b><br/>#{status.message}#{last_checked_text}"
+    
+    symbol_filename = if history 
+      status.small_symbol_filename
+    else
+      status.symbol_filename
+    end
+    
+    return image_tag(symbol_filename, :alt => status.label, :title => tooltip_title_attrib(tooltip_text))
   end
-  
+    
   
   # Hack: helper method to check if the service is a soaplab
   # services. Checks for 'soaplab' in wsdl url
@@ -506,7 +506,7 @@ module ApplicationHelper
       output << content_tag(:p) do
         x = "<b>Service Type:</b> "
         service.service_types.each do |t|
-          x << link_to(h(t), generate_include_filter_url(:t, t, :html))
+          x << link_to(h(t), generate_include_filter_url(:t, t, "services", :html))
         end
         x
       end
@@ -681,19 +681,19 @@ module ApplicationHelper
     return html
   end
   
-  def display_text_for_sortby(sortby)
-    case sortby
+  def display_text_for_sort_by(sort_by)
+    case sort_by
       when "created"
-        "Created At Date"
-      when "updated"
-        "Last Updated At Date"
+        "Created at date"
+      when "modified"
+        "Last modified at date"
       else
         ""
     end
   end
   
-  def display_text_for_sortorder(sortorder)
-    case sortorder
+  def display_text_for_sort_order(sort_order)
+    case sort_order
       when "asc"
         "Ascending"
       when "desc"

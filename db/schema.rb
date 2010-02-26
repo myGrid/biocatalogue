@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091125164036) do
+ActiveRecord::Schema.define(:version => 20100221130931) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(:version => 20091125164036) do
     t.string   "name",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "identifier", :null => false
   end
 
   add_index "annotation_attributes", ["name"], :name => "index_annotation_attributes_on_name"
@@ -156,6 +157,18 @@ ActiveRecord::Schema.define(:version => 20091125164036) do
     t.datetime "updated_at"
   end
 
+  create_table "external_tests", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.string   "doc_url"
+    t.string   "provider_name"
+    t.string   "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "external_tests", ["user_id"], :name => "e_tests_user_id_index"
+
   create_table "favourites", :force => true do |t|
     t.integer  "favouritable_id"
     t.string   "favouritable_type"
@@ -195,11 +208,13 @@ ActiveRecord::Schema.define(:version => 20091125164036) do
   add_index "relationships", ["subject_type", "subject_id"], :name => "relationships_subject_index"
 
   create_table "rest_method_parameters", :force => true do |t|
-    t.integer  "rest_method_id",    :null => false
-    t.integer  "rest_parameter_id", :null => false
-    t.string   "http_cycle",        :null => false
+    t.integer  "rest_method_id",                        :null => false
+    t.integer  "rest_parameter_id",                     :null => false
+    t.string   "http_cycle",                            :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "submitter_id"
+    t.string   "submitter_type",    :default => "User"
   end
 
   add_index "rest_method_parameters", ["rest_method_id", "http_cycle"], :name => "index_rest_method_parameters_on_rest_method_id_and_http_cycle"
@@ -207,11 +222,13 @@ ActiveRecord::Schema.define(:version => 20091125164036) do
   add_index "rest_method_parameters", ["rest_parameter_id"], :name => "rest_method_params_param_id_index"
 
   create_table "rest_method_representations", :force => true do |t|
-    t.integer  "rest_method_id",         :null => false
-    t.integer  "rest_representation_id", :null => false
-    t.string   "http_cycle",             :null => false
+    t.integer  "rest_method_id",                             :null => false
+    t.integer  "rest_representation_id",                     :null => false
+    t.string   "http_cycle",                                 :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "submitter_id"
+    t.string   "submitter_type",         :default => "User"
   end
 
   add_index "rest_method_representations", ["rest_method_id", "http_cycle"], :name => "rest_method_reps_method_id_cycle_index"
@@ -220,20 +237,22 @@ ActiveRecord::Schema.define(:version => 20091125164036) do
   add_index "rest_method_representations", ["rest_representation_id"], :name => "index_rest_method_representations_on_rest_representation_id"
 
   create_table "rest_methods", :force => true do |t|
-    t.integer  "rest_resource_id", :null => false
-    t.string   "method_type",      :null => false
+    t.integer  "rest_resource_id",                     :null => false
+    t.string   "method_type",                          :null => false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "submitter_id"
+    t.string   "submitter_type",   :default => "User"
   end
 
   add_index "rest_methods", ["rest_resource_id", "method_type"], :name => "rest_methods_rest_resource_id_method_type_index"
   add_index "rest_methods", ["rest_resource_id"], :name => "index_rest_methods_on_rest_resource_id"
 
   create_table "rest_parameters", :force => true do |t|
-    t.string   "name",                                   :null => false
+    t.string   "name",                                    :null => false
     t.text     "description"
-    t.string   "param_style",                            :null => false
+    t.string   "param_style",                             :null => false
     t.string   "computational_type"
     t.string   "default_value"
     t.boolean  "required",            :default => false
@@ -242,23 +261,29 @@ ActiveRecord::Schema.define(:version => 20091125164036) do
     t.text     "constrained_options"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "submitter_id"
+    t.string   "submitter_type",      :default => "User"
   end
 
   create_table "rest_representations", :force => true do |t|
-    t.string   "content_type", :null => false
+    t.string   "content_type",                       :null => false
     t.text     "description"
     t.string   "http_status"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "submitter_id"
+    t.string   "submitter_type", :default => "User"
   end
 
   create_table "rest_resources", :force => true do |t|
-    t.integer  "rest_service_id",    :null => false
-    t.string   "path",               :null => false
+    t.integer  "rest_service_id",                        :null => false
+    t.string   "path",                                   :null => false
     t.text     "description"
     t.integer  "parent_resource_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "submitter_id"
+    t.string   "submitter_type",     :default => "User"
   end
 
   add_index "rest_resources", ["parent_resource_id"], :name => "rest_resources_rest_parent_resource_id_index"
@@ -302,22 +327,16 @@ ActiveRecord::Schema.define(:version => 20091125164036) do
   add_index "service_providers", ["name"], :name => "service_providers_name_index"
 
   create_table "service_tests", :force => true do |t|
-    t.string   "name",                                   :null => false
-    t.string   "exec_name",                              :null => false
-    t.string   "test_status",     :default => "Unknown"
-    t.integer  "running_status",  :default => 0
-    t.integer  "testable_id",                            :null => false
-    t.string   "testable_type",                          :null => false
-    t.text     "description",                            :null => false
-    t.string   "filename",                               :null => false
-    t.string   "content_type",                           :null => false
-    t.integer  "user_id",                                :null => false
-    t.integer  "content_blob_id",                        :null => false
-    t.datetime "activated_at"
+    t.integer  "test_id"
+    t.string   "test_type"
+    t.integer  "service_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "binding"
   end
+
+  add_index "service_tests", ["service_id"], :name => "s_tests_service_id_index"
+  add_index "service_tests", ["test_type", "test_id"], :name => "s_tests_test_type_id_index"
+  add_index "service_tests", ["test_type"], :name => "s_tests_test_type_index"
 
   create_table "service_versions", :force => true do |t|
     t.integer  "service_id"
@@ -434,14 +453,32 @@ ActiveRecord::Schema.define(:version => 20091125164036) do
   add_index "soaplab_servers", ["location"], :name => "soaplab_servers_location_index"
 
   create_table "test_results", :force => true do |t|
-    t.integer  "test_id"
-    t.string   "test_type"
     t.integer  "result"
     t.string   "action"
-    t.string   "message"
+    t.text     "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "service_test_id"
+  end
+
+  add_index "test_results", ["service_test_id"], :name => "test_results_stest_id_index"
+
+  create_table "test_scripts", :force => true do |t|
+    t.string   "name",            :null => false
+    t.string   "exec_name",       :null => false
+    t.text     "description",     :null => false
+    t.string   "filename",        :null => false
+    t.string   "content_type",    :null => false
+    t.integer  "user_id",         :null => false
+    t.integer  "content_blob_id", :null => false
+    t.datetime "activated_at"
+    t.string   "prog_language",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "test_scripts", ["prog_language"], :name => "t_scripts_prog_lang_index"
+  add_index "test_scripts", ["user_id"], :name => "t_scripts_user_id_index"
 
   create_table "trash_records", :force => true do |t|
     t.string   "trashable_type"

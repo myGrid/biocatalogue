@@ -1,0 +1,2 @@
+module TestScriptsHelper
+end

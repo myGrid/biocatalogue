@@ -70,7 +70,7 @@ class ServiceDeployment < ActiveRecord::Base
     monitor = UrlMonitor.entry_for(self.class.name, self.id, "endpoint")
     
     unless monitor.nil?
-      results = TestResult.results_for(monitor.class.name, monitor.id, 1)
+      results = TestResult.results_for(monitor.service_test, 1)
       result = results.first unless results.empty?
     end
     
@@ -83,7 +83,7 @@ class ServiceDeployment < ActiveRecord::Base
     monitor = UrlMonitor.entry_for(self.class.name, self.id, "endpoint")
                               
     unless monitor.nil?
-      results = TestResult.results_for(monitor.class.name, monitor.id)
+      results = TestResult.results_for(monitor.service_test)
     end
     
     return results

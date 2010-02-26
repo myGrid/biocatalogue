@@ -5,6 +5,9 @@
 # See license.txt for details.
 
 class ContactController < ApplicationController
+  
+  before_filter :disable_action_for_api
+  
   # GET /contact
   def index
     respond_to do |format|
@@ -29,6 +32,6 @@ class ContactController < ApplicationController
         format.html { render :action => :index }
       end
     end
-
   end
+  
 end

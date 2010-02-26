@@ -5,6 +5,9 @@
 # See license.txt for details.
 
 class ServiceVersionsController < ApplicationController
+  
+  before_filter :disable_action
+  
   # GET /service_versions
   # GET /service_versions.xml
   def index

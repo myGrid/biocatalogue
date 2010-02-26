@@ -1,10 +1,13 @@
 # BioCatalogue: app/views/services/api/_summary.xml.builder
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summary")) do 
+# <summary>
+parent_xml.tag! "summary",
+                xlink_attributes(uri_for_object(service, :sub_path => "summary")),
+                :resourceType => "Service" do 
     
   # <counts>
   parent_xml.counts do
@@ -35,14 +38,14 @@ parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summar
   # <category> *
   service.annotations_with_attribute("category").each do |category_annotation|
     unless (category = Category.find_by_id(category_annotation.value)).nil?
-      parent_xml.category category.name, xlink_attributes(uri_for_object(category))
+      parent_xml.category category.name, xlink_attributes(uri_for_object(category), :title => xlink_title(category)), :resourceType => "Category"
     end
   end
   
   # <provider> *
   service.service_deployments.each do |service_deployment|
-    parent_xml.provider xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider)) do
-      parent_xml.name service_deployment.provider.name   
+    parent_xml.provider xlink_attributes(uri_for_object(service_deployment.provider), :title => xlink_title(service_deployment.provider)), :resourceType => "ServiceProvider" do
+      parent_xml.name display_name(service_deployment.provider, false)   
     end
   end
   
@@ -60,9 +63,7 @@ parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summar
   
   # <location> *
   service.service_deployments.each do |service_deployment|
-    if service_deployment.has_location_info?
-      parent_xml.location :city => service_deployment.city, :country => service_deployment.country  
-    end
+    render :partial => "api/location", :locals => { :parent_xml => parent_xml, :city => service_deployment.city, :country => service_deployment.country }      
   end
   
   # <documentationUrl> *
@@ -72,22 +73,22 @@ parent_xml.summary xlink_attributes(uri_for_object(service, :sub_path => "summar
     end
   end
   
-  # <description> *
+  # <dc:description> *
   service.service_version_instances.each do |service_instance|
   
     unless (desc = service_instance.description).blank?
-      parent_xml.description desc
+      dc_xml_tag parent_xml, :description, desc
     end
     
     service_instance.annotations_with_attribute("description").each do |ann|
-      parent_xml.description ann.value 
+      dc_xml_tag parent_xml, :description, ann.value
     end
       
   end
   
   # <tag> *
   BioCatalogue::Annotations.get_tag_annotations_for_annotatable(service).each do |ann|
-    parent_xml.tag ann.value, xlink_attributes(BioCatalogue::Tags.generate_tag_show_uri(ann.value))
+    parent_xml.tag ann.value, xlink_attributes(uri_for_path(BioCatalogue::Tags.generate_tag_show_uri(ann.value)), :title => xlink_title("Tag - #{ann.value}")), :resourceType => "Tag"
   end
   
   # <cost> *

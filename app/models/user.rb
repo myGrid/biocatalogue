@@ -72,7 +72,7 @@ class User < ActiveRecord::Base
   # where "count" is the total number of annotations provided by that user.
   def self.top_curators(limit=10)
     # NOTE: this query has only been tested to work with MySQL 5.0.x
-    sql = "SELECT users.id AS id, users.display_name AS name, COUNT(*) AS count 
+    sql = "SELECT users.id AS id, users.display_name AS name, users.country as country, COUNT(*) AS count 
             FROM users
             INNER JOIN annotations ON annotations.source_type = 'User' AND annotations.source_id = users.id 
             GROUP BY users.id
@@ -80,6 +80,24 @@ class User < ActiveRecord::Base
             LIMIT #{limit}"
     
     return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+  end
+  
+  # Returns a hash where the keys are User IDs (as Strings) and the values are the number of services (Integer) that that user has submitted.
+  # TODO: need take into account individual ServiceDeployments etc.
+  def self.services_counts
+    # NOTE: this query has only been tested to work with MySQL 5.0.x
+    sql = "SELECT services.submitter_id AS user_id, COUNT(*) AS count 
+            FROM services
+            WHERE services.submitter_type = 'User'
+            GROUP BY services.submitter_id"
+    
+    results = Hash.new 0
+    
+    ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql)).each do |x|
+      results[x['user_id']] = x['count'].to_i
+    end
+    
+    return results
   end
 
   def authenticated?(password)
@@ -160,12 +178,7 @@ class User < ActiveRecord::Base
     service_ids = self.annotations.collect do |a|
       BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(a.annotatable_type, a.annotatable_id), "Service")      
     end
-    service_ids.uniq
-  end
-  
-  #Possibly redundant:
-  def annotated_services    
-    BioCatalogue::Mapper.item_ids_to_model_objects(self.annotated_service_ids, "Service")    
+    service_ids.compact.uniq
   end
   
   def is_admin?

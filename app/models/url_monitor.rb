@@ -5,20 +5,20 @@
 # See license.txt for details
 
 class UrlMonitor < ActiveRecord::Base
-  if ENABLE_CACHE_MONEY
-    is_cached :repository => $cache
-    index :property
-    index [ :parent_type, :parent_id ]
-    index [ :parent_type, :parent_id, :property ]
-  end
+
+  belongs_to :parent , 
+             :polymorphic => true
   
-  #belongs_to :service
-  belongs_to :parent , :polymorphic => true
+  has_one :service_test, 
+          :as => :test, 
+          :dependent => :destroy
+
+  validates_presence_of :parent_type,
+                        :parent_id,
+                        :property
   
-  has_many :test_results, :as => :test, :dependent => :destroy
-  
-  # Helper class method to look up a pingable object
-  # given the pingable class name and id 
+  # Helper class method to look up a parent object
+  # given the parent object class name and id 
   def self.find_parent(parent_str, parent_id)
     parent_str.constantize.find(parent_id)
   end
@@ -28,5 +28,9 @@ class UrlMonitor < ActiveRecord::Base
     UrlMonitor.find(:first, 
                     :conditions => { :parent_id => parent_id, :parent_type => parent_type, :property => property.to_s },
                     :order => "created_at DESC")
+  end
+  
+  def url
+    return eval("self.parent.#{self.property}")
   end
 end

@@ -19,7 +19,9 @@
 					<b>Overall status:</b>
 				</td>
 				<td style="vertical-align: middle;">
-					<%= service_latest_status_symbol(@service) -%>
+					<%  benchmark "Rendered services/_monitoring_tab (overall status)" do %>
+						<%= service_latest_status_symbol(@service) -%>
+					<% end %>
 				</td>
 			</tr>
 		</table>
@@ -31,87 +33,48 @@
 			
 			<h3>Availability Checks</h3>
 			
-			<div class="monitoring_section">
+			<div>
 				
-				<%  benchmark "Rendered services/_monitoring_tab/endpoints" do %>
+				<%  benchmark "Rendered services/_monitoring_tab (URL monitors)" do %>
 				
-					<% @service.service_deployments.each do |dep|  -%>
-				
-						<table>
-							<tr>
-								<td style="padding-right: 1em;"><%= service_test_status_symbol(dep.latest_endpoint_status, text_on_status_icon(dep.latest_endpoint_status, "Endpoint"))%> </td>
-								<td>
-									<b><%= link_to(h("Service Endpoint"),  dep.endpoint, :popup => true) -%></b>
-									<p><%= service_test_status_message(dep.latest_endpoint_status) -%></p>
-								</td>		
-							</tr>
-						</table>
+					<% if (url_monitor_tests = @service.service_tests_by_type("UrlMonitor")).empty? %>
+				 		<p class="none_text"> No availability monitoring yet. Please check back later. </p>
+					<% else %>
+						<% url_monitor_tests.each do |service_test| -%>
+							<div class="monitoring_section">
+								<table>
+									<tr>
+										<td style="padding-right: 1em;">
+											<%= service_test_status_symbol(service_test)%>
+										</td>
+										<td>
+											<b><%= h(service_test.test.property.titleize) -%></b>
+										</td>		
+									</tr>
+								</table>
+								<p>
+					    		<b>Recent History</b>
+								</p>
 						
-						<p>
-					    <b>Recent History</b>
-						</p>
-						
-						<div class="box_indented_with_bar">
-							<ul>
-								<% unless (end_hist = dep.endpoint_recent_history).blank? %>
-						    	<% end_hist.each do |hist| %>
-										<li>
-											<%= service_test_status_symbol(hist,"Endpoint", true) %> 
-								    	<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
-										</li>
-							  	<% end %>
-								<% else %>
-									<li class="none_text">No previous checks</li>
-								<% end %>
-							</ul>
-						</div>
-					
-				  <% end %>
-				
-				<% end %>
-				
-			</div>
-			
-			<div class="monitoring_section">
-				
-				<%  benchmark "Rendered services/_monitoring_tab/wsdl_locations" do %>
-				
-					<% @service.service_version_instances_by_type('SoapService').each do |soap|  %>
-				
-						<table>
-							<tr>
-					 			<td style="padding-right: 1em;"><%= service_test_status_symbol(soap.latest_wsdl_location_status, text_on_status_icon(soap.latest_wsdl_location_status, "Wsdl Location"))%> </td>
-								<td>
-									<b><%= link_to(h("WSDL Location"), soap.wsdl_location, :popup => true) -%></b> 
-									<p><%= service_test_status_message(soap.latest_wsdl_location_status) -%></p>
-								</td>
-							</tr>
-						</table>
-						
-						<p>
-					  	<b>Recent History</b>
-						</p>
-						
-						<div class="box_indented_with_bar">
-							<ul>
-								<% unless (wsdl_hist = soap.wsdl_location_recent_history).blank? %>
-									<% wsdl_hist.each  do |hist| %>
-										<% unless hist.result == -1  %>
-											<li>
-												<%= service_test_status_symbol(hist,"Wsdl Location", true)  %> 
-										    <%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
-											</li>
+								<div class="box_indented_with_bar">
+									<ul>
+										<% unless (test_hist = service_test.recent_test_results).blank? %>
+						    				<% test_hist.each do |hist| %>
+													<li class="container_middled">
+														<%= test_result_status_symbol(hist) %> 
+									    			<span><%= distance_of_time_in_words_to_now(hist.created_at) -%> ago</span>
+													</li>
+							  				<% end %>
+										<% else %>
+											<li class="none_text">No previous checks</li>
 										<% end %>
-									<% end %>
-								<% else %>
-									<li class="none_text">No previous checks</li>
-								<% end %>
-							</ul>
-						</div>
-						
+									</ul>
+								</div>
+							</div>
+			  		<% end %>		
 					<% end %>
 				
-				<% end %>
+				<%end%>
 				
 			</div>
 			
@@ -121,33 +84,68 @@
 			
 			<h3>Test Scripts</h3>
 			
-			<p style="color: red; font-weight: bold;">
-				Coming soon!
-			</p>
-			
-			<% if false %>
-	
-				<h4>Tests for this Service</h4>
+			<div class="monitoring_section">
+				<ul>
+					<h4>Test Scripts for this Service</h4>
 			 
-				<% if @service.service_tests.empty? -%>  <br/>
-				  None <br/>
-				<% else -%>
-					<% @service.service_tests.each do |test| -%>  <br/>
-						<%= test.name -%>  <br/>
-					<% end %>
-				<% end -%>
+					<% if @service.test_scripts.empty? -%>
+				 		<li class="none_text">No scripts uploaded yet</li>
+					<% else -%>
+						<% @service.test_scripts.each do |test| -%>  <br/>
+								<div class="monitoring_section">
+									<h5><%= test.name -%> </h5>
+									<table>
+										<tr>
+					 						<td style="padding-right: 1em;"><%= service_test_status_symbol(test.service_test)%> </td>
+											<td>
+												<b><%= link_to(h("Service"), @service, :popup => true) -%></b> 
+											</td>
+										</tr>
+									</table>
+									
+									<div class="property">
+										<%= render :partial => "annotations/descriptions",
+									 				:locals => { :annotatable => test } -%>
+									</div>
+									<!--history -->
+									<p>
+					  					<b>Recent History</b>
+									</p>
+									<div class="box_indented_with_bar">
+										<ul>
+											<% unless (script_hist = test.recent_test_results).blank? %>
+												<% script_hist.each  do |hist| %>
+												<% unless hist.result == -1  %>
+													<li>
+														<%= test_result_status_symbol(hist)  %> 
+										    			<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
+													</li>
+												<% end %>
+											<% end %>
+											<% else %>
+												<li class="none_text">No previous checks</li>
+											<% end %>
+										</ul>
+									</div>
+									<p>
+										<div class="property">
+											<%= link_to "Download Test", download_test_scripts_path + "/#{test.id}" -%> 
+										</div>
+									</p>
+								</div>	
+							<% end %>
+					<% end -%>
+				</ul>
+			</div>
 			
-			
-			 	<% if mine?(@service) -%>
+			 	<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) -%>
 					<div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
-						<%= render :partial => 'shared/service_test', :locals => {:service_tests => @service} -%>
+						<%= render :partial => 'shared/service_test', :locals => {:service => @service} -%>
 					</div>
 				<% end %>
 			
-			<% end %>
-			
 		</div>
-	
+		
 	</div>
-	
+
 </div>

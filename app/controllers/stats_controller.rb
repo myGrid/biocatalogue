@@ -6,6 +6,8 @@
 
 class StatsController < ApplicationController
   
+  before_filter :disable_action_for_api
+  
   def index
     @stats = BioCatalogue::Stats.get_last_stats
     

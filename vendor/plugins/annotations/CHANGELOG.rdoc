@@ -1,6 +1,14 @@
 = Changelog
 
-== 0.1.0
+== 0.1.1
+* Added 'identifier' to AnnotationAttribute. This can be used to specify what ontology term / URI the attribute can be
+  uniquely identified using. See AnnotationAttribute#before_validation for more information on how this identifier
+  will be generated if not specified manually.
+* Changed the 'annotations' association in act_as_annotation_source to 'annotations_by, to fix cases when a model has both
+  acts_as_annotatable AND acts_as_annotation_source.
+* Latest migration version = v2
+
+== 0.1.0 (July 23rd 2009)
 * Initial import from the BioCatalogue codebase.
 * Improved documentation. See README.rdoc for more info on features and usage.
 * Latest migration version = v1

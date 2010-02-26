@@ -5,8 +5,21 @@
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
+  map.api '/api.:format', :controller => 'api', :action => 'show' 
+  
+  map.lookup '/lookup.:format', :controller => 'lookup', :action => 'show'
+  map.lookup '/lookup', :controller => 'lookup', :action => 'show'
+  
   map.resources :announcements
 
+  map.resources :service_tests,
+                :member => { :results => :get }
+  
+  map.resources :test_results
+  
+  map.resources :test_scripts, 
+                :collection => { :download => :get }
+  
   # To test error messages
   map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index'
   
@@ -14,9 +27,12 @@ ActionController::Routing::Routes.draw do |map|
   map.stats_index '/stats', :controller => 'stats', :action => 'index'
   map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh', :conditions => { :method => :post }
   
-  map.resources :categories
+  map.resources :categories,
+                :member => { :services => :get }
   
-  map.resources :registries
+  map.resources :registries,
+                :member => { :annotations_by => :get,
+                             :services => :get }
 
   map.resources :agents
   
@@ -26,11 +42,15 @@ ActionController::Routing::Routes.draw do |map|
   # Routes from the annotations plugin + extensions
   Annotations.map_routes(map,
                          { :new_popup => :post,
-                           :create_inline => :post },
+                           :create_inline => :post,
+                           :filters => :get },
                          { :edit_popup => :post,
                            :download => :get,
                            :change_attribute => :post })
-
+  
+  map.resources :annotation_attributes,
+                :member => { :annotations => :get }
+  
   # Tags (ordering is important!)
 #  map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
 #  map.tags_auto_complete '/tags/auto_complete', :controller => 'tags', :action => 'auto_complete', :conditions => { :method => :get }
@@ -54,9 +74,13 @@ ActionController::Routing::Routes.draw do |map|
   map.search_by_data '/search/by_data.:format', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :get, :post ] }
   map.search_by_data '/search/by_data', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :post, :get ] }
 
-  map.resources :service_providers
+  map.resources :service_providers,
+                :member => { :annotations => :get,
+                             :annotations_by => :get,
+                             :services => :get }
 
-  #map.resources :service_deployments
+  map.resources :service_deployments,
+                :member => { :annotations => :get }
 
   #map.resources :service_versions
 
@@ -65,7 +89,9 @@ ActionController::Routing::Routes.draw do |map|
                                  :rpx_merge_setup => :get,
                                  :rpx_merge => :post }, 
                 :member => { :change_password => [ :get, :post ],
-                             :rpx_update => [ :get, :post ] }
+                             :rpx_update => [ :get, :post ],
+                             :annotations_by => :get,
+                             :services => :get }
                 
   map.resource :session
 
@@ -87,15 +113,31 @@ ActionController::Routing::Routes.draw do |map|
   map.home '/', :controller => 'home', :action => 'index'
   map.latest '/latest', :controller => 'home', :action => 'latest'
 
-  map.resources :rest_services
+  map.resources :rest_services,
+                :member => { :annotations => :get,
+                             :deployments => :get }
+#  map.resources :rest_resources, :member => {:add_new_resources => :post}
+#  map.resources :rest_methods
+#  map.resources :rest_parameters, :member => {:add_new_parameters => :post}
+#  map.resources :rest_method_parameters
+#  map.resources :rest_representations
+#  map.resources :rest_method_representations
 
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,
-                                 :bulk_new => :get }
+                                 :bulk_new => :get },
+                :member => { :annotations => :get,
+                             :operations => :get,
+                             :deployments => :get }
 
-  #map.resources :soap_operations
-  #map.resources :soap_inputs
-  #map.resources :soap_outputs
+  map.resources :soap_operations,
+                :member => { :annotations => :get }
+                
+  map.resources :soap_inputs,
+                :member => { :annotations => :get }
+                
+  map.resources :soap_outputs,
+                :member => { :annotations => :get }
 
   map.resources :soaplab_servers,
                 :collection => { :load_wsdl => :post}
@@ -106,11 +148,9 @@ ActionController::Routing::Routes.draw do |map|
                              :summary => :get,
                              :annotations => :get,
                              :deployments => :get,
-                             :versions => :get }
+                             :versions => :get,
+                             :monitoring => :get }
   
-  map.resources :service_tests, 
-                :collection => {:add_test => :post }
-
   # Root of website
   map.root :controller => 'home', :action => 'index'
 
@@ -153,4 +193,5 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
   #map.connect ':controller/:action/:id.:format'
+  
 end

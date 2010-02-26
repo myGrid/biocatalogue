@@ -3,10 +3,10 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 class ActsAsAnnotationSourceTest < ActiveSupport::TestCase
   
   def test_has_many_annotations_association
-    assert_equal 7, users(:john).annotations.length
-    assert_equal 6, users(:jane).annotations.length
-    assert_equal 3, groups(:sci_fi_geeks).annotations.length
-    assert_equal 4, groups(:classical_fans).annotations.length
+    assert_equal 7, users(:john).annotations_by.length
+    assert_equal 6, users(:jane).annotations_by.length
+    assert_equal 3, groups(:sci_fi_geeks).annotations_by.length
+    assert_equal 4, groups(:classical_fans).annotations_by.length
   end
   
   def test_annotations_by_class_method
@@ -37,20 +37,20 @@ class ActsAsAnnotationSourceTest < ActiveSupport::TestCase
   
   def test_adding_of_annotation
     us = users(:jane)
-    assert_equal 6, us.annotations.length
-    ann1 = us.annotations << Annotation.new(:attribute_id => AnnotationAttribute.find_or_create_by_name("tag").id, 
+    assert_equal 6, us.annotations_by.length
+    ann1 = us.annotations_by << Annotation.new(:attribute_id => AnnotationAttribute.find_or_create_by_name("tag").id,
                                            :value => "test", 
                                            :annotatable_type => "Book", 
                                            :annotatable_id => 1)
                                            
-    ann2 = us.annotations << Annotation.new(:attribute_name => "description", 
+    ann2 = us.annotations_by << Annotation.new(:attribute_name => "description",
                                            :value => "test2", 
                                            :annotatable_type => "Book", 
                                            :annotatable_id => 2)
                                            
     assert_not_nil(ann1)
     assert_not_nil(ann2)
-    assert_equal 8, us.annotations(true).length
+    assert_equal 8, us.annotations_by(true).length
   end
   
 end

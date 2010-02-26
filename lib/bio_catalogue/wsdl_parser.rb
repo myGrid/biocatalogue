@@ -62,6 +62,7 @@ module BioCatalogue
     #TODO: replace this wsdl parser by an elaborate wsdl handling library
     
     
+    MOBY_STYLE_WSDL_KEYS = ['name', 'target_namespace', 'import'].freeze
    
     def WsdlParser.parse(wsdl_url="")
       
@@ -114,13 +115,16 @@ module BioCatalogue
     def WsdlParser.get_wsdl_hash_and_file_contents(wsdl_url)
       wsdl_file_contents  = open(wsdl_url.strip(), :proxy => HTTP_PROXY).read
       wsdl_hash = Hash.from_xml(wsdl_file_contents)
+      if wsdl_hash['definitions'].keys == MOBY_STYLE_WSDL_KEYS
+        wsdl_hash = moby_wsdl_adapter(wsdl_hash)
+      end
       return [wsdl_hash, wsdl_file_contents]
     end
 
     
     protected    
     def WsdlParser.get_service_info(wsdl_hash)
-      wsdl_hash = check_for_xml_parse_errors(wsdl_hash)
+      #wsdl_hash = check_for_xml_parse_errors(wsdl_hash)
       service_info = {}
       service_info["name"]        = wsdl_hash["definitions"]["service"]["name"]
       service_info["description"] = wsdl_hash["definitions"]["documentation"] || wsdl_hash["definitions"]["service"]["documentation"] || wsdl_hash["definitions"]["service"]['port']["documentation"]
@@ -483,8 +487,48 @@ module BioCatalogue
         return name
       end
     
+    
+    def WsdlParser.moby_wsdl_adapter(moby_style_wsdl_hash)
+      wsdl_hash = {'definitions' => {'service'  => nil,
+                                    'message'   => nil,
+                                    'types'     => nil,
+                                    'port_type' => nil
+                                   }
+                 }
+      messages  = []
+      types     = []
+      porttype  = []
+      service   = nil
+      
+      import = moby_style_wsdl_hash['definitions']['import']
+      import.each do |item|
+        unless item.class.to_s !='Hash'
+          if item.keys.include?('schema')
+            types << item
+          elsif item.keys.include?('part')
+            messages << item
+          elsif item.keys.include?('port')
+            service = item
+          else
+            if item.keys.include?('operation')
+                porttype << item if item['name'] =~/PortType/
+            end
+          end
+        end
+      end
+      wsdl_hash['definitions']['service'] = service
+      wsdl_hash['definitions']['message'] = messages
+      wsdl_hash['definitions']['types']   = types
+      wsdl_hash['definitions']['port_type'] = porttype
+ 
+      return wsdl_hash
+    end
+    
     def WsdlParser.test(num=0)
       wsdls= [
+      "http://www.inab.org/cgi-bin/getMOBYWSDL/INB-dev/mmb.pcb.ub.es/solvateStructureWithLigandsFromPDBText",
+      "http://www.inab.org/cgi-bin/getMOBYWSDL/INB/inb.bsc.es/runNCBIBlastn",
+      "http://www.inab.org/cgi-bin/getMOBYWSDL/INB/inb.bsc.es/runNCBIBlastn",
       "http://edoc3.bibliothek.uni-halle.de:8080/axis/vascoda.wsdl",
       "http://www.biomart.org/biomart/martwsdl",
       "http://www.ebi.ac.uk/Tools/webservices/wsdl/WSWUBlast.wsdl",

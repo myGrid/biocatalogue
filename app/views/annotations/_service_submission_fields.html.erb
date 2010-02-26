@@ -30,7 +30,7 @@
 <p class="high_linespaced form_field_section">
 	Add a <b>description</b> of this service:
 	<br/>
-	<%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => fields_disabled, :size => "50x10", :style => "width: 99%;" %>
+	<%= text_area_tag "annotations[description]", params[:annotations][:description], :disabled => fields_disabled, :size => (controller.controller_name=="rest_services"? "50x7":"50x10"), :style => "width: 99%;" %>
 </p>
 
 <!-- Categories -->

@@ -6,6 +6,8 @@
 
 class AnnouncementsController < ApplicationController
   
+  before_filter :disable_action_for_api, :except => [ :index ]
+  
   before_filter :login_required, :except => [ :show, :index ]
   before_filter :authorise, :except => [ :show, :index ]
   
@@ -95,7 +97,7 @@ class AnnouncementsController < ApplicationController
   end
   
   def setup_for_feed
-    if params[:format] == 'atom'
+    if self.request.format == :atom
       # Remove page param
       params.delete(:page)
       
@@ -109,6 +111,8 @@ class AnnouncementsController < ApplicationController
       error_to_back_or_home("You are not allowed to perform this action")
       return false
     end
+    
+    return true
   end
   
 end

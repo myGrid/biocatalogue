@@ -30,7 +30,7 @@
 <% else %>
 
 	<% 
-		 current_page_ids = @service_ids.paginate(:page => params[:page], :per_page => PAGE_ITEMS_SIZE)
+		 current_page_ids = @service_ids.paginate(:page => params[:page], :per_page => @per_page)
 		 services = search_item_ids_to_objects(current_page_ids, "service")
 	 %>
 	

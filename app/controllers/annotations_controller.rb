@@ -13,11 +13,18 @@ require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers
 class AnnotationsController < ApplicationController
   
   # Disable some of the actions provided in the controller in the plugin.
-  before_filter :disable_action, :only => [ :index, :show, :edit ]
+  before_filter :disable_action, :only => [ :new, :edit ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :create, :create_multiple, :update, :destroy, :set_as_field ]
   
   before_filter :login_required, :only => [ :new, :create, :edit, :update, :destroy, :edit_popup, :create_inline, :change_attribute ]
+  
+  before_filter :parse_current_filters, :only => [ :index ]
+  
+  before_filter :parse_sort_params, :only => [ :index ]
+  
+  before_filter :find_annotations, :only => [ :index ]
   
   before_filter :find_annotation, :only => [ :show, :edit, :update, :destroy, :edit_popup, :download, :change_attribute ]
   
@@ -25,6 +32,22 @@ class AnnotationsController < ApplicationController
   
   skip_before_filter :authorise_action
   before_filter :authorise, :only =>  [ :edit, :edit_popup, :update, :destroy, :change_attribute ]
+  
+  def index
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # index.xml.builder
+      format.json { render :json =>  @annotations.to_json }
+    end
+  end
+  
+  def show
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  # show.xml.builder
+      format.json { render :json => @annotation.to_json }
+    end
+  end
   
   def new_popup
     if @annotatable.nil?
@@ -130,7 +153,67 @@ class AnnotationsController < ApplicationController
     end
   end
   
+  def filters
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # filters.xml.builder
+    end
+  end
+  
   protected
+  
+   def parse_sort_params
+    sort_by_allowed = [ "created", "modified" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+  
+  def find_annotations
+    
+    # Sorting
+    
+    order = 'annotations.created_at DESC'
+    order_field = nil
+    order_direction = nil
+    
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+      when 'modified'
+        order_field = "updated_at"
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "annotations.#{order_field} #{order_direction}"
+    end
+    
+    # Filtering
+    
+    conditions, joins = BioCatalogue::Filtering::Annotations.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
+    
+    @annotations = Annotation.paginate(:page => @page,
+                                       :per_page => @per_page,
+                                       :order => order,
+                                       :conditions => conditions,
+                                       :joins => joins)
+  end
   
   def authorise
     allowed = false

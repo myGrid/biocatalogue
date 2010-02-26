@@ -7,91 +7,102 @@
 class RegistriesController < ApplicationController
   
   before_filter :disable_action, :only => [ :new, :edit, :create, :update, :destroy ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :annotations_by, :services ]
+  
+  before_filter :parse_sort_params, :only => [ :index ]
+  
+  before_filter :find_registries, :only => [ :index ]
+  
+  before_filter :find_registry, :only => [ :show, :annotations, :annotations_by ]
   
   # GET /registries
   # GET /registries.xml
   def index
-    @registries = Registry.paginate(:page => params[:page],
-                                :order => 'created_at DESC')
-
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @registries }
+      format.xml  # index.xml.builder
     end
   end
 
   # GET /registries/1
   # GET /registries/1.xml
   def show
-    @registry = Registry.find(params[:id])
-    @registrys_services = @registry.services.paginate(:page => params[:page],
-                                                      :order => "created_at DESC")
-
+    unless is_api_request?
+      @registrys_services = @registry.services.paginate(:page => params[:page],
+                                                        :order => "created_at DESC")
+    end
+    
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @registry }
+      format.xml  # show.xml.builder
+    end
+  end
+  
+  def annotations_by
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:sor, @registry.id, "annotations", :xml)) }
+      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@registry.annotations_by).values.flatten.to_json }
+    end
+  end
+  
+  def services
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:sr, params[:id], "services", :xml)) }
     end
   end
 
-  # GET /registries/new
-  # GET /registries/new.xml
-  def new
-#    @registry = Registry.new
-#
-#    respond_to do |format|
-#      format.html # new.html.erb
-#      format.xml  { render :xml => @registry }
-#    end
+  protected
+  
+  def parse_sort_params
+    sort_by_allowed = [ "created" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+  
+  def find_registries
+    
+    # Sorting
+    
+    order = 'registries.created_at DESC'
+    order_field = nil
+    order_direction = nil
+    
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "registries.#{order_field} #{order_direction}"
+    end
+    
+    @registries = Registry.paginate(:page => @page,
+                           :per_page => @per_page,
+                           :order => order)
+  
+  end
+  
+  def find_registry
+    @registry = Registry.find(params[:id])
   end
 
-  # GET /registries/1/edit
-  def edit
-#    @registry = Registry.find(params[:id])
-  end
-
-  # POST /registries
-  # POST /registries.xml
-  def create
-#    @registry = Registry.new(params[:registry])
-#
-#    respond_to do |format|
-#      if @registry.save
-#        flash[:notice] = 'Registry was successfully created.'
-#        format.html { redirect_to(@registry) }
-#        format.xml  { render :xml => @registry, :status => :created, :location => @registry }
-#      else
-#        format.html { render :action => "new" }
-#        format.xml  { render :xml => @registry.errors, :status => :unprocessable_entity }
-#      end
-#    end
-  end
-
-  # PUT /registries/1
-  # PUT /registries/1.xml
-  def update
-#    @registry = Registry.find(params[:id])
-#
-#    respond_to do |format|
-#      if @registry.update_attributes(params[:registry])
-#        flash[:notice] = 'Registry was successfully updated.'
-#        format.html { redirect_to(@registry) }
-#        format.xml  { head :ok }
-#      else
-#        format.html { render :action => "edit" }
-#        format.xml  { render :xml => @registry.errors, :status => :unprocessable_entity }
-#      end
-#    end
-  end
-
-  # DELETE /registries/1
-  # DELETE /registries/1.xml
-  def destroy
-#    @registry = Registry.find(params[:id])
-#    @registry.destroy
-#
-#    respond_to do |format|
-#      format.html { redirect_to(registries_url) }
-#      format.xml  { head :ok }
-#    end
-  end
 end

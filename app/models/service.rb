@@ -4,6 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
+
 class Service < ActiveRecord::Base
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache
@@ -18,17 +19,20 @@ class Service < ActiveRecord::Base
   
   acts_as_annotatable
   
-  is_testable
-  
   acts_as_favouritable
   
-  has_many :relationships, :as => :subject, :dependent => :destroy
+  has_many :relationships, 
+           :as => :subject, 
+           :dependent => :destroy
   
   has_many :service_versions, 
            :dependent => :destroy,
            :order => "created_at ASC"
   
   has_many :service_deployments, 
+           :dependent => :destroy
+  
+  has_many :service_tests, 
            :dependent => :destroy
   
   has_submitter
@@ -100,7 +104,7 @@ class Service < ActiveRecord::Base
   # Gets an array of all the service types that this service has (as part of it's versions).
   def service_types
     types = self.service_versions.collect{|sv| sv.service_versionified.service_type_name}.uniq
-    types << "SoapLab" unless self.soaplab_server.nil?
+    types << "Soaplab" unless self.soaplab_server.nil?
     return types
   end
   
@@ -115,10 +119,7 @@ class Service < ActiveRecord::Base
     desc = self.description
     
     if desc.blank?
-      desc_anns = self.latest_version.service_versionified.annotations_with_attribute("description")
-      unless desc_anns.empty?
-        desc = desc_anns.first.value
-      end
+      desc = self.latest_version.service_versionified.annotations_with_attribute("description").first.try(:value)
     end
     
     return desc
@@ -189,11 +190,20 @@ class Service < ActiveRecord::Base
                                              :subject_id => self.id, 
                                              :predicate => "BioCatalogue:memberOf", 
                                              :object_type => "SoaplabServer" })
-    if rel.nil?
-      return nil
-    else
-      return rel.object
-    end
+    rel.nil? ? rel : rel.object
+  end
+  
+  def test_scripts
+    service_test_instances_by_type('TestScript')
+  end
+  
+  def service_tests_by_type(type)
+    ServiceTest.find(:all, :conditions => {:test_type => type, :service_id => self.id})
+  end
+  
+  # e.g. To find all test scripts:  service_test_instances_by_type('TestScript')
+  def service_test_instances_by_type(type)
+    service_tests_by_type(type).collect{|st| st.test}.compact
   end
   
   # This updates the submitter as well as the submitter of this service as well 
@@ -226,6 +236,14 @@ class Service < ActiveRecord::Base
     return status
   end
   
+  def latest_status
+    BioCatalogue::Monitoring::ServiceStatus.new(self)
+  end
+  
+  def latest_test_results_for_all_service_tests
+    self.service_tests.map { |st| st.latest_test_result }
+  end
+  
 protected
   
   def generate_unique_code
@@ -246,7 +264,7 @@ protected
   end
   
   def tweet_create
-    BioCatalogue::Util.say "Called Service#tweet_create to submit job to tweet"
+    logger.info "Called Service#tweet_create to submit job to tweet"
     Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(:service_create, :service_id => self.id), 0, 30.seconds.from_now)
   end
   

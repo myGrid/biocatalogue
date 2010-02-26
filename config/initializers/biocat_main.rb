@@ -28,6 +28,8 @@ require 'bio_catalogue/has_submitter'
 require 'bio_catalogue/wsdl_utils_parser_client'
 require 'bio_catalogue/annotations'
 require 'bio_catalogue/annotations/extensions'
+require 'bio_catalogue/monitoring'
+require 'bio_catalogue/monitoring/status'
 
 # Require additional libraries
 require 'array'
@@ -78,6 +80,8 @@ class ActiveRecord::Base
   @@per_page = PAGE_ITEMS_SIZE
 end
 
+MAX_PAGE_SIZE = 50
+
 # The amount of time to cache the metadata counts data.
 METADATA_COUNTS_DATA_CACHE_TIME = 60*60  # 60 minutes, in seconds.
 
@@ -104,7 +108,7 @@ BOT_IGNORE_LIST = "Googlebot",
 # Disabled this due to ontological term URIs as tags...
 #Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "tag" ])
 
-Annotations::Config.strip_text_rules.update({ "tag" => [ '"' ] })
+Annotations::Config.strip_text_rules.update({ "tag" => [ '"', /^'/, /'$/ ] })
 
 Annotations::Config.limits_per_source.update({ "rating.speed" => 1,
                                                "rating.reliability" => 1,
@@ -120,6 +124,16 @@ Annotations::Config.attribute_names_to_allow_duplicates.concat([ "tag",
 Annotations::Config.value_restrictions.update({ "rating.documentation" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
                                                 "test_xyz" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid test_xyz" } })
 
+Annotations::Config.default_attribute_identifier_template = "http://biocatalogue.org/attribute/%s"
+Annotations::Config.attribute_name_transform_for_identifier = Proc.new { |name|
+  regex = /\.|-|:/
+  if name.match(regex)
+    name.gsub(regex, ' ').titleize.gsub(' ', '').camelize(:lower)
+  else
+    name.camelize(:lower)
+  end
+}
+    
 # ================================
 
 

@@ -6,6 +6,8 @@
 
 class SearchController < ApplicationController
   
+  before_filter :disable_action_for_api, :except => [ :show, :by_data ]
+  
   skip_before_filter :verify_authenticity_token, :only => [ :auto_complete, :by_data ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
@@ -68,8 +70,13 @@ class SearchController < ApplicationController
     @search_type = "input"
     @limit=20
     
+    if params[:search_by_data].blank?
+      error_to_home("Something went wrong. Please contact us if this carries on.")
+      return
+    end
+    
     if request.post?
-      puts params.inspect
+      #puts params.inspect
       if !params[:search_by_data][:search_type].nil? && params[:search_by_data][:search_type].downcase == "output"
         @search_type = "output"
       end
@@ -82,9 +89,9 @@ class SearchController < ApplicationController
         rescue ArgumentError
         end      
       end
-      puts params[:search_by_data][:data]
+      #puts params[:search_by_data][:data]
       unless params[:search_by_data][:data].blank?
-        if is_non_html_request? 
+        if is_api_request? 
           @query=cgi.unescape(params[:search_by_data][:data])
         else
           @query=params[:search_by_data][:data]
@@ -135,7 +142,7 @@ class SearchController < ApplicationController
       # Query is fine
       @query = query
       
-      # Now, the scope...
+      # Now, the scope(s)...
       
       scope = params[:scope]
       
@@ -143,20 +150,25 @@ class SearchController < ApplicationController
       if scope.blank?
         scope = BioCatalogue::Search::ALL_SCOPE_SYNONYMS[0]
       else
-        scope = scope.strip.downcase
-        scope = BioCatalogue::Search::ALL_SCOPE_SYNONYMS[0] if BioCatalogue::Search::ALL_SCOPE_SYNONYMS[1..-1].include?(scope)
         
-        # Reset params[:scope] in case it is accessed again
-        params[:scope] = scope 
+        # Can be a single scope or a list of scopes...
+        
+        if scope =~ /,/
+          scope = scope.split(',').compact.map{|s| s.strip.downcase}.reject{|s| !BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.include?(s)}
+        else
+          scope = scope.strip.downcase
+          scope = BioCatalogue::Search::ALL_SCOPE_SYNONYMS[0] if BioCatalogue::Search::ALL_SCOPE_SYNONYMS.include?(scope)
+          
+          # Check that a valid scope has been provided
+          unless BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
+            error_to_home("'#{scope}' is an invalid search scope")
+            return false
+          end
+        end
+        
       end
 
-      # Check that a valid scope has been provided
-      unless BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
-        error_to_home("'#{scope}' is an invalid search scope")
-        return false
-      end
-
-      # Scope is fine
+      # Scope(s) is fine
       @scope = scope
 
       @results = nil

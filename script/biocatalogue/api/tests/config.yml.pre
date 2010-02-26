@@ -1,0 +1,75 @@
+---
+# Config settings for the API tests.
+
+server: http://localhost:3000
+service_ids:
+  - 1
+  - 4
+  - 2083
+  - 1928
+  - 607
+  - 2157
+  - 2146
+soap_service_ids:
+  - 4
+  - 1926
+  - 2137
+soap_operation_ids:
+  - 11
+  - 12
+soap_input_ids:
+  - 12
+  - 21737
+soap_output_ids:
+  - 11
+  - 13243
+rest_service_ids:
+  - 1
+  - 36
+category_ids:
+  - 1
+  - 2
+  - 4
+  - 10
+  - 43
+tag_endpoints:
+  - "/tags/ebi"
+  - "/tags/protein%20sequence"
+  - "/tags/simpleParameter?namespace=mygrid-service-ontology"
+  - "/tags/DDBJ_record?namespace=mygrid-domain-ontology"
+service_provider_ids:
+  - 1
+  - 4
+user_ids:
+  - 2
+  - 228
+  - 14
+  - 27
+registry_ids:
+  - 1
+  - 2
+annotation_ids:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+annotation_attribute_ids:
+  - 1
+  - 2
+  - 41
+service_test_ids:
+  - 1
+  - 2
+  - 3
+service_test_ids_for_test_results:
+  - 1
+  - 2
+test_result_ids:
+  - 1
+  - 5
+  - 100
+  - 500
+  - 1000
+  - 5000
+  - 10000

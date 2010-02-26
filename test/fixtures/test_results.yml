@@ -1,15 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  test_id: 1
-  test_type: MyString
   result: 1
   action: MyString
   message: MyString
+  service_test_id: 1
 
 two:
-  test_id: 1
-  test_type: MyString
   result: 1
   action: MyString
   message: MyString
+  service_test_id: 1

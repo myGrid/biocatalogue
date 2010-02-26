@@ -11,8 +11,8 @@
 <%# This partial MUST be used within a <div> element with class="filters" %>
 
 <% 
-	 submitter_user_filters = BioCatalogue::Filtering.get_filters_for_submitters_users
-	 submitter_registry_filters = BioCatalogue::Filtering.get_filters_for_submitters_registries 
+	 submitter_user_filters = BioCatalogue::Filtering::Services.get_filters_for_submitters_users
+	 submitter_registry_filters = BioCatalogue::Filtering::Services.get_filters_for_submitters_registries 
 %>
 
 <div class="filter_type_box">

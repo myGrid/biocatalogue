@@ -30,7 +30,7 @@
 		</p>
 		
 		<!-- Service Types -->
-		<% service_types_filters = BioCatalogue::Filtering.get_filters_for_service_types %>
+		<% service_types_filters = BioCatalogue::Filtering::Services.get_filters_for_service_types %>
 		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => service_types_filters,
 														:filter_type => :t } -%>
@@ -43,31 +43,31 @@
 		<% if show_tag_filters? %>
 		
 			<!-- Tags -->												
-			<% tags_filters = BioCatalogue::Filtering.get_filters_for_all_tags %>
+			<% tags_filters = BioCatalogue::Filtering::Services.get_filters_for_all_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => tags_filters,
 															:filter_type => :tag } -%>
 		
 			<!-- Tags (on Services) -->												
-			<% operations_tags_filters = BioCatalogue::Filtering.get_filters_for_service_tags %>
+			<% operations_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_service_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => operations_tags_filters,
 															:filter_type => :tag_s } -%>
 															
 			<!-- Tags (on Operations) -->												
-			<% operations_tags_filters = BioCatalogue::Filtering.get_filters_for_soap_operation_tags %>
+			<% operations_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_operation_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => operations_tags_filters,
 															:filter_type => :tag_ops } -%>
 		
 			<!-- Tags (on Inputs) -->												
-			<% inputs_tags_filters = BioCatalogue::Filtering.get_filters_for_soap_input_tags %>
+			<% inputs_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_input_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => inputs_tags_filters,
 															:filter_type => :tag_ins } -%>
 		
 			<!-- Tags (on Outputs) -->												
-			<% outputs_tags_filters = BioCatalogue::Filtering.get_filters_for_soap_output_tags %>
+			<% outputs_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_output_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => outputs_tags_filters,
 															:filter_type => :tag_outs } -%>
@@ -75,7 +75,7 @@
 		<% end %>
 		
 		<!-- Service Providers -->
-		<% service_provider_filters = BioCatalogue::Filtering.get_filters_for_service_providers %>
+		<% service_provider_filters = BioCatalogue::Filtering::Services.get_filters_for_service_providers %>
 		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => service_provider_filters,
 														:filter_type => :p } -%>
@@ -84,7 +84,7 @@
 		<%= render :partial => "filtering/filter_options_submitters" -%>
 											
 		<!-- Countries -->									
-		<% country_filters = BioCatalogue::Filtering.get_filters_for_countries %>
+		<% country_filters = BioCatalogue::Filtering::Services.get_filters_for_countries %>
 		<%= render :partial => "filtering/filter_options_generic", 
 							 :locals => { :filters => country_filters,
 														:filter_type => :c } -%>

@@ -71,11 +71,17 @@ module ActsAsSolr #:nodoc:
         
 #        query_options[:field_list] = [field_list, 'score']
         
-        # UPDATED by Jits, for BioCatalogue (2009-05-12):
-        # The processing of field names within queries (to add an "_t") should only be done if the query doesn't start and end with double quotation marks.
-        # This is required to search for things like URLs, that have strings like "http:" in them.
-        #query = "(#{query.gsub(/ *: */,"_t:")}) #{models}"
+        # UPDATED by Jits, for BioCatalogue (2010-01-20):
+        # The processing of field names within queries (to add an "_t") should take
+        # into account things like URLs, etc.
+        # Furthermore, whole queries enclosed in double quote marks should be not be processed for field names.
+        
         query = query.gsub(/ *: */,"_t:") unless query.starts_with?('"') and query.ends_with?('"')
+        
+        # Special cases for 'http://' and 'https://'
+        query = query.gsub("http_t:", "http\\:")
+        query = query.gsub("https_t:", "https\\:")
+        
         query = "(#{query}) #{models}"
         
         order = options[:order].split(/\s*,\s*/).collect{|e| e.gsub(/\s+/,'_t ').gsub(/\bscore_t\b/, 'score')  }.join(',') if options[:order] 

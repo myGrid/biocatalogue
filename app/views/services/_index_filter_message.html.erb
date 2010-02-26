@@ -12,7 +12,7 @@
 	<div id="filter_message">
 		<% rounded "#FFFFCC", "#333", "100%" do %>
 		<%= link_to(image_tag(icon_filename_for(:atom)) + "<span>Subscribe to these results</span>", 
-					services_url(params.dup.update({:format => :atom})),
+					generate_filter_url(BioCatalogue::Util.duplicate_params(params), "services", :atom),
 					:id => "subscribe_results_link",
 					:title => tooltip_title_attrib("Subscribe to an Atom feed of these results"), 
 					:target => "_blank") -%>

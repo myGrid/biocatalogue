@@ -36,8 +36,8 @@ Disqus::defaults[:developer] = true # allows for threads to work on localhost du
 # ====================================================
 
 
-# Enable or disable endpoint status check icon in view
-DISABLE_STATUS_CHECK = true
+# Enable or disable status display in view
+ENABLE_STATUS_DISPLAY = true
 
 
 # ==============================================================

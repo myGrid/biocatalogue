@@ -17,7 +17,7 @@
 			
 			<p class="detail_simple">
 				<span style="vertical-align: middle;">By</span>
-				<%= user_link_with_flag(announcement.user) %>
+				<%= user_link_with_flag(:user => announcement.user) %>
 				<span class="ago">
         	(<%= distance_of_time_in_words_to_now(announcement.created_at) -%> ago) 
         </span>

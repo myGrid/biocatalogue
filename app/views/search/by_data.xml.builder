@@ -4,7 +4,8 @@ xml.instruct! :xml
 # <search>
 xml.tag! "searchByData", 
          xlink_attributes(uri_for_collection("by_data", :params => params)), 
-         xml_root_attributes do
+         xml_root_attributes,
+         :resourceType => "SearchByData" do
   xml.parameters do
     xml.data @query
     xml.search_type @search_type

@@ -28,7 +28,7 @@ module BioCatalogue
     
     module InstanceMethods
       def submitter_name
-        %w{ display_name name title }.each do |w|
+        %w{ preferred_name display_name title name }.each do |w|
           return eval("submitter.#{w}") if submitter.respond_to?(w)
         end
         return "#{submitter.class.name}_#{submitter.id}"

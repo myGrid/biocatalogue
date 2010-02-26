@@ -6,8 +6,9 @@
 
 class SoaplabServersController < ApplicationController
   
-  #before_filter :disable_action, :only => [ :index, :show, :edit, :update, :destroy ]
   before_filter :disable_action, :only => [:index, :edit, :update, :destroy ]
+  before_filter :disable_action_for_api
+  
   before_filter :login_required, :except => [ :index, :show ]
   
   # GET /soaplab_servers

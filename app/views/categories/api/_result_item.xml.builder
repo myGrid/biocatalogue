@@ -4,9 +4,10 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-parent_xml.category xlink_attributes(uri_for_object(category), :title => xlink_title(category)) do
-  parent_xml.name display_name(category)
-  
-  # <related>
-  render :partial => "categories/api/related_links_for_category", :locals => { :parent_xml => parent_xml, :category => category }
-end
+# <category>
+render :partial => "categories/api/category", 
+             :locals => { :parent_xml => parent_xml,
+                          :category => category,
+                          :show_narrower => false,
+                          :show_broader => false,
+                          :show_related => true }

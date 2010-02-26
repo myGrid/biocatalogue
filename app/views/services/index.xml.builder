@@ -1,11 +1,8 @@
 # BioCatalogue: app/views/services/index.xml.builder
 #
-# Copyright (c) 2008-2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
-
-total_count = @services.total_entries
-total_pages = @services.total_pages
 
 # <?xml>
 xml.instruct! :xml
@@ -13,59 +10,37 @@ xml.instruct! :xml
 # <services>
 xml.tag! "services", 
          xlink_attributes(uri_for_collection("services", :params => params)), 
-         xml_root_attributes do
+         xml_root_attributes,
+         :resourceType => "Services" do
   
   # <parameters>
   xml.parameters do
     
-    # <page>
-    xml.page @page, :urlKey => "page"
-    
-    # <filters>
-    xml.filters do
-      
-      @current_filters.each do |filter_key, filter_ids|
-        
-        # <filterType>
-        xml.filterType :name => BioCatalogue::Filtering.filter_type_to_display_name(filter_key), :urlKey => filter_key.to_s do
-          
-          filter_ids.each do |f_id|
-            
-            # <filter>
-            xml.filter :urlValue => f_id,
-                       :name => display_name_for_filter(filter_key, f_id)
-            
-          end
-          
-        end
-        
-      end
-      
-    end
+    # Filtering parameters
+    render :partial => "api/filtering/parameters", :locals => { :parent_xml => xml }
     
     # <query>
     xml.query params[:q], :urlKey => "q"
     
-    # <sortBy>
-    xml.sortBy display_text_for_sortby(@sortby), :urlKey => "sortBy", :urlValue => @sortby
+    # Sorting parameters
+    render :partial => "api/sorting/parameters", :locals => { :parent_xml => xml, :sort_by => @sort_by, :sort_order => @sort_order }
     
-    # <sortOrder>
-    xml.sortOrder display_text_for_sortorder(@sortorder), :urlKey => "sortOrder", :urlValue => @sortorder
+    # Pagination parameters
+    render :partial => "api/pagination/parameters", :locals => { :parent_xml => xml, :page => @page, :per_page => @per_page }
+    
   end
   
   # <statistics>
   xml.statistics do
     
-    # <totalPages>
-    xml.totalPages total_pages
+    # <pages>
+    xml.pages @services.total_pages
     
-    # <itemCounts>
-    xml.itemCounts do 
-      
-      # <total>
-      xml.total total_count      
-      
-    end
+    # <results>
+    xml.results @services.total_entries
+    
+    # <total>
+    xml.total Service.count
     
   end
   
@@ -84,21 +59,21 @@ xml.tag! "services",
     
     params_clone = BioCatalogue::Util.duplicate_params(params)
     
-    # <previous>
-    unless @page == 1
-      xml.previous previous_link_xml_attributes(uri_for_collection("services", :params => params_clone.merge(:page => (@page - 1))))
-    end
-    
-    # <next>
-    unless total_pages == 0 or total_pages == @page 
-      xml.next next_link_xml_attributes(uri_for_collection("services", :params => params_clone.merge(:page => (@page + 1))))
-    end
+    # Pagination previous next links
+    render :partial => "api/pagination/previous_next_links", 
+           :locals => { :parent_xml => xml, 
+                        :resource_type => "Services",
+                        :page => @page,
+                        :total_pages => @services.total_pages,
+                        :params_clone => params_clone,
+                        :resource_url_lambda => lambda { |params| uri_for_collection("services", :params => params) } }
     
     # <filters>
     xml.filters xlink_attributes(uri_for_collection("services/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
-                                 :title => xlink_title("Filters for the services index"))
+                                 :title => xlink_title("Filters for the services index")),
+                :resourceType => "Filters"
     
-    # <sorted> *
+    # TODO: <sorted> *
     
   end
   

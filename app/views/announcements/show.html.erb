@@ -45,7 +45,7 @@
 		</p>
 		
 		<div style="padding-left: 1.5em;">
-			<p><b>By: </b><%= user_link_with_flag(@announcement.user) -%></p>
+			<p><b>By: </b><%= user_link_with_flag(:user => @announcement.user) -%></p>
 			<p><b>Created: </b><%= datetime @announcement.created_at -%></p>
 		</div>
 	</div>

@@ -9,7 +9,8 @@ module Annotations
 
       module ClassMethods
         def acts_as_annotation_source
-          has_many :annotations, 
+          has_many :annotations_by,
+                   :class_name => "Annotation",
                    :as => :source, 
                    :order => 'created_at ASC'
                    

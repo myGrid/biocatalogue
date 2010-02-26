@@ -5,11 +5,15 @@
 # See license.txt for details.
 
 class TagsController < ApplicationController
+  
+  before_filter :disable_action_for_api, :except => [ :index, :show ]
+  
   skip_before_filter :verify_authenticity_token, :only => [ :auto_complete ]
   
   before_filter :find_tags, :only => [ :index ]
   before_filter :parse_tag_name, :only => [ :show, :destroy ]
   before_filter :find_tag_results, :only => [ :show ]
+  before_filter :get_tag_items_count, :only => [ :show ]
   
   def index
     respond_to do |format|
@@ -21,6 +25,7 @@ class TagsController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.html.erb
+      format.xml  # show.xml.builder
     end
   end
   
@@ -70,12 +75,16 @@ class TagsController < ApplicationController
 protected
 
   def find_tags
-    @tags = BioCatalogue::Tags.get_tags(params[:limit])
+    @sort = params[:sort].try(:to_sym)
+    @sort = :counts if @sort.blank? or ![ :counts, :name ].include?(@sort) 
     
-    # Sort tags differently if a certain action
-    if action_name == "index" and params[:format] == "xml"
-      @tags.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }
+    if is_api_request?
+      @tags = BioCatalogue::Tags.get_tags(:limit => @limit, :sort => @sort, :page => @page, :per_page => @per_page)
+    else
+      @tags = BioCatalogue::Tags.get_tags(:limit => @limit, :sort => @sort)
     end
+  
+    @total_tags_count = BioCatalogue::Tags.get_total_tags_count
   end
   
   def parse_tag_name
@@ -85,14 +94,23 @@ protected
       dup_params = BioCatalogue::Util.duplicate_params(params)
       dup_params[:tag_keyword] = dup_params[:id]
       @tag_name = BioCatalogue::Tags.get_tag_name_from_params(dup_params)
+      @tag_namespace, @tag_display_name = BioCatalogue::Tags.split_ontology_term_uri(@tag_name)
     end
   end
   
   def find_tag_results
-    @service_ids = [ ]
-    
-    unless @tag_name.nil?
-      @service_ids = BioCatalogue::Tags.get_service_ids_for_tag(@tag_name)
+    unless is_api_request?
+      @service_ids = [ ]
+      
+      unless @tag_name.blank?
+        @service_ids = BioCatalogue::Tags.get_service_ids_for_tag(@tag_name)
+      end
+    end
+  end
+  
+  def get_tag_items_count
+    unless @tag_name.blank?
+      @total_items_count = BioCatalogue::Tags.get_total_items_count_for_tag_name(@tag_name)
     end
   end
   

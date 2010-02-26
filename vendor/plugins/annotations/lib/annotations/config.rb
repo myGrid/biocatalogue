@@ -55,6 +55,20 @@ module Annotations
     # NOTE (1): The attribute name(s) specified MUST all be in lowercase.
     # NOTE (2): values will be checked in a case insensitive manner.
     @@value_restrictions = { }
+
+    # This determines what template to use to generate the unique 'identifier' for new AnnotationAttribute objects.
+    #
+    # String interpolation will be used to place the 'name' of the annotation within the template,
+    # in order to generate a unique identifier (usually a URI).
+    #
+    # This uses the @@attribute_name_transform_for_identifier defined below when performing the substitution.
+    #
+    # For more info on this substitution algorithm, see AnnotationAttribute#before_validation.
+    @@default_attribute_identifier_template = "http://www.example.org/attribute#%s"
+
+    # Defines a Proc that will be used to transform the value of AnnotationAttribute#name when generating the
+    # AnnotationAttribute#identifier value. See AnnotationAttribute#before_validation for more info.
+    @@attribute_name_transform_for_identifier = Proc.new { |name| name.to_s }
     
     def self.reset
       @@attribute_names_for_values_to_be_downcased = [ ]
@@ -64,6 +78,8 @@ module Annotations
       @@limits_per_source = { }
       @@attribute_names_to_allow_duplicates = [ ]
       @@value_restrictions = { }
+      @@default_attribute_identifier_template = "http://www.example.org/attribute#%s"
+      @@attribute_name_transform_for_identifier = Proc.new { |name| name.to_s }
     end
     
     reset
@@ -76,7 +92,9 @@ module Annotations
       :user_model_name,
       :limits_per_source,
       :attribute_names_to_allow_duplicates,
-      :value_restrictions ].each do |sym|
+      :value_restrictions,
+      :default_attribute_identifier_template,
+      :attribute_name_transform_for_identifier ].each do |sym|
       class_eval <<-EOS, __FILE__, __LINE__
         def self.#{sym}
           if defined?(#{sym.to_s.upcase})

@@ -11,7 +11,7 @@
 <% cache(:controller => 'services', :action => 'index', :part => 'tag_cloud') do %>
 
 	<% 
-		 @tags = BioCatalogue::Tags.sort_tags_by_frequency(BioCatalogue::Tags.get_tags(100))
+		 @tags = BioCatalogue::Tags.get_tags(:limit => 100)
 		 initial_number_of_tags = 20
 		 max_font_size = 20 
 	%>

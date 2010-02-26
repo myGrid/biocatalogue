@@ -12,6 +12,7 @@ class Registry < ActiveRecord::Base
   
   acts_as_trashable
   
+  acts_as_annotatable
   acts_as_annotation_source
   
   validates_presence_of :name
@@ -28,6 +29,16 @@ class Registry < ActiveRecord::Base
 
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :display_name, :description, :homepage ] )
+  end
+  
+  def preferred_description
+    desc = self.description
+        
+    if desc.blank?
+      desc = self.annotations_with_attribute("description").first.try(:value)
+    end
+    
+    return desc
   end
   
   def annotation_source_name

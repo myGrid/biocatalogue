@@ -1,6 +1,6 @@
 # BioCatalogue: app/controllers/application_controller.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -34,10 +34,10 @@ class ApplicationController < ActionController::Base
   # Mainly for the Exception Notification plugin:
   self.rails_error_classes = { 
     ActiveRecord::RecordNotFound => "404",
-    ::ActionController::UnknownController => "404",
-    ::ActionController::UnknownAction => "404",
-    ::ActionController::RoutingError => "404",
-    ::ActionView::MissingTemplate => "500",
+    ::ActionController::UnknownController => "406",
+    ::ActionController::UnknownAction => "406",
+    ::ActionController::RoutingError => "406",
+    ::ActionView::MissingTemplate => "406",
     ::ActionView::TemplateError => "500"
   }
 
@@ -53,9 +53,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   layout "application_wide"
-
+  
+  before_filter :debug_messages
+  
   before_filter :set_previous_url
   before_filter :set_page
+  before_filter :set_per_page
+  before_filter :set_limit
   before_filter :set_api_params
   before_filter :update_last_active
   prepend_before_filter :initialise_use_tab_cookie_in_session
@@ -145,8 +149,8 @@ class ApplicationController < ActionController::Base
   end
   helper_method :mine?
   
-  def display_name(item)
-    BioCatalogue::Util.display_name(item)
+  def display_name(item, escape_html=true)
+    BioCatalogue::Util.display_name(item, escape_html)
   end
   helper_method :display_name
   
@@ -157,9 +161,12 @@ class ApplicationController < ActionController::Base
       when Annotation, ServiceDeployment, ServiceVersion, SoapService, RestService
         service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
         return service_url(service_id) unless service_id.nil?
-      when SoapOperation, SoapInput, SoapOutput
+      when SoapOperation, SoapInput, SoapOutput, RestMethod
         service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
         return service_url(service_id, :anchor => "#{item.class.name.underscore}_#{item.id}") unless service_id.nil?
+      when RestParameter, RestRepresentation
+        service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
+        return service_url(service_id, :anchor => "endpoints") unless service_id.nil?
       else
         return url_for(item)  
     end
@@ -172,26 +179,74 @@ class ApplicationController < ActionController::Base
   end
 
   protected
-
+  
+  def debug_messages
+    BioCatalogue::Util.say ""
+    BioCatalogue::Util.say "*** DEBUG MESSAGES ***"
+    BioCatalogue::Util.say "ActionController#request.format = #{self.request.format.inspect}"
+    BioCatalogue::Util.say "ActionController#request.format.html? = #{self.request.format.html?}"
+    BioCatalogue::Util.say ""
+  end
+  
   def disable_action
     raise ActionController::UnknownAction.new
   end
-
+  
+  def disable_action_for_api
+    if is_api_request?
+      raise ActionController::UnknownAction.new
+    else
+      return
+    end
+  end
+  
   def set_previous_url
     unless controller_name.downcase == 'sessions' or 
-      is_non_html_request? or
-      [ 'activate_account', 'rpx_merge', 'ignore_last', 'auto_complete' ].include?(action_name.downcase)
-      session[:previous_url] = request.request_uri unless is_non_html_request?
+           [ 'activate_account', 'rpx_merge', 'ignore_last' ].include?(action_name.downcase) or
+           is_non_html_request?
+      session[:previous_url] = request.request_uri
     end
   end
 
   def set_page
-    page = (params[:page] || 1).to_i
-    if page < 1
-      error_to_home("A wrong page number has been specified in the URL")
+    if self.request.format == :atom
+      @page = 1
+    else
+      page = (params[:page] || 1).to_i
+      if page < 1
+        error_to_home("A wrong page number has been specified in the URL")
+        return false
+      else
+        @page = page
+      end
+    end
+    
+  end
+  
+  def set_per_page
+    if self.request.format == :atom
+      @per_page = 20
+    else
+      per_page = (params[:per_page] || PAGE_ITEMS_SIZE).try(:to_i)
+      if per_page < 1
+        error_to_home("An invalid 'per page' number has been specified in the URL")
+        return false
+      elsif per_page > MAX_PAGE_SIZE
+        @per_page = MAX_PAGE_SIZE
+      else
+        @per_page = per_page
+      end
+    end
+    
+  end
+  
+  def set_limit
+    limit = params[:limit].try(:to_i)
+    if limit and limit < 1
+      error_to_home("A wrong limit has been specified in the URL")
       return false
     else
-      @page = page
+      @limit = limit
     end
   end
   
@@ -199,9 +254,9 @@ class ApplicationController < ActionController::Base
     @api_params = { }
     
     # include_elements
-    @api_params[:include_elements] = [ ]
+    @api_params[:include] = [ ]
     unless params[:include].blank?
-       @api_params[:include_elements] = params[:include].split(',').map{|s| s.strip.downcase}
+       @api_params[:include] = params[:include].split(',').map{|s| s.strip.downcase}.compact
     end
   end
   
@@ -250,8 +305,31 @@ class ApplicationController < ActionController::Base
     return false
   end
   
+  def is_api_request?
+#    OLD: return is_non_html_request? && !self.request.format.browser_generated? && !([ :all, :js ].include?(self.request.format.to_sym))
+
+    return [ :xml, :atom, :json ].include?(self.request.format.to_sym)
+  end
+  
   def is_non_html_request?
-    return (!params[:format].nil? and params[:format] != "html" and params[:format] != "htm")
+#    mime_type_priority_x = if ActionController::Base.use_accept_header
+#      Array(Mime::Type.lookup_by_extension(self.request.parameters[:format]) || self.request.accepts)
+#    else
+#      [self.request.format]
+#    end
+#    
+#    puts ""
+#    puts "*****"
+#    puts ""
+#    puts "ApplicationController#request.parameters[:format] = #{self.request.parameters[:format]}"
+#    puts "ApplicationController#request.accepts = #{self.request.accepts.inspect}"
+#    puts "ApplicationController#request.format = #{self.request.format.inspect}"
+#    puts "mime_type_priority_x = #{mime_type_priority_x.inspect}"
+#    puts ""
+#    puts "*****"
+#    puts ""
+    
+    return !self.request.format.html?
   end
   
   # ========================================
@@ -285,9 +363,77 @@ class ApplicationController < ActionController::Base
 
   # ========================================
   
+  
+  # ===============================
+  # Helpers for Filtering / Sorting
+  # -------------------------------
+  
+  def parse_current_filters
+    @current_filters = BioCatalogue::Filtering.convert_params_to_filters(params, controller_name.downcase.to_sym)
+    puts "*** @current_filters = #{@current_filters.inspect}"
+  end
+  
+  def generate_include_filter_url(filter_type, filter_value, resource, format=nil)
+    new_params = BioCatalogue::Filtering.add_filter_to_params(params, filter_type, filter_value)
+    return generate_filter_url(new_params, resource, format)
+  end
+  helper_method :generate_include_filter_url
+
+  def generate_exclude_filter_url(filter_type, filter_value, resource, format=nil)
+    new_params = BioCatalogue::Filtering.remove_filter_from_params(params, filter_type, filter_value)
+    return generate_filter_url(new_params, resource, format)
+  end
+  helper_method :generate_exclude_filter_url
+  
+  # Note: the 'new_params' here MUST
+  # - be a mutable params hash (so don't the global 'params', duplicate it first using BioCatalogue::Util.duplicate_params(..).
+  # - contain filter params in the required Filter params spec. See: generate_include_filter_url above for ref.
+  def generate_filter_url(new_params, resource, format=nil)
+    # Remove special params
+    new_params_cleaned = BioCatalogue::Util.remove_rails_special_params_from(new_params).reject{|k,v| [ "page", "namespace" ].include?(k.to_s.downcase) }
+    
+    unless format.nil?
+      if format == :html
+        new_params_cleaned.delete(:format)
+      else
+        new_params_cleaned[:format] = format unless format.nil?
+      end
+    end
+    
+    url = eval("#{resource}_url(new_params_cleaned)")
+    
+    return url
+  end
+  helper_method :generate_filter_url
+  
+  def is_filter_selected(filter_type, filter_value)
+    return BioCatalogue::Filtering.is_filter_selected(@current_filters, filter_type, filter_value)
+  end
+  helper_method :is_filter_selected
+  
+  def generate_sort_url(sort_by, sort_order)
+    params_dup = BioCatalogue::Util.duplicate_params(params)
+    params_dup[:sort_by] = sort_by.downcase
+    params_dup[:sort_order] = sort_order.downcase
+      
+    # Reset page param
+    params_dup.delete(:page)
+    
+    return services_url(params_dup)
+  end
+  helper_method :generate_sort_url
+  
+  def is_sort_selected(sort_by, sort_order)
+    return params[:sort_by] == sort_by.downcase && params[:sort_order] == sort_order.downcase
+  end
+  helper_method :is_sort_selected
+  
+  # ===============================
+ 
+  
   def set_up_log_event_core_data
     if USE_EVENT_LOG and !is_request_from_bot?
-      format = ((params[:format].blank? or params[:format].downcase == "htm") ? "html" : params[:format].to_s.downcase)
+      format = self.request.format.to_sym.to_s
       @log_event_core_data = { :format => format, :user_agent => request.env['HTTP_USER_AGENT'], :http_referer =>  request.env['HTTP_REFERER'] }
     end
   end
@@ -329,7 +475,7 @@ class ApplicationController < ActionController::Base
         if a == "index"
           ActivityLog.create(@log_event_core_data.merge(:action => "view_services_index",
                              :culprit => current_user,
-                             :data => { :query => params[:q], :filters => @current_filters }))
+                             :data => { :query => params[:q], :filters => @current_filters, :page => @page, :per_page => @per_page }))
         
           # Log a search as well, if a search query was specified. 
           unless params[:q].blank?

@@ -1,5 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+require File.expand_path(File.dirname(__FILE__) + "/factories/user.rb")
 require 'test_help'
 
 class ActiveSupport::TestCase
@@ -34,5 +35,47 @@ class ActiveSupport::TestCase
   # -- they do not yet inherit this setting
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+  
+  # ========================================
+  
+  
+  # This is a generic method to create and submit a rest method which can be used
+  # within tests
+  #
+  # CONFIGURATION OPTIONS
+  #
+  # name: the name you would like the REST service to have
+  #   default "my test REST service"
+  # base_endpoint: specifies the base endpoint for the REST service
+  #   default "http://www.my-service.com/api/v1/"
+  # submitter: the user who is submitting the REST service.  When no user is
+  #   specified, a new user is created
+  # annotations: the annotations hash
+  #   default: {}
+  # endpoint: additional resource-method combos (endpoints) seperated by a new line
+  #   character "\n"
+  #   default ""
+  def create_rest_service(*args)
+    options = args.extract_options!
+    options.reverse_merge!(:name => "my test REST service",
+                           :base_endpoint => "http://www.my-service.com/api/v1/",
+                           :submitter => Factory.create(:user),
+                           :annotations => {:name => ""},
+                           :endpoints => "")
+    
+    rest = RestService.new(:name => options[:name])
+    rest.submit_service(options[:base_endpoint], options[:submitter], options[:annotations], options[:endpoints])
+    
+    rest.service(true)
+    return rest
+  end
+
+  
+  # ========================================
+  
+  # TODO: should this return a User object back?
+  def do_login_for_functional_test(user=Factory.create(:user))
+    session[:user_id] = user.id
+  end
+
 end

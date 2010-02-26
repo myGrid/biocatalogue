@@ -271,13 +271,58 @@ module BioCatalogue
       end
     end
     
-    def self.display_name(item)
+    def self.display_name(item, escape_html=true)
       # NOTE: the order below matters!
       %w{ preferred_name display_name title name }.each do |w|
-        return eval("CGI.escapeHTML(item.#{w})") if item.respond_to?(w)
-        return item[w] if item.is_a?(Hash) && item.has_key?(w) 
+        if escape_html
+          return eval("CGI.escapeHTML(item.#{w})") if item.respond_to?(w)
+          return CGI.escapeHTML(item[w]) if item.is_a?(Hash) && item.has_key?(w)
+        else
+          return eval("item.#{w}") if item.respond_to?(w)
+          return item[w] if item.is_a?(Hash) && item.has_key?(w)
+        end
       end
       return "#{item.class.name}_#{item.id}"  
+    end
+    
+    # Given a set of params, this attempts to find the *single* object referred to.
+    # Returns: obj_to_redirect_to (nil indicates nothing is found)
+    def self.lookup(params)
+      obj_to_redirect_to = nil
+      
+      if params[:wsdl_location]
+        wsdl_url = params[:wsdl_location] || ""
+        wsdl_url = Addressable::URI.parse(wsdl_url).normalize.to_s unless wsdl_url.blank?
+        
+        unless wsdl_url.blank?
+          soap_service = SoapService.find_by_wsdl_location(wsdl_url)
+          
+          if soap_service 
+            
+            if params[:operation_name]
+              obj_to_redirect_to = SoapOperation.find(:first, :conditions => { :soap_service_id => soap_service.id, :name => params[:operation_name] })
+            else
+              obj_to_redirect_to = soap_service
+            end
+            
+          end
+        end
+        
+      end
+      
+      return obj_to_redirect_to
+    end
+    
+    # Based on: http://stackoverflow.com/questions/1103327/how-to-uniq-an-array-case-insensitive/1103344#1103344
+    def self.uniq_strings_case_insensitive(strings)
+      downcased = [] 
+      strings.inject([]) { |result,h| 
+        unless downcased.include?(h.downcase);
+          result << h
+          downcased << h.downcase
+        end;
+        result 
+      }
     end
     
   end

@@ -8,16 +8,12 @@
 xml.instruct! :xml
 
 # <service>
-xml.tag! "service", 
-         xlink_attributes(uri_for_object(@service, :params => params)), 
-         xml_root_attributes do
-  
-  render :partial => "services/api/core_elements", :locals => { :parent_xml => xml, :service => @service }
-  
-  # <deployments>
-  render :partial => "services/api/deployments", :locals => { :parent_xml => xml, :service => @service }
-  
-  # <related>
-  render :partial => "services/api/related_links_for_service", :locals => { :parent_xml => xml, :service => @service }
-  
-end
+render :partial => "services/api/service", 
+       :locals => { :parent_xml => xml,
+                    :service => @service,
+                    :is_root => true,
+                    :show_summary => false,
+                    :show_deployments => true,
+                    :show_versions => false,
+                    :show_monitoring => false,
+                    :show_related => true }

@@ -98,20 +98,6 @@ module FilteringHelper
     return html
   end
   
-  def generate_include_filter_url(filter_type, filter_value, format=nil)
-    new_params = BioCatalogue::Filtering.add_filter_to_params(params, filter_type, filter_value)
-    return generate_filter_url(new_params, format)
-  end
-
-  def generate_exclude_filter_url(filter_type, filter_value, format=nil)
-    new_params = BioCatalogue::Filtering.remove_filter_from_params(params, filter_type, filter_value)
-    return generate_filter_url(new_params, format)
-  end
-  
-  def is_filter_selected(filter_type, filter_value)
-    return BioCatalogue::Filtering.is_filter_selected(@current_filters, filter_type, filter_value)
-  end
-  
   # Gets the current filters selected, in a grouped structure (Array of Hashes) to take into account subtypes...
   def current_selected_filters_grouped
     grouped = [ ]
@@ -135,21 +121,6 @@ module FilteringHelper
   
   def display_name_for_filter(filter_type, filter_id)
     return BioCatalogue::Filtering.display_name_for_filter(filter_type, filter_id)
-  end
-  
-  def generate_sort_url(sort_by, sort_order)
-    params_dup = BioCatalogue::Util.duplicate_params(params)
-    params_dup[:sortBy] = sort_by.downcase
-    params_dup[:sortOrder] = sort_order.downcase
-      
-    # Reset page param
-    params_dup.delete(:page)
-    
-    return services_url(params_dup)
-  end
-  
-  def is_sort_selected(sort_by, sort_order)
-    return params[:sortBy] == sort_by.downcase && params[:sortOrder] == sort_order.downcase
   end
   
   def show_tag_filters?
@@ -179,23 +150,6 @@ module FilteringHelper
     output << link_to(content_tag(:span, "#{text} "), url, :class => "button_slim", :style => "font-size: 93%;", :title => tooltip_title_attrib(tooltip_text))
     
     return output
-  end
-  
-  protected
-  
-  def generate_filter_url(new_params, format)
-    # Remove special params
-    new_params_cleaned = BioCatalogue::Util.remove_rails_special_params_from(new_params)
-    
-    unless format.nil?
-      if format == :html
-        new_params_cleaned.delete(:format)
-      else
-        new_params_cleaned[:format] = format unless format.nil?
-      end
-    end
-    
-    return services_url(new_params_cleaned)
   end
   
 end

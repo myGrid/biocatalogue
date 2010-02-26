@@ -259,6 +259,59 @@ module BioCatalogue
                   INNER JOIN service_versions ON (soap_services.id = service_versions.service_versionified_id AND service_versions.service_versionified_type = 'SoapService') 
                   WHERE soap_outputs.id = ?",
                   source_id ]
+        when "RestResource"
+          sql = [ "SELECT service_versions.service_id AS id 
+                  FROM rest_resources
+                  INNER JOIN rest_services ON rest_services.id = rest_resources.rest_service_id
+                  INNER JOIN service_versions ON (rest_services.id = service_versions.service_versionified_id AND service_versions.service_versionified_type = 'RestService') 
+                  WHERE rest_resources.id = ?",
+                  source_id ]
+        when "RestMethod"
+          sql = [ "SELECT service_versions.service_id AS id 
+                  FROM rest_methods
+                  INNER JOIN rest_resources ON rest_resources.id = rest_methods.rest_resource_id
+                  INNER JOIN rest_services ON rest_services.id = rest_resources.rest_service_id
+                  INNER JOIN service_versions ON (rest_services.id = service_versions.service_versionified_id AND service_versions.service_versionified_type = 'RestService') 
+                  WHERE rest_methods.id = ?",
+                  source_id]
+        when "RestMethodParameter"
+          sql = [ "SELECT service_versions.service_id AS id 
+                  FROM rest_method_parameters
+                  INNER JOIN rest_methods ON rest_methods.id = rest_method_parameters.rest_method_id
+                  INNER JOIN rest_resources ON rest_resources.id = rest_methods.rest_resource_id
+                  INNER JOIN rest_services ON rest_services.id = rest_resources.rest_service_id
+                  INNER JOIN service_versions ON (rest_services.id = service_versions.service_versionified_id AND service_versions.service_versionified_type = 'RestService') 
+                  WHERE rest_method_parameters.id = ?",
+                  source_id]
+        when "RestParameter"
+          sql = [ "SELECT service_versions.service_id AS id
+                  FROM rest_parameters
+                  INNER JOIN rest_method_parameters ON rest_method_parameters.rest_parameter_id = rest_parameters.id
+                  INNER JOIN rest_methods ON rest_methods.id = rest_method_parameters.rest_method_id
+                  INNER JOIN rest_resources ON rest_resources.id = rest_methods.rest_resource_id
+                  INNER JOIN rest_services ON rest_services.id = rest_resources.rest_service_id
+                  INNER JOIN service_versions ON (rest_services.id = service_versions.service_versionified_id AND service_versions.service_versionified_type = 'RestService') 
+                  WHERE rest_parameters.id = ?",
+                  source_id]
+        when "RestMethodRepresentation"
+          sql = [ "SELECT service_versions.service_id AS id 
+                  FROM rest_method_representations
+                  INNER JOIN rest_methods ON rest_methods.id = rest_method_representations.rest_method_id
+                  INNER JOIN rest_resources ON rest_resources.id = rest_methods.rest_resource_id
+                  INNER JOIN rest_services ON rest_services.id = rest_resources.rest_service_id
+                  INNER JOIN service_versions ON (rest_services.id = service_versions.service_versionified_id AND service_versions.service_versionified_type = 'RestService') 
+                  WHERE rest_method_representations.id = ?",
+                  source_id]                  
+        when "RestRepresentation"
+          sql = [ "SELECT service_versions.service_id AS id
+                  FROM rest_representations
+                  INNER JOIN rest_method_representations ON rest_method_representations.rest_representation_id = rest_representations.id
+                  INNER JOIN rest_methods ON rest_methods.id = rest_method_representations.rest_method_id
+                  INNER JOIN rest_resources ON rest_resources.id = rest_methods.rest_resource_id
+                  INNER JOIN rest_services ON rest_services.id = rest_resources.rest_service_id
+                  INNER JOIN service_versions ON (rest_services.id = service_versions.service_versionified_id AND service_versions.service_versionified_type = 'RestService') 
+                  WHERE rest_representations.id = ?",
+                  source_id]
         when "Annotation"
           ann = Annotation.find(source_id)
           if ann.nil?
