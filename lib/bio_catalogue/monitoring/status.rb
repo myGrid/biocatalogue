@@ -40,7 +40,7 @@ module BioCatalogue
             @small_symbol_filename  = "small-tick-sphere-50.png"
           when 1
             @message                = "This check failed"
-            @label                  = "Failed"
+            @label                  = "Fail"
             @symbol_filename        = "cross-sphere-50.png"
             @small_symbol_filename  = "small-cross-sphere-50.png"
           when 2..255
@@ -80,7 +80,7 @@ module BioCatalogue
             @small_symbol_filename  = "small-tick-sphere-50.png"
           when 1
             @message                = "The last check failed"
-            @label                  = "Failed"
+            @label                  = "Fail"
             @symbol_filename        = "cross-sphere-50.png"
             @small_symbol_filename  = "small-cross-sphere-50.png"
           when 2..255

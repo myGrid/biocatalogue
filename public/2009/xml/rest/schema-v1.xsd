@@ -1321,12 +1321,16 @@
     				<xsd:element name="deployments" maxOccurs="1"
     					minOccurs="0">
     					<xsd:complexType>
-    						<xsd:sequence>
-    							<xsd:element name="serviceDeployment"
-    								type="ServiceDeployment" maxOccurs="unbounded"
-    								minOccurs="1">
-    							</xsd:element>
-    						</xsd:sequence>
+    						<xsd:complexContent>
+    							<xsd:extension base="ResourceLink">
+    								<xsd:sequence>
+    									<xsd:element
+    										name="serviceDeployment" type="ServiceDeployment"
+    										maxOccurs="unbounded" minOccurs="1">
+    									</xsd:element>
+    								</xsd:sequence>
+    							</xsd:extension>
+    						</xsd:complexContent>
     					</xsd:complexType>
     				</xsd:element>
     				<xsd:element name="operations" maxOccurs="1"
@@ -2148,6 +2152,16 @@
     					<xsd:complexType>
     						<xsd:sequence>
     							<xsd:element name="service"
+    								type="ResourceLink" maxOccurs="1" minOccurs="1">
+    							</xsd:element>
+    						</xsd:sequence>
+    					</xsd:complexType>
+    				</xsd:element>
+    				<xsd:element name="related" maxOccurs="1"
+    					minOccurs="0">
+    					<xsd:complexType>
+    						<xsd:sequence>
+    							<xsd:element name="results"
     								type="ResourceLink" maxOccurs="1" minOccurs="1">
     							</xsd:element>
     						</xsd:sequence>
