@@ -213,9 +213,16 @@ module BioCatalogue
       return params.reject { |k,v| special_params.include?(k.to_s.downcase) }
     end
     
+    # For info/debug messages
     def self.say(msg)
       puts msg
       Rails.logger.info msg
+    end
+    
+    # For error messages
+    def self.yell(msg)
+      puts msg
+      Rails.logger.error msg
     end
     
     # Utility method to get all the 'values' from a Hash as a single list.

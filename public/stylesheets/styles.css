@@ -1456,6 +1456,7 @@ ul.simple_list li {
 }
 
 #home_content .section_box {
+	overflow: hidden;
 	color: #333;
 	margin-bottom: 1em;
 	line-height: 1.7;
@@ -3058,7 +3059,7 @@ div.resize-handle {
 }
 
 .activity_feed table.day {
-	width: 100%;
+	width: 99%;
 }
 
 .activity_feed table.day td {

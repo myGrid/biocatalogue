@@ -85,6 +85,8 @@ MAX_PAGE_SIZE = 50
 # The amount of time to cache the metadata counts data.
 METADATA_COUNTS_DATA_CACHE_TIME = 60*60  # 60 minutes, in seconds.
 
+HOMEPAGE_ACTIVITY_FEED_ENTRIES_CACHE_TIME = 5*60  # 5 minutes, in seconds.
+
 BOT_IGNORE_LIST = "Googlebot",
                   "Slurp",
                   "Yahoo",

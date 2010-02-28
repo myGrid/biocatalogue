@@ -24,7 +24,9 @@
 		      <% e[e.keys.first].each do |i| %>
 						<tr>
 							<td class="icon"><%= generic_icon_for(i[1]) -%></td>
-							<td><%= i[0] -%></td>
+							<td title="<%= tooltip_title_attrib(strip_tags(i[0]), 800) -%>">
+								<%= i[0] -%>
+							</td>
 						</tr>
 		      <% end %>
 				</table>
@@ -40,7 +42,9 @@
 		      <% e[e.keys.first].each do |i| %>
 						<tr>
 							<td class="icon" style="width: 28px; padding-right: 10px; padding-top: 0.6em;"><%= generic_icon_for(i[1]) -%></td>
-							<td style="padding-bottom: 0.6em;"><%= i[0] -%></td>
+							<td style="padding-bottom: 0.6em;">
+								<%= i[0] -%>
+							</td>
 						</tr>
 		      <% end %>
 				</table>

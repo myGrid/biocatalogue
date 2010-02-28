@@ -9,15 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100221130931) do
+ActiveRecord::Schema.define(:version => 20100228202812) do
 
   create_table "activity_logs", :force => true do |t|
-    t.string   "action"
-    t.string   "activity_loggable_type"
+    t.string   "action",                 :limit => 60
+    t.string   "activity_loggable_type", :limit => 60
     t.integer  "activity_loggable_id"
-    t.string   "culprit_type"
+    t.string   "culprit_type",           :limit => 60
     t.integer  "culprit_id"
-    t.string   "referenced_type"
+    t.string   "referenced_type",        :limit => 60
     t.integer  "referenced_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20100221130931) do
     t.string   "user_agent"
   end
 
+  add_index "activity_logs", ["action", "activity_loggable_type"], :name => "act_logs_forfeeds_index"
   add_index "activity_logs", ["action"], :name => "act_logs_action_index"
   add_index "activity_logs", ["activity_loggable_type", "activity_loggable_id"], :name => "act_logs_act_loggable_index"
   add_index "activity_logs", ["culprit_type", "culprit_id"], :name => "act_logs_culprit_index"

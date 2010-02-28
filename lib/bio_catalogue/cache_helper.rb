@@ -17,6 +17,8 @@ module BioCatalogue
     
     def self.cache_key_for(type, *args)
       case type
+        when :activity_log_entries
+          "activity_log_entries_#{args[0]}"
         when :metadata_counts_for_service
           "metadata_counts_for_service_#{args[0]}"
         when :children_of_category
