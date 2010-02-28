@@ -169,7 +169,7 @@ class UsersController < ApplicationController
   def rpx_merge_setup
     if ENABLE_RPX
       if params[:token].blank? || (data = RPXNow.user_data(params[:token])).blank? || (rpx_user = User.find_by_identifier(data[:identifier])).nil?
-        error_to_home("Unable to complete the merging of accounts")
+        error("Unable to complete the merging of accounts", :status => 500)
         return
       else
         # This action is used for 2 different parts of the workflow:
@@ -197,7 +197,7 @@ class UsersController < ApplicationController
   def rpx_merge
     if ENABLE_RPX
       if params[:token].blank? || (data = RPXNow.user_data(params[:token])).blank? || (rpx_user = User.find_by_identifier(data[:identifier])).nil? || !rpx_user.allow_merge?
-        error_to_home("Unable to complete the merging of accounts")
+        error("Unable to complete the merging of accounts", :status => 500)
         return
       else
         begin
@@ -212,7 +212,7 @@ class UsersController < ApplicationController
         rescue Exception => ex
           logger.error "Failed to merge new RPX based account with an existing BioCatalogue account. Exception: #{ex.class.name} - #{ex.message}"
           logger.error ex.backtrace.join("\n")
-          error_to_home("Sorry, something went wrong. Please contact us for further assistance.")
+          error("Sorry, something went wrong. Please contact us for further assistance.", :status => 500)
           return
         end
       end

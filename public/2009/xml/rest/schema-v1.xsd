@@ -1895,6 +1895,7 @@
     		<xsd:enumeration value="TestResults"></xsd:enumeration>
     		<xsd:enumeration value="UrlMonitor"></xsd:enumeration>
     		<xsd:enumeration value="TestScript"></xsd:enumeration>
+    		<xsd:enumeration value="Errors"></xsd:enumeration>
     	</xsd:restriction>
     </xsd:simpleType>
 
@@ -2184,4 +2185,12 @@
     </xsd:complexType>
     
     <xsd:complexType name="TestScript"></xsd:complexType>
+
+    <xsd:element name="errors" type="Errors"></xsd:element>
+    
+    <xsd:complexType name="Errors">
+    	<xsd:sequence>
+    		<xsd:element name="error" type="xsd:string" maxOccurs="unbounded" minOccurs="1"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
 </xsd:schema>

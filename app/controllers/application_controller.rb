@@ -214,7 +214,7 @@ class ApplicationController < ActionController::Base
     else
       page = (params[:page] || 1).to_i
       if page < 1
-        error_to_home("A wrong page number has been specified in the URL")
+        error("A wrong page number has been specified in the URL")
         return false
       else
         @page = page
@@ -229,7 +229,7 @@ class ApplicationController < ActionController::Base
     else
       per_page = (params[:per_page] || PAGE_ITEMS_SIZE).try(:to_i)
       if per_page < 1
-        error_to_home("An invalid 'per page' number has been specified in the URL")
+        error("An invalid 'per page' number has been specified in the URL")
         return false
       elsif per_page > MAX_PAGE_SIZE
         @per_page = MAX_PAGE_SIZE
@@ -243,7 +243,7 @@ class ApplicationController < ActionController::Base
   def set_limit
     limit = params[:limit].try(:to_i)
     if limit and limit < 1
-      error_to_home("A wrong limit has been specified in the URL")
+      error("A wrong limit has been specified in the URL")
       return false
     else
       @limit = limit
@@ -260,38 +260,59 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  # Generic method to raise / proceed from errors. Redirects to home.
-  # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
-  def error_to_home(msg, forbidden=false)
-    flash[:error] = msg
+  # Generic method to raise / proceed from errors. 
+  #
+  # For HTML format: renders homepage (or redirects to previous URL), with an error message and appropriate HTTP status code.
+  # For API formats: renders an error collection and appropriate HTTP status code.
+  #
+  # Options:
+  # - :back_first - specifies whether to try to redirect back first (default: false).
+  # - :forbidden - specifies whether this was a forbidden request or not (default: false).
+  # - :status - specifies which HTTP Status code to use (default 403 or 400, depending on whether :forbidden is true or not [respectively]).
+  #
+  # Note: you should return (and in some cases return false) after using this method so that no other respond_to clash.
+  def error(messages, *args)
+    options = args.extract_options!
+    # defaults:
+    options.reverse_merge!(:back_first => false,
+                           :forbidden => false,
+                           :status => (options[:forbidden] ? 403 : 400))
     
-    # TODO: return either a 401 or 403 depending on authentication
-
+    messages = [ messages ].flatten
+    
+    flash[:error] = messages.to_sentence
+    
     respond_to do |format|
-      format.html { redirect_to home_url }
-      if forbidden
-        format.xml  { head :forbidden }
+      
+      if options[:back_first] && !session[:previous_url].blank?
+        format.html { redirect_to(session[:previous_url]) }
       else
-        format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
+        format.html { render "home/index", :status => options[:status] }
+      end
+      
+      if options[:forbidden]
+        format.xml  { head :forbidden }
+        format.json { head :forbidden }
+        format.atom { head :forbidden }
+      else
+        @errors = messages
+        
+        format.xml  { render "api/errors", :status => options[:status] }
+        format.json { render :json => { "errors" => messages }.to_json, :status => options[:status] }
+        format.atom { render :atom => "", :status => options[:status] }
       end
     end
   end
 
-  # Generic method to raise / proceed from errors. Redirects to the previous page or if not available, to home.
-  # Note: you should return (and in some cases return false) after using this method so that no other respond_to clashes.
-  def error_to_back_or_home(msg, forbidden=false)
-    flash[:error] = msg
-    
-    # TODO: return either a 401 or 403 depending on authentication
-    
-    respond_to do |format|
-      format.html { redirect_to(session[:previous_url].blank? ? home_url : session[:previous_url]) }
-      if forbidden
-        format.xml  { head :forbidden }
-      else
-        format.xml { render :xml => "<errors><error>#{msg}</error></errors>" }
-      end
-    end
+  # LEGACY METHOD
+  # Generic method to raise / proceed from errors.
+  #
+  # For HTML format: redirects back to the previous page, OR the homepage.
+  # For API formats: renders an error collection and appropriate HTTP status code.
+  #
+  # Note: you should return (and in some cases return false) after using this method so that no other respond_to clash.
+  def error_to_back_or_home(msg, forbidden=false, status_code=(forbidden ? 403 : 400))
+    error([ msg ], :back_first => true, :forbidden => forbidden, :status => status_code)
   end
 
   def is_request_from_bot?
@@ -442,87 +463,125 @@ class ApplicationController < ActionController::Base
   def log_event
 
     if USE_EVENT_LOG and !is_request_from_bot?
+      
+      c = self.controller_name.downcase
+      a = self.action_name.downcase
+      
+      do_generic_log = false
+      
+      case c
+        
+        # Search
+        when "search"
+          
+          case a
+            # Standard keyword based search
+            when "show"
+              if !@query.blank? and !@scope.blank? and @page == 1
+                ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @scope, :per_page => @per_page }))
+              end
+            # Special "by data" search
+            when "by_data"
+              if !@query.blank?
+                ActivityLog.create(@log_event_core_data.merge(:action => "search_by_data", :culprit => current_user, :data => { :query => @query, :search_type =>  @search_type, :limit => @limit }))
+              end
+            else
+              do_generic_log = true
+          end
+      
+        # Services    
+        when "services"
+        
+          case a
+            # View service
+            when "show"
+              ActivityLog.create(@log_event_core_data.merge(:action => "view",
+                                 :culprit => current_user,
+                                 :activity_loggable => @service))
+            # View index of services
+            when "index"
+              ActivityLog.create(@log_event_core_data.merge(:action => "view_services_index",
+                                 :culprit => current_user,
+                                 :data => { :query => params[:q], :filters => @current_filters, :page => @page, :per_page => @per_page }))
+            
+              # Log a search as well, if a search query was specified. 
+              unless params[:q].blank? and @page == 1
+                ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => params[:q], :type =>  "services", :per_page => @per_page }))
+              end
+            else
+              do_generic_log = true
+          end
+        
+        # Users
+        when "users"
+        
+          case a 
+            # View user profile
+            when "show"
+              if current_user.try(:id) != @user.id
+                ActivityLog.create(@log_event_core_data.merge(:action => "view",
+                                   :culprit => current_user,
+                                   :activity_loggable => @user))
+              end
+            else
+              do_generic_log = true
+          end
+      
+        # Registries
+        when "registries"
+          
+          case a
+            # View registry profile
+            when "show"
+              ActivityLog.create(@log_event_core_data.merge(:action => "view",
+                                 :culprit => current_user,
+                                 :activity_loggable => @registry))
+            else
+              do_generic_log = true
+          end
 
-      c = controller_name.downcase
-      a = action_name.downcase
-        
-      # Search
-      if c == "search"
-        # Standard keyword based search
-        if a == "show"
-          if !@query.blank? and !@scope.blank? and @page == 1
-            ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => @query, :type =>  @scope }))
+        # Service Providers  
+        when "service_providers"
+          
+          case a
+            # View service provider profile
+            when "show"
+              ActivityLog.create(@log_event_core_data.merge(:action => "view",
+                                 :culprit => current_user,
+                                 :activity_loggable => @service_provider))
+            else
+              do_generic_log = true
           end
-        end
+      
+        # Annotations
+        when "annotations"
         
-        # Special "by data" search
-        if a == "by_data"
-          if !@query.blank?
-            ActivityLog.create(@log_event_core_data.merge(:action => "search_by_data", :culprit => current_user, :data => { :query => @query, :search_type =>  @search_type, :limit => @limit }))
+          case a
+            # Download annotation
+            when "download"
+              ActivityLog.create(@log_event_core_data.merge(:action => "download",
+                                 :culprit => current_user,
+                                 :activity_loggable => @annotation))
+            else
+              do_generic_log = true
           end
-        end
-      end
-      
-      if c == "services"
-        # View service
-        if a == "show"
-          ActivityLog.create(@log_event_core_data.merge(:action => "view",
-                             :culprit => current_user,
-                             :activity_loggable => @service))
-        end
         
-        # View index of services
-        if a == "index"
-          ActivityLog.create(@log_event_core_data.merge(:action => "view_services_index",
+        else
+          do_generic_log = true
+      
+      end
+    
+      if do_generic_log
+        # Only log generically if it is an API request...
+        if is_api_request?
+          ActivityLog.create(@log_event_core_data.merge(:action => "#{c}_controller #{a}",
                              :culprit => current_user,
-                             :data => { :query => params[:q], :filters => @current_filters, :page => @page, :per_page => @per_page }))
-        
-          # Log a search as well, if a search query was specified. 
-          unless params[:q].blank?
-            ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => params[:q], :type =>  "services", :filters => @current_filters }))
-          end
+                             :data => { :params => params }))
         end
       end
       
-      if c == "users"
-        # View user profile
-        if a == "show"
-          if current_user.try(:id) != @user.id
-            ActivityLog.create(@log_event_core_data.merge(:action => "view",
-                               :culprit => current_user,
-                               :activity_loggable => @user))
-          end
-        end
-      end
-      
-      if c == "registries"
-        # View registry profile
-        if a == "show"
-          ActivityLog.create(@log_event_core_data.merge(:action => "view",
-                             :culprit => current_user,
-                             :activity_loggable => @registry))
-        end
-      end
-      
-      if c == "service_providers"
-        # View service provider profile
-        if a == "show"
-          ActivityLog.create(@log_event_core_data.merge(:action => "view",
-                             :culprit => current_user,
-                             :activity_loggable => @service_provider))
-        end
-      end
-      
-      if c == "annotations"
-        # Download annotation
-        if a == "download"
-          ActivityLog.create(@log_event_core_data.merge(:action => "download",
-                             :culprit => current_user,
-                             :activity_loggable => @annotation))
-        end
-      end
-
     end
+
   end
 
   def update_last_active

@@ -21,10 +21,13 @@ class SearchController < ApplicationController
   def show
     
     if @query.blank?
-
-      respond_to do |format|
-        format.html # show.html.erb
-        format.xml  # show.xml.builder
+      
+      if is_api_request?
+        error("Please provide a search query using the URL query parameter 'q'. E.g.: #{BioCatalogue::Api.uri_for_collection("search", :params => { :q => "blast" })}")
+      else
+        respond_to do |format|
+          format.html # show.html.erb
+        end
       end
       
     else
@@ -71,7 +74,7 @@ class SearchController < ApplicationController
     @limit=20
     
     if params[:search_by_data].blank?
-      error_to_home("Something went wrong. Please contact us if this carries on.")
+      error("No valid parameters specified")
       return
     end
     
@@ -119,7 +122,7 @@ class SearchController < ApplicationController
   def validate_and_setup_search
     # First check that search is on
     unless BioCatalogue::Search.on?
-      error_to_home('Search is unavailable at this time')
+      error('Search is unavailable at this time', :status => 404)
       return false
     end
 
@@ -130,12 +133,12 @@ class SearchController < ApplicationController
 
       # Check if the query is '*' in which case give the user an appropriate message.
       if query == '*'
-        error_to_home("It looks like you were trying to search for everything in the BioCatalogue! If you would like to browse all services then <a href='#{services_path}'>click here</a>.")
+        error("It looks like you were trying to search for everything in the BioCatalogue! If you would like to browse all services then <a href='#{services_path}'>click here</a>.")
         return false
       end
       
       if query.match(/^[*]/)
-        error_to_home("Unfortunately you can't start your queries with '*'. Please try again without the '*'.")
+        error("Unfortunately you can't start your queries with '*'. Please try again without the '*'.")
         return false
       end
 
@@ -161,7 +164,7 @@ class SearchController < ApplicationController
           
           # Check that a valid scope has been provided
           unless BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
-            error_to_home("'#{scope}' is an invalid search scope")
+            error("'#{scope}' is an invalid search scope")
             return false
           end
         end
