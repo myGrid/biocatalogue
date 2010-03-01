@@ -16,6 +16,6 @@ class FavouritesController < ApplicationController
   before_filter :disable_action, :only => [ :index, :show, :edit ]
   before_filter :disable_action_for_api
   
-  before_filter :add_use_tab_cookie_to_session, :only => [ :create, :update, :destroy ]
+  #before_filter :add_use_tab_cookie_to_session, :only => [ :create, :update, :destroy ]
   
 end
