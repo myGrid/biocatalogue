@@ -26,6 +26,10 @@ soap_output_ids:
 rest_service_ids:
   - 1
   - 36
+service_deployment_ids:
+  - 1
+  - 2
+  - 3
 category_ids:
   - 1
   - 2

@@ -150,7 +150,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:as, @service.id, "annotations", :xml)) }
-      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@service.annotations).values.flatten.to_json }
+      format.json { render :json => @service.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
     end
   end
   

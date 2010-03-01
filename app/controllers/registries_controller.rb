@@ -7,13 +7,13 @@
 class RegistriesController < ApplicationController
   
   before_filter :disable_action, :only => [ :new, :edit, :create, :update, :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :annotations_by, :services ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services ]
   
   before_filter :parse_sort_params, :only => [ :index ]
   
   before_filter :find_registries, :only => [ :index ]
   
-  before_filter :find_registry, :only => [ :show, :annotations, :annotations_by ]
+  before_filter :find_registry, :only => [ :show, :annotations_by ]
   
   # GET /registries
   # GET /registries.xml
@@ -42,7 +42,7 @@ class RegistriesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:sor, @registry.id, "annotations", :xml)) }
-      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@registry.annotations_by).values.flatten.to_json }
+      format.json { render :json => @registry.annotations_by.paginate(:page => @page, :per_page => @per_page).to_json }
     end
   end
   

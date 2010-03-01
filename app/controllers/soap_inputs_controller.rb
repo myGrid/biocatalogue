@@ -23,7 +23,7 @@ class SoapInputsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:asin, @soap_input.id, "annotations", :xml)) }
-      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@soap_input.annotations).values.flatten.to_json }
+      format.json { render :json => @soap_input.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
     end
   end
 

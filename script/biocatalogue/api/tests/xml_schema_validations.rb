@@ -5,16 +5,17 @@
 # See license.txt for details
 
 # Tests the output of various endpoints of the XML REST API against the XSD.
+# NOTE: this relies on their being a large dataset to test against (ie: lots of data in the db!)
 
 require 'test/unit'
-require File.join(File.dirname(__FILE__), 'test_helper')
+require File.join(File.dirname(__FILE__), 'xml_test_helper')
 
 class XmlSchemaValidations < Test::Unit::TestCase
   
-  include TestHelper
+  include XmlTestHelper
 
   def setup
-end
+  end
 
   def test_root
     assert validate_endpoint_xml_output(make_url("/"))

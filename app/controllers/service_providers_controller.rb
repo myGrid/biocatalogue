@@ -42,7 +42,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:asp, @service_provider.id, "annotations", :xml)) }
-      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@service_provider.annotations).values.flatten.to_json }
+      format.json { render :json => @service_provider.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
     end
   end
   
@@ -50,7 +50,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:sosp, @service_provider.id, "annotations", :xml)) }
-      format.json { render :json => BioCatalogue::Annotations.group_by_attribute_names(@service_provider.annotations_by).values.flatten.to_json }
+      format.json { render :json => @service_provider.annotations_by.paginate(:page => @page, :per_page => @per_page).to_json }
     end
   end
   
