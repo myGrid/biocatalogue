@@ -158,9 +158,9 @@ module ActivityFeedsHelper
           data = [ s, al.activity_loggable_type.underscore.to_sym, al.created_at ]
           
           if s.blank?
-            BioCatalogue.yell "***"
-            BioCatalogue.yell "activity_feed entry was blank for activity_log record: #{al.inspect}"
-            BioCatalogue.yell "***"
+            BioCatalogue::Util.yell "***"
+            BioCatalogue::Util.yell "activity_feed entry was blank for activity_log record: #{al.inspect}"
+            BioCatalogue::Util.yell "***"
           end
           
           temp_results[classify_time_span(al.created_at, style)] << data unless s.blank?
