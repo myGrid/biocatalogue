@@ -73,13 +73,14 @@ class SearchController < ApplicationController
     @search_type = "input"
     @limit=20
     
-    if params[:search_by_data].blank?
-      error("No valid parameters specified")
-      return
-    end
-    
     if request.post?
+      if params[:search_by_data].blank?
+        error("No valid parameters specified")
+        return
+      end
+      
       #puts params.inspect
+      
       if !params[:search_by_data][:search_type].nil? && params[:search_by_data][:search_type].downcase == "output"
         @search_type = "output"
       end
