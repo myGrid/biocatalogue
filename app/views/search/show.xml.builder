@@ -53,6 +53,10 @@ xml.tag! "search",
     paged_item_compound_ids = @results.paged_all_item_ids(@page, @per_page)
     items = search_item_compound_ids_to_objects(paged_item_compound_ids)
     
+    if @page < total_pages && items.length != @per_page
+      BioCatalogue::Util.yell "Incorrect number of items per page! paged_item_compound_ids = #{paged_item_compound_ids.inspect}"
+    end
+    
     items.each do |item|
       render :partial => "#{item.class.name.underscore.pluralize}/api/result_item", :locals => { :parent_xml => xml, item.class.name.underscore.to_sym => item }
     end
