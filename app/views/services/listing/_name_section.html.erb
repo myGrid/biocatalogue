@@ -10,7 +10,9 @@
 
 <table class="name_section">
 	<tr>
-		<td class="name"><%= link_to(display_name(service), service_path(service)) -%></td>
+		<td class="name" title="<%= tooltip_title_attrib(display_name(service), 600) -%>">
+			<%= link_to(display_name(service), service_path(service)) -%>
+		</td>
 		<td>
 			<%= service_type_badges(service.service_types) -%>
 		</td>

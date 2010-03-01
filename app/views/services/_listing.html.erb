@@ -23,9 +23,9 @@
 				
 				<% if listing_type == :detailed %>
 					
-					<table style="width: 100%;">
+					<table style="width: 99%; table-layout: fixed;">
 						<tr>
-							<td>
+							<td style="overflow-x: hidden; overflow-y: auto;">
 								<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
 							</td>
 							<td style="text-align: right; width: 450px; vertical-align: top;">
@@ -95,7 +95,7 @@
 								<div class="detail">
 									<table>
 										<tr>
-											<td style="width: 12em; line-height: 1.5; padding-top: 1px;">
+											<td style="width: 12em; line-height: 1.5; padding-top: 1px; text-align: left;">
 												<b>Tags on this service:</b>
 											</td>
 											<td>

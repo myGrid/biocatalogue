@@ -1228,7 +1228,7 @@ body.sidebar-right #login_box {
 
 .listing_item { 
 	margin-bottom: 1.5em;
-	padding: 0.6em 1em;
+	padding: 0.5em 0.9em;
 	/*border-left: 1px solid #CCC;
 	border-top: 1px solid #CCC;
 	border-right: 2px solid #BBB;
@@ -1245,6 +1245,11 @@ body.sidebar-right #login_box {
 	vertical-align: middle;
 }
 
+.listing_item .name_section {
+	max-width: 99%;
+	table-layout: fixed;
+}
+
 .listing_item .name_section td {
 	vertical-align: middle;
 }
@@ -1253,6 +1258,8 @@ body.sidebar-right #login_box {
 	font-size: 138.5%;
 	font-weight: bold;
 	line-height: 1.8;
+	max-width: 80%;
+	word-wrap: break-word;
 }
 
 .listing_item .simple_listing .name {
@@ -1291,6 +1298,7 @@ body.sidebar-right #login_box {
 	margin-top: 1.2em; 
 	padding-top: 0.8em; 
 	border-top: 1px solid #DDD;
+	line-height: 1.5;
 }
 
 /* END listing styles */
@@ -1585,7 +1593,8 @@ table.latest_contributors {
 	line-height: 1.7;
 }
 
-table.latest_contributors th, td {
+table.latest_contributors th, 
+table.latest_contributors td {
 	vertical-align: middle;
 	padding: 2px 5px;
 }
@@ -1932,6 +1941,10 @@ ul.tabbernav li.tabberactive a:hover
 	display:-moz-inline-block;
 	display:-moz-inline-box;
 	display: inline-block;
+}
+
+.annotations_container .none_text {
+	margin-left: 0.3em;
 }
 
 .box_annotations {
