@@ -41,7 +41,7 @@ class TestScript < ActiveRecord::Base
   
   validates_inclusion_of :content_type,
                           :in => ['application/zip','application/x-zip', 'application/x-zip-compressed', 'application/xml', 
-                          'text/x-python-script', 'text/x-perl-script', 'text/x-ruby-script', 'text/plain'],
+                          'text/x-python-script', 'text/x-perl-script', 'text/x-ruby-script', 'application/x-ruby', 'text/plain'],
                           :message => " is not allowed. Allowed file types are zip, xml, python, perl, and ruby"
   attr_protected :filename, 
                  :content_type
