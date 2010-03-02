@@ -282,6 +282,10 @@ class ApplicationController < ActionController::Base
     
     flash[:error] = messages.to_sentence
     
+    if is_api_request?
+      messages << "See http://apidocs.biocatalogue.org/ for help"
+    end
+    
     respond_to do |format|
       
       if options[:back_first] && !session[:previous_url].blank?
