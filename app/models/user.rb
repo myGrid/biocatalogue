@@ -160,7 +160,7 @@ class User < ActiveRecord::Base
   end
   
   def allow_merge?
-    (self.services.count == 0) && (self.annotations.count == 0)
+    (self.services.count == 0) && (self.annotations_by.count == 0)
   end
   
   def update_last_active time
@@ -175,7 +175,7 @@ class User < ActiveRecord::Base
   end
   
   def annotated_service_ids
-    service_ids = self.annotations.collect do |a|
+    service_ids = self.annotations_by.collect do |a|
       BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(a.annotatable_type, a.annotatable_id), "Service")      
     end
     service_ids.compact.uniq
