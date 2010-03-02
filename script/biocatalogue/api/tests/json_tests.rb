@@ -10,7 +10,7 @@
 require 'test/unit'
 require File.join(File.dirname(__FILE__), 'json_test_helper')
 
-class XmlSchemaValidations < Test::Unit::TestCase
+class JsonTests < Test::Unit::TestCase
   
   include JsonTestHelper
 
