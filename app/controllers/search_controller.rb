@@ -96,7 +96,7 @@ class SearchController < ApplicationController
       #puts params[:search_by_data][:data]
       unless params[:search_by_data][:data].blank?
         if is_api_request? 
-          @query=cgi.unescape(params[:search_by_data][:data])
+          @query=CGI.unescape(params[:search_by_data][:data])
         else
           @query=params[:search_by_data][:data]
         end

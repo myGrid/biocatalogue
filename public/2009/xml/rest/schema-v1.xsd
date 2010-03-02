@@ -1896,6 +1896,7 @@
     		<xsd:enumeration value="UrlMonitor"></xsd:enumeration>
     		<xsd:enumeration value="TestScript"></xsd:enumeration>
     		<xsd:enumeration value="Errors"></xsd:enumeration>
+    		<xsd:enumeration value="SearchByData"></xsd:enumeration>
     	</xsd:restriction>
     </xsd:simpleType>
 
@@ -2223,5 +2224,87 @@
     		<xsd:element name="error" type="xsd:string" maxOccurs="unbounded" minOccurs="1"></xsd:element>
     	</xsd:sequence>
     </xsd:complexType>
+
+
+    <xsd:element name="searchByData" type="SearchByData"></xsd:element>
+    
+    <xsd:complexType name="SearchByData">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:sequence>
+    				<xsd:element name="parameters" maxOccurs="1"
+    					minOccurs="1">
+    					<xsd:complexType>
+    						<xsd:sequence>
+    							<xsd:element name="data"
+    								type="xsd:string" maxOccurs="1" minOccurs="1">
+    							</xsd:element>
+    							<xsd:element name="searchType"
+    								maxOccurs="1" minOccurs="1">
+    								<xsd:simpleType>
+    									<xsd:restriction
+    										base="xsd:string">
+    										<xsd:enumeration
+    											value="input">
+    										</xsd:enumeration>
+    										<xsd:enumeration
+    											value="output">
+    										</xsd:enumeration>
+    									</xsd:restriction>
+    								</xsd:simpleType>
+    							</xsd:element>
+    							<xsd:element name="limit"
+    								type="xsd:nonNegativeInteger" maxOccurs="1" minOccurs="1">
+    							</xsd:element>
+    						</xsd:sequence>
+    					</xsd:complexType>
+    				</xsd:element>
+    				<xsd:element name="statistics" maxOccurs="1"
+    					minOccurs="1">
+    					<xsd:complexType>
+    						<xsd:complexContent>
+    							<xsd:extension
+    								base="CollectionCoreStatistics">
+    							</xsd:extension>
+    						</xsd:complexContent>
+    					</xsd:complexType>
+    				</xsd:element>
+    				<xsd:element name="results" maxOccurs="1"
+    					minOccurs="1">
+    					<xsd:complexType>
+    						<xsd:sequence>
+    							<xsd:element name="resultItem"
+    								maxOccurs="unbounded" minOccurs="0">
+    								<xsd:complexType>
+    									<xsd:sequence>
+    										<xsd:element name="service"
+    											type="ResourceLink" maxOccurs="1" minOccurs="1">
+    										</xsd:element>
+    										<xsd:element
+    											name="soapOperation" type="ResourceLink" maxOccurs="1"
+    											minOccurs="1">
+    										</xsd:element>
+    										<xsd:element name="port"
+    											type="ResourceLink" maxOccurs="1" minOccurs="1">
+    										</xsd:element>
+    										<xsd:element
+    											name="annotation" type="ResourceLink" maxOccurs="1"
+    											minOccurs="1">
+    										</xsd:element>
+    									</xsd:sequence>
+    								</xsd:complexType>
+    							</xsd:element>
+    						</xsd:sequence>
+    					</xsd:complexType>
+    				</xsd:element>
+    				<xsd:element name="related" maxOccurs="1"
+    					minOccurs="1">
+    					<xsd:complexType></xsd:complexType>
+    				</xsd:element>
+    			</xsd:sequence>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
 
 </xsd:schema>
