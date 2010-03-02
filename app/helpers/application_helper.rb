@@ -339,7 +339,7 @@ module ApplicationHelper
       if options[:user]
         return link_to(display_name(options[:user]), user_path(options[:user]), :style => "vertical-align: baseline") + flag_icon_from_country(options[:user].country, :style => "vertical-align: middle; margin-left: 0.4em;")
       else
-        return link_to(options[:display_name], options[:id], :style => "vertical-align: baseline") + flag_icon_from_country(options[:country], :style => "vertical-align: middle; margin-left: 0.4em;")
+        return link_to(options[:display_name], user_path(options[:id]), :style => "vertical-align: baseline") + flag_icon_from_country(options[:country], :style => "vertical-align: middle; margin-left: 0.4em;")
       end
     end
   end
