@@ -24,7 +24,7 @@ parent_xml.tag! element_name do
   if status.last_checked
     parent_xml.lastChecked status.last_checked.iso8601
   else
-    parent_xml.lastChecked "", "xsi:nil" => "true"
+    parent_xml.lastChecked nil, "xsi:nil" => "true"
   end
   
 end

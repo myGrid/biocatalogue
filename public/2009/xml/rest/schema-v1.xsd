@@ -2184,7 +2184,37 @@
     	</xsd:sequence>
     </xsd:complexType>
     
-    <xsd:complexType name="TestScript"></xsd:complexType>
+    <xsd:complexType name="TestScript">
+    	<xsd:sequence>
+    		<xsd:element name="name" type="xsd:string" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element ref="dc:description" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="contentType" type="xsd:string"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="programmingLanguage" type="xsd:string"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="executableFilename" type="xsd:string"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="download" type="ResourceLink"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="submitter" type="ResourceLink"
+    			maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    		<xsd:element ref="dcterms:created" maxOccurs="1"
+    			minOccurs="1">
+    		</xsd:element>
+    		<xsd:element name="activatedAt" type="xsd:dateTime"
+    			nillable="true" maxOccurs="1" minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
 
     <xsd:element name="errors" type="Errors"></xsd:element>
     
@@ -2193,4 +2223,5 @@
     		<xsd:element name="error" type="xsd:string" maxOccurs="unbounded" minOccurs="1"></xsd:element>
     	</xsd:sequence>
     </xsd:complexType>
+
 </xsd:schema>

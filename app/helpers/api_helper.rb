@@ -81,10 +81,15 @@ module ApiHelper
         return item
       else
         if item_type_name.blank?
-          return "#{item.class.name.titleize} - #{display_name(item, false)}"
-        else
-          return "#{item_type_name} - #{display_name(item, false)}"
+          item_type_name = case item
+            when User
+              "Member"
+            else
+              item.class.name.titleize
+          end
         end
+        
+        return "#{item_type_name} - #{display_name(item, false)}"
     end
   end
   

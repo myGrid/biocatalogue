@@ -18,7 +18,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :test_results
   
   map.resources :test_scripts, 
-                :collection => { :download => :get }
+                :member => { :download => :get }
   
   # To test error messages
   map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index'
