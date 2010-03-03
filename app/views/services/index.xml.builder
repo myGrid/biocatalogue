@@ -68,12 +68,20 @@ xml.tag! "services",
                         :params_clone => params_clone,
                         :resource_url_lambda => lambda { |params| uri_for_collection("services", :params => params) } }
     
+    params_clone.reject!{|k,v| k.to_s.downcase == "page" }
+    
     # <filters>
-    xml.filters xlink_attributes(uri_for_collection("services/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
+    xml.filters xlink_attributes(uri_for_collection("services/filters", :params => params_clone), 
                                  :title => xlink_title("Filters for the services index")),
                 :resourceType => "Filters"
     
     # TODO: <sorted> *
+    
+    # <withSummaries>
+    params_clone['include'] = "summary"
+    xml.withSummaries xlink_attributes(uri_for_collection("services", :params => params_clone), 
+                                 :title => xlink_title("The services index but with the <summary> element included for each service. This always you to get lots of metadata about the services returned without having to make additional calls.")),
+                :resourceType => "Services"
     
   end
   

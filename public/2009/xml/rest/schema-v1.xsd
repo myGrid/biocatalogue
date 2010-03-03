@@ -588,7 +588,12 @@
 		<xsd:complexContent>
 			<xsd:extension base="CollectionCoreRelatedLinks">
 				<xsd:sequence>
-					<xsd:element name="filters" type="ResourceLink" maxOccurs="1" minOccurs="1"></xsd:element>
+					<xsd:element name="filters" type="ResourceLink"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="withSummaries"
+						type="ResourceLink" maxOccurs="1" minOccurs="1">
+					</xsd:element>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
