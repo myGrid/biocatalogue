@@ -30,7 +30,15 @@ class XmlSchemaValidations < Test::Unit::TestCase
     assert validate_endpoint_xml_output(make_url("/search?q=ebi&scope=services"))
     assert validate_endpoint_xml_output(make_url("/search?q=ebi&scope=services&page=2"))
     assert validate_endpoint_xml_output(make_url("/search?q=ebi&scope=service_providers"))
-    # TODO: other search terms
+    assert validate_endpoint_xml_output(make_url("/search?q=ebi&scope=services,service_providers"))
+    assert validate_endpoint_xml_output(make_url("/search?q=ebi&scope=services&include=summary"))
+    assert validate_endpoint_xml_output(make_url("/search?q=ebi&scope=services&include=summary,related"))
+    
+    assert validate_endpoint_xml_output(make_url("/search?q=blast"))
+    assert validate_endpoint_xml_output(make_url("/search?q=blast&page=2"))
+    assert validate_endpoint_xml_output(make_url("/search?q=blast&scope=soap_operations"))
+    assert validate_endpoint_xml_output(make_url("/search?q=blast&scope=soap_operations&include=inputs,ancestors"))
+    assert validate_endpoint_xml_output(make_url("/search?q=blast&scope=soap_operations&include=inputs,ancestors&page=2"))
   end
     
   def test_services

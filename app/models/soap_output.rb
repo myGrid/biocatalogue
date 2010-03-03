@@ -20,7 +20,8 @@ class SoapOutput < ActiveRecord::Base
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :description, :computational_type, :computational_type_details_for_solr,
-                              { :associated_service_id => :r_id } ])
+                              { :associated_service_id => :r_id },
+                              { :associated_soap_operation_id => :r_id } ])
   end
   
   if USE_EVENT_LOG
@@ -31,6 +32,10 @@ class SoapOutput < ActiveRecord::Base
   
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+  
+  def associated_soap_operation_id
+    self.soap_operation_id
   end
   
   def computational_type_details_for_solr

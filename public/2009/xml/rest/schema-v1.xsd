@@ -18,6 +18,7 @@
 			<xsd:enumeration value="services"></xsd:enumeration>
 			<xsd:enumeration value="users"></xsd:enumeration>
 			<xsd:enumeration value="registries"></xsd:enumeration>
+			<xsd:enumeration value="soap_operations"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -202,6 +203,7 @@
 			<xsd:enumeration value="Service Providers"></xsd:enumeration>
 			<xsd:enumeration value="Users"></xsd:enumeration>
 			<xsd:enumeration value="Registries"></xsd:enumeration>
+			<xsd:enumeration value="Soap Operations"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -220,6 +222,9 @@
 		<xsd:sequence>
 			<xsd:choice maxOccurs="unbounded" minOccurs="0">
 				<xsd:element name="service" type="Service"
+					maxOccurs="unbounded" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="soapOperation" type="SoapOperation"
 					maxOccurs="unbounded" minOccurs="0">
 				</xsd:element>
 				<xsd:element name="serviceProvider"

@@ -35,6 +35,7 @@ class Annotation < ActiveRecord::Base
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :value_for_solr, 
                               { :associated_service_id => :r_id },
+                              { :associated_soap_operation_id => :r_id },
                               { :associated_service_provider_id => :r_id },
                               { :associated_user_id => :r_id }, 
                               { :associated_registry_id => :r_id } ])
@@ -122,6 +123,17 @@ class Annotation < ActiveRecord::Base
   
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+  
+  def associated_soap_operation_id
+    case self.annotatable_type
+      when "SoapOperation"
+        return self.annotatable_id
+      when "SoapInput", "SoapOutput"
+        return self.annotatable.soap_operation_id unless self.annotatable.nil?
+      else
+        nil
+    end
   end
   
   def associated_service_provider_id

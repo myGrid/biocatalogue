@@ -8,7 +8,7 @@ module BioCatalogue
   module Search
     
     # MUST correspond to pluralised and underscored model names.
-    VALID_SEARCH_SCOPES = [ "services", "service_providers", "users", "registries" ].freeze
+    VALID_SEARCH_SCOPES = [ "services", "soap_operations", "service_providers", "users", "registries" ].freeze
     
     ALL_SCOPE_SYNONYMS = [ "all", "any" ].freeze
     

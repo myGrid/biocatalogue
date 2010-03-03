@@ -56,48 +56,52 @@
 			<div id="search_results" class="tabber">
 				<% @results.result_scopes.each do |result_scope| %>
 				
-					<% 
-						 visible_result_scope = result_scope.titleize
-						 items = search_item_ids_to_objects(@results.paged_item_ids_for(result_scope, 1, @per_page), result_scope)
-						 count = @results.count_for(result_scope)
-						 more_items = count > @per_page 
-					%>
+					<% unless [ "soap_operations" ].include? result_scope %>
+				
+						<% 
+							 visible_result_scope = result_scope.titleize
+							 items = search_item_ids_to_objects(@results.paged_item_ids_for(result_scope, 1, @per_page), result_scope)
+							 count = @results.count_for(result_scope)
+							 more_items = count > @per_page 
+						%>
+						
+						<% unless items.empty? %>
+							<div id='<%= "tab-#{result_scope}" -%>' class="tabbertab">
+								<% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}"  %>
+						    <h3><%= "#{visible_result_scope} (#{count_text})" -%></h3>
+								
+								<table style="width:100%; margin: 0 0 1.5em 0;">
+									<tr>
+										<td style="color: #555;">
+											<% if more_items %>
+												<%= "Showing the top #{items.length} items out of #{count} in total" -%>
+											<% end %>
+										</td>
+										<td style="text-align: right;">
+											<%= render :partial => "listing_type_switcher_link", :locals => { :result_scope => result_scope, :style => (more_items ? "margin-right: 1.5em;" : "") } -%>
+											
+											<% if more_items %>
+												<%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)), 
+																		search_url(:q => @query, :scope => result_scope, :page => 2),
+																		:class => "button_slim") -%>
+											<% end %>
+										</td>
+									</tr>
+								</table>
+								
+								<%= render :partial => "#{result_scope}/listing", :locals => { :items => items } %>
+								
+								<% if more_items %>
+									<p style="text-align: right;">
+										<%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)), 
+																search_url(:q => @query, :scope => result_scope, :page => 2),
+																:class => "button_slim") -%>
+									</p>
+								<% end %>
+								
+						  </div>
+						<% end %>
 					
-					<% unless items.empty? %>
-						<div id='<%= "tab-#{result_scope}" -%>' class="tabbertab">
-							<% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}"  %>
-					    <h3><%= "#{visible_result_scope} (#{count_text})" -%></h3>
-							
-							<table style="width:100%; margin: 0 0 1.5em 0;">
-								<tr>
-									<td style="color: #555;">
-										<% if more_items %>
-											<%= "Showing the top #{items.length} items out of #{count} in total" -%>
-										<% end %>
-									</td>
-									<td style="text-align: right;">
-										<%= render :partial => "listing_type_switcher_link", :locals => { :result_scope => result_scope, :style => (more_items ? "margin-right: 1.5em;" : "") } -%>
-										
-										<% if more_items %>
-											<%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)), 
-																	search_url(:q => @query, :scope => result_scope, :page => 2),
-																	:class => "button_slim") -%>
-										<% end %>
-									</td>
-								</tr>
-							</table>
-							
-							<%= render :partial => "#{result_scope}/listing", :locals => { :items => items } %>
-							
-							<% if more_items %>
-								<p style="text-align: right;">
-									<%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)), 
-															search_url(:q => @query, :scope => result_scope, :page => 2),
-															:class => "button_slim") -%>
-								</p>
-							<% end %>
-							
-					  </div>
 					<% end %>
 					
 				<% end %>
