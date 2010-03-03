@@ -93,13 +93,17 @@
 					<% else -%>
 						<% @service.test_scripts.each do |test| -%>  <br/>
 								<div class="monitoring_section">
-									<h5><%= test.name -%> </h5>
+									<h5><%= h test.name -%> </h5>
+									<div align="right">
+										<b>Submitter / Source:</b>
+										<%= submitter_link(test.submitter) %>
+										<span class="ago" style="vertical-align: baseline;">
+											(<%= distance_of_time_in_words_to_now(test.created_at) -%> ago)
+										</span>
+									</div>
 									<table>
 										<tr>
 					 						<td style="padding-right: 1em;"><%= service_test_status_symbol(test.service_test)%> </td>
-											<td>
-												<b><%= link_to(h("Service"), @service, :popup => true) -%></b> 
-											</td>
 										</tr>
 									</table>
 									
@@ -107,6 +111,7 @@
 										<%= render :partial => "annotations/descriptions",
 									 				:locals => { :annotatable => test } -%>
 									</div>
+									
 									<!--history -->
 									<p>
 					  					<b>Recent History</b>
@@ -129,7 +134,7 @@
 									</div>
 									<p>
 										<div class="property">
-											<%= link_to "Download Test", download_test_scripts_path + "/#{test.id}" -%> 
+											<%= link_to("Download Test", url_for(:controller => 'test_scripts', :action =>'download', :id => test.id)) -%> 
 										</div>
 									</p>
 								</div>	

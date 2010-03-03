@@ -1,6 +1,10 @@
 <% testable_item  = service %>
 <% script  = test_script if defined?(test_script) || nil %>
 
+<% h name        = script.name if script || nil %>
+<% h exec_name   = script.exec_name if script || nil %>
+<% h description = script.description if script || nil %>
+
 <fieldset>
 
 <legend> <h4> Upload a test for this <%= testable_item.class %></h4> </legend>
@@ -15,16 +19,16 @@
 		<%= hidden_field_tag 'testable_id', testable_item.id -%>
 		<%= hidden_field_tag 'testable_type', testable_item.class -%> 
 		Name: <br/>
-		<%= text_field_tag 'test_script[name]', nil, :style => 'width:100%;' %>
+		<%= text_field_tag 'test_script[name]', name , :style => 'width:100%;' -%>
 		<p/>
 		Executable Name: 
 		<span>
 			<%= help_icon_with_tooltip(" path to the file that will be executed on the command line. This is executable on command line and takes no arguments ") -%>
 		</span><br/>
-		<%= text_field_tag 'test_script[exec_name]', nil, :style => 'width:100%;' %>
+		<%= text_field_tag 'test_script[exec_name]', exec_name, :style => 'width:100%;' -%>
 		<p/>
 		Description: <br/>
-		<%= text_area_tag 'test_script[description]', nil ,:size => "50x10", :style => 'width:100%; height:50%' %>
+		<%= text_area_tag 'test_script[description]', description ,:size => "50x10", :style => 'width:100%; height:50%' -%>
 		<p/>
 		<p>
 			File:
@@ -32,14 +36,14 @@
 				<%= help_icon_with_tooltip(" upload a text file (only perl, python, ruby, xml ) or a zip archive of files ") -%>
 			</span><br/>
 				
-			<%= file_field 'test_script', :test_data  %>
+			<%= file_field 'test_script', :test_data %>
 		<p/>
 		<p>
 			Select execution environment :  
 			<span>
 				<%= help_icon_with_tooltip(" Script should be compartible with Python 2.5 or higher, Perl 5 or higher, Ruby 1.8.5 or higher or soapUI 3 (community version) ") -%>
 			</span><br/>  
-	 		<%= select_tag 'test_script[prog_language]', options_for_select(["select one", "python","perl","ruby","soapui" ], "select one")%>	
+	 		<%= select_tag 'test_script[prog_language]', options_for_select(["select one", "python","perl","ruby","soapui" ], "select one") -%>	
 		</p>
 	
 		<%= submit_tag 'upload' -%>

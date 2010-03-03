@@ -23,7 +23,7 @@ class TestScriptsController < ApplicationController
     @test_script = TestScript.new(params[:test_script])
     
     #record who uploaded this test
-    @test_script.user_id = current_user.id
+    @test_script.submitter_id = current_user.id
     
     #record the associated service
     @test_script.service_id = params[:testable_id]  
@@ -35,7 +35,9 @@ class TestScriptsController < ApplicationController
         format.xml  { render :xml => @test_script, :status => :created, :location => @test_script }
       else
         flash[:error] = 'There were problems submitting this test script! '
-        format.html { render :partial => "shared/service_test",:layout =>'application_wide',  :locals => {:service => @service, :test_script => @test_script} }
+        format.html { render :partial => "shared/service_test",
+                                        :layout =>'application_wide',  :locals => {:service => @service, 
+                                                                                    :test_script => @test_script } }
         format.xml  { render :xml => @test_script.errors, :status => :unprocessable_entity }
       end
     end

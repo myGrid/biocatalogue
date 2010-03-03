@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100228202812) do
+ActiveRecord::Schema.define(:version => 20100303093705) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -465,21 +465,22 @@ ActiveRecord::Schema.define(:version => 20100228202812) do
   add_index "test_results", ["service_test_id"], :name => "test_results_stest_id_index"
 
   create_table "test_scripts", :force => true do |t|
-    t.string   "name",            :null => false
-    t.string   "exec_name",       :null => false
-    t.text     "description",     :null => false
-    t.string   "filename",        :null => false
-    t.string   "content_type",    :null => false
-    t.integer  "user_id",         :null => false
-    t.integer  "content_blob_id", :null => false
+    t.string   "name",                                :null => false
+    t.string   "exec_name",                           :null => false
+    t.text     "description",                         :null => false
+    t.string   "filename",                            :null => false
+    t.string   "content_type",                        :null => false
+    t.integer  "submitter_id",                        :null => false
+    t.integer  "content_blob_id",                     :null => false
     t.datetime "activated_at"
-    t.string   "prog_language",   :null => false
+    t.string   "prog_language",                       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "submitter_type",  :default => "User"
   end
 
   add_index "test_scripts", ["prog_language"], :name => "t_scripts_prog_lang_index"
-  add_index "test_scripts", ["user_id"], :name => "t_scripts_user_id_index"
+  add_index "test_scripts", ["submitter_id"], :name => "t_scripts_user_id_index"
 
   create_table "trash_records", :force => true do |t|
     t.string   "trashable_type"

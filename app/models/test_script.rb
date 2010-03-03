@@ -15,12 +15,14 @@ class TestScript < ActiveRecord::Base
           :as => :test, 
           :dependent => :destroy
 
-  belongs_to :user
+  #belongs_to :user
   
   belongs_to :content_blob, 
              :dependent => :destroy
              
   acts_as_annotatable
+  
+  has_submitter
   
   # Validations
   validates_presence_of :name, 
@@ -28,7 +30,7 @@ class TestScript < ActiveRecord::Base
                         :description,
                         :filename, 
                         :content_type,
-                        :user_id,
+                        :submitter_id,
 #                        :content_blob_id,
                         :prog_language
                         
@@ -37,7 +39,7 @@ class TestScript < ActiveRecord::Base
   
   validates_inclusion_of :prog_language, 
                          :in  => %w[perl python java ruby utopia rest soapui], 
-                         :message => " is not supported yet. Supported are : perl, python, ruby and soupui projects(xml)"
+                         :message => " may not have been selected. Please check that you selected one of : perl, python, ruby or soupui projects(xml)"
   
   validates_inclusion_of :content_type,
                           :in => ['application/zip','application/x-zip', 'application/x-zip-compressed', 'application/xml', 
