@@ -297,8 +297,8 @@ module Embrace
           a_test  = TestScript.new(:name         => name,
                                   :exec_name     => script[7],
                                   :prog_language => binding.to_s.downcase,
-                                  #:user_id       => existing_service.submitter.id
-                                  :user_id       => user.id
+                                  :submitter_id  => user.id,
+                                  :activated_at  => Time.now
                                   )
           
            a_test.content_blob = ContentBlob.new({:data => script[6]})
