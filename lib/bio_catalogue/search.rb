@@ -103,8 +103,10 @@ module BioCatalogue
     # The main search method.
     #
     # 'scope' can be a string representing one of the search scopes from VALID_SEARCH_SCOPES_INCL_ALL
-    # OR an Array of different scopes required.
+    # OR an Array of the different scopes required.
     def self.search(query, scope=ALL_SCOPE_SYNONYMS[0])
+      return nil unless Search.on?
+      
       return nil if query.blank? or scope.blank?
       
       if scope.is_a? Array
