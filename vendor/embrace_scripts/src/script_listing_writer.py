@@ -13,7 +13,8 @@ class ScriptListingWriter:
         stmt  = "SELECT service_tests.service_id, service_tests.id, test_scripts.exec_name "
         stmt += "FROM service_tests,test_scripts "
         stmt += "WHERE service_tests.test_id =test_scripts.id "
-        stmt += "AND service_tests.test_type ='TestScript' AND test_scripts.prog_language <> 'soapui'; " 
+        stmt += "AND service_tests.test_type ='TestScript' AND test_scripts.prog_language <> 'soapui' " 
+        stmt += "AND test_scripts.activated_at IS NOT NULL ; "
         
         results    = db.execute(stmt)
         references = db.fetchall()
@@ -24,7 +25,8 @@ class ScriptListingWriter:
         stmt  = "SELECT service_tests.service_id, service_tests.id, test_scripts.exec_name "
         stmt += "FROM service_tests,test_scripts "
         stmt += "WHERE service_tests.test_id =test_scripts.id "
-        stmt += "AND service_tests.test_type ='TestScript' AND test_scripts.prog_language = 'soapui'; " 
+        stmt += "AND service_tests.test_type ='TestScript' AND test_scripts.prog_language = 'soapui' " 
+        stmt += "AND test_scripts.activated_at IS NOT NULL ; "
         
         results    = db.execute(stmt)
         references = db.fetchall()
