@@ -49,7 +49,7 @@ class TestScript < ActiveRecord::Base
                  :content_type
   
   if USE_EVENT_LOG
-    acts_as_activity_logged(:models => { :culprit => { :model => :user } })
+    acts_as_activity_logged(:models => { :culprit => { :model => :submitter } })
   end        
   
   # Helper class method to lookup all tests assigned
