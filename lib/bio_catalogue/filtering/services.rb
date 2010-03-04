@@ -439,6 +439,7 @@ module BioCatalogue
                 model_names ]
         
         # If limit has been provided in the URL then add that to query.
+        # TODO: this is buggy!
         if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
           sql[0] = sql[0] + " LIMIT #{limit}"
         end
@@ -474,7 +475,7 @@ module BioCatalogue
         
         grouped_tags.each do |tag_name, op_ids|
           service_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(op_ids, "Service")
-          service_ids.uniq!
+          service_ids = service_ids.compact.uniq
           filters << { 'id' => tag_name, 'name' => tag_name, 'count' => service_ids.length.to_s }
         end
         
