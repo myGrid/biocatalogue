@@ -43,31 +43,31 @@
 		<% if show_tag_filters? %>
 		
 			<!-- Tags -->												
-			<% tags_filters = BioCatalogue::Filtering::Services.get_filters_for_all_tags(100) %>
+			<% tags_filters = BioCatalogue::Filtering::Services.get_filters_for_all_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => tags_filters,
 															:filter_type => :tag } -%>
 		
 			<!-- Tags (on Services) -->												
-			<% operations_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_service_tags(100) %>
+			<% operations_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_service_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => operations_tags_filters,
 															:filter_type => :tag_s } -%>
 															
 			<!-- Tags (on Operations) -->												
-			<% operations_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_operation_tags(100) %>
+			<% operations_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_operation_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => operations_tags_filters,
 															:filter_type => :tag_ops } -%>
 		
 			<!-- Tags (on Inputs) -->												
-			<% inputs_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_input_tags(100) %>
+			<% inputs_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_input_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => inputs_tags_filters,
 															:filter_type => :tag_ins } -%>
 		
 			<!-- Tags (on Outputs) -->												
-			<% outputs_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_output_tags(100) %>
+			<% outputs_tags_filters = BioCatalogue::Filtering::Services.get_filters_for_soap_output_tags %>
 			<%= render :partial => "filtering/filter_options_generic", 
 								 :locals => { :filters => outputs_tags_filters,
 															:filter_type => :tag_outs } -%>
