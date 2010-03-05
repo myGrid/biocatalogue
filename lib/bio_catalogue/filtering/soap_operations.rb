@@ -104,9 +104,9 @@ module BioCatalogue
           end
         end
         
-        soap_operation_ids_for_tag_filters.each do |k,v| 
-          Util.say "*** soap_operation_ids found for tags filter '#{k.to_s}' = #{v.inspect}" 
-        end
+#        soap_operation_ids_for_tag_filters.each do |k,v| 
+#          Util.say "*** soap_operation_ids found for tags filter '#{k.to_s}' = #{v.inspect}" 
+#        end
         
         soap_operation_ids_search_query = [ ]
         
@@ -116,7 +116,7 @@ module BioCatalogue
           unless search_results.blank?
             soap_operation_ids_search_query = search_results.item_ids_for("soap_operations")
           end
-          Util.say "*** soap_operation_ids_search_query = #{soap_operation_ids_search_query.inspect}" 
+#          Util.say "*** soap_operation_ids_search_query = #{soap_operation_ids_search_query.inspect}" 
         end
         
         # Need to go through the various soap operation IDs found for the different criterion 
@@ -149,7 +149,7 @@ module BioCatalogue
           end
         end
         
-        Util.say "*** final_soap_operation_ids (after combining all soap operations IDs found) = #{final_soap_operation_ids.inspect}"
+#        Util.say "*** final_soap_operation_ids (after combining all soap operations IDs found) = #{final_soap_operation_ids.inspect}"
         
         unless final_soap_operation_ids.nil?
           # Remove the dummy value of 0 in case it is in there
@@ -159,7 +159,7 @@ module BioCatalogue
           final_soap_operation_ids = [ -1 ] if final_soap_operation_ids.blank? and 
                                                (!soap_operation_ids_for_tag_filters.keys.blank? or !search_query.blank?)
           
-          Util.say "*** final_soap_operation_ids (after cleanup) = #{final_soap_operation_ids.inspect}"
+#          Util.say "*** final_soap_operation_ids (after cleanup) = #{final_soap_operation_ids.inspect}"
           
           conditions[:id] = final_soap_operation_ids unless final_soap_operation_ids.blank?
         end
