@@ -8,7 +8,11 @@
 parent_xml.related do
   
   # <services>
-  parent_xml.services xlink_attributes(generate_include_filter_url(:tag, tag_name, "services"), :title => xlink_title("List of filtered services for tag '#{tag_name}'")),
+  parent_xml.services xlink_attributes(generate_include_filter_url(:tag, tag_name, "services"), :title => xlink_title("List of filtered services that have the tag '#{tag_name}' somewhere within the service")),
                       :resourceType => "Services"
   
+  # <soapOperations>
+  parent_xml.soapOperations xlink_attributes(generate_include_filter_url(:tag, tag_name, "soap_operations"), :title => xlink_title("List of filtered SOAP operations that have the tag '#{tag_name}' either on the operation itself or on inputs/outputs")),
+                      :resourceType => "Services"
+                      
 end
