@@ -15,8 +15,8 @@ parent_xml.tag! "summary",
     # <deployments>
     parent_xml.deployments service.service_deployments.count
     
-    # <versions>
-    parent_xml.versions service.service_versions.count
+    # <variants>
+    parent_xml.variants service.service_versions.count
     
     # <metadata> *
     metadata_counts_for_service(service).each do |m_type, m_count|

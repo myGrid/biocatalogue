@@ -23,7 +23,7 @@ parent_xml.tag! "serviceDeployment",
   
   # <providedVariant>
   if show_provided_variant
-    render :partial => "service_deployments/api/show_provided_variant", :locals => { :parent_xml => parent_xml, :service_deployment => service_deployment }
+    render :partial => "service_deployments/api/provided_variant", :locals => { :parent_xml => parent_xml, :service_deployment => service_deployment }
   end
   
   # <ancestors>

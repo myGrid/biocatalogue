@@ -360,7 +360,7 @@
 									minOccurs="1" maxOccurs="1">
 								</xsd:element>
 								<xsd:element
-									name="versions" type="xsd:positiveInteger" minOccurs="1"
+									name="variants" type="xsd:positiveInteger" minOccurs="1"
 									maxOccurs="1">
 								</xsd:element>
 								<xsd:element
@@ -976,7 +976,7 @@
 			<xsd:element name="deployments" type="ResourceLink"
 				minOccurs="1" maxOccurs="1">
 			</xsd:element>
-			<xsd:element name="versions" type="ResourceLink"
+			<xsd:element name="variants" type="ResourceLink"
 				minOccurs="1" maxOccurs="1">
 			</xsd:element>
             <xsd:element name="annotations" type="ResourceLink" minOccurs="1" maxOccurs="1">

@@ -15,8 +15,8 @@ parent_xml.related do
   parent_xml.deployments xlink_attributes(uri_for_object(service, :sub_path => "deployments"), :title => xlink_title("All deployments for Service - #{display_name(service, false)}")),
                          :resourceType => "Service"
   
-  # <versions>
-  parent_xml.versions xlink_attributes(uri_for_object(service, :sub_path => "versions"), :title => xlink_title("All versions for Service - #{display_name(service, false)}")),
+  # <variants>
+  parent_xml.variants xlink_attributes(uri_for_object(service, :sub_path => "variants"), :title => xlink_title("All variants (eg: SOAP, REST) available for Service - #{display_name(service, false)}")),
                       :resourceType => "Service"
   
   # <annotations>

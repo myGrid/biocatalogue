@@ -13,7 +13,7 @@ service_ids:
 service_deployment_ids:
   - 1
   - 2
-  - 3
+  - 1928
 soap_service_ids:
   - 4
   - 1926
