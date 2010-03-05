@@ -10,6 +10,6 @@ render :partial => "services/api/service",
                     :service => service,
                     :show_summary => @api_params[:include].include?("summary"),
                     :show_deployments => @api_params[:include].include?("deployments"),
-                    :show_versions => @api_params[:include].include?("versions"),
+                    :show_variants => @api_params[:include].include?("variants"),
                     :show_monitoring => @api_params[:include].include?("monitoring"),
                     :show_related => @api_params[:include].include?("related") }

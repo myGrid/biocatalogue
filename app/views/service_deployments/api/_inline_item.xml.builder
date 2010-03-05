@@ -8,6 +8,6 @@
 render :partial => "service_deployments/api/service_deployment", 
        :locals => { :parent_xml => parent_xml,
                     :service_deployment => service_deployment,
-                    :show_hosted_version => false,
+                    :show_provided_variant => false,
                     :show_ancestors => false,
                     :show_related => false }

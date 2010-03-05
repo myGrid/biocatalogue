@@ -69,7 +69,7 @@ class XmlSchemaValidations < Test::Unit::TestCase
       assert validate_endpoint_xml_output(make_url("/services/#{id}?include=monitoring"))
       assert validate_endpoint_xml_output(make_url("/services/#{id}/summary"))
       assert validate_endpoint_xml_output(make_url("/services/#{id}/deployments"))
-      assert validate_endpoint_xml_output(make_url("/services/#{id}/versions"))
+      assert validate_endpoint_xml_output(make_url("/services/#{id}/variants"))
       assert validate_endpoint_xml_output(make_url("/services/#{id}/annotations"))
       assert validate_endpoint_xml_output(make_url("/services/#{id}/monitoring"))
     end

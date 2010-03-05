@@ -7,7 +7,7 @@
 # Defaults:
 is_root = false unless local_assigns.has_key?(:is_root)
 show_core = true unless local_assigns.has_key?(:show_core)
-show_hosted_version = false unless local_assigns.has_key?(:show_hosted_version)
+show_provided_variant = false unless local_assigns.has_key?(:show_provided_variant)
 show_ancestors = false unless local_assigns.has_key?(:show_ancestors)
 show_related = false unless local_assigns.has_key?(:show_related)
 
@@ -21,9 +21,9 @@ parent_xml.tag! "serviceDeployment",
     render :partial => "service_deployments/api/core_elements", :locals => { :parent_xml => parent_xml, :service_deployment => service_deployment }
   end
   
-  # <hostedVersion>
-  if show_hosted_version
-    render :partial => "service_deployments/api/hosted_version", :locals => { :parent_xml => parent_xml, :service_deployment => service_deployment }
+  # <providedVariant>
+  if show_provided_variant
+    render :partial => "service_deployments/api/show_provided_variant", :locals => { :parent_xml => parent_xml, :service_deployment => service_deployment }
   end
   
   # <ancestors>

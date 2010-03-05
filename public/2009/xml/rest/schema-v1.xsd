@@ -283,7 +283,7 @@
 							</xsd:complexContent>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="versions" minOccurs="0"
+					<xsd:element name="variants" minOccurs="0"
 						maxOccurs="1">
 						<xsd:complexType>
 							<xsd:complexContent>
@@ -841,7 +841,7 @@
 					<xsd:element ref="dcterms:created" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="hostedVersion" maxOccurs="1"
+					<xsd:element name="providedVariant" maxOccurs="1"
 						minOccurs="0">
 						<xsd:complexType>
 							<xsd:choice>

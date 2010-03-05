@@ -14,6 +14,6 @@ render :partial => "services/api/service",
                     :is_root => true,
                     :show_summary => false,
                     :show_deployments => true,
-                    :show_versions => false,
+                    :show_variants => false,
                     :show_monitoring => false,
                     :show_related => true }

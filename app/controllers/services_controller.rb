@@ -7,7 +7,7 @@
 class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :versions, :monitoring ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring ]
   
   before_filter :parse_current_filters, :only => [ :index ]
   
@@ -15,7 +15,7 @@ class ServicesController < ApplicationController
   
   before_filter :find_services, :only => [ :index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :versions, :monitoring ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring ]
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
@@ -161,7 +161,7 @@ class ServicesController < ApplicationController
     end
   end
   
-  def versions
+  def variants
     respond_to do |format|
       format.html { disable_action }
       format.xml # versions.xml.builder

@@ -12,6 +12,6 @@ render :partial => "service_deployments/api/service_deployment",
        :locals => { :parent_xml => xml,
                     :service_deployment => @service_deployment,
                     :is_root => true,
-                    :show_hosted_version => true,
+                    :show_provided_variant => true,
                     :show_ancestors => true,
                     :show_related => true }

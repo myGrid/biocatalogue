@@ -9,7 +9,7 @@ is_root = false unless local_assigns.has_key?(:is_root)
 show_core = true unless local_assigns.has_key?(:show_core)
 show_summary = false unless local_assigns.has_key?(:show_summary)
 show_deployments = false unless local_assigns.has_key?(:show_deployments)
-show_versions = false unless local_assigns.has_key?(:show_versions)
+show_variants = false unless local_assigns.has_key?(:show_variants)
 show_monitoring = false unless local_assigns.has_key?(:show_monitoring)
 show_related = false unless local_assigns.has_key?(:show_related)
 
@@ -33,9 +33,9 @@ parent_xml.tag! "service",
     render :partial => "services/api/deployments", :locals => { :parent_xml => parent_xml, :service => service }
   end
   
-  # <versions>
-  if show_versions
-    render :partial => "services/api/versions", :locals => { :parent_xml => parent_xml, :service => service }
+  # <variants>
+  if show_variants
+    render :partial => "services/api/variants", :locals => { :parent_xml => parent_xml, :service => service }
   end
   
   # <monitoring>

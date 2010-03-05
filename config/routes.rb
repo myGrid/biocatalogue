@@ -149,7 +149,7 @@ ActionController::Routing::Routes.draw do |map|
                              :summary => :get,
                              :annotations => :get,
                              :deployments => :get,
-                             :versions => :get,
+                             :variants => :get,
                              :monitoring => :get }
   
   # Root of website
