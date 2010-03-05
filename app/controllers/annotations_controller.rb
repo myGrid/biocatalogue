@@ -22,6 +22,8 @@ class AnnotationsController < ApplicationController
   
   before_filter :parse_current_filters, :only => [ :index ]
   
+  before_filter :get_filter_groups, :only => [ :filters ]
+  
   before_filter :parse_sort_params, :only => [ :index ]
   
   before_filter :find_annotations, :only => [ :index ]

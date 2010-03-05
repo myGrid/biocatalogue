@@ -17,7 +17,7 @@ xml.tag! "annotations",
   xml.parameters do 
     
     # Filtering parameters
-    render :partial => "api/filtering/parameters", :locals => { :parent_xml => xml }
+    render :partial => "api/filtering/parameters", :locals => { :parent_xml => xml, :resource_type => "Annotations" }
     
     # Sorting parameters
     render :partial => "api/sorting/parameters", :locals => { :parent_xml => xml, :sort_by => @sort_by, :sort_order => @sort_order }

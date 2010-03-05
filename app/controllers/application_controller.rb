@@ -453,6 +453,10 @@ class ApplicationController < ActionController::Base
   end
   helper_method :is_sort_selected
   
+  def get_filter_groups
+    @filter_groups = BioCatalogue::Filtering.get_all_filter_groups_for(self.controller_name.underscore.to_sym, @limit || 200)
+  end
+  
   # ===============================
  
   

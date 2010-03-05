@@ -6,13 +6,23 @@
 
 # <filters>
 parent_xml.filters do
-  @current_filters.each do |filter_key, filter_ids|
-    # <filterType>
-    parent_xml.filterType :name => BioCatalogue::Filtering.filter_type_to_display_name(filter_key), :urlKey => filter_key.to_s do
-      filter_ids.each do |f_id|
-        # <filter>
-        parent_xml.filter display_name_for_filter(filter_key, f_id), :urlValue => f_id
+  
+  # <group> *
+  BioCatalogue::Filtering.filter_groups_from(@current_filters, resource_type).each do |g|
+    parent_xml.group :name => g.name do
+      
+      # <type> *
+      g.filter_types.each do |t|
+        parent_xml.type :name => t.name, :description => t.description, :urlKey => t.key do
+          
+          # <filter> *
+          t.filters.each do |f|
+            parent_xml.filter f['name'], :urlValue => f['id']
+          end
+          
+        end
       end
+      
     end
   end
 end

@@ -568,8 +568,8 @@
 	
 	<xsd:complexType name="FiltersParameters">
 		<xsd:sequence>
-			<xsd:element name="filterType"
-				type="FilterTypeParameter" minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="group" type="FilterGroupParameter"
+				minOccurs="0" maxOccurs="unbounded">
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -608,7 +608,7 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element name="filterType" type="FilterType"
+					<xsd:element name="group" type="FilterGroup"
 						maxOccurs="unbounded" minOccurs="0">
 					</xsd:element>
 				</xsd:sequence>
@@ -631,6 +631,7 @@
 		<xsd:attribute name="urlKey" type="FilterTypeUrlKey"
 			use="required">
 		</xsd:attribute>
+		<xsd:attribute name="description" type="xsd:string" use="required"></xsd:attribute>
 	</xsd:complexType>
 
 	<xsd:simpleType name="FilterTypeName">
@@ -1479,6 +1480,7 @@
     	<xsd:attribute name="urlKey" type="FilterTypeUrlKey"
     		use="required">
     	</xsd:attribute>
+    	<xsd:attribute name="description" type="xsd:string" use="required"></xsd:attribute>
     </xsd:complexType>
 
     <xsd:complexType name="FilterParameter">
@@ -2385,5 +2387,23 @@
     			</xsd:sequence>
     		</xsd:extension>
     	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="FilterGroup">
+    	<xsd:sequence>
+    		<xsd:element name="type" type="FilterType"
+    			maxOccurs="unbounded" minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="FilterGroupParameter">
+    	<xsd:sequence>
+    		<xsd:element name="type" type="FilterTypeParameter"
+    			maxOccurs="unbounded" minOccurs="1">
+    		</xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
     </xsd:complexType>
 </xsd:schema>

@@ -17,7 +17,7 @@ xml.tag! "soapOperations",
   xml.parameters do 
     
     # Filtering parameters
-    render :partial => "api/filtering/parameters", :locals => { :parent_xml => xml }
+    render :partial => "api/filtering/parameters", :locals => { :parent_xml => xml, :resource_type => "SoapOperations" }
     
     # <query>
     xml.query params[:q], :urlKey => "q"

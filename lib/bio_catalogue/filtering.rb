@@ -7,6 +7,7 @@
 # Module for the core filtering functionality
 
 module BioCatalogue
+  
   module Filtering
     
     # ====================
@@ -18,6 +19,7 @@ module BioCatalogue
     #   ...?filter_type_1=[value1],[value2],[value3]&filter_type_2=[value4]&filter_type_3=[value5],[value6]&...
 
     # ====================
+    
     
     UNKNOWN_TEXT = "(unknown)".freeze
     
@@ -31,59 +33,167 @@ module BioCatalogue
     
     TAG_FILTER_KEYS = [ :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs ].freeze
     
-    def self.filter_type_to_display_name(filter_type)
-      case filter_type
-        when :cat
-          "Service Categories"
-        when :t
-          "Service Types"
-        when :p
-          "Service Providers"
-        when :su
-          "Submitters (Members)"
-        when :sr
-          "Submitters (Registries)"
-        when :tag
-          "Tags"
-        when :tag_s
-          "Tags (on Services)"
-        when :tag_ops
-          "Tags (on Operations)"
-        when :tag_ins
-          "Tags (on Inputs)"
-        when :tag_outs
-          "Tags (on Outputs)"
-        when :c
-          "Countries"
-        when :as
-          "Annotatable Object - Services"
-        when :asd 
-          "Annotatable Object - Service Deployments"
-        when :asp
-          "Annotatable Object - Service Providers"
-        when :ars
-          "Annotatable Object - REST Services"
-        when :ass
-          "Annotatable Object - SOAP Services" 
-        when :asop
-          "Annotatable Object - SOAP Operations"
-        when :asin
-          "Annotatable Object - SOAP Inputs"
-        when :asout
-          "Annotatable Object - SOAP Outputs"
-        when :soa
-          "Source - Agents"
-        when :sor
-          "Source - Registries"
-        when :sosp
-          "Source - Service Providers" 
-        when :sou
-          "Source - Users"
-        when :attrib
-          "Annotation Attributes"
-        else
-          "(unknown)"
+    FILTER_GROUPS = { :services => [ { "Service Categories" => [ :cat ] },
+                                     { "Service Types" => [ :t ] },
+                                     { "Service Providers" => [ :p ] },
+                                     { "Submitters / Sources" => [ :su, :sr ] },
+                                     { "Tags" => [ :tag ] },
+                                     { "Tags (on Services)" => [ :tag_s ] },
+                                     { "Tags (on Operations)" => [ :tag_ops ] },
+                                     { "Tags (on Inputs)" => [ :tag_ins ] },
+                                     { "Tags (on Outputs)" => [ :tag_outs ] },
+                                     { "Locations" => [ :c ] } ],
+                      :soap_operations => [ { "Tags" => [ :tag ] },
+                                            { "Tags (on Operations)" => [ :tag_ops ] },
+                                            { "Tags (on Inputs)" => [ :tag_ins ] },
+                                            { "Tags (on Outputs)" => [ :tag_outs ] } ],
+                      :annotations => [ { "Annotation Attributes" => [ :attrib ] },
+                                        { "Annotatables" => [ :as, :asd, :asp, :ars, :ass, :asop, :asin, :asout ] },
+                                        { "Sources" => [ :soa, :sor, :sosp, :sou ] } ] }.freeze
+    
+    FILTER_KEY_DISPLAY_NAMES = { :cat => "Service Categories",
+                                   :t => "Service Types",
+                                   :p => "Service Providers",
+                                   :su => "Members",
+                                   :sr => "Registries", 
+                                   :tag => "Tags",
+                                   :tag_s => "Tags (on Services)",
+                                   :tag_ops => "Tags (on Operations)",
+                                   :tag_ins => "Tags (on Inputs)",
+                                   :tag_outs => "Tags (on Outputs)",
+                                   :c => "Countries",
+                                   :as => "Services",
+                                   :asd => "Service Deployments",
+                                   :asp => "Service Providers",
+                                   :ars => "REST Services",
+                                   :ass => "SOAP Services",
+                                   :asop => "SOAP Operations",
+                                   :asin => "SOAP Inputs",
+                                   :asout => "SOAP Outputs",
+                                   :soa => "Agents",
+                                   :sor => "Registries",
+                                   :sosp => "Service Providers",
+                                   :sou => "Members",
+                                   :attrib => "Annotation Attributes" }.freeze
+  
+  
+    protected
+    
+    
+    def self.hash_for_filter_keys_to_group_names(resource_type_sym)
+      results = { }
+      
+      FILTER_GROUPS[resource_type_sym].each do |group| 
+        group.each do |name, filter_keys|
+          filter_keys.each do |k|
+            results[k] = name
+          end
+        end
       end
+      
+      return results
+    end
+    
+  end
+
+  
+  # This is done twice so that an intial one is created 
+  # with some basic methods required by the rest here...
+  module Filtering
+    
+    FILTER_GROUP_NAMES_FOR_KEYS = { :services => Filtering.hash_for_filter_keys_to_group_names(:services),
+                                    :soap_operations => Filtering.hash_for_filter_keys_to_group_names(:soap_operations),
+                                    :annotations => Filtering.hash_for_filter_keys_to_group_names(:annotations) }
+    
+    
+    # ==========
+    # Helper classes and methods to build and represent collections of Filter Groups where:
+    # - A collection of filters for a particular resource type has 0 or more 'FilterGroup' objects
+    # - A FilterGroup has 1 or more 'FilterType' objects
+    # - A FilterType has 0 or more Filter hashes of the form e.g.: 
+    #   { "id" => "78", "name" => "John", "count" => "181" }
+    #   (the "count" is for the particular resource type).
+    #
+    # Then, the combination logic for combining any filters applied is (at a conceptual level):
+    # - All Filter criteria within a FilterType are OR'ed
+    # - All FilterType within a FilterGroup are OR'ed too
+    # - All FilterGroup are AND'ed
+    # ==========
+
+    class FilterGroup < Struct.new(:name, :filter_types); end
+      
+    class FilterType < Struct.new(:key, :name, :description, :filters); end
+    
+    # This gets an array of all the FilterGroups (with underlying FilterTypes and filters) for a particular resource type.
+    #
+    # 'resource_type' MUST either be:
+    # - a string representing the camelized resource type. E.g.: "Services" or "SoapOperations". OR,
+    # - a symbol representing the underscored resource type. E.g.: :services or :soap_operations
+    def self.get_all_filter_groups_for(resource_type, limit_for_each_type=nil)
+      return [ ] if resource_type.blank? 
+      
+      results = [ ]
+      
+      resource_type_normalised = normalise_resource_type(resource_type)
+      
+      FILTER_GROUPS[resource_type_normalised].each do |group| 
+        group.each do |name, filter_keys|
+          new_group = FilterGroup.new(name, [ ])
+          filter_keys.each do |k|
+            new_group.filter_types << FilterType.new(k, FILTER_KEY_DISPLAY_NAMES[k], "", eval("Filtering::#{resource_type.to_s.camelize}.get_filters_for_filter_type(k, limit_for_each_type)"))
+          end
+          results << new_group
+        end
+      end
+      
+      return results
+    end
+    
+    # Takes a hash of filters, of the form: { filter_key => [ ids_of_filters ] }
+    # e.g.: { :t => [ "SOAP" ], :p => [ "67", "23" ], :c => [ "USA", "(unknown)" ] }
+    # ... and groups these and returns an array of the relevant FilterGroups (with underlying FilterTypes and filters).
+    #
+    # 'resource_type' MUST either be:
+    # - a string representing the camelized resource type. E.g.: "Services" or "SoapOperations". OR,
+    # - a symbol representing the underscored resource type. E.g.: :services or :soap_operations
+    def self.filter_groups_from(filters, resource_type)
+      return [ ] if filters.blank? or resource_type.blank?
+      
+      results = [ ]
+      
+      resource_type_normalised = normalise_resource_type(resource_type)
+      
+      # First convert to a Hash format that is better suited here...
+      filters_in_grouped_hash = { }
+      filters.each do |key, ids|
+        group_name = FILTER_GROUP_NAMES_FOR_KEYS[resource_type_normalised][key]
+        if filters_in_grouped_hash.has_key? group_name
+          filters_in_grouped_hash[group_name] << { key => ids }
+        else
+          filters_in_grouped_hash[group_name] = [ { key => ids } ]
+        end
+      end
+      
+      # Now create the relevant FilterGroup etc objects...
+      filters_in_grouped_hash.each do |group_name, filter_types|
+        new_group = FilterGroup.new(group_name, [ ])
+        
+        filter_types.each do |filter_type|
+          filter_type.each do |key, ids|
+            new_group.filter_types << FilterType.new(key, FILTER_KEY_DISPLAY_NAMES[key], "", ids.map { |id| { 'id' => id, 'name' => Filtering.display_name_for_filter(key, id) } })
+          end
+        end
+        results << new_group
+      end
+      
+      return results
+    end
+    
+    # ==========
+    
+    
+    def self.filter_type_to_display_name(filter_type)
+      FILTER_KEY_DISPLAY_NAMES[filter_type.to_sym] || "(unknown)"
     end
     
     def self.display_name_for_filter(filter_type, filter_id)
@@ -245,6 +355,20 @@ module BioCatalogue
       end
       
       return text
+    end
+    
+    # 'resource_type' MUST either be:
+    # - a string representing the camelized resource type. E.g.: "Services" or "SoapOperations". OR,
+    # - a symbol representing the underscored resource type. E.g.: :services or :soap_operations
+    def self.normalise_resource_type(resource_type)
+      case resource_type
+        when String
+          return resource_type.underscore.to_sym
+        when Symbol
+          return resource_type
+        else
+          raise ArgumentError, "resource_type is not a String or a Symbol! Value specified was: #{resource_type.inspect}", caller
+      end
     end
     
   end
