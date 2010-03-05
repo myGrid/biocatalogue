@@ -10,6 +10,10 @@ service_ids:
   - 607
   - 2157
   - 2146
+service_deployment_ids:
+  - 1
+  - 2
+  - 3
 soap_service_ids:
   - 4
   - 1926

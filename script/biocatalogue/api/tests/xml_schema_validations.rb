@@ -75,6 +75,14 @@ class XmlSchemaValidations < Test::Unit::TestCase
     end
   end
   
+  def test_service_deployment
+    assert config["service_deployment_ids"].length > 0, "No service_deployment_ids found in config.yml"
+    config["service_deployment_ids"].each do |id|
+      assert validate_endpoint_xml_output(make_url("/service_deployments/#{id}"))
+      assert validate_endpoint_xml_output(make_url("/service_deployments/#{id}/annotations"))
+    end
+  end
+  
   def test_soap_service
     assert config["soap_service_ids"].length > 0, "No soap_service_ids found in config.yml"
     config["soap_service_ids"].each do |id|
