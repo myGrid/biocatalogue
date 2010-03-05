@@ -10,9 +10,11 @@
 
 <% t @page_title_suffix -%>
 
-<div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em; margin: 0;">
-	<%= render :partial => 'index_tag_cloud' %>
-</div>
+<% if @current_filters.blank? and params[:q].blank? %>
+	<div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em; margin: 0;">
+		<%= render :partial => 'index_tag_cloud' %>
+	</div>
+<% end %>
 
 <a name="browse"></a>
 

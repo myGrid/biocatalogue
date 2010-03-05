@@ -8,7 +8,7 @@
 
 %>
 
-<% unless @current_filters.blank? %>
+<% unless @current_filters.blank? and params[:q].blank? %>
 	<div id="search_within">
 		<% rounded "#EEE", "#333", "100%" do %>
 			<% form_tag(services_url, :method => :get) do %>
