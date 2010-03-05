@@ -78,7 +78,9 @@
 											<% end %>
 										</td>
 										<td style="text-align: right;">
+											<% if false %>
 											<%= link_to("Filter these services", services_url(:q => @query), :class => "button_slim", :style => "margin-right: 1.5em;") -%>
+											<% end %>
 										
 											<%= render :partial => "listing_type_switcher_link", :locals => { :result_scope => result_scope, :style => (more_items ? "margin-right: 1.5em;" : "") } -%>
 											
