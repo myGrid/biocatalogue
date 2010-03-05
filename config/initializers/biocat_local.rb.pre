@@ -120,3 +120,7 @@ RPX_API_KEY = 'xyz'
 # If set to true, this may cause search to be slower but has the best chance of returning all relevant results.
 # If set to false, it is crucial that all relevant associated object IDs are indexed together with the items, in Solr.
 SEARCH_PERFORM_POST_SOLR_MAPPINGS = false
+
+# The message to display at the very top of the page.
+# Use this for extra special messages like very important announcements and maintenance notices.
+HEADER_MESSAGE = "The BioCatalogue will be undergoing maintenance on Tuesday March 9th 2010 between 16:00-19:00 GMT"
