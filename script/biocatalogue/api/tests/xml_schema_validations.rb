@@ -48,6 +48,7 @@ class XmlSchemaValidations < Test::Unit::TestCase
     assert validate_endpoint_xml_output(make_url("/services?per_page=5&page=3"))
     assert validate_endpoint_xml_output(make_url("/services?t=[SOAP]"))
     assert validate_endpoint_xml_output(make_url("/services?t=[SOAP]&p=[1]"))
+    assert validate_endpoint_xml_output(make_url("/services?t=[SOAP]&p=[1],[3],[5]"))
     assert validate_endpoint_xml_output(make_url("/services?t=[SOAP]&p=[1]&c=[United+Kingdom]"))
     assert validate_endpoint_xml_output(make_url("/services?t=[SOAP]&per_page=5&page=3"))
     assert validate_endpoint_xml_output(make_url("/services?include=summary"))
@@ -82,6 +83,21 @@ class XmlSchemaValidations < Test::Unit::TestCase
       assert validate_endpoint_xml_output(make_url("/soap_services/#{id}/deployments"))
       assert validate_endpoint_xml_output(make_url("/soap_services/#{id}/annotations"))
     end
+  end
+  
+  def test_soap_operations
+    assert validate_endpoint_xml_output(make_url("/soap_operations"))
+    assert validate_endpoint_xml_output(make_url("/soap_operations?page=2"))
+    assert validate_endpoint_xml_output(make_url("/soap_operations?page=3&per_page=5"))
+    assert validate_endpoint_xml_output(make_url("/soap_operations?page=2&include=inputs,ancestors&per_page=3"))
+    assert validate_endpoint_xml_output(make_url("/soap_operations?sort_by=created&sort_order=asc"))
+    assert validate_endpoint_xml_output(make_url("/soap_operations?tag=[blast]"))
+    assert validate_endpoint_xml_output(make_url("/soap_operations?tag=[blast],[predicting]"))
+    assert validate_endpoint_xml_output(make_url("/soap_operations?tag_ins=[blast],[predicting]&tag_outs=[blast_report]"))
+  end
+  
+  def test_soap_operations_filters
+    assert validate_endpoint_xml_output(make_url("/soap_operations/filters"))
   end
   
   def test_soap_operation

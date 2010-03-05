@@ -324,7 +324,9 @@ module BioCatalogue
         # Take into account search query if present
         unless search_query.blank?
           search_results = Search.search(search_query, "services")
-          service_ids_search_query = search_results.item_ids_for("services")
+          unless search_results.blank?
+            service_ids_search_query = search_results.item_ids_for("services")
+          end
         end
         
         # Need to go through the various service IDs found for the different criterion 
@@ -376,7 +378,7 @@ module BioCatalogue
           # Remove the dummy value of 0 in case it is in there
           final_service_ids.delete(0)
           
-          # If a filter that relies on service IDs was specified but no services were found then no services should be returned
+          # If filter(s) / query were specified but nothing was found that means we have an empty result set
           final_service_ids = [ -1 ] if final_service_ids.blank? and 
                                         (filters.has_key?(:cat) or
                                          filters.has_key?(:su) or 

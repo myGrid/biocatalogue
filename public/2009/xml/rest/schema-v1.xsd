@@ -1907,6 +1907,7 @@
     		<xsd:enumeration value="TestScript"></xsd:enumeration>
     		<xsd:enumeration value="Errors"></xsd:enumeration>
     		<xsd:enumeration value="SearchByData"></xsd:enumeration>
+    		<xsd:enumeration value="SoapOperations"></xsd:enumeration>
     	</xsd:restriction>
     </xsd:simpleType>
 
@@ -2317,4 +2318,67 @@
     </xsd:complexType>
 
 
+
+    <xsd:element name="soapOperations" type="SoapOperations"></xsd:element>
+    
+    <xsd:complexType name="SoapOperations">
+    	<xsd:complexContent>
+    		<xsd:extension base="ResourceLink">
+    			<xsd:sequence>
+    				<xsd:element name="parameters" maxOccurs="1"
+    					minOccurs="1">
+    					<xsd:complexType>
+    						<xsd:sequence>
+    							<xsd:element name="filters"
+    								maxOccurs="1" minOccurs="1" type="FiltersParameters">
+    							</xsd:element>
+    							<xsd:element name="query"
+    								type="SearchQueryParameter" maxOccurs="1" minOccurs="1">
+    							</xsd:element>
+    							<xsd:element ref="sortBy" maxOccurs="1" minOccurs="1"></xsd:element>
+    							<xsd:element ref="sortOrder" maxOccurs="1" minOccurs="1"></xsd:element>
+    							<xsd:element ref="page" maxOccurs="1" minOccurs="1"></xsd:element>
+    							<xsd:element ref="pageSize" maxOccurs="1" minOccurs="1"></xsd:element>
+    						</xsd:sequence>
+    					</xsd:complexType>
+    				</xsd:element>
+    				<xsd:element name="statistics" maxOccurs="1"
+    					minOccurs="1">
+    					<xsd:complexType>
+    						<xsd:complexContent>
+    							<xsd:extension
+    								base="CollectionCoreStatistics">
+    							</xsd:extension>
+    						</xsd:complexContent>
+    					</xsd:complexType>
+    				</xsd:element>
+    				<xsd:element name="results" maxOccurs="1"
+    					minOccurs="1">
+    					<xsd:complexType>
+    						<xsd:sequence>
+    							<xsd:element name="soapOperation"
+    								type="SoapOperation" maxOccurs="unbounded" minOccurs="0">
+    							</xsd:element>
+    						</xsd:sequence>
+    					</xsd:complexType>
+    				</xsd:element>
+    				<xsd:element name="related" maxOccurs="1"
+    					minOccurs="1">
+    					<xsd:complexType>
+    						<xsd:complexContent>
+    							<xsd:extension
+    								base="CollectionCoreRelatedLinks">
+    								<xsd:sequence>
+    									<xsd:element name="filters"
+    										type="ResourceLink" maxOccurs="1" minOccurs="1">
+    									</xsd:element>
+    								</xsd:sequence>
+    							</xsd:extension>
+    						</xsd:complexContent>
+    					</xsd:complexType>
+    				</xsd:element>
+    			</xsd:sequence>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
 </xsd:schema>

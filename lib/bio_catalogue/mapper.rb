@@ -160,13 +160,17 @@ module BioCatalogue
             new_value = case model_name.to_s
               when "Service"
                 Mapper.get_ancestor_service_id(source_model_name, source_id)
+              when "SoapOperation"
+                Mapper.get_ancestor_soap_operation_id(source_model_name, source_id)
             end
           end
+          
+          new_value = new_value.try(:to_i)
+          new_value = nil if new_value == 0
           
           if new_value.blank?
             Rails.cache.write(cache_key, BioCatalogue::CacheHelper::NONE_VALUE)
           else
-            new_value = new_value.to_i
             Rails.cache.write(cache_key, new_value)
             associated_model_object_id = new_value
           end
@@ -200,15 +204,25 @@ module BioCatalogue
       end
     end
     
+    # NOTE: this is NOT cached, and hence it is not a public method.
+    # Use Mapper::map_compound_id_to_associated_model_object_id
+    def self.get_ancestor_soap_operation_id(source_model_name, source_id)
+      case source_model_name.to_s
+        when "SoapService"
+          return source_id
+        else
+          return self.get_id_value_from_sql_query(self.sql_query_to_get_soap_operation_id_for_source_model_item(source_model_name, source_id))
+      end
+    end
+    
     # Generic helper method to run a sql query and then return back the first record's "id" field.
     # The sql query provided must be in the form of an Array so it can be sanitised.
     def self.get_id_value_from_sql_query(sql)
       id_value = nil
       
-      data = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
-      
-      if !data.blank? and data.first.has_key?("id")
-        id_value = data.first.fetch("id")
+      unless sql.blank?
+        id_value = ActiveRecord::Base.connection.select_value(ActiveRecord::Base.send(:sanitize_sql, sql)).try(:to_i)
+        id_value = nil if id_value == 0
       end
       
       return id_value
@@ -314,16 +328,40 @@ module BioCatalogue
                   source_id]
         when "Annotation"
           ann = Annotation.find(source_id)
-          if ann.nil?
-            sql = "SELECT 'nothing'"
-          else
+          unless ann.nil?
             sql = self.sql_query_to_get_service_id_for_source_model_item(ann.annotatable_type, ann.annotatable_id)
           end
         when "User", "ServiceProvider", "Registry", "Agent"
-          sql = "SELECT 'nothing'"
+          sql = nil
         else
           Rails.logger.warn "SQL for mapping #{source_model_name} objects to Services has not been implemented yet!"
-          sql = "SELECT 'nothing'"
+      end
+      
+      return sql
+    end
+    
+    # NOTE: the SQL queries here have only been tested to work with MySQL 5.0.x
+    def self.sql_query_to_get_soap_operation_id_for_source_model_item(source_model_name, source_id)
+      sql = nil
+      
+      case source_model_name
+        when "SoapOperation"
+          sql = [ "SELECT ? AS id", source_id ]
+        when "SoapInput"
+          sql = [ "SELECT soap_inputs.soap_operation_id AS id 
+                  FROM soap_inputs
+                  WHERE soap_inputs.id = ?",
+                  source_id ]
+        when "SoapOutput"
+          sql = [ "SELECT soap_outputs.soap_operation_id AS id 
+                  FROM soap_outputs
+                  WHERE soap_outputs.id = ?",
+                  source_id ]
+        when "Annotation"
+          ann = Annotation.find(source_id)
+          unless ann.nil?
+            sql = self.sql_query_to_get_soap_operation_id_for_source_model_item(ann.annotatable_type, ann.annotatable_id)
+          end
       end
       
       return sql

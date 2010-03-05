@@ -162,7 +162,7 @@ class AnnotationsController < ApplicationController
   
   protected
   
-   def parse_sort_params
+  def parse_sort_params
     sort_by_allowed = [ "created", "modified" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase

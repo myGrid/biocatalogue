@@ -22,6 +22,7 @@ module BioCatalogue
     UNKNOWN_TEXT = "(unknown)".freeze
     
     FILTER_KEYS = { :services => [ :cat, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ],
+                    :soap_operations => [ :tag, :tag_ops, :tag_ins, :tag_outs ],
                     :annotations => [ :attrib,
                                       :as, :asd, :asp, :ars, :ass, :asop, :asin, :asout,
                                       :soa, :sor, :sosp, :sou ] }.freeze

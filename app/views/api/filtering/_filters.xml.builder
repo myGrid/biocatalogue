@@ -12,7 +12,7 @@ parent_xml.tag! "filters",
                 :for => resource_type,
                 :resourceType => "Filters" do
   
-  BioCatalogue::Filtering::FILTER_KEYS[resource_type.downcase.to_sym].each do |filter_key|
+  BioCatalogue::Filtering::FILTER_KEYS[resource_type.underscore.to_sym].each do |filter_key|
     
     # <filterType>
     parent_xml.filterType :name => BioCatalogue::Filtering.filter_type_to_display_name(filter_key), :urlKey => filter_key.to_s do

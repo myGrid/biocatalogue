@@ -36,7 +36,7 @@ module ApiHelper
     
     filters.each do |f|
       
-      attribs = xlink_attributes(generate_include_filter_url(filter_key, f["id"], results_resource_type.downcase), :title => xlink_title("Filter by #{filter_key_humanised}: '#{f['name']}'"))
+      attribs = xlink_attributes(generate_include_filter_url(filter_key, f["id"], results_resource_type.underscore), :title => xlink_title("Filter by #{filter_key_humanised}: '#{f['name']}'"))
       attribs.update({
         :urlValue => f["id"],
         :name => f["name"],

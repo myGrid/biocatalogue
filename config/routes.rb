@@ -131,6 +131,7 @@ ActionController::Routing::Routes.draw do |map|
                              :deployments => :get }
 
   map.resources :soap_operations,
+                :collection => { :filters => :get },
                 :member => { :annotations => :get }
                 
   map.resources :soap_inputs,
