@@ -20,9 +20,12 @@
   		<div id="header-region" class="clear-block"></div>
 			
 			<% if defined? HEADER_MESSAGE and !HEADER_MESSAGE.blank? %>
-				<div class="box_info_standout" style="text-align: center; margin-top: -5px; margin-bottom: 0; padding: 3px; border: 0; color: #990000;">
+				<div id="header_message" class="box_info_standout" style="text-align: center; margin-top: -5px; margin-bottom: 0; padding: 3px; border: 0; color: #990000; display: none; font-size: 108%;">
 					<%= white_list HEADER_MESSAGE -%>
 				</div>
+				<script>
+					$('header_message').show();
+				</script>
 			<% end %>
 			
     	<div id="wrapper">
