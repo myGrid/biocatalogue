@@ -61,6 +61,14 @@ class TestScriptRunner:
     
     def signal_handler(self, signum, child):
         os.kill(child.pid, signal.SIGKILL)
+        
+    def status_message(self, exit_code):
+        if exit_code == 0:
+            return "Success: Script ran successfully"
+        elif (exit_code in range(255)):
+            return "Failure: Script failed with exit code : %s"%str(exit_code)
+        else:
+            return "Warning: Script exited with code : %s "%str(exit_code)
     
 if __name__ =='__main__':
     # command line options
@@ -103,8 +111,9 @@ if __name__ =='__main__':
         runner.result     = runner.returncode
         signal.alarm(0)
     
-        logfile  = open(runner.log)
-        runner.summary = "".join(logfile.readlines())
+        #logfile  = open(runner.log)
+        #runner.summary = "".join(logfile.readlines())
+        runner.summary = runner.status_message(runner.returncode)
         logfile.close()
         print runner.returncode
     except Exception, e:
