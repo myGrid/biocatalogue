@@ -27,6 +27,10 @@ xml.tag! "biocatalogue",
     xml.services xlink_attributes(uri_for_collection("services"), :title => xlink_title("Services index")),
                  :resourceType => "Services"
     
+    # <soapOperations>
+    xml.soapOperations xlink_attributes(uri_for_collection("soap_operations"), :title => xlink_title("SOAP operations index")),
+                 :resourceType => "SoapOperations"
+    
     # <categories>
     xml.categories xlink_attributes(uri_for_collection("categories"), :title => xlink_title("Categories index")),
                  :resourceType => "Categories"
@@ -66,6 +70,10 @@ xml.tag! "biocatalogue",
       xml.services xlink_attributes(uri_for_collection("services/filters"), :title => xlink_title("Filters for the services index")),
                           :resourceType => "Filters"  
       
+      # <soapOperations>
+      xml.soapOperations xlink_attributes(uri_for_collection("soap_operations/filters"), :title => xlink_title("Filters for the SOAP operations index")),
+                          :resourceType => "Filters" 
+                          
       # <annotations>
       xml.annotations xlink_attributes(uri_for_collection("annotations/filters"), :title => xlink_title("Filters for the annotations index")),
                           :resourceType => "Filters" 
