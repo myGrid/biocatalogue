@@ -212,7 +212,7 @@ module BioCatalogue
         
         @tags = { }
         tags1 = BioCatalogue::Tags.get_tags
-        tags2 = BioCatalogue::Filtering.get_filters_for_all_tags
+        tags2 = BioCatalogue::Filtering::Services.get_filters_for_all_tags
         
         tags1.each do |t|
           @tags[t['name']] = { :all => t['count'] }
