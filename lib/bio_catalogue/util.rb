@@ -294,6 +294,9 @@ module BioCatalogue
     
     # Given a set of params, this attempts to find the *single* object referred to.
     # Returns: obj_to_redirect_to (nil indicates nothing is found)
+    #
+    # TODO: optimise this! Right now it does a cascade find, but instead it should just
+    # do one query and that's it.
     def self.lookup(params)
       obj_to_redirect_to = nil
       
@@ -307,7 +310,19 @@ module BioCatalogue
           if soap_service 
             
             if params[:operation_name]
-              obj_to_redirect_to = SoapOperation.find(:first, :conditions => { :soap_service_id => soap_service.id, :name => params[:operation_name] })
+              soap_operation = SoapOperation.find(:first, :conditions => { :soap_service_id => soap_service.id, :name => params[:operation_name] })
+              
+              if soap_operation
+                
+                if params[:input_name]
+                  obj_to_redirect_to = SoapInput.find(:first, :conditions => { :soap_operation_id => soap_operation.id, :name => params[:input_name] })
+                elsif params[:output_name]
+                  obj_to_redirect_to = SoapOutput.find(:first, :conditions => { :soap_operation_id => soap_operation.id, :name => params[:output_name] })
+                else
+                  obj_to_redirect_to = soap_operation
+                end
+                
+              end
             else
               obj_to_redirect_to = soap_service
             end
