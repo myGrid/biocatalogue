@@ -14,6 +14,6 @@ render :partial => "services/api/service",
                     :is_root => true,
                     :show_summary => @api_params[:include].include?("summary"),
                     :show_deployments => true,
-                    :show_versions => true,
+                    :show_variants => true,
                     :show_monitoring => @api_params[:include].include?("monitoring"),
                     :show_related => true }
