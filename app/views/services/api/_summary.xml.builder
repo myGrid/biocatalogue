@@ -30,11 +30,6 @@ parent_xml.tag! "summary",
     parent_xml.alternativeName ann.value
   end
   
-  # <serviceType> *
-  service.service_types.each do |s_type|
-    parent_xml.serviceType s_type
-  end
-  
   # <category> *
   service.annotations_with_attribute("category").each do |category_annotation|
     unless (category = Category.find_by_id(category_annotation.value)).nil?

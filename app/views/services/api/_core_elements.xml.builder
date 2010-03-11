@@ -21,6 +21,14 @@ parent_xml.originalSubmitter xlink_attributes(uri_for_object(service.submitter),
 # <dc:description>
 dc_xml_tag parent_xml, :description, service.preferred_description
 
+# <serviceTechnologyTypes>
+parent_xml.serviceTechnologyTypes do 
+  # <type> *
+  service.service_types.each do |s_type|
+    parent_xml.type s_type
+  end
+end
+
 # <latestMonitoringStatus>
 render :partial => "monitoring/api/status", 
        :locals => { :parent_xml => parent_xml, 

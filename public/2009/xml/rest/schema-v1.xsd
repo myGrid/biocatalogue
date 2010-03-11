@@ -259,6 +259,17 @@
 					<xsd:element ref="dc:description" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
+					<xsd:element name="serviceTechnologyTypes"
+						maxOccurs="1" minOccurs="1">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="type"
+									type="ServiceTechnologyType" maxOccurs="unbounded"
+									minOccurs="1">
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
 					<xsd:element name="latestMonitoringStatus"
 						type="MonitoringStatus" maxOccurs="1" minOccurs="1">
 					</xsd:element>
@@ -274,9 +285,9 @@
 							<xsd:complexContent>
 								<xsd:extension base="ResourceLink">
 									<xsd:sequence>
-										<xsd:element name="serviceDeployment"
-											type="ServiceDeployment" minOccurs="1"
-											maxOccurs="unbounded">
+										<xsd:element
+											name="serviceDeployment" type="ServiceDeployment"
+											minOccurs="1" maxOccurs="unbounded">
 										</xsd:element>
 									</xsd:sequence>
 								</xsd:extension>
@@ -289,13 +300,15 @@
 							<xsd:complexContent>
 								<xsd:extension base="ResourceLink">
 									<xsd:sequence>
-										<xsd:choice maxOccurs="unbounded" minOccurs="1">
+										<xsd:choice
+											maxOccurs="unbounded" minOccurs="1">
 											<xsd:element
 												name="soapService" type="SoapService" maxOccurs="unbounded"
 												minOccurs="0">
 											</xsd:element>
 											<xsd:element
-												name="restService" type="RestService" maxOccurs="unbounded" minOccurs="0">
+												name="restService" type="RestService" maxOccurs="unbounded"
+												minOccurs="0">
 											</xsd:element>
 										</xsd:choice>
 									</xsd:sequence>
@@ -328,8 +341,8 @@
 											<xsd:complexType>
 												<xsd:sequence>
 													<xsd:element
-														name="serviceTest" type="ServiceTest" maxOccurs="unbounded"
-														minOccurs="0">
+														name="serviceTest" type="ServiceTest"
+														maxOccurs="unbounded" minOccurs="0">
 													</xsd:element>
 												</xsd:sequence>
 											</xsd:complexType>
@@ -373,10 +386,6 @@
 					<xsd:element
 						name="alternativeName" minOccurs="0" maxOccurs="unbounded"
 						type="xsd:string">
-					</xsd:element>
-					<xsd:element name="serviceType"
-						minOccurs="1" maxOccurs="unbounded"
-						type="ServiceVersionServiceType">
 					</xsd:element>
 					<xsd:element name="category"
 						minOccurs="0" maxOccurs="unbounded"
@@ -882,7 +891,7 @@
 
 
 
-	<xsd:simpleType name="ServiceVersionServiceType">
+	<xsd:simpleType name="ServiceTechnologyType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="SOAP"></xsd:enumeration>
 			<xsd:enumeration value="REST"></xsd:enumeration>
