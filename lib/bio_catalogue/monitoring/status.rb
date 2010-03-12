@@ -35,7 +35,7 @@ module BioCatalogue
         case @test_result.result
           when 0
             @message                = "This check was successful"
-            @label                  = "Success"
+            @label                  = "Passed"
             @symbol_filename        = "tick-sphere-50.png"
             @small_symbol_filename  = "small-tick-sphere-50.png"
           when 1
@@ -75,7 +75,7 @@ module BioCatalogue
         case @service_test.latest_test_result.result
           when 0
             @message                = "The last check for this test was successful"
-            @label                  = "Success"
+            @label                  = "Passed"
             @symbol_filename        = "tick-sphere-50.png"
             @small_symbol_filename  = "small-tick-sphere-50.png"
           when 1
@@ -141,7 +141,7 @@ module BioCatalogue
         case result_code 
           when 0
             @message                  = "All tests were successful for this service"
-            @label                    = "Success"
+            @label                    = "Passed"
             @symbol_filename          = "tick-sphere-50.png"
             @small_symbol_filename    = "small-tick-sphere-50.png"
           when 1..255
