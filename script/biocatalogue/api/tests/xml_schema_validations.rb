@@ -113,6 +113,8 @@ class XmlSchemaValidations < Test::Unit::TestCase
     config["soap_operation_ids"].each do |id|
       assert validate_endpoint_xml_output(make_url("/soap_operations/#{id}"))
       assert validate_endpoint_xml_output(make_url("/soap_operations/#{id}/annotations"))
+      assert validate_endpoint_xml_output(make_url("/soap_operations/#{id}/annotations?include=inputs"))
+      assert validate_endpoint_xml_output(make_url("/soap_operations/#{id}/annotations?include=inputs,outputs"))
     end
   end
   

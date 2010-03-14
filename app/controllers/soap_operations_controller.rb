@@ -38,8 +38,32 @@ class SoapOperationsController < ApplicationController
   def annotations
     respond_to do |format|
       format.html { disable_action }
-      format.xml { redirect_to(generate_include_filter_url(:asop, @soap_operation.id, "annotations", :xml)) }
-      format.json { render :json => @soap_operation.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.xml {
+        
+        # Add SoapOperation filter
+        new_params = BioCatalogue::Filtering.add_filter_to_params(params, :asop, @soap_operation.id)
+        
+        # Now add any other filters, if specified by "include=..."
+        
+        if @api_params[:include].include?('inputs')
+          @soap_operation.soap_inputs.find(:all, :select => "id").each do |input|
+            new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asin, input.id)
+          end
+        end
+        
+        if @api_params[:include].include?('outputs')
+          @soap_operation.soap_outputs.find(:all, :select => "id").each do |output|
+            new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asout, output.id)
+          end
+        end
+        
+        redirect_to(generate_filter_url(new_params, "annotations", :xml))
+        
+      }
+      format.json {
+        # TODO: implement ?include=inputs,outputs
+        render :json => @soap_operation.annotations.paginate(:page => @page, :per_page => @per_page).to_json 
+      }
     end
   end
   
