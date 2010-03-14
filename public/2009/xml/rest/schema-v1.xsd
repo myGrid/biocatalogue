@@ -1643,9 +1643,9 @@
 
     <xsd:simpleType name="MonitoringStatusLabel">
     	<xsd:restriction base="xsd:string">
-    		<xsd:enumeration value="Success"></xsd:enumeration>
+    		<xsd:enumeration value="Passed"></xsd:enumeration>
     		<xsd:enumeration value="Warning"></xsd:enumeration>
-    		<xsd:enumeration value="Fail"></xsd:enumeration>
+    		<xsd:enumeration value="Failed"></xsd:enumeration>
     		<xsd:enumeration value="Unchecked"></xsd:enumeration>
     	</xsd:restriction>
     </xsd:simpleType>
