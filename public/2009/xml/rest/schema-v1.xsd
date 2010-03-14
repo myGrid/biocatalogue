@@ -101,6 +101,9 @@
 								<xsd:element name="services"
 									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
+								<xsd:element name="soapOperations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
+								</xsd:element>
 								<xsd:element name="categories"
 									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
@@ -131,6 +134,10 @@
 										<xsd:sequence>
 											<xsd:element name="services"
 												type="ResourceLink" maxOccurs="1" minOccurs="1">
+											</xsd:element>
+											<xsd:element
+												name="soapOperations" type="ResourceLink" maxOccurs="1"
+												minOccurs="1">
 											</xsd:element>
 											<xsd:element
 												name="annotations" type="ResourceLink" maxOccurs="1"
