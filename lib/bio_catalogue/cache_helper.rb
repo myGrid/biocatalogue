@@ -25,6 +25,8 @@ module BioCatalogue
           "children_of_category_#{args[0]}"
         when :services_count_for_category
           "services_count_for_category_#{args[0]}"
+        when :tags_index
+          "tags_index_#{args.to_sentence(:words_connector => '_', :two_words_connector => '_', :last_word_connector => '_')}"
       end
     end
     

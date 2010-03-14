@@ -79,7 +79,22 @@ protected
     @sort = :counts if @sort.blank? or ![ :counts, :name ].include?(@sort) 
     
     if is_api_request?
-      @tags = BioCatalogue::Tags.get_tags(:limit => @limit, :sort => @sort, :page => @page, :per_page => @per_page)
+      # Use cache only if it's the first page...
+      if @page == 1
+        cache_key = BioCatalogue::CacheHelper.cache_key_for(:tags_index, "api", @page, @per_page, @sort, @limit)
+        
+        # Try and get it from the cache...
+        @tags = Rails.cache.read(cache_key)
+        
+        if @tags.nil?
+          @tags = BioCatalogue::Tags.get_tags(:limit => @limit, :sort => @sort, :page => @page, :per_page => @per_page)
+          
+          # Finally write it to the cache...
+          Rails.cache.write(cache_key, @tags, :expires_in => TAGS_INDEX_CACHE_TIME)
+        end
+      else
+        @tags = BioCatalogue::Tags.get_tags(:limit => @limit, :sort => @sort, :page => @page, :per_page => @per_page)
+      end
     else
       @tags = BioCatalogue::Tags.get_tags(:limit => @limit, :sort => @sort)
     end
