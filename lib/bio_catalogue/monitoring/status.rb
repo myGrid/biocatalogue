@@ -35,22 +35,22 @@ module BioCatalogue
         case @test_result.result
           when 0
             @message                = "This check was successful"
-            @label                  = "Passed"
+            @label                  = "PASSED"
             @symbol_filename        = "tick-sphere-50.png"
             @small_symbol_filename  = "small-tick-sphere-50.png"
           when 1
             @message                = "This check failed"
-            @label                  = "Failed"
+            @label                  = "FAILED"
             @symbol_filename        = "cross-sphere-50.png"
             @small_symbol_filename  = "small-cross-sphere-50.png"
           when 2..255
             @message                = "Something did not go right with this check"
-            @label                  = "Warning"
+            @label                  = "WARNING"
             @symbol_filename        = "pling-sphere-50.png"
             @small_symbol_filename  = "small-pling-sphere-50.png"
           when -1
             @message                = "This check has not been run yet"
-            @label                  = "Unchecked"
+            @label                  = "UNCHECKED"
             @symbol_filename        = "query-sphere-50.png"
             @small_symbol_filename  = "small-query-sphere-50.png"
           else
@@ -75,22 +75,22 @@ module BioCatalogue
         case @service_test.latest_test_result.result
           when 0
             @message                = "The last check for this test was successful"
-            @label                  = "Passed"
+            @label                  = "PASSED"
             @symbol_filename        = "tick-sphere-50.png"
             @small_symbol_filename  = "small-tick-sphere-50.png"
           when 1
             @message                = "The last check failed"
-            @label                  = "Failed"
+            @label                  = "FAILED"
             @symbol_filename        = "cross-sphere-50.png"
             @small_symbol_filename  = "small-cross-sphere-50.png"
           when 2..255
             @message                = "Something did not quite go right with the last check for this test"
-            @label                  = "Warning"
+            @label                  = "WARNING"
             @symbol_filename        = "pling-sphere-50.png"
             @small_symbol_filename  = "small-pling-sphere-50.png"
           when -1
             @message                = "This test has not run yet"
-            @label                  = "Unchecked"
+            @label                  = "UNCHECKED"
             @symbol_filename        = "query-sphere-50.png"
             @small_symbol_filename  = "small-query-sphere-50.png"
           else
@@ -141,17 +141,17 @@ module BioCatalogue
         case result_code 
           when 0
             @message                  = "All tests were successful for this service"
-            @label                    = "Passed"
+            @label                    = "PASSED"
             @symbol_filename          = "tick-sphere-50.png"
             @small_symbol_filename    = "small-tick-sphere-50.png"
           when 1..255
             @message                  = failure_message(failed) # more info from tests causing problems
-            @label                    = "Warning"
+            @label                    = "WARNING"
             @symbol_filename          = "pling-sphere-50.png"
             @small_symbol_filename    = "small-pling-sphere-50.png"
           when -1
             @message                  = "No tests have been run yet for this service"
-            @label                    = "Unchecked"
+            @label                    = "UNCHECKED"
             @symbol_filename          = "query-sphere-50.png"
             @small_symbol_filename    = "small-query-sphere-50.png"
           else
