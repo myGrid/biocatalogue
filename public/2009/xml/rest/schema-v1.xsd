@@ -987,18 +987,20 @@
 
 	<xsd:complexType name="ServiceRelatedLinks">
 		<xsd:sequence>
-			<xsd:element name="summary" type="ResourceLink"
+            <xsd:element name="withAll" type="ResourceLink" maxOccurs="1" minOccurs="1"></xsd:element>
+            <xsd:element name="summary" type="ResourceLink"
 				minOccurs="1" maxOccurs="1">
 			</xsd:element>
-			<xsd:element name="deployments" type="ResourceLink"
+            <xsd:element name="deployments" type="ResourceLink"
 				minOccurs="1" maxOccurs="1">
 			</xsd:element>
 			<xsd:element name="variants" type="ResourceLink"
 				minOccurs="1" maxOccurs="1">
 			</xsd:element>
-            <xsd:element name="annotations" type="ResourceLink" minOccurs="1" maxOccurs="1">
+			<xsd:element name="annotations" type="ResourceLink"
+				minOccurs="1" maxOccurs="1">
 			</xsd:element>
-            <xsd:element name="monitoring" type="ResourceLink"
+			<xsd:element name="monitoring" type="ResourceLink"
 				minOccurs="1" maxOccurs="1">
 			</xsd:element>
 		</xsd:sequence>
@@ -1736,7 +1738,7 @@
     					minOccurs="0">
     					<xsd:complexType>
     						<xsd:sequence>
-    							<xsd:element name="inputs"
+                                <xsd:element name="inputs"
     								type="ResourceLink" maxOccurs="1" minOccurs="1">
     							</xsd:element>
     							<xsd:element name="outputs"
