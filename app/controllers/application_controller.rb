@@ -253,10 +253,16 @@ class ApplicationController < ActionController::Base
   def set_api_params
     @api_params = { }
     
-    # include_elements
+    # 'include'
     @api_params[:include] = [ ]
     unless params[:include].blank?
        @api_params[:include] = params[:include].split(',').map{|s| s.strip.downcase}.compact
+   end
+   
+   # 'also'
+    @api_params[:also] = [ ]
+    unless params[:also].blank?
+       @api_params[:also] = params[:also].split(',').map{|s| s.strip.downcase}.compact
     end
   end
   
@@ -415,7 +421,7 @@ class ApplicationController < ActionController::Base
   # - contain filter params in the required Filter params spec. See: generate_include_filter_url above for ref.
   def generate_filter_url(new_params, resource, format=nil)
     # Remove special params
-    new_params_cleaned = BioCatalogue::Util.remove_rails_special_params_from(new_params).reject{|k,v| [ "page", "namespace", "include" ].include?(k.to_s.downcase) }
+    new_params_cleaned = BioCatalogue::Util.remove_rails_special_params_from(new_params).reject{|k,v| [ "page", "namespace", "include", "also" ].include?(k.to_s.downcase) }
     
     unless format.nil?
       if format == :html
