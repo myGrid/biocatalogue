@@ -19,4 +19,7 @@ parent_xml.related do
   parent_xml.annotations xlink_attributes(uri_for_object(soap_operation, :sub_path => "annotations"), :title => xlink_title("All annotations on this SOAP Operation - #{display_name(soap_operation, false)}")),
                          :resourceType => "Annotations"
   
+  # <annotationsOnAll>
+  parent_xml.annotationsOnAll xlink_attributes(uri_for_object(soap_operation, :sub_path => "annotations", :params => { :include => "all" }), :title => xlink_title("All annotations on ALL parts of this SOAP Operation - #{display_name(soap_operation, false)} - i.e.: on all the inputs and outputs")),
+                         :resourceType => "Annotations"
 end
