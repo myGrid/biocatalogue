@@ -11,4 +11,4 @@ render :partial => "soap_operations/api/soap_operation",
                     :show_inputs => @api_params[:include].include?("inputs"),
                     :show_outputs => @api_params[:include].include?("outputs"),
                     :show_ancestors => @api_params[:include].include?("ancestors"),
-                    :show_related => @api_params[:include].include?("related") }
+                    :show_related => true }
