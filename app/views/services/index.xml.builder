@@ -81,11 +81,30 @@ xml.tag! "services",
                 :resourceType => "Filters"
     
     # TODO: <sorted> *
-    
+
     # <withSummaries>
-    params_clone['include'] = "summary"
-    xml.withSummaries xlink_attributes(uri_for_collection("services", :params => params_clone), 
-                                 :title => xlink_title("The services index but with the <summary> element included for each service. This always you to get lots of metadata about the services returned without having to make additional calls.")),
+    xml.withSummaries xlink_attributes(uri_for_collection("services", :params => params_clone.merge({ :include => 'summary' })), 
+                                 :title => xlink_title("The services index with the <summary> element included for each service. This allows you to get lots of metadata about the services returned without having to make additional calls.")),
+                :resourceType => "Services"
+    
+    # <withDeployments>
+    xml.withDeployments xlink_attributes(uri_for_collection("services", :params => params_clone.merge({ :include => 'deployments' })), 
+                                 :title => xlink_title("The services index with the <deployments> element included for each service. This allows you to get deployments info for the services without having to make additional calls.")),
+                :resourceType => "Services"
+    
+    # <withVariants>
+    xml.withVariants xlink_attributes(uri_for_collection("services", :params => params_clone.merge({ :include => 'variants' })), 
+                                 :title => xlink_title("The services index with the <variants> element included for each service. This allows you to get variants info for the services without having to make additional calls.")),
+                :resourceType => "Services"
+    
+    # <withMonitoring>
+    xml.withMonitoring xlink_attributes(uri_for_collection("services", :params => params_clone.merge({ :include => 'monitoring' })), 
+                                 :title => xlink_title("The services index with the <monitoring> element included for each service. This allows you to get monitoring info for the services without having to make additional calls.")),
+                :resourceType => "Services"
+    
+    # <withAll>
+    xml.withAll xlink_attributes(uri_for_collection("services", :params => params_clone.merge({ :include => 'all' })), 
+                                 :title => xlink_title("The services index with the all subsections included for each service. This allows you to get lots of metadata about the services returned without having to make additional calls.")),
                 :resourceType => "Services"
     
   end
