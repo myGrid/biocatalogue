@@ -10,4 +10,4 @@ render :partial => "test_results/api/test_result",
                     :test_result => test_result,
                     :is_root => false,
                     :show_ancestors => true,
-                    :show_related => false }
+                    :show_related => true }
