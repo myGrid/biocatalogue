@@ -49,7 +49,7 @@ xml.tag! "soapOperations",
     
     # <soapOperation> *
     @soap_operations.each do |s_op|
-      render :partial => "soap_operations/api/soap_operation", :locals => { :parent_xml => xml, :soap_operation => s_op }
+      render :partial => "soap_operations/api/result_item", :locals => { :parent_xml => xml, :soap_operation => s_op }
     end
     
   end

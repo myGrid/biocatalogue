@@ -45,13 +45,13 @@ class SoapOperationsController < ApplicationController
         
         # Now add any other filters, if specified by "include=..."
         
-        if @api_params[:include].include?('inputs')
+        if @api_params[:include].include?('all') or @api_params[:include].include?('inputs')
           @soap_operation.soap_inputs.find(:all, :select => "id").each do |input|
             new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asin, input.id)
           end
         end
         
-        if @api_params[:include].include?('outputs')
+        if @api_params[:include].include?('all') or @api_params[:include].include?('outputs')
           @soap_operation.soap_outputs.find(:all, :select => "id").each do |output|
             new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asout, output.id)
           end

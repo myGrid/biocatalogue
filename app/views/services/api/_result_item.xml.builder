@@ -8,8 +8,8 @@
 render :partial => "services/api/service", 
        :locals => { :parent_xml => parent_xml,
                     :service => service,
-                    :show_summary => @api_params[:include].include?("summary"),
-                    :show_deployments => @api_params[:include].include?("deployments"),
-                    :show_variants => @api_params[:include].include?("variants"),
-                    :show_monitoring => @api_params[:include].include?("monitoring"),
+                    :show_summary => @api_params[:include].include?("all") || @api_params[:include].include?("summary"),
+                    :show_deployments => @api_params[:include].include?("all") || @api_params[:include].include?("deployments"),
+                    :show_variants => @api_params[:include].include?("all") || @api_params[:include].include?("variants"),
+                    :show_monitoring => @api_params[:include].include?("all") || @api_params[:include].include?("monitoring"),
                     :show_related => true }
