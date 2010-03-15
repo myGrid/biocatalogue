@@ -71,8 +71,13 @@ xml.tag! "services",
     params_clone.reject!{|k,v| k.to_s.downcase == "page" }
     
     # <filters>
-    xml.filters xlink_attributes(uri_for_collection("services/filters", :params => params_clone), 
+    xml.filters xlink_attributes(uri_for_collection("services/filters"), 
                                  :title => xlink_title("Filters for the services index")),
+                :resourceType => "Filters"
+                
+    # <filtersFromHere>
+    xml.filtersFromHere xlink_attributes(uri_for_collection("services/filters", :params => params_clone), 
+                                 :title => xlink_title("Filters for the services index that will be applied on top of any current filters")),
                 :resourceType => "Filters"
     
     # TODO: <sorted> *

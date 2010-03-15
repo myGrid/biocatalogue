@@ -69,8 +69,13 @@ xml.tag! "soapOperations",
                         :resource_url_lambda => lambda { |params| uri_for_collection("soap_operations", :params => params) } }
     
     # <filters>
-    xml.filters xlink_attributes(uri_for_collection("soap_operations/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
+    xml.filters xlink_attributes(uri_for_collection("soap_operations/filters"), 
                                  :title => xlink_title("Filters for the SOAP operations index")),
+                :resourceType => "Filters"
+    
+    # <filtersFromHere>
+    xml.filtersFromHere xlink_attributes(uri_for_collection("soap_operations/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
+                                 :title => xlink_title("Filters for the SOAP operations index that will be applied on top of any current filters")),
                 :resourceType => "Filters"
     
   end
