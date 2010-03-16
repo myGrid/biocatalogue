@@ -627,7 +627,7 @@
 					<xsd:element name="withMonitoring"
 						type="ResourceLink" maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="withAll" type="ResourceLink" maxOccurs="1" minOccurs="1"></xsd:element>
+					<xsd:element name="withAllSections" type="ResourceLink" maxOccurs="1" minOccurs="1"></xsd:element>
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -1000,7 +1000,7 @@
 
 	<xsd:complexType name="ServiceRelatedLinks">
 		<xsd:sequence>
-            <xsd:element name="withAll" type="ResourceLink" maxOccurs="1" minOccurs="1"></xsd:element>
+            <xsd:element name="withAllSections" type="ResourceLink" maxOccurs="1" minOccurs="1"></xsd:element>
             <xsd:element name="summary" type="ResourceLink"
 				minOccurs="1" maxOccurs="1">
 			</xsd:element>

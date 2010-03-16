@@ -102,9 +102,9 @@ xml.tag! "services",
                                  :title => xlink_title("The services index with the <monitoring> element included for each service. This allows you to get monitoring info for the services without having to make additional calls.")),
                 :resourceType => "Services"
     
-    # <withAll>
-    xml.withAll xlink_attributes(uri_for_collection("services", :params => params_clone.merge({ :include => 'all' })), 
-                                 :title => xlink_title("The services index with the all subsections included for each service. This allows you to get lots of metadata about the services returned without having to make additional calls.")),
+    # <withAllSections>
+    xml.withAllSections xlink_attributes(uri_for_collection("services", :params => params_clone.merge({ :include => 'all' })), 
+                                 :title => xlink_title("The services index with the all sections included for each service. This allows you to get lots of metadata about the services returned without having to make additional calls.")),
                 :resourceType => "Services"
     
   end

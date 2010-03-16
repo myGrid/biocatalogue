@@ -7,8 +7,8 @@
 # <related>
 parent_xml.related do
   
-  # <withAll>
-  parent_xml.withAll xlink_attributes(uri_for_object(service, :params => { :include => "all" }), :title => xlink_title("A complete view of this Service - #{display_name(service, false)} - which includes the summary, deployments, variants and monitoring")),
+  # <withAllSections>
+  parent_xml.withAllSections xlink_attributes(uri_for_object(service, :params => { :include => "all" }), :title => xlink_title("A complete view of this Service - #{display_name(service, false)} - which includes the summary, deployments, variants and monitoring")),
                      :resourceType => "Service"
                      
   # <summary>
