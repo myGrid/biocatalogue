@@ -612,7 +612,7 @@
 					<xsd:element name="filters" type="ResourceLink"
 						maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="filtersFromHere"
+					<xsd:element name="filtersOnCurrentResults"
 						type="ResourceLink" maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element name="withSummaries"
@@ -2066,7 +2066,7 @@
     				<xsd:element name="filters" type="ResourceLink"
     					maxOccurs="1" minOccurs="1">
     				</xsd:element>
-    				<xsd:element name="filtersFromHere"
+    				<xsd:element name="filtersOnCurrentResults"
     					type="ResourceLink" maxOccurs="1" minOccurs="1">
     				</xsd:element>
     			</xsd:sequence>
@@ -2417,7 +2417,7 @@
     										type="ResourceLink" maxOccurs="1" minOccurs="1">
     									</xsd:element>
     									<xsd:element
-    										name="filtersFromHere" type="ResourceLink" maxOccurs="1" minOccurs="1">
+    										name="filtersOnCurrentResults" type="ResourceLink" maxOccurs="1" minOccurs="1">
     									</xsd:element>
     								</xsd:sequence>
     							</xsd:extension>

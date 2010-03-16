@@ -70,9 +70,9 @@ xml.tag! "annotations",
                                  :title => xlink_title("Filters for the annotations index")),
                 :resourceType => "Filters"
     
-    # <filtersFromHere>
-    xml.filtersFromHere xlink_attributes(uri_for_collection("annotations/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
-                                 :title => xlink_title("Filters for the annotations index that will be applied on top of any current filters")),
+    # <filtersOnCurrentResults>
+    xml.filtersOnCurrentResults xlink_attributes(uri_for_collection("annotations/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
+                                 :title => xlink_title("Filters for the annotations index that will be applied on top of the current results set")),
                 :resourceType => "Filters"
     
   end
