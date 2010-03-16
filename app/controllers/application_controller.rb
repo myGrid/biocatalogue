@@ -289,7 +289,7 @@ class ApplicationController < ActionController::Base
     flash[:error] = messages.to_sentence
     
     if is_api_request?
-      messages << "See http://apidocs.biocatalogue.org/ for help"
+      messages << "See http://apidocs.biocatalogue.org/ for information about the BioCatalogue REST API"
     end
     
     respond_to do |format|
