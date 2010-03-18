@@ -8,7 +8,7 @@
 parent_xml.related do
     
   # <results>
-  parent_xml.results xlink_attributes(uri_for_object(service_test, :sub_path => "results"), :title => xlink_title("Test results for this service test")),
+  parent_xml.results xlink_attributes(uri_for_object(service_test, :sub_path => "results"), :title => xlink_title("Test results for this Service Test")),
     :resourceType => "TestResults"
 
 end

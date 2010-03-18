@@ -8,7 +8,7 @@
 parent_xml.related do
     
   # <services>
-  parent_xml.services xlink_attributes(uri_for_object(category, :sub_path => "services"), :title => xlink_title("The services that have the category '#{display_name(category, false)}'")),
+  parent_xml.services xlink_attributes(uri_for_object(category, :sub_path => "services"), :title => xlink_title("All services that have the category '#{display_name(category, false)}'")),
                       :resourceType => "Services"
   
 end

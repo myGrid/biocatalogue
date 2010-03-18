@@ -8,7 +8,7 @@
 parent_xml.related do
   
   # <annotations>
-  parent_xml.annotations xlink_attributes(uri_for_object(soap_output, :sub_path => "annotations"), :title => xlink_title("All annotations on this SOAP Output - #{display_name(soap_output, false)}")),
+  parent_xml.annotations xlink_attributes(uri_for_object(soap_output, :sub_path => "annotations"), :title => xlink_title("All annotations on this SOAP Output")),
                          :resourceType => "Annotations"
   
 end

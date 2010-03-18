@@ -8,15 +8,15 @@
 parent_xml.related do
   
   # <deployments>
-  parent_xml.deployments xlink_attributes(uri_for_object(soap_service, :sub_path => "deployments"), :title => xlink_title("The service deployments that host this SOAP Service - #{display_name(soap_service, false)}")),
+  parent_xml.deployments xlink_attributes(uri_for_object(soap_service, :sub_path => "deployments"), :title => xlink_title("The service deployments that host this SOAP Service")),
                          :resourceType => "SoapService"
   
   # <operations>
-  parent_xml.operations xlink_attributes(uri_for_object(soap_service, :sub_path => "operations"), :title => xlink_title("All operations on this SOAP Service - #{display_name(soap_service, false)}")),
+  parent_xml.operations xlink_attributes(uri_for_object(soap_service, :sub_path => "operations"), :title => xlink_title("All operations for this SOAP Service")),
                         :resourceType => "SoapService"
     
   # <annotations>
-  parent_xml.annotations xlink_attributes(uri_for_object(soap_service, :sub_path => "annotations"), :title => xlink_title("All annotations on this SOAP Service - #{display_name(soap_service, false)}")),
+  parent_xml.annotations xlink_attributes(uri_for_object(soap_service, :sub_path => "annotations"), :title => xlink_title("All annotations on this SOAP Service")),
                          :resourceType => "Annotations"
 
 end

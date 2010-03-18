@@ -12,7 +12,7 @@ parent_xml.related do
 #                         :resourceType => "Registry"
   
   # <annotationsBy>
-  parent_xml.annotationsBy xlink_attributes(uri_for_object(agent, :sub_path => "annotations_by"), :title => xlink_title("All annotations by this Agent - #{display_name(agent, false)}")),
+  parent_xml.annotationsBy xlink_attributes(uri_for_object(agent, :sub_path => "annotations_by"), :title => xlink_title("All annotations by this Agent")),
                            :resourceType => "Annotations"
   
 end

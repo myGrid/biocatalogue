@@ -8,11 +8,11 @@
 parent_xml.related do
     
   # <annotationsBy>
-  parent_xml.annotationsBy xlink_attributes(uri_for_object(user, :sub_path => "annotations_by"), :title => xlink_title("All annotations by this User - #{display_name(user, false)}")),
+  parent_xml.annotationsBy xlink_attributes(uri_for_object(user, :sub_path => "annotations_by"), :title => xlink_title("All annotations by this User")),
                            :resourceType => "Annotations"
   
   # <services>
-  parent_xml.services xlink_attributes(uri_for_object(user, :sub_path => "services"), :title => xlink_title("All services that this User - #{display_name(user, false)} - has submitted")),
+  parent_xml.services xlink_attributes(uri_for_object(user, :sub_path => "services"), :title => xlink_title("All services that this User has submitted")),
                       :resourceType => "Services"
   
 end

@@ -8,15 +8,15 @@
 parent_xml.related do
     
   # <annotations>
-  parent_xml.annotations xlink_attributes(uri_for_object(service_provider, :sub_path => "annotations"), :title => xlink_title("All annotations on this Service Provider - #{display_name(service_provider, false)}")),
+  parent_xml.annotations xlink_attributes(uri_for_object(service_provider, :sub_path => "annotations"), :title => xlink_title("All annotations on this Service Provider")),
                          :resourceType => "Annotations"
   
   # <annotationsBy>
-  parent_xml.annotationsBy xlink_attributes(uri_for_object(service_provider, :sub_path => "annotations_by"), :title => xlink_title("All annotations by this Service Provider - #{display_name(service_provider, false)}")),
+  parent_xml.annotationsBy xlink_attributes(uri_for_object(service_provider, :sub_path => "annotations_by"), :title => xlink_title("All annotations by this Service Provider")),
                            :resourceType => "Annotations"
   
   # <services>
-  parent_xml.services xlink_attributes(uri_for_object(service_provider, :sub_path => "services"), :title => xlink_title("All services that this Service Provider - #{display_name(service_provider, false)} - provides")),
+  parent_xml.services xlink_attributes(uri_for_object(service_provider, :sub_path => "services"), :title => xlink_title("All services that this Service Provider provides")),
                       :resourceType => "Services"
   
 end
