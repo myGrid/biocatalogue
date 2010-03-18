@@ -221,6 +221,19 @@ class XmlSchemaValidations < Test::Unit::TestCase
     end
   end
   
+  def test_agents
+    assert validate_endpoint_xml_output(make_url("/agents"))
+    assert validate_endpoint_xml_output(make_url("/agents?sort_by=created&sort_order=asc"))
+  end
+  
+  def test_agent
+    assert config["agent_ids"].length > 0, "No agent_ids found in config.yml"
+    config["agent_ids"].each do |id|
+      assert validate_endpoint_xml_output(make_url("/agents/#{id}"))
+      assert validate_endpoint_xml_output(make_url("/agents/#{id}/annotations_by"))
+    end
+  end
+  
   def test_annotation_attributes
     assert validate_endpoint_xml_output(make_url("/annotation_attributes"))
     assert validate_endpoint_xml_output(make_url("/annotation_attributes?page=2"))

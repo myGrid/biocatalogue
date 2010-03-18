@@ -33,8 +33,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :registries,
                 :member => { :annotations_by => :get,
                              :services => :get }
-
-  map.resources :agents
+  
+  map.resources :agents,
+                :member => { :annotations_by => :get }
   
   # Routes from the favourites plugin + extensions
   Favourites.map_routes(map)

@@ -56,6 +56,8 @@ user_ids:
 registry_ids:
   - 1
   - 2
+agents_ids:
+  - 1
 annotation_ids:
   - 1
   - 2

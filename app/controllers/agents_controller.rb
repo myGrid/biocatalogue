@@ -1,94 +1,96 @@
 # BioCatalogue: app/controllers/agents_controller.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
 class AgentsController < ApplicationController
   
   before_filter :disable_action, :only => [ :new, :edit, :create, :update, :destroy ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services ]
+  
+  before_filter :parse_sort_params, :only => [ :index ]
+  
+  before_filter :find_agents, :only => [ :index ]
+  
+  before_filter :find_agent, :only => [ :show, :annotations_by ]
   
   # GET /agents
   # GET /agents.xml
   def index
-    @agents = Agent.find(:all)
-
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @agents }
+      format.xml  # index.xml.builder
     end
   end
 
   # GET /agents/1
   # GET /agents/1.xml
   def show
-    @agent = Agent.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @agent }
+      format.xml  # show.xml.builder
     end
   end
-
-  # GET /agents/new
-  # GET /agents/new.xml
-  def new
-#    @agent = Agent.new
-#
-#    respond_to do |format|
-#      format.html # new.html.erb
-#      format.xml  { render :xml => @agent }
-#    end
+  
+  def annotations_by
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:soa, @agent.id, "annotations", :xml)) }
+      format.json { render :json => @agent.annotations_by.paginate(:page => @page, :per_page => @per_page).to_json }
+    end
+  end
+  
+  protected
+  
+  def parse_sort_params
+    sort_by_allowed = [ "created" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+  
+  def find_agents
+    
+    # Sorting
+    
+    order = 'agents.created_at DESC'
+    order_field = nil
+    order_direction = nil
+    
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "agents.#{order_field} #{order_direction}"
+    end
+    
+    @agents = Agent.paginate(:page => @page,
+                             :per_page => @per_page,
+                             :order => order)
+  
+  end
+  
+  def find_agent
+    @agent = Agent.find(params[:id])
   end
 
-  # GET /agents/1/edit
-  def edit
-#    @agent = Agent.find(params[:id])
-  end
-
-  # POST /agents
-  # POST /agents.xml
-  def create
-#    @agent = Agent.new(params[:agent])
-#
-#    respond_to do |format|
-#      if @agent.save
-#        flash[:notice] = 'Agent was successfully created.'
-#        format.html { redirect_to(@agent) }
-#        format.xml  { render :xml => @agent, :status => :created, :location => @agent }
-#      else
-#        format.html { render :action => "new" }
-#        format.xml  { render :xml => @agent.errors, :status => :unprocessable_entity }
-#      end
-#    end
-  end
-
-  # PUT /agents/1
-  # PUT /agents/1.xml
-  def update
-#    @agent = Agent.find(params[:id])
-#
-#    respond_to do |format|
-#      if @agent.update_attributes(params[:agent])
-#        flash[:notice] = 'Agent was successfully updated.'
-#        format.html { redirect_to(@agent) }
-#        format.xml  { head :ok }
-#      else
-#        format.html { render :action => "edit" }
-#        format.xml  { render :xml => @agent.errors, :status => :unprocessable_entity }
-#      end
-#    end
-  end
-
-  # DELETE /agents/1
-  # DELETE /agents/1.xml
-  def destroy
-#    @agent = Agent.find(params[:id])
-#    @agent.destroy
-#
-#    respond_to do |format|
-#      format.html { redirect_to(agents_url) }
-#      format.xml  { head :ok }
-#    end
-  end
 end

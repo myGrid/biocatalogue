@@ -12,6 +12,7 @@ class Agent < ActiveRecord::Base
   
   acts_as_trashable
   
+  acts_as_annotatable
   acts_as_annotation_source
   
   validates_presence_of :name
@@ -21,6 +22,10 @@ class Agent < ActiveRecord::Base
   
   def annotation_source_name
     self.display_name
+  end
+  
+  def preferred_description
+    self.annotations_with_attribute("description").first.try(:value)
   end
   
   private
