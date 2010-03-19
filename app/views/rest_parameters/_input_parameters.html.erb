@@ -64,8 +64,8 @@
         <% end %>
 
         <% uniq_id = "R#{resource.id}M#{method.id}P#{param.id}" %>
-        <% link_content = "<b>" + param.name + "</b>" %>
-        <% link_content += "&nbsp; &nbsp; <i class='none_text' style=' margin:auto; font-size: 85%;'>Unique to endpoint: #{endpoint}</i>" unless param.is_global %>
+        <% link_content = "<b>" + h(param.name) + "</b>" %>
+        <% link_content += "&nbsp; &nbsp; <i class='none_text' style=' margin:auto; font-size: 85%;'>Unique to endpoint: #{h(endpoint)}</i>" unless param.is_global %>
 
         <%= create_expand_collapse_link(uniq_id, 
                                         :link_text => link_content, 
