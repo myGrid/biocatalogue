@@ -9,26 +9,21 @@
 %>
 
 <div>
-  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service"),
-						  service_url(@soap_service.service, :anchor => "endpoints"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{display_name(@soap_service.service)}\""),
+						  service_url(@soap_service.service, :anchor => "operations"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
 </div>
 
-<div>
-  <!-- SIDE BAR -->  
-  <div style="float:left; width:25%; padding: 10px; margin-top: 35px; background-color: #F3F3F3; height: 00%;">
-    
-    <hr/>
+<div class="vtabs_container">
+	
+  <!-- TABS BAR -->  
+  <div class="vtabs_tab_bar">
     
     <div>
-    	<ul style="margin-left: 15px; padding:10px;">
+    	<ul>
       <% @soap_service.soap_operations.each do |op| %>
-        <li style="list-style-type: circle;">
-					<%= op_label = "#{display_name(op)}<br/>(#{pluralize(@soap_operation.soap_inputs.length, 'input')}, #{pluralize(@soap_operation.soap_outputs.length, 'output')})" -%>
-          <% if op == @soap_operation %>
-            <b><i><%= op_label -%></i></b>
-          <% else %>
-            <%= link_to op_label, op -%>
-          <% end %>
+        <li class="<%= op == @soap_operation ? 'active' : '' -%>">
+					<% op_label = content_tag(:span, display_name(op), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(op.soap_inputs.length, 'input')}, #{pluralize(op.soap_outputs.length, 'output')}", :class => 'detail') -%>
+          <%= link_to op_label, op -%>
         </li>
       <% end %>
 			</ul>
@@ -37,7 +32,7 @@
   </div>
    
   <!-- MAIN AREA-->
-  <div style="float:right; width:70%; padding: 10px;">
+  <div class="vtabs_tab_content">
 	
     <div class="operation_box">
 			

@@ -1346,7 +1346,7 @@ a.service_location_flag {
 }
 
 .operations_contents_box {
-	padding: 0.5em 0.6em; 
+	padding: 0.5em 0.6em;
 	border: 1px solid #CCC; 
 	line-height: 1.5; 
 	background-color: #F3F3F3; 
@@ -1355,11 +1355,8 @@ a.service_location_flag {
 }
 
 .operation_box {
-	margin: 2em 0;
 	line-height: 1.5;
-	padding-bottom: 1em;
-	border: 0px solid #DDD;
-	border-width: 2px 0 2px 0;
+	margin: 0 0.6em;
 }
 
 .operation_heading {
@@ -1664,6 +1661,12 @@ ul.tabbernav li a
 	background-repeat: repeat-x;
 	background-color: #E9F7CC;
 	text-decoration: none;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright: 4px;
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;
 }
 
 ul.tabbernav li a:link { color: #333; }
@@ -1727,6 +1730,90 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 /* END Tabber tab styles */
+
+
+/* BEGIN Vertical tabs styles */
+
+.vtabs_container {
+	margin: 1.5em 0;
+}
+
+.vtabs_container .vtabs_tab_bar {
+	float: left; 
+	width: 15%; 
+}
+
+.vtabs_container .vtabs_tab_bar ul {
+}
+
+.vtabs_container .vtabs_tab_bar ul li {
+	list-style: none;
+	margin: 0;
+	display: block;
+}
+
+.vtabs_container .vtabs_tab_bar ul li a {
+	text-align: right;
+	padding: 4px 0.9em;
+	margin-bottom: 4px;
+	border: 1px solid #CCC;
+	border-right: none;
+	background-image: url('/images/tab-bg.png');
+	background-position: top;
+	background-repeat: repeat-x;
+	background-color: #E9F7CC;
+	text-decoration: none;
+	display: block;
+	border-top-left-radius: 6px;
+	border-bottom-left-radius: 6px;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-bottomleft: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+}
+
+.vtabs_container .vtabs_tab_bar ul li a .name {
+	font-size: 108%;
+	font-weight: bold;
+}
+
+.vtabs_container .vtabs_tab_bar ul li a .detail {
+	font-size: 93%;
+	color: #666;
+	font-style: italic;
+}
+
+.vtabs_container .vtabs_tab_bar ul li a:link { color: #333; }
+
+.vtabs_container .vtabs_tab_bar ul li a:hover
+{
+	color: #000;
+	background: #BFE76F;
+	border-color: #CCC;
+}
+
+.vtabs_container .vtabs_tab_bar ul li.active a
+{
+	background: #fff;
+	border-right: 1px solid #fff;
+}
+
+.vtabs_container .vtabs_tab_bar ul li.active a:hover
+{
+	color: #000;
+	background: #fff;
+	border-right: 1px solid #fff;
+}
+
+.vtabs_container .vtabs_tab_content {
+	float: left; 
+	width: 82%; 
+	padding: 1em;
+	border: 1px solid #CCC;
+}
+
+/* END Vertical tabs styles */
+
 
 .search_button {
 	border: none;

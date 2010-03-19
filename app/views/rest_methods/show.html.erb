@@ -9,7 +9,7 @@
 %>
 
 <div>
-  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service"),
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{display_name(@rest_service.service)}\""),
 						  service_url(@rest_service.service, :anchor => "endpoints"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
 
 	<%= add_endpoints_by_popup(@rest_service, 

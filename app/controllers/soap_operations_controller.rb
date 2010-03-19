@@ -130,7 +130,7 @@ class SoapOperationsController < ApplicationController
   end
   
   def find_soap_operation
-    @soap_operation = SoapOperation.find(params[:id], :include => [ :inputs, :outputs ])
+    @soap_operation = SoapOperation.find(params[:id], :include => [ :soap_inputs, :soap_outputs ])
   end
   
 end
