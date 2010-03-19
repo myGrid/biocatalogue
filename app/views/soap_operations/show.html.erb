@@ -36,22 +36,23 @@
 	
     <div class="operation_box">
 			
+			<% if false %>
 			<p class="operation_heading">
 				<b>SOAP Operation:</b>
 				<span class="operation_name"><%= display_name(@soap_operation) -%></span>
 			</p>
+			<% end %>
+			
+			<h1>SOAP Operation: <%= display_name(@soap_operation) -%></h1>
 			
 			<div>
-				<div>
+				<div style="float: left; width: 73%;">
 					
 					<div style="margin-top: 0.3em; margin-bottom: 2em;">
 						<%= render :partial => "annotations/name_aliases",
 										 	 :locals => { :annotatable => @soap_operation,
 																		:show_promote_option => false } -%>
 					</div>
-					
-					<%= render :partial => "annotations/tags_box",
-						 				 :locals => { :annotatable => @soap_operation } -%>
 					
 					<div>
 						<b>Parameter Order:</b>
@@ -73,6 +74,11 @@
 						 		 			 :locals => { :annotatable => @soap_operation, :show_add => false } -%>
 					</div>
 					
+				</div>
+				
+				<div style="float: right; width: 24%; font-size: 85%;">
+					<%= render :partial => "annotations/tags_box",
+						 				 :locals => { :annotatable => @soap_operation } -%>
 				</div>
 				
 				<span class="clear"></span>
