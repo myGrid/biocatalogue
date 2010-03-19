@@ -1,0 +1,178 @@
+<%
+  
+  # BioCatalogue: app/views/soap_operations/show.html.erb
+  #
+  # Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
+  # Institute (EMBL-EBI) and the University of Southampton.
+  # See license.txt for details
+  
+%>
+
+<div>
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service"),
+						  service_url(@soap_service.service, :anchor => "endpoints"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
+</div>
+
+<div>
+  <!-- SIDE BAR -->  
+  <div style="float:left; width:25%; padding: 10px; margin-top: 35px; background-color: #F3F3F3; height: 00%;">
+    
+    <hr/>
+    
+    <div>
+    	<ul style="margin-left: 15px; padding:10px;">
+      <% @soap_service.soap_operations.each do |op| %>
+        <li style="list-style-type: circle;">
+					<%= op_label = "#{display_name(op)}<br/>(#{pluralize(@soap_operation.soap_inputs.length, 'input')}, #{pluralize(@soap_operation.soap_outputs.length, 'output')})" -%>
+          <% if op == @soap_operation %>
+            <b><i><%= op_label -%></i></b>
+          <% else %>
+            <%= link_to op_label, op -%>
+          <% end %>
+        </li>
+      <% end %>
+			</ul>
+    </div>
+    
+  </div>
+   
+  <!-- MAIN AREA-->
+  <div style="float:right; width:70%; padding: 10px;">
+	
+    <div class="operation_box">
+			
+			<p class="operation_heading">
+				<b>Operation:</b>
+				<span class="operation_name"><%= display_name(@soap_operation) -%></span>
+			</p>
+			
+			<div>
+				<div style="float: left; width: 73%;">
+					
+					<div style="margin-top: 0.3em; margin-bottom: 2em;">
+						<%= render :partial => "annotations/name_aliases",
+										 	 :locals => { :annotatable => @soap_operation,
+																		:show_promote_option => false } -%>
+					</div>
+					
+					<div>
+						<b>Parameter Order:</b>
+						<% unless @soap_operation.parameter_order.blank? %>
+							<%= h(@soap_operation.parameter_order) -%>
+						<% else %>
+							<span class="none_text">unknown</span>
+						<% end %>
+					</div>
+					
+					<div>
+						<%= render :partial => "annotations/descriptions",
+										 	 :locals => { :annotatable => @soap_operation } -%>
+					 
+					</div>
+					
+					<div>
+						<%= render :partial => "annotations/other_annotations",
+						 		 			 :locals => { :annotatable => @soap_operation, :show_add => false } -%>
+					</div>
+					
+				</div>
+				
+				<div style="float: right; width: 24%; font-size: 85%;">
+					<%= render :partial => "annotations/tags_box",
+						 				 :locals => { :annotatable => @soap_operation } -%>
+				</div>
+				
+				<span class="clear"></span>
+			</div>
+		
+			<br/>
+			
+			<b>Inputs:</b>
+			<div class="box_indented_with_bar" style="margin: 1em 0 0 1.5em;">
+				<% @soap_operation.soap_inputs.each do |input| %>
+					<a id='<%= "soap_input_#{input.id}" -%>' name='<%= "soap_input_#{input.id}" -%>'></a>
+					<div class="port">
+						<div style="float: left; width: 73%;">
+							<div style="margin-bottom: 0.6em;">
+								<b>Input:</b>
+								<span class="operation_name"><%= display_name(input) -%></span>
+							</div>
+							
+							<div style="margin-bottom: 1em;">
+								<%= render :partial => "annotations/name_aliases",
+										 	 		 :locals => { :annotatable => input,
+																				:show_promote_option => false } -%>
+							</div>
+								 
+							<%= render :partial => "annotations/descriptions",
+							 	 				 :locals => { :annotatable => input } -%>
+							
+							<%= render :partial => "annotations/formats",
+							 	 				 :locals => { :annotatable => input } -%>
+												 
+							<%= render :partial => "annotations/examples",
+							 	 				 :locals => { :annotatable => input } -%>
+							
+							<%= render :partial => "soap_services/computational_type_info",
+							 	 				 :locals => { :thing => input } -%>
+							
+							<%= render :partial => "annotations/other_annotations",
+						 		 		 		 :locals => { :annotatable => input, :show_add => false } -%>
+							
+						</div>
+						<div style="float: right; width: 24%; font-size: 85%;">
+							<%= render :partial => "annotations/tags_box",
+								 				 :locals => { :annotatable => input } -%>
+						</div>
+						<span class="clear"></span>	
+					</div>
+				<% end %>
+			</div>
+			
+			<br/>
+					
+			<b>Outputs:</b>
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1.5em;">
+				<% @soap_operation.soap_outputs.each do |output| %>
+					<a id='<%= "soap_output_#{output.id}" -%>' name='<%= "soap_output_#{output.id}" -%>'></a>
+					<div class="port">
+						<div style="float: left; width: 73%;">
+							<div style="margin-bottom: 0.6em;">
+								<b>Output:</b>
+								<span class="operation_name"><%= display_name(output) -%></span>
+							</div>
+							
+							<div style="margin-bottom: 1em;">
+								<%= render :partial => "annotations/name_aliases",
+										 	 		 :locals => { :annotatable => output,
+																				:show_promote_option => false } -%>
+							</div>
+							
+							<%= render :partial => "annotations/descriptions",
+							 	 				 :locals => { :annotatable => output } -%>
+												 
+						  <%= render :partial => "annotations/formats",
+							 	 				 :locals => { :annotatable => output } -%>
+												 
+							<%= render :partial => "annotations/examples",
+							 	 				 :locals => { :annotatable => output } -%>
+							
+							<%= render :partial => "soap_services/computational_type_info",
+							 	 				 :locals => { :thing => output } -%>
+							
+							<%= render :partial => "annotations/other_annotations",
+						 		 		 		 :locals => { :annotatable => output, :show_add => false } -%>
+						</div>
+						<div style="float: right; width: 24%; font-size: 85%;">
+							<%= render :partial => "annotations/tags_box",
+								 				 :locals => { :annotatable => output } -%>
+						</div>
+						<span class="clear"></span>
+					</div>
+				<% end %>
+			</div>
+		
+		</div>
+		
+  </div>
+</div>

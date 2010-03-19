@@ -13,7 +13,7 @@
 %>
 
 <b>Input Parameters:</b>
-<%= add_endpoints_by_popup(method, :style => "font-size: 95%;") %>
+<%= add_endpoints_by_popup(method, :class => "button_slim") %>
 
 <div class="box_indented_with_bar" style="margin: 1em 0 0 1.5em;">
   
@@ -26,37 +26,51 @@
             <%= link_to "Delete", rest_parameter_url(param, :rest_method_id => method.id),
                 :confirm => "Are you you want to delete this parameter?",
                 :method => :delete,
+                :style => "width: 47px; padding:2px;",
                 :class => "method_param_delete_link" %>
             
-            <% if param.name.start_with?'UNIQUE_TO_METHOD_' %>
-                <%= link_to "Globalise", 
-                    {:controller => "rest_parameters",
-                     :action => "localise_globalise_parameter", 
-                     :id => param.id,
-                     :rest_method_id => method.id,
-                     :make_unique => false,
-                     :endpoint => endpoint},
-                    :confirm => "Are you you want to make this parameter global.  All annotations that are currently associated with this parameter will be lost and  the generic annotations will be added.",
-                    :class => "link_param_link" %>
+            <% unless param.is_global %>
+              <% tooltip = help_icon_with_tooltip("Make this parameter global. All annotations added to a globalised " +
+                           "parameter will reflect in other global parameters of the same name present in different " + 
+                           "endpoints of this REST service.") %>
+
+              <%= link_to "Globalise " + tooltip, 
+                  {:controller => "rest_parameters",
+                   :action => "localise_globalise_parameter", 
+                   :id => param.id,
+                   :rest_method_id => method.id,
+                   :make_local => false,
+                   :endpoint => endpoint},
+                  :confirm => "Are you you want to make this parameter global.  All annotations that are currently associated with this parameter may be lost and the generic annotations will be added.  Deleted annotations cannot be retrieved.",
+                  :style => "padding:1px;",
+                  :class => "link_param_link" %>
             <% else %>
-                <%= link_to "Localise", 
-                    {:controller => "rest_parameters",
-                     :action => "localise_globalise_parameter", 
-                     :id => param.id,
-                     :rest_method_id => method.id,
-                     :make_unique => true,
-                     :endpoint => endpoint},
-                    :confirm => "Are you you want to this parameter unique to this endpoint.  You will lose all annotations that are currently associated with this parameter.",
-                    :class => "unlink_param_link" %>
+              <% tooltip = help_icon_with_tooltip("Create a copy of this paramater that is unique to this endpoint.  " +
+                           "All annotations added to the localised copy will not be added to any other parameters " +
+                           "of the same name from other endpoints of this REST service.  No annotations are carried " +
+                           "across after localisation.") %>
+              <%= link_to "Localise " + tooltip, 
+                  {:controller => "rest_parameters",
+                   :action => "localise_globalise_parameter", 
+                   :id => param.id,
+                   :rest_method_id => method.id,
+                   :make_local => true,
+                   :endpoint => endpoint},
+                  :confirm => "Are you you want to make this parameter unique to this endpoint.",
+                  :style => "padding:1px;",
+                  :class => "unlink_param_link" %>
             <% end %>
           </span>
         <% end %>
 
         <% uniq_id = "R#{resource.id}M#{method.id}P#{param.id}" %>
-        <% link_content = "<b>" + param.name.sub(/UNIQUE_TO_METHOD_\d+\-/, '') + "</b>" %>
-        <% link_content += "   <i>*</i>" if param.name.start_with?"UNIQUE_TO_METHOD_" %>
+        <% link_content = "<b>" + param.name + "</b>" %>
+        <% link_content += "&nbsp; &nbsp; <i class='none_text' style=' margin:auto; font-size: 85%;'>Unique to endpoint: #{endpoint}</i>" unless param.is_global %>
 
-        <%= create_component_dropdown_title(uniq_id, :link_text => link_content, :icon_float => "right") -%>
+        <%= create_expand_collapse_link(uniq_id, 
+                                        :link_text => link_content, 
+                                        :icon_float => "right",
+                                        :class => "parameter_collapsable_title") -%>
 
         <div id='<%=h uniq_id %>' style="display:none;">
           <span class="clear"></span>
@@ -70,7 +84,10 @@
           </div>
           
           <div style="width:73%;">
-            <%= render :partial => "annotations/constraints",
+            <%= render :partial => "rest_parameters/default_value",
+                       :locals => { :parameter => param, :rest_method_id => method.id } -%>
+
+            <%= render :partial => "rest_parameters/constraints",
                        :locals => { :parameter => param, :rest_method_id => method.id } -%>
                         
             <%= render :partial => "annotations/descriptions",
@@ -78,10 +95,6 @@
             
             <%= render :partial => "annotations/examples",
                        :locals => { :annotatable => param } -%>
-            
-            <%= render :partial => "annotations/other_annotations",
-                       :locals => { :annotatable => param } -%>
-            
             <br />
           </div>
         </div>                       

@@ -28,16 +28,13 @@ module RestServicesHelper
     # default config options
     options.reverse_merge!(:style => "",
                            :class => nil,
-                           :link_text => "Add new " + (create_endpoints ? "Endpoints":"Parameters"),
-                           :tooltip_text => (create_endpoints ? "Add new Endpoints to this Service" : 
-                                                                "Add new Parameters to this Endpoint"))
+                           :link_text => "Add " + (create_endpoints ? "New Endpoints":"Input Parameters"),
+                           :tooltip_text => (create_endpoints ? "Add new endpoints to this service" : 
+                                                                "Add new input parameters to this endpoint"))
 
     default_styles = ""
     default_styles += "float: right; " unless options[:style].include?('float')
-    default_styles += "font-size: 100%; " unless options[:style].include?('font-size')
     default_styles += "font-weight: bold; " unless options[:style].include?('font-weight')
-    default_styles += "line-height: 15px; " unless options[:style].include?('line-height')
-    default_styles += "margin: 0px " + (create_endpoints ? "7px 0px 7px;":"1px 0px 7px;")
     
     options[:style] = default_styles + options[:style]
 
@@ -45,13 +42,8 @@ module RestServicesHelper
     
     if logged_in?
       inner_html = image_tag("add.png")
-      inner_html += content_tag(:span, options[:link_text], :style => options[:style])
+      inner_html += content_tag(:span, " " + options[:link_text])
       
-      css_hash = {:style => options[:style],
-                  :class => options[:class],
-                  :alt => options[:tooltip_text],
-                  :title => tooltip_title_attrib(options[:tooltip_text]) }
-
       url_hash = {:controller => (create_endpoints ? "rest_resources":"rest_parameters"),
                   :action => "new_popup"}
 
@@ -65,8 +57,8 @@ module RestServicesHelper
         id_value = "new_parameter_for_#{parent_object.class.name}_#{parent_object.id}_redbox"
       end
 
-      combined_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, combined_hash, css_hash)
+      redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_css_hash(options))
     else # NOT LOGGED IN
       inner_html = image_tag("add_inactive.png")
       inner_html += content_tag(:span, options[:link_text], :style => options[:style])
@@ -117,19 +109,6 @@ module RestServicesHelper
   # ========================================
   
   
-  # Returns the string representation for the resource path.
-  def resource_path_to_string(resource_path)
-    path = case resource_path
-             when '.' then "/{parameters}"
-             else resource_path
-           end
-    return path
-  end
-  
-  
-  # ========================================
-  
-  
   # This method will create a link to a popup dialog, which allows the user to
   # edit the base endpoint to a RestService
   #
@@ -163,13 +142,8 @@ module RestServicesHelper
     link_content = ''
     
     inner_html = image_tag("pencil.gif")
-    inner_html += content_tag(:span, options[:link_text], :style => options[:style])
+    inner_html += content_tag(:span, options[:link_text])
     
-    css_hash = {:style => options[:style],
-                :class => options[:class],
-                :alt => options[:tooltip_text],
-                :title => tooltip_title_attrib(options[:tooltip_text]) }
-
     url_hash = {:controller => "rest_services", 
                 :action => "edit_base_endpoint_by_popup", 
                 :service_deployment_id => service_deployment.id }
@@ -177,10 +151,50 @@ module RestServicesHelper
     fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
     id_value = "edit_base_endpoint_for_#{service_deployment.class.name}_#{service_deployment.id}_redbox"
     
-    combined_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-    link_content = link_to_remote_redbox(inner_html, combined_hash, css_hash)
+    redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
+    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_css_hash(options))
     
     return link_content
   end
 
+
+  # ========================================
+  
+  
+  # This method creates a url template string which can be used to show how a REST
+  # Service can be used.
+  def create_url_template(base_url, resource, method)
+    return '' if base_url.blank? || resource.blank? || method.blank?
+    
+    required_params = []
+    method.request_parameters.select{ |p| p.param_style=="query" && p.required }.each do |p| 
+      required_params << "#{p.name}={#{p.name}}" unless resource.path.include?("{#{p.name}}")
+    end
+    
+    required_params = required_params.sort.join('&')
+    required_params = '?' + required_params unless required_params.blank?
+    
+    return (if resource.path == '/{parameters}' 
+              "#{base_url}#{required_params}"
+            elsif resource.path == '/{id}'
+              "#{base_url}/{id}#{required_params}"
+            elsif resource.path.include?('?')
+              "#{base_url + resource.path}#{required_params.sub('?', '&')}"
+            else
+              "#{base_url + resource.path}#{required_params}"
+            end)
+  end
+  
+  
+  # ========================================
+  
+  
+  private
+  
+  def create_css_hash(options)
+    return {:style => options[:style],
+            :class => options[:class],
+            :alt => options[:tooltip_text],
+            :title => tooltip_title_attrib(options[:tooltip_text]) }
+  end
 end

@@ -174,8 +174,7 @@ module AnnotationsHelper
     if attribute_name.blank?
       return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
     elsif annotatable.class.name == "RestMethod"
-      resource_path = resource_path_to_string(annotatable.rest_resource.path)
-      return "For Endpoint: <b/>#{h(annotatable.method_type)} #{h(resource_path)}</b>"
+      return "For Endpoint: <b/>#{h(annotatable.method_type)} #{h(annotatable.rest_resource.path)}</b>"
     else
       return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
     end

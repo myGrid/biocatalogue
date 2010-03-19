@@ -9,7 +9,7 @@
 %>
 
 <b>Input Representations:</b>
-<%= add_representations_by_popup(method, "request", :style => "font-size: 95%;") %>
+<%= add_representations_by_popup(method, "request", :class => "button_slim") %>
 
 <div class="box_indented_with_bar" style="margin: 1em 0 0 1.5em;">
   
@@ -22,6 +22,7 @@
             <%= link_to "Delete", rest_representation_url(rep, :rest_method_id => method.id, :http_cycle => "request"),
                 :confirm => "Are you you want to delete this representation?",
                 :method => :delete,
+                :style => "width: 47px; padding:2px;",
                 :class => "method_param_delete_link" %>
             </span>
         <% end %>
@@ -29,12 +30,15 @@
         <% uniq_id = "R#{resource.id}M#{method.id}IR#{rep.id}" %>
         <% link_content = "<b>" + rep.content_type + "</b>" %>
         
-        <%= create_component_dropdown_title(uniq_id, :link_text => link_content, :icon_float => "right") -%>
+        <%= create_expand_collapse_link(uniq_id, 
+                                        :link_text => link_content, 
+                                        :icon_float => "right",
+                                        :class => "parameter_collapsable_title") -%>
 
         <div id='<%=h uniq_id %>' style="display:none;">
           <span class="clear"></span>
                               
-          <div style="; float: right; width: 24%; font-size: 85%;">                    
+          <div style="float: right; width: 24%; font-size: 85%;">                    
             <%= add_submitter_text(method.request_representations.find(rep.id)) %>
 
             <br/><br/><br/>
@@ -48,10 +52,6 @@
             
             <%= render :partial => "annotations/examples",
                        :locals => { :annotatable => rep } -%>
-            
-            <%= render :partial => "annotations/other_annotations",
-                       :locals => { :annotatable => rep } -%>
-            
             <br />
           </div>
         </div>                       

@@ -100,34 +100,36 @@ class RestMethod < ActiveRecord::Base
   #   default = "query"
   # :mandatory - specifies whether a parameter is mandatory/required or not by the endpoint
   #   default = false
-  # :make_unique - whether the parameters being added are meant to be made unique to this method 
+  # :make_local - whether the parameters being added are meant to be made unique to this method 
   #   default = false
   def add_parameters(capture_string, user_submitting, *args)
     options = args.extract_options!
     options.reverse_merge!(:param_style => "query",
                            :mandatory => false,
-                           :make_unique => false)
+                           :make_local => false)
 
     options[:param_style].downcase!
 
     return unless [true, false].include?(options[:mandatory])
-    return unless [true, false].include?(options[:make_unique])
+    return unless [true, false].include?(options[:make_local])
     
     return unless %w{ template query matrix header }.include?(options[:param_style])
-
     # sanitize user input
-    capture_string.chomp!
-    capture_string.strip!
-    capture_string.squeeze!(" ")
+    chomp_strip_squeeze(capture_string)
 
     # iterate and create objects
     extracted_param_count = 0
     capture_string.split("\n").sort.each do |param| # params_list.each
-      param.chomp!
+      chomp_strip_squeeze(param)
 
       config_option = (param.split(' ').size==2 ? param.split(' ')[-1] : nil)
-      is_mandatory = !config_option.nil? && config_option.downcase=='!' ? true:false
-      is_mandatory = options[:mandatory] unless is_mandatory
+      is_mandatory = (if options[:mandatory]
+                        true
+                      elsif config_option=='!'
+                        true
+                      else
+                        false
+                      end)
 
       param.sub!(/\!$/, '') # sanitize ie remove '!' from the end of the string
 
@@ -139,25 +141,27 @@ class RestMethod < ActiveRecord::Base
       # sanitize ie get rid of special syntax
       param_name.gsub!('{', '')
       param_name.gsub!('}', '')
+      param_value.gsub!('-', '_')
       param_value = "" if param_value =~ /\W/
 
       # next if param name contains non-alphanumeric characters
-      next if param_name =~ /\W/ && !param_name.start_with?('UNIQUE_TO_METHOD_')
+      next if param_name.gsub('-', '_') =~ /\W/
       
       begin
         transaction do
-          extracted_param = RestParameter.check_exists_for_rest_service(self.rest_resource.rest_service, param_name, options[:make_unique])
+          extracted_param = RestParameter.check_exists_for_rest_service(self.rest_resource.rest_service, param_name, options[:make_local])
 
           if extracted_param.nil?
             extracted_param = RestParameter.new(:name => param_name, 
                                                 :param_style => options[:param_style], 
                                                 :default_value => param_value,
-                                                :required => is_mandatory)
+                                                :required => is_mandatory,
+                                                :is_global => !options[:make_local])
             extracted_param.submitter = user_submitting
             extracted_param.save!
           end
           
-          no_param_for_method = RestParameter.check_duplicate(self, param_name, options[:make_unique]).nil?
+          no_param_for_method = RestParameter.check_duplicate(self, param_name, options[:make_local]).nil?
 
           if no_param_for_method
             @method_param_map = RestMethodParameter.new(:rest_method_id => self.id,
@@ -168,8 +172,15 @@ class RestMethod < ActiveRecord::Base
             
             extracted_param_count += 1
           end
+
+          begin
+            extracted_param.create_annotations({"example_data" => "#{param_name}=#{param_value}"}, user_submitting) unless param_value.empty?
+          rescue Exception => ex
+            logger.error("Failed to create annotations for RestParameter with ID: #{extracted_param.id}. Exception:")
+            logger.error(ex.message)
+            logger.error(ex.backtrace.join("\n"))
+          end
           
-          extracted_param.create_annotations({"example_data" => "#{param_name.sub(/UNIQUE_TO_METHOD_\d+\-/, '')}=#{param_value}"}, user_submitting) unless param_value.empty?
         end # transaction
       rescue Exception => ex
         @method_param_map.destroy if @method_param_map
@@ -246,4 +257,15 @@ class RestMethod < ActiveRecord::Base
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end
 
+
+  # ========================================
+  
+  
+  private
+  
+  def chomp_strip_squeeze(string)
+    string.chomp!
+    string.strip!
+    string.squeeze!(" ")
+  end
 end

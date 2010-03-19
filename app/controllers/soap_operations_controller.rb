@@ -29,8 +29,10 @@ class SoapOperationsController < ApplicationController
   end
   
   def show
+    @soap_service = @soap_operation.soap_service
+    
     respond_to do |format|
-      format.html { redirect_to url_for_web_interface(@soap_operation) }
+      format.html # show.html.erb
       format.xml  # show.xml.builder
     end
   end
@@ -128,7 +130,7 @@ class SoapOperationsController < ApplicationController
   end
   
   def find_soap_operation
-    @soap_operation = SoapOperation.find(params[:id])
+    @soap_operation = SoapOperation.find(params[:id], :include => [ :inputs, :outputs ])
   end
   
 end

@@ -16,21 +16,21 @@
 	
 	<div class="body">
     <% form_for :rest_parameter, :url => {:controller => "rest_parameters", 
-                                          :action => "update_constraint", 
+                                          :action => "update_default_value", 
                                           :id => @rest_parameter.id, 
                                           :rest_method_id => params[:rest_method_id] } do |f| %>
     <%= f.error_messages %>
 
     <div>
       <div class="box_info_standout" style="font-size:100%" >
-        You are editing a constraint added for REST Parameter: 
+        You are editing a constraint made for Rest Parameter: 
         <b><%= @rest_parameter.name -%></b>
       </div>
       
       <!--PARAMS CAPTURE TEXT AREA-->
       <p class="high_linespaced form_field_section">
-        <%= text_area_tag "new_constraint", @old_constraint, :size => "50x7", :style => "width: 99%;" %>
-        <%= hidden_field_tag "old_constraint", @old_constraint %>
+        <%= text_area_tag "new_value", @rest_parameter.default_value, :size => "50x3", :style => "width: 99%;" %>
+        <%= hidden_field_tag "old_value", @rest_parameter.default_value %>
       </p>
       
       <!--SUBMIT-->

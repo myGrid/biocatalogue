@@ -21,7 +21,7 @@ class RestResourcesControllerTest < ActionController::TestCase
     do_login_for_functional_test(user)
     
     assert_difference('RestResource.count', 3) do 
-      post :add_new_resources, :rest_resources => "/res.xml \n /5 \n ?id=2&meth=getPics", 
+      post :add_new_resources, :rest_resources => "/res.xml \n /{id} \n ?id={id}&meth=getPics", 
            :rest_service_id => create_rest_service(:submitter => user).id
     end
     

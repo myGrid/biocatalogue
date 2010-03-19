@@ -24,7 +24,14 @@ class RestResourcesController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "#{count} new " + (count==1 ? 'endpoint was':'endpoints were') + ' added'
-      format.html { redirect_to "#{service_url(@rest_service.service)}#endpoints" }
+      
+      redirect_url = if request.env["HTTP_REFERER"].include?('/rest_methods/')
+                       request.env["HTTP_REFERER"] # redirect_to :back
+                     else
+                       service_url(@rest_service.service) + '#endpoints'
+                     end
+      
+      format.html { redirect_to redirect_url }
     end
   end
   

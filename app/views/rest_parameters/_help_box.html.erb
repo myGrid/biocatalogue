@@ -1,0 +1,39 @@
+<%
+
+# BioCatalogue: app/views/rest_parameters/_help_box.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div class="box_info_standout" style="font-size:85%" >
+  <b>Note:</b>  by default, the parameters will be added as <b>optional</b> parameters.
+    
+  <div id="hidden_parameter_capture_help" style="display:none;">
+    <br/>
+    Syntax:<br/>
+    <ul style="margin-left: 1em;">
+      <li><b>parameter</b> <i style="font-size:smaller;">space</i> <b>!</b> &nbsp;-&nbsp;
+          <i>Make this parameter mandatory.</i></li>
+      <li><b>parameter = some_value</b> &nbsp;-&nbsp;
+          <i>Add 'some_value' as example data to the parameter 'parameter'.</i></li>
+    </ul><br/>
+    
+    Example:<br/>
+    <ul style="margin-left: 1em;">
+      <li>id=23</li>
+      <li>surname=doe !</li>
+      <li>name !</li>
+      <li>dbname</i>
+    </ul>
+  </div>
+  
+  <br/>
+  <span style="float:right;">
+    <%= create_expand_collapse_link('hidden_parameter_capture_help', 
+                                    :link_text => "expand/collapse") -%>
+  </span>
+  <br/>
+</div>

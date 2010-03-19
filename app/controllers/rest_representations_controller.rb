@@ -28,7 +28,7 @@ class RestRepresentationsController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "#{count} new representation" + (count==1 ? ' was':'s were') + ' added'
-      format.html { redirect_to "#{service_url(service)}#rest_method_#{@rest_method.id}" }
+      format.html { redirect_to @rest_method }
     end
   end
 
@@ -83,10 +83,8 @@ class RestRepresentationsController < ApplicationController
                          :rest_method_id => params[:rest_method_id]})
 
     rest_method = RestMethod.find(params[:rest_method_id])
-    resource = rest_method.rest_resource
-    service = resource.rest_service.service
         
-    return "#{service_url(service)}#rest_method_#{params[:rest_method_id]}"
+    return rest_method_url(rest_method)
   end
   
   def destroy_method_rep_map() # USES params[:rest_method_id], params[:http_cycle], and @rest_representation.id

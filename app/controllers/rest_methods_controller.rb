@@ -6,14 +6,19 @@
 
 class RestMethodsController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :show, :edit ]
+  before_filter :disable_action, :only => [ :index, :edit ]
   before_filter :disable_action_for_api
 
-  before_filter :login_required
+  before_filter :login_required, :except => [ :show ]
   
   before_filter :find_rest_method
   
   before_filter :authorise, :only => [ :destroy ]
+  
+  def show
+    @rest_service = @rest_method.rest_resource.rest_service
+    @base_endpoint = @rest_service.service.latest_deployment.endpoint
+  end
   
   def destroy
     # collect the IDs of the objects to be destroyed AFTER the method is destroyed
@@ -30,12 +35,25 @@ class RestMethodsController < ApplicationController
     representation_ids.uniq!
     
     # destroy the method
-    rest_resource = @rest_method.rest_resource
-    service = rest_resource.rest_service.service # for redirection
+    rest_resource = @rest_method.rest_resource # for redirection
+    rest_service = rest_resource.rest_service # for redirection
+    service = rest_service.service # for redirection
     
     @rest_method.destroy
 
-    rest_resource.destroy if rest_resource.rest_methods.blank?
+    # get a method under the same resource for redirection, otherwise, delete resource
+    if rest_resource.rest_methods.blank?
+      rest_resource.destroy
+      
+      # redirect to a different method from a different resource
+      if rest_service.rest_resources.blank?
+        redirect_url = service_url(service) + '#endpoints'
+      else
+        redirect_url = rest_method_url(rest_service.rest_resources[0].rest_methods[0])
+      end
+    else
+      redirect_url = rest_method_url(rest_resource.rest_methods[0])
+    end
     
     # destroy any unused parameters and representations
     destroy_unused_objects(parameter_ids, true) # is_parameter = true
@@ -45,7 +63,9 @@ class RestMethodsController < ApplicationController
       success_msg = "Endpoint <b>" + (params[:endpoint] || "") + "</b> has been deleted".squeeze(' ')
       flash[:notice] = success_msg
       
-      format.html { redirect_to "#{service_url(service)}#endpoints" }
+      redirect_url = (service_url(rest_service.service) + '#endpoints') unless request.env["HTTP_REFERER"].include?('/rest_methods/')
+
+      format.html { redirect_to redirect_url }
       format.xml  { head :ok }
     end
   end

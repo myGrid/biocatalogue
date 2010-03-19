@@ -22,7 +22,8 @@ class SoapService < ActiveRecord::Base
   
   has_many :soap_operations, 
            :dependent => :destroy,
-           :include => [ :soap_inputs, :soap_outputs ]
+           :include => [ :soap_inputs, :soap_outputs ],
+           :order => "name ASC"
   
   has_many :url_monitors, 
            :as => :parent,

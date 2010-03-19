@@ -43,28 +43,20 @@ class RestParameter < ActiveRecord::Base
   # ===============
   
   # For the given rest_method object, find duplicate entry based on 'param_name'
-  def self.check_duplicate(rest_method, param_name, make_unique=false)
-    param_name.gsub!("UNIQUE_TO_METHOD_#{rest_method.id}-", '') unless make_unique
-    
-    param = nil
-    
-    param = rest_method.request_parameters.find_by_name(param_name)
+  def self.check_duplicate(rest_method, param_name, make_local=false)
+    param = rest_method.request_parameters.find(:first, :conditions => {:name => param_name, 
+                                                                        :is_global => !make_local})
 
-    if param.nil?
-      unique_param_name = "UNIQUE_TO_METHOD_#{rest_method.id}-" + param_name
-      param = rest_method.request_parameters.find_by_name(unique_param_name)
-    end
-    
     return param # RestParameter || nil
   end
 
   # Check that a given param exists for the given rest_service object
-  def self.check_exists_for_rest_service(rest_service, param_name, make_unique=false)
+  def self.check_exists_for_rest_service(rest_service, param_name, make_local=false)
     param = nil
     
     rest_service.rest_resources.each do |resource|
       resource.rest_methods.each { |method| 
-        param = RestParameter.check_duplicate(method, param_name, make_unique)
+        param = RestParameter.check_duplicate(method, param_name, make_local)
         break unless param.nil?
       }
       break unless param.nil?

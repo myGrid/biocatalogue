@@ -92,7 +92,13 @@ class AnnotationsController < ApplicationController
     respond_to do |format|
       if @annotation.save
         flash[:notice] = 'Annotation was successfully updated.'
-        url_to_redirect_to = url_for_web_interface(@annotation.annotatable) || home_url
+
+        url_to_redirect_to = if @annotation.annotatable_type =~ /RestParameter|RestRepresentation/
+                               request.env["HTTP_REFERER"]
+                             else  
+                               url_for_web_interface(@annotation.annotatable) || home_url
+                             end
+
         format.html { redirect_to url_to_redirect_to }
         format.xml  { head :ok }
       else

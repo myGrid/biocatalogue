@@ -16,7 +16,70 @@ class RestParametersController < ApplicationController
   
   before_filter :authorise, :except => [ :new_popup, :add_new_parameters ]
 
-  def update_constraint    
+  def update_default_value  
+    # sanitize user input to make it have characters that are only fit for URIs
+    params[:new_value].chomp!
+    params[:new_value].strip!
+    default_value = CGI::escape(params[:new_value])
+    
+    do_not_proceed = default_value.blank? || params[:old_value]==default_value
+
+    unless do_not_proceed
+      @rest_parameter.default_value = default_value
+      @rest_parameter.save!
+    end
+    
+    respond_to do |format|
+      if do_not_proceed
+        flash[:error] = "An error occured while trying to update the default value for parameter <b>#{@rest_parameter.name}</b>"
+      else
+        flash[:notice] = "The default value for parameter <b>#{@rest_parameter.name}</b> has been updated"
+      end
+      format.html { redirect_to get_redirect_url }
+      format.xml  { head :ok }
+    end
+  end
+  
+  def edit_default_value_popup
+    respond_to do |format|
+      format.js { render :layout => false }
+    end
+  end
+  
+  def remove_default_value
+    @rest_parameter.default_value = nil
+    @rest_parameter.save!
+    
+    respond_to do |format|
+      flash[:notice] = "The default value has been deleted from parameter <b>#{@rest_parameter.name}</b>"
+
+      format.html { redirect_to get_redirect_url }
+      format.xml  { head :ok }
+    end
+  end
+  
+  def inline_add_default_value
+    # sanitize user input to make it have characters that are only fit for URIs
+    params[:default_value].chomp!
+    params[:default_value].strip!
+    default_value = CGI::escape(params[:default_value])
+
+    unless default_value.blank?
+      @rest_parameter.default_value = default_value
+      @rest_parameter.save!
+    end
+    
+    respond_to do |format|
+      format.html { render :partial => "rest_parameters/#{params[:partial]}", 
+                           :locals => { :parameter => @rest_parameter,
+                                        :rest_method_id => params[:rest_method_id]} }
+      format.js { render :partial => "rest_parameters/#{params[:partial]}", 
+                         :locals => { :parameter => @rest_parameter, 
+                                      :rest_method_id => params[:rest_method_id] } } 
+    end
+  end
+  
+  def update_constraint
     do_not_proceed = params[:new_constraint].blank? || 
                      params[:old_constraint]==params[:new_constraint] || 
                      @rest_parameter.constrained_options.include?(params[:new_constraint])
@@ -31,7 +94,7 @@ class RestParametersController < ApplicationController
       if do_not_proceed
         flash[:error] = "An error occured while trying to update constraint for parameter <b>#{@rest_parameter.name}</b>"
       else
-        flash[:notice] = "Constraint for parameter <b>" + @rest_parameter.name.gsub("UNIQUE_TO_METHOD_#{params[:rest_method_id]}-", '') + "</b> has been updated"
+        flash[:notice] = "Constraint for parameter <b>#{@rest_parameter.name}</b> has been updated"
       end
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
@@ -51,7 +114,7 @@ class RestParametersController < ApplicationController
     @rest_parameter.save!
     
     respond_to do |format|
-      flash[:notice] = "Constraint has been deleted from parameter <b>" + @rest_parameter.name.gsub("UNIQUE_TO_METHOD_#{params[:rest_method_id]}-", '') + "</b>"
+      flash[:notice] = "Constraint has been deleted from parameter <b>#{@rest_parameter.name}</b>"
 
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
@@ -68,10 +131,10 @@ class RestParametersController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { render :partial => "annotations/#{params[:partial]}", 
+      format.html { render :partial => "rest_parameters/#{params[:partial]}", 
                            :locals => { :parameter => @rest_parameter,
                                         :rest_method_id => params[:rest_method_id]} }
-      format.js { render :partial => "annotations/#{params[:partial]}", 
+      format.js { render :partial => "rest_parameters/#{params[:partial]}", 
                          :locals => { :parameter => @rest_parameter, 
                                       :rest_method_id => params[:rest_method_id] } } 
     end
@@ -91,14 +154,14 @@ class RestParametersController < ApplicationController
     
     respond_to do |format|
       flash[:notice] = "#{count} new parameter" + (count==1 ? ' was':'s were') + ' added'
-      format.html { redirect_to "#{service_url(service)}#rest_method_#{@rest_method.id}" }
+      format.html { redirect_to @rest_method }
     end
   end
   
   def localise_globalise_parameter
     url_to_redirect_to = get_redirect_url()
 
-    param_name, param_default_value = @rest_parameter.name, @rest_parameter.default_value
+    param_name = @rest_parameter.name
   
     # destroy map
     destroy_method_param_map() # this is the map for the parameter being linked/unlinked
@@ -108,19 +171,17 @@ class RestParametersController < ApplicationController
     
     # make unique or generic
     associated_method = RestMethod.find(params[:rest_method_id])    
-    if params[:make_unique] # make the param unique to the method
-      unique_param = "UNIQUE_TO_METHOD_" + params[:rest_method_id] + '-' + param_name + '=' + param_default_value
-      associated_method.add_parameters(unique_param, current_user, :make_unique => true)
+    if params[:make_local] # make the param unique to the method
+      associated_method.add_parameters(param_name, current_user, :make_local => true)
     else # use an already existing param OR create one as needed
-      generic_param = param_name.gsub("UNIQUE_TO_METHOD_#{params[:rest_method_id]}-", '') + '=' + param_default_value
-      associated_method.add_parameters(generic_param, current_user)
+      associated_method.add_parameters(param_name, current_user)
     end
 
     respond_to do |format|
-      if params[:make_unique]
+      if params[:make_local]
         success_msg = "Parameter <b>#{param_name}</b> now has a copy unique for endpoint <b>" + (params[:endpoint] || "") + "</b>"
       else
-        success_msg = "Parameter <b>" + param_name.gsub("UNIQUE_TO_METHOD_#{params[:rest_method_id]}-", '') + "</b> for endpoint <b>" + (params[:endpoint] || "") + "</b> is now global"
+        success_msg = "Parameter <b>#{param_name}</b> for endpoint <b>" + (params[:endpoint] || "") + "</b> is now global"
       end
       flash[:notice] = success_msg.squeeze(' ')
 
@@ -134,14 +195,14 @@ class RestParametersController < ApplicationController
     @rest_parameter.save!
     
     respond_to do |format|
-      flash[:notice] = "Parameter <b>" + @rest_parameter.name.gsub("UNIQUE_TO_METHOD_#{params[:rest_method_id]}-", '') + "</b> is now " + (@rest_parameter.required ? 'mandatory':'optional')
+      flash[:notice] = "Parameter <b>#{@rest_parameter.name}</b> is now " + (@rest_parameter.required ? 'mandatory':'optional')
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
     end
   end
   
   def destroy
-    success_msg = "Parameter <b>" + @rest_parameter.name.gsub("UNIQUE_TO_METHOD_#{params[:rest_method_id]}-", '') + "</b> has been deleted"
+    success_msg = "Parameter <b>#{@rest_parameter.name}</b> has been deleted"
 
     url_to_redirect_to = get_redirect_url()
     
@@ -184,10 +245,8 @@ class RestParametersController < ApplicationController
                                                                 :rest_method_id => params[:rest_method_id]})
 
     rest_method = RestMethod.find(params[:rest_method_id])
-    resource = rest_method.rest_resource
-    service = resource.rest_service.service
-        
-    return "#{service_url(service)}#rest_method_#{params[:rest_method_id]}"
+
+    return rest_method_url(rest_method)
   end
   
   def destroy_method_param_map() # USES params[:rest_method_id] and @rest_parameter.id

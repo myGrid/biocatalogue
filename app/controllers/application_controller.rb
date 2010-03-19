@@ -161,7 +161,7 @@ class ApplicationController < ActionController::Base
       when Annotation, ServiceDeployment, ServiceVersion, SoapService, RestService
         service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
         return service_url(service_id) unless service_id.nil?
-      when SoapOperation, SoapInput, SoapOutput, RestMethod
+      when SoapOperation, SoapInput, SoapOutput
         service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
         return service_url(service_id, :anchor => "#{item.class.name.underscore}_#{item.id}") unless service_id.nil?
       when RestParameter, RestRepresentation

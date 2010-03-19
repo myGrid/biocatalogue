@@ -30,16 +30,20 @@ module RestMethodsHelper
     # default config options
     options.reverse_merge!(:style => "",
                            :class => nil,
-                           :link_text => "Add new Representations",
+                           :link_text => "Add " + (http_cycle=='request' ? 'In':'Out') + "put Representations",
                            :tooltip_text => "Add new representations to this endpoint")
 
-    options[:style] += "float: right; font-weight: bold; line-height: 15px; margin: 0px 1px 0px 7px;"
+    default_styles = ""
+    default_styles += "float: right; " unless options[:style].include?('float')
+    default_styles += "font-weight: bold; " unless options[:style].include?('font-weight')
+    
+    options[:style] = default_styles + options[:style]
 
     link_content = ''
     
     if logged_in?
       inner_html = image_tag("add.png")
-      inner_html += content_tag(:span, options[:link_text], :style => options[:style])
+      inner_html += content_tag(:span, " " + options[:link_text], :style => options[:style])
       
       css_hash = {:style => options[:style],
                   :class => options[:class],
@@ -81,17 +85,17 @@ module RestMethodsHelper
   #  :class - any CSS class that need to be applied to the text.
   #    default: nil
   #  :icon_left_margin - the left margin of the expand / collapse icon
-  #    default: "90%"
-  #  :icon_float - the CSS float value for the icon.  This OVERRIDES the :icon_left_margin
+  #    default: "5px"
+  #  :icon_float - the CSS float value for the icon i.e. 'left', right', etc.  This OVERRIDES :icon_left_margin
   #    default: ''
-def create_component_dropdown_title(update_element_id, *args)
+def create_expand_collapse_link(update_element_id, *args)
     return '' if update_element_id.blank?
     
     options = args.extract_options!
     # default config options
     options.reverse_merge!(:link_text => update_element_id,
-                           :class => "parameter_dropdown_title",
-                           :icon_left_margin => "90%",
+                           :class => nil,
+                           :icon_left_margin => "5px",
                            :icon_float => "")
 
     expand_link = options[:link_text] + expand_image(options[:icon_left_margin], options[:icon_float])

@@ -202,8 +202,8 @@ class RestService < ActiveRecord::Base
       extra_param = has_query_params_only ? "" : resource_path[-1]
       extra_param ||= ""
       
-      # only keep the template params that have format: {param}
-      template_params.reject! { |x| !x.match(/^\{\w+\}$/) }
+      # only keep the template params that have format: {param} || {param_name} || {param-name}
+      template_params.reject! { |x| !x.gsub('-', '_').match(/^\{\w+\}$/) }
 
       # get the query params that define the service
       # ie query params that have format: param_name=param_value
@@ -224,12 +224,11 @@ class RestService < ActiveRecord::Base
       
       if !base_url_params.empty?
         resource_path = resource_path + '?' + base_url_params.join('&')
-      elsif resource_path == ''
-        resource_path = '{id}'
       end
             
       resource_path = '/' + resource_path
-
+      resource_path = "/{parameters}" if resource_path == '/'
+      
       transaction do
         begin
           @extracted_resource = RestResource.check_duplicate(self, resource_path)
@@ -254,8 +253,14 @@ class RestService < ActiveRecord::Base
           next
         end # begin_rescue
 
-        @extracted_method.create_annotations({
+        begin
+          @extracted_method.create_annotations({
               "example_endpoint" => "#{endpoint}#{endpoint_components[-1]}"}, user_submitting)
+        rescue Exception => ex
+          logger.error("Failed to create annotations for RestMethod with ID: #{@extracted_method.id}. Exception:")
+          logger.error(ex.message)
+          logger.error(ex.backtrace.join("\n"))
+        end
         
         @extracted_method.add_parameters(template_params.join("\n"), user_submitting, 
                                                                      :mandatory => true, 

@@ -8,46 +8,35 @@
 
 %>
 
-<div class="redbox_contents" style="width:500px;">
+<div class="redbox_contents" style="width:550px;">
 	<div class="head">
 		<%= link_to_close_redbox image_tag("close.gif"), :style => "float:right; margin-left:0.5em; vertical-align:middle;" -%>
     <span style="vertical-align:middle;">Add New Parameters</span>
 	</div>
 	
 	<div class="body">
-    <% form_for :rest_method, :url => {:controller => "rest_parameters", :action => "add_new_parameters", :rest_method_id => @rest_method.id } do |f| %>
+    <% form_for :rest_method, :url => {:controller => "rest_parameters", 
+                                       :action => "add_new_parameters", 
+                                       :rest_method_id => @rest_method.id } do |f| %>
     <%= f.error_messages %>
 
-    <!--PARAMS CAPTURE HELP BOX-->
     <div>
 			<div class="box_info_standout">
 				<%= annotation_add_info_text("this text is ignored in this case", @rest_method) -%>				
 			</div>
 
       <p class="step_text">
-        List the parameters you would like to add:
+        List the parameters you would like to add to this endpoint:
       </p>
-
-      <div class="box_info_standout" style="font-size:80%" >
-        By default, the parameters will be added as <b>optional</b> parameters.  To make a parameter <b>mandatory</b> when
-        making a call to the endpoint, simply add <b>a space followed by an exclamation mark</b> at the end of the parameter.<br/><br/>
-        
-        Example:<br/>
-        <ul style="margin-left: 1em;">
-          <li>id=23</li>
-          <li>name !</li>
-          <li>dbname</i>
-          <li>surname=doe !</li>
-        </ul>
-      </div>
+  
+      <!--PARAMS CAPTURE HELP BOX-->
+      <%= render :partial => "rest_parameters/help_box" -%>
       
       <!--PARAMS CAPTURE TEXT AREA-->
       <p class="high_linespaced form_field_section">
         <%= text_area_tag "rest_parameters", params[:rest_parameters],
-            :size => "50x10", :style => "width: 99%;" %>
+            :size => "50x7", :style => "width: 99%;" %>
       </p>
-
-      <br/>
       
       <!--SUBMIT-->
       <p style="margin-top: 1.5em; text-align: center;">
