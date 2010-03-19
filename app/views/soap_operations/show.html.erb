@@ -33,6 +33,8 @@
    
   <!-- MAIN AREA-->
   <div class="vtabs_tab_content">
+  	
+		<h1>SOAP Operation: <%= display_name(@soap_operation) -%></h1>
 	
     <div class="operation_box">
 			
@@ -42,8 +44,6 @@
 				<span class="operation_name"><%= display_name(@soap_operation) -%></span>
 			</p>
 			<% end %>
-			
-			<h1>SOAP Operation: <%= display_name(@soap_operation) -%></h1>
 			
 			<div>
 				<div style="float: left; width: 73%;">
@@ -87,87 +87,131 @@
 			<br/>
 			
 			<span style="font-size: 108%;"><b>Inputs:</b></span>
-			<div class="box_indented_with_bar" style="margin: 1em 0 0 1.5em;">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1em;">
 				<% @soap_operation.soap_inputs.each do |input| %>
-					<a id='<%= "soap_input_#{input.id}" -%>' name='<%= "soap_input_#{input.id}" -%>'></a>
+				
+					<% uniq_id = "soap_input_#{input.id}" %>
+					
+					<a name='<%= uniq_id -%>'></a>
+					
 					<div class="port">
-						<div style="float: left; width: 73%;">
-							<div style="margin-bottom: 0.6em;">
-								<b>SOAP Input:</b>
-								<span class="operation_name"><%= display_name(input) -%></span>
+																				
+						<div>
+							<%= create_expand_collapse_link(uniq_id, 
+                                        :link_text => "<b>SOAP Input: <span class='operation_name'>#{display_name(input)}</span></b>", 
+                                        :icon_float => "right",
+                                        :class => "parameter_collapsable_title") -%>
+						</div>
+						
+						<div id="<%= uniq_id -%>" style="display: none;">
+						
+							<div style="float: left; width: 73%;">
+								<% if false %>
+								<div style="margin-bottom: 0.6em;">
+									<b>SOAP Input:</b>
+									<span class="operation_name"><%= display_name(input) -%></span>
+								</div>
+								<% end %>
+								
+								<div style="margin-bottom: 1em;">
+									<%= render :partial => "annotations/name_aliases",
+											 	 		 :locals => { :annotatable => input,
+																					:show_promote_option => false } -%>
+								</div>
+									 
+								<%= render :partial => "annotations/descriptions",
+								 	 				 :locals => { :annotatable => input } -%>
+								
+								<%= render :partial => "annotations/formats",
+								 	 				 :locals => { :annotatable => input } -%>
+													 
+								<%= render :partial => "annotations/examples",
+								 	 				 :locals => { :annotatable => input } -%>
+								
+								<%= render :partial => "soap_services/computational_type_info",
+								 	 				 :locals => { :thing => input } -%>
+								
+								<%= render :partial => "annotations/other_annotations",
+							 		 		 		 :locals => { :annotatable => input, :show_add => false } -%>
+								
 							</div>
 							
-							<div style="margin-bottom: 1em;">
-								<%= render :partial => "annotations/name_aliases",
-										 	 		 :locals => { :annotatable => input,
-																				:show_promote_option => false } -%>
+							<div style="float: right; width: 24%; font-size: 85%;">
+								<%= render :partial => "annotations/tags_box",
+									 				 :locals => { :annotatable => input } -%>
 							</div>
-								 
-							<%= render :partial => "annotations/descriptions",
-							 	 				 :locals => { :annotatable => input } -%>
 							
-							<%= render :partial => "annotations/formats",
-							 	 				 :locals => { :annotatable => input } -%>
-												 
-							<%= render :partial => "annotations/examples",
-							 	 				 :locals => { :annotatable => input } -%>
-							
-							<%= render :partial => "soap_services/computational_type_info",
-							 	 				 :locals => { :thing => input } -%>
-							
-							<%= render :partial => "annotations/other_annotations",
-						 		 		 		 :locals => { :annotatable => input, :show_add => false } -%>
-							
+							<span class="clear"></span>
+						
 						</div>
-						<div style="float: right; width: 24%; font-size: 85%;">
-							<%= render :partial => "annotations/tags_box",
-								 				 :locals => { :annotatable => input } -%>
-						</div>
-						<span class="clear"></span>	
+							
 					</div>
+					
 				<% end %>
 			</div>
 			
 			<br/>
 					
 			<span style="font-size: 108%;"><b>Outputs:</b></span>
-			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1.5em;">
+			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1em;">
 				<% @soap_operation.soap_outputs.each do |output| %>
-					<a id='<%= "soap_output_#{output.id}" -%>' name='<%= "soap_output_#{output.id}" -%>'></a>
+				
+					<% uniq_id = "soap_output_#{output.id}" %>
+					
+					<a name='<%= uniq_id -%>'></a>
+					
 					<div class="port">
-						<div style="float: left; width: 73%;">
-							<div style="margin-bottom: 0.6em;">
-								<b>SOAP Output:</b>
-								<span class="operation_name"><%= display_name(output) -%></span>
+						
+						<div>
+							<%= create_expand_collapse_link(uniq_id, 
+                                        :link_text => "<b>SOAP Output: <span class='operation_name'>#{display_name(output)}</span></b>", 
+                                        :icon_float => "right",
+                                        :class => "parameter_collapsable_title") -%>
+						</div>
+						
+						<div id="<%= uniq_id -%>" style="display: none;">
+						
+							<div style="float: left; width: 73%;">
+								<% if false %>
+								<div style="margin-bottom: 0.6em;">
+									<b>SOAP Output:</b>
+									<span class="operation_name"><%= display_name(output) -%></span>
+								</div>
+								<% end %>
+								
+								<div style="margin-bottom: 1em;">
+									<%= render :partial => "annotations/name_aliases",
+											 	 		 :locals => { :annotatable => output,
+																					:show_promote_option => false } -%>
+								</div>
+								
+								<%= render :partial => "annotations/descriptions",
+								 	 				 :locals => { :annotatable => output } -%>
+													 
+							  <%= render :partial => "annotations/formats",
+								 	 				 :locals => { :annotatable => output } -%>
+													 
+								<%= render :partial => "annotations/examples",
+								 	 				 :locals => { :annotatable => output } -%>
+								
+								<%= render :partial => "soap_services/computational_type_info",
+								 	 				 :locals => { :thing => output } -%>
+								
+								<%= render :partial => "annotations/other_annotations",
+							 		 		 		 :locals => { :annotatable => output, :show_add => false } -%>
 							</div>
 							
-							<div style="margin-bottom: 1em;">
-								<%= render :partial => "annotations/name_aliases",
-										 	 		 :locals => { :annotatable => output,
-																				:show_promote_option => false } -%>
+							<div style="float: right; width: 24%; font-size: 85%;">
+								<%= render :partial => "annotations/tags_box",
+									 				 :locals => { :annotatable => output } -%>
 							</div>
-							
-							<%= render :partial => "annotations/descriptions",
-							 	 				 :locals => { :annotatable => output } -%>
-												 
-						  <%= render :partial => "annotations/formats",
-							 	 				 :locals => { :annotatable => output } -%>
-												 
-							<%= render :partial => "annotations/examples",
-							 	 				 :locals => { :annotatable => output } -%>
-							
-							<%= render :partial => "soap_services/computational_type_info",
-							 	 				 :locals => { :thing => output } -%>
-							
-							<%= render :partial => "annotations/other_annotations",
-						 		 		 		 :locals => { :annotatable => output, :show_add => false } -%>
+						
+							<span class="clear"></span>
+						
 						</div>
-						<div style="float: right; width: 24%; font-size: 85%;">
-							<%= render :partial => "annotations/tags_box",
-								 				 :locals => { :annotatable => output } -%>
-						</div>
-						<span class="clear"></span>
+											
 					</div>
+					
 				<% end %>
 			</div>
 		

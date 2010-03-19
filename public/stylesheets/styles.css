@@ -1345,15 +1345,6 @@ a.service_location_flag {
 	line-height: 1.0;
 }
 
-.operations_contents_box {
-	padding: 0.5em 0.6em;
-	border: 1px solid #CCC; 
-	line-height: 1.5; 
-	background-color: #F3F3F3; 
-	font-weight: bold; 
-	font-size: 108%;
-}
-
 .operation_box {
 	line-height: 1.5;
 	margin: 0 0.6em;
@@ -1369,6 +1360,7 @@ a.service_location_flag {
 	background-color: #FFBB7F;
 	font-weight: bold;
 	padding: 0.3em 0.5em;
+	vertical-align: baseline;
 }
 
 .port {
@@ -3209,12 +3201,12 @@ span.maximum_width_collapsable_title a{
 }
 
 span.parameter_collapsable_title a {
-  display: inline-block;
-  min-width: 425px;
-  width: 70%;
-  line-height: 12px;
-  min-height: 20px;
+  display: block;
+  width: 100%;
+  line-height: 1.0;
   text-decoration: none;
+	vertical-align: baseline;
+	padding-bottom: 0.5em;
 }
 
 span.method_param_link_container a {

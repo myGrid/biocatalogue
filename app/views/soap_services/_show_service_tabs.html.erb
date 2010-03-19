@@ -8,29 +8,22 @@
 
 %>
 
-<% ops = service_version_instance.soap_operations.sort {|a,b| a.name.downcase <=> b.name.downcase} %>
-
 <div id="tab-operations" class="tabbertab">
-  <h3>Operations (<%= ops.length -%>)</h3>
+  <h3>Operations (<%= service_version_instance.soap_operations.length -%>)</h3>
 	
-	<a name='operations_index'></a>
-	<div class="operations_contents_box">
-		<% ops.each do |operation| %>
-			<span style="margin: 0 0.4em;">
-				<%= content_tag(:a, display_name(operation), :href => "#soap_operation_#{operation.id}") -%>
-			</span>
-		<% end %>
-	</div>
+	<a name='operations_top'></a>
 	
 	<div style="margin: 0 1em;">
 	
-		<% ops.each do |operation| %>
+		<% service_version_instance.soap_operations.each do |operation| %>
 			
-			<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">
-				<a href="#operations_index">Back to top</a>
-			</p>
+			
 			
 		<% end %>
+		
+		<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">
+			<a href="#operations_top">Back to top</a>
+		</p>
 	
 	</div>
   
