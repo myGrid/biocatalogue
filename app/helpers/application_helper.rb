@@ -364,19 +364,12 @@ module ApplicationHelper
   # This takes into account the various idosyncracies and the data model 
   # to give you the best link to something. 
   def link_for_web_interface(item)
-    case item
-      when ServiceDeployment, ServiceVersion, SoapService, RestService
-        service = Service.find_by_id(BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service"))
-        return link_to(display_name(service), service_url(service)) unless service.nil?
-      when SoapOperation, SoapInput, SoapOutput, RestMethod
-        service = Service.find_by_id(BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service"))
-        return link_to(display_name(service), service_url(service, :anchor => "#{item.class.name.underscore}_#{item.id}")) unless service.nil?
-      when RestParameter, RestRepresentation
-        service = Service.find_by_id(BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service"))
-        return link_to(display_name(service), service_url(service, :anchor => "endpoints")) unless service.nil?
-      else
-        return link_to(display_name(item), item)  
-    end 
+    url = url_for_web_interface(item)
+    if url.blank?
+      return display_name(item)
+    else
+      return link_to(display_name(item), url)
+    end
   end
   
   # ========================================
