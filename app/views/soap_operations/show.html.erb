@@ -37,18 +37,21 @@
     <div class="operation_box">
 			
 			<p class="operation_heading">
-				<b>Operation:</b>
+				<b>SOAP Operation:</b>
 				<span class="operation_name"><%= display_name(@soap_operation) -%></span>
 			</p>
 			
 			<div>
-				<div style="float: left; width: 73%;">
+				<div>
 					
 					<div style="margin-top: 0.3em; margin-bottom: 2em;">
 						<%= render :partial => "annotations/name_aliases",
 										 	 :locals => { :annotatable => @soap_operation,
 																		:show_promote_option => false } -%>
 					</div>
+					
+					<%= render :partial => "annotations/tags_box",
+						 				 :locals => { :annotatable => @soap_operation } -%>
 					
 					<div>
 						<b>Parameter Order:</b>
@@ -72,24 +75,19 @@
 					
 				</div>
 				
-				<div style="float: right; width: 24%; font-size: 85%;">
-					<%= render :partial => "annotations/tags_box",
-						 				 :locals => { :annotatable => @soap_operation } -%>
-				</div>
-				
 				<span class="clear"></span>
 			</div>
 		
 			<br/>
 			
-			<b>Inputs:</b>
+			<span style="font-size: 108%;"><b>Inputs:</b></span>
 			<div class="box_indented_with_bar" style="margin: 1em 0 0 1.5em;">
 				<% @soap_operation.soap_inputs.each do |input| %>
 					<a id='<%= "soap_input_#{input.id}" -%>' name='<%= "soap_input_#{input.id}" -%>'></a>
 					<div class="port">
 						<div style="float: left; width: 73%;">
 							<div style="margin-bottom: 0.6em;">
-								<b>Input:</b>
+								<b>SOAP Input:</b>
 								<span class="operation_name"><%= display_name(input) -%></span>
 							</div>
 							
@@ -126,14 +124,14 @@
 			
 			<br/>
 					
-			<b>Outputs:</b>
+			<span style="font-size: 108%;"><b>Outputs:</b></span>
 			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1.5em;">
 				<% @soap_operation.soap_outputs.each do |output| %>
 					<a id='<%= "soap_output_#{output.id}" -%>' name='<%= "soap_output_#{output.id}" -%>'></a>
 					<div class="port">
 						<div style="float: left; width: 73%;">
 							<div style="margin-bottom: 0.6em;">
-								<b>Output:</b>
+								<b>SOAP Output:</b>
 								<span class="operation_name"><%= display_name(output) -%></span>
 							</div>
 							

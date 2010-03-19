@@ -1646,6 +1646,7 @@ ul.tabbernav
 ul.tabbernav li
 {
 	list-style: none;
+	list-style-image: none;
 	margin: 0;
 	display: inline;
 }
@@ -1740,22 +1741,25 @@ ul.tabbernav li.tabberactive a:hover
 
 .vtabs_container .vtabs_tab_bar {
 	float: left; 
-	width: 15%; 
+	width: 15%;
+	margin: 0;
 }
 
 .vtabs_container .vtabs_tab_bar ul {
+	margin: 0;
 }
 
 .vtabs_container .vtabs_tab_bar ul li {
 	list-style: none;
+	list-style-image: none;
 	margin: 0;
-	display: block;
 }
 
 .vtabs_container .vtabs_tab_bar ul li a {
 	text-align: right;
+	line-height: 1.5;
 	padding: 4px 0.9em;
-	margin-bottom: 4px;
+	margin-bottom: 5px;
 	border: 1px solid #CCC;
 	border-right: none;
 	background-image: url('/images/tab-bg.png');
@@ -1795,14 +1799,20 @@ ul.tabbernav li.tabberactive a:hover
 .vtabs_container .vtabs_tab_bar ul li.active a
 {
 	background: #fff;
+	margin-right: -1px;
 	border-right: 1px solid #fff;
+	z-index: 5;
+	position: relative;
 }
 
 .vtabs_container .vtabs_tab_bar ul li.active a:hover
 {
 	color: #000;
 	background: #fff;
+	margin-right: -1px;
 	border-right: 1px solid #fff;
+	z-index: 5;
+	position: relative;
 }
 
 .vtabs_container .vtabs_tab_content {
