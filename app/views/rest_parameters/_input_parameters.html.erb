@@ -39,8 +39,7 @@
                    :action => "localise_globalise_parameter", 
                    :id => param.id,
                    :rest_method_id => method.id,
-                   :make_local => false,
-                   :endpoint => endpoint},
+                   :make_local => false},
                   :confirm => "Are you you want to make this parameter global.  All annotations that are currently associated with this parameter may be lost and the generic annotations will be added.  Deleted annotations cannot be retrieved.",
                   :style => "padding:1px;",
                   :class => "link_param_link" %>
@@ -54,8 +53,7 @@
                    :action => "localise_globalise_parameter", 
                    :id => param.id,
                    :rest_method_id => method.id,
-                   :make_local => true,
-                   :endpoint => endpoint},
+                   :make_local => true},
                   :confirm => "Are you you want to make this parameter unique to this endpoint.",
                   :style => "padding:1px;",
                   :class => "unlink_param_link" %>
@@ -65,7 +63,7 @@
 
         <% uniq_id = "R#{resource.id}M#{method.id}P#{param.id}" %>
         <% link_content = "<b>" + h(param.name) + "</b>" %>
-        <% link_content += "&nbsp; &nbsp; <i class='none_text' style=' margin:auto; font-size: 85%;'>Unique to endpoint: #{h(endpoint)}</i>" unless param.is_global %>
+        <% link_content += "&nbsp; &nbsp; <i class='none_text' style=' margin:auto; font-size: 85%;'>Unique to endpoint: #{h(method.display_endpoint)}</i>" unless param.is_global %>
 
         <%= create_expand_collapse_link(uniq_id, 
                                         :link_text => link_content, 

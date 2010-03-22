@@ -179,11 +179,10 @@ class RestParametersController < ApplicationController
 
     respond_to do |format|
       if params[:make_local]
-        success_msg = "Parameter <b>#{param_name}</b> now has a copy unique for endpoint <b>" + (params[:endpoint] || "") + "</b>"
+        success_msg = "Parameter <b>#{param_name}</b> now has a copy unique for endpoint <b>" + associated_method.display_endpoint + "</b>"
       else
-        success_msg = "Parameter <b>#{param_name}</b> for endpoint <b>" + (params[:endpoint] || "") + "</b> is now global"
+        success_msg = "Parameter <b>#{param_name}</b> for endpoint <b>" + associated_method.display_endpoint + "</b> is now global"
       end
-      flash[:notice] = success_msg.squeeze(' ')
 
       format.html { redirect_to url_to_redirect_to }
       format.xml  { head :ok }

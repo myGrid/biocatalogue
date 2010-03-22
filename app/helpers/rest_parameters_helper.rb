@@ -99,4 +99,25 @@ module RestParametersHelper
     return link_content
   end
   
+  
+  # ========================================
+  
+  
+  private
+  
+  def create_url_hash(parent_object, options, for_constraint=true)
+    url_hash = {:controller => "rest_parameters",
+                :id => parent_object.id,
+                :rest_method_id => options[:rest_method_id] }
+                  
+    if for_constraint
+      url_hash.merge!(:action => "edit_constraint_popup",
+                      :constraint => options[:constraint])
+    else
+      url_hash.merge!(:action => "edit_default_value_popup")
+    end
+    
+    return url_hash
+  end
+
 end

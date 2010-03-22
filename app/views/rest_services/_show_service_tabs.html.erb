@@ -15,93 +15,43 @@
 <% resources = service_version_instance.rest_resources.sort {|a,b| a.path.downcase <=> b.path.downcase} %>
 
 <% s_d = service_version_instance.service.latest_deployment -%>
-<% base_url = s_d.endpoint.to_s.sub(/\/$/, '') -%>
+<% base_endpoint = s_d.endpoint.to_s.sub(/\/$/, '') -%>
 <% endpoint_count = 0 %>
 
 <div id="tab-endpoints" class="tabbertab">
   <% resources.each { |res| endpoint_count += res.rest_methods.size } %>
   <h3>Endpoints (<%= endpoint_count -%>)</h3>
 
+	<a name='operations_top'></a>
+	
   <%= add_endpoints_by_popup(service_version_instance, 
-                             :style => "font-size:105%; padding:6px; line-height:6px; text-align:center;", 
+                             :style => "padding:7px; line-height:6px; text-align:center;", 
                              :class => "button_slim") %>
 
   <!--WHAT ARE ENDPOINTS HELP BOX-->                             
   <div style="width: 80%;"><%= render :partial => "rest_services/help_box" -%></div>
-  
-  <span class="clear"></span>
-  
-  <% resources.each do |resource| %>
-    <% resource.rest_methods.each do |method| %>
-      <div class="operation_box" style=" line-height: 1.5; background-color: #F3F3F3; padding: 10px;" >
-        <span class="operation_heading">
-          <% endpoint = "#{h(method.method_type)} #{h(resource.path)}" %>
-          
-          <% if method.endpoint_name %>
-            <% endpoint += " (<i style='font-size:85%;'>#{h(method.endpoint_name)}</i>)" %>
-          <% else %>
-            <% endpoint += " (<i class='none_text' style='font-size:85%;'>No Name</i>)" %>
-          <% end %>
 
-          <% endpoint_link = "Endpoint: #{endpoint}" %>
-          
-          <b><%= link_to endpoint_link, method -%></b>
 
-          
-          <span class="method_param_link_container">
-            <%= link_to "Delete", rest_method_url(method, :endpoint => endpoint),
-                                  :confirm => "Are you you want to delete this endpoint.  This cannot be undone.", 
-                                  :method => :delete,
-                                  :class => "method_param_delete_link button_slim" if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, method) %>
-                                  
-            <%= link_to "More Info / Annotate", method, 
-                        :class => "method_param_annotate_link button_slim" -%>
-          </span>
-
-          <br/>
-          <span style="font-size:75%; margin-left:10px;">
-            <%= h create_url_template(base_url, resource, method) -%>
-          </span>
-                          
+	<div class="operations_quick_browse_box">
+		<span class="heading">
+			Quick Browse:
+		</span>
+    
+		<% resources.each do |res| %>
+      <% res.rest_methods.each do |meth| %>
+        <span style="margin: 0 0.4em;">
+          <%= link_to meth.display_endpoint, meth -%>
         </span>
-        
-        <div>
-          <% descriptions = method.annotations_with_attribute("description").sort {|a,b| a.updated_at <=> b.updated_at} %>
-          <% tags = method.annotations_with_attribute("tag").sort {|a,b| a.updated_at <=> b.updated_at} %>
-          
-          <b>Description:</b> 
-          <% if descriptions[0] %>
-            <% limit = 175 %>
-            <span style="font-size:90%;">
-              <%= h descriptions[0].value[0, limit] + (descriptions[0].value.size > limit ? "..." : "") -%>
-            </span>
-          <% else %>
-            <span class="none_text">No info yet</span>
-          <% end %>
-          <br/>
-          
-          <table style="font-size: 87%;">
-            <tr>
-              <td>
-                <b>Tags on this endpoint:</b>
-              </td>
-              <td>
-                <%= render :partial => "annotations/tags_flat",
-                           :locals => { :annotatable => method } -%>
-              </td>
-            </tr>
-          </table>
+      <% end %>
+		<% end %>
+	</div>
+	
+  
+  <%= render :partial => "rest_methods/listing", 
+             :locals => { :items => resources, :base_endpoint => base_endpoint } -%>
 
-        </div>
-          
-        <span class="clear"></span>
-      </div>
-    <% end %>
-    
-    <br/>
-    
-    <p style="margin: 0 0 1.5em 0; font-size: 90%; text-align: right;">
-      <a href="#operations_index">Back to top</a>
-    </p>
-  <% end %>
+	<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">
+		<a href="#operations_top">Back to top</a>
+	</p>
+  
 </div>

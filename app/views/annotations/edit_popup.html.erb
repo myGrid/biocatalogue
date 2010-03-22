@@ -20,7 +20,7 @@
 		<% form_for :annotation, @annotation, :url => annotation_url(@annotation), :html => { :method => :put } do |f| %>
 		  
       <% display_annotatable = if @annotation.annotatable_type == "RestMethod"
-                                 "Endpoint: <b/>#{h(@annotation.annotatable.method_type)} #{h@annotation.annotatable.rest_resource.path}"
+                                 "Endpoint: <b/>#{h(@annotation.annotatable.display_endpoint)}"
                                else
                                  "#{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name)}"
                                end

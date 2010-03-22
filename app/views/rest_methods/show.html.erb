@@ -26,9 +26,8 @@
        <% @rest_service.rest_resources.each do |resource| %>
         <% resource.rest_methods.each do |meth| %>
           <li class="<%= meth == @rest_method ? 'active' : '' -%>">
-            <% endpoint = meth.method_type + ' ' + resource.path %>
             
-            <% label = content_tag(:span, endpoint, :class => 'name') + "<br/>" + content_tag(:span, meth.endpoint_name, :class => 'detail') -%>
+            <% label = content_tag(:span, meth.display_endpoint, :class => 'name') + "<br/>" + content_tag(:span, meth.endpoint_name, :class => 'detail') -%>
             <%= link_to  label, meth -%>
 
 
@@ -41,12 +40,11 @@
   <!-- MAIN AREA-->
   <div class="vtabs_tab_content" style=" width:72%;">
     <% resource = @rest_method.rest_resource %>
-    <% endpoint = @rest_method.method_type + ' ' + resource.path %>
 
     <h1>
-      Endpoint: <%= h endpoint -%>    
+      Endpoint: <%= h @rest_method.display_endpoint -%>    
       <span class="method_param_link_container">
-        <%= link_to "Delete", rest_method_url(@rest_method, :endpoint => endpoint),
+        <%= link_to "Delete", @rest_method,
                               :confirm => "Are you you want to delete this endpoint.  This cannot be undone.", 
                               :method => :delete,
                               :style => "margin-right: 0px; padding:7px;",
@@ -87,7 +85,7 @@
           
       <br />
       <%= render :partial => "rest_parameters/input_parameters", 
-                 :locals => {:method => @rest_method, :resource => resource, :endpoint => endpoint} -%>
+                 :locals => {:method => @rest_method, :resource => resource} -%>
               
       <br />
       <%= render :partial => "rest_representations/input_representations", 

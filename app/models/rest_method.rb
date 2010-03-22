@@ -248,7 +248,14 @@ class RestMethod < ActiveRecord::Base
     
     return extracted_rep_count
   end
+  
+  
   # =========================================
+  
+  
+  def display_endpoint
+    return "#{self.method_type} #{self.rest_resource.path}"
+  end
   
   
   protected

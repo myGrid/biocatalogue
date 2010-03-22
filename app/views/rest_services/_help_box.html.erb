@@ -8,22 +8,20 @@
 
 %>
 
-<% css_options = (css_options||"") + " font-size:90%; padding:3px;"%>
-
-<div class="box_info_standout" <%= "style=#{css_options}" %> >
-  <h4 style="font-size:105%;">
+<div class="box_info_standout" %>
+  <div style="height:20px; margin-top:5px;">
     <%= create_expand_collapse_link('hidden_resource_capture_help', 
                                     :link_text => "What are endpoints ?",
                                     :icon_float => "right",
                                     :class => "maximum_width_collapsable_title") -%>
-  </h4>
+  </div>
   
-  <div id="hidden_resource_capture_help" style="display:none;">
+  <div id="hidden_resource_capture_help" style="display:none;"><br/>
     A REST service has a collection of different endpoints that service consumers can access to get various data/functionality from the REST resources of the REST service.  
     
     These endpoints are, hence, simple URLs to the REST resources.
     
-    a resource can be accessed using the different http methods.
+    A resource can be accessed using the different HTTP methods.
     
     
     <br/><br/>
