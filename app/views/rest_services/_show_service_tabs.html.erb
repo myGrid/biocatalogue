@@ -29,16 +29,16 @@
   <!--WHAT ARE ENDPOINTS HELP BOX-->                             
   <div style="width: 80%;"><%= render :partial => "rest_services/help_box" -%></div>
   
-  <span class="clear"><hr/></span>
+  <span class="clear"></span>
   
   <% resources.each do |resource| %>
     <% resource.rest_methods.each do |method| %>
       <div class="operation_box" style=" line-height: 1.5; background-color: #F3F3F3; padding: 10px;" >
         <span class="operation_heading">
-          <% endpoint = "#{method.method_type} #{resource.path}" %>
+          <% endpoint = "#{h(method.method_type)} #{h(resource.path)}" %>
           
           <% if method.endpoint_name %>
-            <% endpoint += " (<i style='font-size:85%;'>#{method.endpoint_name}</i>)" %>
+            <% endpoint += " (<i style='font-size:85%;'>#{h(method.endpoint_name)}</i>)" %>
           <% else %>
             <% endpoint += " (<i class='none_text' style='font-size:85%;'>No Name</i>)" %>
           <% end %>
@@ -97,6 +97,8 @@
         <span class="clear"></span>
       </div>
     <% end %>
+    
+    <br/>
     
     <p style="margin: 0 0 1.5em 0; font-size: 90%; text-align: right;">
       <a href="#operations_index">Back to top</a>

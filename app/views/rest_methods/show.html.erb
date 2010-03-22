@@ -2,7 +2,7 @@
   
   # BioCatalogue: app/views/rest_methods/show.html.erb
   #
-  # Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
+  # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
   # Institute (EMBL-EBI) and the University of Southampton.
   # See license.txt for details
   
@@ -18,77 +18,52 @@
 
 </div>
 
-<div>
-  <!-- SIDE BAR -->  
-  <div style="float:left; width:25%; padding: 10px; margin-top: 35px; background-color: #F3F3F3; height: 00%;">
-    
-    <hr/>
-    
-    <div>
-      <% @rest_service.rest_resources.each do |resource| %>
-        <div>
-          <ul style="margin-left: 15px; padding:10px;">
-            <% resource.rest_methods.each do |meth| %>
-              <li style="list-style-type: circle;">
-                <% endpoint = meth.method_type + ' ' + resource.path %>
+<div class="vtabs_container">
+	
+  <!-- TABS BAR -->  
+  <div class="vtabs_tab_bar" style="width:25%;">
+    <ul>
+       <% @rest_service.rest_resources.each do |resource| %>
+        <% resource.rest_methods.each do |meth| %>
+          <li class="<%= meth == @rest_method ? 'active' : '' -%>">
+            <% endpoint = meth.method_type + ' ' + resource.path %>
+            
+            <% label = content_tag(:span, endpoint, :class => 'name') + "<br/>" + content_tag(:span, meth.endpoint_name, :class => 'detail') -%>
+            <%= link_to  label, meth -%>
 
-                <% if meth.endpoint_name %>
-                  <% endpoint += " (<i style='font-size:85%;'>#{meth.endpoint_name}</i>)" %>
-                <% else %>
-                  <% endpoint += " (<i class='none_text' style='font-size:85%;'>No Name</i>)" %>
-                <% end %>
 
-                <% if meth == @rest_method %>
-                  <b><i><%= endpoint -%></i></b>
-                <% else %>
-                  <%= link_to endpoint, meth -%>
-                <% end %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-        <hr/>
+          </li>
+        <% end %>
       <% end %>
-      
-      <hr/>
-    </div>
-    
+    </ul>
   </div>
    
   <!-- MAIN AREA-->
-  <div style="float:right; width:70%; padding: 10px;">
+  <div class="vtabs_tab_content" style=" width:72%;">
+    <% resource = @rest_method.rest_resource %>
+    <% endpoint = @rest_method.method_type + ' ' + resource.path %>
+
+    <h1>
+      Endpoint: <%= h endpoint -%>    
+      <span class="method_param_link_container">
+        <%= link_to "Delete", rest_method_url(@rest_method, :endpoint => endpoint),
+                              :confirm => "Are you you want to delete this endpoint.  This cannot be undone.", 
+                              :method => :delete,
+                              :style => "margin-right: 0px; padding:7px;",
+                              :class => "method_param_delete_link button_slim" if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method) %>
+      </span>
+    </h1>
+    
     <div class="operation_box">        
-      <p class="operation_heading">
-        <b>Endpoint:</b>
-        
-        <% resource = @rest_method.rest_resource %>
-        <% endpoint = @rest_method.method_type + ' ' + resource.path %>
-        <span class="operation_name"><%= h endpoint -%></span>            
-                                            
-        <span class="method_param_link_container">
-          <%= link_to "Delete", rest_method_url(@rest_method, :endpoint => endpoint),
-                                :confirm => "Are you you want to delete this endpoint.  This cannot be undone.", 
-                                :method => :delete,
-                                :style => "margin-right: 0px;",
-                                :class => "method_param_delete_link button_slim" if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method) %>
-        </span>
-      </p>
-      
       <div>
         <div style="float: left; width: 73%;">
-          <div style="margin-bottom: 2em; margin-left:10px;">
-            <b>Endpoint Name:</b>
-            
-            <% if @rest_method.endpoint_name %>
-              <%=h @rest_method.endpoint_name -%>
-            <% else %>
-              <span class="none_text">No Name</span>
-            <% end %>
-            
-            <br/>
-            <span style="font-size:90%; padding:10px;">
-              <%=h create_url_template(@base_endpoint, resource, @rest_method) -%>
-            </span>
+          <div style="margin-bottom: 1.2em;">            
+            <%= render :partial => "rest_methods/endpoint_name" -%>
+          </div>
+          
+          <div style="margin-bottom: 1.2em;">
+           <b>Template:</b>
+           <%=h create_url_template(@base_endpoint, resource, @rest_method) -%>
           </div>
           
           <div>
@@ -102,7 +77,7 @@
           </div>
         </div>
           
-        <div style="float: right; width: 24%; font-size: 85%;">
+        <div style="float: right; width: 24%; font-size: 85%; margin-top:10px;">
           <%= render :partial => "annotations/tags_box",
             :locals => { :annotatable => @rest_method } -%>
         </div>

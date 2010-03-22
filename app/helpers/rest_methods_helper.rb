@@ -6,7 +6,57 @@
 
 module RestMethodsHelper
   include ApplicationHelper
+  
+  
+  # This method will create a link to a popup dialog, which allows the user to
+  # edit a REST Method's endpoint name.
+  #
+  # CONFIGURATION OPTIONS (all these options are optional)
+  #  :tooltip_text - text that will be displayed in a tooltip over the text.
+  #    default: 'Edit default value'
+  #  :link_text - text to be displayed as part of the link.
+  #    default: 'edit'
+  #  :style - any CSS inline styles that need to be applied to the text.
+  #    default: ''
+  #  :class - any CSS class that need to be applied to the text.
+  #    default: nil
+  def edit_endpoint_name_by_popup(rest_method, *args)
+    return '' unless rest_method.class.name == 'RestMethod'
     
+    options = args.extract_options!
+    
+    # default config options
+    options.reverse_merge!(:style => "",
+                           :class => nil,
+                           :link_text => "edit",
+                           :tooltip_text => "Edit this endpoint's name")
+    
+    link_content = ''
+    
+    if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, rest_method)
+      inner_html = content_tag(:span, options[:link_text])
+      
+      url_hash = {:controller => "rest_methods",
+                  :action => "edit_endpoint_name_popup",
+                  :id => rest_method.id}
+
+      fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
+      id_value = "edit_constraint_for_#{rest_method.class.name}_#{rest_method.id}_redbox"
+
+      
+      redbox_hash = {:url => url_hash, 
+                     :id => id_value, 
+                     :failure => fail_value}
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+    end
+    
+    return link_content
+  end
+  
+  
+  # ========================================
+
+
   # This method will create a link to a popup dialog, which allows the user to
   # add more representations to the given RestMethod.
   #
@@ -43,12 +93,8 @@ module RestMethodsHelper
     
     if logged_in?
       inner_html = image_tag("add.png")
-      inner_html += content_tag(:span, " " + options[:link_text], :style => options[:style])
+      inner_html += content_tag(:span, " " + options[:link_text])
       
-      css_hash = {:style => options[:style],
-                  :class => options[:class],
-                  :alt => options[:tooltip_text],
-                  :title => tooltip_title_attrib(options[:tooltip_text]) }
 
       url_hash = {:controller => "rest_representations",
                   :action => "new_popup", 
@@ -58,11 +104,13 @@ module RestMethodsHelper
       fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
       id_value = "new_representation_for_#{method.class.name}_#{method.id}_redbox"
 
-      combined_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, combined_hash, css_hash)
+      redbox_hash = {:url => url_hash,
+                     :id => id_value, 
+                     :failure => fail_value}
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
     else # NOT LOGGED IN
       inner_html = image_tag("add_inactive.png")
-      inner_html += content_tag(:span, options[:link_text], :style => options[:style])
+      inner_html += content_tag(:span, options[:link_text])
       
       link_content = link_to(inner_html, login_path, 
                              :class => options[:class], 
@@ -72,5 +120,4 @@ module RestMethodsHelper
     
     return link_content
   end
-  
-end
+  end

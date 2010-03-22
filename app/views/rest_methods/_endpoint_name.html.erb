@@ -1,0 +1,58 @@
+<%
+
+# BioCatalogue: app/views/rest_methods/_endpoint_name.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%
+	main_div_id = "endpoint_name_#{rand(10000000)}"
+  
+  can_edit = BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method)  
+%>
+
+<% unless @rest_method.nil? %>
+	<div id="<%= main_div_id -%>" class="annotations_container">
+		<div style="margin-top: 1em;">
+      <b>Endpoint Name:</b>
+      
+      <% if !@rest_method.endpoint_name.blank? %>
+        <span class="box_annotations">
+          <%=h @rest_method.endpoint_name %>
+
+          <span style="float:right; font-size:90%; margin-right:5px;">
+            <% if can_edit %>
+              <%= edit_endpoint_name_by_popup(@rest_method) -%>
+
+              &nbsp; &nbsp;
+
+              <%= link_to "delete", :id => @rest_method.id, :action => :remove_endpoint_name -%>
+            <% end %>
+          </span>
+          
+          
+        </span>
+      <% else %>
+        <span class="none_text">
+          No name
+        </span>
+
+        <%= render :partial => "rest_methods/add_endpoint_name_box",
+                   :locals => { :partial_from => "endpoint_name",
+                                :rest_method_id => @rest_method.id,
+                                :text_area_default_text => "Add a name to this endpoint...",
+                                :main_div_id => main_div_id } if can_edit -%>
+      <% end %>
+
+      <% if !logged_in? && @rest_method.endpoint_name.blank? %>
+        <span class="login_link_box" style="float:right; margin-top:5px;">
+          <small><%= link_to("Login to add a name to this endpoint", login_path) -%></small>
+        </span>
+      <% end %>
+    </div>
+
+	</div>
+<% end %>

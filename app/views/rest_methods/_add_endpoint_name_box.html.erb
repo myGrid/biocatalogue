@@ -1,0 +1,50 @@
+<%
+
+# BioCatalogue: app/views/rest_methods/_add_endpoint_name_box.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%
+	text_area_id = "text_area_#{rand(10000000)}"
+	submit_button_div_id = "submit_button_div_#{rand(10000000)}"
+	spinner_id = "spinner_#{rand(10000000)}"
+
+	text_area_initial_height = 20 unless local_assigns.has_key?(:text_area_initial_height)
+%>
+
+<div class="add_box">
+	<% rounded(annotation_add_box_background_color, "#333", "100%") do %>
+		<% form_remote_tag(:url => {:controller => "rest_methods", 
+                                :action => "inline_add_endpoint_name", 
+                                :id => rest_method_id,
+                                :partial => partial_from }, 
+										   :update => { :success => main_div_id }, 
+									 		 :success => "new Effect.Highlight('#{main_div_id}', { duration: 1.0 });",
+											 :failure => "alert('Sorry, an error has occurred whilst submitting. If this error persists we would be very grateful if you notified us.');", 
+											 :loading => "Element.show('#{spinner_id}')",
+           						 :complete => "Element.hide('#{spinner_id}')") do %>
+					
+			<div>
+	    	<%= text_area_tag "endpoint_name", 
+													text_area_default_text,
+													:id => text_area_id,
+													:rows => 1,
+													:onfocus => "$('#{submit_button_div_id}').show();" -%>
+			</div>
+			
+			<div class="submit_button_div" id="<%= submit_button_div_id -%>" style="display: none;">
+				<%= image_tag icon_filename_for(:spinner), :id => spinner_id, :style => "display: none; vertical-align: middle; margin-right: 1em;" -%>
+	    	<%= submit_tag "Add" -%>
+			</div>
+			
+			<script type="text/javascript">
+				<%= default_add_box_js_for_textarea(text_area_id, text_area_initial_height) -%>
+			</script>
+		
+		<% end %>
+	<% end %>
+</div>

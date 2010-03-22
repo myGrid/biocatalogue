@@ -58,7 +58,7 @@ module RestServicesHelper
       end
 
       redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_css_hash(options))
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
     else # NOT LOGGED IN
       inner_html = image_tag("add_inactive.png")
       inner_html += content_tag(:span, options[:link_text], :style => options[:style])
@@ -152,7 +152,7 @@ module RestServicesHelper
     id_value = "edit_base_endpoint_for_#{service_deployment.class.name}_#{service_deployment.id}_redbox"
     
     redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_css_hash(options))
+    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
     
     return link_content
   end
@@ -189,9 +189,9 @@ module RestServicesHelper
   # ========================================
   
   
-  private
-  
-  def create_css_hash(options)
+  # This method creates a CSS hash which can be used by redbox based on a list
+  # of config 'options'
+  def create_redbox_css_hash(options)
     return {:style => options[:style],
             :class => options[:class],
             :alt => options[:tooltip_text],

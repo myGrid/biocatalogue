@@ -118,13 +118,21 @@ ActionController::Routing::Routes.draw do |map|
                 :member => { :annotations => :get,
                              :deployments => :get,
                              :update_base_endpoint => :post }
+
   map.resources :rest_resources, 
                 :member => {:add_new_resources => :post}
-  map.resources :rest_methods
+
+  map.resources :rest_methods,
+                :member => {:update_endpoint_name => :post,
+                            :inline_add_endpoint_name => :post }
+
   map.resources :rest_parameters,
                 :member => {:add_new_parameters => :post}
+
   map.resources :rest_method_parameters
+
   map.resources :rest_representations
+
   map.resources :rest_method_representations
 
   map.resources :soap_services,

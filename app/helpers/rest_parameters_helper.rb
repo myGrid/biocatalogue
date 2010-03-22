@@ -39,7 +39,7 @@ module RestParametersHelper
     method = RestMethod.find(options[:rest_method_id])
     
     if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, parent_object, :rest_method => method)
-      inner_html = content_tag(:span, options[:link_text], :style => options[:style])
+      inner_html = content_tag(:span, options[:link_text])
       
       fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
       id_value = "edit_constraint_for_#{parent_object.class.name}_#{parent_object.id}_redbox"
@@ -47,7 +47,7 @@ module RestParametersHelper
       redbox_hash = {:url => create_url_hash(parent_object, options), 
                      :id => id_value, 
                      :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_css_hash(options))
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
     end
     
     return link_content
@@ -74,7 +74,7 @@ module RestParametersHelper
     options.reverse_merge!(:style => "",
                            :class => nil,
                            :link_text => "edit",
-                           :tooltip_text => "Edit default vale",
+                           :tooltip_text => "Edit default value",
                            :rest_method_id => nil)
                            
     return '' if options[:rest_method_id].nil?
@@ -84,7 +84,7 @@ module RestParametersHelper
     method = RestMethod.find(options[:rest_method_id])
     
     if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, parent_object, :rest_method => method)
-      inner_html = content_tag(:span, options[:link_text], :style => options[:style])
+      inner_html = content_tag(:span, options[:link_text])
             
       fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
       id_value = "edit_constraint_for_#{parent_object.class.name}_#{parent_object.id}_redbox"
@@ -93,37 +93,10 @@ module RestParametersHelper
       redbox_hash = {:url => create_url_hash(parent_object, options, false), 
                      :id => id_value, 
                      :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_css_hash(options))
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
     end
     
     return link_content
   end
   
-  
-  # ========================================
-  
-  
-  private
-  
-  def create_css_hash(options)
-    return {:style => options[:style],
-            :class => options[:class],
-            :alt => options[:tooltip_text],
-            :title => tooltip_title_attrib(options[:tooltip_text]) }
-  end
-  
-  def create_url_hash(parent_object, options, for_constraint=true)
-    url_hash = {:controller => "rest_parameters",
-                :id => parent_object.id,
-                :rest_method_id => options[:rest_method_id] }
-                  
-    if for_constraint
-      url_hash.merge!(:action => "edit_constraint_popup",
-                      :constraint => options[:constraint])
-    else
-      url_hash.merge!(:action => "edit_default_value_popup")
-    end
-    
-    return url_hash
-  end
 end

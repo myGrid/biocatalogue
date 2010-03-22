@@ -15,6 +15,65 @@ class RestMethodsController < ApplicationController
   
   before_filter :authorise, :only => [ :destroy ]
   
+  def update_endpoint_name
+    # sanitize user input
+    params[:new_name].chomp!
+    params[:new_name].strip!
+    
+    do_not_proceed = params[:new_name].blank? || params[:old_name]==params[:new_name]
+
+    unless do_not_proceed
+      @rest_method.endpoint_name = params[:new_name]
+      @rest_method.save!
+    end
+    
+    respond_to do |format|
+      if do_not_proceed
+        flash[:error] = "An error occured while trying to update the endpoint's name"
+      else
+        flash[:notice] = "The endpoint's name has been updated"
+      end
+      format.html { redirect_to @rest_method }
+      format.xml  { head :ok }
+    end
+  end
+  
+  def edit_endpoint_name_popup
+    respond_to do |format|
+      format.js { render :layout => false }
+    end
+  end
+  
+  def remove_endpoint_name
+    @rest_method.endpoint_name = nil
+    @rest_method.save!
+    
+    respond_to do |format|
+      flash[:notice] = "The endpoint name has been deleted"
+
+      format.html { redirect_to @rest_method }
+      format.xml  { head :ok }
+    end
+  end
+  
+  def inline_add_endpoint_name
+    # sanitize user input to make it have characters that are only fit for URIs
+    params[:endpoint_name].chomp!
+    params[:endpoint_name].strip!
+
+    unless params[:endpoint_name].blank?
+      @rest_method.endpoint_name = params[:endpoint_name]
+      @rest_method.save!
+    end
+    
+    respond_to do |format|
+      format.html { render :partial => "rest_methods/#{params[:partial]}", 
+                           :locals => { :rest_method => @rest_method }}
+      format.js { render :partial => "rest_methods/#{params[:partial]}", 
+                         :locals => { :rest_method => @rest_method }}
+    end
+  end
+  
   def show
     @rest_service = @rest_method.rest_resource.rest_service
     @base_endpoint = @rest_service.service.latest_deployment.endpoint

@@ -10,9 +10,7 @@
 
 <%
 	main_div_id = "default_value_#{rand(10000000)}"
-  
-  make_mandatory_or_optional_style = "float:right; font-size:80%;"
-  
+    
   meth = RestMethod.find(rest_method_id)
   can_edit = BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, parameter, :rest_method => meth)  
 %>
@@ -38,7 +36,7 @@
         <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
           <%=h parameter.default_value %>
 
-          <span style= <%=h make_mandatory_or_optional_style %> >
+          <span style="float:right; font-size:90%;">
             <%= edit_default_value_by_popup(parameter,
                                             :rest_method_id => rest_method_id) -%>
             &nbsp; &nbsp;
