@@ -49,7 +49,7 @@ class RestMethodsController < ApplicationController
     @rest_method.save!
     
     respond_to do |format|
-      flash[:notice] = "The endpoint name has been deleted"
+      flash[:notice] = "The endpoint's name has been deleted"
 
       format.html { redirect_to @rest_method }
       format.xml  { head :ok }

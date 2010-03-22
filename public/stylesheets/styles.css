@@ -3192,7 +3192,7 @@ div.resize-handle {
 
 
 /* BEGIN styles for REST Services support */
-span.collapsable_title a {
+.collapsable_title a {
   display: block;
   width: 100%;
   line-height: 1.0;
@@ -3201,7 +3201,7 @@ span.collapsable_title a {
 	padding-bottom: 0.5em;
 }
 
-span.actions_link_container a {
+.actions_link_container a {
   color: grey;
   text-decoration: none;
   float: right;
@@ -3213,10 +3213,10 @@ span.actions_link_container a {
   background-position-x: left;
   background-position-y:center; 
   margin: 0px 7px 0px 7px;
-  padding: 5px;
+  padding: 7px;
 }
 
-span.actions_link_container a:hover {
+.actions_link_container a:hover {
   font-weight: bold;
 }
 
@@ -3230,12 +3230,12 @@ a:hover.delete_link  {
 }
 
 a.localise_param_link {
-  width: 85px;
+  width: 80px;
   background-image: url(/images/link_break.png);
 }
 
 a.globalise_param_link {
-  width: 85px;
+  width: 80px;
   background-image: url(/images/link_add.png);
 }
 

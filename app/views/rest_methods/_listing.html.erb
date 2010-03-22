@@ -22,15 +22,7 @@
           
           <%= link_to(link_text, method) -%>
         </p>
-        
-        <div style="margin-top: -0.4em;">
-          <%= render :partial => "annotations/name_aliases",
-                     :locals => { :annotatable => method,
-                                  :show_add_option => false,
-                                  :show_modify_options => false,
-                                  :show_none_text => false } -%>
-        </div>
-        
+                
         <p class="detail faded">
           <%= h create_url_template(base_endpoint, resource, method) -%>
         </p>
