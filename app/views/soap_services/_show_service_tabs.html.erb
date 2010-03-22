@@ -13,7 +13,12 @@
 	
 	<a name='operations_top'></a>
 	
-	<div style="margin: 0 1em;">
+	<div class="box_info_standout">
+		These are the SOAP operations available for the SOAP variant of this service. 
+		Click on each one to get more information and annotate.
+	</div>
+	
+	<div>
 	
 		<%= render :partial => "soap_operations/listing", :locals => { :items => service_version_instance.soap_operations } -%>
 		
