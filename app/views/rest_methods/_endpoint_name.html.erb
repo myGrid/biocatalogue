@@ -24,13 +24,14 @@
           <%=h @rest_method.endpoint_name %>
 
           <span style="float:right; font-size:90%; margin-right:5px;">
-            <% if can_edit %>
-              <%= edit_endpoint_name_by_popup(@rest_method) -%>
+            <%= edit_endpoint_name_by_popup(@rest_method) -%>
 
               &nbsp; &nbsp;
 
-              <%= link_to "delete", :id => @rest_method.id, :action => :remove_endpoint_name -%>
-            <% end %>
+            <%= link_to "delete", { :id => @rest_method.id, 
+                                  :action => :remove_endpoint_name}, 
+                                  :confirm => "Are you sure you want to clear this endpoint's name?  This cannot be undone.",
+                                  :method => :put if can_edit -%>
           </span>
           
           

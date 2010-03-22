@@ -40,11 +40,12 @@
             <%= edit_default_value_by_popup(parameter,
                                             :rest_method_id => rest_method_id) -%>
             &nbsp; &nbsp;
-            <% if can_edit %>
-              <a href='<%= "/rest_parameters/remove_default_value/#{parameter.id}?rest_method_id=#{rest_method_id}"-%>'
-                 onclick="if (confirm('Are you you want to delete the default value.  This cannot be undone.')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'authenticity_token'); s.setAttribute('value', '<%= form_authenticity_token -%>'); f.appendChild(s);f.submit(); };return false;" 
-                 style="margin-right: 0px;">delete</a>
-            <% end %>
+            
+            <%= link_to "delete", { :id => parameter.id, 
+                                  :action => :remove_default_value,
+                                  :rest_method_id => rest_method_id}, 
+                                  :confirm => "Are you you want to delete the default value.  This cannot be undone.",
+                                  :method => :put if can_edit -%>
           </span>
         <% end %>
       </div>

@@ -3192,15 +3192,7 @@ div.resize-handle {
 
 
 /* BEGIN styles for REST Services support */
-span.maximum_width_collapsable_title a{
-  display: inline-block;
-  line-height: 15px;
-  min-height: 15px;
-  text-decoration: none;
-  width: 100%;
-}
-
-span.parameter_collapsable_title a {
+span.collapsable_title a {
   display: block;
   width: 100%;
   line-height: 1.0;
@@ -3209,7 +3201,7 @@ span.parameter_collapsable_title a {
 	padding-bottom: 0.5em;
 }
 
-span.method_param_link_container a {
+span.actions_link_container a {
   color: grey;
   text-decoration: none;
   float: right;
@@ -3224,34 +3216,25 @@ span.method_param_link_container a {
   padding: 5px;
 }
 
-span.method_param_link_container a:hover {
+span.actions_link_container a:hover {
   font-weight: bold;
 }
 
-a.method_param_delete_link {
+a.delete_link {
   width: 50px;
   background-image: url(/images/delete_faded_darker.png);
 }
 
-a:hover.method_param_delete_link  {
+a:hover.delete_link  {
   background-image: url(/images/delete.png);
 }
 
-a.method_param_annotate_link {
-  width: 133px;
-  background-image: url(/images/note_edit.png);
-}
-
-a:hover.method_param_annotate_link  {
-  background-image: url(/images/note_edit.png);
-}
-
-a.unlink_param_link {
+a.localise_param_link {
   width: 85px;
   background-image: url(/images/link_break.png);
 }
 
-a.link_param_link {
+a.globalise_param_link {
   width: 85px;
   background-image: url(/images/link_add.png);
 }
