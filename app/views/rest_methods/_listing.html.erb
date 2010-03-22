@@ -9,8 +9,8 @@
 %>
 
 <div class="listings">
-	<% items.each do |resource| %>
-    <% resource.rest_methods.each do |method| %>
+	<% items.sort.each do |resource| %>
+    <% resource.rest_methods.sort.each do |method| %>
       <div class="listing_item">
         <p class="name">
           <% link_text = "Endpoint: #{method.display_endpoint} " %>

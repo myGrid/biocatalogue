@@ -12,7 +12,7 @@
   # This tab uses the same stylesheet elements as the operations tab for SOAP services.
 %>
 
-<% resources = service_version_instance.rest_resources.sort {|a,b| a.path.downcase <=> b.path.downcase} %>
+<% resources = service_version_instance.rest_resources.sort %>
 
 <% s_d = service_version_instance.service.latest_deployment -%>
 <% base_endpoint = s_d.endpoint.to_s.sub(/\/$/, '') -%>
@@ -38,7 +38,7 @@
 		</span>
     
 		<% resources.each do |res| %>
-      <% res.rest_methods.each do |meth| %>
+      <% res.rest_methods.sort.each do |meth| %>
         <span style="margin: 0 0.4em;">
           <%= link_to meth.display_endpoint, meth -%>
         </span>

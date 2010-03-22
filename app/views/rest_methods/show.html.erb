@@ -23,8 +23,8 @@
   <!-- TABS BAR -->  
   <div class="vtabs_tab_bar" style="width:25%;">
     <ul>
-       <% @rest_service.rest_resources.each do |resource| %>
-        <% resource.rest_methods.each do |meth| %>
+       <% @rest_service.rest_resources.sort.each do |resource| %>
+        <% resource.rest_methods.sort.each do |meth| %>
           <li class="<%= meth == @rest_method ? 'active' : '' -%>">
             
             <% label = content_tag(:span, meth.display_endpoint, :class => 'name') + "<br/>" + content_tag(:span, meth.endpoint_name, :class => 'detail') -%>

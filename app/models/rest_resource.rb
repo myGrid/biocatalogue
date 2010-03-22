@@ -47,7 +47,12 @@ class RestResource < ActiveRecord::Base
     return rest_service.rest_resources(true).find_by_path(resource_path) # RestResource || nil
   end
   
-  
+  # for sort
+  def <=>(other)
+    comparison = self.path <=> other.path
+    return comparison unless comparison==0
+  end
+
   # =========================================
   
   

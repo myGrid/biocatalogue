@@ -89,6 +89,23 @@ class RestMethod < ActiveRecord::Base
   def self.check_duplicate(rest_resource, method_type)
     return rest_resource.rest_methods(true).find_by_method_type(method_type) # RestMethod || nil
   end
+  
+  # shows the endpoint value for self
+  def display_endpoint
+    return "#{self.method_type} #{self.rest_resource.path}"
+  end
+  
+  # for sort
+  def <=>(other)
+    order = {'GET' => 1, 'POST' => 2, 'PUT' => 3, 'DELETE' => 4 }
+    
+    self_order = order[self.method_type]
+    other_order = order[other.method_type]
+    
+    comparison = self_order <=> other_order
+    return comparison unless comparison==0
+  end
+  
 
   # ==========================
   
@@ -251,11 +268,6 @@ class RestMethod < ActiveRecord::Base
   
   
   # =========================================
-  
-  
-  def display_endpoint
-    return "#{self.method_type} #{self.rest_resource.path}"
-  end
   
   
   protected
