@@ -200,7 +200,7 @@ hr {
   padding: 0;
   border: none;
   height: 1px;
-  background: #5294c1;
+  background: #CCC;
 }
 
 ul {
@@ -3257,3 +3257,21 @@ a.link_param_link {
 }
 
 /* END styles for REST Services support */
+
+.operations_quick_browse_box {
+	padding: 0.5em 0.6em; 
+	border: 1px solid #CCC; 
+	line-height: 1.5; 
+	background-color: #F3F3F3; 
+	font-weight: bold; 
+	font-size: 108%;
+	margin-bottom: 1.5em;
+}
+
+.operations_quick_browse_box .heading {
+	font-weight: bold; 
+	font-size: 77%;
+	margin: 0 1.5em 0 0;
+	padding: 0;
+	vertical-align: middle;
+}
