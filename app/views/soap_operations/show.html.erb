@@ -21,7 +21,7 @@
     <div>
     	<ul>
       <% @soap_service.soap_operations.each do |op| %>
-        <li class="<%= op == @soap_operation ? 'active' : '' -%>">
+        <li class="<%= op == @soap_operation ? 'active' : '' -%>" title="<%= tooltip_title_attrib(display_name(op)) -%>">
 					<% op_label = content_tag(:span, display_name(op), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(op.soap_inputs.length, 'input')}, #{pluralize(op.soap_outputs.length, 'output')}", :class => 'detail') -%>
           <%= link_to op_label, op -%>
         </li>

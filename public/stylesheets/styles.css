@@ -1792,9 +1792,8 @@ ul.tabbernav li.tabberactive a:hover
 .vtabs_container .vtabs_tab_bar ul li.active a
 {
 	background: #fff;
-	margin-right: -1px;
-	border-right: 1px solid #fff;
-	z-index: 5;
+	margin-right: -2px;
+	border-right: 2px solid #fff;
 	position: relative;
 }
 
@@ -1802,9 +1801,8 @@ ul.tabbernav li.tabberactive a:hover
 {
 	color: #000;
 	background: #fff;
-	margin-right: -1px;
-	border-right: 1px solid #fff;
-	z-index: 5;
+	margin-right: -2px;
+	border-right: 2px solid #fff;
 	position: relative;
 }
 
@@ -1813,6 +1811,7 @@ ul.tabbernav li.tabberactive a:hover
 	width: 82%; 
 	padding: 1em;
 	border: 1px solid #CCC;
+	border-left: 2px solid #DDD;
 }
 
 /* END Vertical tabs styles */
