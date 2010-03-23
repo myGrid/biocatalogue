@@ -177,12 +177,17 @@ module RestServicesHelper
     required_params = required_params.sort.join('&')
     required_params = '?' + required_params unless required_params.blank?
 
+    # TODO: fix display bug using this if else combined with the 'return'
+    if base_url.include?('?')
+    else
+    end
+    
     return (if resource_path == '/{parameters}' 
               "#{base_url}#{required_params}"
             elsif resource_path == '/{id}'
               "#{base_url}/{id}#{required_params}"
             elsif resource_path.include?('?')
-              "#{base_url + resource_path}#{required_params.sub('?', '&')}"
+              "#{base_url + resource_path}#{required_params.gsub('?', '&')}"
             else
               "#{base_url + resource_path}#{required_params}"
             end)

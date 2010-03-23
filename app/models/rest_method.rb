@@ -90,6 +90,11 @@ class RestMethod < ActiveRecord::Base
     return rest_resource.rest_methods(true).find_by_method_type(method_type) # RestMethod || nil
   end
   
+  # used by activity feed
+  def display_name 
+    return (self.endpoint_name.blank? ? display_endpoint : self.endpoint_name)
+  end
+  
   # shows the endpoint value for self
   def display_endpoint
     return "#{self.method_type} #{self.rest_resource.path}"

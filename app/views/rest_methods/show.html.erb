@@ -73,6 +73,12 @@
             <%= render :partial => "annotations/example_endpoints",
               :locals => { :annotatable => @rest_method } -%>
           </div>
+          
+          <div>
+            <%= render :partial => "annotations/documentation_urls",
+                       :locals => { :annotatable => @rest_method } -%>
+          </div>
+
         </div>
           
         <div style="float: right; width: 24%; font-size: 85%; margin-top:10px;">

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100318162218) do
+ActiveRecord::Schema.define(:version => 20100323163321) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(:version => 20100318162218) do
     t.integer  "referenced_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "data",                   :limit => 16777215
+    t.text     "data",                   :limit => 2147483647
     t.string   "format"
     t.string   "http_referer"
     t.string   "user_agent"
@@ -60,10 +60,10 @@ ActiveRecord::Schema.define(:version => 20100318162218) do
   end
 
   create_table "annotation_properties", :force => true do |t|
-    t.integer  "annotation_id",                                              :null => false
-    t.string   "property_type",                                              :null => false
-    t.integer  "property_id",                                                :null => false
-    t.integer  "value",         :limit => 10, :precision => 10, :scale => 0
+    t.integer  "annotation_id", :null => false
+    t.string   "property_type", :null => false
+    t.integer  "property_id",   :null => false
+    t.integer  "value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -238,14 +238,15 @@ ActiveRecord::Schema.define(:version => 20100318162218) do
   add_index "rest_method_representations", ["rest_representation_id"], :name => "index_rest_method_representations_on_rest_representation_id"
 
   create_table "rest_methods", :force => true do |t|
-    t.integer  "rest_resource_id",                     :null => false
-    t.string   "method_type",                          :null => false
+    t.integer  "rest_resource_id",                      :null => false
+    t.string   "method_type",                           :null => false
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "submitter_id"
-    t.string   "submitter_type",   :default => "User"
+    t.string   "submitter_type",    :default => "User"
     t.string   "endpoint_name"
+    t.string   "documentation_url"
   end
 
   add_index "rest_methods", ["rest_resource_id", "method_type"], :name => "rest_methods_rest_resource_id_method_type_index"
@@ -390,7 +391,7 @@ ActiveRecord::Schema.define(:version => 20100318162218) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
-    t.text     "computational_type_details", :limit => 16777215
+    t.text     "computational_type_details", :limit => 2147483647
   end
 
   add_index "soap_inputs", ["soap_operation_id"], :name => "index_soap_inputs_on_soap_operation_id"
@@ -417,7 +418,7 @@ ActiveRecord::Schema.define(:version => 20100318162218) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
-    t.text     "computational_type_details", :limit => 16777215
+    t.text     "computational_type_details", :limit => 2147483647
   end
 
   add_index "soap_outputs", ["soap_operation_id"], :name => "index_soap_outputs_on_soap_operation_id"
