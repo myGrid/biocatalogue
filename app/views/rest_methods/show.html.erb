@@ -92,15 +92,17 @@
       <br />
       <%= render :partial => "rest_parameters/input_parameters", 
                  :locals => {:method => @rest_method, :resource => resource} -%>
-              
-      <br />
-      <%= render :partial => "rest_representations/input_representations", 
-                 :locals => {:method => @rest_method, :resource => resource} -%>
 
-      <br />
-      <%= render :partial => "rest_representations/output_representations", 
-                 :locals => {:method => @rest_method, :resource => resource} -%>
+      <%= render :partial => "rest_representations/representation", 
+                 :locals => {:method => @rest_method, 
+                             :resource => resource,
+                             :is_http_request => true} -%>
 
+      <%= render :partial => "rest_representations/representation", 
+                 :locals => {:method => @rest_method, 
+                             :resource => resource,
+                             :is_http_request => false} -%>
+      <br/>
     </div>
   </div>
 </div>
