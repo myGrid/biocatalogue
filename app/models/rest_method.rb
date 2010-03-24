@@ -243,13 +243,9 @@ class RestMethod < ActiveRecord::Base
 
       begin
         transaction do
-          representation = RestRepresentation.check_exists_for_rest_service(self.rest_resource.rest_service, content_type)
-
-          if representation.nil?
-            representation = RestRepresentation.new(:content_type => content_type)
-            representation.submitter = user_submitting
-            representation.save!
-          end
+          representation = RestRepresentation.new(:content_type => content_type)
+          representation.submitter = user_submitting
+          representation.save!
           
           no_representation = RestRepresentation.check_duplicate(self, content_type, options[:http_cycle]).nil?
           
@@ -261,7 +257,7 @@ class RestMethod < ActiveRecord::Base
             @method_rep_map.save!
            
             extracted_rep_count += 1
-         end
+          end
         end # transaction
       rescue Exception => ex
         @method_rep_map.destroy if @method_rep_map

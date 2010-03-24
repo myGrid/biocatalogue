@@ -102,7 +102,7 @@ class RestServicesController < ApplicationController
         respond_to do |format|
           if @rest_service.submit_service(endpoint, current_user, params[:annotations].dup)
             success_msg = 'Service was successfully submitted.'
-            success_msg += "  You may now add endpoints via the Endpoints tab."
+            success_msg += "<br/>You may now add endpoints via the Endpoints tab."
             
             flash[:notice] = success_msg
             format.html { redirect_to(@rest_service.service(true)) }
@@ -151,7 +151,7 @@ class RestServicesController < ApplicationController
       @service_deployment.endpoint = endpoint
       @service_deployment.save!
     
-      flash[:notice] = "The base endpoint has been successfully changed"
+      flash[:notice] = "The base URL has been successfully changed"
       
       respond_to do |format|
         format.html { redirect_to @service_deployment.service }

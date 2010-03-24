@@ -264,11 +264,13 @@ class RestService < ActiveRecord::Base
         
         @extracted_method.add_parameters(template_params.join("\n"), user_submitting, 
                                                                      :mandatory => true, 
-                                                                     :param_style => "template")
+                                                                     :param_style => "template",
+                                                                     :make_local => true)
 
         @extracted_method.add_parameters(query_params.join("\n"), user_submitting,
                                                                   :mandatory => true, 
-                                                                  :param_style => "query")
+                                                                  :param_style => "query",
+                                                                  :make_local => true)
 
         @extracted_method.add_representations(output_representation, user_submitting) unless output_representation.blank?
       end # transaction

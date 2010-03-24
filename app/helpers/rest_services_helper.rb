@@ -135,7 +135,7 @@ module RestServicesHelper
     options.reverse_merge!(:style => "",
                            :class => nil,
                            :link_text => "edit",
-                           :tooltip_text => "Edit the base endpoint")
+                           :tooltip_text => "Edit the base URL")
 
     options[:style] += "float: right; line-height: 15px; margin: 0px 1px 0px 7px;"
 

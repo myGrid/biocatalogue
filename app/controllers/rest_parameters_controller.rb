@@ -150,7 +150,7 @@ class RestParametersController < ApplicationController
     resource = @rest_method.rest_resource # for redirection
     service = resource.rest_service.service # for redirection
     
-    count = @rest_method.add_parameters(params[:rest_parameters], current_user)
+    count = @rest_method.add_parameters(params[:rest_parameters], current_user, :make_local => true)
     
     respond_to do |format|
       flash[:notice] = "#{count} new parameter" + (count==1 ? ' was':'s were') + ' added'
