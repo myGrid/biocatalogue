@@ -252,10 +252,13 @@ class RestService < ActiveRecord::Base
           # no need to proceed with iteration since params will not have a resource object to attach to
           next
         end # begin_rescue
-
+        
         begin
+          endpoint_components[-1].gsub!('{', '')
+          endpoint_components[-1].gsub!('}', '')
+          
           @extracted_method.create_annotations({
-              "example_endpoint" => "#{endpoint}#{endpoint_components[-1]}"}, user_submitting)
+              "example_endpoint" => "#{endpoint}#{endpoint_components[-1]}"}, user_submitting) if template_params.blank?
         rescue Exception => ex
           logger.error("Failed to create annotations for RestMethod with ID: #{@extracted_method.id}. Exception:")
           logger.error(ex.message)
