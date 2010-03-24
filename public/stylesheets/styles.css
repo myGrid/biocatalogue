@@ -3192,6 +3192,7 @@ div.resize-handle {
 
 
 /* BEGIN styles for REST Services support */
+
 .collapsable_title a {
   display: block;
   width: 100%;
@@ -3206,12 +3207,12 @@ div.resize-handle {
   text-decoration: none;
   float: right;
   text-align: right;
-  font-size: 85%;
+  font-size: 87%;
   font-weight: normal;
   line-height: 10px;  
   background-repeat: no-repeat;
   background-position-x: left;
-  background-position-y:center; 
+  background-position-y: center; 
   margin: 0px 7px 0px 7px;
   padding: 2px;
 }
@@ -3227,6 +3228,19 @@ a.delete_link {
 
 a:hover.delete_link  {
   background-image: url(/images/delete.png);
+}
+
+a.edit_link, a:hover.edit_link {
+  width: 40px;
+  background-image: url(/images/pencil.gif);
+  background-repeat: no-repeat;
+  background-position-x: left;
+  font-weight: normal;
+  background-position-y: center; 
+}
+
+a:hover.edit_link{
+  font-weight:bold;
 }
 
 a.localise_param_link {

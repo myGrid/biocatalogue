@@ -6,7 +6,7 @@
 
 class RestParametersController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :show, :edit ]
+  before_filter :disable_action, :only => [ :index, :show, :edit, :localise_globalise_parameter ]
   before_filter :disable_action_for_api
 
   before_filter :login_required

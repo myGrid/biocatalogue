@@ -23,15 +23,19 @@
         <span class="box_annotations">
           <%=h @rest_method.endpoint_name %>
 
-          <span style="float:right; font-size:90%; margin-right:5px;">
-            <%= edit_endpoint_name_by_popup(@rest_method) -%>
-
-              &nbsp; &nbsp;
-
+          <span class="actions_link_container">
             <%= link_to "delete", { :id => @rest_method.id, 
-                                  :action => :remove_endpoint_name}, 
+                                  :action => :remove_endpoint_name},
                                   :confirm => "Are you sure you want to clear this endpoint's name?  This cannot be undone.",
-                                  :method => :put if can_edit -%>
+                                  :method => :put,
+                                  :class => "delete_link button_slim",
+                                  :style => "width:45px; padding:3px;" if can_edit -%>
+            
+            &nbsp; &nbsp;
+
+            <%= edit_endpoint_name_by_popup(@rest_method, 
+                                            :class => "edit_link button_slim",
+                                            :style => "padding:3px;") -%>
           </span>
           
           

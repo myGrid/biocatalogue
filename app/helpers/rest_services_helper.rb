@@ -137,12 +137,11 @@ module RestServicesHelper
                            :link_text => "edit",
                            :tooltip_text => "Edit the base URL")
 
-    options[:style] += "float: right; line-height: 15px; margin: 0px 1px 0px 7px;"
+    options[:style] += "float: right;"
 
     link_content = ''
     
-    inner_html = image_tag("pencil.gif")
-    inner_html += content_tag(:span, options[:link_text])
+    inner_html = content_tag(:span, options[:link_text])
     
     url_hash = {:controller => "rest_services", 
                 :action => "edit_base_endpoint_by_popup", 
@@ -171,26 +170,41 @@ module RestServicesHelper
     resource_path = resource.path.sub(/^\/\?/, '?') # change "/?" to "?"
     
     method.request_parameters.select{ |p| p.param_style=="query" && p.required }.each do |p| 
-      required_params << "#{p.name}={#{p.name}}" unless resource_path.include?("{#{p.name}}")
+      unless p.default_value.blank?
+        required_params << "#{p.name}=#{p.default_value}"
+      else
+        required_params << "#{p.name}={#{p.name}}"
+      end
+      
     end
     
     required_params = required_params.sort.join('&')
     required_params = '?' + required_params unless required_params.blank?
 
-    # TODO: fix display bug using this if else combined with the 'return'
-    if base_url.include?('?')
-    else
-    end
+    url_template = (if base_url.include?('?')
+                      required_params.gsub!('?', '&')
+                      resource_path.gsub!('?', '&')
+                      
+                      if resource_path == '/{parameters}' 
+                        "#{base_url}#{required_params}"
+                      elsif resource_path.start_with?('/')
+                        "<span class='none_text'>Could not generate URL template</span>"
+                      else
+                        "#{base_url}#{resource_path}#{required_params}"
+                      end
+                    else
+                      if resource_path == '/{parameters}' 
+                        "#{base_url}#{required_params}"
+                      elsif resource_path == '/{id}'
+                        "#{base_url}/{id}#{required_params}"
+                      elsif resource_path.include?('?')
+                        "#{base_url + resource_path}#{required_params.gsub('?', '&')}"
+                      else
+                        "#{base_url + resource_path}#{required_params}"
+                      end
+                    end)
     
-    return (if resource_path == '/{parameters}' 
-              "#{base_url}#{required_params}"
-            elsif resource_path == '/{id}'
-              "#{base_url}/{id}#{required_params}"
-            elsif resource_path.include?('?')
-              "#{base_url + resource_path}#{required_params.gsub('?', '&')}"
-            else
-              "#{base_url + resource_path}#{required_params}"
-            end)
+    return url_template
   end
   
   

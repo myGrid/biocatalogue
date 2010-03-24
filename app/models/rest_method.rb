@@ -159,33 +159,31 @@ class RestMethod < ActiveRecord::Base
       param_name.strip!
       param_value ||= ""
       param_value.strip!
-      
+
       # sanitize ie get rid of special syntax
       param_name.gsub!('{', '')
       param_name.gsub!('}', '')
-      param_value.gsub!('-', '_')
-      param_value = "" if param_value =~ /\W/
-
+      param_value.gsub!('{', '')
+      param_value.gsub!('}', '')
+      param_value = nil if param_value.blank?
+      
       # next if param name contains non-alphanumeric characters
       next if param_name.gsub('-', '_') =~ /\W/
       
       begin
         transaction do
-          extracted_param = RestParameter.check_exists_for_rest_service(self.rest_resource.rest_service, param_name, options[:make_local])
-
-          if extracted_param.nil?
+          extracted_param = RestParameter.check_duplicate(self, param_name, options[:make_local])
+          no_param_for_method = extracted_param.nil?
+          
+          if no_param_for_method
             extracted_param = RestParameter.new(:name => param_name, 
                                                 :param_style => options[:param_style], 
-                                                :default_value => param_value,
+                                                :default_value => CGI::escape(param_value),
                                                 :required => is_mandatory,
                                                 :is_global => !options[:make_local])
             extracted_param.submitter = user_submitting
             extracted_param.save!
-          end
-          
-          no_param_for_method = RestParameter.check_duplicate(self, param_name, options[:make_local]).nil?
-
-          if no_param_for_method
+            
             @method_param_map = RestMethodParameter.new(:rest_method_id => self.id,
                                                         :rest_parameter_id => extracted_param.id,
                                                         :http_cycle => "request")
@@ -193,16 +191,11 @@ class RestMethod < ActiveRecord::Base
             @method_param_map.save!
             
             extracted_param_count += 1
+          else
+            extracted_param.default_value = CGI::escape(param_value)
+            extracted_param.required = is_mandatory unless extracted_param.param_style=="template"
+            extracted_param.save!
           end
-
-          begin
-            extracted_param.create_annotations({"example_data" => "#{param_name}=#{param_value}"}, user_submitting) unless param_value.empty?
-          rescue Exception => ex
-            logger.error("Failed to create annotations for RestParameter with ID: #{extracted_param.id}. Exception:")
-            logger.error(ex.message)
-            logger.error(ex.backtrace.join("\n"))
-          end
-          
         end # transaction
       rescue Exception => ex
         @method_param_map.destroy if @method_param_map
@@ -243,13 +236,14 @@ class RestMethod < ActiveRecord::Base
 
       begin
         transaction do
-          representation = RestRepresentation.new(:content_type => content_type)
-          representation.submitter = user_submitting
-          representation.save!
-          
-          no_representation = RestRepresentation.check_duplicate(self, content_type, options[:http_cycle]).nil?
+          representation = RestRepresentation.check_duplicate(self, content_type, options[:http_cycle])
+          no_representation = representation.nil?
           
           if no_representation
+            representation = RestRepresentation.new(:content_type => content_type)
+            representation.submitter = user_submitting
+            representation.save!
+
             @method_rep_map = RestMethodRepresentation.new(:rest_method_id => self.id,
                                                            :rest_representation_id => representation.id,
                                                            :http_cycle => options[:http_cycle])

@@ -42,10 +42,11 @@
                                                     :rest_method_id => rest_method_id) -%>
             &nbsp; &nbsp;
               
-            <%= link_to "delete", { :id => parameter.id, 
-                                  :action => :remove_constraint,
-                                  :constraint => c,
-                                  :rest_method_id => rest_method_id}, 
+            <%= link_to "delete", {:id => parameter.id, 
+                                   :controller => :rest_parameters,
+                                   :action => :remove_constraint,
+                                   :constraint => c,
+                                   :rest_method_id => rest_method_id}, 
                                   :confirm => "Are you you want to delete this constraint?  This cannot be undone.",
                                   :method => :put if can_edit -%>
           </span>
@@ -56,7 +57,7 @@
 		
 		<% if logged_in? %>
       <%= render :partial => "rest_parameters/add_constraint_box",
-                 :locals => { :partial_from => "constraints",
+                 :locals => { :partial_from => "constrained_options",
                               :parameter_id => parameter.id,
                               :rest_method_id => rest_method_id,
                               :text_area_default_text => "Add a constraint...",

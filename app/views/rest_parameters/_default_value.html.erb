@@ -26,7 +26,7 @@
 
       <span class="none_text" style="font-size: 85%;">
         <% if logged_in? && !can_edit %>
-          You are not allowed to edit the constraints of this parameter.
+          You are not allowed to edit the default value of this parameter.
         <% end %>
       </span>            
     </div>
@@ -41,9 +41,10 @@
                                             :rest_method_id => rest_method_id) -%>
             &nbsp; &nbsp;
             
-            <%= link_to "delete", { :id => parameter.id, 
-                                  :action => :remove_default_value,
-                                  :rest_method_id => rest_method_id}, 
+            <%= link_to "delete", {:id => parameter.id,
+                                   :controller => :rest_parameters,
+                                   :action => :remove_default_value,
+                                   :rest_method_id => rest_method_id}, 
                                   :confirm => "Are you you want to delete the default value.  This cannot be undone.",
                                   :method => :put if can_edit -%>
           </span>
