@@ -1,6 +1,6 @@
 <%
 
-# BioCatalogue: app/views/rest_parameters/_constraints.html.erb
+# BioCatalogue: app/views/rest_parameters/_constrained_options.html.erb
 #
 # Copyright (c) 2009, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -20,10 +20,10 @@
 <% unless parameter.nil? %>
 	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
-		  <b>Constraint(s):</b> 
+		  <b>Constrained Option(s):</b> 
 
       <span>
-        <%= help_icon_with_tooltip("These are 'specifications' stating how a parameter should be used.") %>
+        <%= help_icon_with_tooltip("These are specified values (or range of values) accepted by the parameter.") %>
       </span>
 
       <span class="none_text" style="font-size: 85%;">
@@ -33,31 +33,7 @@
       </span>            
     </div>
 		
-		<div class="box_annotations">
-      <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
-
-        This parameter is 
-        <% if parameter.required %>
-          <b>mandatory</b>.
-          <span style= <%=h make_mandatory_or_optional_style %> >
-            <%= link_to "make optional", :controller => "rest_parameters",
-                                         :action => 'make_optional_or_mandatory',
-                                         :id => parameter.id,
-                                         :rest_method_id => rest_method_id,
-                                         :make_optional => true if can_edit -%>
-          </span>
-        <% else %>
-          <b>optional</b>.
-          <span style= <%=h make_mandatory_or_optional_style %> >
-            <%= link_to "make mandatory", :controller => "rest_parameters",
-                                          :action => 'make_optional_or_mandatory',
-                                          :id => parameter.id,
-                                          :rest_method_id => rest_method_id,
-                                          :make_optional => false if can_edit -%>
-          </span>
-        <% end %>
-      <% end %>
-      
+		<div class="box_annotations">      
       <% parameter.constrained_options.each do |c| %>
         <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
           <%= c %>

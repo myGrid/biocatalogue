@@ -16,8 +16,6 @@
           <% link_text = "Endpoint: #{method.display_endpoint} " %>
           <% if method.endpoint_name %>
             <% link_text += "(#{method.endpoint_name})" %>
-          <% else %>
-            <% link_text += "(<span class='none_text'>No name</span>)" %>
           <% end %>
           
           <%= link_to(link_text, method) -%>
