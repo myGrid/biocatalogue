@@ -79,9 +79,9 @@ class Service < ActiveRecord::Base
               :limit => limit)
   end
   
-  def to_param
-    "#{self.id}-#{self.unique_code}"
-  end
+#  def to_param
+#    "#{self.id}-#{self.unique_code}"
+#  end
   
   def latest_version
     self.service_versions.last
