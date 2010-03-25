@@ -8,9 +8,27 @@
   
 %>
 
-<div>
+<h1>
+	SOAP Operations on Service:
+	<%= link_to display_name(@soap_service.service), service_url(@soap_service.service, :anchor => "operations") -%>
+</h1>
+
+<div style="margin-bottom: 1.5em;">
   <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{display_name(@soap_service.service)}\""),
 						  service_url(@soap_service.service, :anchor => "operations"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
+</div>
+
+<a name='operations_top'></a>
+	
+<div class="operations_quick_browse_box">
+	<span class="heading">
+		Quick Browse:
+	</span>
+	<% @soap_service.soap_operations.each do |op| %>
+		<span style="margin: 0 0.4em;">
+			<%= link_to(display_name(op), op) -%>
+		</span>
+	<% end %>
 </div>
 
 <div class="vtabs_container">
@@ -219,3 +237,7 @@
 		
   </div>
 </div>
+
+<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">
+	<a href="#operations_top">Back to top</a>
+</p>
