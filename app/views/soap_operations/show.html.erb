@@ -116,7 +116,7 @@
 																				
 						<div>
 							<%= create_expand_collapse_link(uniq_id, 
-                                        :link_text => "<b>SOAP Input: <span class='operation_name'>#{display_name(input)}</span></b>", 
+                                        :link_text => "<b><span class='operation_name'>#{display_name(input)}</span></b>", 
                                         :icon_float => "right",
                                         :class => "collapsable_title") -%>
 						</div>
@@ -182,7 +182,7 @@
 						
 						<div>
 							<%= create_expand_collapse_link(uniq_id, 
-                                        :link_text => "<b>SOAP Output: <span class='operation_name'>#{display_name(output)}</span></b>", 
+                                        :link_text => "<b><span class='operation_name'>#{display_name(output)}</span></b>", 
                                         :icon_float => "right",
                                         :class => "collapsable_title") -%>
 						</div>
@@ -238,6 +238,6 @@
   </div>
 </div>
 
-<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">
+<p style="margin: 1.5em 0 1.5em 0; font-size: 93%; text-align: right;">
 	<a href="#operations_top">Back to top</a>
 </p>
