@@ -23,7 +23,9 @@
       <li>http://www.ebi.ac.uk/cgi-bin/dbfetch?db={EMBL}&amp;id={J00231}&amp;style=raw</li>
     </ul><br/>
     
-    In the above example, <b>db</b> and <b>id</b> are extracted as configurable parameters.  In the second endpoint <b>style</b> is treated as a non-configurable parameter i.e. part of the endpoint.<br/>
+    In the above example, <b>db</b> and <b>id</b> are extracted as configurable parameters.  In the second endpoint <b>style</b> is treated as a non-configurable parameter i.e. part of the endpoint.<br/><br/>
+    
+    <b>Note:</b> the value within the curly braces will be added as that parameter's default value.  This can be changed later.
   </div>
   
   <span style="float:right;">
@@ -31,7 +33,7 @@
                                     :link_text => "expand/collapse") -%>
   </span>
   
-  <br/><br/>
+  <br/><br/>    
   The endpoints for this REST service <b>must</b> be preceded by the base URL:
     <b><%=h @rest_service.service.latest_deployment.endpoint -%></b>
 </div>

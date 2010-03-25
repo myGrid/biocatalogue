@@ -147,18 +147,23 @@ class RestService < ActiveRecord::Base
 
     base_url = endpoint.sub(/\/$/, '') # remove trailing '/' from endpoint and copy into base_url
     endpoint.sub!(/\/$/, '') # remove trailing '/' from endpoint
+    base_url.gsub!(/http(s*)\:\/\//i, '') # remove protocol from base
     
-    # remove the base endpoint so that we are left with the resources only.
-    # in the event that the protocol (http or https) is left, remove that too
-    base_url = base_url.gsub(/http(s*)\:\/\//i, '')
-    capture_string.gsub!(/http(s*)\:\/\//i, '')
-    capture_string.gsub!(base_url, '')
-
     # create a list of the resources and try to create the corresponding
     # RestResource, RestMethod, RestParameter, RestMethodParameter objects
-    extracted_endpoints_count = 0 # counter
+    
+    # these lists will be returned in the form of a hash
+    created_endpoints = []
+    updated_endpoints = []
+    error_endpoints = [] 
+    
     resource_list = capture_string.split("\n")
-    resource_list.each do |resource|
+    resource_list.each do |user_endpoint|
+      # remove the base endpoint so that we are left with the resource path only.
+      # in the event that the protocol (http or https) is left, remove that too
+      resource = user_endpoint.gsub(/http(s*)\:\/\//i, '')
+      resource.gsub!(base_url, '')
+
       endpoint_components = resource.split(' ')
       http_method = ""
       resource_path = endpoint_components[-1]
@@ -169,13 +174,18 @@ class RestService < ActiveRecord::Base
         # skip if given HTTP method contains other values other than GET, PUT, POST, and DELETE
         if %w{ GET PUT POST DELETE }.include?(endpoint_components[0].upcase)
           http_method = endpoint_components[0].upcase
-        else next
+        else 
+          error_endpoints << user_endpoint
+          next
         end
       else next
       end
       
       # only work on resource_paths that start with a punctuation mark
-      next unless resource_path =~ /^\W.+$/
+      unless resource_path =~ /^\W.+$/
+        error_endpoints << user_endpoint
+        next
+      end
 
       case resource_path.split('?').size
         when 1
@@ -190,7 +200,9 @@ class RestService < ActiveRecord::Base
           template_params, query_params = resource_path.split('?')
           query_params = query_params.split('&')
           template_params = template_params.split('/')
-        else next
+        else
+          error_endpoints << user_endpoint
+          next
       end
       
       has_query_params_only = (resource_path.start_with?('?') ? true:false)
@@ -230,8 +242,9 @@ class RestService < ActiveRecord::Base
       resource_path = "/{parameters}" if resource_path == '/'
       
       transaction do
-        begin
+        begin # create endpoint
           @extracted_resource = RestResource.check_duplicate(self, resource_path)
+          
           if @extracted_resource.nil?
             @extracted_resource = RestResource.new(:rest_service_id => self.id, 
                                                    :path => resource_path)
@@ -240,20 +253,24 @@ class RestService < ActiveRecord::Base
           end
           
           @extracted_method = RestMethod.check_duplicate(@extracted_resource,http_method)
-          if @extracted_method.nil?
+          
+          if @extracted_method.nil? # create ENDPOINT
             @extracted_method = RestMethod.new(:rest_resource_id => @extracted_resource.id, 
                                                :method_type => http_method)
             @extracted_method.submitter = user_submitting
             @extracted_method.save!
-            
-            extracted_endpoints_count += 1
+                      
+            created_endpoints << @extracted_method.display_endpoint
+          else # update existing
+            updated_endpoints << @extracted_method.display_endpoint
           end
         rescue 
           # no need to proceed with iteration since params will not have a resource object to attach to
+          error_endpoints << user_endpoint
           next
         end # begin_rescue
         
-        begin
+        begin # add example endpoint annotation
           endpoint_components[-1].gsub!('{', '')
           endpoint_components[-1].gsub!('}', '')
           
@@ -265,6 +282,7 @@ class RestService < ActiveRecord::Base
           logger.error(ex.backtrace.join("\n"))
         end
         
+        # add parameters
         @extracted_method.add_parameters(template_params.join("\n"), user_submitting, 
                                                                      :mandatory => true, 
                                                                      :param_style => "template",
@@ -275,12 +293,16 @@ class RestService < ActiveRecord::Base
                                                                   :param_style => "query",
                                                                   :make_local => true)
 
+        # add representations
         @extracted_method.add_representations(output_representation, user_submitting) unless output_representation.blank?
       end # transaction
     end # resource_list.each
     
     self.rest_resources(true) # refresh the model
-    return extracted_endpoints_count
+    
+    return {:created => created_endpoints, 
+            :updated => updated_endpoints, 
+            :error => error_endpoints}
   end # mine_for_resources
 
 

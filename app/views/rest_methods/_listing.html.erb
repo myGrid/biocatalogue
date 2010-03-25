@@ -14,11 +14,8 @@
       <div class="listing_item">
         <p class="name">
           <% link_text = "Endpoint: #{method.display_endpoint} " %>
-          <% if method.endpoint_name %>
-            <% link_text += "(#{method.endpoint_name})" %>
-          <% end %>
-          
           <%= link_to(link_text, method) -%>
+          <%= "<i style='font-size:80%; float:right;'>#{method.endpoint_name}</i>" if method.endpoint_name -%>
         </p>
                 
         <p class="detail faded">

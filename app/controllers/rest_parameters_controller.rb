@@ -150,10 +150,33 @@ class RestParametersController < ApplicationController
     resource = @rest_method.rest_resource # for redirection
     service = resource.rest_service.service # for redirection
     
-    count = @rest_method.add_parameters(params[:rest_parameters], current_user, :make_local => true)
+    results = @rest_method.add_parameters(params[:rest_parameters], current_user, :make_local => true)
     
     respond_to do |format|
-      flash[:notice] = "#{count} new parameter" + (count==1 ? ' was':'s were') + ' added'
+      unless results[:created].blank?
+        flash[:notice] ||= ""
+        flash[:notice] += "The following parameters were successfully created:<br/>"
+        results[:created].each { |e| 
+          flash[:notice] += (e==results[:created][0] ? "#{e}" : " , #{e}")
+        }
+        flash[:notice] += "<br/><br/>"
+      end
+      
+      unless results[:updated].blank?
+        flash[:notice] ||= ""
+        flash[:notice] += "The following parameters already exist and have been updated:<br/>"
+        results[:updated].each { |e| 
+          flash[:notice] += (e==results[:updated][0] ? "#{e}" : " , #{e}")
+        }
+      end
+      
+      unless results[:error].blank?
+        flash[:error] = "The following parameters could not be added:<br/>"
+        results[:error].each { |e| 
+          flash[:error] += (e==results[:error][0] ? "#{e}" : " , #{e}")
+        }
+      end
+      
       format.html { redirect_to @rest_method }
     end
   end

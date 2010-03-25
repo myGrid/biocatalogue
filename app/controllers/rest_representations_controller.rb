@@ -24,10 +24,33 @@ class RestRepresentationsController < ApplicationController
     resource = @rest_method.rest_resource # for redirection
     service = resource.rest_service.service # for redirection
     
-    count = @rest_method.add_representations(params[:rest_representations], current_user, :http_cycle => params[:http_cycle])
+    results = @rest_method.add_representations(params[:rest_representations], current_user, :http_cycle => params[:http_cycle])
     
     respond_to do |format|
-      flash[:notice] = "#{count} new representation" + (count==1 ? ' was':'s were') + ' added'
+      unless results[:created].blank?
+        flash[:notice] ||= ""
+        flash[:notice] += "The following representations were successfully created:<br/>"
+        results[:created].each { |e| 
+          flash[:notice] += (e==results[:created][0] ? "#{e}" : " , #{e}")
+        }
+        flash[:notice] += "<br/><br/>"
+      end
+      
+      unless results[:updated].blank?
+        flash[:notice] ||= ""
+        flash[:notice] += "The following parameters already exist:<br/>"
+        results[:updated].each { |e| 
+          flash[:notice] += (e==results[:updated][0] ? "#{e}" : " , #{e}")
+        }
+      end
+      
+      unless results[:error].blank?
+        flash[:error] = "The following representations could not be added:<br/>"
+        results[:error].each { |e| 
+          flash[:error] += (e==results[:error][0] ? "#{e}" : " , #{e}")
+        }
+      end
+
       format.html { redirect_to @rest_method }
     end
   end

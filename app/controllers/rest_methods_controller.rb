@@ -109,10 +109,10 @@ class RestMethodsController < ApplicationController
       if rest_service.rest_resources.blank?
         redirect_url = service_url(service) + '#endpoints'
       else
-        redirect_url = rest_method_url(rest_service.rest_resources[0].rest_methods[0])
+        redirect_url = rest_method_url(rest_service.rest_resources.sort[0].rest_methods.sort[0])
       end
     else
-      redirect_url = rest_method_url(rest_resource.rest_methods[0])
+      redirect_url = rest_method_url(rest_resource.rest_methods.sort[0])
     end
     
     # destroy any unused parameters and representations

@@ -138,9 +138,13 @@ class RestMethod < ActiveRecord::Base
     return unless %w{ template query matrix header }.include?(options[:param_style])
     # sanitize user input
     chomp_strip_squeeze(capture_string)
+    
+    # these lists will be returned in the form of a hash
+    created_params = []
+    updated_params = []
+    error_params = [] 
 
     # iterate and create objects
-    extracted_param_count = 0
     capture_string.split("\n").sort.each do |param| # params_list.each
       chomp_strip_squeeze(param)
 
@@ -165,20 +169,24 @@ class RestMethod < ActiveRecord::Base
       param_name.gsub!('}', '')
       param_value.gsub!('{', '')
       param_value.gsub!('}', '')
-      param_value = nil if param_value.blank?
-      
+
+      param_value = CGI::escape(param_value) unless param_value.blank?
+
       # next if param name contains non-alphanumeric characters
-      next if param_name.gsub('-', '_') =~ /\W/
-      
+      if param_name.gsub('-', '_') =~ /\W/
+        error_params << param_name
+        next
+      end
+
       begin
         transaction do
           extracted_param = RestParameter.check_duplicate(self, param_name, options[:make_local])
           no_param_for_method = extracted_param.nil?
           
-          if no_param_for_method
+          if no_param_for_method # create a new param
             extracted_param = RestParameter.new(:name => param_name, 
                                                 :param_style => options[:param_style], 
-                                                :default_value => CGI::escape(param_value),
+                                                :default_value => param_value,
                                                 :required => is_mandatory,
                                                 :is_global => !options[:make_local])
             extracted_param.submitter = user_submitting
@@ -189,20 +197,26 @@ class RestMethod < ActiveRecord::Base
                                                         :http_cycle => "request")
             @method_param_map.submitter = user_submitting
             @method_param_map.save!
-            
-            extracted_param_count += 1
-          else
-            extracted_param.default_value = CGI::escape(param_value)
+
+            created_params << param_name
+          else # update existing param
+            extracted_param.default_value = param_value
             extracted_param.required = is_mandatory unless extracted_param.param_style=="template"
             extracted_param.save!
+
+            updated_params << param_name
           end
         end # transaction
       rescue Exception => ex
         @method_param_map.destroy if @method_param_map
+        error_params << param_name
+        next
       end # begin_rescue
     end # params_list.each
     
-    return extracted_param_count
+    return {:created => created_params,
+            :updated => updated_params, 
+            :error => error_params}
   end
 
   # This method adds RestRepresentations to this RestMethod.
@@ -223,23 +237,33 @@ class RestMethod < ActiveRecord::Base
     content_types.strip!
     content_types.squeeze!(" ")
 
+    # these lists will be returned in the form of a hash
+    created_types = []
+    updated_types = []
+    error_types = [] 
+
     # iterate and create objects
-    extracted_rep_count = 0
     content_types.split("\n").sort.each do |content_type| # params_list.each
       content_type.chomp!
       content_type.downcase!
       
-      next if content_type.split('/').size != 2
+      if content_type.split('/').size != 2
+        error_types << content_type
+        next
+      end
       
       base_type, sub_type = content_type.split('/')
-      next unless SUPPORTED_CONTENT_TYPES.include?(base_type)
+      unless SUPPORTED_CONTENT_TYPES.include?(base_type)
+        error_types << content_type
+        next
+      end
 
       begin
         transaction do
           representation = RestRepresentation.check_duplicate(self, content_type, options[:http_cycle])
           no_representation = representation.nil?
           
-          if no_representation
+          if no_representation # create new representation
             representation = RestRepresentation.new(:content_type => content_type)
             representation.submitter = user_submitting
             representation.save!
@@ -250,15 +274,21 @@ class RestMethod < ActiveRecord::Base
             @method_rep_map.submitter = user_submitting
             @method_rep_map.save!
            
-            extracted_rep_count += 1
+            created_types << content_type
+          else
+            updated_types << content_type
           end
         end # transaction
       rescue Exception => ex
         @method_rep_map.destroy if @method_rep_map
+        error_types << content_type
+        next
       end # begin_rescue
     end
     
-    return extracted_rep_count
+    return {:created => created_types,
+            :updated => updated_types,
+            :error => error_types}
   end
   
   

@@ -20,10 +20,32 @@ class RestResourcesController < ApplicationController
   end
   
   def add_new_resources
-    count = @rest_service.mine_for_resources(params[:rest_resources], @rest_service.service_deployments[0].endpoint, current_user)
+    results = @rest_service.mine_for_resources(params[:rest_resources], @rest_service.service_deployments[0].endpoint, current_user)
     
     respond_to do |format|
-      flash[:notice] = "#{count} new " + (count==1 ? 'endpoint was':'endpoints were') + ' added'
+      unless results[:created].blank?
+        flash[:notice] ||= ""
+        flash[:notice] += "The following endpoints were successfully created:<br/>"
+        results[:created].each { |e| 
+          flash[:notice] += (e==results[:created][0] ? "#{e}" : " , #{e}")
+        }
+        flash[:notice] += "<br/><br/>"
+      end
+      
+      unless results[:updated].blank?
+        flash[:notice] ||= ""
+        flash[:notice] += "The following endpoints already exist and have been updated:<br/>"
+        results[:updated].each { |e| 
+          flash[:notice] += (e==results[:updated][0] ? "#{e}" : " , #{e}")
+        }
+      end
+      
+      unless results[:error].blank?
+        flash[:error] = "The following endpoints could not be added:<br/>"
+        results[:error].each { |e| 
+          flash[:error] += (e==results[:error][0] ? "#{e}" : " , #{e}")
+        }
+      end
       
       redirect_url = if request.env["HTTP_REFERER"].include?('/rest_methods/')
                        request.env["HTTP_REFERER"] # redirect_to :back
