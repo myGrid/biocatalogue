@@ -420,7 +420,7 @@ class ApplicationController < ActionController::Base
   # - contain filter params in the required Filter params spec. See: generate_include_filter_url above for ref.
   def generate_filter_url(new_params, resource, format=nil)
     # Remove special params
-    new_params_cleaned = BioCatalogue::Util.remove_rails_special_params_from(new_params).reject{|k,v| [ "page", "namespace", "include", "also" ].include?(k.to_s.downcase) }
+    new_params_cleaned = BioCatalogue::Util.remove_rails_special_params_from(new_params).reject{|k,v| [ "limit", "page", "namespace", "include", "also" ].include?(k.to_s.downcase) }
     
     unless format.nil?
       if format == :html
