@@ -10,7 +10,11 @@ class LookupController < ApplicationController
     obj = BioCatalogue::Util.lookup(params)
     
     if obj
-      redirect_to obj
+      respond_to do |format|
+        format.html { redirect_to url_for_web_interface(obj) }
+        format.xml  { redirect_to "#{url_for(obj)}.xml" }
+        format.json  { redirect_to "#{}url_for(obj)}.json" }
+      end
     else
       raise ActiveRecord::RecordNotFound.new
     end
