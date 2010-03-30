@@ -149,6 +149,8 @@
 						<%= h s_d.location -%>
 						<%= flag_icon_from_country(s_d.country, :text => loc) -%>
 						<br/>
+					<% else %>
+						<span class="none_text">not available</span>
 					<% end %>
 				<% end %>
 			</p>
