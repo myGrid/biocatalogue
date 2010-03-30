@@ -73,16 +73,12 @@
 			<div style="text-align: right;">
 				<table style="width: 185px; margin-bottom: 1em;">
 					<tr>
-						<td style="text-align: right; width: 80px;">
-							<%= link_to("permalink", service_url(@service), :style => "font-size: 85%;") -%>
-					
-							<br/><br/>
-							
+						<td style="text-align: right; width: 80px; vertical-align: middle;">
 							<%= link_to "View the comments on this service", 
 													service_url(@service, :anchor => "disqus_thread"),
 													:style => "font-size: 85%;" -%>
 						</td>
-						<td style="text-align: right; padding-left: 25px; width: 50px;">
+						<td style="text-align: right; padding-left: 25px; width: 50px; vertical-align: middle;">
 							<%= service_latest_status_symbol(@service) -%>
 						</td>
 					</tr>

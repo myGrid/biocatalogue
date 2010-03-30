@@ -3103,6 +3103,11 @@ div.resize-handle {
 	float: right; 
 	font-size: 77%;
 	vertical-align: middle;
+	position: relative;
+}
+
+.header_right_bar * {
+	vertical-align: middle;
 }
 
 .header_right_bar .actions_button {

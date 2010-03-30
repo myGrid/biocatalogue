@@ -13,6 +13,7 @@
 <h1>
 	SOAP Operations on Service:
 	<%= link_to display_name(@soap_service.service), service_url(@soap_service.service, :anchor => "operations") -%>
+	<span class="faded">(<%= @soap_service.soap_operations.length -%>)</span>
 </h1>
 
 <div style="margin-bottom: 1.5em;">
