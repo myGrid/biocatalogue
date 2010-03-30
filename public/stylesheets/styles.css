@@ -3221,6 +3221,10 @@ div.resize-handle {
 	padding-bottom: 0.5em;
 }
 
+.collapsable_title a:hover {
+	background-color: #DDD;
+}
+
 .actions_link_container a {
   color: grey;
   text-decoration: none;
