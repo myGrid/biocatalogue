@@ -679,6 +679,8 @@ module ApplicationHelper
   # This method will create an dropdown title (in the form of a link) 
   # which allows the components to be expanded or collapsed.
   #
+  # If a block is passed then that is yielded to instead of using the :link_text config below.
+  #
   # CONFIGURATION OPTIONS (all these options are optional)
   #  :link_text - text to be displayed as part of the link.
   #    default: update_element_id (the ID of the element to be expanded or collapsed)
@@ -688,7 +690,7 @@ module ApplicationHelper
   #    default: "5px"
   #  :icon_float - the CSS float value for the icon i.e. 'left', right', etc.  This OVERRIDES :icon_left_margin
   #    default: ''
-  def create_expand_collapse_link(update_element_id, *args)
+  def create_expand_collapse_link(update_element_id, *args, &block)
     return '' if update_element_id.blank?
     
     options = args.extract_options!
@@ -697,9 +699,15 @@ module ApplicationHelper
                            :class => nil,
                            :icon_left_margin => "5px",
                            :icon_float => "")
+                           
+    link_text = if block_given?
+      capture(&block)
+    else
+      options[:link_text]
+    end
 
-    expand_link = options[:link_text] + expand_image(options[:icon_left_margin], options[:icon_float])
-    collapse_link = options[:link_text] + collapse_image(options[:icon_left_margin], options[:icon_float])
+    expand_link = expand_image(options[:icon_left_margin], options[:icon_float]) + link_text
+    collapse_link = collapse_image(options[:icon_left_margin], options[:icon_float]) + link_text
 
     expand_link_id = update_element_id + '_name_more_link'
     collapse_link_id = update_element_id + '_name_less_link'
@@ -715,8 +723,14 @@ module ApplicationHelper
                             end 
                             
     span_content = expand_link_content + collapse_link_content
-
-    return content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline;")
+    
+    content = content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline;")
+    
+    if block_given?
+      return concat(content, block.binding)
+    else
+      return content
+    end
   end
   
   def display_text_for_sort_by(sort_by)

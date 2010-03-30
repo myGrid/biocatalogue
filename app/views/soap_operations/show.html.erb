@@ -120,13 +120,23 @@
 					<div class="port">
 																				
 						<div>
-							<%= create_expand_collapse_link(uniq_id, 
-                                        :link_text => "<b><span class='operation_name'>#{display_name(input)}</span></b>", 
+							<% create_expand_collapse_link(uniq_id, 
                                         :icon_float => "right",
-                                        :class => "collapsable_title") -%>
+                                        :class => "collapsable_title") do -%>
+								
+								<div>
+									<span class='operation_name'><%= display_name(input) -%></span>
+								</div>
+								<% unless (desc = input.preferred_description).blank? %>
+									<div style="font-style: italic; color: #666; margin-top: 0.6em;">
+										<%= annotation_prepare_description(desc, true, 150, false) -%>
+									</div>
+								<% end %>
+								
+							<% end %>
 						</div>
 						
-						<div id="<%= uniq_id -%>" style="display: none;">
+						<div id="<%= uniq_id -%>" style="display: none; margin-top: 0.7em;">
 						
 							<div style="float: left; width: 73%;">
 								<% if false %>
@@ -186,13 +196,23 @@
 					<div class="port">
 						
 						<div>
-							<%= create_expand_collapse_link(uniq_id, 
-                                        :link_text => "<b><span class='operation_name'>#{display_name(output)}</span></b>", 
+							<% create_expand_collapse_link(uniq_id, 
                                         :icon_float => "right",
-                                        :class => "collapsable_title") -%>
+                                        :class => "collapsable_title") do -%>
+								
+								<div>
+									<span class='operation_name'><%= display_name(output) -%></span>
+								</div>
+								<% unless (desc = output.preferred_description).blank? %>
+									<div style="font-style: italic; color: #666; margin-top: 0.6em;">
+										<%= annotation_prepare_description(desc, true, 150, false) -%>
+									</div>
+								<% end %>
+								
+							<% end %>
 						</div>
 						
-						<div id="<%= uniq_id -%>" style="display: none;">
+						<div id="<%= uniq_id -%>" style="display: none; margin-top: 0.7em;">
 						
 							<div style="float: left; width: 73%;">
 								<% if false %>

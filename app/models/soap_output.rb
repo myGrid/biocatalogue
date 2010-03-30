@@ -28,6 +28,19 @@ class SoapOutput < ActiveRecord::Base
     acts_as_activity_logged(:models => { :referenced => { :model => :soap_operation } })
   end
   
+  def preferred_description
+    # Either the description from the service description doc, 
+    # or the last description annotation.
+    
+    desc = self.description
+    
+    if desc.blank?
+      desc = self.annotations_with_attribute("description").first.try(:value)
+    end
+    
+    return desc
+  end
+  
   protected
   
   def associated_service_id

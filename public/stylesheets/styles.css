@@ -1364,6 +1364,9 @@ a.service_location_flag {
 	font-weight: bold;
 	padding: 0.3em 0.5em;
 	vertical-align: baseline;
+	display:-moz-inline-block;
+	display:-moz-inline-box;
+	display: inline-block;
 }
 
 .port {
