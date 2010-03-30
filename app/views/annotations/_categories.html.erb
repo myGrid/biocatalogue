@@ -30,7 +30,7 @@
 								<% category = Category.find_by_id(category_annotation.value) %>
 								<% unless category.nil? %>
 									<li>
-										<span class="main">
+										<span class="main shadow-small">
 											<%= link_to(h(category.name),
 																	services_path(:cat => "[#{category.id}]"),
 																	:class => "category",

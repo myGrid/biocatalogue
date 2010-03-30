@@ -276,6 +276,12 @@ img, a img {
     padding: 3px 5px 3px 5px;
 }
 
+.shadow-small {
+	-moz-box-shadow: 1px 1px 0px #999;
+	-webkit-box-shadow: 1px 1px 0px #999;
+	box-shadow: 1px 1px 0px #999;
+}
+
 .standout_link {
 	color: #333333;
 	border: 1px solid #EED799; 
@@ -2860,10 +2866,13 @@ ul.categories li span.main {
 	margin-bottom: 0.4em;
 	margin-right: 0.5em;
 	padding: 1px 4px;
+	/*
 	border-top: 1px solid #DEDEDE;
 	border-left: 1px solid #DEDEDE;
 	border-right: 1px solid #999;
 	border-bottom: 1px solid #999;
+	*/
+	border: 1px solid #DDD;
 	border-radius: 2px;
 	-moz-border-radius: 2px;
 	-webkit-border-radius: 2px;
