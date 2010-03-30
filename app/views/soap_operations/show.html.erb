@@ -8,6 +8,8 @@
   
 %>
 
+<% t "#{display_name(@soap_operation)} (on Service: #{display_name(@soap_service.service)})" -%>
+
 <h1>
 	SOAP Operations on Service:
 	<%= link_to display_name(@soap_service.service), service_url(@soap_service.service, :anchor => "operations") -%>
