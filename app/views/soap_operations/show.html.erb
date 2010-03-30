@@ -24,10 +24,10 @@
 	
 <div class="operations_quick_browse_box">
 	<span class="heading">
-		Quick Browse:
+		Quick Browse
 	</span>
 	<% @soap_service.soap_operations.each do |op| %>
-		<span style="margin: 0 0.4em;">
+		<span class="entry">
 			<%= link_to(display_name(op), op) -%>
 		</span>
 	<% end %>
