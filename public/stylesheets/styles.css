@@ -1653,7 +1653,7 @@ ul.tabbernav li a
 {
 	padding: 3px 0.5em;
 	margin-right: 4px;
-	border: 1px solid #BBB;
+	border: 1px solid #DDD;
 	border-bottom: none;
 	background-image: url('/images/tab-bg.png');
 	background-position: top;
@@ -3338,6 +3338,6 @@ a:hover.make_optional_link  {
 .operations_quick_browse_box .entry a.active,
 .operations_quick_browse_box .entry a:hover {
 	border: 1px dotted #CCC;
-	background-color: #FFF;
+	background-color: #DDE;
 }
 	
