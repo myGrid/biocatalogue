@@ -679,7 +679,7 @@ module ApplicationHelper
   # This method will create an dropdown title (in the form of a link) 
   # which allows the components to be expanded or collapsed.
   #
-  # If a block is passed then that is yielded to instead of using the :link_text config below.
+  # If a block is passed then the contents of the block is used instead of :link_text config below.
   #
   # CONFIGURATION OPTIONS (all these options are optional)
   #  :link_text - text to be displayed as part of the link.
