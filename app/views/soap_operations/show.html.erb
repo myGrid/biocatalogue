@@ -126,7 +126,7 @@
                                         :class => "collapsable_title") do -%>
 								
 								<div>
-									<span class='operation_name'><%= display_name(input) -%></span>
+									<%= display_name(input) -%>
 								</div>
 								<% unless (desc = input.preferred_description).blank? %>
 									<div style="font-style: italic; color: #666; margin-top: 0.6em;">
@@ -202,7 +202,7 @@
                                         :class => "collapsable_title") do -%>
 								
 								<div>
-									<span class='operation_name'><%= display_name(output) -%></span>
+									<%= display_name(output) -%>
 								</div>
 								<% unless (desc = output.preferred_description).blank? %>
 									<div style="font-style: italic; color: #666; margin-top: 0.6em;">
