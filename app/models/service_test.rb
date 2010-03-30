@@ -38,7 +38,8 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def recent_test_results(limit=5)
-    self.test_results.last(limit) || [ TestResult.new(:result => -1, :created_at => Time.now) ]
+    TestResult.find(:all, :conditions => ["service_test_id=?", self.id], 
+                          :limit => limit, :order => 'created_at DESC') || [ TestResult.new(:result => -1, :created_at => Time.now) ]
   end
   
   def latest_status
