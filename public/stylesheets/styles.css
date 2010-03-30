@@ -1706,6 +1706,9 @@ ul.tabbernav li.tabberactive a:hover
 	padding: 1em;
 	border: 1px solid #BBB;
 	border-top: 0;
+	-moz-box-shadow: 1px 1px 1px #999;
+	-webkit-box-shadow: 1px 1px 1px #999;
+	box-shadow: 1px 1px 1px #999;
 
  /* If you don't want the tab size changing whenever a tab is changed
     you can set a fixed height */
@@ -1826,6 +1829,9 @@ ul.tabbernav li.tabberactive a:hover
 	width: 82%; 
 	padding: 1em;
 	border: 1px solid #BBB;
+	-moz-box-shadow: 1px 1px 1px #999;
+	-webkit-box-shadow: 1px 1px 1px #999;
+	box-shadow: 1px 1px 1px #999;
 }
 
 /* END Vertical tabs styles */
