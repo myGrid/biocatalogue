@@ -3112,6 +3112,7 @@ div.resize-handle {
 	display: inline-block;
 	vertical-align: baseline;
 	border: 1px solid #DDD;
+	background-color: #F5F5F5;
 }
 
 .header_right_bar .actions_button * {
