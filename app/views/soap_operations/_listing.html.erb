@@ -10,6 +10,7 @@
 
 <div class="listings">
 	<% items.each do |op| %>
+		<a name='<%= "soap_operation_#{op.id}" -%>'></a>
 		<div class="listing_item">
 			<p class="name">
 				<%= link_to(display_name(op), op) -%>
