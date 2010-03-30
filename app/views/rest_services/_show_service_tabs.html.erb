@@ -22,7 +22,7 @@
   <% resources.each { |res| endpoint_count += res.rest_methods.size } %>
   <h3>Endpoints (<%= endpoint_count -%>)</h3>
 
-	<a name='operations_top'></a>
+	<a name='endpoints_top'></a>
 	
   <%= add_endpoints_by_popup(service_version_instance, 
                              :style => "padding:7px; line-height:6px; text-align:center;", 
@@ -34,13 +34,13 @@
 
 	<div class="operations_quick_browse_box">
 		<span class="heading">
-			Quick Browse:
+			Quick Browse
 		</span>
     
 		<% resources.each do |res| %>
       <% res.rest_methods.sort.each do |meth| %>
-        <span style="margin: 0 0.4em;">
-          <%= link_to meth.display_endpoint, meth -%>
+        <span class="entry">
+          <%= link_to display_name(meth), meth -%>
         </span>
       <% end %>
 		<% end %>
@@ -52,7 +52,7 @@
              :locals => { :items => resources, :base_endpoint => base_endpoint } -%>
 
 	<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">
-		<a href="#operations_top">Back to top</a>
+		<a href="#endpoints_top">Back to top</a>
 	</p>
   
 </div>

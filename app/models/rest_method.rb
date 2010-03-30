@@ -167,11 +167,9 @@ class RestMethod < ActiveRecord::Base
       # sanitize ie get rid of special syntax
       param_name.gsub!('{', '')
       param_name.gsub!('}', '')
-      param_value.gsub!('{', '')
-      param_value.gsub!('}', '')
-
-      param_value = CGI::escape(param_value) unless param_value.blank?
-
+      
+      param_value = nil if param_value.gsub('-', '_') =~ /\W/
+      
       # next if param name contains non-alphanumeric characters
       if param_name.gsub('-', '_') =~ /\W/
         error_params << param_name
@@ -186,7 +184,6 @@ class RestMethod < ActiveRecord::Base
           if no_param_for_method # create a new param
             extracted_param = RestParameter.new(:name => param_name, 
                                                 :param_style => options[:param_style], 
-                                                :default_value => param_value,
                                                 :required => is_mandatory,
                                                 :is_global => !options[:make_local])
             extracted_param.submitter = user_submitting
@@ -200,11 +197,19 @@ class RestMethod < ActiveRecord::Base
 
             created_params << param_name
           else # update existing param
-            extracted_param.default_value = param_value
             extracted_param.required = is_mandatory unless extracted_param.param_style=="template"
             extracted_param.save!
 
             updated_params << param_name
+          end
+
+          # add annotations
+          begin
+            extracted_param.create_annotations({"example_data" => "#{param_name}=#{param_value}"}, user_submitting) unless param_value.blank?
+          rescue Exception => ex
+            logger.error("Failed to create annotations for RestParameter with ID: #{extracted_param.id}. Exception:")
+            logger.error(ex.message)
+            logger.error(ex.backtrace.join("\n"))
           end
         end # transaction
       rescue Exception => ex
@@ -214,9 +219,9 @@ class RestMethod < ActiveRecord::Base
       end # begin_rescue
     end # params_list.each
     
-    return {:created => created_params,
-            :updated => updated_params, 
-            :error => error_params}
+    return {:created => created_params.uniq,
+            :updated => updated_params.uniq, 
+            :error => error_params.uniq}
   end
 
   # This method adds RestRepresentations to this RestMethod.
@@ -286,9 +291,9 @@ class RestMethod < ActiveRecord::Base
       end # begin_rescue
     end
     
-    return {:created => created_types,
-            :updated => updated_types,
-            :error => error_types}
+    return {:created => created_types.uniq,
+            :updated => updated_types.uniq,
+            :error => error_types.uniq}
   end
   
   

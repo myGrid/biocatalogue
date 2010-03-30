@@ -8,7 +8,14 @@
   
 %>
 
-<div>
+<% t "Details for endpoint: #{@rest_method.display_endpoint}" %>
+
+<h1>
+	REST Endpoints on Service:
+	<%= link_to display_name(@rest_service.service), service_url(@rest_service.service, :anchor => "endpoints") -%>
+</h1>
+
+<div style="margin-bottom: 1.5em;">
   <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{display_name(@rest_service.service)}\""),
 						  service_url(@rest_service.service, :anchor => "endpoints"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
 
@@ -16,6 +23,22 @@
                                :style => "float:none;", 
                                :class => "button_slim") %>
 
+</div>
+
+<a name='endpoints_top'></a>
+	
+<div class="operations_quick_browse_box">
+	<span class="heading">
+		Quick Browse
+	</span>
+
+  <% @rest_service.rest_resources.sort.each do |res| %>
+    <% res.rest_methods.sort.each do |meth| %>
+      <span class="entry">
+        <%= link_to display_name(meth), meth -%>
+      </span>
+    <% end %>
+  <% end %>
 </div>
 
 <div class="vtabs_container">
@@ -96,7 +119,7 @@
       <%= render :partial => "rest_representations/representation", 
                  :locals => {:method => @rest_method, 
                              :resource => resource,
-                             :is_http_request => true} -%>
+                             :is_http_request => true} if %w{ POST PUT }.include?(@rest_method.method_type) -%>
 
       <%= render :partial => "rest_representations/representation", 
                  :locals => {:method => @rest_method, 
@@ -106,3 +129,7 @@
     </div>
   </div>
 </div>
+
+<p style="margin: 1.5em 0 1.5em 0; font-size: 93%; text-align: right;">
+	<a href="#endpoints_top">Back to top</a>
+</p>

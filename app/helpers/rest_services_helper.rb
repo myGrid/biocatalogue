@@ -164,18 +164,16 @@ module RestServicesHelper
   # Service can be used.
   def create_url_template(base_url, resource, method)
     return '' if base_url.blank? || resource.blank? || method.blank?
+
+    base_url.sub!(/\/$/, '') # remove trailing '/' from base endpoint
     
     required_params = []
     
     resource_path = resource.path.sub(/^\/\?/, '?') # change "/?" to "?"
     
-    method.request_parameters.select{ |p| p.param_style=="query" && p.required }.each do |p| 
-      unless p.default_value.blank?
-        required_params << "#{p.name}=#{p.default_value}"
-      else
+    method.request_parameters.select{ |p| 
+      p.param_style=="query" && p.required }.each do |p| 
         required_params << "#{p.name}={#{p.name}}"
-      end
-      
     end
     
     required_params = required_params.sort.join('&')
@@ -203,6 +201,12 @@ module RestServicesHelper
                         "#{base_url + resource_path}#{required_params}"
                       end
                     end)
+
+    # TODO: fix double slash bug in template
+    # this is a temporary hack to remove "//" that appear in some templates.
+    # i have not figure out exactly what is causing it, hence this dirty patch.
+    url_template.squeeze!('/')
+    url_template.sub!(':/', '://') # compensation of squeeze
     
     return url_template
   end

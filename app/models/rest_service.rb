@@ -191,32 +191,40 @@ class RestService < ActiveRecord::Base
         when 1
           if resource_path.split('?')[0].start_with?('/') # yes == a resource path
             query_params = []
-            template_params = resource_path.split('?')[0].split('/')
+            template_params = resource_path.split('?')[0].split('{')
+            resource_path = resource_path.split('?')[0].split('/')
           else # params only
             template_params = []
+            resource_path = []
             query_params = resource_path.split('?')[0].split('&')
           end
         when 2
           template_params, query_params = resource_path.split('?')
           query_params = query_params.split('&')
-          template_params = template_params.split('/')
+          template_params = template_params.split('{')
+          resource_path = resource_path.split('?')[0].split('/')
         else
           error_endpoints << user_endpoint
           next
       end
-      
-      has_query_params_only = (resource_path.start_with?('?') ? true:false)
+            
+      skip_to_next = false
+      template_params.each { |p| 
+        p.gsub!(/\}.*/, '') # remove everything after '}'
 
-      # get resource path components
-      resource_path = template_params.reject { |x| x.blank? }
-      
-      # this will be used to determine the representation
-      extra_param = has_query_params_only ? "" : resource_path[-1]
-      extra_param ||= ""
-      
-      # only keep the template params that have format: {param} || {param_name} || {param-name}
-      template_params.reject! { |x| !x.gsub('-', '_').match(/^\{\w+\}$/) }
+        # only keep the template params that have format: param || param_name || param-name
+        skip_to_next unless p.gsub('-', '_').match(/^\w+$/)
+        break if skip_to_next
+      } 
+        
+      if skip_to_next
+        error_endpoints << user_endpoint
+        next
+      end
 
+      template_params.reject! { |x| x.blank? }
+      resource_path.reject! { |x| x.blank? }
+      
       # get the query params that define the service
       # ie query params that have format: param_name=param_value
       base_url_params = query_params.select { |x| x.match(/^\w+\=\w+$/) }
@@ -224,13 +232,7 @@ class RestService < ActiveRecord::Base
       # only keep the configurable params to the service
       # ie keep the query params that have format: param_name={anything}
       query_params.reject! { |x| !x.match(/^\w+\=\{.+\}$/) }
-      
-      if !has_query_params_only && extra_param.match(/^.+\.\w+$/) # format: anything.word
-        output_representation = 'application/' + extra_param.split('.')[-1].downcase
-      else
-        output_representation = ""
-      end
-      
+            
       resource_path = resource_path.join('/')
       resource_path ||= ""
       
@@ -259,7 +261,8 @@ class RestService < ActiveRecord::Base
                                                :method_type => http_method)
             @extracted_method.submitter = user_submitting
             @extracted_method.save!
-                      
+            
+            @redirect_endpoint = @extracted_method
             created_endpoints << @extracted_method.display_endpoint
           else # update existing
             updated_endpoints << @extracted_method.display_endpoint
@@ -292,17 +295,15 @@ class RestService < ActiveRecord::Base
                                                                   :mandatory => true, 
                                                                   :param_style => "query",
                                                                   :make_local => true)
-
-        # add representations
-        @extracted_method.add_representations(output_representation, user_submitting) unless output_representation.blank?
       end # transaction
     end # resource_list.each
     
     self.rest_resources(true) # refresh the model
     
-    return {:created => created_endpoints, 
-            :updated => updated_endpoints, 
-            :error => error_endpoints}
+    return {:created => created_endpoints.uniq, 
+            :updated => updated_endpoints.uniq, 
+            :error => error_endpoints.uniq,
+            :last_endpoint => (@redirect_endpoint || @extracted_method)}
   end # mine_for_resources
 
 

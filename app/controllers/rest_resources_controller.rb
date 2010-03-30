@@ -48,7 +48,7 @@ class RestResourcesController < ApplicationController
       end
       
       redirect_url = if request.env["HTTP_REFERER"].include?('/rest_methods/')
-                       request.env["HTTP_REFERER"] # redirect_to :back
+                       results[:last_endpoint] || :back # last endpoint
                      else
                        service_url(@rest_service.service) + '#endpoints'
                      end

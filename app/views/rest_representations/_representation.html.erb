@@ -63,6 +63,9 @@
             <%= render :partial => "annotations/examples",
                        :locals => { :annotatable => rep } -%>
                        
+            <%= render :partial => "annotations/formats",
+                       :locals => { :annotatable => rep } -%>
+
             <%= render :partial => "annotations/data_schemas",
                        :locals => { :annotatable => rep } -%>
             <br />
@@ -77,3 +80,5 @@
 
   <span class="clear"></span> 
 </div>
+
+<br />
