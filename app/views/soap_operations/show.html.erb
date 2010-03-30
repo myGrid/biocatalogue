@@ -78,7 +78,8 @@
 					</div>
 					
 					<div>
-						<b>Parameter Order:</b>
+						<b>Inputs Parameter Order:</b>
+						<%= info_icon_with_tooltip("The order in which the input parameters should be used.") -%>
 						<% unless @soap_operation.parameter_order.blank? %>
 							<%= h(@soap_operation.parameter_order) -%>
 						<% else %>
