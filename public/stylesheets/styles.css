@@ -3322,12 +3322,20 @@ a:hover.make_optional_link  {
 	background-color: #FFF;
 }
 
-.operations_quick_browse_box .entry {
+.operations_quick_browse_box .entry a {
 	font-size: 93%;
 	vertical-align: middle;
 	margin: 0 0.4em;
-	line-height: 1.6;
 	color: #333;
 	font-weight: bold;
+	padding: 2px 4px;
+	text-decoration: none;
+	border: 1px dotted transparent;
+}
+
+.operations_quick_browse_box .entry a.active,
+.operations_quick_browse_box .entry a:hover {
+	border: 1px dotted #CCC;
+	background-color: #FFF;
 }
 	

@@ -30,7 +30,7 @@
 	|
 	<% @soap_service.soap_operations.each do |op| %>
 		<span class="entry">
-			<%= link_to(display_name(op), op) -%>
+			<%= link_to(display_name(op), op, :class => (op == @soap_operation ? 'active' : '')) -%>
 		</span>
 		|
 	<% end %>
