@@ -1634,7 +1634,7 @@ table.latest_contributors td.count {
 ul.tabbernav
 {
 	margin: 0;
-	border-bottom: 1px solid #AAA;
+	border-bottom: 1px solid #BBB;
 	font-weight: bold;
 	font-size: 116%;
 	line-height: 24px;
@@ -1653,7 +1653,7 @@ ul.tabbernav li a
 {
 	padding: 3px 0.5em;
 	margin-right: 4px;
-	border: 1px solid #CCC;
+	border: 1px solid #BBB;
 	border-bottom: none;
 	background-image: url('/images/tab-bg.png');
 	background-position: top;
@@ -1674,13 +1674,13 @@ ul.tabbernav li a:hover
 {
 	color: #000;
 	background: #BFE76F;
-	border-color: #AAA;
+	border-color: #BBB;
 }
 
 ul.tabbernav li.tabberactive a
 {
 	background: #fff;
-	border: 1px solid #AAA;
+	border: 1px solid #BBB;
 	border-bottom: 2px solid #fff;
 }
 
@@ -1688,7 +1688,7 @@ ul.tabbernav li.tabberactive a:hover
 {
 	color: #000;
 	background: #fff;
-	border: 1px solid #AAA;
+	border: 1px solid #BBB;
 	border-bottom: 1px solid #fff;
 }
 
@@ -1698,7 +1698,7 @@ ul.tabbernav li.tabberactive a:hover
   --------------------------------------------------*/
 .tabberlive .tabbertab {
 	padding: 1em;
-	border: 1px solid #AAA;
+	border: 1px solid #BBB;
 	border-top: 0;
 
  /* If you don't want the tab size changing whenever a tab is changed
@@ -1761,7 +1761,7 @@ ul.tabbernav li.tabberactive a:hover
 	line-height: 1.5;
 	padding: 4px 0.9em;
 	margin-bottom: 5px;
-	border: 1px solid #CCC;
+	border: 1px solid #DDD;
 	border-right: none;
 	background-image: url('/images/tab-bg.png');
 	background-position: top;
@@ -1794,13 +1794,13 @@ ul.tabbernav li.tabberactive a:hover
 .vtabs_container .vtabs_tab_bar ul li a:hover
 {
 	background: #BFE76F;
-	border-color: #AAA;
+	border-color: #BBB;
 }
 
 .vtabs_container .vtabs_tab_bar ul li.active a
 {
 	background: #fff;
-	border: 1px solid #AAA;
+	border: 1px solid #BBB;
 	margin-right: -2px;
 	border-right: 2px solid #fff;
 	position: relative;
@@ -1809,7 +1809,7 @@ ul.tabbernav li.tabberactive a:hover
 .vtabs_container .vtabs_tab_bar ul li.active a:hover
 {
 	background: #fff;
-	border: 1px solid #AAA;
+	border: 1px solid #BBB;
 	margin-right: -2px;
 	border-right: 2px solid #fff;
 	position: relative;
@@ -1819,7 +1819,7 @@ ul.tabbernav li.tabberactive a:hover
 	float: left; 
 	width: 82%; 
 	padding: 1em;
-	border: 1px solid #AAA;
+	border: 1px solid #BBB;
 }
 
 /* END Vertical tabs styles */
