@@ -23,10 +23,12 @@
 		<span class="heading">
 			Quick Browse
 		</span>
+		|
 		<% service_version_instance.soap_operations.each do |op| %>
 			<span class="entry">
 				<%= link_to(display_name(op), op) -%>
 			</span>
+			|
 		<% end %>
 	</div>
 	

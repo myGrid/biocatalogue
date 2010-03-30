@@ -36,15 +36,15 @@
 		<span class="heading">
 			Quick Browse
 		</span>
-    
+    |
 		<% resources.each do |res| %>
       <% res.rest_methods.sort.each do |meth| %>
         <span class="entry">
           <%= link_to display_name(meth), meth -%>
         </span>
       <% end %>
+			|
 		<% end %>
-    <br/>
 	</div>
 	
   
