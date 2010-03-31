@@ -776,4 +776,8 @@ module ApplicationHelper
     end
   end
   
+  def show_last_search_box?
+   return !(session[:last_search].blank? or controller.controller_name.downcase == "search" or controller.action_name.downcase == "search")
+  end
+  
 end
