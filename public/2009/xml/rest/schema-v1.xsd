@@ -1943,6 +1943,9 @@
     		<xsd:enumeration value="SoapOperations"></xsd:enumeration>
     		<xsd:enumeration value="Agent"></xsd:enumeration>
     		<xsd:enumeration value="Agents"></xsd:enumeration>
+    		<xsd:enumeration value="RestMethod"></xsd:enumeration>
+    		<xsd:enumeration value="RestParameter"></xsd:enumeration>
+    		<xsd:enumeration value="RestRepresentation"></xsd:enumeration>
     	</xsd:restriction>
     </xsd:simpleType>
 
