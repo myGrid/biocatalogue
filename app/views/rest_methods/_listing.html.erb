@@ -13,7 +13,7 @@
     <% resource.rest_methods.sort.each do |method| %>
       <div class="listing_item">
         <p class="name">
-          <% link_text = "Endpoint: #{method.display_endpoint} " %>
+          <% link_text = "#{method.display_endpoint} " %>
           <%= "<i style='font-size:80%;'>#{method.endpoint_name}</i> | " if method.endpoint_name -%>
           <%= link_to(link_text, method) -%>
         </p>
