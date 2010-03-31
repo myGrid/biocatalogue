@@ -706,8 +706,13 @@ module ApplicationHelper
       options[:link_text]
     end
 
-    expand_link = expand_image(options[:icon_left_margin], options[:icon_float]) + link_text
-    collapse_link = collapse_image(options[:icon_left_margin], options[:icon_float]) + link_text
+    unless options[:icon_float].blank?
+      expand_link = expand_image(options[:icon_left_margin], options[:icon_float]) + link_text
+      collapse_link = collapse_image(options[:icon_left_margin], options[:icon_float]) + link_text
+    else
+      expand_link = link_text + expand_image(options[:icon_left_margin])
+      collapse_link = link_text + collapse_image(options[:icon_left_margin])
+    end
 
     expand_link_id = update_element_id + '_name_more_link'
     collapse_link_id = update_element_id + '_name_less_link'

@@ -70,7 +70,7 @@
         <%= link_to "Delete", @rest_method,
                               :confirm => "Are you you want to delete this endpoint.  This cannot be undone.", 
                               :method => :delete,
-                              :style => "margin-right: 0px; padding:7px; font-size:85%;",
+                              :style => "margin-right: 8px; padding:5px; font-size:80%; font-weight:bold; width:55px;",
                               :class => "delete_link button_slim" if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method) %>
       </span>
     </h1>
