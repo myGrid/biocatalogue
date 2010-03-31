@@ -49,11 +49,9 @@
     <ul>
        <% @rest_service.rest_resources.sort.each do |resource| %>
         <% resource.rest_methods.sort.each do |meth| %>
-          <li class="<%= meth == @rest_method ? 'active' : '' -%>">
-            <% label = content_tag(:span, truncate(meth.display_endpoint, :length => 30), :class => 'name') + "<br/>" + content_tag(:span, meth.endpoint_name, :class => 'detail') -%>
+          <li class="<%= meth == @rest_method ? 'active' : '' -%>" title="<%= tooltip_title_attrib(meth.display_endpoint) -%>">
+            <% label = content_tag(:span, truncate(meth.display_endpoint, :length => 30), :class => 'name') + "<br/>" + content_tag(:span, truncate(meth.endpoint_name, :length => 30), :class => 'detail') -%>
             <%= link_to  label, meth -%>
-
-
           </li>
         <% end %>
       <% end %>
