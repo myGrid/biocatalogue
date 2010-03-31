@@ -11,11 +11,14 @@
 <% css_options = (css_options||"") + " font-size:85%; padding:7px 10px; min-width:300px;"%>
 
 <div class="box_info_standout" <%= "style=#{css_options}" %> >
-  Simply enter the parameterised endpoints (manually or via copy-and-paste), one on each line, in the space provided below;  this will default to an HTTP GET.  To specify other HTTP methods/verbs (i.e. PUT, POST, DELETE, and GET itself), simply enter the HTTP method followed by the endpoint, seperating the two by a space.<br/>
+  <p>
+    Simply enter the parameterised endpoints (manually or via copy-and-paste), one on each line, in the space provided below;  this will default to an HTTP GET.  To specify other HTTP methods/verbs (i.e. PUT, POST, DELETE, and GET itself), simply enter the HTTP method followed by the endpoint, seperating the two by a space.
+  </p>
     
   <div id="hidden_resource_capture_help" style="display:none;">
-    <br/>
-    To specify configurable parameters, simply put curly braces <b>{}</b> around the parameter's value; configurable query parameters will be defined as <b>name={value}</b>, while configurable URL parameters as <b>{value}</b>. <br/><br/>
+    <p>
+      To specify configurable parameters, simply put curly braces <b>{}</b> around the parameter's value; configurable query parameters will be defined as <b>name={value}</b>, while configurable URL parameters as <b>{value}</b>. 
+    </p>
 
     Example:<br/>
     <ul style="margin-left: 1em;">
@@ -23,17 +26,28 @@
       <li>http://www.ebi.ac.uk/cgi-bin/dbfetch?db={EMBL}&amp;id={J00231}&amp;style=raw</li>
     </ul><br/>
     
-    In the above example, <b>db</b> and <b>id</b> are extracted as configurable parameters.  In the second endpoint <b>style</b> is treated as a non-configurable parameter i.e. part of the endpoint.<br/><br/>
+    In the above example: <br/>
+    <ul style="margin-left: 1em;">
+      <li>Two endpoints will be extracted; one with an HTTP POST, the other with  a GET.</li>
+      <li>Both endpoints have <b>http://www.ebi.ac.uk</b> as their base URL.</li>
+      <li>Both endpoints contain two configurable parameters, <b>db</b> and <b>id</b>.</li>  
+      <li>The second endpoint contains a non-configurable query parameter (<b>style</b>) which will be treated as a part of the endpoint.</li>
+    </ul>
     
-    <b>Note:</b> the value within the curly braces will be added as that parameter's default value.  This can be changed later.
+    <p>
+      <b>Note:</b> the value within the curly braces will be added as that parameter's default value.  This can be changed later.
+    </p>
   </div>
   
+  <p>
+    The endpoints for this REST service <b>must</b> be preceded by the base URL:
+    <b><%=h @rest_service.service.latest_deployment.endpoint -%></b>
+  </p>
+
   <span style="float:right;">
     <%= create_expand_collapse_link('hidden_resource_capture_help', 
                                     :link_text => "expand/collapse") -%>
   </span>
   
-  <br/><br/>    
-  The endpoints for this REST service <b>must</b> be preceded by the base URL:
-    <b><%=h @rest_service.service.latest_deployment.endpoint -%></b>
+  <br/><br/>
 </div>
