@@ -35,7 +35,7 @@
   <% @rest_service.rest_resources.sort.each do |res| %>
     <% res.rest_methods.sort.each do |meth| %>
       <span class="entry">
-        <%= link_to display_name(meth), meth -%>
+        <%= link_to(display_name(meth), meth, :class => (meth == @rest_method ? 'active' : '')) -%>
       </span>
 			|
     <% end %>
@@ -50,8 +50,7 @@
        <% @rest_service.rest_resources.sort.each do |resource| %>
         <% resource.rest_methods.sort.each do |meth| %>
           <li class="<%= meth == @rest_method ? 'active' : '' -%>">
-            
-            <% label = content_tag(:span, meth.display_endpoint, :class => 'name') + "<br/>" + content_tag(:span, meth.endpoint_name, :class => 'detail') -%>
+            <% label = content_tag(:span, truncate(meth.display_endpoint, :length => 30), :class => 'name') + "<br/>" + content_tag(:span, meth.endpoint_name, :class => 'detail') -%>
             <%= link_to  label, meth -%>
 
 
@@ -132,6 +131,8 @@
     </div>
   </div>
 </div>
+
+<span class="clear"></span>
 
 <p style="margin: 1.5em 0 1.5em 0; font-size: 93%; text-align: right;">
 	<a href="#endpoints_top">Back to top</a>
