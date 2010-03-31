@@ -29,7 +29,10 @@
                              :class => "button_slim") %>
 
   <!--WHAT ARE ENDPOINTS HELP BOX-->                             
-  <div style="width: 80%;"><%= render :partial => "rest_services/help_box" -%></div>
+  <div style="width: 80%;">
+    <%= render :partial => "rest_services/help_box",
+               :locals => { :base_endpoint => base_endpoint }-%>
+  </div>
 
 
 	<div class="operations_quick_browse_box">

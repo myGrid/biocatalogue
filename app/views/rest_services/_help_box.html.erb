@@ -16,17 +16,22 @@
                                     :class => "collapsable_title") -%>
   </div>
   
-  <div id="hidden_resource_capture_help" style="display:none;"><br/>
-    A REST service has a collection of different endpoints that service consumers can access to get various data/functionality from the REST resources of the REST service.  
+  <div id="hidden_resource_capture_help" style="display:none; font-size:90%;">
+    <p>
+      A REST service has a collection of different endpoints that service consumers can access to get various data/functionality from the REST resources of the REST service.  
     
-    These endpoints are, hence, simple URLs to these REST resources combined with an HTTP method/verb (i.e. GET, POST, PUT, or DELETE).
+      These endpoints are, hence, simple URLs to these REST resources combined with an HTTP method/verb (i.e. GET, POST, PUT, or DELETE).
+    </p>
     
-    
-    <br/><br/>
-    
-    For more information on REST services, please visit
-    <%= link_to "http://en.wikipedia.org/wiki/Representational_State_Transfer",
-                "http://en.wikipedia.org/wiki/Representational_State_Transfer", 
-                :target => "blank" -%>
+    <p>
+      Each endpoint belonging to this REST service <b>must</b> be preceded by the base URL: <b><%=h base_endpoint %></b>
+    </p>
+
+    <p>
+      For more information on REST services, please visit
+      <%= link_to "http://en.wikipedia.org/wiki/Representational_State_Transfer",
+                  "http://en.wikipedia.org/wiki/Representational_State_Transfer", 
+                  :target => "blank" -%>
+    </p>
   </div>
 </div>
