@@ -11,6 +11,7 @@
 <div id="breadcrumbs_bar">
 	<table>
 		<tr>
+			<td><%= render :partial => "widgets/last_search_notice" -%></td>
 			<td>
 				<ul class="breadcrumb_list">
 					<li><%= link_to "Home", home_url %></li>
@@ -19,7 +20,6 @@
 				</ul>
 			</td>
 			<td style="text-align: right; overflow: hidden;">
-				<%= render :partial => "widgets/last_search_notice" -%>
 				<%= render :partial => "widgets/bookmarking" -%>
 			</td>
 		</tr>
