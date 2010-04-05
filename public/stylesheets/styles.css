@@ -3261,8 +3261,7 @@ div.resize-handle {
   font-weight: normal;
   line-height: 10px;  
   background-repeat: no-repeat;
-  background-position-x: left;
-  background-position-y: center; 
+  background-position: left center; 
   margin: 0px 7px 0px 7px;
   padding: 2px;
 }
@@ -3284,9 +3283,8 @@ a.edit_link, a:hover.edit_link {
   width: 40px;
   background-image: url(/images/pencil.gif);
   background-repeat: no-repeat;
-  background-position-x: left;
+  background-position: left center; 
   font-weight: normal;
-  background-position-y: center; 
 }
 
 a:hover.edit_link{
@@ -3305,23 +3303,21 @@ a.globalise_param_link {
 
 a.make_required_link {
   width: 85px;
-  background-image: url(/images/circle_orange.png);
-  background-size: 15%;
+  background-image: url(/images/circle_orange_small.png);
 }
 
 a.make_optional_link {
   width: 85px;
-  background-image: url(/images/circle_blue.png);
-  background-size: 15%;
+  background-image: url(/images/circle_blue_small.png);
 }
 
 /*
 a:hover.make_required_link  {
-  background-image: url(/images/circle_blue.png);
+  background-image: url(/images/circle_blue_small.png);
 }
 
 a:hover.make_optional_link  {
-  background-image: url(/images/circle_orange.png);
+  background-image: url(/images/circle_orange_small.png);
 }
 */
 
