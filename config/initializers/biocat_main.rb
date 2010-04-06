@@ -34,6 +34,7 @@ require 'bio_catalogue/monitoring/status'
 # Require additional libraries
 require 'array'
 require 'object'
+require 'auto_link_override'
 require 'addressable/uri'
 require 'system_timer'
 require 'libxml'
