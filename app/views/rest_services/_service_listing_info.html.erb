@@ -8,9 +8,18 @@
 
 %>
 
-<!--
-<p>
-	<b><%= pluralize(service_version_instance.rest_resources.size, "REST Resources") -%></b>
-</p>
--->
+<div class="extra_detail_box">
+	
+	<% unless (base_endpoint = service_version_instance.service.latest_deployment.endpoint).nil? %>
+		<b>Base URL:</b>
+		<%= link_to(h(base_endpoint), base_endpoint, :popup => true) -%>
+		|
+	<% end %>
+	
+  <% count = 0 %>
+  <% service_version_instance.rest_resources.each { |r| count += r.rest_methods.size } %>
+	<b><%= pluralize(count, "Endpoint") -%></b>
+	
+</div>
+
 
