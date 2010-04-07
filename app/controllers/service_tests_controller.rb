@@ -48,7 +48,7 @@ class ServiceTestsController < ApplicationController
   def results
     respond_to do |format|
       format.html { disable_action }
-      format.xml { redirect_to(test_results_url(:service_test_id => @service_test.id)) }
+      format.xml { redirect_to(test_results_url(:service_test_id => @service_test.id, :format => :xml)) }
     end
   end
   
