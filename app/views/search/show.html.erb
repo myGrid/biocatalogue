@@ -58,7 +58,7 @@
 			<div id="search_results" class="tabber">
 				<% @results.result_scopes.each do |result_scope| %>
 				
-					<% unless [ "soap_operations" ].include? result_scope %>
+					<% unless [ "annotations" ].include? result_scope %>
 				
 						<% 
 							 visible_result_scope = result_scope.titleize
