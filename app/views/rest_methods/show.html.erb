@@ -8,7 +8,12 @@
   
 %>
 
-<% t "Details for endpoint: #{@rest_method.display_endpoint}" %>
+<% 
+  t "Details for endpoint: #{@rest_method.display_endpoint}" 
+
+  show_button = logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method)
+%>
+
 
 <h1>
 	REST Endpoints on Service:
@@ -21,7 +26,7 @@
 
 	<%= add_endpoints_by_popup(@rest_service, 
                                :style => "float:none;", 
-                               :class => "button_slim") %>
+                               :class => "button_slim") if show_button %>
 
 </div>
 

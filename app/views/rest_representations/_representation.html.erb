@@ -10,11 +10,14 @@
 
 <% 
   http_cycle = (is_http_request ? "request" : "response")
+  
+  show_button = logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, method)
 %>
 
 <b><%= (is_http_request ? "Input" : "Output") -%> Representations:</b>
 
-<%= add_representations_by_popup(method, http_cycle, :class => "button_slim") %>
+<%= add_representations_by_popup(method, http_cycle, 
+                                 :class => "button_slim") if show_button %>
 
 <div class="box_indented_with_bar" style="margin: 1em 0 0 1.5em;">
   

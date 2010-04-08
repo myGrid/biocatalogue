@@ -12,11 +12,16 @@
   # This tab uses the same stylesheet elements as the operations tab for SOAP services.
 %>
 
-<% resources = service_version_instance.rest_resources.sort %>
+<% 
+  show_button = logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_version_instance)
+  
+  resources = service_version_instance.rest_resources.sort 
 
-<% s_d = service_version_instance.service.latest_deployment -%>
-<% base_endpoint = s_d.endpoint.to_s.sub(/\/$/, '') -%>
-<% endpoint_count = 0 %>
+  s_d = service_version_instance.service.latest_deployment
+  base_endpoint = s_d.endpoint.to_s.sub(/\/$/, '') 
+
+  endpoint_count = 0 
+%>
 
 <div id="tab-endpoints" class="tabbertab">
   <% resources.each { |res| endpoint_count += res.rest_methods.size } %>
@@ -26,10 +31,11 @@
 	
   <%= add_endpoints_by_popup(service_version_instance, 
                              :style => "padding:7px; line-height:6px; text-align:center;", 
-                             :class => "button_slim") %>
+                             :class => "button_slim") if show_button -%>
 
-  <!--WHAT ARE ENDPOINTS HELP BOX-->                             
-  <div style="width: 80%;">
+  <!--WHAT ARE ENDPOINTS HELP BOX-->
+  <% box_style = (show_button ? "width: 80%;" : "") %>
+  <div style='<%=h box_style %>' >
     <%= render :partial => "rest_services/help_box",
                :locals => { :base_endpoint => base_endpoint }-%>
   </div>
