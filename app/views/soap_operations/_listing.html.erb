@@ -24,6 +24,12 @@
 																:show_none_text => false } -%>
 			</div>
 			
+			<% if op.associated_service %>
+				<p class="detail">
+					Part of Service: <%= link_to display_name(op.associated_service), op.associated_service -%>
+				</p>
+			<% end %>
+			
 			<p class="detail faded">
 				<%= pluralize(op.soap_inputs.length, 'input') -%>
 				<span class="faded" style="margin: 0 0.2em; vertical-align: middle;">|</span>
