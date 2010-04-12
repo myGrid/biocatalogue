@@ -77,7 +77,7 @@ class TestResult < ActiveRecord::Base
           
           if ENABLE_TWITTER
             BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so submitting a job to tweet about..."
-            msg = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{current_status.label} to #{previous_status.label}"
+            msg = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{current_status.label} to #{previous_status.label} (#{self.created_at.strftime("%Y-%m-%d %H:%M %Z")})"
             Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), 0, 5.seconds.from_now)
           end
           
