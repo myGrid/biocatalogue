@@ -264,8 +264,11 @@ protected
   end
   
   def tweet_create
-    logger.info "Called Service#tweet_create to submit job to tweet"
-    Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(:service_create, :service_id => self.id), 0, 30.seconds.from_now)
+    if ENABLE_TWITTER
+      BioCatalogue::Util.say "Called Service#tweet_create to submit job to tweet"
+      msg = "New #{self.service_types[0]} service: #{BioCatalogue::Util.display_name(self)} - #{BioCatalogue::Api.uri_for_object(self)}"
+      Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), 0, 5.seconds.from_now)
+    end
   end
   
 end
