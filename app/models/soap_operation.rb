@@ -36,4 +36,17 @@ class SoapOperation < ActiveRecord::Base
   def associated_service
     @associated_service ||= Service.find_by_id(associated_service_id)
   end
+  
+  def preferred_description
+    # Either the description from the service description doc, 
+    # or the last description annotation.
+    
+    desc = self.description
+    
+    if desc.blank?
+      desc = self.annotations_with_attribute("description").first.try(:value)
+    end
+    
+    return desc
+  end
 end

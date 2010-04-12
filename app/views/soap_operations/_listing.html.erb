@@ -36,14 +36,14 @@
 				<%= pluralize(op.soap_outputs.length, 'output') -%>
 			</p>
 			
-			<div style="font-size: 85%;">
-				<%= render :partial => "annotations/descriptions",
-							:locals => { :annotatable => op,
-								:show_header => false,
-								:truncate_desc => 400,
-								:auto_link_desc => false,
-								:show_modify_options => false,
-								:show_add_box => false } -%>
+			<div class="box_annotations detail">
+				<% unless (desc = op.preferred_description).blank? %>
+					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+						<div class="text">
+							<%= annotation_prepare_description(desc, true, 500, false) -%>
+						</div>
+					<% end %>
+				<% end %>
 			</div>
 			
 			<div class="detail">
