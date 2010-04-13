@@ -77,14 +77,14 @@ class TestResult < ActiveRecord::Base
           
           if ENABLE_TWITTER
             BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so submitting a job to tweet about..."
-            msg = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{current_status.label} to #{previous_status.label} (#{self.created_at.strftime("%Y-%m-%d %H:%M %Z")})"
+            msg = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label} (#{self.created_at.strftime("%Y-%m-%d %H:%M %Z")})"
             Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), 0, 5.seconds.from_now)
           end
           
           unless MONITORING_STATUS_CHANGE_RECIPIENTS.empty?
             BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so emailing the special set of recipients about it..."
-            subject = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{current_status.label} to #{previous_status.label}"
-            text = "A monitoring test status change has occurred! Service '#{BioCatalogue::Util.display_name(service)}' has a test (#{self.service_test.test_type}, ID: #{self.service_test.test_id}) change status from #{current_status.label} to #{previous_status.label}. Last test result message: #{current_status.message}. Go to Service: #{BioCatalogue::Api.uri_for_object(service)}"
+            subject = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label}"
+            text = "A monitoring test status change has occurred! Service '#{BioCatalogue::Util.display_name(service)}' has a test (#{self.service_test.test_type}, ID: #{self.service_test.test_id}) change status from #{previous_status.label} to #{current_status.label}. Last test result message: #{current_status.message}. Go to Service: #{BioCatalogue::Api.uri_for_object(service)}"
             Delayed::Job.enqueue(BioCatalogue::Jobs::StatusChangeEmails.new(subject, text, MONITORING_STATUS_CHANGE_RECIPIENTS), 0, 5.seconds.from_now)
           end
           
