@@ -195,8 +195,8 @@ class RestService < ActiveRecord::Base
             resource_path = resource_path.split('?')[0].split('/')
           else # params only
             template_params = []
-            resource_path = []
             query_params = resource_path.split('?')[0].split('&')
+            resource_path = []
           end
         when 2
           template_params, query_params = resource_path.split('?')

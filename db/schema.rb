@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(:version => 20100323163321) do
     t.integer  "referenced_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "data",                   :limit => 2147483647
+    t.text     "data",                   :limit => 16777215
     t.string   "format"
     t.string   "http_referer"
     t.string   "user_agent"
@@ -60,10 +60,10 @@ ActiveRecord::Schema.define(:version => 20100323163321) do
   end
 
   create_table "annotation_properties", :force => true do |t|
-    t.integer  "annotation_id", :null => false
-    t.string   "property_type", :null => false
-    t.integer  "property_id",   :null => false
-    t.integer  "value"
+    t.integer  "annotation_id",                                              :null => false
+    t.string   "property_type",                                              :null => false
+    t.integer  "property_id",                                                :null => false
+    t.integer  "value",         :limit => 10, :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -391,7 +391,7 @@ ActiveRecord::Schema.define(:version => 20100323163321) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
-    t.text     "computational_type_details", :limit => 2147483647
+    t.text     "computational_type_details", :limit => 16777215
   end
 
   add_index "soap_inputs", ["soap_operation_id"], :name => "index_soap_inputs_on_soap_operation_id"
@@ -418,7 +418,7 @@ ActiveRecord::Schema.define(:version => 20100323163321) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
-    t.text     "computational_type_details", :limit => 2147483647
+    t.text     "computational_type_details", :limit => 16777215
   end
 
   add_index "soap_outputs", ["soap_operation_id"], :name => "index_soap_outputs_on_soap_operation_id"
