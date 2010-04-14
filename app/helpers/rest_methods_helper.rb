@@ -120,4 +120,5 @@ module RestMethodsHelper
     
     return link_content
   end
-  end
+
+end

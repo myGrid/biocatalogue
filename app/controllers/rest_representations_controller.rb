@@ -30,25 +30,19 @@ class RestRepresentationsController < ApplicationController
       unless results[:created].blank?
         flash[:notice] ||= ""
         flash[:notice] += "The following representations were successfully created:<br/>"
-        results[:created].each { |e| 
-          flash[:notice] += (e==results[:created][0] ? "#{e}" : " , #{e}")
-        }
+        flash[:notice] += results[:created].to_sentence
         flash[:notice] += "<br/><br/>"
       end
       
       unless results[:updated].blank?
         flash[:notice] ||= ""
         flash[:notice] += "The following parameters already exist:<br/>"
-        results[:updated].each { |e| 
-          flash[:notice] += (e==results[:updated][0] ? "#{e}" : " , #{e}")
-        }
+        flash[:notice] += results[:updated].to_sentence
       end
       
       unless results[:error].blank?
         flash[:error] = "The following representations could not be added:<br/>"
-        results[:error].each { |e| 
-          flash[:error] += (e==results[:error][0] ? "#{e}" : " , #{e}")
-        }
+        flash[:error] += results[:error].to_sentence
       end
 
       format.html { redirect_to @rest_method }

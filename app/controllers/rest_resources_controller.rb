@@ -26,25 +26,19 @@ class RestResourcesController < ApplicationController
       unless results[:created].blank?
         flash[:notice] ||= ""
         flash[:notice] += "The following endpoints were successfully created:<br/>"
-        results[:created].each { |e| 
-          flash[:notice] += (e==results[:created][0] ? "#{e}" : " , #{e}")
-        }
+        flash[:notice] += results[:created].to_sentence
         flash[:notice] += "<br/><br/>"
       end
       
       unless results[:updated].blank?
         flash[:notice] ||= ""
-        flash[:notice] += "The following endpoints already exist and have been updated:<br/>"
-        results[:updated].each { |e| 
-          flash[:notice] += (e==results[:updated][0] ? "#{e}" : " , #{e}")
-        }
+        flash[:notice] += "The following endpoints already exist and have been updated:<br/>" 
+        flash[:notice] += results[:updated].to_sentence
       end
       
       unless results[:error].blank?
         flash[:error] = "The following endpoints could not be added:<br/>"
-        results[:error].each { |e| 
-          flash[:error] += (e==results[:error][0] ? "#{e}" : " , #{e}")
-        }
+        flash[:error] += results[:error].to_sentence
       end
       
       redirect_url = if request.env["HTTP_REFERER"].include?('/rest_methods/')
