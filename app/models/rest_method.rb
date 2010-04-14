@@ -90,6 +90,23 @@ class RestMethod < ActiveRecord::Base
     return rest_resource.rest_methods(true).find_by_method_type(method_type) # RestMethod || nil
   end
   
+  # Check that an endpoint name does not exist in the parent service
+  def check_endpoint_name_exists(name)
+    rest_service = self.rest_resource.rest_service
+    
+    name_exists = false
+    
+    rest_service.rest_resources.each do |resource|
+      resource.rest_methods.each { |m|
+        name_exists = true if m.endpoint_name == name
+        break if name_exists
+      }
+      break if name_exists
+    end
+    
+    return name_exists
+  end
+  
   # used by activity feed
   def display_name 
     return (self.endpoint_name.blank? ? display_endpoint : self.endpoint_name)

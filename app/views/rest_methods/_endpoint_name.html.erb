@@ -25,7 +25,7 @@
 
           <span class="actions_link_container">
             <%= link_to "delete", { :id => @rest_method.id, 
-                                  :action => :remove_endpoint_name},
+                                    :action => :remove_endpoint_name},
                                   :confirm => "Are you sure you want to clear this endpoint's name?  This cannot be undone.",
                                   :method => :put,
                                   :class => "delete_link button_slim",
@@ -37,8 +37,6 @@
                                             :class => "edit_link button_slim",
                                             :style => "padding:3px;") -%>
           </span>
-          
-          
         </span>
       <% else %>
         <span class="none_text">

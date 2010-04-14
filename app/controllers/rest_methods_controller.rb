@@ -20,7 +20,9 @@ class RestMethodsController < ApplicationController
     params[:new_name].chomp!
     params[:new_name].strip!
     
-    do_not_proceed = params[:new_name].blank? || params[:old_name]==params[:new_name]
+    do_not_proceed = params[:new_name].blank? || params[:old_name]==params[:new_name] || 
+                     @rest_method.check_endpoint_name_exists(params[:new_name])                      
+
 
     unless do_not_proceed
       @rest_method.endpoint_name = params[:new_name]
@@ -29,7 +31,13 @@ class RestMethodsController < ApplicationController
     
     respond_to do |format|
       if do_not_proceed
-        flash[:error] = "An error occured while trying to update the endpoint's name"
+        if params[:new_name].blank?
+          flash[:error] = "An endpoint's name cannot be empty."
+        elsif params[:new_name]==params[:old_name]
+          flash[:notice] = "The endpoint's new name is the same as the old one; nothing has been changed."
+        else
+          flash[:error] = "The name you are trying to assign to this endpoint belongs to another endpoint of this service."
+        end
       else
         flash[:notice] = "The endpoint's name has been updated"
       end
@@ -60,18 +68,22 @@ class RestMethodsController < ApplicationController
     # sanitize user input to make it have characters that are only fit for URIs
     params[:endpoint_name].chomp!
     params[:endpoint_name].strip!
-
-    unless params[:endpoint_name].blank?
-      @rest_method.endpoint_name = params[:endpoint_name]
-      @rest_method.save!
-    end
+    
+    if @rest_method.check_endpoint_name_exists(params[:endpoint_name]) # endpoint name exists                      
+      raise "Error- Endpoint name already taken."
+    else # endpoint name does not exist
+      unless params[:endpoint_name].blank?
+        @rest_method.endpoint_name = params[:endpoint_name]
+        @rest_method.save!
+      end      
+    end # if else
     
     respond_to do |format|
       format.html { render :partial => "rest_methods/#{params[:partial]}", 
                            :locals => { :rest_method => @rest_method }}
       format.js { render :partial => "rest_methods/#{params[:partial]}", 
                          :locals => { :rest_method => @rest_method }}
-    end
+    end # respond  
   end
   
   def show
