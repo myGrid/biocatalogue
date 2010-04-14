@@ -86,12 +86,12 @@
 			
 			<div class="monitoring_section">
 				<ul>
-					<h4>Test Scripts for this Service</h4>
+					<!--<h4>Test Scripts for this Service</h4>-->
 			 
-					<% if @service.test_scripts.empty? -%>
-				 		<li class="none_text">No scripts uploaded yet</li>
+					<% if @service.test_scripts({:active_only => true}).empty? -%>
+				 		<li class="none_text">No scripts uploaded yet or none activated </li>
 					<% else -%>
-						<% @service.test_scripts.each do |test| -%>  <br/>
+						<% @service.test_scripts({:active_only => true}).each do |test| -%>  <br/>
 								<div class="monitoring_section">
 									
 									<h5><%= h test.name -%> </h5>

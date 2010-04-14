@@ -193,8 +193,12 @@ class Service < ActiveRecord::Base
     rel.nil? ? rel : rel.object
   end
   
-  def test_scripts
-    service_test_instances_by_type('TestScript')
+  def test_scripts(options={})
+    scripts = service_test_instances_by_type('TestScript')
+    if options[:active_only]
+      return scripts.collect{|s| s if s.activated_at }.compact
+    end
+    scripts
   end
   
   def service_tests_by_type(type)
