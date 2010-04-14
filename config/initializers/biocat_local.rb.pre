@@ -131,3 +131,9 @@ HEADER_MESSAGE = "The BioCatalogue will be undergoing maintenance on Tuesday Mar
 # This augments any other status change notification feature.
 # This MUST be an array of email addresses or a blank array.
 MONITORING_STATUS_CHANGE_RECIPIENTS = [ "tom@example.org", "dick@example.org", "harry@example.org" ]
+
+# This setting determines whether notifications
+# about service status should be sent to service
+# submitters or anyone responsible for the service in 
+# addition to those included in the status recipients list above.
+NOTIFY_SERVICE_RESPONSIBLE = false

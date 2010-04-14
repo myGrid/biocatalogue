@@ -52,6 +52,10 @@ class TestResult < ActiveRecord::Base
     BioCatalogue::Monitoring::TestResultStatus.new(self)
   end
   
+  def responsible_emails
+    [self.service_test.service.submitter.email]
+  end
+  
   # previous result id is set to nil for new_with_unknown_status
   def update_status
     if self.service_test.status_changed?
@@ -82,6 +86,9 @@ class TestResult < ActiveRecord::Base
           end
           
           unless MONITORING_STATUS_CHANGE_RECIPIENTS.empty?
+            if NOTIFY_SERVICE_RESPONSIBLE
+              MONITORING_STATUS_CHANGE_RECIPIENTS.concat(self.responsible_emails)
+            end
             BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so emailing the special set of recipients about it..."
             subject = "[BioCatalogue] Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label}"
             text = "A monitoring test status change has occurred! Service '#{BioCatalogue::Util.display_name(service)}' has a test (#{self.service_test.test_type}, ID: #{self.service_test.test_id}) change status from #{previous_status.label} to #{current_status.label}. Last test result message: #{current_status.message}. Go to Service: #{BioCatalogue::Api.uri_for_object(service)}"
