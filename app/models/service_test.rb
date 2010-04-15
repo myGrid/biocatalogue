@@ -46,6 +46,10 @@ class ServiceTest < ActiveRecord::Base
     BioCatalogue::Monitoring::ServiceTestStatus.new(self)
   end
   
+  def activated?
+    self.test.activated_at
+  end
+  
   def status_changed?
     results = self.test_results.last(2)
     case results.length

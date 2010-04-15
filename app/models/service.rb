@@ -244,8 +244,12 @@ class Service < ActiveRecord::Base
     BioCatalogue::Monitoring::ServiceStatus.new(self)
   end
   
-  def latest_test_results_for_all_service_tests
-    self.service_tests.map { |st| st.latest_test_result }
+  def latest_test_results_for_all_service_tests(options ={})
+    results = self.service_tests.map{ |st| st.latest_test_result if st.activated? }.compact
+    if options[:all]
+      return self.service_tests.map{ |st| st.latest_test_result  }.compact
+    end
+    results
   end
   
 protected
