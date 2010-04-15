@@ -13,7 +13,7 @@ class RestMethodsController < ApplicationController
   
   before_filter :find_rest_method
   
-  before_filter :authorise, :only => [ :destroy ]
+  before_filter :authorise, :except => [ :show ]
   
   def update_endpoint_name
     # sanitize user input
@@ -43,6 +43,12 @@ class RestMethodsController < ApplicationController
       end
       format.html { redirect_to @rest_method }
       format.xml  { head :ok }
+    end
+  end
+  
+  def edit_resource_path_popup
+    respond_to do |format|
+      format.js { render :layout => false }
     end
   end
   

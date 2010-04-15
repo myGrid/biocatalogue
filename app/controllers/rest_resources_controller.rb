@@ -13,6 +13,8 @@ class RestResourcesController < ApplicationController
   
   before_filter :find_rest_service
 
+  before_filter :authorise
+  
   def new_popup    
     respond_to do |format|
       format.js { render :layout => false }
@@ -52,6 +54,21 @@ class RestResourcesController < ApplicationController
   end
   
   
+  # ========================================
+  
+  
+  protected
+  
+  def authorise    
+    unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_service)
+      error_to_back_or_home("You are not allowed to perform this action")
+      return false
+    end
+
+    return true
+  end
+
+
   # ========================================
   
   

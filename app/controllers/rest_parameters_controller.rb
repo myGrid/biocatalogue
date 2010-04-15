@@ -14,7 +14,7 @@ class RestParametersController < ApplicationController
   before_filter :find_rest_method, :only => [ :new_popup, :add_new_parameters ]
   before_filter :find_rest_parameter, :except => [ :new_popup, :add_new_parameters ]
   
-  before_filter :authorise, :except => [ :new_popup, :add_new_parameters ]
+  before_filter :authorise
 
   def update_default_value  
     # sanitize user input to make it have characters that are only fit for URIs

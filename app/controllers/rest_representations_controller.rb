@@ -12,7 +12,7 @@ class RestRepresentationsController < ApplicationController
   before_filter :find_rest_representation, :only => [ :destroy ]
   before_filter :find_rest_method, :except => [ :destroy ]
   
-  before_filter :authorise, :only => [ :destroy ]
+  before_filter :authorise
 
   def new_popup     
     respond_to do |format|
