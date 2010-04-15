@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
-# This script generate a report of the major trend about service monitoring
+# This script generate a reports about service statuses. It currently generates a
+# list of link to failing tests. 
 #
+# NOTE : This script is intended for debugging purposes only
 #
 # Usage: monitoring_report [options]
 #
