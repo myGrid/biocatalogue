@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100323163321) do
+ActiveRecord::Schema.define(:version => 20100415085648) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -208,6 +208,16 @@ ActiveRecord::Schema.define(:version => 20100323163321) do
   add_index "relationships", ["predicate"], :name => "relationships_predicate_index"
   add_index "relationships", ["subject_type", "subject_id"], :name => "relationships_subject_index"
 
+  create_table "responsibility_requests", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "subject_id"
+    t.string   "subject_type"
+    t.string   "status"
+    t.string   "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rest_method_parameters", :force => true do |t|
     t.integer  "rest_method_id",                        :null => false
     t.integer  "rest_parameter_id",                     :null => false
@@ -329,6 +339,15 @@ ActiveRecord::Schema.define(:version => 20100323163321) do
   end
 
   add_index "service_providers", ["name"], :name => "service_providers_name_index"
+
+  create_table "service_responsibles", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "service_id"
+    t.string   "status"
+    t.string   "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "service_tests", :force => true do |t|
     t.integer  "test_id"
@@ -501,6 +520,7 @@ ActiveRecord::Schema.define(:version => 20100323163321) do
     t.string   "property"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "activated_at", :default => '2010-04-15 10:08:14'
   end
 
   add_index "url_monitors", ["parent_type", "parent_id"], :name => "url_monitors_parent_index"
