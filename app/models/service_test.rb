@@ -47,7 +47,7 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def activated?
-    self.test.activated_at
+    !self.test.activated_at.nil?
   end
   
   def status_changed?

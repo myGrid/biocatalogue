@@ -117,10 +117,11 @@ module BioCatalogue
       # 3 If there are none, status is "blue" meaning unchecked
       # 4 If at least one has failed, status is "amber" and relevant failure messages should be appended to the overall status message
       # 5 If all tests pass then status is "green"
+      # NOTE : Only activated tests are included!
       def populate
         result_code = -1
-        
-        test_results = @service.service_tests.map{|st| st.latest_test_result if BioCatalogue::Monitoring::INTERNAL_TEST_TYPES.include?(st.test_type)}.compact
+        activated_service_tests = @service.service_tests.map{ |st| st if st.activated? }.compact
+        test_results = activated_service_tests.map{|st| st.latest_test_result if BioCatalogue::Monitoring::INTERNAL_TEST_TYPES.include?(st.test_type)}.compact
         
         unless test_results.empty?
           test_results.each do |test_result|
