@@ -131,6 +131,7 @@ class RestMethod < ActiveRecord::Base
 
   # ==========================
   
+
   # This method adds RestParameters to this RestMethod.
   #
   # CONFIG OPTIONS
@@ -142,6 +143,7 @@ class RestMethod < ActiveRecord::Base
   # :make_local - whether the parameters being added are meant to be made unique to this method 
   #   default = false
   def add_parameters(capture_string, user_submitting, *args)
+    # TODO: MAKE CODE MODULAR!!!
     options = args.extract_options!
     options.reverse_merge!(:param_style => "query",
                            :mandatory => false,
@@ -240,7 +242,11 @@ class RestMethod < ActiveRecord::Base
             :updated => updated_params.uniq, 
             :error => error_params.uniq}
   end
+  
+  
+  # =========================================
 
+  
   # This method adds RestRepresentations to this RestMethod.
   #
   # CONFIG OPTIONS
@@ -248,6 +254,7 @@ class RestMethod < ActiveRecord::Base
   # :http_cycle - whether the representation is a request or a response representation
   #   default = "response"
   def add_representations(content_types, user_submitting, *args)
+    # TODO: MAKE CODE MODULAR!!!
     options = args.extract_options!
     options.reverse_merge!(:http_cycle => "response")
 
@@ -315,6 +322,27 @@ class RestMethod < ActiveRecord::Base
   
   
   # =========================================
+
+  
+  # This method updates the resource path for this RestMethod's RestResource
+  def update_resource_path(new_resource_path, user_submitting)
+    # sanitize user input
+    new_resource_path.chomp!
+    new_resource_path.strip!
+    new_resource_path.gsub!(' ', '+')
+    
+    return "Endpoint paths cannot be empty." if new_resource_path.blank?
+    return "The new path is the same as the old one." if self.rest_resource.path==new_resource_path
+    return "The new path contains one or more configurable query parameters." if new_resource_path.match(/\w+\=\{.+\}/)
+    
+    # return "The new path contains invalid characters" if condition_here
+
+    rest_service = self.rest_resource.rest_service
+    return do_resource_path_update(rest_service, new_resource_path, user_submitting) # nil || error message
+  end
+  
+  
+  # =========================================
   
   
   protected
@@ -333,5 +361,39 @@ class RestMethod < ActiveRecord::Base
     string.chomp!
     string.strip!
     string.squeeze!(" ")
-  end
+  end # chomp strip squeeze
+    
+  # =========================================
+
+  def do_resource_path_update(rest_service, new_resource_path, user_submitting)
+    transaction do # do update
+      begin 
+        @new_resource = RestResource.check_duplicate(rest_service, new_resource_path)
+
+        if @new_resource.nil?
+          @new_resource = RestResource.new(:rest_service_id => rest_service.id, :path => new_resource_path)
+          @new_resource.submitter = user_submitting
+          @new_resource.save!
+        end
+            
+        old_resource_id = self.rest_resource.id # needed for deletion if it is no longer used
+
+        if RestMethod.check_duplicate(@new_resource, self.method_type).nil? # endpoint does not exist
+          self.rest_resource_id = @new_resource.id
+          self.save!
+          
+          old_res = RestResource.find(old_resource_id)
+          old_res.destroy if old_res && old_res.rest_methods.blank? # remove unused RestResource
+        else # endpoint exists 
+          raise # complain that the endpoint already exists and return
+        end
+      rescue
+        @new_resource.destroy if @new_resource
+        return "Could not update the endpoint.  If this error persists we would be very grateful if you notified us."
+      end
+    end # transaction
+    
+    return nil
+  end # do_resource_path_update
+  
 end

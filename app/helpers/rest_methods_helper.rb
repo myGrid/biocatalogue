@@ -9,27 +9,28 @@ module RestMethodsHelper
   
   
   # This method will create a link to a popup dialog, which allows the user to
-  # edit a REST Method's endpoint name.
+  # edit a REST Method's endpoint name or the corresponding REST Resource's path.
   #
   # CONFIGURATION OPTIONS (all these options are optional)
   #  :tooltip_text - text that will be displayed in a tooltip over the text.
-  #    default: 'Edit default value'
+  #    default: 'Edit this endpoint's name'
   #  :link_text - text to be displayed as part of the link.
   #    default: 'edit'
   #  :style - any CSS inline styles that need to be applied to the text.
   #    default: ''
   #  :class - any CSS class that need to be applied to the text.
   #    default: nil
-  def edit_endpoint_name_by_popup(rest_method, *args)
+  def edit_endpoint_property_by_popup(rest_method, property="endpoint_name", *args)
     return '' unless rest_method.class.name == 'RestMethod'
+    return '' unless %w{ endpoint_name resource_path }.include?(property.downcase)
     
     options = args.extract_options!
     
     # default config options
     options.reverse_merge!(:style => "",
                            :class => nil,
-                           :link_text => "edit",
-                           :tooltip_text => "Edit this endpoint's name")
+                           :link_text => (property=="endpoint_name" ? "edit" : "Rename"),
+                           :tooltip_text => "Edit this endpoint's " + (property=="endpoint_name" ? "name":"path"))
     
     link_content = ''
     
@@ -37,12 +38,11 @@ module RestMethodsHelper
       inner_html = content_tag(:span, options[:link_text])
       
       url_hash = {:controller => "rest_methods",
-                  :action => "edit_endpoint_name_popup",
+                  :action => (property=="endpoint_name" ? "edit_endpoint_name_popup" : "edit_resource_path_popup"),
                   :id => rest_method.id}
 
       fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
-      id_value = "edit_constraint_for_#{rest_method.class.name}_#{rest_method.id}_redbox"
-
+      id_value = "edit_#{property}_for_#{rest_method.class.name}_#{rest_method.id}_redbox"
       
       redbox_hash = {:url => url_hash, 
                      :id => id_value, 

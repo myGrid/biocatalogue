@@ -153,156 +153,50 @@ class RestService < ActiveRecord::Base
     # RestResource, RestMethod, RestParameter, RestMethodParameter objects
     
     # these lists will be returned in the form of a hash
-    created_endpoints = []
-    updated_endpoints = []
-    error_endpoints = [] 
+    @created_endpoints = []
+    @updated_endpoints = []
+    @error_endpoints = [] 
     
     resource_list = capture_string.split("\n")
     resource_list.each do |user_endpoint|
-      # remove the base endpoint so that we are left with the resource path only.
-      # in the event that the protocol (http or https) is left, remove that too
-      resource = user_endpoint.gsub(/http(s*)\:\/\//i, '')
-      resource.gsub!(base_url, '')
-
-      endpoint_components = resource.split(' ')
-      http_method = ""
-      resource_path = endpoint_components[-1]
+      @query_params, @template_params, @resource_path, @http_method = nil, nil, nil, nil
+      annotation_value = ""
       
-      if endpoint_components.size == 1
-        http_method = "GET"
-      elsif endpoint_components.size == 2
-        # skip if given HTTP method contains other values other than GET, PUT, POST, and DELETE
-        if %w{ GET PUT POST DELETE }.include?(endpoint_components[0].upcase)
-          http_method = endpoint_components[0].upcase
-        else 
-          error_endpoints << user_endpoint
-          next
-        end
-      else next
-      end
-      
-      # only work on resource_paths that start with a punctuation mark
-      unless resource_path =~ /^\W.+$/
-        error_endpoints << user_endpoint
-        next
-      end
-
-      case resource_path.split('?').size
-        when 1
-          if resource_path.split('?')[0].start_with?('/') # yes == a resource path
-            query_params = []
-            template_params = resource_path.split('?')[0].split('{')
-            resource_path = resource_path.split('?')[0].split('/')
-          else # params only
-            template_params = []
-            query_params = resource_path.split('?')[0].split('&')
-            resource_path = []
-          end
-        when 2
-          template_params, query_params = resource_path.split('?')
-          query_params = query_params.split('&')
-          template_params = template_params.split('{')
-          resource_path = resource_path.split('?')[0].split('/')
-        else
-          error_endpoints << user_endpoint
-          next
-      end
+      if process_user_endpoint(user_endpoint, base_url, annotation_value)
+        transaction do
+          if create_endpoint(user_endpoint, user_submitting)
+            begin # add example endpoint annotation
+              annotation_value.gsub!('{', '')
+              annotation_value.gsub!('}', '')
+              
+              @extracted_method.create_annotations({"example_endpoint" => "#{endpoint}#{annotation_value}"}, user_submitting) if @template_params.blank?
+            rescue Exception => ex
+              logger.error("Failed to create annotations for RestMethod with ID: #{@extracted_method.id}. Exception:")
+              logger.error(ex.message)
+              logger.error(ex.backtrace.join("\n"))
+            end
             
-      skip_to_next = false
-      template_params.each { |p| 
-        p.gsub!(/\}.*/, '') # remove everything after '}'
-
-        # only keep the template params that have format: param || param_name || param-name
-        skip_to_next unless p.gsub('-', '_').match(/^\w+$/)
-        break if skip_to_next
-      } 
+            # add parameters
+            @extracted_method.add_parameters(@template_params.join("\n"), user_submitting, 
+                                                                         :mandatory => true, 
+                                                                         :param_style => "template",
+                                                                         :make_local => true)
         
-      if skip_to_next
-        error_endpoints << user_endpoint
-        next
-      end
-
-      template_params.reject! { |x| x.blank? }
-      resource_path.reject! { |x| x.blank? }
+            @extracted_method.add_parameters(@query_params.join("\n"), user_submitting,
+                                                                      :mandatory => true, 
+                                                                      :param_style => "query",
+                                                                      :make_local => true)
+          end # inner if (endpoint objects successfully created)
+        end # transaction
+      end # outer if (endpoint was successfully processed)
       
-      # get the query params that define the service
-      # ie query params that have format: param_name=param_value
-      base_url_params = query_params.select { |x| x.match(/^\w+\=\w+$/) }
-      
-      # only keep the configurable params to the service
-      # ie keep the query params that have format: param_name={anything}
-      query_params.reject! { |x| !x.match(/^\w+\=\{.+\}$/) }
-            
-      resource_path = resource_path.join('/')
-      resource_path ||= ""
-      
-      if !base_url_params.empty?
-        resource_path = resource_path + '?' + base_url_params.join('&')
-      end
-            
-      resource_path = '/' + resource_path
-      resource_path = "/{parameters}" if resource_path == '/'
-      
-      transaction do
-        begin # create endpoint
-          @extracted_resource = RestResource.check_duplicate(self, resource_path)
-          
-          if @extracted_resource.nil?
-            @extracted_resource = RestResource.new(:rest_service_id => self.id, 
-                                                   :path => resource_path)
-            @extracted_resource.submitter = user_submitting
-            @extracted_resource.save!
-          end
-          
-          @extracted_method = RestMethod.check_duplicate(@extracted_resource,http_method)
-          
-          if @extracted_method.nil? # create ENDPOINT
-            @extracted_method = RestMethod.new(:rest_resource_id => @extracted_resource.id, 
-                                               :method_type => http_method)
-            @extracted_method.submitter = user_submitting
-            @extracted_method.save!
-            
-            @redirect_endpoint = @extracted_method
-            created_endpoints << @extracted_method.display_endpoint
-          else # update existing
-            updated_endpoints << @extracted_method.display_endpoint
-          end
-        rescue 
-          # no need to proceed with iteration since params will not have a resource object to attach to
-          error_endpoints << user_endpoint
-          next
-        end # begin_rescue
-        
-        begin # add example endpoint annotation
-          endpoint_components[-1].gsub!('{', '')
-          endpoint_components[-1].gsub!('}', '')
-          
-          @extracted_method.create_annotations({
-              "example_endpoint" => "#{endpoint}#{endpoint_components[-1]}"}, user_submitting) if template_params.blank?
-        rescue Exception => ex
-          logger.error("Failed to create annotations for RestMethod with ID: #{@extracted_method.id}. Exception:")
-          logger.error(ex.message)
-          logger.error(ex.backtrace.join("\n"))
-        end
-        
-        # add parameters
-        @extracted_method.add_parameters(template_params.join("\n"), user_submitting, 
-                                                                     :mandatory => true, 
-                                                                     :param_style => "template",
-                                                                     :make_local => true)
-
-        @extracted_method.add_parameters(query_params.join("\n"), user_submitting,
-                                                                  :mandatory => true, 
-                                                                  :param_style => "query",
-                                                                  :make_local => true)
-      end # transaction
     end # resource_list.each
     
     self.rest_resources(true) # refresh the model
     
-    return {:created => created_endpoints.uniq, 
-            :updated => updated_endpoints.uniq, 
-            :error => error_endpoints.uniq,
+    return {:created => @created_endpoints.uniq, 
+            :updated => @updated_endpoints.uniq, 
+            :error => @error_endpoints.uniq,
             :last_endpoint => (@redirect_endpoint || @extracted_method)}
   end # mine_for_resources
 
@@ -315,5 +209,131 @@ class RestService < ActiveRecord::Base
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end
+  
+  
+  # =========================================
+  
+  
+  private
+  
+  def process_user_endpoint(user_endpoint, base_url, annotation_value)
+    # remove the base endpoint so that we are left with the resource path only.
+    # in the event that the protocol (http or https) is left, remove that too
+    resource = user_endpoint.gsub(/http(s*)\:\/\//i, '')
+    resource.gsub!(base_url, '')
+
+    endpoint_components = resource.split(' ')
+    @http_method = ""
+    @resource_path = endpoint_components[-1]
+    annotation_value << endpoint_components[-1] 
+    
+    if endpoint_components.size == 1
+      @http_method = "GET"
+    elsif endpoint_components.size == 2
+      # skip if given HTTP method contains other values other than GET, PUT, POST, and DELETE
+      if %w{ GET PUT POST DELETE }.include?(endpoint_components[0].upcase)
+        @http_method = endpoint_components[0].upcase
+      else 
+        @error_endpoints << user_endpoint
+        return false
+      end
+    else 
+      @error_endpoints << user_endpoint
+      return false      
+    end
+    
+    # only work on resource_paths that start with a punctuation mark
+    unless @resource_path =~ /^\W.+$/
+      @error_endpoints << user_endpoint
+      return false
+    end
+
+    case @resource_path.split('?').size
+      when 1
+        if @resource_path.split('?')[0].start_with?('/') # yes == a resource path
+          @query_params = []
+          @template_params = @resource_path.split('?')[0].split('{')
+          @resource_path = @resource_path.split('?')[0].split('/')
+        else # params only
+          @template_params = []
+          @query_params = @resource_path.split('?')[0].split('&')
+          @resource_path = []
+        end
+      when 2
+        @template_params, @query_params = @resource_path.split('?')
+        @query_params = @query_params.split('&')
+        @template_params = @template_params.split('{')
+        @resource_path = @resource_path.split('?')[0].split('/')
+      else
+        @error_endpoints << user_endpoint
+        return false
+    end
+    
+    @template_params.each { |p| p.gsub!(/\}.*/, '') } # remove everything after '}' 
+    
+    # only keep the template params that have format: param || param_name || param-name
+    @template_params.reject! { |p| !p.gsub('-', '_').match(/^\w+$/) } 
+
+    @template_params.reject! { |x| x.blank? }
+    @resource_path.reject! { |x| x.blank? }
+    
+    # get the query params that define the service
+    # ie query params that have format: param_name=param_value
+    base_url_params = @query_params.select { |x| x.match(/^\w+\=\w+$/) }
+    
+    # only keep the configurable params to the service
+    # ie keep the query params that have format: param_name={anything}
+    @query_params.reject! { |x| !x.match(/^\w+\=\{.+\}$/) }
+          
+    @resource_path = @resource_path.join('/')
+    @resource_path ||= ""
+    
+    if !base_url_params.empty?
+      @resource_path = @resource_path + '?' + base_url_params.join('&')
+    end
+          
+    @resource_path = '/' + @resource_path
+    @resource_path = "/{parameters}" if @resource_path == '/'
+    
+    return true
+  end # process_user_endpoint
+  
+  # =========================================
+
+  def create_endpoint(user_endpoint, user_submitting)
+    begin # create endpoint
+      @extracted_resource = RestResource.check_duplicate(self, @resource_path)
+      
+      if @extracted_resource.nil?
+        @extracted_resource = RestResource.new(:rest_service_id => self.id, 
+                                               :path => @resource_path)
+        @extracted_resource.submitter = user_submitting
+        @extracted_resource.save!
+      end
+      
+      @extracted_method = RestMethod.check_duplicate(@extracted_resource, @http_method)
+      
+      if @extracted_method.nil? # create ENDPOINT
+        @extracted_method = RestMethod.new(:rest_resource_id => @extracted_resource.id, 
+                                           :method_type => @http_method)
+        @extracted_method.submitter = user_submitting
+        @extracted_method.save!
+        
+        @redirect_endpoint = @extracted_method
+        @created_endpoints << @extracted_method.display_endpoint
+      else # update existing
+        @updated_endpoints << @extracted_method.display_endpoint
+      end
+    rescue Exception => ex
+      # no need to proceed with iteration since params will not have a resource object to attach to
+      @error_endpoints << user_endpoint
+      return false
+    end # begin_rescue
+    
+    return true
+  end # create_endpoint_objects
+  
+  # =========================================
+
   
 end

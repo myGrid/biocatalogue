@@ -162,21 +162,25 @@ module RestServicesHelper
   
   # This method creates a url template string which can be used to show how a REST
   # Service can be used.
-  def create_url_template(base_url, resource, method)
-    return '' if base_url.blank? || resource.blank? || method.blank?
+  def create_url_template(base_url, resource, method, resource_path=nil) # 'resource_path' overrides 'resource'
+    return '' if base_url.blank? || (resource.blank? && resource_path.blank?) || method.blank?
 
     base_url.sub!(/\/$/, '') # remove trailing '/' from base endpoint
     
     required_params = []
     
-    resource_path = resource.path.sub(/^\/\?/, '?') # change "/?" to "?"
+    if resource_path.blank? # use path from var 'resource'
+      resource_path = resource.path.sub(/^\/\?/, '?') # change "/?" to "?"
+    else # use path from var 'resource_path'
+      resource_path.sub!(/^\/\?/, '?') # change "/?" to "?"
+    end
     
     method.request_parameters.select{ |p| 
       p.param_style=="query" && p.required }.each do |p| 
         required_params << "#{p.name}={#{p.name}}"
     end
     
-    required_params = required_params.sort.join('&')
+    required_params = required_params.join('&')
     required_params = '?' + required_params unless required_params.blank?
 
     url_template = (if base_url.include?('?')

@@ -73,14 +73,21 @@
     <% resource = @rest_method.rest_resource %>
 
     <h1>
-      <%= h @rest_method.display_endpoint -%>    
       <span class="actions_link_container">
+        <% button_css = "margin-right: 8px; padding:7px; font-size:80%; font-weight:bold;" %>
         <%= link_to "Delete", @rest_method,
                               :confirm => "Are you you want to delete this endpoint.  This cannot be undone.", 
                               :method => :delete,
-                              :style => "margin-right: 8px; padding:5px; font-size:80%; font-weight:bold; width:55px;",
+                              :style => "#{button_css} width:55px; right:0px;",
                               :class => "delete_link button_slim" if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method) %>
+        
+        <%= edit_endpoint_property_by_popup(@rest_method, "resource_path",
+                                            :class => "edit_link button_slim",
+                                            :style => "#{button_css} width:72px;") -%>
+
       </span>
+
+      <%= h @rest_method.display_endpoint -%>    
     </h1>
     
     <div class="operation_box">        

@@ -34,7 +34,7 @@ class RestResourcesController < ApplicationController
       
       unless results[:updated].blank?
         flash[:notice] ||= ""
-        flash[:notice] += "The following endpoints already exist and have been updated:<br/>" 
+        flash[:notice] += "The following endpoints already exist and have been updated where possible:<br/>" 
         flash[:notice] += results[:updated].to_sentence
       end
       

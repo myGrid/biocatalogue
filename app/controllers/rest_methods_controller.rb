@@ -14,6 +14,29 @@ class RestMethodsController < ApplicationController
   before_filter :find_rest_method
   
   before_filter :authorise, :except => [ :show ]
+    
+  def update_resource_path
+    error_msg = @rest_method.update_resource_path(params[:new_path], current_user)
+    
+    respond_to do |format|
+      if error_msg.blank?
+        flash[:notice] = "Endpoint was successfully updated."
+      else
+        flash[:error] = error_msg
+      end
+      
+      format.html { redirect_to @rest_method }
+      format.xml  { head :ok }
+    end
+  end
+  
+  def edit_resource_path_popup
+    @base_endpoint = @rest_method.rest_resource.rest_service.service.latest_deployment.endpoint
+    
+    respond_to do |format|
+      format.js { render :layout => false }
+    end
+  end
   
   def update_endpoint_name
     # sanitize user input
@@ -22,7 +45,6 @@ class RestMethodsController < ApplicationController
     
     do_not_proceed = params[:new_name].blank? || params[:old_name]==params[:new_name] || 
                      @rest_method.check_endpoint_name_exists(params[:new_name])                      
-
 
     unless do_not_proceed
       @rest_method.endpoint_name = params[:new_name]
@@ -43,12 +65,6 @@ class RestMethodsController < ApplicationController
       end
       format.html { redirect_to @rest_method }
       format.xml  { head :ok }
-    end
-  end
-  
-  def edit_resource_path_popup
-    respond_to do |format|
-      format.js { render :layout => false }
     end
   end
   
