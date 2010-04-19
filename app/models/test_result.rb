@@ -86,10 +86,11 @@ class TestResult < ActiveRecord::Base
           end
           
           unless MONITORING_STATUS_CHANGE_RECIPIENTS.empty?
+            status_recipients_emails = MONITORING_STATUS_CHANGE_RECIPIENTS.dup
             
-            status_recipients_emails = MONITORING_STATUS_CHANGE_RECIPIENTS
-            status_recipients_emails.concat(self.responsible_emails) if NOTIFY_SERVICE_RESPONSIBLE
-            
+            if NOTIFY_SERVICE_RESPONSIBLE
+              status_recipients_emails = status_recipients_emails + self.responsible_emails
+            end
             BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so emailing the special set of recipients about it..."
             subject = "[BioCatalogue] Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label}"
             text = "A monitoring test status change has occurred! Service '#{BioCatalogue::Util.display_name(service)}' has a test (#{self.service_test.test_type}, ID: #{self.service_test.test_id}) change status from #{previous_status.label} to #{current_status.label}. Last test result message: #{current_status.message}. Go to Service: #{BioCatalogue::Api.uri_for_object(service)}"
