@@ -20,15 +20,16 @@
 <% unless parameter.nil? %>
 	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
-		  <b>Constrained Option(s):</b> 
+		  <b>Constrained Options:</b> 
 
       <span>
-        <%= help_icon_with_tooltip("These are specified values (or range of values) accepted by the parameter.") %>
+        <%= help_icon_with_tooltip("These are specified values (or range of values) accepted by the parameter.  " + 
+            "For example, a parameter which accepts a boolean value only has two constrained options (possible values): <b>TRUE</b> and <b>FALSE</b>.") %>
       </span>
 
       <span class="none_text" style="font-size: 85%;">
         <% if logged_in? && !can_edit %>
-          You are not allowed to edit the constraints of this parameter.
+          You are not allowed to edit the constrained options of this parameter.
         <% end %>
       </span>            
     </div>
@@ -36,25 +37,35 @@
 		<div class="box_annotations">      
       <% parameter.constrained_options.each do |c| %>
         <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
-          <%= c %>
-          <span style= <%=h make_mandatory_or_optional_style %> >
-            <%= edit_constraint_by_popup(parameter, :constraint => c, 
-                                                    :rest_method_id => rest_method_id) -%>
-            &nbsp; &nbsp;
-              
-            <%= link_to "delete", {:id => parameter.id, 
-                                   :controller => :rest_parameters,
-                                   :action => :remove_constraint,
-                                   :constraint => c,
-                                   :rest_method_id => rest_method_id}, 
-                                  :confirm => "Are you you want to delete this constraint?  This cannot be undone.",
-                                  :method => :put if can_edit -%>
-          </span>
+          <div class="text">
+            <div style="margin-top: 0.7em;">              
+              <span style= <%=h make_mandatory_or_optional_style %> >
+                <%= edit_constraint_by_popup(parameter, :constraint => CGI::escape(c), 
+                                                        :rest_method_id => rest_method_id) -%>
+                &nbsp; &nbsp;
+                  
+                <%= link_to "delete", {:id => parameter.id, 
+                                       :controller => :rest_parameters,
+                                       :action => :remove_constraint,
+                                       :constraint => c,
+                                       :rest_method_id => rest_method_id}, 
+                                      :confirm => "Are you you want to delete this constraint?  This cannot be undone.",
+                                      :method => :put if can_edit -%>
+              </span>
+
+              <pre><%= c %></pre>
+            </div>
+          </div>
         <% end %>
       <% end %>
-      
 		</div>
 		
+    <% if !logged_in? && parameter.constrained_options.empty? %>
+      <span class="none_text" style="font-size: 85%;">
+        No constrained options specified.
+      </span>
+    <% end %>
+
 		<% if logged_in? %>
       <%= render :partial => "rest_parameters/add_constraint_box",
                  :locals => { :partial_from => "constrained_options",

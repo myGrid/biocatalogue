@@ -29,7 +29,7 @@
       
       <!--PARAMS CAPTURE TEXT AREA-->
       <p class="high_linespaced form_field_section">
-        <%= text_area_tag "new_constraint", @old_constraint, :size => "50x7", :style => "width: 99%;" %>
+        <%= text_area_tag "new_constraint", CGI::unescape(@old_constraint), :size => "50x7", :style => "width: 99%;" %>
         <%= hidden_field_tag "old_constraint", @old_constraint %>
       </p>
       

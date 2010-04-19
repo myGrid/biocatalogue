@@ -80,6 +80,9 @@ class RestParametersController < ApplicationController
   end
   
   def update_constraint
+    params[:new_constraint].chomp!
+    params[:new_constraint].strip!
+
     do_not_proceed = params[:new_constraint].blank? || 
                      params[:old_constraint]==params[:new_constraint] || 
                      @rest_parameter.constrained_options.include?(params[:new_constraint])
@@ -122,8 +125,10 @@ class RestParametersController < ApplicationController
   end
   
   def inline_add_constraints
-    do_not_proceed = params[:constraint].blank? || 
-                     @rest_parameter.constrained_options.include?(params[:constraint])
+    params[:constraint].chomp!
+    params[:constraint].strip!
+
+    do_not_proceed = params[:constraint].blank? || @rest_parameter.constrained_options.include?(params[:constraint])
     
     unless do_not_proceed
       @rest_parameter.constrained_options << params[:constraint]

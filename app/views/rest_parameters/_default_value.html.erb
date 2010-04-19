@@ -34,20 +34,24 @@
     <% if !parameter.default_value.blank? %>
       <div class="box_annotations">
         <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
-          <%=h parameter.default_value %>
-
-          <span style="float:right; font-size:90%;">
-            <%= edit_default_value_by_popup(parameter,
-                                            :rest_method_id => rest_method_id) -%>
-            &nbsp; &nbsp;
-            
-            <%= link_to "delete", {:id => parameter.id,
-                                   :controller => :rest_parameters,
-                                   :action => :remove_default_value,
-                                   :rest_method_id => rest_method_id}, 
-                                  :confirm => "Are you you want to delete the default value.  This cannot be undone.",
-                                  :method => :put if can_edit -%>
-          </span>
+          <div class="text">
+            <div style="margin-top: 0.7em;">
+              <span style="float:right; font-size:90%;">
+                <%= edit_default_value_by_popup(parameter,
+                                                :rest_method_id => rest_method_id) -%>
+                &nbsp; &nbsp;
+                
+                <%= link_to "delete", {:id => parameter.id,
+                                       :controller => :rest_parameters,
+                                       :action => :remove_default_value,
+                                       :rest_method_id => rest_method_id}, 
+                                      :confirm => "Are you you want to delete the default value.  This cannot be undone.",
+                                      :method => :put if can_edit -%>
+              </span>
+              
+              <pre><%=h parameter.default_value %></pre>
+            </div>
+          </div>  
         <% end %>
       </div>
 		<% elsif !logged_in? %>
