@@ -246,9 +246,14 @@ module ActsAsSolr #:nodoc:
         begin
           iteration_start = Time.now
           items = finder.call(self, {:limit => limit, :offset => offset})
-          add_batch = items.collect { |content| content.to_solr_doc }
+          items_to_process = items.reject { |item| item.indexing_disabled? || !item.should_solr_index? }
+#          puts ""
+#          puts "items.length = #{items.length}"
+#          puts "items_to_process.length = #{items_to_process.length}"
+#          puts ""
+          add_batch = items_to_process.collect { |content| content.to_solr_doc }
     
-          if items.size > 0
+          if items_to_process.size > 0
             solr_add add_batch
             solr_commit
           end

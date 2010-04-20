@@ -6,11 +6,15 @@ module ActsAsSolr #:nodoc:
     def solr_id
       "#{self.class.name}:#{record_id(self)}"
     end
+    
+    def should_solr_index?
+      evaluate_condition(:if, self)
+    end
 
     # saves to the Solr index
     def solr_save
       return true if indexing_disabled?
-      if evaluate_condition(:if, self) 
+      if should_solr_index?
         logger.debug "solr_save: #{self.class.name} : #{record_id(self)}"
         solr_add to_solr_doc
         solr_commit if configuration[:auto_commit]
