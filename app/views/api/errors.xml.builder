@@ -13,8 +13,11 @@ xml.tag! "errors",
          :resourceType => "Errors" do
   
   # <error> *
-  @errors.each do | error |
-    xml.error error
+  
+  if defined? @errors and !@errors.nil?
+    @errors.each do | error |
+      xml.error error
+    end
   end
   
 end

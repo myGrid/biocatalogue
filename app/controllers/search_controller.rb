@@ -35,16 +35,16 @@ class SearchController < ApplicationController
         @results = BioCatalogue::Search.search(@query, @scope)
         
         raise "nil @results object returned" if @results.nil?
-        
-        respond_to do |format|
-          format.html # show.html.erb
-          format.xml  # show.xml.builder
-        end
       rescue Exception => ex
-        error("Sorry, search didn't work this time. Try with different keyword(s). Please <a href='#{contact_url}'>report this</a> if it continues for other searches.")
+        error("Sorry, search didn't work this time. Try with different keyword(s). Please <a href='#{contact_url}'>report this</a> if it fails for other searches too.")
         logger.error("Search failed for query: '#{@query}'. Exception:")
         logger.error(ex.message)
         logger.error(ex.backtrace.join("\n"))
+      end
+      
+      respond_to do |format|
+        format.html # show.html.erb
+        format.xml  # show.xml.builder
       end
     end
   

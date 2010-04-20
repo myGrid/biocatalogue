@@ -118,7 +118,7 @@ class User < ActiveRecord::Base
   end
 
   def activated?
-    self.activated_at != nil
+    !self.activated_at.blank?
   end
 
   def password_required?

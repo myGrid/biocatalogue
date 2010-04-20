@@ -9,19 +9,23 @@ is_root = false unless local_assigns.has_key?(:is_root)
 show_core = true unless local_assigns.has_key?(:show_core)
 show_related = false unless local_assigns.has_key?(:show_related)
 
-# <user>
-parent_xml.tag! "user",
-                xlink_attributes(uri_for_object(user), :title => xlink_title(user)).merge(is_root ? xml_root_attributes : {}),
-                :resourceType => "User" do
-  
-  # Core elements
-  if show_core
-    render :partial => "users/api/core_elements", :locals => { :parent_xml => parent_xml, :user => user }
+if user.activated?
+
+  # <user>
+  parent_xml.tag! "user",
+                  xlink_attributes(uri_for_object(user), :title => xlink_title(user)).merge(is_root ? xml_root_attributes : {}),
+                  :resourceType => "User" do
+    
+    # Core elements
+    if show_core
+      render :partial => "users/api/core_elements", :locals => { :parent_xml => parent_xml, :user => user }
+    end
+    
+    # <related>
+    if show_related
+      render :partial => "users/api/related_links", :locals => { :parent_xml => parent_xml, :user => user }
+    end
+    
   end
-  
-  # <related>
-  if show_related
-    render :partial => "users/api/related_links", :locals => { :parent_xml => parent_xml, :user => user }
-  end
-  
+
 end
