@@ -79,17 +79,18 @@ class RestParametersController < ApplicationController
     end
   end
   
-  def update_constraint
-    params[:new_constraint].chomp!
-    params[:new_constraint].strip!
+  def update_constrained_options
+    params[:new_constrained_options].chomp!
+    params[:new_constrained_options].strip!
 
-    do_not_proceed = params[:new_constraint].blank? || 
-                     params[:old_constraint]==params[:new_constraint] || 
-                     @rest_parameter.constrained_options.include?(params[:new_constraint])
+    do_not_proceed = params[:new_constrained_options].blank? || 
+                     params[:old_constrained_options]==params[:new_constrained_options] || 
+                     @rest_parameter.constrained_options.include?(params[:new_constrained_options])
 
     unless do_not_proceed
-      @rest_parameter.constrained_options.delete(params[:old_constraint])
-      @rest_parameter.constrained_options << params[:new_constraint]
+      @rest_parameter.constrained_options = params[:new_constrained_options].split("\n")
+      @rest_parameter.constrained_options.each { |c| c.strip! }
+      @rest_parameter.constrained = 1
       @rest_parameter.save!
     end
     
@@ -97,54 +98,34 @@ class RestParametersController < ApplicationController
       if do_not_proceed
         flash[:error] = "An error occured while trying to update constraint for parameter <b>#{@rest_parameter.name}</b>"
       else
-        flash[:notice] = "Constraint for parameter <b>#{@rest_parameter.name}</b> has been updated"
+        flash[:notice] = "Constrained values for parameter <b>#{@rest_parameter.name}</b> have been updated"
       end
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
     end
   end
 
-  def edit_constraint_popup
-    @old_constraint = params[:constraint]
+  def edit_constrained_options_popup
+    @old_constrained_options = @rest_parameter.constrained_options.join("\n") 
     
     respond_to do |format|
       format.js { render :layout => false }
     end
   end
   
-  def remove_constraint
-    @rest_parameter.constrained_options.delete(params[:constraint])
+  def remove_constrained_options
+    @rest_parameter.constrained_options = []
+    @rest_parameter.constrained = 0
     @rest_parameter.save!
     
     respond_to do |format|
-      flash[:notice] = "Constraint has been deleted from parameter <b>#{@rest_parameter.name}</b>"
+      flash[:notice] = "Constrained values have been deleted from parameter <b>#{@rest_parameter.name}</b>"
 
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
     end
   end
   
-  def inline_add_constraints
-    params[:constraint].chomp!
-    params[:constraint].strip!
-
-    do_not_proceed = params[:constraint].blank? || @rest_parameter.constrained_options.include?(params[:constraint])
-    
-    unless do_not_proceed
-      @rest_parameter.constrained_options << params[:constraint]
-      @rest_parameter.save!
-    end
-    
-    respond_to do |format|
-      format.html { render :partial => "rest_parameters/#{params[:partial]}", 
-                           :locals => { :parameter => @rest_parameter,
-                                        :rest_method_id => params[:rest_method_id]} }
-      format.js { render :partial => "rest_parameters/#{params[:partial]}", 
-                         :locals => { :parameter => @rest_parameter, 
-                                      :rest_method_id => params[:rest_method_id] } } 
-    end
-  end
-
   def new_popup    
     respond_to do |format|
       format.js { render :layout => false }

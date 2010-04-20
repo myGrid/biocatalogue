@@ -19,16 +19,7 @@
 	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
 		  <b>Default Value:</b> 
-
-      <span>
-        <%= help_icon_with_tooltip("This is the value used when no value is provided to the parameter by the user.  Any value entered here will be URL encoded.") %>
-      </span>
-
-      <span class="none_text" style="font-size: 85%;">
-        <% if logged_in? && !can_edit %>
-          You are not allowed to edit the default value of this parameter.
-        <% end %>
-      </span>            
+      <%= help_icon_with_tooltip("This is the value used when no value is provided to the parameter by the user.  Any value entered here will be URL encoded.") %>
     </div>
 		
     <% if !parameter.default_value.blank? %>
@@ -36,6 +27,8 @@
         <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
           <div class="text">
             <div style="margin-top: 0.7em;">
+              <pre><%=h parameter.default_value %></pre>
+              
               <span style="float:right; font-size:90%;">
                 <%= edit_default_value_by_popup(parameter,
                                                 :rest_method_id => rest_method_id) -%>
@@ -48,8 +41,6 @@
                                       :confirm => "Are you you want to delete the default value.  This cannot be undone.",
                                       :method => :put if can_edit -%>
               </span>
-              
-              <pre><%=h parameter.default_value %></pre>
             </div>
           </div>  
         <% end %>
@@ -69,7 +60,7 @@
 
 		<% unless logged_in? %>
 			<div class="login_link_box">
-				<small><%= link_to("Login to add a default value", login_path) -%></small>
+				<small><%= link_to("Login to update this parameter's default value", login_path) -%></small>
 			</div>
 		<% end %>
 	</div>  

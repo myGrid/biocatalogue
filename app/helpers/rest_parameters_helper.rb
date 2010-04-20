@@ -28,11 +28,11 @@ module RestParametersHelper
     options.reverse_merge!(:style => "",
                            :class => nil,
                            :link_text => "edit",
-                           :tooltip_text => "Edit constraint",
+                           :tooltip_text => "Edit constrained values",
                            :constraint => nil,
                            :rest_method_id => nil)
                            
-    return '' if options[:constraint].nil? || options[:rest_method_id].nil?
+    return '' if options[:rest_method_id].nil?
     
     link_content = ''
 
@@ -42,12 +42,17 @@ module RestParametersHelper
       inner_html = content_tag(:span, options[:link_text])
       
       fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
-      id_value = "edit_constraint_for_#{parent_object.class.name}_#{parent_object.id}_redbox"
+      id_value = "edit_constrained_options_for_#{parent_object.class.name}_#{parent_object.id}_redbox"
 
-      redbox_hash = {:url => create_url_hash(parent_object, options), 
+      redbox_hash = {:url => create_url_hash(parent_object, options, "constrained_options"), 
                      :id => id_value, 
                      :failure => fail_value}
       link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+    else
+      link_content = content_tag(:span, 
+                                 "You are not allowed to edit the constrained value of this parameter.", 
+                                 :class => "none_text", 
+                                 :style => "font-size: 90%;")
     end
     
     return link_content
@@ -90,10 +95,15 @@ module RestParametersHelper
       id_value = "edit_constraint_for_#{parent_object.class.name}_#{parent_object.id}_redbox"
 
       
-      redbox_hash = {:url => create_url_hash(parent_object, options, false), 
+      redbox_hash = {:url => create_url_hash(parent_object, options, "default_value"), 
                      :id => id_value, 
                      :failure => fail_value}
       link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+    else
+      link_content = content_tag(:span, 
+                                 "You are not allowed to edit the default value of this parameter.", 
+                                 :class => "none_text", 
+                                 :style => "font-size: 90%;")
     end
     
     return link_content
@@ -105,17 +115,12 @@ module RestParametersHelper
   
   private
   
-  def create_url_hash(parent_object, options, for_constraint=true)
+  def create_url_hash(parent_object, options, property="default_value")
     url_hash = {:controller => "rest_parameters",
                 :id => parent_object.id,
                 :rest_method_id => options[:rest_method_id] }
                   
-    if for_constraint
-      url_hash.merge!(:action => "edit_constraint_popup",
-                      :constraint => options[:constraint])
-    else
-      url_hash.merge!(:action => "edit_default_value_popup")
-    end
+    url_hash.merge!(:action => "edit_#{property}_popup")
     
     return url_hash
   end

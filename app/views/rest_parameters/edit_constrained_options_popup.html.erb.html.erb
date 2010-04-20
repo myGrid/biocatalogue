@@ -1,6 +1,6 @@
 <%
 
-# BioCatalogue: app/views/rest_parameters/new_popup.html.erb
+# BioCatalogue: app/views/rest_parameters/edit_constrained_options_popup.html.erb
 #
 # Copyright (c) 2008, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -16,21 +16,31 @@
 	
 	<div class="body">
     <% form_for :rest_parameter, :url => {:controller => "rest_parameters", 
-                                          :action => "update_constraint", 
+                                          :action => "update_constrained_options", 
                                           :id => @rest_parameter.id, 
                                           :rest_method_id => params[:rest_method_id] } do |f| %>
     <%= f.error_messages %>
 
     <div>
-      <div class="box_info_standout" style="font-size:100%" >
-        You are editing a constraint added for REST Parameter: 
-        <b><%= @rest_parameter.name -%></b>
+      <div class="box_info_standout" style="font-size:85%" >
+        You are editing the constrained values for REST Parameter: 
+        <b><%= @rest_parameter.name -%></b><br /><br />
+        
+        Enter one value per line.  For practicality, you may enter the type of the value instead.<br /><br />
+        
+        Example:<br/>
+        <ul style="margin-left: 1em;">
+          <li>true</li>
+          <li>false</li>
+          <li>fasta sequence</li>
+          <li>integer</li>
+        </ul><br/>
       </div>
       
       <!--PARAMS CAPTURE TEXT AREA-->
       <p class="high_linespaced form_field_section">
-        <%= text_area_tag "new_constraint", CGI::unescape(@old_constraint), :size => "50x7", :style => "width: 99%;" %>
-        <%= hidden_field_tag "old_constraint", @old_constraint %>
+        <%= text_area_tag "new_constrained_options", @old_constrained_options, :size => "50x7", :style => "width: 99%;" %>
+        <%= hidden_field_tag "old_constrained_options", @old_constrained_options %>
       </p>
       
       <!--SUBMIT-->

@@ -68,14 +68,14 @@
     
     <!--ANNOTATIONS-->
     <div style="width:70%;">
+      <%= render :partial => "annotations/descriptions",
+                 :locals => { :annotatable => param } -%>
+      
       <%= render :partial => "rest_parameters/default_value",
                  :locals => { :parameter => param, :rest_method_id => method.id } -%>
       
       <%= render :partial => "rest_parameters/constrained_options",
                  :locals => { :parameter => param, :rest_method_id => method.id } -%>
-      
-      <%= render :partial => "annotations/descriptions",
-                 :locals => { :annotatable => param } -%>
       
       <%= render :partial => "annotations/examples",
                  :locals => { :annotatable => param } -%>
