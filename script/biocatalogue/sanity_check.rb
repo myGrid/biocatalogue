@@ -77,6 +77,12 @@ class SanityCheck
       puts "ERROR: RestService #{rest_service.id} does not have an associated ServiceVersion" if rest_service.service_version.blank?
     end
     
+    # 3. Check for providers with no associated Services
+    
+    ServiceProvider.all do |provider|
+      puts "ERROR: ServiceProvidr #{provider.id} has no associated services. " if provider.services.count == 0
+    end
+    
     # TODO: check for orphaned Annotations
   
   end
