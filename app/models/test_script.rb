@@ -88,6 +88,10 @@ class TestScript < ActiveRecord::Base
     @service_id = id
   end
   
+  def activated?
+    self.service_test.activated?
+  end
+  
   def create_service_test
     self.service_test = ServiceTest.new(:service_id => @service_id,
                                     :test_type => self.class.name, :test_id => self.id) 

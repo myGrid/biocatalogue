@@ -33,4 +33,9 @@ class UrlMonitor < ActiveRecord::Base
   def url
     return eval("self.parent.#{self.property}")
   end
+  
+  def activated?
+    self.service_test.activated?
+  end
+  
 end
