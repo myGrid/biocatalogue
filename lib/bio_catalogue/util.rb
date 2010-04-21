@@ -219,6 +219,12 @@ module BioCatalogue
       Rails.logger.info msg
     end
     
+    # For warning messages
+    def self.warn(msg)
+      puts msg
+      Rails.logger.warn msg
+    end
+    
     # For error messages
     def self.yell(msg)
       puts msg
