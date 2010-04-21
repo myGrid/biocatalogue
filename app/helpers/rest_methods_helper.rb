@@ -29,7 +29,7 @@ module RestMethodsHelper
     # default config options
     options.reverse_merge!(:style => "",
                            :class => nil,
-                           :link_text => (property=="endpoint_name" ? "edit" : "Rename"),
+                           :link_text => "edit",
                            :tooltip_text => "Edit this endpoint's " + (property=="endpoint_name" ? "name":"path"))
     
     link_content = ''

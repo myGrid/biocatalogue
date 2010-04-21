@@ -21,9 +21,16 @@
     <%= f.error_messages %>
 
     <div>
-      <div class="box_info_standout" style="font-size:100%" >
+      <div class="box_info_standout" style="font-size:90%" >
         You are editing the path for endpoint:
         <b><%= @rest_method.display_endpoint -%></b>
+        
+        <br /><br />
+        
+        <b>Please note:</b>
+        Any URL parameters that are removed from the path will also be removed from the endpoint.
+        If the new path for the endpoint contains new URL parameters, these will be added to the endpoint.
+         
       </div>
       
       <p class="high_linespaced form_field_section">
@@ -33,17 +40,6 @@
         <b><%= @rest_method.method_type %></b>        
       </p>
       
-      <!--p style="margin-bottom: 1.5em; text-align: center;">
-        <%= link_to "Preview Template", :controller => "rest_methods", 
-                                        :action => "update_template_preview", 
-                                        :id => @rest_method.id %>
-      </p>
-
-      <div id="template_preview_div" style="margin-top: 1.2em; text-align:center;">
-        <%= create_url_template(@base_endpoint, nil, @rest_method, "?sabotaged=yes") -%>
-      </div>
-
-      <br /-->
       <p style="margin-top: 1.5em; text-align: center;">
         <%= f.submit "Update", :disable_with => "Submitting..." -%>
         <%= button_to_function "Close", "RedBox.close()" -%>

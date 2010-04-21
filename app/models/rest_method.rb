@@ -339,7 +339,7 @@ class RestMethod < ActiveRecord::Base
 
     rest_service = self.rest_resource.rest_service
     return do_resource_path_update(rest_service, new_resource_path, user_submitting) # nil || error message
-  end
+  end  
   
   
   # =========================================
@@ -391,6 +391,24 @@ class RestMethod < ActiveRecord::Base
         @new_resource.destroy if @new_resource
         return "Could not update the endpoint.  If this error persists we would be very grateful if you notified us."
       end
+      
+      # update template params
+      template_params = new_resource_path.split("{")
+      template_params.each { |p| p.gsub!(/\}.*/, '') } # remove everything after '}' 
+  
+      # only keep the template params that have format: param || param_name || param-name
+      template_params.reject! { |p| !p.gsub('-', '_').match(/^\w+$/) } 
+      template_params.reject! { |x| x.blank? }
+      
+      params_to_delete = self.request_parameters.select { |p| p.param_style=="template" && !template_params.include?(p.name) }
+      params_to_delete.each { |p| p.destroy }
+      
+      self.request_parameters # reload collection
+      
+      self.add_parameters(template_params.join("\n"), user_submitting, 
+                                                      :mandatory => true, 
+                                                      :param_style => "template",
+                                                      :make_local => true)
     end # transaction
     
     return nil

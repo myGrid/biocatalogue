@@ -82,8 +82,9 @@
                               :class => "delete_link button_slim" if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method) %>
         
         <%= edit_endpoint_property_by_popup(@rest_method, "resource_path",
+                                            :link_text => "Edit",
                                             :class => "edit_link button_slim",
-                                            :style => "#{button_css} width:72px;") -%>
+                                            :style => "#{button_css} width:47px;") -%>
 
       </span>
 
