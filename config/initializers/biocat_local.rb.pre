@@ -130,7 +130,7 @@ HEADER_MESSAGE = "The BioCatalogue will be undergoing maintenance on Tuesday Mar
 # The list of email addresses that ALL status change emails should be sent to.
 # This augments any other status change notification feature.
 # This MUST be an array of email addresses or a blank array.
-MONITORING_STATUS_CHANGE_RECIPIENTS = [ "tom@example.org", "dick@example.org", "harry@example.org" ]
+MONITORING_STATUS_CHANGE_RECIPIENTS = [ "tom@example.org", "dick@example.org", "harry@example.org" ].freeze
 
 # This setting determines whether notifications
 # about service status should be sent to service
