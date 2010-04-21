@@ -116,6 +116,7 @@ class Annotation < ActiveRecord::Base
     if self.attribute_name.downcase == "category"
       if Category.find_by_id(self.value).nil?
         self.errors.add_to_base("Please select a valid category")
+        return false
       end
     end
     return true
