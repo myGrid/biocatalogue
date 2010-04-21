@@ -136,25 +136,23 @@ module TagsHelper
                        :style => "text-decoration: none;",
                        :title => tooltip_title_attrib(title_text, 500)) { inner_html }
                   
-                  # Add the option to delete the tag, if allowed and if the tag has the current user as a submitter....
+                  # Add the option to delete the tag, if allowed (through the Auth module).
+                  #
+                  # IMPORTANT: The delete AJAX functionality depends on the parent container for the tag clouds having
+                  # an ID of "#{annotatable.class.name}_#{annotatable.id}_tag_cloud"
                   if logged_in? and 
                      options[:allow_delete] and 
                      !options[:annotatable].nil? and 
                      !submitters.nil? and 
-                     (submitters.include?("User:#{current_user.id}") or current_user.is_curator?) then
+                     BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :tag, :tag_submitters => submitters) then
                      
-                    annotatable = options[:annotatable]
-                    
-                    # The delete AJAX functionality depends on the parent container for the tag clouds having
-                    # an ID of "#{annotatable.class.name}_#{annotatable.id}_tag_cloud"
-                    
                     link_to_remote(icon_faded_with_hover(:delete),
-                                  :url => "#{tag_url(0, :tag_name => tag_name, :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id)}",
+                                  :url => "#{tag_url(0, :tag_name => tag_name, :annotatable_type => options[:annotatable].class.name, :annotatable_id => options[:annotatable].id)}",
                                   :method => :delete,
-                                  :update => { :success => "#{annotatable.class.name}_#{annotatable.id}_tag_cloud", :failure => '' },
+                                  :update => { :success => "#{options[:annotatable].class.name}_#{options[:annotatable].id}_tag_cloud", :failure => '' },
                                   :loading => "Element.show('tags_spinner')",
                                   :complete => "Element.hide('tags_spinner')", 
-                                  :success => "new Effect.Highlight('#{annotatable.class.name}_#{annotatable.id}_tags', { duration: 0.5 });",
+                                  :success => "new Effect.Highlight('#{options[:annotatable].class.name}_#{options[:annotatable].id}_tags', { duration: 0.5 });",
                                   :failure => "Element.hide('tags_spinner'); alert('Sorry, an error has occurred.');",
                                   :html => { :title => tooltip_title_attrib("Delete this tag"), :style => "margin-left:0.4em;" },
                                   :confirm => "Are you sure you want to delete this tag?")

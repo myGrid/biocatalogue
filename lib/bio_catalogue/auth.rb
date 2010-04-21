@@ -7,11 +7,17 @@
 module BioCatalogue
   module Auth
     
-    # For now this checks if the user specified is the original submitter of the 
-    # Service that the "thing" is referring to.
+    # The MAIN way in which authorisation should be handled within the system.
     #
-    # CONFIGURATION OPTIONS
-    # rest_method: this is the RestMethod to which 'thing' is associated when 'thing' is a RestParameter or RestRepresentation.  For all other types of 'thing', this is optional.
+    # This allows us to centralise all authorisation handling.
+    #
+    # Remember that authorisation should happen BOTH in:
+    # - Views (e.g.: when determining whether to show actions buttons).
+    # - Controllers (i.e.: to secure actions that require authorisation).
+    #
+    # *args are Hash pairs that are used to provide additional information used in authorisation. These can be:
+    #   :rest_method - this is the RestMethod to which 'thing' is associated when 'thing' is a RestParameter or RestRepresentation.  For all other types of 'thing', this is optional.
+    #   :tag_submitters - an Array of compound IDs specifying the submitters of the tag.
     def self.allow_user_to_curate_thing?(user, thing, *args)
       return false if user.nil? or thing.nil?
       
@@ -24,6 +30,8 @@ module BioCatalogue
       case thing
         when :announcements
           # Above check for is_curator? is enough
+        when :tag
+          return true if options[:tag_submitters].include?("User:#{user.id}") 
         when Annotation
           return true if thing.source == user
         when Service

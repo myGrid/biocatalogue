@@ -53,13 +53,14 @@ class TagsController < ApplicationController
                                    :conditions => { :annotatable_type => annotatable.class.name,
                                                     :annotatable_id => annotatable.id,
                                                     :attribute_id => AnnotationAttribute.find_by_name("tag").id, 
-                                                    :source_type => current_user.class.name,
-                                                    :source_id => current_user.id,
                                                     :value => @tag_name })
         
         unless existing.blank?
           existing.each do |a|
-            a.destroy
+            submitters = [ BioCatalogue::Mapper.compound_id_for_model_object(a.source) ]
+            if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :tag, :tag_submitters => submitters)            
+              a.destroy
+            end
           end
         end
       end
