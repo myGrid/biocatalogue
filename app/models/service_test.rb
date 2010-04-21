@@ -51,27 +51,35 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def activate!
-    begin
-      self.activated_at = Time.now
-      self.save!
-      return true
-    rescue Exception => ex
-      logger.error("Failed to activate service_test #{self.id}. Exception:")
-      logger.error(ex)
-      return false
+    unless self.activated_at.blank?
+      begin
+        self.activated_at = Time.now
+        self.save!
+        return true
+      rescue Exception => ex
+        logger.error("Failed to activate service_test #{self.id}. Exception:")
+        logger.error(ex)
+        return false
+      end
     end
+    logger.error("Service test with #{self.id} was already activated. Exception:")
+    return false
   end
   
   def deactivate!
-    begin
-      self.activated_at = nil
-      self.save!
-      return true
-    rescue Exception => ex
-      logger.error("Failed to deactivate service_test #{self.id}. Exception:")
-      logger.error(ex)
-      return false
+    unless !self.activated_at.blank?
+      begin
+        self.activated_at = nil
+        self.save!
+        return true
+      rescue Exception => ex
+        logger.error("Failed to deactivate service_test #{self.id}. Exception:")
+        logger.error(ex)
+        return false
+      end
     end
+    logger.error("Service test with #{self.id} was already deactivated. Exception:")
+    return false
   end
   
   
