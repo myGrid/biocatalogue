@@ -9,10 +9,11 @@ class ServiceTestsController < ApplicationController
   before_filter :disable_action, :only => [ :index, :new, :edit, :update, :destroy ]
   before_filter :disable_action_for_api, :except => [ :show, :create, :results ]
   
-  before_filter :find_service_test, :only => [ :show, :results ]
+  before_filter :find_service_test, :only => [ :show, :results, :enable, :disable ]
   
   # Only logged in users can add tests
-  before_filter :login_required, :only => [ :create ]
+  before_filter :login_required, :only => [ :create, :enable, :disable ]
+  before_filter :authorise, :only => [ :enable, :disable ]
   
   def show
     respond_to do |format|
@@ -52,10 +53,52 @@ class ServiceTestsController < ApplicationController
     end
   end
   
+  def disable
+    @test = @service_test.test
+    
+    respond_to do |format|
+      if @test.update_attribute(:activated_at, nil)
+        flash[:notice] = "Service test with id #{@service_test.id} has been deactivated."
+        format.html{redirect_to @service_test.service }
+        format.xml { disable_action }
+      else
+        flash[:error] = "Could not deactivate service test  with id #{@service_test.id} ."
+        format.html{redirect_to @service_test.service }
+        format.xml { disable_action }
+      end
+    end
+  end
+  
+  def enable
+    @test = @service_test.test
+    
+    respond_to do |format|
+      if @test.update_attribute(:activated_at, Time.now)
+        flash[:notice] = "Service test with id #{@service_test.id} has been activated."
+        format.html{redirect_to @service_test.service }
+        format.xml { disable_action }
+      else
+        flash[:error] = "Could not activate service test  with id #{@service_test.id} ."
+        format.html{redirect_to @service_test.service }
+        format.xml { disable_action }
+      end
+    end
+  end
+  
+  
   protected
   
   def find_service_test
     @service_test = ServiceTest.find(params[:id])
+  end
+  
+  def authorise
+    unless current_user && current_user.is_admin?
+      flash[:error] = "You are not allowed to perform this action! "
+      redirect_to @service_test.service
+      # error_to_back_or_home("You are not allowed to perform this action")
+      # return false
+    end
   end
 
 end

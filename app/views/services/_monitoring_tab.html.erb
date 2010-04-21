@@ -8,6 +8,12 @@
 
 %>
 
+<% if current_user && current_user.is_admin?%>
+	<% script_view_options ={:active_only => false } %>
+<%else%>
+	<% script_view_options ={:active_only => true } %>
+<%end%>
+
 <div id="tab-monitoring" class="tabbertab">
 	
 	<h3>Monitoring</h3>
@@ -88,10 +94,10 @@
 				<ul>
 					<!--<h4>Test Scripts for this Service</h4>-->
 			 
-					<% if @service.test_scripts({:active_only => true}).empty? -%>
+					<% if @service.test_scripts(script_view_options).empty? -%>
 				 		<li class="none_text">No scripts uploaded yet or none activated </li>
 					<% else -%>
-						<% @service.test_scripts({:active_only => true}).each do |test| -%>  <br/>
+						<% @service.test_scripts(script_view_options).each do |test| -%>  <br/>
 								<div class="monitoring_section">
 									
 									<h5><%= h test.name -%> </h5>
@@ -100,9 +106,6 @@
 										<tr>
 					 						<td style="padding-right: 1em;">
 												<%= service_test_status_symbol(test.service_test)%>
-											</td>
-											<td style="text-align: right;">
-												<%= link_to("Download", download_test_script_url(test), :class => "button_slim") -%>
 											</td>
 										</tr>
 									</table>
@@ -139,6 +142,17 @@
 												<li class="none_text">No previous checks</li>
 											<% end %>
 										</ul>
+									</div>
+									
+									<div style="text-align: right;">
+										<%= link_to("Download", download_test_script_url(test), :class => "button_slim") -%>
+										<%if current_user && current_user.is_admin? %>
+										    <% if !test.activated_at.nil? %>
+												<%= link_to("Disable", disable_service_test_url(test.service_test), :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
+											<% else %>
+												<%= link_to("Enable", enable_service_test_url(test.service_test), :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
+											<% end %>
+										<%end%>
 									</div>
 								</div>	
 							<% end %>
