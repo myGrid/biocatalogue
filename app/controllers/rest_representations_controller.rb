@@ -72,7 +72,10 @@ class RestRepresentationsController < ApplicationController
   protected
   
   def authorise    
-    unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_representation, :rest_method => RestMethod.find(params[:rest_method_id]))
+    auth_on_meth = BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method)
+    auth_on_rep = BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_representation, :rest_method => RestMethod.find(params[:rest_method_id]))
+    
+    unless auth_on_rep || auth_on_meth
       error_to_back_or_home("You are not allowed to perform this action")
       return false
     end

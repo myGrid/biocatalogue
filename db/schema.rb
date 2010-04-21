@@ -501,7 +501,7 @@ ActiveRecord::Schema.define(:version => 20100415085648) do
     t.string   "property"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "activated_at", :default => '2010-04-19 11:52:36'
+    t.datetime "activated_at", :default => '2010-04-21 10:15:15'
   end
 
   add_index "url_monitors", ["parent_type", "parent_id"], :name => "url_monitors_parent_index"

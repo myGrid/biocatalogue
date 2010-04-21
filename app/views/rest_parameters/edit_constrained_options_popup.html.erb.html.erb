@@ -11,7 +11,7 @@
 <div class="redbox_contents" style="width:500px;">
 	<div class="head">
 		<%= link_to_close_redbox image_tag("close.gif"), :style => "float:right; margin-left:0.5em; vertical-align:middle;" -%>
-    <span style="vertical-align:middle;">Edit Constraint</span>
+    <span style="vertical-align:middle;">Edit Constrained Values</span>
 	</div>
 	
 	<div class="body">
@@ -26,14 +26,13 @@
         You are editing the constrained values for REST Parameter: 
         <b><%= @rest_parameter.name -%></b><br /><br />
         
-        Enter one value per line.  For practicality, you may enter the type of the value instead.<br /><br />
+        Enter one value per line.<br /><br />
         
         Example:<br/>
         <ul style="margin-left: 1em;">
-          <li>true</li>
-          <li>false</li>
-          <li>fasta sequence</li>
-          <li>integer</li>
+          <li>orange</li>
+          <li>apple</li>
+          <li>banana</li>
         </ul><br/>
       </div>
       

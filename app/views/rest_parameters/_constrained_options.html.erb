@@ -21,20 +21,20 @@
 		  <b>Constrained Values:</b> 
 
       <%= help_icon_with_tooltip("These are specified values (or range of values) accepted by the parameter.  " + 
-            "For example, a parameter which accepts a boolean value only has two constrained options (possible values): <b>TRUE</b> and <b>FALSE</b>.") %>
+            "For example, a parameter which accepts a boolean value only has two constrained values (possible values): <b>TRUE</b> and <b>FALSE</b>.  " + 
+            "Another parameter may have the following constrained values: <b>apple</b>, <b>orange</b>, and <b>banana</b>.") %>
      
       <br />
       
       <% if parameter.constrained %>
-         This parameter <b>is</b> constrained to this set of values.
+         This parameter <b>is</b> constrained to the following set of values:
       <% else %>
          This parameter <b>is not</b> constrained to any set of values.
          
          <%= "<br />" unless can_edit %>
          <%= edit_constraint_by_popup(parameter, :rest_method_id => rest_method_id, 
-                                                 :link_text => "Set Values", 
-                                                 :class => "button_slim",
-                                                 :style => "float:right;") -%>
+                                                 :link_text => "Make Constrained",  
+                                                 :class => "button_slim") -%>
          <br /><br />
       <% end %>
     </div>
