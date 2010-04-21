@@ -35,7 +35,6 @@ class TestScript < ActiveRecord::Base
                         :prog_language
                         
   validates_associated :content_blob, :message => " is invalid. Maybe the uploaded file is empty" 
-  validates_associated :service_test, :message => " is invalid. Creation of associated service test probably failed"
   
   validates_inclusion_of :prog_language, 
                          :in  => %w[perl python java ruby utopia rest soapui], 

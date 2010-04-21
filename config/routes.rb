@@ -14,8 +14,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :service_tests,
                 :member => { :results => :get,
-                              :enable => :get,
-                              :disable => :get}
+                              :enable => :put,
+                              :disable => :put}
   
   map.resources :test_results
   

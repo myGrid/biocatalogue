@@ -54,33 +54,33 @@ class ServiceTestsController < ApplicationController
   end
   
   def disable
-    @test = @service_test.test
-    
+
     respond_to do |format|
-      if @test.update_attribute(:activated_at, nil)
-        flash[:notice] = "Service test with id #{@service_test.id} has been deactivated."
-        format.html{redirect_to @service_test.service }
+      if @service_test.deactivate!
+        flash[:notice] = "<div class=\"flash_header\">Service test has been deactivated</div><div class=\"flash_body\">.</div>"
+        format.html{redirect_to(service_url(@service_test.service, :id => @service_test.service.id, :anchor => "testscripts")) }
         format.xml { disable_action }
       else
-        flash[:error] = "Could not deactivate service test  with id #{@service_test.id} ."
-        format.html{redirect_to @service_test.service }
+        flash[:notice] = "<div class=\"flash_header\">Could not deactivate service test</div><div class=\"flash_body\">.</div>"
+        format.html{redirect_to(service_url(@service_test.service, :id => @service_test.service.id, :anchor => "testscripts")) }
         format.xml { disable_action }
       end
     end
   end
   
   def enable
-    @test = @service_test.test
-    
+
     respond_to do |format|
-      if @test.update_attribute(:activated_at, Time.now)
-        flash[:notice] = "Service test with id #{@service_test.id} has been activated."
-        format.html{redirect_to @service_test.service }
-        format.xml { disable_action }
-      else
-        flash[:error] = "Could not activate service test  with id #{@service_test.id} ."
-        format.html{redirect_to @service_test.service }
-        format.xml { disable_action }
+      if @service_test
+        if @service_test.activate!
+          flash[:notice] = "<div class=\"flash_header\">Service test has been activated</div><div class=\"flash_body\">.</div>"
+          format.html{ redirect_to(service_url(@service_test.service, :id => @service_test.service.id, :anchor => "testscripts")) }
+          format.xml { disable_action }
+        else
+          flash[:error] = "<div class=\"flash_header\">Could not activate service test</div><div class=\"flash_body\">.</div>"
+          format.html{ redirect_to(service_url(@service_test.service, :id => @service_test.service.id, :anchor => "testscripts")) }
+          format.xml { disable_action }
+        end
       end
     end
   end
@@ -92,12 +92,11 @@ class ServiceTestsController < ApplicationController
     @service_test = ServiceTest.find(params[:id])
   end
   
+  # TODO investigate why "error_to_back_or_home" is causing multiple redirect errors
   def authorise
     unless current_user && current_user.is_admin?
       flash[:error] = "You are not allowed to perform this action! "
       redirect_to @service_test.service
-      # error_to_back_or_home("You are not allowed to perform this action")
-      # return false
     end
   end
 

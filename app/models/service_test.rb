@@ -47,8 +47,34 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def activated?
-    !self.test.activated_at.nil?
+    !self.activated_at.blank?
   end
+  
+  def activate!
+    begin
+      self.activated_at = Time.now
+      self.save!
+      return true
+    rescue Exception => ex
+      logger.error("Failed to activate service_test #{self.id}. Exception:")
+      logger.error(ex)
+      return false
+    end
+  end
+  
+  def deactivate!
+    begin
+      self.activated_at = nil
+      self.save!
+      return true
+    rescue Exception => ex
+      logger.error("Failed to deactivate service_test #{self.id}. Exception:")
+      logger.error(ex)
+      return false
+    end
+  end
+  
+  
   
   def status_changed?
     results = self.test_results.last(2)

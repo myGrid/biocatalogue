@@ -196,7 +196,8 @@ class Service < ActiveRecord::Base
   def test_scripts(options={})
     scripts = service_test_instances_by_type('TestScript')
     if options[:active_only]
-      return scripts.collect{|s| s if s.activated_at }.compact
+      #return scripts.collect{|s| s if s.activated_at }.compact
+      return scripts.collect{|s| s if s.service_test.activated_at }.compact
     end
     scripts
   end

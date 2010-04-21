@@ -146,11 +146,12 @@
 									
 									<div style="text-align: right;">
 										<%= link_to("Download", download_test_script_url(test), :class => "button_slim") -%>
+										
 										<%if current_user && current_user.is_admin? %>
-										    <% if !test.activated_at.nil? %>
-												<%= link_to("Disable", disable_service_test_url(test.service_test), :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
+										    <% if !test.service_test.activated_at.nil? %>
+												<%= link_to("Disable", disable_service_test_url(test.service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
 											<% else %>
-												<%= link_to("Enable", enable_service_test_url(test.service_test), :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
+												<%= link_to("Enable", enable_service_test_url(test.service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
 											<% end %>
 										<%end%>
 									</div>
