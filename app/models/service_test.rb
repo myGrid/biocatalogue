@@ -51,7 +51,7 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def activate!
-    unless self.activated_at.blank?
+    unless !self.activated_at.blank?
       begin
         self.activated_at = Time.now
         self.save!
@@ -67,7 +67,7 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def deactivate!
-    unless !self.activated_at.blank?
+    unless self.activated_at.blank?
       begin
         self.activated_at = nil
         self.save!
