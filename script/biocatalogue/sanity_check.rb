@@ -84,6 +84,8 @@ class SanityCheck
     end
     
     # TODO: check for orphaned Annotations
+    # TODO: check for orphaned/duplicate ServiceTests and UrlMonitors
+    # TODO: check for orphaned ContentBlobs
   
   end
   
