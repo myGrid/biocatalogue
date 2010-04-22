@@ -28,7 +28,7 @@ class RestResourceTest < ActiveSupport::TestCase
   def test_add_methods
     rest = create_rest_service(:endpoints => "/{id}\n put /{id}?xml={true}\n PUt /{id}")
     
-    added_methods = []    
+    added_methods = []
     rest.rest_resources[0].rest_methods.each { |x| added_methods << x.method_type }
     added_methods.sort!
     

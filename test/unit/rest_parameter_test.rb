@@ -7,7 +7,7 @@ class RestParameterTest < ActiveSupport::TestCase
   end
 
   def test_parameter_count
-    rest_one = create_rest_service(:endpoints => "/search?q={term}")
+    rest_one = create_rest_service(:endpoints => "/search?q={term}&style=raw")
     rest_two = create_rest_service(:endpoints => "/{db}/{id}")
     
     assert_equal RestParameter.count, 3
@@ -17,20 +17,22 @@ class RestParameterTest < ActiveSupport::TestCase
     rest = create_rest_service(:endpoints => "/workflows.xml?xml={true}")
     method = rest.rest_resources[0].rest_methods[0]
     
-    assert_nil RestParameter.check_duplicate(method, "id") # does not exist
-    assert_not_nil RestParameter.check_duplicate(method, "xml") # exists
-            
-    assert_nil RestParameter.check_duplicate(method, "xml", true)
+    assert_nil RestParameter.check_duplicate(method, "id") # global ID does not exist
+    assert_nil RestParameter.check_duplicate(method, "xml") # global XML does not exist
+    
+    assert_nil RestParameter.check_duplicate(method, "id", true) # local id does not exist
+    assert_not_nil RestParameter.check_duplicate(method, "xml", true) # local XML exists
   end
     
   def test_check_exists_for_rest_service
     rest = create_rest_service(:endpoints => "/workflows.xml?xml={true}")
     method = rest.rest_resources[0].rest_methods[0]
     
-    assert_nil RestParameter.check_exists_for_rest_service(rest, "id") # does not exist
-    assert_not_nil RestParameter.check_exists_for_rest_service(rest, "xml") # exists
+    assert_nil RestParameter.check_exists_for_rest_service(rest, "id") # global ID does not exist
+    assert_nil RestParameter.check_exists_for_rest_service(rest, "xml") # global XML does not exist
             
-    assert_nil RestParameter.check_exists_for_rest_service(rest, "xml", true)    
+    assert_nil RestParameter.check_exists_for_rest_service(rest, "id", true) # local ID does not exist
+    assert_not_nil RestParameter.check_exists_for_rest_service(rest, "xml", true) # local XML exists    
   end
   
   def test_submitter
