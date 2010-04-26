@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100415085648) do
+ActiveRecord::Schema.define(:version => 20100421145629) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -336,6 +336,7 @@ ActiveRecord::Schema.define(:version => 20100415085648) do
     t.integer  "service_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "activated_at"
   end
 
   add_index "service_tests", ["service_id"], :name => "s_tests_service_id_index"
@@ -475,7 +476,6 @@ ActiveRecord::Schema.define(:version => 20100415085648) do
     t.string   "content_type",                        :null => false
     t.integer  "submitter_id",                        :null => false
     t.integer  "content_blob_id",                     :null => false
-    t.datetime "activated_at"
     t.string   "prog_language",                       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -501,7 +501,6 @@ ActiveRecord::Schema.define(:version => 20100415085648) do
     t.string   "property"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "activated_at", :default => '2010-04-21 10:15:15'
   end
 
   add_index "url_monitors", ["parent_type", "parent_id"], :name => "url_monitors_parent_index"

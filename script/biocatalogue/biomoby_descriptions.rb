@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 
-# This script tags certain services with certain tags, based on a set of rules.
-# E.g.: services that have "http://biomoby.org/services" OR "getMOBYWSDL" in their WSDL location(s) should be tagged with "BioMoby".
+# This script is used to update the descriptions of BioMoby services.
+# It follows the rule that: all BioMoby services that have one operation 
+# should "inherit" the description from the parent SoapService (ie: copy over the annotation).
 #
 #
-# Usage: auto_tagger [options]
+# Usage: biomoby_descriptions [options]
 #
 #    -e, --environment=name           Specifies the environment to run this script under (test|development|production).
 #                                     Default: development
@@ -16,20 +17,17 @@
 # 
 # Examples of running this script:
 #
-#  ruby auto_tagger.rb                <- runs the script on the development database.
+#  ruby biomoby_descriptions.rb                <- runs the script on the development database.
 #
-#  ruby auto_tagger.rb -e production  <- runs the script on the production database.
+#  ruby biomoby_descriptions.rb -e production  <- runs the script on the production database.
 #
-#  ruby auto_tagger.rb -t             <- runs the script on the development database, in test mode (so no data is written to the db).
+#  ruby biomoby_descriptions.rb -t             <- runs the script on the development database, in test mode (so no data is written to the db).
 #
-#  ruby auto_tagger.rb -h             <- displays help text for this script.  
-#
-#
-# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/auto_tagger_{current_time}.log' so you won't see any normal output in the console.
+#  ruby biomoby_descriptions.rb -h             <- displays help text for this script.  
 #
 #
-# Depedencies:
-# - Rails (v2.2.2)
+# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/biomoby_descriptions_{current_time}.log' so you won't see any normal output in the console.
+#
 
 require 'rubygems'
 require 'optparse'
@@ -63,7 +61,7 @@ class Counter
   end
 end
 
-class AutoTagger
+class BioMobyDescriptions
   
   attr_accessor :options, :biocat_agent, :rules
   
@@ -104,8 +102,8 @@ class AutoTagger
     # Set up rules
     
     @rules = { }
-    @rules[:wsdl_location] = { "http://biomoby.org/services%" => "BioMoby", 
-                               "%getMOBYWSDL%" => "BioMoby" }
+    @rules[:wsdl_location] = [ "http://biomoby.org/services%", 
+                               "%getMOBYWSDL%" ]
     
   end
   
@@ -113,7 +111,7 @@ class AutoTagger
     
     puts ""
     puts ""
-    puts "=> Booting Auto Tagger process. Running on #{@options[:environment]} database." 
+    puts "=> Booting BioMoby Descriptions process. Running on #{@options[:environment]} database." 
     
     if @options[:test]
       puts ""
@@ -128,6 +126,8 @@ class AutoTagger
     stats["total_annotations_already_exist"] = Counter.new
     stats["total_annotations_failed"] = Counter.new
     stats["total_services_processed"] = Counter.new
+    stats["total_soap_services_with_one_operation"] = Counter.new
+    stats["total_soap_services_without_descriptions"] = Counter.new
     
     begin
       Service.transaction do
@@ -143,7 +143,7 @@ class AutoTagger
               rule_specs.each do |text, tag_name|
               
                 puts ""
-                puts "> Processing services that have a WSDL location of '#{text}' (will add tag '#{tag_name}')"
+                puts "> Processing services that have a WSDL location of '#{text}'"
               
                 soap_services = SoapService.find(:all, :conditions => [ "wsdl_location LIKE ?", text ])
                 
@@ -152,23 +152,20 @@ class AutoTagger
                   
                   stats["total_services_processed"].increment
                   
-                  puts "INFO: adding tag '#{tag_name}' to Service '#{service.name}' (ID: #{service.id}) if required"
+                  puts "INFO: checking to see if description is required to be set on the SoapOperation for Service '#{service.name}' (ID: #{service.id})"
                   
-                  # Only create the tag if it doesn't already exist...
-                  
-                  exists = false
-                  
-                  service.annotations_with_attribute("Tag").each do |a|
-                    if a.value.downcase == "biomoby" 
-                      exists = true
-                      break
+                  # Now if the SoapService only has one operation, then copy over the description from the SoapService (if available).
+                  if ss.soap_operations.length == 1
+                    stats["total_soap_services_with_one_operation"].increment
+                    
+                    desc = ss.description
+                    desc = ss.annotations_with_attribute("description").first.try(:value)
+                    
+                    if desc.blank?
+                      stats["total_soap_services_without_descriptions"].increment
+                    else
+                      create_annotation(op = ss.soap_operations.first, "description", desc, stats)
                     end
-                  end
-                  
-                  if exists
-                    stats["total_annotations_already_exist"].increment
-                  else
-                    create_annotation(service, "Tag", tag_name, stats)
                   end
                 end
               
@@ -264,11 +261,11 @@ class AutoTagger
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/auto_tagger_{current_time}.log' ..."
-$stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "auto_tagger_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
+puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/biomoby_descriptions_{current_time}.log' ..."
+$stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "biomoby_descriptions_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 
-puts Benchmark.measure { AutoTagger.new(ARGV.clone).run }
+puts Benchmark.measure { BioMobyDescriptions.new(ARGV.clone).run }
 
 # Reset $stdout
 $stdout = STDOUT
