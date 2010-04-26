@@ -34,7 +34,7 @@ parent_xml.tag! "testScript" do
   dcterms_xml_tag parent_xml, :created, test_script.created_at
   
   # <activatedAt>
-  if test_script.activated_at
+  if test_script.activated?
     parent_xml.activatedAt test_script.activated_at.iso8601
   else
     parent_xml.activatedAt nil, "xsi:nil" => "true"
