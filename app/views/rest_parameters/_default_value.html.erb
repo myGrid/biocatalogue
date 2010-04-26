@@ -30,8 +30,7 @@
               <pre><%=h parameter.default_value %></pre>
               
               <span style="float:right;">
-                <%= edit_default_value_by_popup(parameter,
-                                                :rest_method_id => rest_method_id) -%>
+                <%= edit_default_value_by_popup(parameter, :rest_method_id => rest_method_id) if logged_in? -%>
                 &nbsp; &nbsp;
                 
                 <%= link_to "delete", {:id => parameter.id,
