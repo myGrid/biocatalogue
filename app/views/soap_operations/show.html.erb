@@ -17,8 +17,8 @@
 </h1>
 
 <div style="margin-bottom: 1.5em;">
-  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{display_name(@soap_service.service)}\""),
-						  service_url(@soap_service.service, :anchor => "operations"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service"),
+						  service_url(@soap_service.service), :class => "button_slim", :style => "margin-right:1.5em;" -%>
 </div>
 
 <a name='operations_top'></a>
