@@ -128,6 +128,7 @@ class BioMobyDescriptions
     stats["total_services_processed"] = Counter.new
     stats["total_soap_services_with_one_operation"] = Counter.new
     stats["total_soap_services_without_descriptions"] = Counter.new
+    stats["services_without_descriptions_ids"] = [ ]
     
     begin
       Service.transaction do
@@ -163,6 +164,7 @@ class BioMobyDescriptions
                     
                     if desc.blank?
                       stats["total_soap_services_without_descriptions"].increment
+                      stats["services_without_descriptions_ids"] << service.id
                     else
                       create_annotation(op = ss.soap_operations.first, "description", desc, stats)
                     end
