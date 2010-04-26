@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-# This script does a sanity check over the whole database to check:
-# - data integrity and consistency
+# This script does a sanity check over the whole database to check for issues related to data integrity and consistency, and so on.
 #
 #
 # Usage: sanity_check [options]
@@ -16,8 +15,6 @@
 
 require 'optparse'
 require 'benchmark'
-
-
 
 
 class SanityCheck
@@ -51,9 +48,9 @@ class SanityCheck
   
   def run
   
-    # 1. Check that all Service objects have at least:
-    #    - One valid ServiceDeployment, that has at least one valid ServiceVersion that points to a valid SoapService or RestService.
-    #    - One valid ServiceVersion, that points to a valid SoapService or RestService and has at least one valid ServiceDeployment.
+    # Check that all Service objects have at least:
+    #   - One valid ServiceDeployment, that has at least one valid ServiceVersion that points to a valid SoapService or RestService.
+    #   - One valid ServiceVersion, that points to a valid SoapService or RestService and has at least one valid ServiceDeployment.
   
     Service.all.each do |service|
       puts "ERROR: Service #{service.id} has no ServiceDeployments" if service.service_deployments.count < 1
@@ -67,7 +64,8 @@ class SanityCheck
       end
     end
     
-    # 2. Check for "orphaned" SoapService or RestService objects.
+    
+    # Check for "orphaned" SoapService or RestService objects.
     
     SoapService.all.each do |soap_service|
       puts "ERROR: SoapService #{soap_service.id} does not have an associated ServiceVersion" if soap_service.service_version.blank?
@@ -77,11 +75,29 @@ class SanityCheck
       puts "ERROR: RestService #{rest_service.id} does not have an associated ServiceVersion" if rest_service.service_version.blank?
     end
     
-    # 3. Check for providers with no associated Services
+    
+    # Check for "orphaned" SoapOperations, SoapInputs and SoapOutputs.
+    
+    SoapOperation.all.each do |soap_operation|
+      puts "ERROR: SoapOperation #{soap_operation.id} does not have an associated SoapService" if soap_operation.soap_service.blank?
+    end
+    
+    SoapInput.all.each do |soap_input|
+      puts "ERROR: SoapInput #{soap_input.id} does not have an associated SoapOperation" if soap_input.soap_operation.blank?
+    end
+    
+    SoapOutput.all.each do |soap_output|
+      puts "ERROR: SoapOutput #{soap_output.id} does not have an associated SoapOperation" if soap_output.soap_operation.blank?
+    end
+    
+    
+    # Check for providers with no associated Services
     
     ServiceProvider.all do |provider|
-      puts "ERROR: ServiceProvidr #{provider.id} has no associated services. " if provider.services.count == 0
+      puts "ERROR: ServiceProvider #{provider.id} has no associated services. " if provider.services.count == 0
     end
+    
+    
     
     # TODO: check for orphaned Annotations
     # TODO: check for orphaned/duplicate ServiceTests and UrlMonitors
