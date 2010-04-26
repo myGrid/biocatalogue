@@ -37,9 +37,9 @@ class SearchController < ApplicationController
         raise "nil @results object returned" if @results.nil?
       rescue Exception => ex
         error("Sorry, search didn't work this time. Try with different keyword(s). Please <a href='#{contact_url}'>report this</a> if it fails for other searches too.")
-        logger.error("Search failed for query: '#{@query}'. Exception:")
-        logger.error(ex.message)
+        logger.error("Search failed for query: '#{@query}'.\nException: #{ex.message}")
         logger.error(ex.backtrace.join("\n"))
+        return false
       end
       
       respond_to do |format|
