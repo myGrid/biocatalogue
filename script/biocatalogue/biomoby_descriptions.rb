@@ -160,7 +160,7 @@ class BioMobyDescriptions
                     stats["total_soap_services_with_one_operation"].increment
                     
                     desc = ss.description
-                    desc = ss.annotations_with_attribute("description").first.try(:value)
+                    desc = ss.annotations_with_attribute("description").first.try(:value) if desc.blank?
                     
                     if desc.blank?
                       stats["total_soap_services_without_descriptions"].increment
