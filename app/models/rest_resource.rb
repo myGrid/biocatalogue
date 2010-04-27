@@ -49,8 +49,7 @@ class RestResource < ActiveRecord::Base
   
   # for sort
   def <=>(other)
-    comparison = self.path <=> other.path
-    return comparison unless comparison==0
+    return self.path <=> other.path
   end
 
   # =========================================

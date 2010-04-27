@@ -124,8 +124,7 @@ class RestMethod < ActiveRecord::Base
     self_order = order[self.method_type]
     other_order = order[other.method_type]
     
-    comparison = self_order <=> other_order
-    return comparison unless comparison==0
+    return self_order <=> other_order
   end
   
 
