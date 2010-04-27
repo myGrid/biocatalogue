@@ -20,12 +20,26 @@ class Agent < ActiveRecord::Base
   
   before_create :generate_default_display_name
   
+  has_many :services,
+           :as => "submitter"
+  
+  if USE_EVENT_LOG
+    acts_as_activity_logged
+  end
+  
   def annotation_source_name
     self.display_name
   end
   
   def preferred_description
     self.annotations_with_attribute("description").first.try(:value)
+  end
+  
+  def annotated_service_ids
+    service_ids = self.annotations_by.collect do |a|
+      BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(a.annotatable_type, a.annotatable_id), "Service")      
+    end
+    service_ids.compact.uniq
   end
   
   private

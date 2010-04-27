@@ -27,6 +27,15 @@ class AgentsController < ApplicationController
   # GET /agents/1
   # GET /agents/1.xml
   def show
+    unless is_api_request?
+      @agents_services = @agent.services.paginate(:page => @page,
+                                                  :order => "created_at DESC")
+                                                
+      agents_annotated_service_ids = @agent.annotated_service_ids 
+      @agents_paged_annotated_services_ids = agents_annotated_service_ids.paginate(:page => @page, :per_page => @per_page)
+      @agents_paged_annotated_services = BioCatalogue::Mapper.item_ids_to_model_objects(@agents_paged_annotated_services_ids, "Service")
+    end
+                                                        
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder
