@@ -13,7 +13,7 @@
 %>
 
 <% 
-  show_button = logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_version_instance)
+  show_button = logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_version_instance.service)
   
   resources = service_version_instance.rest_resources.sort 
 
