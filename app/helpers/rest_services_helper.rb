@@ -171,11 +171,11 @@ module RestServicesHelper
     
     if resource_path.blank? # use path from var 'resource'
       resource_path = resource.path.sub(/^\/\?/, '?') # change "/?" to "?"
-      resource_path = resource.path.sub(/^\/\&/, '&') # change "/&" to "&"
     else # use path from var 'resource_path'
       resource_path.sub!(/^\/\?/, '?') # change "/?" to "?"
-      resource_path.sub!(/^\/\&/, '?') # change "/&" to "&"
     end
+    
+    resource_path.sub!(/^\/\&/, '&') # change "/&" to "&"
     
     method.request_parameters.select{ |p| 
       p.param_style=="query" && p.required }.each do |p| 
