@@ -203,6 +203,8 @@ module RestServicesHelper
                         "#{base_url}/{id}#{required_params}"
                       elsif resource_path.include?('?')
                         "#{base_url + resource_path}#{required_params.gsub('?', '&')}"
+                      elsif resource_path.start_with?('&')
+                        "#{base_url + resource_path.sub('&', '?')}#{required_params.gsub('?', '&')}"
                       else
                         "#{base_url + resource_path}#{required_params}"
                       end
