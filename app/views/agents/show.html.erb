@@ -23,13 +23,13 @@
   <div id="tab-profile" class="tabbertab">
     <h3>Profile</h3>
 		
-		<p><b>Description:</b></p>
-		<div class="box_description">
-			<% unless @agent.preferred_description.blank? %>
-				<%= white_list(simple_format(@agent.preferred_description)) -%>
-			<% else %>
-				<span class="none_text">None</span>
-			<% end %>
+		<div class="properties">
+      
+      <div class="property" style="margin-top: 0.5em;">
+        <%= render :partial => "annotations/descriptions",
+                   :locals => { :annotatable => @agent } -%>
+      </div>
+			
 		</div>
   </div>
   
