@@ -171,8 +171,10 @@ module RestServicesHelper
     
     if resource_path.blank? # use path from var 'resource'
       resource_path = resource.path.sub(/^\/\?/, '?') # change "/?" to "?"
+      resource_path = resource.path.sub(/^\/\&/, '&') # change "/&" to "&"
     else # use path from var 'resource_path'
       resource_path.sub!(/^\/\?/, '?') # change "/?" to "?"
+      resource_path.sub!(/^\/\&/, '?') # change "/&" to "&"
     end
     
     method.request_parameters.select{ |p| 
@@ -183,7 +185,7 @@ module RestServicesHelper
     required_params = required_params.join('&')
     required_params = '?' + required_params unless required_params.blank?
 
-    url_template = (if base_url.include?('?')
+    url_template = (if base_url.include?('?') # base url has non configurable query params
                       required_params.gsub!('?', '&')
                       resource_path.gsub!('?', '&')
                       
@@ -194,7 +196,7 @@ module RestServicesHelper
                       else
                         "#{base_url}#{resource_path}#{required_params}"
                       end
-                    else
+                    else # base url does not have query params
                       if resource_path == '/{parameters}' 
                         "#{base_url}#{required_params}"
                       elsif resource_path == '/{id}'
