@@ -49,6 +49,8 @@ module ActivityFeedsHelper
         
         al_items = [ ]
         
+        # NOTE: for now, any activity caused by an Agent is ignored.
+                
         benchmark "Retrieving new users activity logs" do
           # Users activated
           al_items.concat ActivityLog.find(:all,
@@ -60,7 +62,7 @@ module ActivityFeedsHelper
         benchmark "Retrieving new services activity logs" do
           # Services created
           al_items.concat ActivityLog.find(:all,
-            :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND created_at >= ?", options[:days_limit] ],
+            :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND culprit_type NOT IN ('Agent') AND created_at >= ?", options[:days_limit] ],
             :order => "created_at DESC",
             :limit => options[:query_limit])
         end
@@ -68,7 +70,7 @@ module ActivityFeedsHelper
         benchmark "Retrieving new annotations activity logs" do
           # Annotations created
           al_items.concat ActivityLog.find(:all,
-            :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND created_at >= ?", options[:days_limit] ],
+            :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND culprit_type NOT IN ('Agent') AND created_at >= ?", options[:days_limit] ],
             :order => "created_at DESC",
             :limit => options[:query_limit])
         end
