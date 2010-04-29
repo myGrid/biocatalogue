@@ -228,7 +228,7 @@ module Embrace
                   puts "INFO: Service does not exist in BioCatalogue"  
                   @stats.counts[:services_not_found_scripts] += test_scritpts_for_service(id,conn).num_rows
                 else
-                  tests = test_scritpts_for_service(id,conn)
+                  tests = test_scripts_for_service(id,conn)
                   puts "INFO: Embrace Service with ID #{id} has #{tests.num_rows} tests"
                   tests.each do |script|
                     create_biocat_test_script(script, existing_service, conn)
@@ -287,7 +287,7 @@ module Embrace
        
           descs = test_description(script[0], db)
           name = ""
-          description =""
+          description =" "
           descs.each  do |desc|
             name        = desc[0]
             description = desc[1]
@@ -297,8 +297,7 @@ module Embrace
           a_test  = TestScript.new(:name         => name,
                                   :exec_name     => script[7],
                                   :prog_language => binding.to_s.downcase,
-                                  :submitter_id  => user.id,
-                                  :activated_at  => Time.now
+                                  :submitter_id  => user.id
                                   )
           
            a_test.content_blob = ContentBlob.new({:data => script[6]})
