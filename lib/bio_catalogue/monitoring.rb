@@ -43,8 +43,8 @@ module BioCatalogue
               mon = UrlMonitor.new(:parent_id => dep.id, 
                               :parent_type => dep.class.to_s, 
                               :property => "endpoint")
-              service_test = ServiceTest.new(:service_id => dep.service.id,
-                                              :test_type => mon.class.name)
+              service_test = ServiceTest.new( :service_id => dep.service.id,
+                                              :test_type => mon.class.name, :activated_at => Time.now )
               mon.service_test = service_test                         
               if mon.save!
                 puts "Created new monitor for deployment id : #{dep.id}"
@@ -66,7 +66,7 @@ module BioCatalogue
                               :parent_type => ss.class.to_s, 
                               :property => "wsdl_location")
               service_test = ServiceTest.new(:service_id => ss.service.id,
-                                              :test_type => mon.class.name)
+                                              :test_type => mon.class.name, :activated_at => Time.now )
               mon.service_test = service_test
               if mon.save!
                 puts "Created new monitor for soap service id : #{ss.id}"
