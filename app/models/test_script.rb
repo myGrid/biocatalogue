@@ -93,8 +93,10 @@ class TestScript < ActiveRecord::Base
   end
   
   def create_service_test
-    self.service_test = ServiceTest.new(:service_id => @service_id,
-                                    :test_type => self.class.name, :test_id => self.id) 
+    self.service_test = ServiceTest.new(:service_id   => @service_id,
+                                          :test_type  => self.class.name, 
+                                          :test_id    => self.id,
+                                          :activated_at => Time.now) 
                                     
     unless self.service_test.save
       self.errors.add_to_base("Could not create an associated service test")
