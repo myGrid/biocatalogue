@@ -140,7 +140,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,
-                                 :bulk_new => :get },
+                                 :bulk_new => :get,
+                                 :wsdl_locations => :get },
                 :member => { :annotations => :get,
                              :operations => :get,
                              :deployments => :get }

@@ -8,9 +8,9 @@
 class SoapServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :index, :edit, :update, :destroy, :bulk_new, :bulk_create ]
-  before_filter :disable_action_for_api, :except => [ :show, :annotations, :operations, :deployments ]
+  before_filter :disable_action_for_api, :except => [ :show, :annotations, :operations, :deployments, :wsdl_locations ]
   
-  before_filter :login_required, :except => [ :index, :show, :annotations, :operations, :deployments ]
+  before_filter :login_required, :except => [ :index, :show, :annotations, :operations, :deployments, :wsdl_locations ]
   
   before_filter :find_soap_service, :only => [ :show, :annotations, :operations, :deployments ]
   
@@ -215,6 +215,14 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # deployments.xml.builder
+    end
+  end
+  
+  def wsdl_locations
+    @wsdl_locations = SoapService.find(:all, :select => "wsdl_location").map { |s| s.wsdl_location }.uniq.compact
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # wsdl_locations.xml.builder
     end
   end
   
