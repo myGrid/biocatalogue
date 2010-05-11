@@ -11,6 +11,8 @@ class RestMethodTest < ActiveSupport::TestCase
     
     assert_not_nil RestMethod.check_duplicate(rest.rest_resources[0], "GET")
     assert_nil RestMethod.check_duplicate(rest.rest_resources[0], "PUT")
+    
+    rest.destroy
   end
   
   def test_submitter
@@ -18,6 +20,8 @@ class RestMethodTest < ActiveSupport::TestCase
     rest_service = create_rest_service(:endpoints => "/resource.xml", :submitter => user)
     
     assert_equal rest_service.rest_resources[0].rest_methods[0].submitter, user # same submitter
+    
+    rest_service.destroy
   end
 
   def test_check_endpoint_name_exists
@@ -28,11 +32,15 @@ class RestMethodTest < ActiveSupport::TestCase
     
     assert rest.rest_resources[2].rest_methods[0].check_endpoint_name_exists("some name")
     assert !rest.rest_resources[2].rest_methods[0].check_endpoint_name_exists("some other name")
+
+    rest.destroy
   end
   
   def test_create_endpoint_with_no_params
     rest = create_rest_service(:endpoints => "/search")
     assert rest.rest_resources[0].rest_methods[0].request_parameters.empty?
+
+    rest.destroy
   end
   
   def test_create_endpoint_with_query_params
@@ -43,6 +51,8 @@ class RestMethodTest < ActiveSupport::TestCase
     assert_equal "q", params[0].name
     
     assert_equal "/search?style=raw", rest.rest_resources[0].path
+
+    rest.destroy
   end
 
   def test_create_endpoint_with_template_params
@@ -53,6 +63,8 @@ class RestMethodTest < ActiveSupport::TestCase
     params.each { |p| assert %w{ db id format }.include?(p.name) }
     
     assert_equal "/{db}/download/{id}.{format}", rest.rest_resources[0].path
+
+    rest.destroy
   end
   
   def test_create_endpoint_with_template_and_query_params
@@ -67,6 +79,8 @@ class RestMethodTest < ActiveSupport::TestCase
     assert_equal "q", q_params[0].name
     
     assert_equal "/{api-v}/search.{format}?filter=tags", rest.rest_resources[0].path
+
+    rest.destroy
   end
   
   def test_add_parameters
@@ -84,6 +98,8 @@ class RestMethodTest < ActiveSupport::TestCase
     
     method.add_parameters("name=john-doe \n update=true \n name ! \n alias={jadefox} !", Factory(:user))
     assert_equal 5, method.request_parameters.size # should increase by 3
+
+    rest.destroy
   end
   
   def test_add_representations
@@ -107,6 +123,8 @@ class RestMethodTest < ActiveSupport::TestCase
     method.add_representations("application/xml", user, :http_cycle => "response")
     assert_equal 1, method.response_representations(true).size # should add new representations
     assert_equal 1, method.request_representations(true).size
+
+    rest.destroy
   end
   
   def test_update_resource_path
@@ -120,6 +138,8 @@ class RestMethodTest < ActiveSupport::TestCase
     assert_not_nil = method.update_resource_path("/{db}/{id}?format={x}", submitter) # error message returned
     
     assert_nil = method.update_resource_path("/{db}/{id}.{format}?style=raw", submitter) # changed successfully
+
+    rest.destroy
   end
 
   def test_sort
@@ -130,5 +150,7 @@ class RestMethodTest < ActiveSupport::TestCase
     assert_equal methods[1].method_type, "POST"
     assert_equal methods[2].method_type, "PUT"
     assert_equal methods[3].method_type, "DELETE"
+
+    rest.destroy
   end
 end

@@ -1,75 +1,46 @@
 require 'test_helper'
 
 class RestServicesControllerTest < ActionController::TestCase
-  BASE_ENDPOINT = "http://www.my-service.com/api/v1"
-  ONE_URL = "DELete  www.my-service.com/api/v1/format.xml?id=3&name=johndoe"
-  TWO_URLS = "www.my-service.com/api/v1?id=3&method=getSomething\r\nDELete  www.my-service.com/api/v1/format.xml?id=3&name=johndoe"
-  
-  test "should ask for login" do
+  BASE_ENDPOINT = "http://www.my-service.com/api/"
+  ONE_ENDPOINT = "DELete  www.my-service.com/api/{api-v}/people.{format}?id={id}&name=x{}"
+  TWO_ENDPOINTS = "www.my-service.com/api/{api-v}?id={x}&method=getPerson\r\n#{ONE_ENDPOINT}"
+    
+  def test_register_service_without_authentication
     get :new
     assert_redirected_to :login
   end
 
-  test "create rest_service with one endpoint" do
+  def test_register_service
     do_login_for_functional_test
     
     assert_difference('RestService.count') do
       post :create, :endpoint => BASE_ENDPOINT, 
                     :rest_service => {:name => "test"},
-                    :annotations => {},
-                    :rest_resources => ONE_URL
-    end
-
-    assert_redirected_to service_path(RestService.last.service)
-  end
-
-  test "create rest_service with multiple endpoints" do
-    do_login_for_functional_test
-    
-    assert_difference('RestService.count') do
-      post :create, :endpoint => BASE_ENDPOINT, 
-                    :rest_service => {:name => "test"},
-                    :annotations => {},
-                    :rest_resources => TWO_URLS
-    end
-    
-    assert_redirected_to service_path(RestService.last.service)
-  end
-
-  test "create rest_service with no endpoints" do
-    do_login_for_functional_test
-    
-    assert_difference('RestService.count') do
-      post :create, :endpoint => BASE_ENDPOINT, 
-                    :rest_service => {:name => "test"},
-                    :annotations => {},
-                    :rest_resources => ""
+                    :annotations => {}
     end
   
     assert_redirected_to service_path(RestService.last.service)
   end
   
-  test "attempt to create rest_service that exists and redirect" do
+  def test_register_existing_service
     do_login_for_functional_test
     
-    assert_difference('RestService.count') do
+    assert_difference('RestService.count', 1) do
       post :create, :endpoint => BASE_ENDPOINT, 
-                    :rest_service => {:name => "test"},
-                    :annotations => {},
-                    :rest_resources => ""
+                    :rest_service => {:name => "test 1"},
+                    :annotations => {}
     end
     
     assert_difference('RestService.count', 0) do
       post :create, :endpoint => BASE_ENDPOINT, 
-                    :rest_service => {:name => "test"},
-                    :annotations => {},
-                    :rest_resources => ""
+                    :rest_service => {:name => "test 2"},
+                    :annotations => {}
                     
-    assert_redirected_to service_path(RestService.last.service)
+      assert_redirected_to service_path(RestService.last.service)
     end
   end
-  
-  test "attempt update base endpoint without logging in" do
+
+  def test_update_base_endpoint_without_authentication
     get :edit_base_endpoint_by_popup
     assert_redirected_to :login
     
@@ -77,24 +48,43 @@ class RestServicesControllerTest < ActionController::TestCase
     assert_redirected_to :login
   end
   
-  test "update base endpoint" do
+  def test_unauthorised_update_base_endpoint
     do_login_for_functional_test
-
-    post :create, :endpoint => BASE_ENDPOINT, 
+    
+    base = BASE_ENDPOINT + "/new_version"
+    
+    post :create, :endpoint => base, 
+                  :rest_service => {:name => "test 1"},
+                  :annotations => {}
+    
+    do_login_for_functional_test # login as a different user
+    
+    post :update_base_endpoint, :service_deployment_id => ServiceDeployment.find_by_endpoint(base).id,
+                                :new_endpoint => base + '/changed'
+    
+    assert_nil ServiceDeployment.find_by_endpoint(base + '/changed')
+    assert_not_nil ServiceDeployment.find_by_endpoint(base)
+  end
+  
+  def test_update_base_endpoint
+    do_login_for_functional_test
+    
+    base = BASE_ENDPOINT + "/different_version"
+    
+    post :create, :endpoint => base, 
                   :rest_service => {:name => "test"},
-                  :annotations => {},
-                  :rest_resources => ""
+                  :annotations => {}
     
     # Does not change
-    post :update_base_endpoint, :service_deployment_id => ServiceDeployment.find_by_endpoint(BASE_ENDPOINT).id,
-                                :new_endpoint => BASE_ENDPOINT+'/'
-    assert_not_nil ServiceDeployment.find_by_endpoint(BASE_ENDPOINT)
-    assert_nil ServiceDeployment.find_by_endpoint(BASE_ENDPOINT+'/')
+    post :update_base_endpoint, :service_deployment_id => ServiceDeployment.find_by_endpoint(base).id,
+                                :new_endpoint => base + '/'
+    assert_not_nil ServiceDeployment.find_by_endpoint(base)
+    assert_nil ServiceDeployment.find_by_endpoint(base + '/') # should not store with trailing '/'
 
     # Changes
-    post :update_base_endpoint, :service_deployment_id => ServiceDeployment.find_by_endpoint(BASE_ENDPOINT).id,
-                                :new_endpoint => BASE_ENDPOINT+'/changed'
-    assert_nil ServiceDeployment.find_by_endpoint(BASE_ENDPOINT)
-    assert_not_nil ServiceDeployment.find_by_endpoint(BASE_ENDPOINT+'/changed')
+    post :update_base_endpoint, :service_deployment_id => ServiceDeployment.find_by_endpoint(base).id,
+                                :new_endpoint => base + '/changed'
+    assert_nil ServiceDeployment.find_by_endpoint(base)
+    assert_not_nil ServiceDeployment.find_by_endpoint(base + '/changed')
   end
 end

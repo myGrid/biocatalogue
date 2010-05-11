@@ -1,26 +1,20 @@
 require 'test_helper'
 
 class RestParametersControllerTest < ActionController::TestCase
-  test "get something without logging in" do
+  def test_get_without_authentication
     get :make_optional_or_mandatory
     assert_redirected_to :login
     
     get :add_new_parameters
     assert_redirected_to :login
     
-    get :localise_globalise_parameter
-    assert_redirected_to :login
-
     get :new_popup
     assert_redirected_to :login
     
-    get :remove_constraint
+    get :update_constrained_options
     assert_redirected_to :login
     
-    get :inline_add_constraints
-    assert_redirected_to :login
-
-    get :edit_constraint_popup
+    get :edit_constrained_options_popup
     assert_redirected_to :login
     
     get :inline_add_default_value
@@ -32,7 +26,8 @@ class RestParametersControllerTest < ActionController::TestCase
     get :update_default_value
     assert_redirected_to :login
   end
-  test "add new parameters" do
+
+  def test_add_new_parameters
     rest = login_and_create_service_with_endpoints("/{id}")
     method = rest.rest_resources[0].rest_methods[0]
     
@@ -45,21 +40,35 @@ class RestParametersControllerTest < ActionController::TestCase
       post :add_new_parameters, :rest_method_id => method.id, 
                                 :rest_parameters => "x"
     end
+    
+    rest.destroy
+  end
+
+  def test_unauthorised_add_new_parameters
+    rest = login_and_create_service_with_endpoints("/{id}")
+    method = rest.rest_resources[0].rest_methods[0]
+    
+    assert_difference('RestParameter.count', 0) do
+      post :add_new_parameters, :rest_method_id => method.id, 
+                                :rest_parameters => "x"
+    end
+    
+    rest.destroy
   end
   
-  test "add multiple parameters" do
+  def test_add_multiple_parameters
     rest = login_and_create_service_with_endpoints("/workflow.xml")
     method = rest.rest_resources[0].rest_methods[0]
-          
-    assert_equal 0, RestParameter.count
-
+    
     assert_difference('RestParameter.count', 3) do # adding multiple params
       post :add_new_parameters, :rest_method_id => method.id, 
                                 :rest_parameters => "x={x} !\ny !\n z=z"
     end
+    
+    rest.destroy
   end
   
-  test "globalise and localise parameter" do
+  def globalise_and_localise_parameter # TEST DISABLED
     rest = login_and_create_service_with_endpoints("?id={x}")
     method = rest.rest_resources[0].rest_methods[0]
     param = method.request_parameters[0]
@@ -84,38 +93,11 @@ class RestParametersControllerTest < ActionController::TestCase
 
     assert_equal RestParameter.last.name, param_name
     assert RestParameter.last.is_global
+
+    rest.destroy
   end
-  
-  test "globalise and localise parameter on a shared parameter" do
-    rest = login_and_create_service_with_endpoints("/{id} \n put /{id}?xml=true") # 'id' is the shared/common parameter
-    method = rest.rest_resources[0].rest_methods[0]
-    param = method.request_parameters[0]
-    param_name = param.name
     
-    assert param.is_global
-    
-    # make local
-    assert_difference('RestParameter.count', 1) do
-      post :localise_globalise_parameter, :id => param.id,
-                                          :rest_method_id => method.id,
-                                          :make_local => true
-    end
-    
-    assert_equal RestParameter.last.name, param_name
-    assert !RestParameter.last.is_global
-    
-    # make global
-    assert_difference('RestParameter.count', -1) do
-      post :localise_globalise_parameter, :id => RestParameter.last.id,
-                                          :rest_method_id => method.id,
-                                          :make_local => false
-    end
-    
-    assert_equal RestParameter.last.name, param_name
-    assert RestParameter.last.is_global
-  end
-  
-  test "make optional or mandatory" do
+  def test_make_optional_or_mandatory
     rest = login_and_create_service_with_endpoints("/{id}")
     method = rest.rest_resources[0].rest_methods[0]
     param = method.request_parameters[0]
@@ -125,51 +107,44 @@ class RestParametersControllerTest < ActionController::TestCase
     post :make_optional_or_mandatory, :id => param.id,
                                       :rest_method_id => method.id
     
-    assert !param.required
+    assert !method.request_parameters(true)[0].required
+
+    rest.destroy
   end
   
-  test "constraints" do
+  def test_constrained_options
     rest = login_and_create_service_with_endpoints("/{id}")
     method = rest.rest_resources[0].rest_methods[0]
+    param = method.request_parameters[0]
 
-    assert RestParameter.last.constrained_options.empty?
+    assert param.constrained_options.empty?
+    assert !param.constrained
     
     # add constraint
-    assert_difference('RestParameter.last.constrained_options.size', 1) do
-      post :inline_add_constraints, :constraint => "the constraint",
-                                    :id => RestParameter.last.id,
-                                    :rest_method_id => method.id,
-                                    :partial => "constraints"
+    assert_difference('RestParameter.last.constrained_options.size', 3) do
+      post :update_constrained_options, :new_constrained_options => "x\ny\nz",
+                                        :id => param.id,
+                                        :rest_method_id => method.id,
+                                        :partial => "constrained_options"
     end
     
-    # update constraint
-    post :update_constraint, :new_constraint => "new",
-                             :id => RestParameter.last.id,
-                             :rest_method_id => method.id
-
-    assert_equal RestParameter.last.constrained_options[0], "new"
+    param = method.request_parameters(true)[0]
+    assert_equal "x", param.constrained_options[0]
+    assert_equal param.constrained_options.size, 3
+    assert param.constrained
     
     # remove constraint
-    post :remove_constraint, :constraint => "doesn't exist, so nothing will change",
-                             :id => RestParameter.last.id,
-                             :rest_method_id => method.id
-    
-    assert_equal RestParameter.last.constrained_options[0], "new"
-    assert_equal RestParameter.last.constrained_options.size, 1
-    
-    post :remove_constraint, :constraint => "new",
-                             :id => RestParameter.last.id,
-                             :rest_method_id => method.id
-    
-    assert RestParameter.last.constrained_options.empty?
-    
+    post :remove_constrained_options, :id => param.id,
+                                      :rest_method_id => method.id
+
+    param = method.request_parameters(true)[0]    
+    assert !param.constrained
+    assert param.constrained_options.empty?
+
+    rest.destroy
   end
   
-  
-  # ========================================
-  
-  
-  private
+private
   
   def login_and_create_service_with_endpoints(endpoint="")
     user = Factory.create(:user)

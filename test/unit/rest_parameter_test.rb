@@ -11,6 +11,9 @@ class RestParameterTest < ActiveSupport::TestCase
     rest_two = create_rest_service(:endpoints => "/{db}/{id}")
     
     assert_equal RestParameter.count, 3
+    
+    rest_one.destroy
+    rest_two.destroy
   end
 
   def test_check_duplicate
@@ -22,6 +25,8 @@ class RestParameterTest < ActiveSupport::TestCase
     
     assert_nil RestParameter.check_duplicate(method, "id", true) # local id does not exist
     assert_not_nil RestParameter.check_duplicate(method, "xml", true) # local XML exists
+    
+    rest.destroy
   end
     
   def test_check_exists_for_rest_service
@@ -33,6 +38,8 @@ class RestParameterTest < ActiveSupport::TestCase
             
     assert_nil RestParameter.check_exists_for_rest_service(rest, "id", true) # local ID does not exist
     assert_not_nil RestParameter.check_exists_for_rest_service(rest, "xml", true) # local XML exists    
+    
+    rest.destroy
   end
   
   def test_submitter
@@ -42,5 +49,7 @@ class RestParameterTest < ActiveSupport::TestCase
     param = rest.rest_resources[0].rest_methods[0].request_parameters[0]
     
     assert_equal param.submitter, submitter # the submitter
+    
+    rest.destroy
   end
 end

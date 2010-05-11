@@ -13,6 +13,8 @@ class RestMethodParameterTest < ActiveSupport::TestCase
     
     assert_not_nil method.submitter # should have a submitter
     assert_equal method.submitter, map.submitter # same submitter
+
+    rest.destroy
   end
   
   def test_linking
@@ -21,5 +23,7 @@ class RestMethodParameterTest < ActiveSupport::TestCase
     
     assert_equal map.rest_method_id, RestMethod.first.id
     assert_equal map.rest_parameter_id, RestParameter.first.id
+
+    rest.destroy
   end
 end

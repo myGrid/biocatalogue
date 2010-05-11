@@ -15,6 +15,10 @@ class RestResourceTest < ActiveSupport::TestCase
     
     rest_three = create_rest_service(:name => "three", :endpoints => "?xml=true&id={3}&method=getTag")
     assert_not_nil RestResource.check_duplicate(rest_three, "/?xml=true&method=getTag") # exists
+    
+    rest_one.destroy
+    rest_two.destroy
+    rest_three.destroy
   end
   
   def test_submitter
@@ -23,6 +27,8 @@ class RestResourceTest < ActiveSupport::TestCase
     
     assert_not_equal rest_service.rest_resources[0].submitter, user # different users
     assert_not_nil rest_service.rest_resources[0].submitter
+
+    rest_service.destroy
   end
   
   def test_add_methods
@@ -35,5 +41,7 @@ class RestResourceTest < ActiveSupport::TestCase
     assert_equal 1, rest.rest_resources.size # only one rest_resource ie "/{id}"
     assert_equal 2, rest.rest_resources[0].rest_methods.size # only GET and PUT methods since PUT is repeated
     assert_equal added_methods, %w{ GET PUT }.sort
+    
+    rest.destroy
   end
 end
