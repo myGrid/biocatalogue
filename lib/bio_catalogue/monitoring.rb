@@ -88,7 +88,7 @@ module BioCatalogue
       def self.check_url_status(url)
         puts "checking url #{url}"
         status = {:action => 'http_head'}
-        check =  BioCatalogue::Availability::URLCheck.new(url)
+        check =  BioCatalogue::AvailabilityCheck::URLCheck.new(url)
         if check.available?
           status.merge!({:result=> 0, :message => check.response}) 
         else
@@ -120,7 +120,7 @@ module BioCatalogue
         puts "checking endpoint #{endpoint}"
         status = {:action => 'soap_fault'}
 
-        ep =  BioCatalogue::Availability::SoapEndPoint.new(endpoint)
+        ep =  BioCatalogue::AvailabilityCheck::SoapEndPoint.new(endpoint)
         if ep.available?
           status.merge!({:result=> 0, :message => ep.parser.document}) 
         else

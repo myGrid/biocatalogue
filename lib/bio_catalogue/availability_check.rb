@@ -9,7 +9,7 @@ require 'uri'
 require 'pp'
 
 module BioCatalogue
-  module Availability
+  module AvailabilityCheck
     
     class SoapResponseParser
       attr_accessor :document
