@@ -88,19 +88,12 @@ module BioCatalogue
       def self.check_url_status(url)
         puts "checking url #{url}"
         status = {:action => 'http_head'}
-        data = %x[curl -I --max-time 20 -X GET #{url}]
-  
-        pieces = data.split
-        if pieces[1] =='200' and pieces[2] =='OK'   # status OK
-          status.merge!({:result=> 0, :message => data})
-        elsif pieces[1] =='302'                     # redirect means OK
-          status.merge!({:result=> 0, :message => data})
-        elsif pieces[1] =='400'                     # bad request means endpoint is available but needs curation
-          status.merge!({:result=> 0, :message => data})
-        else 
-          status.merge!({:result=> 1, :message => data})
+        check =  BioCatalogue::Availability::URLCheck.new(url)
+        if check.available?
+          status.merge!({:result=> 0, :message => check.response}) 
+        else
+          status.merge!({:result=> 1, :message => check.response})
         end
-    
         return status 
       end
 
@@ -126,13 +119,12 @@ module BioCatalogue
       def self.generate_soap_fault(endpoint)
         puts "checking endpoint #{endpoint}"
         status = {:action => 'soap_fault'}
-        data = %x[curl --max-time 20 --header "Content-Type: text/xml" --data "<?xml version="1.0"?>" #{endpoint}]
-  
-        pieces = data.split
-        if pieces[0] == '<?xml'||'<soap:Envelope'
-          status.merge!({:result=> 0, :message => data})
+
+        ep =  BioCatalogue::Availability::SoapEndPoint.new(endpoint)
+        if ep.available?
+          status.merge!({:result=> 0, :message => ep.parser.document}) 
         else
-          status.merge!({:result=> 1, :message => data})
+          status.merge!({:result=> 1, :message => ep.parser.document})
         end
         return status
       end
