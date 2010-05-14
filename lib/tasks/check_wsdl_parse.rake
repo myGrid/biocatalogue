@@ -7,34 +7,29 @@
 
 namespace :biocatalogue do
   namespace :wsdl_parser do
-    desc "check all the soap service wsdls parse"
-    task :check_all => :environment do
-      info = check(Service.find(:all))
-      write_report(info)
-    end
-    
-    desc "check last 50 soap service wsdls parse"
-    task :check_last_50 => :environment do
-      info = check(Service.find(:all).last(50))
-      write_report(info)
-    end
-    
-    desc "check first 50 soap service wsdls parse"
-    task :check_first_50 => :environment do
-      info = check(Service.find(:all).first(50))
-      write_report(info)
-    end
-    
-    
-    desc "check first 10 soap service wsdls parse"
-    task :check_first_10 => :environment do
-      info = check(Service.find(:all).first(10))
-      write_report(info)
-    end
-    
-    desc "check last 10 soap service wsdls parse"
-    task :check_last_10 => :environment do
-      info = check(Service.find(:all).last(10))
+    desc "check soap service wsdls parse"
+    task :check => :environment do
+      
+      last_no  = ENV['last']
+      first_no = ENV['first']
+      all      = ENV['all']
+      services = []
+      if last_no.to_i > 0 :
+        services.concat(Service.find(:all).last(last_no.to_i))
+      end
+      if first_no.to_i > 0
+        services.concat(Service.find(:all).last(first_no.to_i))
+      end
+      
+      if all
+        services = Service.find(:all)
+      end
+      if (!last_no && !first_no && !all)
+        puts "You need to pass configuation parameters. For example, to check the first 3 services in development do :"
+        puts "rake biocatalogue:wsdl_parser:check RAILS_ENV=development first=3"
+        exit(0)
+      end
+      info = check(services)
       write_report(info)
     end
     
@@ -45,7 +40,7 @@ namespace :biocatalogue do
       count  = 1
       failed = [] 
       services.each do |service|
-        service.service_version_instances_by_type('soap').each do |soap|
+        service.service_version_instances_by_type('SoapService').each do |soap|
           begin
             info, error, data = BioCatalogue::WSDLUtils::WSDLParser.parse(soap.wsdl_location)
             if info.empty?
