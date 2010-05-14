@@ -87,4 +87,5 @@ class RestServicesControllerTest < ActionController::TestCase
     assert_nil ServiceDeployment.find_by_endpoint(base)
     assert_not_nil ServiceDeployment.find_by_endpoint(base + '/changed')
   end
+
 end

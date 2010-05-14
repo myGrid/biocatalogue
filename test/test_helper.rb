@@ -69,13 +69,22 @@ class ActiveSupport::TestCase
     rest.service(true)
     return rest
   end
-
   
   # ========================================
   
   # TODO: should this return a User object back?
   def do_login_for_functional_test(user=Factory.create(:user))
     session[:user_id] = user.id
+  end
+   
+  # ========================================
+
+  def login_and_return_first_method(endpoint="")
+    user = Factory.create(:user)
+    do_login_for_functional_test(user)
+  
+    @rest = create_rest_service(:submitter => user, :endpoints => endpoint)
+    return @rest.rest_resources[0].rest_methods[0]
   end
 
 end

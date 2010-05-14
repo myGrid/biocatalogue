@@ -17,45 +17,38 @@ class RestRepresentationsControllerTest < ActionController::TestCase
     get :new_popup, :rest_method_id => rest.rest_resources[0].rest_methods[0].id
     assert !flash[:error].blank?
     
-    rest.destroy
+    rest.service.destroy
   end
     
-  # TODO: fix the tests below
-  def unauthorised_update_base_endpoint
-    do_login_for_functional_test
-    
-    rest = create_rest_service(:endpoints => "/{id}")
-
+  def test_unauthorised_add_new_representations
+    method = login_and_return_first_method("/{id}")
     rep = "application/xml"
     
     do_login_for_functional_test # login as a different user
     
     assert_difference('RestRepresentation.count', 0) do
-      post :add_new_representations, :rest_method_id => rest.rest_resources[0].rest_methods[0].id,
+      post :add_new_representations, :rest_method_id => method.id,
                                      :rest_representations => rep,
                                      :http_cycle => "request"
     end
 
-    rest.destroy
+    @rest.service.destroy
   end
 
-  def add_new_representations
-    do_login_for_functional_test
-
-    rest = create_rest_service(:endpoints => "/{id}")
-
+  def test_add_new_representations
+    method = login_and_return_first_method("/{id}")
     rep = "application/xml"
-    
+
     assert_difference('RestRepresentation.count', 2) do
-      post :add_new_representations, :rest_method_id => rest.rest_resources[0].rest_methods[0].id,
+      post :add_new_representations, :rest_method_id => method.id,
                                      :rest_representations => rep,
                                      :http_cycle => "response"
                          
-      post :add_new_representations, :rest_method_id => rest.rest_resources[0].rest_methods[0].id,
+      post :add_new_representations, :rest_method_id => method.id,
                                      :rest_representations => rep,
                                      :http_cycle => "request"
     end
 
-    rest.destroy    
-  end
+    @rest.service.destroy    
+  end     
 end

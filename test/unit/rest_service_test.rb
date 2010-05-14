@@ -7,15 +7,12 @@ class RestServiceTest < ActiveSupport::TestCase
   ONE_URL_TWICE = ONE_URL + "\r\n" + ONE_URL
   TWO_URLS = "www.my-service.com/api/v1?id=3&method=getSomething\r\nDELete  www.my-service.com/api/v1/format.xml?id=3&name=johndoe"
   TWO_URLS_ONE_REPEATED = TWO_URLS + "\r\n" + ONE_URL
-  
-  
+
   # ========================================
-  
   
   def test_create_rest_service_without_user
     rest_service = create_rest_service(:submitter => nil)
     assert_nil rest_service.service # was not submitted
-    rest_service.destroy
   end
 
   def test_create_rest_service_without_endpoints
@@ -25,7 +22,7 @@ class RestServiceTest < ActiveSupport::TestCase
     assert_not_nil rest_service.service.submitter # has submitter
     assert rest_service.rest_resources.empty? # has no rest_resources
     
-    rest_service.destroy
+    rest_service.service.destroy
   end
     
   def test_method_mine_for_resources_same_submitter
@@ -40,7 +37,7 @@ class RestServiceTest < ActiveSupport::TestCase
     
     assert_equal submitter, rest_service.rest_resources.first.submitter # same submitter
 
-    rest_service.destroy
+    rest_service.service.destroy
   end
   
   def test_method_mine_for_resources_different_submitters
@@ -55,6 +52,6 @@ class RestServiceTest < ActiveSupport::TestCase
     
     assert_not_equal sub_one, sub_two # not the same submitter
     
-    rest_service.destroy
+    rest_service.service.destroy
   end
 end

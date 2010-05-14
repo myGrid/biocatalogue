@@ -13,7 +13,7 @@ class RestMethodRepresentationTest < ActiveSupport::TestCase
     assert_not_nil method.submitter # should have a submitter
     assert_equal method.submitter, rest.service.submitter # same submitter
 
-    rest.destroy
+    rest.service.destroy
   end
   
   def test_linking
@@ -28,6 +28,6 @@ class RestMethodRepresentationTest < ActiveSupport::TestCase
     assert_not_nil method.response_representations(true)[0]
     assert_equal method.response_representations(true)[0], RestRepresentation.last
 
-    rest.destroy
+    rest.service.destroy
   end
 end

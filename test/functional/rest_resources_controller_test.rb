@@ -16,31 +16,36 @@ class RestResourcesControllerTest < ActionController::TestCase
     assert !flash[:error].blank?
   end
   
-  # THE TEST BELOW ARE CURRENTLY NOT WORKING
-  # TODO: fix tests for add new resources
-  def add_new_resources 
+  def add_new_resources # TODO: fix test env["HTTP_REFERER"] issue
     user = Factory.create(:user)
     do_login_for_functional_test(user)
 
     env["HTTP_REFERER"] = "/rest_methods/"
+    rest = create_rest_service(:submitter => user)
     
     assert_difference('RestResource.count', 3) do 
-      post :add_new_resources, :rest_resources => "/res.xml \n /{id} \n ?id={id}&meth=getPics", 
-                               :rest_service_id => create_rest_service(:submitter => user).id
+      put :add_new_resources, 
+          :rest_resources => "/res.xml \n /{id} \n ?id={id}&meth=getPics", 
+          :rest_service_id => rest.id
     end
     
     assert_redirected_to (service_path(Service.last) + "#endpoints")
+    rest.service.destroy
   end
   
-  def add_one_new_resource
-    user = Factory.create(:user)
-    do_login_for_functional_test(user)
+  def unauthorised_add_new_resources # TODO: fix redirected_to :login issue
+    do_login_for_functional_test
+    rest = create_rest_service
     
-    assert_difference('RestResource.count', 1) do 
-      post :add_new_resources, :rest_resources => "/res.xml", 
-           :rest_service_id => create_rest_service(:submitter => user).id
+    do_login_for_functional_test
+                
+    assert_difference('RestResource.count', 0) do 
+      put :add_new_resources, 
+          :rest_resources => "/res.xml", 
+          :rest_service_id => rest.id
     end
     
-    assert_redirected_to (service_path(Service.last) + "#endpoints")
+    assert_redirected_to :login
+    rest.service.destroy
   end
 end

@@ -33,30 +33,30 @@ class RestMethodsControllerTest < ActionController::TestCase
     assert method.endpoint_name.blank?
 
     # no name change
-    post :inline_add_endpoint_name, :endpoint_name => "  \r\n ",
-                                    :id => method.id,
-                                    :partial => "endpoint_name"
+    put :inline_add_endpoint_name, :endpoint_name => "  \r\n ",
+                                   :id => method.id,
+                                   :partial => "endpoint_name"
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
     assert method.endpoint_name.blank?
     
     # name changes
-    post :inline_add_endpoint_name, :endpoint_name => "name",
-                                    :id => method.id,
-                                    :partial => "endpoint_name"
+    put :inline_add_endpoint_name, :endpoint_name => "name",
+                                   :id => method.id,
+                                   :partial => "endpoint_name"
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
     assert_equal "name", method.endpoint_name
 
     # no name change
-    post :inline_add_endpoint_name, :endpoint_name => "  \r\n ",
-                                    :id => method.id,
-                                    :partial => "endpoint_name"
+    put :inline_add_endpoint_name, :endpoint_name => "  \r\n ",
+                                   :id => method.id,
+                                   :partial => "endpoint_name"
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
     assert_equal "name", method.endpoint_name
 
-    @rest.destroy
+    @rest.service.destroy
   end
   
   def test_remove_endpoint_name
@@ -67,13 +67,13 @@ class RestMethodsControllerTest < ActionController::TestCase
     
     assert method.endpoint_name == "some name"
     
-    post :remove_endpoint_name, :id => method.id
+    put :remove_endpoint_name, :id => method.id
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
     assert method.endpoint_name.blank?
     assert_redirected_to method
     
-    @rest.destroy
+    @rest.service.destroy
   end
   
   def test_update_endpoint_name
@@ -83,44 +83,59 @@ class RestMethodsControllerTest < ActionController::TestCase
     method.save!
     
     # no name change
-    post :update_endpoint_name, :new_name => "name",
-                                :id => method.id
+    put :update_endpoint_name, :new_name => "name",
+                               :id => method.id
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
     assert_equal "name", method.endpoint_name
     assert_redirected_to method
     
     # name changes
-    post :update_endpoint_name, :new_name => "name 2",
-                                :id => method.id
+    put :update_endpoint_name, :new_name => "name 2",
+                               :id => method.id
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
     assert_equal "name 2", method.endpoint_name
 
     # no name change
-    post :update_endpoint_name, :new_name => "  \r\n ",
-                                :id => method.id
+    put :update_endpoint_name, :new_name => "  \r\n ",
+                               :id => method.id
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
     assert_equal "name 2", method.endpoint_name
 
-    @rest.destroy
+    @rest.service.destroy
   end
 
   def test_update_resource_path
     method = login_and_return_first_method("/{id}")
     
-    @rest.destroy
-  end
-  
-private
-  
-  def login_and_return_first_method(endpoint="")
-    user = Factory.create(:user)
-    do_login_for_functional_test(user)
+    fails = [ '', '/{id}', '/q={q}' ]
+    passes = [ '/{id}.{format}', '/workflow.xml' ]
     
-    @rest = create_rest_service(:submitter => user, :endpoints => endpoint)
-    return @rest.rest_resources[0].rest_methods[0]
+    fails.each do |path|
+      put :update_resource_path, :id => method.id,
+                                 :new_path => path
+                                 
+      method = @rest.rest_resources(true)[0].rest_methods[0]
+      assert_equal method.rest_resource.path, "/{id}"
+    end
+
+    passes.each do |path|
+      put :update_resource_path, :id => method.id,
+                                 :new_path => path
+                                 
+      method = @rest.rest_resources(true)[0].rest_methods[0]
+      assert_equal method.rest_resource.path, path
+      
+      if path.include?('{') && path.include?('}')
+        assert !method.request_parameters.select{ |p| p.param_style=='template'}.empty?
+      else
+        assert method.request_parameters.select{ |p| p.param_style=='template'}.empty?
+      end
+    end
+    
+    @rest.service.destroy
   end
 
 end

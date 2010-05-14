@@ -10,7 +10,7 @@ class RestRepresentationTest < ActiveSupport::TestCase
     rest = create_rest_service(:endpoints => "/results.xml")
     assert_equal RestRepresentation.count, 0
 
-    rest.destroy
+    rest.service.destroy
   end
 
   def test_check_duplicate
@@ -24,7 +24,7 @@ class RestRepresentationTest < ActiveSupport::TestCase
     assert_not_nil RestRepresentation.check_duplicate(method, "application/xml", "response") # exists
     assert_not_nil RestRepresentation.check_duplicate(method, "application/xml") # exists
 
-    rest.destroy
+    rest.service.destroy
   end
     
   def test_check_exists_for_rest_service
@@ -36,7 +36,7 @@ class RestRepresentationTest < ActiveSupport::TestCase
     assert_nil RestRepresentation.check_exists_for_rest_service(rest, "xml") # does not exist
     assert_not_nil RestRepresentation.check_exists_for_rest_service(rest, "application/xml") # exists
     
-    rest.destroy
+    rest.service.destroy
   end
   
   def test_submitter
@@ -49,6 +49,6 @@ class RestRepresentationTest < ActiveSupport::TestCase
     
     assert_equal rep.submitter, submitter # the submitter
     
-    rest.destroy
+    rest.service.destroy
   end
 end
