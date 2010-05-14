@@ -24,6 +24,7 @@ module BioCatalogue
     
         soap_services = instances.delete_if{ |instance| instance.class.to_s != "SoapService" }
         update_soap_service_monitors(soap_services)
+        update_rest_service_monitors
         end
       end
   
@@ -73,6 +74,29 @@ module BioCatalogue
               end
            end
         end
+      end
+      
+      def self.update_rest_service_monitors(*params)
+        Annotation.find(:all, 
+                        :conditions => {:annotatable_type => "RestMethod"}).collect{|a| a if a.attribute.name=="example_endpoint" }.each  do |ann|
+          monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
+          if monitor.nil?
+            mon = create_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
+            if mon.save!
+              Rails.logger.error("Created a new monitor for #{ann.send('value')}")
+            end
+          end
+        end
+      end
+      
+      def self.create_monitor(parent, property, service)
+        mon = UrlMonitor.new(:parent_id => parent.id, 
+                              :parent_type => parent.class.name, 
+                              :property => property)
+        service_test = ServiceTest.new(:service_id => service.id,
+                                              :test_type => mon.class.name, :activated_at => Time.now )
+        mon.service_test = service_test
+        return mon
       end
         
     end # MonitorUpdate

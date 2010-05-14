@@ -252,6 +252,16 @@ class Service < ActiveRecord::Base
     results
   end
   
+  # Either return the creation time of the earliest test result
+  # for all the service tests or return nil if no test results exist
+  def monitored_since
+    first_results = self.service_tests.collect{|st| st.test_results.first}.compact
+    unless first_results.first.nil?
+      return first_results.sort_by{|r| r.created_at}.first.created_at 
+    end
+    return nil
+  end
+  
 protected
   
   def generate_unique_code
