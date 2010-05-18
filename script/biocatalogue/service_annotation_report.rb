@@ -60,14 +60,14 @@ soap_services.each do |soap_service|
       all_inputs_have_descriptions = all_inputs_have_descriptions && field_or_annotation_has_value?(soap_input, :description)
       all_inputs_have_descriptions_and_data = all_inputs_have_descriptions_and_data && 
                                               field_or_annotation_has_value?(soap_input, :description) &&
-                                              !soap_input.annotations_with_attribute("example").blank?
+                                              !soap_input.annotations_with_attribute("example_data").blank?
     end
     
     soap_operation.soap_outputs.each do |soap_output|
       all_outputs_have_descriptions = all_outputs_have_descriptions && field_or_annotation_has_value?(soap_output, :description)
       all_outputs_have_descriptions_and_data = all_outputs_have_descriptions_and_data && 
                                               field_or_annotation_has_value?(soap_output, :description) &&
-                                              !soap_output.annotations_with_attribute("example").blank?
+                                              !soap_output.annotations_with_attribute("example_data").blank?
     end
   end
   
