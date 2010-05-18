@@ -14,6 +14,8 @@ class SoapInput < ActiveRecord::Base
   
   acts_as_annotatable
   
+  acts_as_archived
+  
   belongs_to :soap_operation
   
   serialize :computational_type_details

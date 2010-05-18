@@ -43,12 +43,49 @@
     
     <div>
     	<ul>
+      
+			<% unless @soap_operation.archived? %>
+				<li class="active" title="<%= tooltip_title_attrib(display_name(@soap_operation)) -%>">
+	        <% op_label = content_tag(:span, truncate(display_name(@soap_operation), :length => 20), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(@soap_operation.soap_inputs.length, 'input')}, #{pluralize(@soap_operation.soap_outputs.length, 'output')}", :class => 'detail') -%>
+	        <%= link_to op_label, @soap_operation -%>
+	      </li>
+			<% end %>
+			
       <% @soap_service.soap_operations.each do |op| %>
-        <li class="<%= op == @soap_operation ? 'active' : '' -%>" title="<%= tooltip_title_attrib(display_name(op)) -%>">
-					<% op_label = content_tag(:span, truncate(display_name(op), :length => 20), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(op.soap_inputs.length, 'input')}, #{pluralize(op.soap_outputs.length, 'output')}", :class => 'detail') -%>
-          <%= link_to op_label, op -%>
-        </li>
+			  <% unless op == @soap_operation %>
+	        <li title="<%= tooltip_title_attrib(display_name(op)) -%>">
+						<% op_label = content_tag(:span, truncate(display_name(op), :length => 20), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(op.soap_inputs.length, 'input')}, #{pluralize(op.soap_outputs.length, 'output')}", :class => 'detail') -%>
+	          <%= link_to op_label, op -%>
+	        </li>
+				<% end %>
       <% end %>
+			
+			<% unless @soap_service.archived_soap_operations.empty? %>
+			
+				<br/>
+				
+				<p class="group_heading">
+	        <b>Archived operations</b>
+	      </p>
+				
+				<% if @soap_operation.archived? %>
+	        <li class="active archived" title="<%= tooltip_title_attrib(display_name(@soap_operation)) -%>">
+	          <% op_label = content_tag(:span, truncate(display_name(@soap_operation), :length => 20), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(@soap_operation.soap_inputs.length, 'input')}, #{pluralize(@soap_operation.soap_outputs.length, 'output')}", :class => 'detail') -%>
+	          <%= link_to op_label, @soap_operation -%>
+	        </li>
+	      <% end %>
+				
+				<% @soap_service.archived_soap_operations.each do |op| %>
+	        <% unless op == @soap_operation %>
+	          <li class="archived" title="<%= tooltip_title_attrib(display_name(op)) -%>">
+	            <% op_label = content_tag(:span, truncate(display_name(op), :length => 20), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(op.soap_inputs.length, 'input')}, #{pluralize(op.soap_outputs.length, 'output')}", :class => 'detail') -%>
+	            <%= link_to op_label, op -%>
+	          </li>
+	        <% end %>
+	      <% end %>
+			
+			<% end %>
+			
 			</ul>
     </div>
     
@@ -58,6 +95,10 @@
   <div class="vtabs_tab_content">
   	
 		<h1><%= display_name(@soap_operation) -%></h1>
+		
+		<% if @soap_operation.archived? %>
+		  <%= render :partial => 'shared/archived_status_banner', :locals => { :status_text => "This SOAP operation has been archived because it was removed or renamed in the SOAP service's WSDL document. Please do not use it as it may not be accessible." } -%>
+		<% end %>
 	
     <div class="operation_box">
 			
@@ -76,6 +117,18 @@
 										 	 :locals => { :annotatable => @soap_operation,
 																		:show_promote_option => false } -%>
 					</div>
+					
+					<% if @soap_operation.soap_service_port %>
+					  <div class="box_grouped_info">
+					 	  <b>Port:</b> <span style="font-weight: bold; color: #990000;"><%= h @soap_operation.soap_service_port.name -%></span>
+							<br/>
+							<b>Location:</b> <%= h @soap_operation.soap_service_port.location -%>
+							<br/>
+							<b>Protocol:</b> <%= h @soap_operation.soap_service_port.protocol -%>
+							<br/>
+              <b>Default Style:</b> <%= h @soap_operation.soap_service_port.style -%>
+					  </div>
+					<% end %>
 					
 					<div>
 						<b>Inputs Parameter Order:</b>
@@ -110,162 +163,59 @@
 		
 			<br/>
 			
-			<span style="font-size: 108%;"><b>Inputs:</b></span>
+			<span style="font-size: 108%;">
+			  <b>Inputs:</b>
+			  <span class="count_text">(<%= @soap_operation.soap_inputs.length -%>)</span>
+		  </span>
 			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1em;">
 				<% @soap_operation.soap_inputs.each do |input| %>
+					<%= render :partial => 'soap_inputs/soap_input', :locals => { :input => input }-%>
+				<% end %>
 				
-					<% uniq_id = "soap_input_#{input.id}" %>
-					
-					<a name='<%= uniq_id -%>'></a>
-					
-					<div class="port">
-																				
-						<div>
-							<% create_expand_collapse_link(uniq_id, 
-                                        :icon_float => "right",
-                                        :class => "collapsable_title") do -%>
-								
-								<div>
-									<b><%= display_name(input) -%></b>
-								</div>
-								<% unless (desc = input.preferred_description).blank? %>
-									<div style="font-style: italic; color: #666; margin-top: 0.6em;">
-										<%= annotation_prepare_description(desc, true, 150, false) -%>
-									</div>
-								<% end %>
-								
-							<% end %>
-						</div>
-						
-						<div id="<%= uniq_id -%>" style="display: none; margin-top: 0.7em;">
-						
-							<div style="float: left; width: 73%;">
-								<% if false %>
-								<div style="margin-bottom: 0.6em;">
-									<b>SOAP Input:</b>
-									<span class="operation_name"><%= display_name(input) -%></span>
-								</div>
-								<% end %>
-								
-								<div style="margin-bottom: 1em;">
-									<%= render :partial => "annotations/name_aliases",
-											 	 		 :locals => { :annotatable => input,
-																					:show_promote_option => false } -%>
-								</div>
-									 
-								<%= render :partial => "annotations/descriptions",
-								 	 				 :locals => { :annotatable => input } -%>
-								
-								<%= render :partial => "annotations/formats",
-								 	 				 :locals => { :annotatable => input } -%>
-													 
-								<%= render :partial => "annotations/examples",
-								 	 				 :locals => { :annotatable => input } -%>
-								
-								<%= render :partial => "soap_services/computational_type_info",
-								 	 				 :locals => { :thing => input } -%>
-								
-								<%= render :partial => "annotations/other_annotations",
-							 		 		 		 :locals => { :annotatable => input, :show_add => false } -%>
-								
-							</div>
-							
-							<div style="float: right; width: 24%; font-size: 85%;">
-								<%= render :partial => "annotations/tags_box",
-									 				 :locals => { :annotatable => input } -%>
-							</div>
-							
-							<span class="clear"></span>
-						
-						</div>
-							
-					</div>
-					
+				<% unless @soap_operation.archived_soap_inputs.empty? %>
+					<h4>
+						Archived Inputs
+						<span style="margin-left: 1em; vertical-align: baseline;">
+			        <%= info_icon_with_tooltip("These are the inputs that have been archived because they were removed/renamed in the SOAP service's WSDL document.") -%>
+			      </span>
+				  </h4>
+					<% @soap_operation.archived_soap_inputs.each do |input| %>
+	          <%= render :partial => 'soap_inputs/soap_input', :locals => { :input => input }-%>
+	        <% end %>
 				<% end %>
 			</div>
 			
 			<br/>
 					
-			<span style="font-size: 108%;"><b>Outputs:</b></span>
+			<span style="font-size: 108%;">
+        <b>Outputs:</b>
+        <span class="count_text">(<%= @soap_operation.soap_outputs.length -%>)</span>
+      </span>
 			<div class="box_indented_with_bar" style="margin: 0.7em 0 0 1em;">
-				<% @soap_operation.soap_outputs.each do |output| %>
-				
-					<% uniq_id = "soap_output_#{output.id}" %>
-					
-					<a name='<%= uniq_id -%>'></a>
-					
-					<div class="port">
-						
-						<div>
-							<% create_expand_collapse_link(uniq_id, 
-                                        :icon_float => "right",
-                                        :class => "collapsable_title") do -%>
-								
-								<div>
-									<b><%= display_name(output) -%></b>
-								</div>
-								<% unless (desc = output.preferred_description).blank? %>
-									<div style="font-style: italic; color: #666; margin-top: 0.6em;">
-										<%= annotation_prepare_description(desc, true, 150, false) -%>
-									</div>
-								<% end %>
-								
-							<% end %>
-						</div>
-						
-						<div id="<%= uniq_id -%>" style="display: none; margin-top: 0.7em;">
-						
-							<div style="float: left; width: 73%;">
-								<% if false %>
-								<div style="margin-bottom: 0.6em;">
-									<b>SOAP Output:</b>
-									<span class="operation_name"><%= display_name(output) -%></span>
-								</div>
-								<% end %>
-								
-								<div style="margin-bottom: 1em;">
-									<%= render :partial => "annotations/name_aliases",
-											 	 		 :locals => { :annotatable => output,
-																					:show_promote_option => false } -%>
-								</div>
-								
-								<%= render :partial => "annotations/descriptions",
-								 	 				 :locals => { :annotatable => output } -%>
-													 
-							  <%= render :partial => "annotations/formats",
-								 	 				 :locals => { :annotatable => output } -%>
-													 
-								<%= render :partial => "annotations/examples",
-								 	 				 :locals => { :annotatable => output } -%>
-								
-								<%= render :partial => "soap_services/computational_type_info",
-								 	 				 :locals => { :thing => output } -%>
-								
-								<%= render :partial => "annotations/other_annotations",
-							 		 		 		 :locals => { :annotatable => output, :show_add => false } -%>
-							</div>
-							
-							<div style="float: right; width: 24%; font-size: 85%;">
-								<%= render :partial => "annotations/tags_box",
-									 				 :locals => { :annotatable => output } -%>
-							</div>
-						
-							<span class="clear"></span>
-						
-						</div>
-											
-					</div>
-					
-				<% end %>
-			</div>
-		
+        <% @soap_operation.soap_outputs.each do |output| %>
+          <%= render :partial => 'soap_outputs/soap_output', :locals => { :output => output }-%>
+        <% end %>
+        
+        <% unless @soap_operation.archived_soap_outputs.empty? %>
+          <h4>
+            Archived Outputs
+            <span style="margin-left: 1em; vertical-align: baseline;">
+              <%= info_icon_with_tooltip("These are the outputs that have been archived because they were removed/renamed in the SOAP service's WSDL document.") -%>
+            </span>
+          </h4>
+          <% @soap_operation.archived_soap_outputs.each do |output| %>
+            <%= render :partial => 'soap_outputs/soap_output', :locals => { :output => output }-%>
+          <% end %>
+        <% end %>
+      </div>
+			
 		</div>
+		
+		<p style="margin: 1.5em 0 1.5em 0; font-size: 93%; text-align: right;">
+		  <a href="#operations_top">Back to top</a>
+		</p>
 		
   </div>
 </div>
 
 <span class="clear"></span>
-
-<p style="margin: 1.5em 0 1.5em 0; font-size: 93%; text-align: right;">
-	<a href="#operations_top">Back to top</a>
-</p>

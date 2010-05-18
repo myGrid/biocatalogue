@@ -17,8 +17,7 @@ class ServicesController < ApplicationController
   
   before_filter :find_services, :only => [ :index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, 
-                                          :summary, :annotations, :deployments, :variants, :monitoring ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive ]
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
@@ -28,10 +27,8 @@ class ServicesController < ApplicationController
   
   before_filter :set_listing_type, :only => [ :index ]
   
-  before_filter :login_required, :only => [ :destroy ]
-  
-  before_filter :authorise, :only => [ :destroy ]
-                                                              
+  before_filter :login_required, :only => [ :destroy, :check_updates, :archive, :unarchive ]
+  before_filter :authorise, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   
   # GET /services
   # GET /services.xml
@@ -182,7 +179,35 @@ class ServicesController < ApplicationController
     end
   end
   
-
+  def check_updates
+    # Submit a job to run the service updater
+    BioCatalogue::ServiceUpdater.submit_job_to_run_service_updater(@service.id)
+    
+    flash[:notice] = "The service updater has been scheduled to run. Any new updates found will be shown in the 'News' tab."
+    
+    respond_to do |format|
+      format.html { redirect_to @service }
+    end
+  end
+  
+  def archive
+    @service.archive!
+    respond_to do |format|
+      flash[:notice] = "This service has been archived"
+      format.html { redirect_to @service }
+      format.xml  { head :ok }
+    end
+  end
+  
+  def unarchive
+    @service.unarchive!
+    respond_to do |format|
+      flash[:notice] = "This service has been unarchived"
+      format.html { redirect_to @service }
+      format.xml  { head :ok }
+    end
+  end
+ 
   protected
   
   def parse_sort_params

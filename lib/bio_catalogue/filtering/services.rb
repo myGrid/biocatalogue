@@ -69,20 +69,7 @@ module BioCatalogue
           sql += " LIMIT #{limit}"
         end
          
-        items = ActiveRecord::Base.connection.select_all(sql)
-        
-        # Need to replace the name with the preferred display name for that provider...
-        
-        providers_cache = { }
-        ServiceProvider.find_all_by_id(items.map { |i| i['id'] }).each do |sp|
-          providers_cache[sp.id.to_s] = sp
-        end
-        
-        items.each do |item|
-          item['name'] = providers_cache[item['id']].display_name if providers_cache.has_key?(item['id'])
-        end
-        
-        return items
+        return ActiveRecord::Base.connection.select_all(sql)
       end
       
       # Gets an ordered list of all the different service types and their counts of services.

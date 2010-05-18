@@ -14,12 +14,14 @@ class Service < ActiveRecord::Base
   end
   
   after_create :tweet_create
-  
+    
   acts_as_trashable
   
   acts_as_annotatable
   
   acts_as_favouritable
+  
+  acts_as_archived
   
   has_many :relationships, 
            :as => :subject, 
@@ -68,7 +70,8 @@ class Service < ActiveRecord::Base
   
   validates_associated :service_deployments
   
-  validates_associated :service_tests
+  # This causes a "stack level too deep" error because of recursive validates_associated calls in ServiceTest
+  #validates_associated :service_tests
   
   validates_existence_of :submitter   # User must exist in the db beforehand.
   

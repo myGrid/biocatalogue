@@ -116,6 +116,12 @@ module ApplicationHelper
         "dropdown.png"
       when :partners
         "group_link.png"
+      when :check_updates
+        "monitor_go.png"
+      when :archive, :archived
+        "cog_error.png"
+      when :unarchive
+        "cog_go.png"
       else
         ''
     end
@@ -684,11 +690,15 @@ module ApplicationHelper
   # CONFIGURATION OPTIONS (all these options are optional)
   #  :link_text - text to be displayed as part of the link.
   #    default: update_element_id (the ID of the element to be expanded or collapsed)
-  #  :class - any CSS class that need to be applied to the text.
+  #  :link_style - any additional inline CSS styles that should be applied to the link tag.
+  #    default: ''
+  #  :style - any additional inline CSS styles that should be applied to the container span tag.
+  #    default: ''
+  #  :class - any CSS class that need to be applied to the container span tag.
   #    default: nil
-  #  :icon_left_margin - the left margin of the expand / collapse icon
+  #  :icon_left_margin - the left margin of the expand / collapse icon.
   #    default: "5px"
-  #  :icon_float - the CSS float value for the icon i.e. 'left', right', etc.  This OVERRIDES :icon_left_margin
+  #  :icon_float - the CSS float value for the icon i.e. 'left', right', etc.  This OVERRIDES :icon_left_margin.
   #    default: ''
   def create_expand_collapse_link(update_element_id, *args, &block)
     return '' if update_element_id.blank?
@@ -696,6 +706,8 @@ module ApplicationHelper
     options = args.extract_options!
     # default config options
     options.reverse_merge!(:link_text => update_element_id,
+                           :link_style => "",
+                           :style => "", 
                            :class => nil,
                            :icon_left_margin => "5px",
                            :icon_float => "")
@@ -717,19 +729,19 @@ module ApplicationHelper
     expand_link_id = update_element_id + '_name_more_link'
     collapse_link_id = update_element_id + '_name_less_link'
     
-    expand_link_content = link_to_function(expand_link, :id => expand_link_id, :style => "vertical-align: baseline;") do |page| 
+    expand_link_content = link_to_function(expand_link, :id => expand_link_id, :style => "vertical-align: baseline;  #{options[:link_style]}") do |page| 
                             page.toggle expand_link_id, collapse_link_id
                             page.visual_effect :toggle_blind, update_element_id, :duration => '0.2'
                           end
 
-    collapse_link_content = link_to_function(collapse_link, :id => collapse_link_id, :style => "display:none; vertical-align: baseline;") do |page| 
+    collapse_link_content = link_to_function(collapse_link, :id => collapse_link_id, :style => "display:none; vertical-align: baseline;  #{options[:link_style]}") do |page| 
                               page.toggle expand_link_id, collapse_link_id
                               page.visual_effect :toggle_blind, update_element_id, :duration => '0.2'
                             end 
                             
     span_content = expand_link_content + collapse_link_content
     
-    content = content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline;")
+    content = content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline; #{options[:style]}")
     
     if block_given?
       return concat(content, block.binding)

@@ -14,11 +14,35 @@ class SoapOperation < ActiveRecord::Base
   
   acts_as_annotatable
   
+  acts_as_archived
+  
   belongs_to :soap_service
+  
   belongs_to :soap_service_port
   
-  has_many :soap_inputs, :dependent => :destroy
-  has_many :soap_outputs, :dependent => :destroy
+  has_many :soap_inputs,
+           :conditions => "soap_inputs.archived_at IS NULL",
+           :dependent => :destroy,
+           :order => "soap_inputs.name ASC"
+           
+  has_many :soap_outputs,
+           :conditions => "soap_outputs.archived_at IS NULL",
+           :dependent => :destroy,
+           :order => "soap_outputs.name ASC"
+  
+  has_many :archived_soap_inputs,
+           :class_name => "SoapInput",
+           :foreign_key => "soap_operation_id",
+           :dependent => :destroy,
+           :conditions => "soap_inputs.archived_at IS NOT NULL",
+           :order => "soap_inputs.name ASC"
+  
+  has_many :archived_soap_outputs,
+           :class_name => "SoapOutput",
+           :foreign_key => "soap_operation_id",
+           :dependent => :destroy,
+           :conditions => "soap_outputs.archived_at IS NOT NULL",
+           :order => "soap_outputs.name ASC"
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :description, :parent_port_type,

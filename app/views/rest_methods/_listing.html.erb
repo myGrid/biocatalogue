@@ -8,48 +8,59 @@
 
 %>
 
+<%
+  resource = nil unless local_assigns.has_key?(:resource)
+  base_endpoint = nil unless local_assigns.has_key?(:base_endpoint)
+%>
+
 <div class="listings">
-	<% items.sort.each do |resource| %>
-    <% resource.rest_methods.sort.each do |method| %>
-      <div class="listing_item">
-        <p class="name">
-          <% link_text = "#{method.display_endpoint} " %>
-          <%= "<i style='font-size:80%;'>#{method.endpoint_name}</i> | " if method.endpoint_name -%>
-          <%= link_to(link_text, method) -%>
+	<% items.each do |method| %>
+	  <% resource = method.rest_resource if resource.nil?; %>
+		<% base_endpoint = resource.rest_service.service.latest_deployment.endpoint if base_endpoint.nil? %>
+    <div class="listing_item">
+      <p class="name">
+        <% link_text = "#{method.display_endpoint} " %>
+        <%= "<i style='font-size:80%;'>#{method.endpoint_name}</i> | " if method.endpoint_name -%>
+        <%= link_to(link_text, method) -%>
+      </p>
+			
+			<% if method.associated_service %>
+        <p class="detail">
+          Part of Service: <%= link_to display_name(method.associated_service), method.associated_service -%>
         </p>
-                
-        <p class="detail faded">
-          <b>Template:</b>
-          <%= help_icon_with_tooltip("This is an example of how the endpoint's URL will look. This includes the minimal set of parameters needed to be able to use the endpoint.") -%>
-          
-          <%= create_url_template(base_endpoint, resource, method) -%>
-        </p>
+      <% end %>
+              
+      <p class="detail faded">
+        <b>Template:</b>
+        <%= help_icon_with_tooltip("This is an example of how the endpoint's URL will look. This includes the minimal set of parameters needed to be able to use the endpoint.") -%>
         
-        <div style="font-size: 85%;">
-          <%= render :partial => "annotations/descriptions",
-                     :locals => { :annotatable => method,
-                                  :show_header => false,
-                                  :truncate_desc => 400,
-                                  :auto_link_desc => false,
-                                  :show_modify_options => false,
-                                  :show_add_box => false } -%>
-        </div>
-        
-        <div class="detail">
-          <table>
-            <tr>
-              <td style="width: 17em; line-height: 1.5; padding-top: 1px; text-align: left;">
-                <b>Tags on this endpoint:</b>
-              </td>
-              <td>
-                <%= render :partial => "annotations/tags_flat",
-                           :locals => { :annotatable => method } -%>
-              </td>
-            </tr>
-          </table>
-        </div>
-        
+        <%= create_url_template(base_endpoint, resource, method) -%>
+      </p>
+      
+      <div style="font-size: 85%;">
+        <%= render :partial => "annotations/descriptions",
+                   :locals => { :annotatable => method,
+                                :show_header => false,
+                                :truncate_desc => 400,
+                                :auto_link_desc => false,
+                                :show_modify_options => false,
+                                :show_add_box => false } -%>
       </div>
-    <% end %>
+      
+      <div class="detail">
+        <table>
+          <tr>
+            <td style="width: 17em; line-height: 1.5; padding-top: 1px; text-align: left;">
+              <b>Tags on this endpoint:</b>
+            </td>
+            <td>
+              <%= render :partial => "annotations/tags_flat",
+                         :locals => { :annotatable => method } -%>
+            </td>
+          </tr>
+        </table>
+      </div>
+      
+    </div>
   <% end %>
 </div>

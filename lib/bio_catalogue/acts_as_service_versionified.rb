@@ -57,13 +57,11 @@ module BioCatalogue
       # This is to update things like the updated_at time
       def save_service_version_record
         if service_version
-          service_version.updated_at = Time.now
-          service_version.save    # This should only do a partial update (ie: save the updated_at field only).
+          service_version.update_attribute(:updated_at, Time.now)
         end
         
         if service
-          service.updated_at = Time.now
-          service.save            # This should only do a partial update (ie: save the updated_at field only).
+          service.update_attribute(:updated_at, Time.now)
         end
       end
       
@@ -165,7 +163,8 @@ module BioCatalogue
         wsdl_geoloc = BioCatalogue::Util.url_location_lookup(endpoint)
         city, country = BioCatalogue::Util.city_and_country_from_geoloc(wsdl_geoloc)
         
-        provider_name = Addressable::URI.parse(endpoint).host.gsub(".", "-")
+        hostname = Addressable::URI.parse(endpoint).host
+        provider_name = hostname.gsub(".", "-")
         
         # Create the associated service, service_version and service_deployment objects.
         # We can assume here that this is the submission of a completely new service in BioCatalogue.
@@ -182,9 +181,19 @@ module BioCatalogue
         
         new_service_deployment = new_service_version.service_deployments.build(:endpoint => endpoint,
                                                                                :city => city,
-                                                                               :country => country)
+                                                                               :country => country)        
         
-        new_service_deployment.provider = ServiceProvider.find_or_create_by_name(provider_name)
+        provider_hostname = ServiceProviderHostname.find_or_initialize_by_hostname(hostname)
+        
+        if provider_hostname.service_provider.nil?
+          provider = ServiceProvider.find_or_create_by_name(provider_name)
+          provider_hostname.service_provider_id = provider.id
+          provider_hostname.save!
+        else
+          provider = provider_hostname.service_provider
+        end
+        
+        new_service_deployment.provider = provider 
         new_service_deployment.service = new_service
         new_service_deployment.submitter = actual_submitter
                                                       

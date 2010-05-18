@@ -37,5 +37,10 @@ namespace :biocatalogue do
       Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateAnnotationPropertiesFull.new)
     end
     
+    desc 'Submits a job to run the service updater for all services in the BioCatalogue'
+    task :run_service_updater_for_all => :environment do
+      Delayed::Job.enqueue(BioCatalogue::Jobs::RunServiceUpdaterForAll.new)
+    end
+    
   end
 end

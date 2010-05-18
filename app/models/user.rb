@@ -194,7 +194,15 @@ class User < ActiveRecord::Base
     [ 1, 2 ].include? self.role_id  
   end
 
-  private
+  def self.admins
+    User.find_all_by_role_id(1)
+  end
+  
+  def self.curators
+    User.find_all_by_role_id(2)
+  end
+  
+private
 
   # Encrypts password with the salt.
   def self.encrypt(password, salt)
@@ -235,4 +243,5 @@ class User < ActiveRecord::Base
       self.display_name = (email.blank? ? "[no name]" : self.email.split("@")[0])
     end
   end
+
 end

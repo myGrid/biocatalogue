@@ -9,9 +9,8 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+ActiveRecord::Schema.define(:version => 20100518124313) do
 
-ActiveRecord::Schema.define(:version => 20100421145629) do
-  
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
     t.string   "activity_loggable_type", :limit => 60
@@ -335,6 +334,13 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
   add_index "service_deployments", ["service_version_id"], :name => "service_deployments_service_version_id_index"
   add_index "service_deployments", ["submitter_type", "submitter_id"], :name => "service_deployments_submitter_index"
 
+  create_table "service_provider_hostnames", :force => true do |t|
+    t.integer  "service_provider_id"
+    t.string   "hostname"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "service_providers", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -389,6 +395,7 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
     t.string   "name"
     t.integer  "submitter_id"
     t.string   "submitter_type"
+    t.datetime "archived_at"
   end
 
   add_index "services", ["name"], :name => "services_name_index"
@@ -415,6 +422,7 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
     t.integer  "min_occurs"
     t.integer  "max_occurs"
     t.text     "computational_type_details", :limit => 16777215
+    t.datetime "archived_at"
   end
 
   add_index "soap_inputs", ["soap_operation_id"], :name => "index_soap_inputs_on_soap_operation_id"
@@ -428,6 +436,7 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
     t.string   "parameter_order"
     t.string   "parent_port_type"
     t.integer  "soap_service_port_id"
+    t.datetime "archived_at"
   end
 
   add_index "soap_operations", ["soap_service_id"], :name => "index_soap_operations_on_soap_service_id"
@@ -442,9 +451,17 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
     t.integer  "min_occurs"
     t.integer  "max_occurs"
     t.text     "computational_type_details", :limit => 16777215
+    t.datetime "archived_at"
   end
 
   add_index "soap_outputs", ["soap_operation_id"], :name => "index_soap_outputs_on_soap_operation_id"
+
+  create_table "soap_service_changes", :force => true do |t|
+    t.integer  "soap_service_id"
+    t.text     "changelog",       :limit => 16777215
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "soap_service_ports", :force => true do |t|
     t.string   "name"
@@ -454,6 +471,7 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "soap_service_id"
+    t.datetime "archived_at"
   end
 
   create_table "soap_services", :force => true do |t|
@@ -463,7 +481,8 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
     t.string   "documentation_url"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "wsdl_file_id"
+    t.string   "namespace"
+    t.text     "description_from_soaplab"
   end
 
   add_index "soap_services", ["name"], :name => "soap_services_name_index"
@@ -478,17 +497,6 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
   end
 
   add_index "soaplab_servers", ["location"], :name => "soaplab_servers_location_index"
-
-  create_table "test_results", :force => true do |t|
-    t.integer  "result"
-    t.string   "action"
-    t.text     "message"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "service_test_id"
-  end
-
-  add_index "test_results", ["service_test_id"], :name => "test_results_stest_id_index"
 
   create_table "test_scripts", :force => true do |t|
     t.string   "name",                                :null => false
@@ -554,6 +562,7 @@ ActiveRecord::Schema.define(:version => 20100421145629) do
     t.integer  "content_blob_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "soap_service_id", :null => false
   end
 
 end

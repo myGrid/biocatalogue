@@ -36,6 +36,7 @@ class Annotation < ActiveRecord::Base
     acts_as_solr(:fields => [ :value_for_solr, 
                               { :associated_service_id => :r_id },
                               { :associated_soap_operation_id => :r_id },
+                              { :associated_rest_method_id => :r_id },
                               { :associated_service_provider_id => :r_id },
                               { :associated_user_id => :r_id }, 
                               { :associated_registry_id => :r_id } ])
@@ -132,6 +133,19 @@ class Annotation < ActiveRecord::Base
         return self.annotatable_id
       when "SoapInput", "SoapOutput"
         return self.annotatable.soap_operation_id unless self.annotatable.nil?
+      else
+        nil
+    end
+  end
+  
+  def associated_rest_method_id
+    case self.annotatable_type
+      when "RestMethod"
+        return self.annotatable_id
+      when "RestMethodParameter", "RestMethodParameter"
+        return self.annotatable.rest_method_id unless self.annotatable.nil?
+      when "RestParameter", "RestRepresentation"
+        return self.annotatable.associated_rest_method_id unless self.annotatable.nil?
       else
         nil
     end

@@ -12,7 +12,7 @@
 	
 	<div id="tab-activity" class="tabbertab">
     <h3>Latest Activity</h3>
-		<%= render :partial => 'activity', :locals => { :style => :detailed } -%>
+		<%= render :partial => 'shared/activity', :locals => { :style => :detailed, :entries => activity_entries_for_home(:detailed) } -%>
 	</div>
 	
 	<div id="tab-services" class="tabbertab">
@@ -57,5 +57,3 @@
 	</div>
 	
 </div>
-
-<%= render :partial => 'shared/tabber_startup' -%>

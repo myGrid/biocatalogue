@@ -1,36 +1,27 @@
 #!/usr/bin/ruby
 #
-# lib/bio_catalogue/wsdl_utils_parser_client.rb
+# lib/bio_catalogue/wsdl_utils/parser_client.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
 # A client to the WSDLUtils web service (From EMBRACE registry - www.embraceregistry.net ). 
 # This client calls the parse function of the WSDLUtils web service through it REST interface
-# and uses the 'wsdl_utils_output_parser.rb' to parse the output.
-
-
-require 'open-uri'
-require 'rexml/document'
-require 'cgi'
-require 'system_timer'
-require 'pp'
-
-require 'bio_catalogue/wsdl_utils_output_parser'
+# and uses the 'lib/wsdl_utils/output_parser.rb' classes to parse the output.
 
 
 module BioCatalogue
-  module WSDLUtils
-    module WSDLParser
+  module WsdlUtils
+    module ParserClient
       
       
-      # Call the 'parse' method of the of the
+      # Call the 'parse' method of the
       # WSDLUtils web service. Convert the obtained
       # xml into REXML document. Return the document
       # if all is fine. Otherwise, return nil 
       #
-      # Example WSDL_BASE_URI = 'http://localhost/WSDLUtils/WSDLUtils.php?'
+      # Example WSDLUTILS_BASE_URI = 'http://localhost/WSDLUtils/WSDLUtils.php?'
       PARAM_STRING = '?method=parse&wsdl_uri='
       PARSER_URI   = WSDLUTILS_BASE_URI + PARAM_STRING
       
@@ -77,46 +68,53 @@ module BioCatalogue
       #
       # service_info structure:
       #   { 
-      #     :name         => "service_name",
-      #     :description  => "service_description",
-      #     :ports        => [
-      #                       {
-      #                         :name     => "port_name"
-      #                         :protocol => "url"
-      #                         :style    => "style of the communication. Eg document"
-      #                         :location => "uri to an endpoint of the service"
-      #                       } 
-      #                       ]
-      #     :operations   => 
-      #         [
+      #     "name"        => "...",
+      #     "description" => "...",
+      #     "namespace"   => "...",
+      #     "endpoint"   => "...",
+      #     "ports"       => 
+      #       [
+      #         {
+      #           "name"     => "..."
+      #           "protocol" => "..."
+      #           "style"    => "style of the communication. Eg document"
+      #           "location" => "uri to an endpoint of the service"
+      #         } 
+      #       ]
+      #     "operations"  => 
+      #       [
       #         { 
-      #           :name             => "op_name", 
-      #           :description      => "op_description",
-      #           :parent_port_type => "port type to which operation is bound"
-      #           :inputs           => 
-      #               [
+      #           "name"             => "...", 
+      #           "description"      => "...",
+      #           "action"           => "...",
+      #           "parent_port_type" => "port to which operation is bound",
+      #           "operation_type"   => "...",
+      #           "inputs"           => 
+      #             [
       #               { 
-      #                 :name                 => "input_name",
-      #                 :computational_type   => "computational_type" 
-      #                 :description
+      #                 "name"                       => "...",
+      #                 "description"                => "...",
+      #                 "computational_type"         => "...",
+      #                 "computational_type_details" => { ... }
+      #
       #               },
       #               { ... } 
-      #               ]
-      #           :outputs      => 
-      #               [
+      #             ]
+      #           "outputs"          => 
+      #             [
       #               { 
-      #                 :name                => "output_name",
-      #                 :computational_type  => "computational_type" 
+      #                 "name"                       => "...",
+      #                 "description"                => "...",
+      #                 "computational_type"         => "...",
+      #                 "computational_type_details" => { ... }
       #               },
       #               { ... }
-      #               ] 
+      #             ] 
       #         },
       #         { ... } 
-      #         ] 
+      #       ] 
       #   }
       #
-      
-      
       def self.parse(wsdl)
         error_messages     = []
         service_info       = {}
@@ -129,7 +127,7 @@ module BioCatalogue
           wsdl_doc = get_wsdl_doc(get_parsed_wsdl(wsdl))
           unless wsdl_doc.nil?
             wsdl_doc.elements.each("service") do |service|
-              service_info = BioCatalogue::WSDLParser::Service.new(service).parse
+              service_info = BioCatalogue::WsdlUtils::OutputParser::Service.new(service).parse
             end
           end
         rescue Exception => ex
@@ -144,7 +142,7 @@ module BioCatalogue
         
         return [service_info, error_messages, wsdl_file_contents ]
       end
-     
+      
     end
   end
 end

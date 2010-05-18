@@ -10,9 +10,9 @@ class SoapServicesController < ApplicationController
   before_filter :disable_action, :only => [ :index, :edit, :update, :destroy, :bulk_new, :bulk_create ]
   before_filter :disable_action_for_api, :except => [ :show, :annotations, :operations, :deployments, :wsdl_locations ]
   
-  before_filter :login_required, :except => [ :index, :show, :annotations, :operations, :deployments, :wsdl_locations ]
+  before_filter :login_required, :except => [ :index, :show, :annotations, :operations, :deployments, :wsdl_locations, :latest_wsdl ]
   
-  before_filter :find_soap_service, :only => [ :show, :annotations, :operations, :deployments ]
+  before_filter :find_soap_service, :only => [ :show, :annotations, :operations, :deployments, :latest_wsdl ]
   
   # GET /soap_services/1
   # GET /soap_services/1.xml
@@ -94,6 +94,7 @@ class SoapServicesController < ApplicationController
     
     if wsdl_location.blank?
       @error_message = "Please provide a valid WSDL URL"
+      @error_message_details = ""
     else
       @soap_service = SoapService.new(:wsdl_location => wsdl_location)
       
@@ -102,39 +103,40 @@ class SoapServicesController < ApplicationController
         "If this problem persists, please <a href='/contact'>contact us</a>"
       
       begin
+        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
         
-        @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WSDLUtils::WSDLParser.parse(@soap_service.wsdl_location)
-        #try the old parser if new on fails
-        if @wsdl_info.blank?
-          @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
-        end
         # Check for a duplicate
-        @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["end_point"])
+        @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["endpoint"])
         
-        # Only continue we have valid wsdl_indo or if no duplicate was found
-        if @wsdl_info and !@wsdl_info.blank?
+        # Only continue we have valid wsdl_info or if no duplicate was found
+        unless @wsdl_info.blank?
           if @existing_service.nil?
             if err_msgs.empty?
               @error_message = nil
               
-              # Try and find location of the service from the url of the WSDL.
-              @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@soap_service.wsdl_location)
+              # Try and find location of the service from the url of the endpoint
+              @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@wsdl_info["endpoint"])
             else
               @error_message = err_text
+              @error_message_details = err_msgs.to_sentence
             end
+          else
+            # Submit a job to run the service updater
+            BioCatalogue::ServiceUpdater.submit_job_to_run_service_updater(@existing_service.id)
           end
         else
           @error_message = err_text
+          @error_message_details = err_msgs.to_sentence
         end
       rescue Exception => ex
         @error_message = err_text
-        logger.error("Failed to load WSDL from URL - #{wsdl_location}. Exception:")
-        logger.error(ex.message)
-        logger.error(ex.backtrace.join("\n"))
+        @error_message_details = ex.message
+        BioCatalogue::Util.yell("Failed to load WSDL from URL - #{wsdl_location}.\nException: #{ex.message}.\nStack trace: #{ex.backtrace.join('\n')}")
       end
     end
     respond_to do |format|
       format.html { render :partial => "after_wsdl_load" }
+      format.js { render :partial => "after_wsdl_load" }
       format.xml  { render :xml => '', :status => 406 }
     end
   end
@@ -224,6 +226,10 @@ class SoapServicesController < ApplicationController
       format.html { disable_action }
       format.xml  # wsdl_locations.xml.builder
     end
+  end
+  
+  def latest_wsdl
+    send_data(@soap_service.latest_wsdl_contents, :type => "text/xml", :disposition => 'inline')
   end
   
   protected

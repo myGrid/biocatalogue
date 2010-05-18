@@ -1,0 +1,84 @@
+<%
+
+# BioCatalogue: app/views/soap_outputs/_soap_output.html.erb
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% uniq_id = "soap_output_#{output.id}" %>
+          
+<a name='<%= uniq_id -%>'></a>
+
+<div class="port <%= output.archived? ? 'archived' : '' -%>">
+  
+  <div>
+    <% create_expand_collapse_link(uniq_id, 
+                              :icon_float => "right",
+                              :class => "collapsable_title") do -%>
+      
+      <div>
+        <b><%= display_name(output) -%></b>
+      </div>
+      
+			<% if output.archived? %>
+        <p class="archived_status_text" style="margin: 0; margin-top: 0.6em;">
+          This SOAP output has been archived because it was removed or renamed in the SOAP service's WSDL document.
+        </p>
+      <% else %>
+        <% unless (desc = output.preferred_description).blank? %>
+          <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+            <div class="text">
+              <%= annotation_prepare_description(desc, true, 150, false) -%>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+      
+    <% end %>
+  </div>
+  
+  <div id="<%= uniq_id -%>" style="display: none; margin-top: 0.7em;">
+  
+    <div style="float: left; width: 73%;">
+      <% if false %>
+      <div style="margin-bottom: 0.6em;">
+        <b>SOAP Output:</b>
+        <span class="operation_name"><%= display_name(output) -%></span>
+      </div>
+      <% end %>
+      
+      <div style="margin-bottom: 1em;">
+        <%= render :partial => "annotations/name_aliases",
+                   :locals => { :annotatable => output,
+                                :show_promote_option => false } -%>
+      </div>
+      
+      <%= render :partial => "annotations/descriptions",
+                 :locals => { :annotatable => output } -%>
+                 
+      <%= render :partial => "annotations/formats",
+                 :locals => { :annotatable => output } -%>
+                 
+      <%= render :partial => "annotations/examples",
+                 :locals => { :annotatable => output } -%>
+      
+      <%= render :partial => "soap_services/computational_type_info",
+                 :locals => { :thing => output } -%>
+      
+      <%= render :partial => "annotations/other_annotations",
+                 :locals => { :annotatable => output, :show_add => false } -%>
+    </div>
+    
+    <div style="float: right; width: 24%; font-size: 85%;">
+      <%= render :partial => "annotations/tags_box",
+                 :locals => { :annotatable => output } -%>
+    </div>
+  
+    <span class="clear"></span>
+  
+  </div>
+            
+</div>

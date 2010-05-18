@@ -11,23 +11,15 @@
 <% t "#{display_name(@service_provider)}" -%>
 
 <h1>
+  <%= edit_provider_by_popup(@service_provider,
+                             :link_text => "Edit",
+                             :tooltip_text => "Give this Service Provider a new name, OR merge it into an existing one",
+                             :style => "font-size:70%; font-weight:bold; width:45px; text-align:right;", 
+                             :class => "button_slim edit_link" ) %>
+  
 	<%= generic_icon_for(:provider, 'margin-right: 0.3em;', "Service Provider") -%>
 	<%= display_name(@service_provider) -%>
 </h1>
-
-<div>
-	<% unless @service_provider.display_name == @service_provider.name -%>
-		<span style="vertical-align: middle;">
-			<b>Original name: </b>
-			<%= h(@service_provider.name) -%>
-		</span>
-		<span class="faded" style="vertical-align: middle; margin-left: 1em;"> | </span>
-	<% end %>
-	<span class="inline-block">
-		<%= render :partial => "annotations/name_aliases",
-							 :locals => { :annotatable => @service_provider } -%>
-	</span>
-</div>
 
 <div id="provider-tabs" class="tabber" style="margin-top: 1.5em;">
 	
@@ -78,6 +70,15 @@
 		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @provider_services } %>
   </div>
 
+  <div id="tab-hostnames" class="tabbertab">
+    <h3><%= "Hostnames (#{@provider_hostnames.size})" -%></h3>
+    
+    <div class="listings">
+      <% @provider_hostnames.each do |hostname| %>
+        <div class="listing_item"><b><%= h hostname.hostname %></b></div>
+      <% end %>
+    </div>
+    
+  </div>
+  
 </div>
-
-<%= render :partial => 'shared/tabber_startup' -%>

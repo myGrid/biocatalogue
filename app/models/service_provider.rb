@@ -15,15 +15,18 @@ class ServiceProvider < ActiveRecord::Base
   acts_as_annotatable
   acts_as_annotation_source
   
-  virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
-  
   has_many :service_deployments
   
   has_many :services,
            :through => :service_deployments,
-           :uniq => true
-  
+           :uniq => true,
+           :dependent => :destroy
+           
+  has_many :service_provider_hostnames,
+           :dependent => :destroy
+           
   validates_presence_of :name
+  validates_uniqueness_of :name
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name ] )
@@ -62,4 +65,74 @@ class ServiceProvider < ActiveRecord::Base
     
     return BioCatalogue::Tags.sort_tags_alphabetically(tags_hash.values)
   end
+
+  def merge_into(provider, *args)
+    success = false
+
+    options = args.extract_options!    
+    options.reverse_merge!(:print_log => false,
+                           :migrate_deployments => true,
+                           :migrate_annotations => true,
+                           :migrate_hostnames => true)
+    
+    options.each { |o| 
+      return success unless o[-1].class.name =~ /(True|False)Class/
+    }
+    
+    transaction do
+      #update deployments
+      if options[:migrate_deployments]
+        puts "", "Migrating Service Deployments..." if options[:print_log]
+        self.service_deployments.each { |d|
+          d.service_provider_id = provider.id 
+          d.save!
+          puts d.inspect if options[:print_log] 
+        } 
+        puts "Service Deployments Migrated!" if options[:print_log] 
+      end 
+    
+      # update hostnames
+      if options[:migrate_hostnames]
+        puts "", "Migrating Hostnames..." if options[:print_log]
+        self.service_provider_hostnames.each { |h|
+          h.service_provider_id = provider.id
+          h.save!
+          puts h.inspect if options[:print_log] 
+        }
+        puts "Hostnames Migrated!" if options[:print_log] 
+      end
+      
+      # update annotations
+      if options[:migrate_annotations]
+        puts "", "Migrating Annotations..." if options[:print_log]
+        self.annotations.each { |a|
+          begin
+            a.annotatable_id = provider.id
+            a.save!
+            puts a.inspect if options[:print_log] 
+          rescue
+            a.destroy
+            if options[:print_log]
+              puts "The following annotation could not be migrated and has been deleted:"
+              puts a.inspect
+            end
+          end
+        }
+        puts "Annotations Migrated!" if options[:print_log] 
+      end
+      
+      # refresh changed associations before destroying self
+      self.service_deployments(true)
+      self.service_provider_hostnames(true) 
+      self.annotations(true)
+      
+      puts "", "Deleting Orphaned Service Provider: #{self.inspect}"       
+      self.destroy
+      
+      success = true
+    end
+    
+    return success
+  end
+  
 end

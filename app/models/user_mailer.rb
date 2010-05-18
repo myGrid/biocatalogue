@@ -93,4 +93,12 @@ class UserMailer < ActionMailer::Base
                 :service => service
   end
 
+  def orphaned_provider_notification(user_emails, base_url, provider)
+    content_type "text/html"
+    recipients  user_emails
+    from        SENDER_EMAIL_ADDRESS
+    subject     "[BioCatalogue] The system has a Service Provider with no services"
+    body        :base_url => base_url,
+                :provider => provider
+  end
 end

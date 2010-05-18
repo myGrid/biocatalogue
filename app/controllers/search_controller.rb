@@ -174,6 +174,8 @@ class SearchController < ApplicationController
 
       # Scope(s) is fine
       @scope = scope
+      
+      @visible_search_type = BioCatalogue::Search.scope_to_visible_search_type(@scope)
 
       @results = nil
 

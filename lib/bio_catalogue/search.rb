@@ -8,7 +8,7 @@ module BioCatalogue
   module Search
     
     # MUST correspond to pluralised and underscored model names.
-    VALID_SEARCH_SCOPES = [ "services", "soap_operations", "service_providers", "users", "registries" ].freeze
+    VALID_SEARCH_SCOPES = [ "services", "soap_operations", "rest_methods", "service_providers", "users", "registries" ].freeze
     
     ALL_SCOPE_SYNONYMS = [ "all", "any" ].freeze
     
@@ -23,6 +23,18 @@ module BioCatalogue
     
     def self.on?
       return ENABLE_SEARCH
+    end
+    
+    def self.scope_to_visible_search_type(scope)
+      return "" if scope.blank?
+      case scope  
+        when "soap_operations"
+          "SOAP Operations"
+        when "rest_methods"
+          "REST Endpoints"
+        else
+          scope.titleize
+      end
     end
     
     def self.update_search_query_suggestions_file

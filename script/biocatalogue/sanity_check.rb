@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-# This script does a sanity check over the whole database to check for issues related to data integrity and consistency, and so on.
+# This script does a sanity check over the whole database to check:
+# - data integrity and consistency
 #
 #
 # Usage: sanity_check [options]
@@ -62,6 +63,42 @@ class SanityCheck
       service.service_versions.each do |service_version|
         check_service_version(service_version)
       end
+    end
+    
+        
+    # Check for orphaned ServiceVersion, ServiceDeployment and ServiceProviderHostname objects.
+    
+    ServiceVersion.all.each do |service_version|
+      puts "ERROR: ServiceVersion #{service_version.id} does not have an associated Service" if service_version.service.blank?
+    end
+    
+    ServiceDeployment.all.each do |service_deployment|
+      puts "ERROR: ServiceDeployment #{service_deployment.id} does not have an associated Service" if service_deployment.service.blank?
+    end
+    
+    ServiceProviderHostname.all.each do |service_provider_hostname|
+      puts "ERROR: ServiceProviderHostname #{service_provider_hostname.id} does not have an associated ServiceProvider" if service_provider_hostname.service_provider.blank?
+    end
+    
+    
+    # Check that all ServiceProvider objects have at least one ServiceDeployment.
+    
+    ServiceProvider.all.each do |service_provider|
+      puts "ERROR: ServiceProvider #{service_provider.id} does not have at least one associated ServiceDeployment" if service_provider.service_deployments.count < 1
+    end
+
+    
+    # Check that all ServiceDeployment objects have a valid ServiceProvider.
+    
+    ServiceDeployment.all.each do |service_deployment|
+      puts "ERROR: ServiceDeployment #{service_deployment.id} does not have an associated ServiceProvider" if service_deployment.provider.blank?
+    end
+    
+    
+    # Check that ServiceProviders have at least one ServiceProviderHostname.
+    
+    ServiceProvider.all.each do |service_provider|
+      puts "ERROR: ServiceProvider #{service_provider.id} does not have at least one associated ServiceProviderHostname" if service_provider.service_provider_hostnames.count < 1
     end
     
     

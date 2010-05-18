@@ -1,0 +1,2 @@
+module CurationHelper
+end

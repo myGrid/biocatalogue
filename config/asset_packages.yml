@@ -16,9 +16,8 @@ javascripts:
 stylesheets: 
 - base:
   - reset-fonts
+  - p7exp
   - styles
   - redbox
   - rounded-corners
   - ratings
-  - p7exp
-  

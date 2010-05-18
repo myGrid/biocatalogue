@@ -14,8 +14,8 @@
 	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 	<div class="content">
 		<p class="heading">
-			<%= info_icon_with_tooltip("The users who have added this service to their favourites") -%>
-			Favourited By <font class="faded">(<%= favourites.length -%>)</font>
+			<span><%= info_icon_with_tooltip("The users who have added this service to their favourites") -%></span>
+			<span>Favourited By <font class="faded">(<%= favourites.length -%>)</font></span>
 		</p>
 		
 		<% unless favourites.empty? %>

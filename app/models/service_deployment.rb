@@ -15,6 +15,8 @@ class ServiceDeployment < ActiveRecord::Base
     index [ :submitter_type, :submitter_id ]
   end
   
+  after_destroy :mail_provider_if_required
+
   acts_as_trashable
   
   acts_as_annotatable
@@ -40,7 +42,7 @@ class ServiceDeployment < ActiveRecord::Base
   before_save :check_service_id
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name, :provider_name, 
+    acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name, :provider_name, :provider_hostnames,
                               { :associated_service_id => :r_id } ])
   end
   
@@ -93,6 +95,12 @@ class ServiceDeployment < ActiveRecord::Base
     self.provider.name
   end
   
+  def provider_hostnames
+    hostnames = ""
+    self.provider.service_provider_hostnames.each { |h| hostnames << h.hostname + " " }
+    return hostnames.strip
+  end
+  
 protected
 
   def check_service_id
@@ -107,6 +115,18 @@ protected
   
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+
+private
+  
+  def mail_provider_if_required    
+    # send emails to biocat admins
+    if self.provider.services.empty?
+      recipients = []
+      User.admins.each { |user| recipients << user.email }
+
+      UserMailer.deliver_orphaned_provider_notification(recipients.join(", "), SITE_BASE_HOST, provider)
+    end
   end
   
 end

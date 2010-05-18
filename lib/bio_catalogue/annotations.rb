@@ -265,5 +265,68 @@ module BioCatalogue
       return grouped
     end
     
+    # Create Annotations in bulk...
+    #
+    # Note that this is run through the annotations preprocessor so
+    # attributes like "tags" and "categories" are allowed.
+    #
+    # Example Input:
+    #
+    # [ 
+    #   {
+    #     "resource" => "http://www.biocatalogue.org/soap_inputs/23",
+    #     "annotations" => {
+    #       "tag" => [ "x", "y", "z" ],
+    #       "description" => "ihouh uh ouho ouh"
+    #     }
+    #   },
+    #   {
+    #     "resource" => "http://www.biocatalogue.org/soap_operations/237",
+    #     "annotations" => {
+    #       "tag" => [ "x", "y", "z" ],
+    #       "description" => "ihouh uh ouho ouh"
+    #     }
+    #   } 
+    # ]
+    #
+    # Example Output:
+    #
+    # [ 
+    #   {
+    #     "resource" => "http://www.biocatalogue.org/soap_inputs/23",
+    #     "annotations" => [
+    #       <<Annotation objects>>
+    #     ]
+    #   },
+    #   {
+    #     "resource" => "http://www.biocatalogue.org/soap_operations/237",
+    #     "annotations" => [
+    #       <<Annotation objects>>
+    #     ] 
+    #   } 
+    # ]
+    #
+    # Note that the output will ONLY include the valid resources and successfully
+    # created annotations.
+    def self.bulk_create(annotation_groups, source)
+      results = [ ]
+      
+      unless annotation_groups.blank?
+        annotation_groups.each do |x|
+          obj = BioCatalogue::Api.object_for_uri(x["resource"])
+          unless obj.nil?
+            # TODO: how to prevent annotations being created on objects that they shouldn't be 
+            result = { }
+            result["resource"] = x["resource"]
+            result["annotations"] = obj.create_annotations(Annotations.preprocess_annotations_data(x["annotations"]), source)
+            
+            results << result
+          end
+        end
+      end
+      
+      return results
+    end
+    
   end
 end

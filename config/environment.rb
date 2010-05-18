@@ -24,7 +24,7 @@ Rails::Initializer.run do |config|
   # They can then be installed with "rake gems:install" on new installations.
   # config.gem "bj"
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
-  # config.gem "aws-s3", :lib => "aws/s3"
+  # config.gem "aws-s3", :lib => "aws/s3" 
   config.gem 'disqus', :version => '1.0.1'
   config.gem 'soap4r', :version => '1.5.8'
   config.gem 'mperham-memcache-client', :version => '>= 1.7.4', :lib => 'memcache', :source => "http://gems.github.com"
@@ -40,6 +40,7 @@ Rails::Initializer.run do |config|
   config.gem 'grosser-rpx_now', :version => '>= 0.5.10', :lib => 'rpx_now', :source => 'http://gems.github.com'
   config.gem 'factory_girl', :version => '1.2.3', :source => "http://gemcutter.org"
   config.gem 'mocha', :version => '0.9.8'
+  config.gem 'seer', :version => '0.6.1'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.

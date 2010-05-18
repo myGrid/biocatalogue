@@ -2,22 +2,31 @@
 
 # BioCatalogue: app/views/services/listing/_name_section.html.erb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
 %>
 
-<table class="name_section">
+<table style="width: 100%;">
 	<tr>
-		<td class="name" title="<%= tooltip_title_attrib(display_name(service), 600) -%>">
-			<%= link_to(display_name(service), service_path(service)) -%>
-		</td>
 		<td>
-			<%= service_type_badges(service.service_types) -%>
+			<table class="name_section">
+			  <tr>
+			    <td class="name" title="<%= tooltip_title_attrib(display_name(service), 600) -%>">
+			      <%= link_to(display_name(service), service_path(service)) -%>
+			    </td>
+			    <td>
+			      <%= service_type_badges(service.service_types) -%>
+			    </td>
+			    <td>
+			      <%= service_location_flags(service) -%>
+			    </td>
+			  </tr>
+			</table>
 		</td>
-		<td>
-			<%= service_location_flags(service) -%>
+		<td style="text-align: right; padding-top: 0.4em;">
+			<%= render :partial => 'services/stats_bar', :locals => { :service => service } -%>
 		</td>
 	</tr>
 </table>

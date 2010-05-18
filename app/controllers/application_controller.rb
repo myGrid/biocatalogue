@@ -78,13 +78,13 @@ class ApplicationController < ActionController::Base
         end
       end
       format.xml  do
-        user = authenticate_with_http_basic do |login, password|
-          User.authenticate(login, password)
+        user = authenticate_or_request_with_http_basic do |login, password|
+          @current_user = User.authenticate(login, password)
         end
-        if user
-          @current_user = user
-        else
-          request_http_basic_authentication
+      end
+      format.json  do
+        user = authenticate_or_request_with_http_basic do |login, password|
+          @current_user = User.authenticate(login, password)
         end
       end
     end

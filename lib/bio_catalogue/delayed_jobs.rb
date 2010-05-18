@@ -7,8 +7,17 @@
 module BioCatalogue
   module DelayedJobs
     
-    def self.job_exists?(job_name)
-      Delayed::Job.find(:all, :conditions => [ "delayed_jobs.handler LIKE ?", "%#{job_name}%" ]).length > 0
+    def self.job_exists?(job_name, additional_strings_to_find=[])
+      conditions = [ ]
+      conditions << "delayed_jobs.handler LIKE ?"
+      conditions << "%#{job_name}%"
+      
+      additional_strings_to_find.each do |s|
+        conditions[0] = conditions[0] + " AND delayed_jobs.handler LIKE ?"
+        conditions << "%#{s}%"
+      end
+      
+      Delayed::Job.find(:all, :conditions => conditions).length > 0
     end
     
   end

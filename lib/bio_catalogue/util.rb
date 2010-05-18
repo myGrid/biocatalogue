@@ -353,5 +353,21 @@ module BioCatalogue
       }
     end
     
+    # type should be either:
+    #   :error
+    #   :warning
+    #   :info
+    def self.log_exception(ex, type, initial_msg="An exception occurred!")
+      msg = initial_msg + "\n\tException type: #{ex.class.name}. \n\tException message: #{ex.message}. \n\t#{ex.backtrace.join("\n")}"
+      case type
+        when :error
+          Util.yell(msg)
+        when :warning
+          Util.warn(msg)
+        else
+          Util.say(msg)
+      end
+    end
+    
   end
 end

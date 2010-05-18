@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/services/show.html.erb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -11,59 +11,82 @@
 <% t "#{display_name(@service)} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.map{|p| display_name(p)}.to_sentence)}]" -%>
 
 <h1>
-	<span class="header_right_bar">
+  <span class="header_right_bar">
 		<span style="vertical-align: middle;">
 			<%= render :partial => 'services/stats_bar', :locals => { :service => @service } -%>
 		</span>
-		<!-- moved authorisation into inner action -->
-		<%unless current_user.nil?%>
-			<span class="actions_button">
-				<ul class="p7menubar">
-					<li>
-						<a href="#" class="trigger">
-							<span style="vertical-align: middle;">Actions</span>
-							<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
-						</a>
-						<ul>
-							<li>
-								<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
-									<%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
-														service_path(@service), 
-														:method => :delete, 
-														:confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
-								<%end%>
-							</li>
-							
-							<li>
-								<%if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, @service)%>
-										<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'), 
-														new_responsibility_request_url+"?service_id=#{@service.id}")
-														-%>												
-								<%end%>
-							</li>
-							
-							<li>
-								<%if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)%>
-									<%unless @pending_responsibility_requests.empty?%>
-										<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Pending Responsibility Requests'), 
-														:controller => 'responsibility_requests', 
-														:action => 'index')
-														-%>
-									<%end%>
-								<%end%>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</span>
-		<%end%>
-		<!-- end of outer span-->
 	</span>
+	
+	<% if logged_in? %>
+	  <span class="header_left_bar">
+	      <span class="actions_button">
+	        <ul class="p7menubar">
+						<% if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, @service) %>
+	            <li>
+								<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'), 
+												new_responsibility_request_url(:service_id => @service.id)) -%>											
+							</li>
+						<% end %>
+	          <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+	            <% unless @pending_responsibility_requests.empty? %>
+								<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' View Pending Responsibility Requests'), 
+												:controller => 'responsibility_requests', 
+												:action => 'index') -%>
+							<% end %>
+							
+	            <li>
+	              <a href="#" class="trigger">
+	                <span style="vertical-align: middle;">Actions</span>
+	                <%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+	              </a>
+	              <ul>
+	              	<li>
+	                  <%= link_to(image_tag(icon_filename_for(:check_updates)) + content_tag(:span, ' Check for Updates'), 
+	                              check_updates_service_path(@service),
+	                              :method => :post) -%>
+	                </li>
+								
+								  <% if @service.archived? %>
+								    <li>
+		                  <%= link_to(image_tag(icon_filename_for(:unarchive)) + content_tag(:span, ' Unarchive'), 
+		                              unarchive_service_path(@service),
+		                              :method => :post, 
+		                              :confirm => "This will remove the service's archived status and make it seem like an active service again. Are you sure you would like to do this? (You can still archive it later)") -%>
+		                </li>
+								  <% else %>
+								    <li>
+	                    <%= link_to(image_tag(icon_filename_for(:archive)) + content_tag(:span, ' Archive'), 
+	                                archive_service_path(@service),
+	                                :method => :post, 
+	                                :confirm => "This will mark the service as being archived/inactive. Are you sure you would like to do this? (You can unarchive it later if required)") -%>
+	                  </li>
+								  <% end %>
+	                
+								  <li>
+	                  <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'), 
+	                              service_path(@service),
+	                              :method => :delete, 
+	                              :confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
+	                </li>
+	              <% end %>
+	            </ul>
+	          </li>
+	        </ul>
+	      </span>
+	  </span>
+	<% end %>
+	
   <%= generic_icon_for(:service, 'margin-right: 0.3em;', "Web Service") -%>
 	<span style="vertical-align: middle;"><%= display_name(@service) -%></span>
 	<%= service_type_badges(@service.service_types) -%>
 	<%= service_location_flags(@service) -%>
 </h1>
+
+<% if @service.archived? %>
+  <%= render :partial => 'shared/archived_status_banner', 
+             :locals => { :status_text => "This service has been archived because it may not be active anymore (or is close to being non active). Please do not use it as it may not be accessible.",
+                          :item => @service } -%>
+<% end %>
 			
 <table style="width: 100%;">
 	<tr>
@@ -277,10 +300,10 @@
 
 	
   <%= render :partial => "services/monitoring_tab" -%>
+	
+	<%= render :partial => "services/news_tab" -%>
  
 </div>
-
-<%= render :partial => 'shared/tabber_startup' -%>
 
 <div style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
 	<h2>Comments</h2>

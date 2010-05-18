@@ -16,7 +16,7 @@ module RestServicesHelper
   #  :link_text - text to be displayed as part of the link.
   #    default: 'Add new endpoints'
   #  :style - any CSS inline styles that need to be applied to the text.
-  #    default: 'float:right; margin: 0px 10px 1px 10px;'
+  #    default: ''
   #  :class - any CSS class that need to be applied to the text.
   #    default: nil
   def add_endpoints_by_popup(parent_object, *args)
@@ -80,7 +80,7 @@ module RestServicesHelper
   #
   # CONFIGURATION OPTIONS (all these options are optional)
   #  :style - any CSS inline styles that need to be applied to the text.
-  #    default: 'float:right; margin: 3px;'
+  #    default: ''
   #  :class - any CSS class that need to be applied to the text.
   #    default: nil
   def add_submitter_text(object, *args)
@@ -118,7 +118,7 @@ module RestServicesHelper
   #  :link_text - text to be displayed as part of the link.
   #    default: 'Add new endpoints'
   #  :style - any CSS inline styles that need to be applied to the text.
-  #    default: 'float:right; margin: 0px 10px 1px 10px;'
+  #    default: ''
   #  :class - any CSS class that need to be applied to the text.
   #    default: nil
   def edit_base_endpoint_by_popup(service_deployment, *args)

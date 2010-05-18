@@ -14,11 +14,11 @@ class AnnotationsController < ApplicationController
   
   # Disable some of the actions provided in the controller in the plugin.
   before_filter :disable_action, :only => [ :new, :edit ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :filters ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :bulk_create ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :create, :create_multiple, :update, :destroy, :set_as_field ]
   
-  before_filter :login_required, :only => [ :new, :create, :edit, :update, :destroy, :edit_popup, :create_inline, :change_attribute ]
+  before_filter :login_required, :only => [ :new, :create, :edit, :update, :destroy, :edit_popup, :create_inline, :change_attribute, :bulk_create ]
   
   before_filter :parse_current_filters, :only => [ :index ]
   
@@ -33,7 +33,7 @@ class AnnotationsController < ApplicationController
   before_filter :find_annotatable, :only => [ :new, :create, :new_popup, :create_inline ]
   
   skip_before_filter :authorise_action
-  before_filter :authorise, :only =>  [ :edit, :edit_popup, :update, :destroy, :change_attribute ]
+  before_filter :authorise, :only =>  [ :edit, :edit_popup, :update, :destroy, :change_attribute, :bulk_create ]
   
   def index
     respond_to do |format|
@@ -168,6 +168,56 @@ class AnnotationsController < ApplicationController
     end
   end
   
+  # POST /annotations/bulk_create
+  #
+  # Example Input (application/json):
+  #
+  # {
+  #   "bulk_annotations": [ {
+  #     "resource": "http://www.biocatalogue.org/soap_inputs/23",
+  #     "annotations": {
+  #       "tag": [ "x", "y", "z" ],
+  #       "description": "ihouh uh ouho ouh"
+  #     }
+  #   },
+  #   {
+  #     "resource": "http://www.biocatalogue.org/soap_operations/237",
+  #     "annotations": {
+  #       "tag": [ "x", "y", "z" ],
+  #       "description": "ihouh uh ouho ouh"
+  #     }
+  #   } ]
+  # }
+  #
+  # Example Output (application/json):
+  #
+  # {
+  #   "bulk_annotations": [ {
+  #     "resource": "http://www.biocatalogue.org/soap_inputs/23",
+  #     "annotations": [
+  #       <<items in the Annotation resource JSON format>>
+  #     ]
+  #   },
+  #   {
+  #     "resource": "http://www.biocatalogue.org/soap_operations/237",
+  #     "annotations": [
+  #       <<items in the Annotation resource JSON format>>
+  #     ] 
+  #   } ]
+  # }
+  #
+  # Note that the output will ONLY include the valid resources and successfully
+  # created annotations.
+  def bulk_create
+    results = BioCatalogue::Annotations.bulk_create(params["bulk_annotations"], current_user)
+    
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  { render :xml => results.to_xml(:root => "bulkAnnotations", :camelize => true, :skip_types => true) }
+      format.json { render :json => { "bulk_annotations" => results }.to_json }
+    end
+  end
+  
   protected
   
   def parse_sort_params
@@ -228,6 +278,8 @@ class AnnotationsController < ApplicationController
     case action_name.downcase
       when "edit", "update", "edit_popup"
         allowed = mine?(@annotation)
+      when "bulk_create"
+        allowed = (current_user.is_curator? or current_user.is_admin?)
       else
         allowed = BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @annotation)
     end

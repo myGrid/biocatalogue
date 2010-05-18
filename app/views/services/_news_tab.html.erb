@@ -1,0 +1,81 @@
+<%
+
+# BioCatalogue: app/views/services/_news_tab.html.erb
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div id="tab-news" class="tabbertab">
+  
+  <h3>News</h3>
+	
+	<div style="overflow: hidden;">
+		<div style="float: left; width: 60%;">
+			
+			<br/>
+			<br/>
+			
+		</div>
+		
+		<div style="float: right; width: 38%;">
+			
+			<% @service.service_version_instances_by_type("SoapService").each do |soap_service| %>
+				<div class="box_section">
+			    <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
+			    <div class="content">
+			      <p class="heading">
+			      	<span><%= info_icon_with_tooltip("This lists any changes found from the WSDL document. This can either be due to providers adding/removing information in the WSDL OR from better WSDL parsing functionality resulting in more information being added to the catalogue") -%></span>
+							<span>Updates from WSDL</span>
+							<br/><br/>
+							<span class="box_grouped_info" style="font-weight: normal; font-size: 77%;">
+								WSDL Location: <%= link_to(h(soap_service.wsdl_location), soap_service.wsdl_location, :popup => true) -%>
+							</span>
+			      </p>
+						
+						<% unless soap_service.soap_service_changes.empty? %>
+						  <% soap_service.soap_service_changes.each do |c| %>
+								<div id="updates_from_wsdl_<%= c.id -%>" style="text-align: left;">
+									<% create_expand_collapse_link("updates_from_wsdl_#{c.id}_changelog", 
+									                              :icon_float => "right",
+									                              :class => "collapsable_title",
+		                                            :link_style => "margin: 0; margin-top: 0.6em; padding: 0.4em 0.5em; font-weight: bold; color: #444;") do -%>
+							      
+										<span style="color: #999; margin-right: 1em;">
+								      <%= "#{distance_of_time_in_words_to_now(c.updated_at).capitalize} ago" -%>
+										</span>
+										<span>
+											<%= pluralize(c.changelog.length, 'update') -%>
+										</span>	
+							      
+							    <% end %>
+									
+									<div id="updates_from_wsdl_<%= c.id -%>_changelog" style="display: none;">
+										<ul class="simple_list" style="font-size: 85%; margin-bottom: 0.5em; border-top: 1px solid #DDC; padding-top: 0.5em;">
+											<% c.changelog.each do |e| %>
+                        <li><%= h(e).gsub(/(\bport\b)|(\boperation\b)|(\binput\b)|(\boutput\b)/, '<strong>\1\2\3\4</strong>') -%></li>											
+											<% end %>
+										</ul>
+										<p style="font-size: 85%; margin-bottom: 1.8em; color: #999; text-align: right;">
+											[ <%= link_to "link to these changes", service_url(@service, :anchor => "updates_from_wsdl_#{c.id}") -%> ]
+										</p>
+									</div>
+								</div>
+							<% end %>
+						<% else %>
+						  <div class="none_text">No updates found yet</div>
+						<% end%>
+						
+					</div>
+			    <b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
+			  </div>
+			<% end %>
+			
+	  </div>
+		
+		<span class="clear"></span>
+	</div>
+	
+</div>

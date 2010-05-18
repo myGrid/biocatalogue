@@ -38,13 +38,13 @@ class RestMethodsController < ApplicationController
     end
   end
   
-  def update_endpoint_name
+  def update
     # sanitize user input
     params[:new_name].chomp!
     params[:new_name].strip!
     
     do_not_proceed = params[:new_name].blank? || params[:old_name]==params[:new_name] || 
-                     @rest_method.check_endpoint_name_exists(params[:new_name])                      
+                     @rest_method.check_endpoint_name_exists(params[:new_name])
 
     unless do_not_proceed
       @rest_method.endpoint_name = params[:new_name]
@@ -61,14 +61,14 @@ class RestMethodsController < ApplicationController
           flash[:error] = "The name you are trying to assign to this endpoint belongs to another endpoint of this service."
         end
       else
-        flash[:notice] = "The endpoint's name has been updated"
+        flash[:notice] = "The endpoint has been updated"
       end
       format.html { redirect_to @rest_method }
       format.xml  { head :ok }
     end
   end
   
-  def edit_endpoint_name_popup
+  def edit_by_popup
     respond_to do |format|
       format.js { render :layout => false }
     end
@@ -92,7 +92,7 @@ class RestMethodsController < ApplicationController
     params[:endpoint_name].strip!
     
     if @rest_method.check_endpoint_name_exists(params[:endpoint_name]) # endpoint name exists                      
-      raise "Error- Endpoint name already taken."
+      raise "Error - Endpoint name already taken."
     else # endpoint name does not exist
       unless params[:endpoint_name].blank?
         @rest_method.endpoint_name = params[:endpoint_name]

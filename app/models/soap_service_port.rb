@@ -5,8 +5,13 @@
 # See license.txt for details.
 
 class SoapServicePort < ActiveRecord::Base
+  acts_as_trashable
+  
+  acts_as_archived
+  
   belongs_to :soap_service
-  has_many   :soap_operations
+  
+  has_many :soap_operations
   
   validates_presence_of :name
   

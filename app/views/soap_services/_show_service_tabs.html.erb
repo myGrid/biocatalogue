@@ -10,7 +10,7 @@
 
 <div id="tab-operations" class="tabbertab">
 	
-  <h3>Operations (<%= service_version_instance.soap_operations.length -%>)</h3>
+  <h3>SOAP Operations (<%= service_version_instance.soap_operations.length -%>)</h3>
 	
 	<a name='operations_top'></a>
 	
@@ -37,5 +37,19 @@
 	<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">
 		<a href="#operations_top">Back to top</a>
 	</p>
+	
+	<h4>
+		<span style="vertical-align: baseline;">Archived Operations</span>
+		<span class="count_text" style="vertical-align: baseline;">(<%= service_version_instance.archived_soap_operations.length -%>)</span>
+		<span style="margin-left: 1em; vertical-align: baseline;">
+		  <%= info_icon_with_tooltip("These are the operations that have been archived because they were removed/renamed in the SOAP service's WSDL document.") -%>
+		</span>
+	</h4>
+	
+	<br/>
+	
+	<div>
+	  <%= render :partial => "soap_operations/listing", :locals => { :items => service_version_instance.archived_soap_operations } -%>
+	</div>
   
 </div>

@@ -77,7 +77,7 @@ class RestMethod < ActiveRecord::Base
   
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :method_type, :description, :submitter_name, { :associated_service_id => :r_id } ])
+    acts_as_solr(:fields => [ :method_type, :description, :submitter_name, :rest_resource_search_terms, { :associated_service_id => :r_id } ])
   end
   
   if USE_EVENT_LOG
@@ -319,6 +319,14 @@ class RestMethod < ActiveRecord::Base
             :error => error_types.uniq}
   end
   
+  def associated_service_id
+    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+  
+  def associated_service
+    @associated_service ||= Service.find_by_id(associated_service_id)
+  end
+  
   
   # =========================================
 
@@ -346,8 +354,8 @@ class RestMethod < ActiveRecord::Base
   
   protected
   
-  def associated_service_id
-    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  def rest_resource_search_terms
+    return "#{self.rest_resource.path} #{self.rest_resource.description}"
   end
 
 

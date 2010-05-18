@@ -61,6 +61,24 @@ module BioCatalogue
       return uri
     end
     
+    # Attempts to figure out what internal object the URI is referring to.
+    # Returns nil if the URI is an invalid resource URI, or if the object doesn't exist anymore.
+    def self.object_for_uri(uri)
+      return nil if uri.blank?
+      return nil unless uri.downcase.include?(SITE_BASE_HOST.downcase)
+      
+      obj = nil
+      
+      begin
+        pieces = uri.downcase.gsub(SITE_BASE_HOST.downcase, '').split('/').delete_if { |s| s.blank? }
+        obj = pieces[0].singularize.camelize.constantize.find(pieces[1])
+      rescue Exception => ex
+        BioCatalogue::Util.log_exception(ex, :warning, "BioCatalogue::Api.object_for_uri failed to find an object for the uri '#{uri}'")
+      end
+      
+      return obj
+    end
+    
     protected
       
     def self.append_params(uri, params)

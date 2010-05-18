@@ -10,31 +10,41 @@
 
 <div class="listings">
 	<% items.each do |op| %>
-		<a name='<%= "soap_operation_#{op.id}" -%>'></a>
-		<div class="listing_item">
+	
+		<div id="<%= "soap_operation_#{op.id}" -%>" class="listing_item <%= op.archived? ? 'archived' : '' -%>">
 			<p class="name">
 				<%= link_to(display_name(op), op) -%>
 			</p>
 			
+			<% if op.archived? %>
+			
+        <p class="archived_status_text">
+          This SOAP operation has been archived because it was removed or renamed in the SOAP service's WSDL document.
+        </p>
+			
+			
+			
+			<% else %>
+			
 			<div style="margin-top: -0.4em;">
-				<%= render :partial => "annotations/name_aliases",
-									 :locals => { :annotatable => op,
-																:show_add_option => false,
-																:show_modify_options => false,
-																:show_none_text => false } -%>
-			</div>
+					<%= render :partial => "annotations/name_aliases",
+										 :locals => { :annotatable => op,
+																	:show_add_option => false,
+																	:show_modify_options => false,
+																	:show_none_text => false } -%>
+				</div>
+				
+				<p class="detail faded">
+					<%= pluralize(op.soap_inputs.length, 'input') -%>
+					<span class="faded" style="margin: 0 0.2em; vertical-align: middle;">|</span>
+					<%= pluralize(op.soap_outputs.length, 'output') -%>
+				</p
 			
 			<% if op.associated_service %>
 				<p class="detail">
 					Part of Service: <%= link_to display_name(op.associated_service), op.associated_service -%>
 				</p>
 			<% end %>
-			
-			<p class="detail faded">
-				<%= pluralize(op.soap_inputs.length, 'input') -%>
-				<span class="faded" style="margin: 0 0.2em; vertical-align: middle;">|</span>
-				<%= pluralize(op.soap_outputs.length, 'output') -%>
-			</p>
 			
 			<div class="box_annotations detail">
 				<% unless (desc = op.preferred_description).blank? %>
@@ -47,19 +57,22 @@
 			</div>
 			
 			<div class="detail">
-				<table>
-					<tr>
-						<td style="width: 17em; line-height: 1.5; padding-top: 1px; text-align: left;">
-							<b>Tags on this SOAP Operation:</b>
-						</td>
-						<td>
-							<%= render :partial => "annotations/tags_flat",
-										 		 :locals => { :annotatable => op } -%>
-						</td>
-					</tr>
-				</table>
-			</div>
+					<table>
+						<tr>
+							<td style="width: 17em; line-height: 1.5; padding-top: 1px; text-align: left;">
+								<b>Tags on this SOAP Operation:</b>
+							</td>
+							<td>
+								<%= render :partial => "annotations/tags_flat",
+											 		 :locals => { :annotatable => op } -%>
+							</td>
+						</tr>
+					</table>
+				</div>
+			
+			<% end %>
 			
 		</div>
+		
 	<% end %>
 </div>

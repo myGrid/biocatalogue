@@ -1,6 +1,6 @@
 # BioCatalogue: app/config/initializers/biocat_main.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -17,6 +17,21 @@ end
 # This is not loaded in Rails 2.3 anymore (apparently).
 require 'net/smtp'
 
+# Require additional libraries
+require 'array'
+require 'object'
+require 'hash'
+require 'auto_link_override'
+require 'addressable/uri'
+require 'system_timer'
+require 'libxml'
+require 'dnsruby'
+require 'open-uri'
+require 'system_timer'
+require 'pp'
+require 'rexml/document'
+require 'acts_as_archived'
+
 # NOTE: 
 # all libraries within /lib/bio_catalogue will be loaded automatically by Rails (when accessed),
 # as long as they follow the convention. E.g.: the module BioCatalogue::ActsAsHuman
@@ -25,24 +40,14 @@ require 'net/smtp'
 # Some of these need to be preloaded...
 require 'bio_catalogue/acts_as_service_versionified'
 require 'bio_catalogue/has_submitter'
-require 'bio_catalogue/wsdl_utils_parser_client'
 require 'bio_catalogue/annotations'
 require 'bio_catalogue/annotations/extensions'
 require 'bio_catalogue/monitoring'
 require 'bio_catalogue/monitoring/status'
 
-# Require additional libraries
-require 'array'
-require 'object'
-require 'auto_link_override'
-require 'addressable/uri'
-require 'system_timer'
-require 'libxml'
-require 'dnsruby'
-
 # Never explicitly load the memcache-client library as we need to use 
 # the specific one vendored in our codebase.
-#require 'memcache'
+#NEVER DO:require 'memcache'
 
 # Change XML backend that Rails uses to a faster one
 ActiveSupport::XmlMini.backend = 'LibXML'

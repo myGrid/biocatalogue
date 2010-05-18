@@ -279,3 +279,63 @@ document.observe('dom:loaded', function(){
 		duration: 1.2
 	})
 });
+
+// For URLs like http://localhost:3000/services/8#updates_from_wsdl_5,
+// need to open up the relevant box. 
+document.observe('dom:loaded', function() {
+  var hash_value = window.location.hash.substr(1);
+	
+	if (hash_value.include('updates_from_wsdl_')) {
+		el = $(hash_value + '_changelog');
+		if (el) {
+			el.blindDown({ duration: 0.8 });
+			el.focus();
+		}
+	}
+});
+
+// For loading of tabs and switching to the required tab...
+//
+//   Since we specified manualStartup=true, tabber will not run after
+//   the onload event. Instead let's run it now, to prevent any delay
+//   while images load.
+//	 
+//   The following code also handles the anchor hash in the URL and does one of two things:
+//   1. either shows the correct tab by matching the anchor to the element with id: "tab-{anchor}", or
+//   2. searches for the element the anchor is referring and tries to figure out what tab it's in and makes that tab active.
+//      Note: the element with the anchor MUST have an ID set to the same value as the anchor hash for this to work.
+document.observe('dom:loaded', function() {
+  if (window.location.hash && window.location.hash.match( /^#/ )) 
+  { 
+    var hash_value = window.location.hash.substr(1);
+    var tab_el = document.getElementById("tab-" + hash_value);
+    var anchor_el = null;
+    var anchor_el_id = null;
+     
+    if (tab_el == null) {
+      /* It wasn't a tab so we need to find the anchor it refers to and scroll to it. */
+      
+      anchor_el = $(hash_value);
+      
+      if (anchor_el) {
+        anchor_el_parents = anchor_el.ancestors();
+      
+        found = false;
+      
+        for(i = 0; i < anchor_el_parents.length && !found; i++) {
+          if (anchor_el_parents[i].hasClassName('tabbertab')) {
+              tab_el = anchor_el_parents[i];
+              found = true;
+          }
+        }
+      }
+    }
+    
+    /* Now set the class accordingly on the tab elements, to show the tab. */
+    if (tab_el) { 
+      tab_el.className = "tabbertab tabbertabdefault";
+    }
+  }
+
+  tabberAutomatic(tabberOptions);
+});

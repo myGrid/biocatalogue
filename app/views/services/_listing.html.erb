@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/services/_listing.html.erb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -18,160 +18,172 @@
 <div class="listings">
 	<% items.each do |service| %>
 		<% unless service.nil? %>
-			<% service_version_instance = service.latest_version.service_versionified %>
-			<div class="listing_item">
-				
-				<% if listing_type == :detailed %>
+			
+      <% if service.archived? %>
+			  
+				<div class="listing_item archived">
+					<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
 					
-					<table style="width: 99%; table-layout: fixed;">
-						<tr>
-							<td style="overflow-x: hidden; overflow-y: auto;">
-								<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
-							</td>
-							<td style="text-align: right; width: 450px; vertical-align: top;">
-								<span class="inline-block" style="padding-right: 2em; padding-top: 0.8em;">
-									<%= render :partial => 'services/stats_bar', :locals => { :service => service } -%>
-								</span>
-								
-								<%= render :partial => "services/annotation_counts",
-										 		 :locals => { :service => service } -%>
-							</td>
-						</tr>
-					</table>
+					<p class="archived_status_text">
+						This service has been archived because it may not be active anymore (or is close to being non active).
+					</p>
+				</div>
+			 
+			<% else %>			
+			
+				<% service_version_instance = service.latest_version.service_versionified %>
+				<div class="listing_item">
 					
-					<% cache(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service.id) do -%>
-						<div style="margin-top: -0.4em;">
-							<%= render :partial => "annotations/name_aliases",
-												 :locals => { :annotatable => service,
-																			:name_annotations => all_alternative_name_annotations_for_service(service),
-																			:show_add_option => false,
-																			:show_modify_options => false,
-																			:show_none_text => false } -%>
-						</div>
-					<% end %>
-					
-					<% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
-						<div style="margin-top: 0.8em;">
-							<%= render :partial => "annotations/categories", 
-												 :locals => { :service => service,
-																			:show_add_option => false,
-																			:show_modify_options => false } -%>
-						</div>
-					<% end %>
-					
-					<% cache(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service.id) do -%>
-						<div style="margin-top: 0.8em; font-size: 85%;">
-							<%= render :partial => "annotations/descriptions",
-										:locals => { :annotatable => service_version_instance,
-											:show_header => false,
-											:truncate_desc => 700,
-											:auto_link_desc => false,
-											:show_modify_options => false,
-											:show_add_box => false } -%>
-						</div>
-					<% end %>
+					<% if listing_type == :detailed %>
 						
-					<table style="width:100%;">
-						<tr>
-							<td>
-								
-								<p class="detail">
-									
-									<b>Provider:</b>
-									<% service.providers.each do |provider| %>
-										<%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
-									<% end %>
-									
-									<span class="faded" style="margin: 0 0.2em; vertical-align: middle;">|</span>
-									
-									<b>Submitter / Source:</b>
-									<%= submitter_link(service.submitter) %>
-									<span class="ago" style="vertical-align: baseline;">
-										(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
-									</span>
-									
-								</p>
-								
-								<div class="detail">
-									<table>
-										<tr>
-											<td style="width: 12em; line-height: 1.5; padding-top: 1px; text-align: left;">
-												<b>Tags on this service:</b>
-											</td>
-											<td>
-												<%= render :partial => "annotations/tags_flat",
-															 		 :locals => { :annotatable => service } -%>
-											</td>
-										</tr>
-									</table>
-								</div>
-								
-								<%= render :partial => "#{service_version_instance.class.to_s.pluralize.underscore}/service_listing_info", 
-								 	 				 :locals => { :service_version_instance =>  service_version_instance } %>
-								
-							</td>
-							
-							<%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
-								<td style="width: 60px; text-align: right; vertical-align: bottom; padding-bottom: 0.5em;">
-									<%= service_latest_status_symbol(service) -%>
-								</td>
-							<% end %>
-						</tr>
-					</table>
-					
-				<% elsif listing_type == :simple %>
-					
-					<div class="simple_listing">
-						<table style="width: 100%;">
+						<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
+						
+						<table style="width: 100%; table-layout: fixed;">
 							<tr>
 								<td>
-									<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
-									
-									<% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
-										<div style="margin-top: 0.8em;">
-											<%= render :partial => "annotations/categories", 
-																 :locals => { :service => service,
-																							:show_add_option => false,
-																							:show_modify_options => false } -%>
-										</div>
-									<% end %>
+									<% cache(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service.id) do -%>
+				            <div>
+				              <%= render :partial => "annotations/name_aliases",
+				                         :locals => { :annotatable => service,
+				                                      :name_annotations => all_alternative_name_annotations_for_service(service),
+				                                      :show_add_option => false,
+				                                      :show_modify_options => false,
+				                                      :show_none_text => false } -%>
+				            </div>
+				          <% end %>
+				          
+				          <% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
+				            <div style="margin-top: 0.8em;">
+				              <%= render :partial => "annotations/categories", 
+				                         :locals => { :service => service,
+				                                      :show_add_option => false,
+				                                      :show_modify_options => false } -%>
+				            </div>
+				          <% end %>
 								</td>
-								<%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
-									<td style="width: 60px; text-align: right; vertical-align: top; padding-bottom: 0.5em;">
-										<%= service_latest_status_symbol(service) -%>
-									</td>
-								<% end %>
+								<td style="text-align: right; width: 300px; vertical-align: top;">
+									<%= render :partial => "services/annotation_counts",
+											 		 :locals => { :service => service } -%>
 								</td>
 							</tr>
 						</table>
 						
-						<div class="box_annotations detail">
-							<% unless (desc = service.preferred_description).blank? %>
-								<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
-									<div class="text">
-										<%= annotation_prepare_description(desc, true, 500, false) -%>
+						<% cache(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service.id) do -%>
+							<div style="margin-top: 1em; font-size: 85%;">
+								<%= render :partial => "annotations/descriptions",
+											:locals => { :annotatable => service_version_instance,
+												:show_header => false,
+												:truncate_desc => 700,
+												:auto_link_desc => false,
+												:show_modify_options => false,
+												:show_add_box => false } -%>
+							</div>
+						<% end %>
+							
+						<table style="width:100%;">
+							<tr>
+								<td>
+									
+									<p class="detail">
+										
+										<b>Provider:</b>
+										<% service.providers.each do |provider| %>
+											<%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
+										<% end %>
+										
+										<span class="faded" style="margin: 0 0.2em; vertical-align: middle;">|</span>
+										
+										<b>Submitter / Source:</b>
+										<%= submitter_link(service.submitter) %>
+										<span class="ago" style="vertical-align: baseline;">
+											(<%= distance_of_time_in_words_to_now(service.created_at) -%> ago)
+										</span>
+										
+									</p>
+									
+									<div class="detail">
+										<table>
+											<tr>
+												<td style="width: 12em; line-height: 1.5; padding-top: 1px; text-align: left;">
+													<b>Tags on this service:</b>
+												</td>
+												<td>
+													<%= render :partial => "annotations/tags_flat",
+																 		 :locals => { :annotatable => service } -%>
+												</td>
+											</tr>
+										</table>
 									</div>
+									
+									<%= render :partial => "#{service_version_instance.class.to_s.pluralize.underscore}/service_listing_info", 
+									 	 				 :locals => { :service_version_instance =>  service_version_instance } %>
+									
+								</td>
+								
+								<%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
+									<td style="width: 60px; text-align: right; vertical-align: bottom; padding-bottom: 0.5em;">
+										<%= service_latest_status_symbol(service) -%>
+									</td>
 								<% end %>
-							<% end %>
+							</tr>
+						</table>
+						
+					<% elsif listing_type == :simple %>
+						
+						<div class="simple_listing">
+							<table style="width: 100%;">
+								<tr>
+									<td>
+										<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
+										
+										<% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
+											<div style="margin-top: 0.8em;">
+												<%= render :partial => "annotations/categories", 
+																	 :locals => { :service => service,
+																								:show_add_option => false,
+																								:show_modify_options => false } -%>
+											</div>
+										<% end %>
+									</td>
+									<%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
+										<td style="width: 60px; text-align: right; vertical-align: top; padding-bottom: 0.5em;">
+											<%= service_latest_status_symbol(service) -%>
+										</td>
+									<% end %>
+									</td>
+								</tr>
+							</table>
+							
+							<div class="box_annotations detail">
+								<% unless (desc = service.preferred_description).blank? %>
+									<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+										<div class="text">
+											<%= annotation_prepare_description(desc, true, 500, false) -%>
+										</div>
+									<% end %>
+								<% end %>
+							</div>
+							
+							<p class="detail">
+										
+								<b>Provider:</b>
+								<% service.providers.each do |provider| %>
+									<%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
+								<% end %>
+								
+							</p>
+							
+							<%= render :partial => "#{service_version_instance.class.to_s.pluralize.underscore}/service_listing_info", 
+									 	 		 :locals => { :service_version_instance =>  service_version_instance } %>
+					 		
 						</div>
 						
-						<p class="detail">
-									
-							<b>Provider:</b>
-							<% service.providers.each do |provider| %>
-								<%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
-							<% end %>
-							
-						</p>
-						
-						<%= render :partial => "#{service_version_instance.class.to_s.pluralize.underscore}/service_listing_info", 
-								 	 		 :locals => { :service_version_instance =>  service_version_instance } %>
-				 		
-					</div>
+					<% end %>
 					
-				<% end %>
-				
-			</div>
+				</div>
+			
+			<% end %>
+			
 		<% end %>
 	<% end %>
 </div>

@@ -10,27 +10,24 @@
 
 <% counts = metadata_counts_for_service(service) %>
 <div class="annotations_counts_outer_box">
-	<% rounded "#DDD", "#333", "100%" do %>
-		<div class="annotations_counts_box">
-			<% content_tag(:span, :class => "total", :title => tooltip_title_attrib("Overall number of annotations on this service, including tags, aliases, descriptions, etc on the service, it's operations, inputs, outputs and so on."))  do %>
-				Annotations: <%= counts[:all] -%>
-				<%= image_tag(icon_filename_for(:annotations), :alt => "Overall number of annotations on this service, including tags, aliases, descriptions, etc on the service, it's operations, inputs, outputs and so on.") -%>
-			<% end %>
-			
-			<% content_tag(:span, :class => "annotation_source_provider", :title => tooltip_title_attrib("Total number of annotations from the provider's definition / description document."))  do %>
-				<%= counts[:providers] -%>
-				<%= image_tag(icon_filename_for(:annotation_source_provider_document), :alt => "Total number of annotations from the provider's definition / description document.") -%>
-			<% end %>
-			
-			<% content_tag(:span, :class => "annotation_source_member", :title => tooltip_title_attrib("Total number of annotations submitted by members of the BioCatalogue."))  do %>
-				<%= counts[:users] -%>
-				<%= image_tag(icon_filename_for(:annotation_source_member), :alt => "Total number of annotations submitted by members of the BioCatalogue.") -%>
-			<% end %>
-			
-			<% content_tag(:span, :class => "annotation_source_registry end", :title => tooltip_title_attrib("Total number of annotations sourced from other registries."))  do %>
-				<%= counts[:registries] -%>
-				<%= image_tag(icon_filename_for(:annotation_source_registry), :alt => "Total number of annotations sourced from other registries.") -%>
-			<% end %>
-		</div>
-	<% end %>
+	<div class="annotations_counts_box">
+		<% content_tag(:span, :class => "total", :title => tooltip_title_attrib("Overall number of annotations on this service, including tags, aliases, descriptions, etc on the service, it's operations, inputs, outputs and so on."))  do %>
+			Annotations: <%= counts[:all] -%>
+		<% end %>
+		
+		<% content_tag(:span, :class => "annotation_source_provider", :title => tooltip_title_attrib("Total number of annotations from the provider's definition / description document."))  do %>
+			<%= image_tag(icon_filename_for(:annotation_source_provider_document), :alt => "Total number of annotations from the provider's definition / description document.") -%>
+			<%= counts[:providers] -%>
+		<% end %>
+		
+		<% content_tag(:span, :class => "annotation_source_member", :title => tooltip_title_attrib("Total number of annotations submitted by members of the BioCatalogue."))  do %>
+      <%= image_tag(icon_filename_for(:annotation_source_member), :alt => "Total number of annotations submitted by members of the BioCatalogue.") -%>
+			<%= counts[:users] -%>
+		<% end %>
+		
+		<% content_tag(:span, :class => "annotation_source_registry end", :title => tooltip_title_attrib("Total number of annotations sourced from other registries."))  do %>
+			<%= image_tag(icon_filename_for(:annotation_source_registry), :alt => "Total number of annotations sourced from other registries.") -%>
+			<%= counts[:registries] -%>
+		<% end %>
+	</div>
 </div>

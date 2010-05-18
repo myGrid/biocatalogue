@@ -14,8 +14,8 @@
 	<b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
 	<div class="content">
 		<p class="heading">
-			<%= info_icon_with_tooltip("Other services that are similar to this service. Currently we find other services with matching categories and parent categories.") -%>
-			Similar Services <font class="faded">(<%= similar_services.length -%>)</font>
+			<span><%= info_icon_with_tooltip("Other services that are similar to this service. Currently we find other services with matching categories and parent categories.") -%></span>
+			<span>Similar Services <font class="faded">(<%= similar_services.length -%>)</font></span>
 		</p>
 		
 		<% unless similar_services.empty? %>

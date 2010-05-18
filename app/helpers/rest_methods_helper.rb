@@ -66,7 +66,7 @@ module RestMethodsHelper
   #  :link_text - text to be displayed as part of the link.
   #    default: 'Add new Representations'
   #  :style - any CSS inline styles that need to be applied to the text.
-  #    default: 'float:right; margin: 0px 10px 1px 10px;'
+  #    default: ''
   #  :class - any CSS class that need to be applied to the text.
   #    default: nil
   def add_representations_by_popup(method, http_cycle, *args)

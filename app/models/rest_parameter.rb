@@ -22,7 +22,9 @@ class RestParameter < ActiveRecord::Base
   validates_existence_of :submitter # User must exist in the db beforehand.
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :submitter_name, { :associated_service_id => :r_id } ] )
+    acts_as_solr(:fields => [ :name, :description, :submitter_name, 
+                              { :associated_service_id => :r_id },
+                              { :associated_rest_method_id => :r_id } ] )
   end
 
   if USE_EVENT_LOG
@@ -68,6 +70,10 @@ class RestParameter < ActiveRecord::Base
   
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+
+  def associated_rest_method_id
+    return RestMethodParameter.find_by_rest_parameter_id(self.id).try(:rest_method_id)
   end
 
 end

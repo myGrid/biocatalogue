@@ -1,10 +1,13 @@
 # BioCatalogue: app/config/routes.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
+  
+  map.resource :curation
+  
   map.api '/api.:format', :controller => 'api', :action => 'show' 
   
   map.lookup '/lookup.:format', :controller => 'lookup', :action => 'show'
@@ -46,7 +49,8 @@ ActionController::Routing::Routes.draw do |map|
   Annotations.map_routes(map,
                          { :new_popup => :post,
                            :create_inline => :post,
-                           :filters => :get },
+                           :filters => :get,
+                           :bulk_create => :post },
                          { :edit_popup => :post,
                            :download => :get,
                            :change_attribute => :post })
@@ -116,6 +120,8 @@ ActionController::Routing::Routes.draw do |map|
   map.home '/', :controller => 'home', :action => 'index'
   map.latest '/latest', :controller => 'home', :action => 'latest'
 
+  map.service_provider_auto_complete 'service_providers/auto_complete', :controller => 'service_providers', :action => 'auto_complete', :conditions => { :method => :get }
+
   map.resources :rest_services,
                 :member => { :annotations => :get,
                              :deployments => :get,
@@ -125,8 +131,7 @@ ActionController::Routing::Routes.draw do |map|
                 :member => { :add_new_resources => :post }
 
   map.resources :rest_methods,
-                :member => { :update_endpoint_name => :post,
-                             :inline_add_endpoint_name => :post }
+                :member => { :inline_add_endpoint_name => :post }
 
   map.resources :rest_parameters,
                 :member => { :add_new_parameters => :post }
@@ -144,7 +149,8 @@ ActionController::Routing::Routes.draw do |map|
                                  :wsdl_locations => :get },
                 :member => { :annotations => :get,
                              :operations => :get,
-                             :deployments => :get }
+                             :deployments => :get,
+                             :latest_wsdl => :get }
 
   map.resources :soap_operations,
                 :collection => { :filters => :get },
@@ -166,7 +172,10 @@ ActionController::Routing::Routes.draw do |map|
                              :annotations => :get,
                              :deployments => :get,
                              :variants => :get,
-                             :monitoring => :get}
+                             :monitoring => :get,
+                             :check_updates => :post,
+                             :archive => :post,
+                             :unarchive => :post }
                              
   map.resources :responsibility_requests,
                   :member => { :approve => :put,
