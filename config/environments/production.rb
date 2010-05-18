@@ -9,7 +9,7 @@ config.cache_classes = true
 
 # Use cronolog for log rotation in production
 # Set ROTATE_LOGS=false to turn off log rotation.
-ROTATE_LOGS     = true
+ROTATE_LOGS     = false
 cronolog_params = "/my/server/cronolog /my/application/file/log/production.log.%Y%m%d"
 
 if ROTATE_LOGS
