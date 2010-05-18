@@ -5,6 +5,9 @@
 # See license.txt for details
 
 class SoapService < ActiveRecord::Base
+  
+  serialize :description_from_soaplab
+  
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache
     index :name

@@ -49,20 +49,29 @@
 						<% url_monitor_tests.each do |service_test| -%>
 							<% if service_test.activated? || (current_user && current_user.is_admin?) -%>
 								<div class="monitoring_section">
-									<table>
-										<tr>
-											<td style="padding-right: 1em;">
-												<%= service_test_status_symbol(service_test)%>
-											</td>
-											<td> <% if service_test.test.parent_type =="Annotation" %>
-														<b><%= h(service_test.test.parent.attribute.name.titleize) -%> </b><br/>
-													<%else%>
-														<b><%= h(service_test.test.property.titleize) -%></b> <br/>
-													<%end%>
-												<%= h(service_test.test.parent.send(service_test.test.property)) -%>
-											</td>		
-										</tr>
-									</table>
+									<h5>
+									<div style="text-align: left;"> 
+										<p>
+											<% if service_test.test.parent_type =="Annotation" %>
+												<%= h(service_test.test.parent.attribute.name.titleize) -%> : 
+											<%else%>
+												<%= h(service_test.test.property.titleize) -%> : 
+											<%end%>
+											<%= h(service_test.test.parent.send(service_test.test.property)) -%>
+										</p>
+									</div>	
+									</h5>
+									<div style="text-align: left;">
+										<p>
+											<% if ms = service_test.monitored_since %> 
+												<b></>Monitored Since :</b>  <%=h ms -%>
+											<%end%>
+										</p>
+									</div>
+									<div style="padding-right: 1em;">
+										<%= service_test_status_symbol(service_test)%>
+									</div>
+	
 									<p>
 					    			<b>Recent History</b>
 									</p>
@@ -111,6 +120,13 @@
 					<% @service.test_scripts(script_view_options).each do |test| -%>  <br/>
 						<div class="monitoring_section">		
 							<h5><%= h test.name -%> </h5>	
+							<div style="text-align: left;">
+								<p>
+									<% if ms = test.service_test.monitored_since %> 
+										<b>Monitored Since : </b>  <%=h ms -%>
+									<%end%>
+								</p>
+							</div>
 							<table style="width: 99%; margin: 0.7em 0 0.3em 0;">
 								<tr>
 					 				<td style="padding-right: 1em;">
@@ -176,3 +192,4 @@
 		</div>
 	</div>
 </div>
+

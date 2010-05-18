@@ -102,4 +102,30 @@ class ServiceTest < ActiveRecord::Base
     
   end
   
+  def monitored_since(format=true)
+    unless self.test_results.empty?
+      return self.test_results.first.created_at.strftime("%A %B %d , %Y") if format
+      return self.test_results.first.created_at
+    end
+    return nil
+  end
+  
+  def failing_since
+    last_result = self.test_results.last
+    if last_result.result > 0
+      if self.test_results.count == 1
+        return last_result.created_at
+      end
+      last_success = TestResult.find(:first, :conditions => ["service_test_id=? AND result=0 ", self.id], 
+                                              :order => 'created_at DESC')
+      unless last_success.nil?
+        return TestResult.find(:all, :conditions => ["service_test_id=? AND result=1 AND created_at > ? ", 
+                                                                          self.id, last_success.created_at],
+                                                            :order => 'created_at ASC').first.created_at
+      end
+      return self.test_results.first.created_at
+    end
+    return nil
+  end
+  
 end

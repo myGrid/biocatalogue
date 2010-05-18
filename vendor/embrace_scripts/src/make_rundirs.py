@@ -23,7 +23,7 @@ class DirectoryMaker:
         stmt  = "SELECT service_tests.service_id, service_tests.id, test_scripts.filename, content_blobs.data "
         stmt += "FROM service_tests,test_scripts,content_blobs  "
         stmt += "WHERE service_tests.test_id = test_scripts.id AND service_tests.test_type ='TestScript' "
-        stmt += "AND test_scripts.content_blob_id = content_blobs.id AND test_scripts.activated_at IS NOT NULL; " 
+        stmt += "AND test_scripts.content_blob_id = content_blobs.id AND service_tests.activated_at IS NOT NULL; " 
         
         results    = db.execute(stmt)
         references = db.fetchall()
@@ -69,9 +69,9 @@ class DirectoryMaker:
                         os.chdir(dir)
                         os.system("unzip %s"%fname )
                         os.chdir(cwd)
-                        cmd = "chmod -R u=rxw  %s"%dir
-                        print cmd
-                        os.system(cmd)
+                    cmd = "chmod -R u=rxw  %s"%dir
+                    print cmd
+                    os.system(cmd)
                 except Exception, e:
                     print str(e)
     

@@ -79,7 +79,8 @@ module BioCatalogue
             @symbol_filename        = "tick-sphere-50.png"
             @small_symbol_filename  = "small-tick-sphere-50.png"
           when 1
-            @message                = "The last check failed"
+            @message                = "The last check failed "
+            @message               += "<p><b>Note :</b> Test is failing since #{@service_test.failing_since.strftime("%A %B %d , %Y")}<p>"
             @label                  = "FAILED"
             @symbol_filename        = "cross-sphere-50.png"
             @small_symbol_filename  = "small-cross-sphere-50.png"
@@ -171,10 +172,12 @@ module BioCatalogue
         
         url_tests.each do |t|
           msg +="<li> Could not access <b>#{t.service_test.test.property} </b>.</li>\n"
+          #msg +="<li> Failing since: <b>#{t.service_test.failing_since.strftime("%A %B %d , %Y")} </b> .</li>\n"
         end
         
         test_scripts.each do |t|
           msg +="<li> Test Script: <b>#{t.service_test.test.name} </b> failed.</li>\n"
+          #msg +="<li> Failing since: <b>#{t.service_test.failing_since.strftime("%A %B %d , %Y")} </b> .</li>\n"
         end
         msg +="</ul></p>" 
         

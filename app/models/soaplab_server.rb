@@ -211,5 +211,30 @@ class SoaplabServer < ActiveRecord::Base
     
     related_str.constantize.find(rels.collect{ |r| r.subject_id})
   end
-   
+  
+  def update_descriptions
+    services = self.services
+    services.each do |service|
+      
+      logger.debug(service.latest_version.service_versionified.wsdl_location)
+      begin
+        proxy = SOAP::WSDLDriverFactory.new(service.latest_version.service_versionified.wsdl_location).create_rpc_driver
+        desc = proxy.describe
+        if desc
+          logger.debug(desc)
+          #soap = service.latest_version.service_versionified
+          #soap.description_from_soaplab = self.parse_service_description(desc)
+          #soap.save!
+        end
+      rescue Exception => ex
+        logger.error("Could not get soaplab service description")
+        logger.error(ex)
+      end
+    end
+  end
+  
+  def parse_service_description(description)
+     Hash.better_from_xml(description)
+  end
+    
 end
