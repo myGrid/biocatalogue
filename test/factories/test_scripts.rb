@@ -8,13 +8,13 @@ Factory.define :test_script do |ts|
   ts.filename "filename"
   ts.content_type "application/xml"
   ts.prog_language "soapui"
-  ts.user {|a| a.association(:user)}
+  ts.submitter {|a| a.association(:user)}
   ts.content_blob {|a| a.association(:content_blob)}
   
 end
 
 Factory.define :test_script_with_user, :parent => :test_script do |script|
-  script.association(:user)
+  script.submitter {|a| a.association(:user)}
 end
 
 Factory.define :test_script_with_results, :parent => :test_script do |script|

@@ -10,7 +10,7 @@ class TestScriptTest < ActiveSupport::TestCase
   test "should not be valid without associated user" do
     script_with_data = @script_with_data
     assert script_with_data.valid?
-    script_with_data.user  = nil
+    script_with_data.submitter  = nil
     assert !script_with_data.valid?," test script valid without associated user"  
   end
   
@@ -69,7 +69,7 @@ class TestScriptTest < ActiveSupport::TestCase
   
   test "should return user associated with test script" do
     script = Factory(:test_script_with_user)
-    assert_equal script, TestScript.find_tests_by_user(script.user)[0], "Did not return user associated with test"
+    assert_equal script, TestScript.find_tests_by_user(script.submitter)[0], "Did not return user associated with test"
   end
   
 end

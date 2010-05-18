@@ -55,7 +55,7 @@ class TestScript < ActiveRecord::Base
   # to all testable types for a given user.
   def self.find_tests_by_user(user)
     find(:all,
-      :conditions => ["user_id = ?", user.id],
+      :conditions => ["submitter_id = ?", user.id],
       :order => "created_at DESC"
     )
   end
