@@ -1,0 +1,55 @@
+<%
+
+# BioCatalogue: app/views/user_mailer/responsibility_request_notification.html.erb
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+Dear <%=h @owner.display_name -%>,
+
+<p>
+We have received a request from <%= link_to url_for( :only_path => false,
+													:host => @base_url,
+            										:controller => 'users',
+            										:action => 'show',
+													:id => @user.id), url_for( :only_path => false,
+																		:host => @base_url,
+            															:controller => 'users',
+            															:action => 'show',
+																		:id => @user.id)  -%> 
+
+that they would like to take responsibility for the  <%= link_to url_for(:only_path => false,
+																		:host => @base_url,
+            															:controller => 'services',
+            															:action => 'show',
+																		:id => @service.id), url_for(:only_path => false,
+																							:host => @base_url,
+            																				:controller => 'services',
+            																				:action => 'show',
+																							:id => @service.id) -%> 
+																							
+for which you are currently responsible. Granting this request will give the user full permissions on the service
+including the possibility to remove it from the BioCatalogue.
+</p>
+
+<p>
+Please visit <%= link_to url_for(:only_path => false,
+									  :host => @base_url,
+            						  :controller => 'responsibility_requests',
+            						  :action => 'index'),
+									  url_for(:only_path => false,
+									  							:host => @base_url,
+            						  							:controller => 'responsibility_requests',
+            						  							:action => 'index') -%> 
+to grant or turn down this request.
+</p>
+
+
+Kind Regards,</br>
+
+- The BioCatalogue Team
+<p/>
+<%= link_to SITE_BASE_HOST, SITE_BASE_HOST -%>

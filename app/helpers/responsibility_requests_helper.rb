@@ -1,0 +1,2 @@
+module ResponsibilityRequestsHelper
+end

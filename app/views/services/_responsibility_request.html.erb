@@ -1,0 +1,30 @@
+<% if defined?(requests) && !requests.empty? -%>
+	<%if requests.length > 1 %>
+		<div style="text-align: right;">
+			<%= link_to("Approve All", approve_all_responsibility_requests_service_url(requests.first.subject), :class => "button_slim") -%>
+		</div>
+	<%end%>
+	<% requests.each do |req| -%>
+		<div class="monitoring_section">
+			<h5><%= h "Responsibility Resquests for #{req.subject.name}" -%> </h5>	
+			<table style="width: 99%; margin: 0.7em 0 0.3em 0;">
+				<tr>
+					<td style="padding-right: 1em;">
+					    <p> User requesting responsibility : </p>
+						<%= link_to req.user.display_name, user_url(req.user)%>
+					</td>
+					<td style="text-align: right;">
+						<%= link_to("Approve", approve_responsibility_request_service_url(req.subject)+"?user=#{req.user.id}", 
+																:confirm =>"Note: This will give the user full rights on the service, including permissions to remove it from BioCatalogue.",
+																:class => "button_slim") -%>
+						<%= link_to("Turn Down", deny_responsibility_service_url(req.subject)+"?resp_req=#{req.id}", 
+																:confirm => "You really do not want to give this user permissions on this service?", 
+																:class => "button_slim") -%>
+					</td>
+				</tr>
+			</table>
+		</div>	
+	<% end -%>
+<%else%>
+  <p class="none_text"> No requests need approval at this moment. Please check back later. </p>
+<% end -%>

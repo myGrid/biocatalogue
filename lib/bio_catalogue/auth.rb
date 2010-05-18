@@ -35,7 +35,7 @@ module BioCatalogue
         when Annotation
           return true if thing.source == user
         when Service
-          return true if thing.submitter_type == "User" && thing.submitter_id == user.id
+          return true if thing.all_responsibles.include?(user)
         when TestScript
           return true if thing.submitter_type == "User" && thing.submitter_id == user.id
           
@@ -69,6 +69,14 @@ module BioCatalogue
       return false
     end
     
+    def self.allow_user_to_claim_thing?(user, thing, *params)
+      case thing
+        when Service
+          return (!thing.all_responsibles.include?(user) && !existing_request_for_thing?(thing, user) )
+      end
+      return false
+    end
+    
     
     # ========================================
     
@@ -77,6 +85,10 @@ module BioCatalogue
     def self.check_user_owns_service_with_thing(user, thing)
       service = Mapper.map_object_to_associated_model_object(thing, "Service")
       return !service.nil? && service.submitter_type == "User" && service.submitter_id == user.id
+    end
+    
+    def self.existing_request_for_thing?(thing, user)
+      return ResponsibilityRequest.exists?(:user_id => user.id,:subject_id => thing.id, :subject_type => thing.class.name )
     end
     
   end

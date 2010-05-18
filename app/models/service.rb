@@ -35,6 +35,13 @@ class Service < ActiveRecord::Base
   has_many :service_tests, 
            :dependent => :destroy
   
+  has_many :responsibility_requests,
+           :as => :subject,
+           :dependent => :destroy
+  
+  has_many :service_responsibles,
+            :dependent => :destroy
+  
   has_submitter
   
   # Custom association for just the 'tag' annotations.
@@ -260,6 +267,24 @@ class Service < ActiveRecord::Base
       return first_results.sort_by{|r| r.created_at}.first.created_at 
     end
     return nil
+  end
+  
+  # Curators and submitters are given full permissions on the 
+  # service by adding them to the set of those responsible to
+  # manage the service the service by default.  
+  def all_responsibles
+    curators = User.find(:all, :conditions => {:role_id => 1})
+    responsibles = self.service_responsibles.collect{|r| r.user if r.status='active'}.compact
+    responsibles << self.submitter if self.submitter_type == "User"
+    responsibles.concat(curators)
+    return responsibles.uniq
+  end
+  
+  def pending_responsibility_requests(limit=5)
+    reqs = ResponsibilityRequest.find(:all, :conditions => {:subject_type => self.class.name,
+                                                            :subject_id => self.id,
+                                                            :status => 'pending'}, :limit => limit)
+    return reqs
   end
   
 protected

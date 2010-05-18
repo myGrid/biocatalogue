@@ -17,7 +17,8 @@ class ServicesController < ApplicationController
   
   before_filter :find_services, :only => [ :index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, 
+                                          :summary, :annotations, :deployments, :variants, :monitoring ]
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
@@ -28,7 +29,9 @@ class ServicesController < ApplicationController
   before_filter :set_listing_type, :only => [ :index ]
   
   before_filter :login_required, :only => [ :destroy ]
+  
   before_filter :authorise, :only => [ :destroy ]
+                                                              
   
   # GET /services
   # GET /services.xml
@@ -51,6 +54,8 @@ class ServicesController < ApplicationController
     @all_service_types = @service.service_types
     
     @soaplab_service = @service.soaplab_server
+    
+    @pending_responsibility_requests = @service.pending_responsibility_requests
     
     respond_to do |format|
       format.html # show.html.erb
@@ -176,7 +181,8 @@ class ServicesController < ApplicationController
       format.xml # monitoring.xml.builder
     end
   end
- 
+  
+
   protected
   
   def parse_sort_params

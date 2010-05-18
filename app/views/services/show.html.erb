@@ -15,7 +15,8 @@
 		<span style="vertical-align: middle;">
 			<%= render :partial => 'services/stats_bar', :locals => { :service => @service } -%>
 		</span>
-		<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+		<!-- moved authorisation into inner action -->
+		<%unless current_user.nil?%>
 			<span class="actions_button">
 				<ul class="p7menubar">
 					<li>
@@ -25,16 +26,38 @@
 						</a>
 						<ul>
 							<li>
-								<%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
+								<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+									<%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Service'), 
 														service_path(@service), 
 														:method => :delete, 
 														:confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
+								<%end%>
+							</li>
+							
+							<li>
+								<%if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, @service)%>
+										<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'), 
+														new_responsibility_request_url+"?service_id=#{@service.id}")
+														-%>												
+								<%end%>
+							</li>
+							
+							<li>
+								<%if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)%>
+									<%unless @pending_responsibility_requests.empty?%>
+										<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Pending Responsibility Requests'), 
+														:controller => 'responsibility_requests', 
+														:action => 'index')
+														-%>
+									<%end%>
+								<%end%>
 							</li>
 						</ul>
 					</li>
 				</ul>
 			</span>
-		<% end %>
+		<%end%>
+		<!-- end of outer span-->
 	</span>
   <%= generic_icon_for(:service, 'margin-right: 0.3em;', "Web Service") -%>
 	<span style="vertical-align: middle;"><%= display_name(@service) -%></span>

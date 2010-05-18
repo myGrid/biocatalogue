@@ -166,7 +166,13 @@ ActionController::Routing::Routes.draw do |map|
                              :annotations => :get,
                              :deployments => :get,
                              :variants => :get,
-                             :monitoring => :get }
+                             :monitoring => :get}
+                             
+  map.resources :responsibility_requests,
+                  :member => { :approve => :put,
+                               :deny    => :put,
+                               :turn_down => :get,
+                               :cancel => :put}
   
   # Root of website
   map.root :controller => 'home', :action => 'index'

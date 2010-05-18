@@ -1,0 +1,29 @@
+<p>
+	<h5> Requesting Responsibility for a Service:  <%=link_to @service.name, service_url(@service) %></h5>
+</p>
+
+<h6> What does requesting responsibility for a service mean? </h6>
+<p class="box_info_standout">	
+	Some services in BioCatalogue have been registered by people who do not normally maintain the service or 
+	are responsible for the service in any way. This responsibility request mechanism allows people that maintain or own
+	the service to be given the permissions to manage the entry in BioCatalogue
+</p>
+
+<h6> What happens when you submit a request? </h6>
+<p class="box_info_standout">
+	The people currently responsible for the service will be informed about your request.
+	You will also receive a confirmation mail for the request once it is successfully submitted.
+	You will also be informed by mail when the request is approved or turned down.
+</p>
+
+<p>
+	Click the button below to submit a request to take responsibility for <%= link_to @service.name, service_url(@service) %>
+<p>
+
+<% form_tag (responsibility_requests_path, :method => :post )  do -%>
+	<%= hidden_field_tag 'responsibility_request[subject_id]', @service.id -%>
+	<%= hidden_field_tag 'responsibility_request[subject_type]', @service.class.name -%>
+	<%= hidden_field_tag 'responsibility_request[user_id]', current_user.id -%>
+	<%= hidden_field_tag 'responsibility_request[status]', 'pending' -%>
+	<%= submit_tag('Submit Request', :confirm =>" Are you sure? ")  -%>
+<%end%>

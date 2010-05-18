@@ -8,14 +8,17 @@
 # binary data of the uploaded test file
 
 class TestScript < ActiveRecord::Base
+  if ENABLE_CACHE_MONEY
+    is_cached :repository => $cache
+    index :name
+    index :exec_name
+  end
   
   after_create :create_service_test
   
   has_one :service_test, 
           :as => :test, 
           :dependent => :destroy
-
-  #belongs_to :user
   
   belongs_to :content_blob, 
              :dependent => :destroy

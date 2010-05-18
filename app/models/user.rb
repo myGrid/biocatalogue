@@ -23,6 +23,11 @@ class User < ActiveRecord::Base
 
   has_many :services,
            :as => "submitter"
+  
+  has_many :responsibility_requests, 
+            :dependent => :destroy
+  has_many :service_responsibles,
+            :dependent => :destroy
 
   if USE_EVENT_LOG
     acts_as_activity_logged
