@@ -21,25 +21,29 @@
 	  <span class="header_left_bar">
 	      <span class="actions_button">
 	        <ul class="p7menubar">
-						<% if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, @service) %>
-	            <li>
-								<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'), 
-												new_responsibility_request_url(:service_id => @service.id)) -%>											
-							</li>
-						<% end %>
-	          <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
-	            <% unless @pending_responsibility_requests.empty? %>
-								<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' View Pending Responsibility Requests'), 
-												:controller => 'responsibility_requests', 
-												:action => 'index') -%>
-							<% end %>
-							
-	            <li>
-	              <a href="#" class="trigger">
-	                <span style="vertical-align: middle;">Actions</span>
-	                <%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
-	              </a>
-	              <ul>
+            <li>
+              <a href="#" class="trigger">
+                <span style="vertical-align: middle;">Actions</span>
+                <%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+              </a>
+              <ul>
+			          <% if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, @service) %>
+		              <li>
+		                <%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'), 
+		                        new_responsibility_request_url(:service_id => @service.id)) -%>                     
+		              </li>
+		            <% end %>
+								
+								<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+								
+									<% unless @pending_responsibility_requests.empty? %>
+		                <li>
+		                  <%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' View Pending Responsibility Requests'), 
+		                          :controller => 'responsibility_requests', 
+		                          :action => 'index') -%>
+		                </li>
+		              <% end %>
+									
 	              	<li>
 	                  <%= link_to(image_tag(icon_filename_for(:check_updates)) + content_tag(:span, ' Check for Updates'), 
 	                              check_updates_service_path(@service),
@@ -68,9 +72,9 @@
 	                              :method => :delete, 
 	                              :confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
 	                </li>
-	              <% end %>
-	            </ul>
-	          </li>
+                <% end %>
+              </ul>
+            </li>
 	        </ul>
 	      </span>
 	  </span>
