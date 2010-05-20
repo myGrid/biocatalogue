@@ -19,7 +19,6 @@ class SoapService < ActiveRecord::Base
   acts_as_service_versionified  # This also mixes in acts_as_annotatable
   
   has_many :wsdl_files,
-           :readonly => true,
            :dependent => :destroy,
            :order => "created_at DESC"
   
