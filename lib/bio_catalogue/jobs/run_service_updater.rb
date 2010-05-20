@@ -9,11 +9,7 @@ module BioCatalogue
     class RunServiceUpdater < Struct.new(:service_id)
       def perform
         service = Service.find_by_id(service_id)
-        
-        # Run SoapService#update_from_latest_wsdl! for all SoapService variants of this Service
-        service.service_version_instances_by_type("SoapService").each do |soap_service|
-          soap_service.update_from_latest_wsdl!
-        end
+        service.run_service_updater! unless service.nil?
       end
     end    
   end

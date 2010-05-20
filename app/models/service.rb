@@ -290,6 +290,14 @@ class Service < ActiveRecord::Base
     return reqs
   end
   
+  def run_service_updater!
+    # Run SoapService#update_from_latest_wsdl! for all SoapService variants of this Service
+    self.service_version_instances_by_type("SoapService").each do |soap_service|
+      # The soap_service object is read only so need to refetch the object...
+      SoapService.find(soap_service.id).update_from_latest_wsdl!
+    end
+  end
+  
 protected
   
   def generate_unique_code
