@@ -48,6 +48,9 @@ class SanityCheck
   end  
   
   def run
+    
+    puts ""
+    puts ""
   
     # Check that all Service objects have at least:
     #   - One valid ServiceDeployment, that has at least one valid ServiceVersion that points to a valid SoapService or RestService.
@@ -144,8 +147,17 @@ class SanityCheck
       puts "ERROR: Annotation #{annotation.id} has an empty value" if annotation.value.blank?
     end
     
+    
+    # Check for orphaned ServiceTests
+    
+    ServiceTest.all.each do |service_test|
+      puts "ERROR: ServiceTest #{service_test.id} does not have a valid associated Service" if service_test.service.nil?
+    end
+
+    
     # TODO: check Annotation versions
-    # TODO: check for orphaned/duplicate ServiceTests and UrlMonitors
+    # TODO: check for duplicate ServiceTests
+    # TODO: check for orphaned/duplicate UrlMonitors
     # TODO: check for orphaned ContentBlobs
   
   end
