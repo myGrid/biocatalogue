@@ -15,10 +15,35 @@ module BioCatalogue
       silence_warnings { CacheHelper::Expires.const_set "BASE_HOST", base_host } unless defined? CacheHelper::Expires.BASE_HOST
     end
     
+    # Canonical method for generating keys for caching.
+    #
+    # At the end of the day, the key generated is just a string.
+    # The crucial thing about generating these keys for caching is 
+    # defining strong mechanisms to gaurantee uniqueness and avoiding 
+    # unintended key clashes. This method aims to help with this.
+    #
+    # The following key 'type' values are supported (with corresponding args):
+    #
+    #   :activity_log_entries
+    #     Takes 3 args:
+    #       - the location of the activity feed.
+    #       - the ID of any associated object.
+    #       - style of the corresponding activity feed the data will be used in.
+    #
+    #   :metadata_counts_for_service
+    #     Takes 1 arg:
+    #       - the ID of the Service that the data is for.
+    #
+    #   :children_of_category
+    #     Takes 1 arg: 
+    #       - the ID of the Category that the data is for.
+    #
+    #   :tags_index
+    #     Takes any number of args, that are then added to the key in the form "_x_y_z".
     def self.cache_key_for(type, *args)
       case type
         when :activity_log_entries
-          "activity_log_entries_#{args[0]}"
+          "activity_log_entries_#{args[0]}_#{args[1]}_#{args[2]}"
         when :metadata_counts_for_service
           "metadata_counts_for_service_#{args[0]}"
         when :children_of_category

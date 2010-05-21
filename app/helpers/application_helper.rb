@@ -122,6 +122,10 @@ module ApplicationHelper
         "cog_error.png"
       when :unarchive
         "cog_go.png"
+      when :soap_service_change
+        "cog_edit.png"
+      when :monitoring_status_change
+        "wrench.png"
       else
         ''
     end
