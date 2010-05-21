@@ -111,11 +111,25 @@ class ServiceProvider < ActiveRecord::Base
             a.save!
             puts a.inspect if options[:print_log] 
           rescue
-            a.destroy
             if options[:print_log]
               puts "The following annotation could not be migrated and has been deleted:"
               puts a.inspect
             end
+            a.destroy
+          end
+        }
+        
+        self.annotations_by.each { |a|
+          begin
+            a.source_id = provider.id
+            a.save!
+            puts a.inspect if options[:print_log] 
+          rescue
+            if options[:print_log]
+              puts "The following annotation could not be migrated and has been deleted:"
+              puts a.inspect
+            end
+            a.destroy
           end
         }
         puts "Annotations Migrated!" if options[:print_log] 
