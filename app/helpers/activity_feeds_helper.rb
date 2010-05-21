@@ -135,20 +135,36 @@ module ActivityFeedsHelper
               end
               
               unless value_to_display.blank? or item.attribute.nil? or annotatable.nil? or source.nil?
-                subject_name = case item.annotatable_type
+                inner_obj_text = case item.annotatable_type
+                  when "ServiceDeployment", "SoapService", "RestService"
+                    "the #{item.annotatable_type.titleize} of "
+                  else
+                    nil
+                end
+                
+                subject_type = case item.annotatable_type
                   when "Service", "ServiceDeployment", "ServiceVersion", "SoapService", "RestService"
                     "Service"
                   else
                     item.annotatable_type.titleize
                 end
+                
+                subject = case item.annotatable_type
+                  when "ServiceDeployment", "ServiceVersion", "SoapService", "RestService"
+                    item.annotatable.service
+                  else
+                    item.annotatable
+                end
               
                 output << link_to(display_name(source), source)
                 output << content_tag(:span, " added", :class => "activity_feed_action")
-                output << " a #{item.attribute_name.humanize.downcase} annotation to #{subject_name}: "
+                output << " a #{item.attribute_name.humanize.downcase} annotation to "
+                output << inner_obj_text unless inner_obj_text.blank?
+                output << "#{subject_type}: "
                 
-                link = link_for_web_interface(annotatable)
+                link = link_for_web_interface(subject)
                 
-                output << (link || display_name(annotatable))
+                output << (link || display_name(subject))
                 
                 if style == :detailed
                   output << " - "

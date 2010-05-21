@@ -41,6 +41,12 @@ module BioCatalogue
     #
     #   :tags_index
     #     Takes any number of args, that are then added to the key in the form "_x_y_z".
+    #
+    #   :associated_object_ids
+    #     Takes 2 args:
+    #       - the parent object's type.
+    #       - the parent object's ID.
+    #
     def self.cache_key_for(type, *args)
       case type
         when :activity_log_entries
@@ -53,6 +59,8 @@ module BioCatalogue
           "services_count_for_category_#{args[0]}"
         when :tags_index
           "tags_index_#{args.to_sentence(:words_connector => '_', :two_words_connector => '_', :last_word_connector => '_')}"
+        when :associated_object_ids
+          "associated_object_ids_#{args[0]}_#{args[1]}"
       end
     end
     

@@ -298,6 +298,73 @@ class Service < ActiveRecord::Base
     end
   end
   
+  # Currently only gets the associated object IDs for:
+  # - ServiceDeployments
+  # - ServiceVersions
+  # - SoapService
+  # - RestService
+  #
+  # Note that this is eternally cached.
+  #
+  # FIXME: this needs to take into account when any new objects of the 
+  # type above are added to the Service.
+  def associated_object_ids(cache_refresh=false)
+    object_ids = nil
+      
+    cache_key = BioCatalogue::CacheHelper.cache_key_for(:associated_object_ids, "Service", self.id)
+  
+    if cache_refresh
+      Rails.cache.delete(cache_key)
+    end
+    
+    # Try and get it from the cache...
+    object_ids = Rails.cache.read(cache_key)
+    
+    if object_ids.nil?
+      
+      # It's not in the cache so get the values and store it in the cache...
+      
+      object_ids = { }
+      
+      object_ids["ServiceDeployments"] = self.service_deployments.map { |sd| sd.id }
+      object_ids["ServiceVersions"] = self.service_versions.map { |sv| sv.id }
+      object_ids["SoapServices"] = self.service_version_instances_by_type("SoapService").map { |ss| ss.id }
+      object_ids["RestServices"] = self.service_version_instances_by_type("RestService").map { |rs| rs.id }
+      
+      # Finally write it to the cache...
+      Rails.cache.write(cache_key, object_ids)
+      
+    end
+    
+    return object_ids
+  end
+  
+  def annotations_activity_logs(since, limit=100)
+    obj_ids = self.associated_object_ids
+    
+    ActivityLog.find(:all,
+      :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND (
+                       (activity_loggable_type = 'Service' AND activity_loggable_id = ?) OR (referenced_type = 'Service' AND referenced_id = ?) OR
+                       (activity_loggable_type = 'ServiceDeployment' AND activity_loggable_id IN (?)) OR (referenced_type = 'ServiceDeployment' AND referenced_id IN (?)) OR
+                       (activity_loggable_type = 'ServiceVersion' AND activity_loggable_id IN (?)) OR (referenced_type = 'ServiceVersion' AND referenced_id IN (?)) OR
+                       (activity_loggable_type = 'SoapService' AND activity_loggable_id IN (?)) OR (referenced_type = 'SoapService' AND referenced_id IN (?)) OR
+                       (activity_loggable_type = 'RestService' AND activity_loggable_id IN (?)) OR (referenced_type = 'RestService' AND referenced_id IN (?))
+                       ) AND created_at >= ?", 
+                       "Service", 
+                       self.id,
+                       (obj_ids["ServiceDeployments"] || []),
+                       (obj_ids["ServiceDeployments"] || []),
+                       (obj_ids["ServiceVersions"] || []),
+                       (obj_ids["ServiceVersions"] || []),
+                       (obj_ids["SoapServices"] || []),
+                       (obj_ids["SoapServices"] || []),
+                       (obj_ids["RestServices"] || []),
+                       (obj_ids["RestServices"] || []),
+                       since ],
+      :order => "created_at DESC",
+      :limit => limit)
+  end
+  
 protected
   
   def generate_unique_code

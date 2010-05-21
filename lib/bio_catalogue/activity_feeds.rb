@@ -106,109 +106,110 @@ module BioCatalogue
       
       activity_logs = nil
       
-      cache_key = BioCatalogue::CacheHelper.cache_key_for(:activity_log_entries, location, options[:scoped_object_type], options[:scoped_object_id], options[:style])
-    
-      if options[:cache_refresh]
-        Rails.cache.delete(cache_key)
-      end
+      begin
       
-      # Try and get it from the cache...
-      activity_logs = Rails.cache.read(cache_key)
+        cache_key = BioCatalogue::CacheHelper.cache_key_for(:activity_log_entries, location, options[:scoped_object_type], options[:scoped_object_id], options[:style])
       
-      if activity_logs.nil?
+        if options[:cache_refresh]
+          Rails.cache.delete(cache_key)
+        end
         
-        # It's not in the cache so get the values and store it in the cache...
+        # Try and get it from the cache...
+        activity_logs = Rails.cache.read(cache_key)
         
-        activity_logs = [ ]
-        
-        # Fetch the necessary ActivityLog entries...
-
-        case location
+        if activity_logs.nil?
           
-          when :home
-        
-            # User activated
-            activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'activate' AND activity_loggable_type = 'User' AND created_at >= ?", options[:since] ],
-              :order => "created_at DESC",
-              :limit => options[:query_limit])
-            
-            # Services created
-            activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND created_at >= ?", options[:since] ],
-              :order => "created_at DESC",
-              :limit => options[:query_limit])
-            
-            # Annotations created
-            activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND created_at >= ?", options[:since] ],
-              :order => "created_at DESC",
-              :limit => options[:query_limit])
-            
-            # SoapServiceChanges created
-            activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND created_at >= ?", options[:since] ],
-              :order => "created_at DESC",
-              :limit => options[:query_limit])
-            
-            # Favourites created
-            activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND created_at >= ?", options[:since] ],
-              :order => "created_at DESC",
-              :limit => options[:query_limit])
-            
-          when :monitoring
-            
-            # Monitoring status changes
-            activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'status_change' AND activity_loggable_type = 'ServiceTest' AND created_at >= ?", options[:since] ],
-              :order => "created_at DESC",
-              :limit => options[:query_limit])
+          # It's not in the cache so get the values and store it in the cache...
           
-          when :service
+          activity_logs = [ ]
           
-            if scoped_object.is_a? Service
+          # Fetch the necessary ActivityLog entries...
+  
+          case location
+            
+            when :home
+          
+              # User activated
+              activity_logs.concat ActivityLog.find(:all,
+                :conditions => [ "action = 'activate' AND activity_loggable_type = 'User' AND created_at >= ?", options[:since] ],
+                :order => "created_at DESC",
+                :limit => options[:query_limit])
               
               # Services created
               activity_logs.concat ActivityLog.find(:all,
-                :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND activity_loggable_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND created_at >= ?", options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
               
               # Annotations created
               activity_logs.concat ActivityLog.find(:all,
-                :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND 
-                                 ((activity_loggable_type = 'Service' AND activity_loggable_id = ?) OR (referenced_type = 'Service' AND referenced_id = ?)) AND 
-                                 created_at >= ?", options[:scoped_object_id], options[:scoped_object_id], options[:since] ],
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND created_at >= ?", options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
               
-              soap_service_ids = scoped_object.service_version_instances_by_type("SoapService").map { |ss| ss.id }
-              
               # SoapServiceChanges created
               activity_logs.concat ActivityLog.find(:all,
-                :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND referenced_type = 'SoapService' AND referenced_id IN (?) AND created_at >= ?", soap_service_ids, options[:since] ],
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND created_at >= ?", options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
               
               # Favourites created
               activity_logs.concat ActivityLog.find(:all,
-                :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND created_at >= ?", options[:since] ],
+                :order => "created_at DESC",
+                :limit => options[:query_limit])
+              
+            when :monitoring
+              
+              # Monitoring status changes
+              activity_logs.concat ActivityLog.find(:all,
+                :conditions => [ "action = 'status_change' AND activity_loggable_type = 'ServiceTest' AND created_at >= ?", options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
             
-            end
+            when :service
+            
+              if scoped_object.is_a? Service
+                
+                associated_object_ids = scoped_object.associated_object_ids 
+                
+                # Services created
+                activity_logs.concat ActivityLog.find(:all,
+                  :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND activity_loggable_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
+                  :order => "created_at DESC",
+                  :limit => options[:query_limit])
+                
+                # Annotations created
+                activity_logs.concat scoped_object.annotations_activity_logs(options[:since], options[:query_limit])
+                
+                # SoapServiceChanges created
+                activity_logs.concat ActivityLog.find(:all,
+                  :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND referenced_type = 'SoapService' AND referenced_id IN (?) AND created_at >= ?", associated_object_ids["SoapServices"], options[:since] ],
+                  :order => "created_at DESC",
+                  :limit => options[:query_limit])
+                
+                # Favourites created
+                activity_logs.concat ActivityLog.find(:all,
+                  :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
+                  :order => "created_at DESC",
+                  :limit => options[:query_limit])
+              
+              end
+          end
+          
+          # Reorder based on time
+          activity_logs.sort! { |a,b| b.created_at <=> a.created_at }
+          
+          # Use only up to the limit and process these...
+          activity_logs = activity_logs[0...options[:items_limit]]
+          
+          # Finally write it to the cache...
+          Rails.cache.write(cache_key, activity_logs, :expires_in => options[:cache_time])
+          
         end
-        
-        # Reorder based on time
-        activity_logs.sort! { |a,b| b.created_at <=> a.created_at }
-        
-        # Use only up to the limit and process these...
-        activity_logs = activity_logs[0...options[:items_limit]]
-        
-        # Finally write it to the cache...
-        Rails.cache.write(cache_key, activity_logs, :expires_in => options[:cache_time])
-        
+      
+      rescue Exception => ex
+        BioCatalogue::Util.log_exception(ex, :error, "Failed to run 'BioCatalogue#ActivityFeeds.activity_logs_for location: #{location}")
       end
         
       return activity_logs || [ ]
