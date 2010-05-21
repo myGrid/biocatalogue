@@ -69,12 +69,14 @@ class TestResult < ActiveRecord::Base
         end
         
         if USE_EVENT_LOG
+          
+          service = self.service_test.service
         
           ActivityLog.create(:action => "status_change",
                            :data =>{:current_result_id => self.id, :previous_result_id =>previous.id },
-                           :activity_loggable => self.service_test)
+                           :activity_loggable => self.service_test,
+                           :referenced => service)
           
-          service = self.service_test.service
           current_status = BioCatalogue::Monitoring::TestResultStatus.new(self)
           previous_status = BioCatalogue::Monitoring::TestResultStatus.new(previous)
           
