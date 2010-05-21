@@ -17,6 +17,11 @@
 		<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :detailed } -%>
 	</div>
 	
+	<div id="tab-monitoring" class="tabbertab">
+    <h3>Monitoring</h3>
+    <%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_monitoring, :style => :detailed } -%>
+  </div>
+	
 	<div id="tab-services" class="tabbertab">
     <h3>Services</h3>
 		<%= render :partial => "services/listing", :locals => { :items => Service.latest(10), :listing_type => :simple } -%>
@@ -24,11 +29,6 @@
 			<%= link_to "Browse All Services", services_url, :class => "button_slim" -%>
 		</p>
 	</div>
-	
-	<div id="tab-monitoring" class="tabbertab">
-    <h3>Monitoring</h3>
-    <%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_monitoring, :style => :detailed } -%>
-  </div>
 	
 	<div id="tab-contributors" class="tabbertab">
     <h3>Contributors</h3>
