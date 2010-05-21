@@ -56,7 +56,7 @@ class SanityCheck
     Service.all.each do |service|
       puts "ERROR: Service #{service.id} has no ServiceDeployments" if service.service_deployments.count < 1
       service.service_deployments.each do |service_deployment|
-        check_service_version(service_deployment.service_version, "ERROR: ServiceDeployment #{service_deployment.id} does not have an associated ServiceVersion")
+        check_service_version(service_deployment.service_version, "ERROR: ServiceDeployment #{service_deployment.id} does not have a valid associated ServiceVersion")
       end
       
       puts "ERROR: Service #{service.id} has no ServiceVersions" if service.service_versions.count < 1
@@ -69,15 +69,15 @@ class SanityCheck
     # Check for orphaned ServiceVersion, ServiceDeployment and ServiceProviderHostname objects.
     
     ServiceVersion.all.each do |service_version|
-      puts "ERROR: ServiceVersion #{service_version.id} does not have an associated Service" if service_version.service.blank?
+      puts "ERROR: ServiceVersion #{service_version.id} does not have a valid associated Service" if service_version.service.blank?
     end
     
     ServiceDeployment.all.each do |service_deployment|
-      puts "ERROR: ServiceDeployment #{service_deployment.id} does not have an associated Service" if service_deployment.service.blank?
+      puts "ERROR: ServiceDeployment #{service_deployment.id} does not have a valid associated Service" if service_deployment.service.blank?
     end
     
     ServiceProviderHostname.all.each do |service_provider_hostname|
-      puts "ERROR: ServiceProviderHostname #{service_provider_hostname.id} does not have an associated ServiceProvider" if service_provider_hostname.service_provider.blank?
+      puts "ERROR: ServiceProviderHostname #{service_provider_hostname.id} does not have a valid associated ServiceProvider" if service_provider_hostname.service_provider.blank?
     end
     
     
@@ -91,7 +91,7 @@ class SanityCheck
     # Check that all ServiceDeployment objects have a valid ServiceProvider.
     
     ServiceDeployment.all.each do |service_deployment|
-      puts "ERROR: ServiceDeployment #{service_deployment.id} does not have an associated ServiceProvider" if service_deployment.provider.blank?
+      puts "ERROR: ServiceDeployment #{service_deployment.id} does not have a valid associated ServiceProvider" if service_deployment.provider.blank?
     end
     
     
@@ -105,38 +105,46 @@ class SanityCheck
     # Check for "orphaned" SoapService or RestService objects.
     
     SoapService.all.each do |soap_service|
-      puts "ERROR: SoapService #{soap_service.id} does not have an associated ServiceVersion" if soap_service.service_version.blank?
+      puts "ERROR: SoapService #{soap_service.id} does not have a valid associated ServiceVersion" if soap_service.service_version.blank?
     end
     
     RestService.all.each do |rest_service|
-      puts "ERROR: RestService #{rest_service.id} does not have an associated ServiceVersion" if rest_service.service_version.blank?
+      puts "ERROR: RestService #{rest_service.id} does not have a valid associated ServiceVersion" if rest_service.service_version.blank?
     end
     
     
     # Check for "orphaned" SoapOperations, SoapInputs and SoapOutputs.
     
     SoapOperation.all.each do |soap_operation|
-      puts "ERROR: SoapOperation #{soap_operation.id} does not have an associated SoapService" if soap_operation.soap_service.blank?
+      puts "ERROR: SoapOperation #{soap_operation.id} does not have a valid associated SoapService" if soap_operation.soap_service.blank?
     end
     
     SoapInput.all.each do |soap_input|
-      puts "ERROR: SoapInput #{soap_input.id} does not have an associated SoapOperation" if soap_input.soap_operation.blank?
+      puts "ERROR: SoapInput #{soap_input.id} does not have a valid associated SoapOperation" if soap_input.soap_operation.blank?
     end
     
     SoapOutput.all.each do |soap_output|
-      puts "ERROR: SoapOutput #{soap_output.id} does not have an associated SoapOperation" if soap_output.soap_operation.blank?
+      puts "ERROR: SoapOutput #{soap_output.id} does not have a valid associated SoapOperation" if soap_output.soap_operation.blank?
     end
     
     
     # Check for providers with no associated Services
     
-    ServiceProvider.all do |provider|
+    ServiceProvider.all.each do |provider|
       puts "ERROR: ServiceProvider #{provider.id} has no associated services. " if provider.services.count == 0
     end
     
     
+    # Check for orphaned Annotations
     
-    # TODO: check for orphaned Annotations
+    Annotation.all.each do |annotation|
+      puts "ERROR: Annotation #{annotation.id} does not have a valid associated Source" if annotation.source.nil?
+      puts "ERROR: Annotation #{annotation.id} does not have a valid associated Annotatable" if annotation.annotatable.nil?
+      puts "ERROR: Annotation #{annotation.id} does not have a valid associated Attribute" if annotation.attribute.nil?
+      puts "ERROR: Annotation #{annotation.id} has an empty value" if annotation.value.blank?
+    end
+    
+    # TODO: check Annotation versions
     # TODO: check for orphaned/duplicate ServiceTests and UrlMonitors
     # TODO: check for orphaned ContentBlobs
   
@@ -147,7 +155,7 @@ class SanityCheck
       puts message_if_blank
     else
       if service_version.service_versionified.blank?
-        puts "ERROR: ServiceVersion #{service_version.id} does not have a service version instance (aka service_versionified)"
+        puts "ERROR: ServiceVersion #{service_version.id} does not have a valid service version instance (aka service_versionified)"
       elsif not %w( SoapService RestService ).include? service_version.service_versionified_type
         puts "ERROR: ServiceVersion #{service_deployment.service_version.id} has a service_versionified that is not a SoapService or RestService. It is: '{service_version.service_versionified_type}'"
       end
