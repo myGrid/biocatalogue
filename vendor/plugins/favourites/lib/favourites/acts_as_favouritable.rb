@@ -82,6 +82,18 @@ module Favourites
           
           return favourited
         end
+        
+        def favourite_by_user(user_id)
+          obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self.class).to_s
+          
+          favs = Favourite.find(:all,
+                                :conditions => { :favouritable_type =>  obj_type, 
+                                                 :favouritable_id => self.id,
+                                                 :user_id => user_id })
+          
+          return favs.first
+        end
+        
       end
       
     end

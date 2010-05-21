@@ -27,6 +27,22 @@
                 <%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
               </a>
               <ul>
+              	<% if @service.favourited_by_user?(current_user.id) -%>
+								  <% unless (f = @service.favourite_by_user(current_user)).nil? %>
+									  <li>
+									  	<%= link_to image_tag(icon_filename_for(:favourite)) + content_tag(:span, " Unfavourite"),
+	                          favourite_path(f),
+	                          :method => :delete -%>
+										</li>
+									<% end %>
+								<% else %>
+								  <li>
+                    <%= link_to image_tag(icon_filename_for(:favourite)) + content_tag(:span, " Favourite"),
+			                    favourites_url(:favouritable_type => "Service", :favouritable_id => @service.id), 
+			                    :method => :post -%>
+                  </li>
+								<% end %>
+								
 			          <% if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, @service) %>
 		              <li>
 		                <%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'), 
