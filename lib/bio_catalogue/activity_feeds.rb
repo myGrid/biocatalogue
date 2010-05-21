@@ -22,16 +22,21 @@ module BioCatalogue
     # The following +location+ values are supported:
     #   :home
     #   :monitoring
+    #   :service
     #
     # The following *optional* arguments are supported:
     #
     #   :scoped_object_type - the type of the object that the +ActivityLog+ records should be scoped for.
     #     Default:
-    #       'NA'
+    #       ''
     #   
     #   :scoped_object_id - the ID of the object that the +ActivityLog+ records should be scoped for.
     #     Default:
     #       0
+    #
+    #   :scoped_object - instead of providing the type and ID separately you can provide the object itself.
+    #     Default:
+    #       nil
     #    
     #   :style - the style of the activity feed that will be generated from these records. 
     #     Options:
@@ -64,7 +69,7 @@ module BioCatalogue
     #       false
     #
     def self.activity_logs_for(location, *args)
-      return [ ] unless [ :home, :monitoring ].include?(location)
+      return [ ] unless [ :home, :monitoring, :service ].include?(location)
       
       options = args.extract_options!
       
@@ -72,8 +77,9 @@ module BioCatalogue
       
       options.reverse_merge!(:style => :simple, 
                              :days => 60.days.ago,
-                             :scoped_object_type => 'NA',
+                             :scoped_object_type => '',
                              :scoped_object_id => 0,
+                             :scoped_object => nil,
                              :cache_time => HOMEPAGE_ACTIVITY_FEED_ENTRIES_CACHE_TIME,
                              :cache_refresh => false)
       
@@ -83,6 +89,17 @@ module BioCatalogue
       else
         options.reverse_merge!(:query_limit => 1000, 
                                :items_limit => 100)
+      end
+      
+      scoped_object = options[:scoped_object]
+      
+      if scoped_object.nil?
+        unless options[:scoped_object_type].blank? or options[:scoped_object_id].blank?
+          scoped_object = options[:scoped_object_type].constantize.find_by_id(options[:scoped_object_id])
+        end
+      else
+        options[:scoped_object_type] = scoped_object.class.name
+        options[:scoped_object_id] = scoped_object.id
       end
       
       # Get 'em...
@@ -147,7 +164,38 @@ module BioCatalogue
               :conditions => [ "action = 'status_change' AND activity_loggable_type = 'ServiceTest' AND created_at >= ?", options[:days] ],
               :order => "created_at DESC",
               :limit => options[:query_limit])
-        
+          
+          when :service
+          
+            if scoped_object.is_a? Service
+              
+              # Services created
+              activity_logs.concat ActivityLog.find(:all,
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND activity_loggable_id = ? AND created_at >= ?", options[:scoped_object_id], options[:days] ],
+                :order => "created_at DESC",
+                :limit => options[:query_limit])
+              
+              # Annotations created
+              activity_logs.concat ActivityLog.find(:all,
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:days] ],
+                :order => "created_at DESC",
+                :limit => options[:query_limit])
+              
+              soap_service_ids = scoped_object.service_version_instances_by_type("SoapService").map { |ss| ss.id }
+              
+              # SoapServiceChanges created
+              activity_logs.concat ActivityLog.find(:all,
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND referenced_type = 'SoapService' AND referenced_id IN (?) AND created_at >= ?", soap_service_ids, options[:days] ],
+                :order => "created_at DESC",
+                :limit => options[:query_limit])
+              
+              # Favourites created
+              activity_logs.concat ActivityLog.find(:all,
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:days] ],
+                :order => "created_at DESC",
+                :limit => options[:query_limit])
+            
+            end
         end
         
         # Reorder based on time

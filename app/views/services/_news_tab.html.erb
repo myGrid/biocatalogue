@@ -14,10 +14,8 @@
 	
 	<div style="overflow: hidden;">
 		<div style="float: left; width: 60%;">
-			
-			<br/>
-			<br/>
-			
+		  <h2>Latest Activity</h2>
+			<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :detailed } -%>
 		</div>
 		
 		<div style="float: right; width: 38%;">

@@ -54,6 +54,10 @@ class ServicesController < ApplicationController
     
     @pending_responsibility_requests = @service.pending_responsibility_requests
     
+    unless is_api_request?
+      @activity_logs_main = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service)
+    end
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder

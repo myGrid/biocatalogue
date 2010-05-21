@@ -46,7 +46,13 @@ module ActivityFeedsHelper
       # Now prepare the entries    
       activity_logs.each do |al|
         if allowed_models_to_process.include?(al.activity_loggable_type)
-          entry_text = activity_feed_entry_for(get_object_via_cache(al.activity_loggable_type, al.activity_loggable_id, object_cache), al.action, al.data, style, object_cache)
+          entry_obj = get_object_via_cache(al.activity_loggable_type, al.activity_loggable_id, object_cache)
+          
+          entry_text = if entry_obj.blank?
+            ''
+          else
+            activity_feed_entry_for(entry_obj, al.action, al.data, style, object_cache)
+          end
           
           entry_type = case al.action
             when 'status_change'
@@ -68,7 +74,7 @@ module ActivityFeedsHelper
     end
     
     days_order.each do |d|
-      results << { d => temp_results[d] }
+      results << { d => temp_results[d] } unless temp_results[d].blank?
     end
     
     return results
