@@ -45,9 +45,9 @@ module BioCatalogue
     #     Default: 
     #       :simple
     #
-    #   :days - the maximum number of days that the +ActivityLog+ records must span.
+    #   :since - the last date at which the +ActivityLog+ records must stop.
     #     Default: 
-    #       60 days ago
+    #       60
     #
     #   :items_limit - the maximum number of +ActivityLog+ records to return back, in total.
     #     Defaults:
@@ -76,7 +76,7 @@ module BioCatalogue
       # Defaults for options:
       
       options.reverse_merge!(:style => :simple, 
-                             :days => 60.days.ago,
+                             :since => 60.days.ago,
                              :scoped_object_type => '',
                              :scoped_object_id => 0,
                              :scoped_object => nil,
@@ -129,31 +129,31 @@ module BioCatalogue
         
             # User activated
             activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'activate' AND activity_loggable_type = 'User' AND created_at >= ?", options[:days] ],
+              :conditions => [ "action = 'activate' AND activity_loggable_type = 'User' AND created_at >= ?", options[:since] ],
               :order => "created_at DESC",
               :limit => options[:query_limit])
             
             # Services created
             activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND created_at >= ?", options[:days] ],
+              :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND created_at >= ?", options[:since] ],
               :order => "created_at DESC",
               :limit => options[:query_limit])
             
             # Annotations created
             activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND created_at >= ?", options[:days] ],
+              :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND created_at >= ?", options[:since] ],
               :order => "created_at DESC",
               :limit => options[:query_limit])
             
             # SoapServiceChanges created
             activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND created_at >= ?", options[:days] ],
+              :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND created_at >= ?", options[:since] ],
               :order => "created_at DESC",
               :limit => options[:query_limit])
             
             # Favourites created
             activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND created_at >= ?", options[:days] ],
+              :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND created_at >= ?", options[:since] ],
               :order => "created_at DESC",
               :limit => options[:query_limit])
             
@@ -161,7 +161,7 @@ module BioCatalogue
             
             # Monitoring status changes
             activity_logs.concat ActivityLog.find(:all,
-              :conditions => [ "action = 'status_change' AND activity_loggable_type = 'ServiceTest' AND created_at >= ?", options[:days] ],
+              :conditions => [ "action = 'status_change' AND activity_loggable_type = 'ServiceTest' AND created_at >= ?", options[:since] ],
               :order => "created_at DESC",
               :limit => options[:query_limit])
           
@@ -171,13 +171,15 @@ module BioCatalogue
               
               # Services created
               activity_logs.concat ActivityLog.find(:all,
-                :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND activity_loggable_id = ? AND created_at >= ?", options[:scoped_object_id], options[:days] ],
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND activity_loggable_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
               
               # Annotations created
               activity_logs.concat ActivityLog.find(:all,
-                :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:days] ],
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND 
+                                 ((activity_loggable_type = 'Service' AND activity_loggable_id = ?) OR (referenced_type = 'Service' AND referenced_id = ?)) AND 
+                                 created_at >= ?", options[:scoped_object_id], options[:scoped_object_id], options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
               
@@ -185,13 +187,13 @@ module BioCatalogue
               
               # SoapServiceChanges created
               activity_logs.concat ActivityLog.find(:all,
-                :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND referenced_type = 'SoapService' AND referenced_id IN (?) AND created_at >= ?", soap_service_ids, options[:days] ],
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'SoapServiceChange' AND referenced_type = 'SoapService' AND referenced_id IN (?) AND created_at >= ?", soap_service_ids, options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
               
               # Favourites created
               activity_logs.concat ActivityLog.find(:all,
-                :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:days] ],
+                :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
             
@@ -243,9 +245,9 @@ module BioCatalogue
       ids_map = Hash.new { |h,k| h[k] = [ ] }
       
       activity_logs.each do |al|
-        ids_map[al.activity_loggable_type] << al.activity_loggable_id.to_s unless al.activity_loggable_type.nil? 
-        ids_map[al.culprit_type] << al.culprit_id.to_s unless al.culprit_type.nil? 
-        ids_map[al.referenced_type] << al.referenced_id.to_s unless al.referenced_type.nil?
+        ids_map[al.activity_loggable_type] << al.activity_loggable_id.to_s unless al.activity_loggable_type.blank? 
+        ids_map[al.culprit_type] << al.culprit_id.to_s unless al.culprit_type.blank? 
+        ids_map[al.referenced_type] << al.referenced_id.to_s unless al.referenced_type.blank?
       end
       
       # First annotations, so we can pick out more useful things...

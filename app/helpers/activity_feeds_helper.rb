@@ -48,7 +48,7 @@ module ActivityFeedsHelper
         if allowed_models_to_process.include?(al.activity_loggable_type)
           entry_obj = get_object_via_cache(al.activity_loggable_type, al.activity_loggable_id, object_cache)
           
-          entry_text = if entry_obj.blank?
+          entry_text = if entry_obj.nil?
             ''
           else
             activity_feed_entry_for(entry_obj, al.action, al.data, style, object_cache)
@@ -64,10 +64,10 @@ module ActivityFeedsHelper
           data = [ entry_text, entry_type, al.created_at ]
           
           if entry_text.blank?
-            BioCatalogue::Util.warn "activity_feed entry was blank for activity_log record: \n\t#{al.inspect}.\n It could be that the referenced entry has been deleted."
+            BioCatalogue::Util.warn "Activity feed entry was blank for ActivityLog record: \n\t#{al.inspect}.\n It could be that the activity_loggable, culprit or referenced has been deleted."
+          else
+            temp_results[classify_time_span(al.created_at, style)] << data
           end
-          
-          temp_results[classify_time_span(al.created_at, style)] << data unless entry_text.blank?
         end
       end
     
@@ -128,6 +128,10 @@ module ActivityFeedsHelper
               # Special case for annotation values for certain kinds of attributes
               if item.attribute_name.downcase == "category"
                 value_to_display = Category.find(item.value).try(:name)
+              end
+              
+              if item.attribute_name.downcase == "tag"
+                namespace, value_to_display = BioCatalogue::Tags.split_ontology_term_uri(item.value) 
               end
               
               unless value_to_display.blank? or item.attribute.nil? or annotatable.nil? or source.nil?

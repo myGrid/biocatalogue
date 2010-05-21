@@ -55,7 +55,7 @@ class ServicesController < ApplicationController
     @pending_responsibility_requests = @service.pending_responsibility_requests
     
     unless is_api_request?
-      @activity_logs_main = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service)
+      @activity_logs_main = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service, :since => 120.days.ago)
     end
     
     respond_to do |format|
