@@ -17,6 +17,8 @@ module ActivityFeedsHelper
   #
   # Style can be :simple or :detailed
   def activity_entries_for(activity_logs, style=:simple)
+    allowed_models_to_process = ["User", "Service", "Annotation", "SoapServiceChange", "Favourite", "ServiceTest"].freeze
+    
     return [ ] if activity_logs.blank?
     
     results = [ ]
@@ -43,7 +45,7 @@ module ActivityFeedsHelper
     
       # Now prepare the entries    
       activity_logs.each do |al|
-        if ["User", "Service", "Annotation", "SoapServiceChange", "Favourite", "ServiceTest"].include?(al.activity_loggable_type)
+        if allowed_models_to_process.include?(al.activity_loggable_type)
           entry_text = activity_feed_entry_for(get_object_via_cache(al.activity_loggable_type, al.activity_loggable_id, object_cache), al.action, al.data, style, object_cache)
           
           entry_type = case al.action
@@ -203,11 +205,10 @@ module ActivityFeedsHelper
                   current_status = BioCatalogue::Monitoring::TestResultStatus.new(current_result)
                   previous_status = BioCatalogue::Monitoring::TestResultStatus.new(previous_result)
                   
-                  output << "Service: "
                   output << link_to(display_name(service), service_url(service))
                   output << " has a test "
                   output << content_tag(:span, "change status", :class => "activity_feed_action")
-                  output << " from #{previous_status.label} to #{current_status.label}"
+                  output << " from #{previous_status.label} to <b>#{current_status.label}</b>"
                 end
               end
           

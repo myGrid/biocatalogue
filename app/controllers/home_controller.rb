@@ -11,7 +11,8 @@ class HomeController < ApplicationController
   def index
     unless is_api_request?
       ActivityLog.benchmark "ActivityLog entries for /home", Logger::INFO, false do
-        @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:home, :style => :simple)
+        @activity_logs_main = BioCatalogue::ActivityFeeds.activity_logs_for(:home, :style => :simple)
+        @activity_logs_monitoring = BioCatalogue::ActivityFeeds.activity_logs_for(:monitoring, :style => :simple, :items_limit => 5)
       end
     end
     
@@ -24,7 +25,8 @@ class HomeController < ApplicationController
   def latest
     unless is_api_request?
       ActivityLog.benchmark "ActivityLog entries for /home/latest", Logger::INFO, false do
-        @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:home, :style => :detailed)
+        @activity_logs_main = BioCatalogue::ActivityFeeds.activity_logs_for(:home, :style => :detailed)
+        @activity_logs_monitoring = BioCatalogue::ActivityFeeds.activity_logs_for(:monitoring, :style => :detailed)
       end
     end
     

@@ -21,6 +21,7 @@ module BioCatalogue
     #
     # The following +location+ values are supported:
     #   :home
+    #   :monitoring
     #
     # The following *optional* arguments are supported:
     #
@@ -63,7 +64,7 @@ module BioCatalogue
     #       false
     #
     def self.activity_logs_for(location, *args)
-      return [ ] unless [ :home ].include?(location)
+      return [ ] unless [ :home, :monitoring ].include?(location)
       
       options = args.extract_options!
       
@@ -138,6 +139,8 @@ module BioCatalogue
               :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND created_at >= ?", options[:days] ],
               :order => "created_at DESC",
               :limit => options[:query_limit])
+            
+          when :monitoring
             
             # Monitoring status changes
             activity_logs.concat ActivityLog.find(:all,
