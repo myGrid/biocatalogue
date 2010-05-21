@@ -9,8 +9,9 @@
 %>
 
 <%
-	# Set defaults for optional parameters to this partial...
 	style = :simple unless local_assigns.has_key?(:style)
+  
+  entries = activity_entries_for(activity_logs, style)
 %>
 
 <% unless entries.empty? %>

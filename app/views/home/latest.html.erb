@@ -12,7 +12,7 @@
 	
 	<div id="tab-activity" class="tabbertab">
     <h3>Latest Activity</h3>
-		<%= render :partial => 'shared/activity', :locals => { :style => :detailed, :entries => activity_entries_for_home(:detailed) } -%>
+		<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs, :style => :detailed } -%>
 	</div>
 	
 	<div id="tab-services" class="tabbertab">

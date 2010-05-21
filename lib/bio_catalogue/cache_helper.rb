@@ -22,12 +22,13 @@ module BioCatalogue
     # defining strong mechanisms to gaurantee uniqueness and avoiding 
     # unintended key clashes. This method aims to help with this.
     #
-    # The following key 'type' values are supported (with corresponding args):
+    # The following key 'type' values are supported (with corresponding args, in order):
     #
     #   :activity_log_entries
-    #     Takes 3 args:
+    #     Takes 4 args:
     #       - the location of the activity feed.
-    #       - the ID of any associated object.
+    #       - the type of an associated object.
+    #       - the ID of an associated object.
     #       - style of the corresponding activity feed the data will be used in.
     #
     #   :metadata_counts_for_service
@@ -43,7 +44,7 @@ module BioCatalogue
     def self.cache_key_for(type, *args)
       case type
         when :activity_log_entries
-          "activity_log_entries_#{args[0]}_#{args[1]}_#{args[2]}"
+          "activity_log_entries_#{args[0]}_#{args[1]}_#{args[2]}_#{args[3]}"
         when :metadata_counts_for_service
           "metadata_counts_for_service_#{args[0]}"
         when :children_of_category
