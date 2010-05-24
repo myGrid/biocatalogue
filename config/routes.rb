@@ -118,6 +118,8 @@ ActionController::Routing::Routes.draw do |map|
   map.submit_feedback '/contact', :controller => 'contact', :action => 'create', :conditions => { :method => :post }
   map.contact '/contact', :controller => 'contact', :action => 'index', :conditions => { :method => :get }
   map.home '/', :controller => 'home', :action => 'index'
+  map.activity_feed '/index.:format', :controller => 'home', :action => 'index'
+  map.status_changes_feed '/status_changes.:format', :controller => 'home', :action => 'status_changes' 
   map.latest '/latest', :controller => 'home', :action => 'latest'
 
   map.service_provider_auto_complete 'service_providers/auto_complete', :controller => 'service_providers', :action => 'auto_complete', :conditions => { :method => :get }

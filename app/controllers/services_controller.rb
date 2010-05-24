@@ -54,13 +54,15 @@ class ServicesController < ApplicationController
     
     @pending_responsibility_requests = @service.pending_responsibility_requests
     
-    unless is_api_request?
+    if  !is_api_request? or self.request.format == :atom
+      @feed_title = "BioCatalogue.org - Service '#{BioCatalogue::Util.display_name(@service, false)}' - Latest Activity"
       @activity_logs_main = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service, :since => 120.days.ago)
     end
     
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder
+      format.atom  # show.atom.builder
     end
   end
 

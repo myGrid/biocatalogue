@@ -6,7 +6,7 @@
 
 class HomeController < ApplicationController
   
-  before_filter :disable_action_for_api, :except => [ :index ]
+  before_filter :disable_action_for_api, :except => [ :index, :status_changes ]
   
   def index
     unless is_api_request?
@@ -16,9 +16,15 @@ class HomeController < ApplicationController
       end
     end
     
+    if self.request.format == :atom
+      @feed_title = "BioCatalogue.org - Latest Activity"
+      @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:home, :style => :detailed)
+    end
+    
     respond_to do |format|
       format.html # index.html.erb
       format.xml { redirect_to api_url(:format => :xml), :status => 303 }
+      format.atom # index.atom.builder
     end
   end
   
@@ -32,6 +38,17 @@ class HomeController < ApplicationController
     
     respond_to do |format|
       format.html # latest.html.erb
+    end
+  end
+  
+  def status_changes
+    if self.request.format == :atom
+      @feed_title = "BioCatalogue.org - Service Monitoring Status Changes"
+      @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:monitoring, :style => :detailed)
+    end
+    
+    respond_to do |format|
+      format.atom # status_changes.atom.builder
     end
   end
   

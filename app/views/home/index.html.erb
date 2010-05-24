@@ -72,6 +72,9 @@
 			<!-- Latest Activity -->
 			<div class="section_box">
 				<h4>
+					<span style="float: right; margin-left: 0.3em;">
+            <%= feed_icon_tag "Latest Activity", activity_feed_path(:format => :atom) -%>
+          </span>
 					<%= generic_icon_for(:activity, 'margin-right: 0.4em;') -%>
 					<span>Latest Activity</span>
 				</h4>
@@ -88,6 +91,9 @@
 			<!-- Monitoring Test Changes -->
       <div class="section_box">
         <h4>
+        	<span style="float: right; margin-left: 0.3em;">
+            <%= feed_icon_tag "Service Monitoring Status Changes", status_changes_feed_path(:format => :atom) -%>
+          </span>
           <%= generic_icon_for(:activity, 'margin-right: 0.4em;') -%>
           <span>Monitoring Test Changes</span>
         </h4>

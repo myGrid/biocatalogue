@@ -158,7 +158,7 @@ module ActivityFeedsHelper
               
                 output << link_to(display_name(source), source)
                 output << content_tag(:span, " added", :class => "activity_feed_action")
-                output << " a #{item.attribute_name.humanize.downcase} annotation to "
+                output << " a #{h(item.attribute_name.humanize.downcase)} annotation to "
                 output << inner_obj_text unless inner_obj_text.blank?
                 output << "#{subject_type}: "
                 

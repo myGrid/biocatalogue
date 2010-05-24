@@ -14,17 +14,31 @@
 	
 	<div id="tab-activity" class="tabbertab">
     <h3>Activity</h3>
+		
+		<span style="float: right; margin-left: 0.3em;">
+      <%= feed_icon_tag "Latest Activity", activity_feed_path(:format => :atom) -%>
+    </span>
+		
 		<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :detailed } -%>
 	</div>
 	
 	<div id="tab-monitoring" class="tabbertab">
+		<span style="float: right; margin-left: 0.3em;">
+      <%= feed_icon_tag "Service Monitoring Status Changes", status_changes_feed_path(:format => :atom) -%>
+    </span>
+		
     <h3>Monitoring</h3>
     <%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_monitoring, :style => :detailed } -%>
   </div>
 	
 	<div id="tab-services" class="tabbertab">
     <h3>Services</h3>
+		<p style="text-align: right; margin: 0 0 1em 0;">
+      <%= feed_icon_tag "Latest Services", services_path(:format => :atom) -%>
+    </span>
+		
 		<%= render :partial => "services/listing", :locals => { :items => Service.latest(10), :listing_type => :simple } -%>
+		
 		<p style="text-align: right;">
 			<%= link_to "Browse All Services", services_url, :class => "button_slim" -%>
 		</p>

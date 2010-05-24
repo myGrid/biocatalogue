@@ -65,6 +65,6 @@
 </div>
 
 <div id="action_icons">
-	<%= link_to(image_tag(icon_filename_for(:atom)), services_url(:format => :atom), :title => tooltip_title_attrib("Subscribe to the <b>Latest Services</b> feed"), :target => "_blank") -%>
+	<%= link_to(image_tag(icon_filename_for(:atom)), activity_feed_url(:format => :atom), :title => tooltip_title_attrib("Subscribe to the <b>Latest Activity</b> feed"), :target => "_blank") -%>
 	<%= render :partial => "widgets/twitter" -%>
 </div>
