@@ -27,6 +27,8 @@ class Annotation < ActiveRecord::Base
 
   after_save :process_post_save_custom_logic
   
+  after_destroy :process_post_destroy_custom_logic
+  
   if USE_EVENT_LOG
     acts_as_activity_logged :models => { :culprit => { :model => :source },
                                          :referenced => { :model => :annotatable } }
@@ -183,4 +185,14 @@ class Annotation < ActiveRecord::Base
       
     end
   end
+  
+  def process_post_destroy_custom_logic
+    if self.attribute_name.downcase == 'example_endpoint'
+      url_monitors = UrlMonitor.find(:all, :conditions => [ "parent_id = ? AND parent_type = ?", self.id, "Annotation" ])
+      url_monitors.each do |u|
+        u.destroy
+      end
+    end
+  end
+  
 end
