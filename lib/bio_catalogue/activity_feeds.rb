@@ -193,6 +193,12 @@ module BioCatalogue
                   :conditions => [ "action = 'create' AND activity_loggable_type = 'Favourite' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
                   :order => "created_at DESC",
                   :limit => options[:query_limit])
+                  
+                # Monitoring status changes
+                activity_logs.concat ActivityLog.find(:all,
+                  :conditions => [ "action = 'status_change' AND activity_loggable_type = 'ServiceTest' AND referenced_type = 'Service' AND referenced_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
+                  :order => "created_at DESC",
+                  :limit => options[:query_limit])
               
               end
           end
