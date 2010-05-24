@@ -14,6 +14,9 @@
 	
 	<div style="overflow: hidden;">
 		<div style="float: left; width: 60%;">
+		  <span style="float: right; margin-left: 0.3em;">
+        <%= feed_icon_tag "Latest Activity on this Service", service_path(:format => :atom) -%>
+      </span>
 			<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :detailed } -%>
 		</div>
 		

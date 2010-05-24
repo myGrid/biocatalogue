@@ -178,7 +178,7 @@ module ApplicationHelper
   end
   
   def feed_icon_tag(title, url, style='')
-    alt_text = "Subscribe to #{title} feed"
+    alt_text = "Subscribe to <b>#{title}</b> feed"
     link_to image_tag(icon_filename_for(:atom), :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0; #{style}"), url
   end
   
