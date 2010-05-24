@@ -8,24 +8,16 @@
 
 %>
 
-Dear <%=h @owner.display_name -%>,
+Dear <%=h display_name(@owner) -%>,
 
 <p>
-The user, <%= link_to url_for( :only_path => false,
-								:host => @base_url,
-            					:controller => 'users',
-            					:action => 'show',
-								:id => @user.id), url_for( :only_path => false,
+The user, <%= link_to display_name(@user), url_for( :only_path => false,
 															:host => @base_url,
             												:controller => 'users',
             												:action => 'show',
 															:id => @user.id)  -%> 
 
-, approved a request to take responsibility for service,  <%= link_to url_for(:only_path => false,
-																		:host => @base_url,
-            															:controller => 'services',
-            															:action => 'show',
-																		:id => @service.id), url_for(:only_path => false,
+, approved a request to take responsibility for service,  <%= link_to display_name(@service), url_for(:only_path => false,
 																							:host => @base_url,
             																				:controller => 'services',
             																				:action => 'show',

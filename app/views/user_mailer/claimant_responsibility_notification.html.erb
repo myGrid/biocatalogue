@@ -8,9 +8,9 @@
 
 %>
 
-Dear <%=h @user.display_name -%>, <br/>
+Dear <%=h display_name(@user) -%>, <br/>
 
-We have received your request to take responsibility for the service : <%= link_to(@service.name, url_for(:only_path => false,
+We have received your request to take responsibility for the service : <%= link_to(display_name(@service), url_for(:only_path => false,
 																					:host => @base_url,
             																		:controller => 'services',
             																		:action => 'show',
