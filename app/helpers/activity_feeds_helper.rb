@@ -192,7 +192,7 @@ module ActivityFeedsHelper
                 output << link_to(display_name(soap_service.service), soap_service.service)
                 output << " has been"
                 output << content_tag(:span, " updated", :class => "activity_feed_action")
-                output << " (changes from WSDL)."
+                output << " (#{pluralize(item.changelog.length, 'update')} from latest WSDL)."
                 output << " See #{link_to("changelog entry", service_url(soap_service.service, :anchor => "updates_from_wsdl_" + item.id.to_s))}."
               end
           
