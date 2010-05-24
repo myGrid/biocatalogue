@@ -106,9 +106,9 @@ module BioCatalogue
         end
       end
       
-      def self.build_url_monitor(parent, property, service, max_monitors_per_service = 3)
+      def self.build_url_monitor(parent, property, service, max_monitors_per_service = 2)
         
-        monitor_count = SericeTest.find(:all , :conditions => ["service_id=? AND test_type=?", service.id, "UrlMonitor"]).count
+        monitor_count = ServiceTest.find(:all , :conditions => ["service_id=? AND test_type=?", service.id, "UrlMonitor"]).count
         
         if monitor_count < max_monitors_per_service
           mon = UrlMonitor.new(:parent_id => parent.id, 
