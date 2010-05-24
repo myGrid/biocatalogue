@@ -15,7 +15,6 @@ atom_feed(:url => announcements_url(:format => :atom),
     feed.entry(announcement) do |entry|
       entry.title(display_name(announcement))
       entry.content(white_list(simple_format(auto_link(announcement.body, :link => :all, :href_options => { :target => '_blank' }))), :type => 'html')
-      entry.updated(announcement.updated_at)
       
       entry.author do |author|
         author.name(display_name(announcement.user))
