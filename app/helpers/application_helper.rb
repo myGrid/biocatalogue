@@ -126,6 +126,14 @@ module ApplicationHelper
         "cog_edit.png"
       when :monitoring_status_change
         "wrench.png"
+      when :monitoring_status_change_failed
+        "small-cross-sphere-16.png"
+      when :monitoring_status_change_warning
+        "small-pling-sphere-16.png"
+      when :monitoring_status_change_passed
+        "small-tick-sphere-16.png"
+      when :monitoring_status_change_unchecked
+        "small-query-sphere-16.png"
       else
         ''
     end

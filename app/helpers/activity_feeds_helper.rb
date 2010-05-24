@@ -48,17 +48,11 @@ module ActivityFeedsHelper
         if allowed_models_to_process.include?(al.activity_loggable_type)
           entry_obj = get_object_via_cache(al.activity_loggable_type, al.activity_loggable_id, object_cache)
           
-          entry_text = if entry_obj.nil?
-            ''
+          if entry_obj.nil?
+            entry_text = ''
+            entry_type = ''
           else
-            activity_feed_entry_for(entry_obj, al.action, al.data, style, object_cache)
-          end
-          
-          entry_type = case al.action
-            when 'status_change'
-              :monitoring_status_change
-            else
-              al.activity_loggable_type.underscore.to_sym
+            entry_text, entry_type = activity_feed_entry_for(entry_obj, al.action, al.data, style, object_cache)
           end
           
           data = [ entry_text, entry_type, al.created_at ]
@@ -86,6 +80,7 @@ module ActivityFeedsHelper
     return "" if item.nil?
       
     output = ""
+    entry_type = item.class.name.underscore.to_sym
     
     begin
       case item
@@ -97,7 +92,7 @@ module ActivityFeedsHelper
               output << link_to(display_name(item), item)
               output << content_tag(:span, " joined", :class => "activity_feed_action")
               output << " the BioCatalogue"
-        
+              
           end
           
         when Service
@@ -113,7 +108,7 @@ module ActivityFeedsHelper
                 output << " a new Service: "
                 output << link_to(display_name(item), item)
               end
-        
+              
           end
           
         when Annotation
@@ -178,7 +173,7 @@ module ActivityFeedsHelper
                   end
                 end
               end
-        
+              
           end
         
         when SoapServiceChange
@@ -195,7 +190,7 @@ module ActivityFeedsHelper
                 output << " (#{pluralize(item.changelog.length, 'update')} from latest WSDL)."
                 output << " See #{link_to("changelog entry", service_url(soap_service.service, :anchor => "updates_from_wsdl_" + item.id.to_s))}."
               end
-          
+              
           end
         
         when Favourite
@@ -236,6 +231,8 @@ module ActivityFeedsHelper
                   output << content_tag(:span, "change status", :class => "activity_feed_action")
                   output << " from #{previous_status.label} to <b>#{current_status.label}</b>"
                 end
+                
+                entry_type = "monitoring_status_change_#{current_status.label.downcase}".to_sym
               end
           
           end
@@ -246,7 +243,7 @@ module ActivityFeedsHelper
       output = ''
     end
     
-    return output
+    return [ output, entry_type ]
   end
   
   def get_object_via_cache(obj_type, obj_id, object_cache)
