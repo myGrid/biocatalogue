@@ -46,9 +46,13 @@ module BioCatalogue
                               :property => "endpoint")
               service_test = ServiceTest.new( :service_id => dep.service.id,
                                               :test_type => mon.class.name, :activated_at => Time.now )
-              mon.service_test = service_test                         
-              if mon.save!
-                puts "Created new monitor for deployment id : #{dep.id}"
+              mon.service_test = service_test  
+              begin
+                if mon.save!
+                  Rails.logger.debug("Created new monitor for deployment id : #{dep.id}")
+                end
+              rescue Exception => ex
+                Rails.logger.warn("Failed to create a monitor :")
               end
           end
         end
@@ -69,34 +73,55 @@ module BioCatalogue
               service_test = ServiceTest.new(:service_id => ss.service.id,
                                               :test_type => mon.class.name, :activated_at => Time.now )
               mon.service_test = service_test
-              if mon.save!
-                puts "Created new monitor for soap service id : #{ss.id}"
+              begin
+                if mon.save!
+                  Rails.logger.debug("Created new monitor for soap service id : #{ss.id}")
+                end
+              rescue Exception => ex
+                Rails.logger.warn("Failed to create a monitor for Service : #{ss.id}")
+                Rails.logger.warn(ex)
               end
            end
         end
       end
       
       def self.update_rest_service_monitors(*params)
+        
         Annotation.find(:all, 
                         :conditions => {:annotatable_type => "RestMethod"}).collect{|a| a if a.attribute.name=="example_endpoint" }.compact.each  do |ann|
           monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
           if monitor.nil?
-            mon = create_url_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
-            if mon.save!
-              Rails.logger.error("Created a new monitor for #{ann.send('value')}")
+            mon = build_url_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
+            if mon
+              begin
+                if mon.save!
+                  Rails.logger.debug("Created a new monitor for #{ann.send('value')}")
+                end
+              rescue Exception => ex
+                Rails.logger.warn("Could not create url monitor")
+                Rails.logger.warn(ex)
+              end
             end
           end
         end
       end
       
-      def self.create_url_monitor(parent, property, service)
-        mon = UrlMonitor.new(:parent_id => parent.id, 
+      def self.build_url_monitor(parent, property, service, max_monitors_per_service = 3)
+        
+        monitor_count = SericeTest.find(:all , :conditions => ["service_id=? AND test_type=?", service.id, "UrlMonitor"]).count
+        
+        if monitor_count < max_monitors_per_service
+          mon = UrlMonitor.new(:parent_id => parent.id, 
                               :parent_type => parent.class.name, 
                               :property => property)
-        service_test = ServiceTest.new(:service_id => service.id,
+          service_test = ServiceTest.new(:service_id => service.id,
                                               :test_type => mon.class.name, :activated_at => Time.now )
-        mon.service_test = service_test
-        return mon
+          mon.service_test = service_test
+          return mon
+        else
+          return nil
+        end
+        
       end
         
     end # MonitorUpdate
@@ -215,25 +240,29 @@ module BioCatalogue
           # and run the checks agains them
           result = {}
           pingable = UrlMonitor.find_parent(monitor.parent_type, monitor.parent_id)
-    
-          if monitor.property =="endpoint" and pingable.service_version.service_versionified_type =="SoapService"
-            # eg: check :soap_endpoint => pingable.endpoint
-            result = check :soap_endpoint => pingable.send(monitor.property)
-          else
+          if pingable
+            if monitor.property =="endpoint" and pingable.service_version.service_versionified_type =="SoapService"
+              # eg: check :soap_endpoint => pingable.endpoint
+              result = check :soap_endpoint => pingable.send(monitor.property)
+            else
               # eg: check :url => pingable.wsdl_location
-            result = check :url => pingable.send(monitor.property)
-          end
+              result = check :url => pingable.send(monitor.property)
+            end
     
-          # create a test result entry in the db to record
-          # the current check for this URL/endpoint
-          tr = TestResult.new(:result => result[:result],
+            # create a test result entry in the db to record
+            # the current check for this URL/endpoint
+            tr = TestResult.new(:result => result[:result],
                               :action => result[:action],
                               :message => result[:message],
-                              :service_test_id => monitor.service_test.id)
-          if tr.save!
-            puts "Result for monitor id:  #{monitor.id} saved!"
-          else
-            puts "Ooops! Result for monitor id:  #{monitor.id} could not be saved!"
+                               :service_test_id => monitor.service_test.id)
+            begin
+              if tr.save!
+                Rails.logger.debug("Result for monitor id:  #{monitor.id} saved!")
+              end
+            rescue Exception => ex
+              Rails.logger.warn("Result for monitor id:  #{monitor.id} could not be saved!")
+              Rails.logger.warn(ex)
+            end
           end
         end
       end
