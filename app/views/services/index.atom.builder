@@ -9,11 +9,10 @@ atom_feed :url => generate_filter_url(BioCatalogue::Util.duplicate_params(params
           :schema_date => "2009" do |feed|
   
   feed.title(@feed_title)
-  feed.updated Time.now.utc
+  feed.updated Time.now
 
   @services.each do |service|
     feed.entry(service) do |entry|
-      entry.link :type => "text/html", :rel => "alternate", :href => uri_for_object(service)
       entry.title(display_name(service))
       entry.content(service_body_for_feed(service), :type => 'html')
 
