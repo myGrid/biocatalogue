@@ -43,7 +43,7 @@ class HomeController < ApplicationController
   
   def status_changes
     if self.request.format == :atom
-      @feed_title = "BioCatalogue.org - Service Monitoring Status Changes"
+      @feed_title = "BioCatalogue.org - Service Monitoring Test Status Changes"
       @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:monitoring, :style => :detailed)
     end
     
