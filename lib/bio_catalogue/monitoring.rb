@@ -78,10 +78,10 @@ module BioCatalogue
       
       def self.update_rest_service_monitors(*params)
         Annotation.find(:all, 
-                        :conditions => {:annotatable_type => "RestMethod"}).collect{|a| a if a.attribute.name=="example_endpoint" }.each  do |ann|
+                        :conditions => {:annotatable_type => "RestMethod"}).collect{|a| a if a.attribute.name=="example_endpoint" }.compact.each  do |ann|
           monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
           if monitor.nil?
-            mon = create_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
+            mon = create_url_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
             if mon.save!
               Rails.logger.error("Created a new monitor for #{ann.send('value')}")
             end
@@ -89,7 +89,7 @@ module BioCatalogue
         end
       end
       
-      def self.create_monitor(parent, property, service)
+      def self.create_url_monitor(parent, property, service)
         mon = UrlMonitor.new(:parent_id => parent.id, 
                               :parent_type => parent.class.name, 
                               :property => property)
