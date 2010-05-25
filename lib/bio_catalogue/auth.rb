@@ -84,7 +84,7 @@ module BioCatalogue
     
     def self.check_user_owns_service_with_thing(user, thing)
       service = Mapper.map_object_to_associated_model_object(thing, "Service")
-      return !service.nil? && service.submitter_type == "User" && service.submitter_id == user.id
+      return !service.nil? && service.all_responsibles.include?(user)
     end
     
     def self.existing_request_for_thing?(thing, user)

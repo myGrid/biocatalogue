@@ -42,7 +42,7 @@ class Service < ActiveRecord::Base
            :dependent => :destroy
   
   has_many :service_responsibles,
-            :dependent => :destroy
+           :dependent => :destroy
   
   has_submitter
   
@@ -276,7 +276,7 @@ class Service < ActiveRecord::Base
   # service by adding them to the set of those responsible to
   # manage the service the service by default.  
   def all_responsibles
-    curators = User.find(:all, :conditions => {:role_id => 1})
+    curators = User.find(:all, :conditions => {:role_id => [ 1, 2 ]})
     responsibles = self.service_responsibles.collect{|r| r.user if r.status='active'}.compact
     responsibles << self.submitter if self.submitter_type == "User"
     responsibles.concat(curators)
