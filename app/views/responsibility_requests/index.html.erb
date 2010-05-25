@@ -1,8 +1,8 @@
 
 <%if defined?(@responsibility_requests) && !@responsibility_requests.empty? -%>
-	<p class="box_info">
+	<h1>
 		Pending responsibility requests for Services
-	</p>
+	</h1>
 
 	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @responsibility_requests } %>
 	<% @responsibility_requests.each do |req| -%>
