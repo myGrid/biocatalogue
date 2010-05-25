@@ -8,7 +8,7 @@
 
 %>
 
-Dear <%=h display_name(@user) -%>, <br/>
+Dear <%= display_name(@user) -%>, <br/>
 
 We have received your request to take responsibility for the service : <%= link_to(display_name(@service), url_for(:only_path => false,
 																					:host => @base_url,

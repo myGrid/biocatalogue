@@ -12,7 +12,7 @@
 				<tr>
 					<td style="padding-right: 1em;">
 						Requested by : 
-						<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span,  h(req.user.display_name)), 
+						<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span,  display_name(req)), 
 		                        user_url(req.user)) -%> 
 					</td>
 					<td style="text-align: right;">

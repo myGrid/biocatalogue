@@ -8,7 +8,7 @@
 
 %>
 
-Dear <%=h @owner.display_name -%>,
+Dear <%= display_name(@owner) -%>,
 
 <p>
 The user, <%= link_to display_name(@user), url_for( :only_path => false,
