@@ -7,12 +7,12 @@
 	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @responsibility_requests } %>
 	<% @responsibility_requests.each do |req| -%>
 		<div class="monitoring_section">
-			<h5>Responsibility Resquests for <%= link_to req.subject.name, service_url(req.subject)  -%> </h5>	
+			<h5>Responsibility Resquests for <%= link_to BioCatalogue::Util.display_name(req.subject), service_url(req.subject)  -%> </h5>	
 			<table style="width: 99%; margin: 0.7em 0 0.3em 0;">
 				<tr>
 					<td style="padding-right: 1em;">
 						Requested by : 
-						<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span,  display_name(req)), 
+						<%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span,  BioCatalogue::Util.display_name(req.user)), 
 		                        user_url(req.user)) -%> 
 					</td>
 					<td style="text-align: right;">
