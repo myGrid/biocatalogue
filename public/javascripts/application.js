@@ -222,6 +222,7 @@ function getCategoryState (catID) {
     }
   }
 }
+
 //Set a single category's state in the cookie:
 function setCategoryState (catID, state) {
   var cat_states = getCookie("category_state")
@@ -248,6 +249,7 @@ function setCategoryState (catID, state) {
   setCookie("category_state", cat_states);
 }
 
+
 // From: http://chaolam.wordpress.com/2009/07/30/javascript-html-text-input-field-with-default-text/
 // Using textInputWithDefaultText.js
 document.observe('dom:loaded', function() {
@@ -273,12 +275,14 @@ document.observe('dom:loaded', function() {
 	});
 });
 
+
 // Make the search notice box slide down
 document.observe('dom:loaded', function(){
 	new Effect.BlindDown('last_search_notice', {
 		duration: 1.2
 	})
 });
+
 
 // For URLs like http://localhost:3000/services/8#updates_from_wsdl_5,
 // need to open up the relevant box. 
@@ -293,6 +297,7 @@ document.observe('dom:loaded', function() {
 		}
 	}
 });
+
 
 // For loading of tabs and switching to the required tab...
 //
@@ -339,3 +344,4 @@ document.observe('dom:loaded', function() {
 
   tabberAutomatic(tabberOptions);
 });
+

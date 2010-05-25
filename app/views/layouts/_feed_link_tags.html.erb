@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/layouts/_feed_links_tags.html.erb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -12,4 +12,8 @@
 <%= auto_discovery_link_tag(:atom, activity_feed_path(:format => :atom), :title => "Latest Activity") -%>
 <%= auto_discovery_link_tag(:atom, services_path(:format => :atom), :title => "Latest Services") -%>
 <%= auto_discovery_link_tag(:atom, status_changes_feed_path(:format => :atom), :title => "Service Monitoring Test Status Changes") -%>
+
+<% if defined?(@service) and defined?(@feed_title) %>
+  <%= auto_discovery_link_tag(:atom, activity_service_path(@service, :format => :atom, :title => @feed_title)) -%>
+<% end %>
 

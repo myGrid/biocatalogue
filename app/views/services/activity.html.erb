@@ -1,0 +1,14 @@
+<%
+
+# BioCatalogue: app/views/services/activity.html.erb
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<span style="float: right; margin-left: 0.3em;">
+  <%= feed_icon_tag "Latest Activity on this Service", activity_service_path(@service, :format => :atom) -%>
+</span>
+<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs, :style => :detailed } -%>

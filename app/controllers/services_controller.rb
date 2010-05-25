@@ -7,7 +7,7 @@
 class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity ]
   
   before_filter :parse_current_filters, :only => [ :index ]
   
@@ -17,11 +17,13 @@ class ServicesController < ApplicationController
   
   before_filter :find_services, :only => [ :index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity ]
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
-  before_filter :setup_for_feed, :only => [ :index ]
+  before_filter :setup_for_index_feed, :only => [ :index ]
+  
+  before_filter :setup_for_activity_feed, :only => [ :activity ]
   
   before_filter :set_page_title_suffix, :only => [ :index ]
   
@@ -54,15 +56,9 @@ class ServicesController < ApplicationController
     
     @pending_responsibility_requests = @service.pending_responsibility_requests
     
-    if  !is_api_request? or self.request.format == :atom
-      @feed_title = "BioCatalogue.org - Service '#{BioCatalogue::Util.display_name(@service, false)}' - Latest Activity"
-      @activity_logs_main = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service, :since => 120.days.ago)
-    end
-    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder
-      format.atom  # show.atom.builder
     end
   end
 
@@ -213,6 +209,14 @@ class ServicesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  def activity
+    respond_to do |format|
+      format.html  # activity.html.erb
+      format.atom  # activity.atom.builder
+      format.js { render :layout => false }
+    end
+  end
  
   protected
   
@@ -279,7 +283,7 @@ class ServicesController < ApplicationController
     end
   end
   
-  def setup_for_feed
+  def setup_for_index_feed
     if self.request.format == :atom
       # Remove page param
       params.delete(:page)
@@ -291,6 +295,13 @@ class ServicesController < ApplicationController
       else
         "Services - #{text}"
       end
+    end
+  end
+  
+  def setup_for_activity_feed
+    if !is_api_request? or self.request.format == :atom
+      @feed_title = "BioCatalogue.org - Service '#{BioCatalogue::Util.display_name(@service, false)}' - Latest Activity"
+      @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service, :since => 120.days.ago)
     end
   end
   

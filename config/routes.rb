@@ -177,7 +177,8 @@ ActionController::Routing::Routes.draw do |map|
                              :monitoring => :get,
                              :check_updates => :post,
                              :archive => :post,
-                             :unarchive => :post }
+                             :unarchive => :post,
+                             :activity => [ :get, :post ] }
                              
   map.resources :responsibility_requests,
                   :member => { :approve => :put,

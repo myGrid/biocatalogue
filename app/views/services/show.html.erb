@@ -332,3 +332,15 @@
 	
 	<%= disqus_thread -%>
 </div>
+
+
+<% # Load activity feed content %>
+<script>
+	document.observe('dom:loaded', function() {
+    <%= remote_function({ :url => activity_service_url(@service),
+                          :update => { :success => 'activity_list' },
+                          :success => "new Effect.Highlight(activity_list, { duration: 0.7 });",
+                          :loading => "Element.show('activity_list_spinner')",
+                          :complete => "Element.hide('activity_list_spinner')" }) -%>
+	});
+</script>
