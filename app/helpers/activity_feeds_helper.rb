@@ -220,7 +220,7 @@ module ActivityFeedsHelper
 
               unless service.nil?
                 current_result = TestResult.find_by_id(extra_data['current_result_id'])
-                previous_result = TestResult.find_by_id(extra_data['previous_result_id'])
+                previous_result = TestResult.find_by_id(extra_data['previous_result_id']) || TestResult.new_with_unknown_status
                 
                 unless current_result.nil?
                   current_status = BioCatalogue::Monitoring::TestResultStatus.new(current_result)
