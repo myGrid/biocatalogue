@@ -94,7 +94,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 138.5%;
+  font-size: 153.9%;
   color: #000033;
 	margin-bottom: 0.5em;
 	/*
@@ -3196,6 +3196,10 @@ div.resize-handle {
 	display:-moz-inline-box;
 	display: inline-block;
 	vertical-align: baseline;
+	background-image: url('/images/button_slim_bg.png');
+  background-position: top;
+  background-repeat: repeat-x;
+  background-color: #EEF6FF;
 }
 
 .header_right_bar .actions_button {
