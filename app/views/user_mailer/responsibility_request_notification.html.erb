@@ -8,16 +8,17 @@
 
 %>
 
-Dear <%= display_name(@owner) -%>,
+Dear <%= BioCatalogue::Util.display_name(@owner) -%>,
+
 
 <p>
-We have received a request from <%= link_to display_name(@user), url_for( :only_path => false,
+We have received a request from <%= link_to BioCatalogue::Util.display_name(@user), url_for( :only_path => false,
 																		:host => @base_url,
             															:controller => 'users',
             															:action => 'show',
 																		:id => @user.id)  -%> 
 
-that they would like to take responsibility for the  <%= link_to display_name(@service), url_for(:only_path => false,
+that they would like to be given permissions for the  <%= link_to BioCatalogue::Util.display_name(@service), url_for(:only_path => false,
 																							:host => @base_url,
             																				:controller => 'services',
             																				:action => 'show',
