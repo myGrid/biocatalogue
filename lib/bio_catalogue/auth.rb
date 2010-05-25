@@ -39,11 +39,11 @@ module BioCatalogue
         when TestScript
           return true if thing.submitter_type == "User" && thing.submitter_id == user.id
           
-          return true if check_user_owns_service_with_thing(user, thing)
+          return true if check_user_is_responsible_for_service_with_thing(user, thing)
         when RestMethod
           return true if thing.submitter_type == "User" && thing.submitter_id == user.id
           
-          return true if check_user_owns_service_with_thing(user, thing)
+          return true if check_user_is_responsible_for_service_with_thing(user, thing)
         when RestParameter, RestRepresentation
           return false if options[:rest_method].nil? || options[:rest_method].class.to_s != "RestMethod"
           
@@ -58,11 +58,11 @@ module BioCatalogue
           end
           return true if user.id == map.submitter_id && thing.submitter_type == "User"
           
-          return true if check_user_owns_service_with_thing(user, map)
+          return true if check_user_is_responsible_for_service_with_thing(user, map)
         else
           # Try to see if it belongs to a service and if so check that instead
           if thing.is_a? ActiveRecord::Base
-            return true if check_user_owns_service_with_thing(user, thing)
+            return true if check_user_is_responsible_for_service_with_thing(user, thing)
           end
       end
       
@@ -82,7 +82,7 @@ module BioCatalogue
     
     private
     
-    def self.check_user_owns_service_with_thing(user, thing)
+    def self.check_user_is_responsible_for_service_with_thing(user, thing)
       service = Mapper.map_object_to_associated_model_object(thing, "Service")
       return !service.nil? && service.all_responsibles.include?(user)
     end
