@@ -138,6 +138,8 @@ module AnnotationsHelper
   #    default: 'Edit annotation'
   #  :style - any CSS inline styles that need to be applied to the icon/text.
   #    default: ''
+  #  :class - the CSS class to apply to the link.
+  #    default: '' 
   #  :link_text - text to be displayed as part of the link.
   #    default: 'edit'
   #  :show_icon - specifies whether to show the standard edit annotation icon or not.
@@ -151,6 +153,7 @@ module AnnotationsHelper
     options.reverse_merge!(:attribute_name => nil,
                            :tooltip_text => 'Edit annotation',
                            :style => '',
+                           :class => '',
                            :link_text => 'edit',
                            :show_icon => false,
                            :icon_filename => 'note_edit.png')
@@ -165,7 +168,8 @@ module AnnotationsHelper
                                    :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
                                  { :style => "text-decoration: none; vertical-align: baseline; #{options[:style]}",
                                    :alt => options[:tooltip_text],
-                                   :title => tooltip_title_attrib(options[:tooltip_text]) })
+                                   :title => tooltip_title_attrib(options[:tooltip_text]),
+                                   :class => options[:class] })
   end
 
   def annotation_add_info_text(attribute_name, annotatable)

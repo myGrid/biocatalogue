@@ -2097,7 +2097,7 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .box_annotations div.text {
-	padding: 0 0.7em;
+	padding: 0 0.4em 0 0.6em;
   overflow-x: auto;
 }
 
@@ -2112,9 +2112,22 @@ ul.tabbernav li.tabberactive a:hover
 
 .box_annotations .actions {
 	margin: 0.4em 0 0 0; 
-	font-size: 85%;
+	font-size: 77%;
 	color: #666;
 	text-align: right;
+}
+
+.box_annotations .actions .button_slim {
+	padding: 2px 4px;
+	line-height: 1.0;
+	font-weight: bold !important;
+	margin-left: 0.4em;
+	text-decoration: none !important;
+}
+
+.box_annotations .actions .button_slim span {
+	font-weight: bold !important;
+	text-decoration: none !important;
 }
 
 .annotations_container .add_box {
