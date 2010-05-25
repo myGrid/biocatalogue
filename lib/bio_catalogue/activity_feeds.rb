@@ -271,7 +271,7 @@ module BioCatalogue
       # Now get the rest of the objects required and store in cache...
       ids_map.each do |k,v|
         unless k == "Annotation"
-          k.constantize.find_all_by_id(v).each do |a|
+          k.constantize.find_all_by_id(v.uniq).each do |a|
             object_cache[k][a.id.to_s] = a
           end
         end
