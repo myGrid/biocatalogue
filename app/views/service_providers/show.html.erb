@@ -11,14 +11,15 @@
 <% t "#{display_name(@service_provider)}" -%>
 
 <h1>
+  <%= generic_icon_for(:provider, 'margin-right: 0.3em;', "Service Provider") -%>
+  <%= display_name(@service_provider) -%>
+	
   <%= edit_provider_by_popup(@service_provider,
                              :link_text => "Edit",
                              :tooltip_text => "Give this Service Provider a new name, OR merge it into an existing one",
-                             :style => "font-size:70%; font-weight:bold; width:45px; text-align:right;", 
+                             :style => "font-size:60%; font-weight:bold; width:35px; text-align:right; float: none; margin-left: 3em;", 
                              :class => "button_slim edit_link" ) %>
   
-	<%= generic_icon_for(:provider, 'margin-right: 0.3em;', "Service Provider") -%>
-	<%= display_name(@service_provider) -%>
 </h1>
 
 <div id="provider-tabs" class="tabber" style="margin-top: 1.5em;">

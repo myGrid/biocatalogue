@@ -31,7 +31,7 @@ module ServiceProvidersHelper
                            :link_text => "Rename",
                            :tooltip_text => "Give this service provider a new name")
 
-    options[:style] += "float: right;"
+    options[:style] += "float: right;" unless options[:style].include?("float")
 
     link_content = ''
     
