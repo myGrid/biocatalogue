@@ -89,17 +89,20 @@ module BioCatalogue
         
         Annotation.find(:all, 
                         :conditions => {:annotatable_type => "RestMethod"}).collect{|a| a if a.attribute.name=="example_endpoint" }.compact.each  do |ann|
-          monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
-          if monitor.nil?
-            mon = build_url_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
-            if mon
-              begin
-                if mon.save!
-                  Rails.logger.debug("Created a new monitor for #{ann.send('value')}")
+          
+          if from_trusted_source?(ann)
+            monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
+            if monitor.nil?
+              mon = build_url_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
+              if mon
+                begin
+                  if mon.save!
+                    Rails.logger.debug("Created a new monitor for #{ann.send('value')}")
+                  end
+                rescue Exception => ex
+                  Rails.logger.warn("Could not create url monitor")
+                  Rails.logger.warn(ex)
                 end
-              rescue Exception => ex
-                Rails.logger.warn("Could not create url monitor")
-                Rails.logger.warn(ex)
               end
             end
           end
@@ -122,6 +125,21 @@ module BioCatalogue
           return nil
         end
         
+      end
+      
+      # Is the "example_endpoint" annotation from a trusted source?
+      # Only submitters of the services && admins are considered
+      # trusted sources.
+      # Maybe in the future this should include anyone with full
+      # permission on the service.
+      def self.from_trusted_source?(ann)
+        if ann.attribute.name.downcase =="example_endpoint" && ann.annotatable.class.name == "RestMethod"
+          if ann.source.class.name == "User" 
+            return true if ann.source.is_admin?
+            return true if ann.source == ann.annotatable.rest_resource.rest_service.service.submitter
+          end
+        end
+        return false    
       end
         
     end # MonitorUpdate
