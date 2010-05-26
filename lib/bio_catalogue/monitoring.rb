@@ -88,7 +88,9 @@ module BioCatalogue
       def self.update_rest_service_monitors(*params)
         
         Annotation.find(:all, 
-                        :conditions => {:annotatable_type => "RestMethod"}).collect{|a| a if a.attribute.name=="example_endpoint" }.compact.each  do |ann|
+                        :joins => :attribute,
+                        :conditions => { :annotatable_type => 'RestMethod',
+                        :annotation_attributes => { :name => "example_endpoint" } }).each  do |ann|
           
           if from_trusted_source?(ann)
             monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
@@ -128,15 +130,12 @@ module BioCatalogue
       end
       
       # Is the "example_endpoint" annotation from a trusted source?
-      # Only submitters of the services && admins are considered
-      # trusted sources.
-      # Maybe in the future this should include anyone with full
-      # permission on the service.
+      # Anyone responsible for the service is considered a trusted 
+      # source
       def self.from_trusted_source?(ann)
         if ann.attribute.name.downcase =="example_endpoint" && ann.annotatable.class.name == "RestMethod"
           if ann.source.class.name == "User" 
-            return true if ann.source.is_admin?
-            return true if ann.source == ann.annotatable.rest_resource.rest_service.service.submitter
+            return true if ann.annotatable.rest_resource.rest_service.service.all_responsibles.include?(ann.source)
           end
         end
         return false    
