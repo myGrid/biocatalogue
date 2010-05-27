@@ -32,7 +32,11 @@ class SearchController < ApplicationController
       
     else
       begin
-        @results = BioCatalogue::Search.search(@query, @scope)
+        if is_api_request?
+          @results = BioCatalogue::Search.search(@query, @scope, "rest_methods")
+        else
+          @results = BioCatalogue::Search.search(@query, @scope)
+        end
         
         raise "nil @results object returned" if @results.nil?
       rescue Exception => ex

@@ -116,10 +116,12 @@ module BioCatalogue
     #
     # 'scope' can be a string representing one of the search scopes from VALID_SEARCH_SCOPES_INCL_ALL
     # OR an Array of the different scopes required.
-    def self.search(query, scope=ALL_SCOPE_SYNONYMS[0])
+    def self.search(query, scope=ALL_SCOPE_SYNONYMS[0], ignore_scope=nil)
       return nil unless Search.on?
       
       return nil if query.blank? or scope.blank?
+      
+      return nil if scope == ignore_scope
       
       if scope.is_a? Array
         scope.map! { |s| s.downcase }
@@ -154,6 +156,9 @@ module BioCatalogue
         end
       end
       
+      unless ignore_scope.blank? 
+        scopes_for_results = scopes_for_results - [ ignore_scope ].flatten
+      end
       
       return Results.new(search_result_docs, scopes_for_results)
     end
