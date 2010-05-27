@@ -36,4 +36,23 @@
 	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @responsibility_requests } %>
 <%else%>
   <p class="none_text center"> No requests need approval by you at this moment. Please check back later. </p>
+	
+	<div>
+		<div class="box_info_standout" style="margin: 4em auto; width: 400px; padding: 0.3em 1.4em;">
+		  <p>
+		  	<b>How do I request responsibility for a service?</b>
+		  </p>
+			<p>
+				<ul class="simple_list">
+					<li>Browse to the service's profile page</li>
+					<li>
+						Select the <i><b>Take Responsibility</b></i> option from the <i><b>Actions</b></i> drop down menu
+						(the blue button on the left hand side next to the title of the service)
+				  </li>
+					<li>Follow the instructions on the subsequent page(s)</li>
+				</ul>
+			</p>
+		</div>
+	</div>	
+		
 <% end -%>
