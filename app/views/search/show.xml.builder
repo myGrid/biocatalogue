@@ -23,7 +23,7 @@ xml.tag! "search",
     
     # <scope>
     [ @scope ].flatten.each do |s|
-      xml.scope BioCatalogue::search.scope_to_visible_search_type(s), :urlKey => "scope", :urlValue => s
+      xml.scope BioCatalogue::Search.scope_to_visible_search_type(s), :urlKey => "scope", :urlValue => s
     end
     
     # Pagination parameters
@@ -42,7 +42,7 @@ xml.tag! "search",
     
     # <scopedResults> *
     @results.result_scopes.each do |result_scope|
-      xml.scopedResults @results.count_for(result_scope), :scope => BioCatalogue::search.scope_to_visible_search_type(result_scope)
+      xml.scopedResults @results.count_for(result_scope), :scope => BioCatalogue::Search.scope_to_visible_search_type(result_scope)
     end
       
   end
@@ -84,9 +84,9 @@ xml.tag! "search",
       BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.each do |result_scope|
         unless result_scope == @scope
           xml.scoped "", 
-                     { :scope => BioCatalogue::search.scope_to_visible_search_type(result_scope), :resourceType => "Search" },
+                     { :scope => BioCatalogue::Search.scope_to_visible_search_type(result_scope), :resourceType => "Search" },
                      xlink_attributes(uri_for_collection("search", :params => params_clone.merge(:scope => result_scope).reject{|k,v| k.to_s.downcase == "page" }), 
-                                      :title => xlink_title("Search results for #{BioCatalogue::search.scope_to_visible_search_type(result_scope)}"))
+                                      :title => xlink_title("Search results for #{BioCatalogue::Search.scope_to_visible_search_type(result_scope)}"))
         end
       end      
       
