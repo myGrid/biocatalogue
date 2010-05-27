@@ -210,7 +210,7 @@
 			<xsd:enumeration value="Service Providers"></xsd:enumeration>
 			<xsd:enumeration value="Users"></xsd:enumeration>
 			<xsd:enumeration value="Registries"></xsd:enumeration>
-			<xsd:enumeration value="Soap Operations"></xsd:enumeration>
+			<xsd:enumeration value="SOAP Operations"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 
