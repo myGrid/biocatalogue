@@ -301,7 +301,7 @@ class ServicesController < ApplicationController
   def setup_for_activity_feed
     if !is_api_request? or self.request.format == :atom
       @feed_title = "BioCatalogue.org - Service '#{BioCatalogue::Util.display_name(@service, false)}' - Latest Activity"
-      @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service, :since => 120.days.ago)
+      @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service, :since => Time.now.ago(120.days))
     end
   end
   

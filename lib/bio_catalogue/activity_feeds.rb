@@ -47,7 +47,7 @@ module BioCatalogue
     #
     #   :since - the last date at which the +ActivityLog+ records must stop.
     #     Default: 
-    #       60
+    #       60 days ago
     #
     #   :items_limit - the maximum number of +ActivityLog+ records to return back, in total.
     #     Defaults:
@@ -76,7 +76,7 @@ module BioCatalogue
       # Defaults for options:
       
       options.reverse_merge!(:style => :simple, 
-                             :since => 60.days.ago,
+                             :since => Time.now.ago(60.days),
                              :scoped_object_type => '',
                              :scoped_object_id => 0,
                              :scoped_object => nil,
