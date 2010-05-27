@@ -176,7 +176,7 @@ class SearchController < ApplicationController
       if is_api_request?
         case scope
           when Array
-            scope = scope.reject! { |i| i == "rest_methods" } 
+            scope = scope.reject { |i| i == "rest_methods" } 
           when String
             if scope == "rest_methods"
               error("'#{scope}' is an invalid search scope")
