@@ -152,7 +152,7 @@
   </div>
   
   <div id="tab-services" class="tabbertab">
-    <h3><%= "Services submitted (#{@users_services.total_entries})" -%></h3>
+    <h3><%= "Services Submitted (#{@users_services.total_entries})" -%></h3>
     
 		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_services } %>
 		
@@ -162,9 +162,21 @@
 		
 		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users_services } %>
   </div>
+	
+	<div id="tab-other-services-responsible" class="tabbertab">
+    <h3><%= "Other Services Responsible For (#{@users_other_services_responsible.total_entries})" -%></h3>
+    
+    <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_other_services_responsible } %>
+    
+    <div id="users_responsible_services" style="margin: 1em 0;">
+      <%= render :partial => "services/listing", :locals => { :items => @users_other_services_responsible } %>
+    </div>
+    
+    <%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users_other_services_responsible } %>
+  </div>
   
   <div id="tab-annotated-services" class="tabbertab">
-    <h3><%= "Services annotated (#{@users_paged_annotated_services_ids.total_entries})" -%></h3>    
+    <h3><%= "Services Annotated (#{@users_paged_annotated_services_ids.total_entries})" -%></h3>    
 
     <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_paged_annotated_services_ids, :entry_name => "service" } %>
     
