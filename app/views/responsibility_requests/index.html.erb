@@ -1,9 +1,8 @@
-
+<h1>
+  Pending Responsibility Requests for Services
+</h1>
+	
 <%if defined?(@responsibility_requests) && !@responsibility_requests.empty? -%>
-	<h1>
-		Pending responsibility requests for Services
-	</h1>
-
 	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @responsibility_requests } %>
 	<% @responsibility_requests.each do |req| -%>
 		<div class="monitoring_section">
@@ -36,5 +35,5 @@
 	<% end -%>
 	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @responsibility_requests } %>
 <%else%>
-  <p class="none_text"> No requests need approval at this moment. Please check back later. </p>
+  <p class="none_text center"> No requests need approval by you at this moment. Please check back later. </p>
 <% end -%>
