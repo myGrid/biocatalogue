@@ -7,7 +7,7 @@
 # <?xml>
 xml.instruct! :xml
 
-# <serviceProvider>
+# <user>
 render :partial => "users/api/user", 
        :locals => { :parent_xml => xml,
                     :user => @user,
