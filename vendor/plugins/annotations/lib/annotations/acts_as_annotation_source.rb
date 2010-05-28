@@ -12,7 +12,7 @@ module Annotations
           has_many :annotations_by,
                    :class_name => "Annotation",
                    :as => :source, 
-                   :order => 'created_at ASC'
+                   :order => 'updated_at ASC'
                    
           send :extend, SingletonMethods
           send :include, InstanceMethods
@@ -30,7 +30,7 @@ module Annotations
           Annotation.find(:all,
                           :conditions => { :source_type =>  obj_type, 
                                            :source_id => id },
-                          :order => "created_at DESC")
+                          :order => "updated_at DESC")
         end
         
         # Helper finder to get all annotations for all objects of the mixin source type, for the annotatable object provided.
@@ -42,7 +42,7 @@ module Annotations
                           :conditions => { :source_type => obj_type,
                                            :annotatable_type =>  annotatable_type, 
                                            :annotatable_id => annotatable_id },
-                          :order => "created_at DESC")
+                          :order => "updated_at DESC")
         end
       end
       
@@ -53,7 +53,7 @@ module Annotations
           Annotation.find(:all,
                           :conditions => { :source_type =>  self.class.name, 
                                            :source_id => id },
-                          :order => "created_at DESC",
+                          :order => "updated_at DESC",
                           :limit => limit)
         end
         

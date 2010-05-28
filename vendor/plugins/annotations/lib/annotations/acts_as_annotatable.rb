@@ -12,7 +12,7 @@ module Annotations
           has_many :annotations, 
                    :as => :annotatable, 
                    :dependent => :destroy, 
-                   :order => 'created_at ASC'
+                   :order => 'updated_at ASC'
                    
           send :extend, SingletonMethods
           send :include, InstanceMethods
@@ -47,7 +47,7 @@ module Annotations
           Annotation.find(:all,
                           :conditions => { :annotatable_type =>  obj_type, 
                                            :annotatable_id => id },
-                          :order => "created_at DESC")
+                          :order => "updated_at DESC")
         end
         
         # Helper finder to get all annotations for all objects of the mixin annotatable type, by the source specified.
@@ -59,7 +59,7 @@ module Annotations
                           :conditions => { :annotatable_type =>  obj_type, 
                                            :source_type => source_type,
                                            :source_id => source_id },
-                          :order => "created_at DESC")
+                          :order => "updated_at DESC")
         end
       end
       
@@ -82,7 +82,7 @@ module Annotations
           Annotation.find(:all,
                           :conditions => { :annotatable_type =>  obj_type, 
                                            :annotatable_id => self.id },
-                          :order => "created_at DESC",
+                          :order => "updated_at DESC",
                           :limit => limit)
         end
         
@@ -99,7 +99,7 @@ module Annotations
                           :conditions => { :annotatable_type => obj_type,
                                            :annotatable_id => self.id,
                                            :annotation_attributes =>  { :name => attrib.strip.downcase } },
-                          :order => "created_at DESC")
+                          :order => "updated_at DESC")
         end
         
         # Same as the {obj}.annotations_with_attribute method (above) but 
@@ -116,7 +116,7 @@ module Annotations
                           :conditions => { :annotatable_type => obj_type,
                                            :annotatable_id => self.id,
                                            :annotation_attributes =>  { :name => attribs } },
-                          :order => "created_at DESC")
+                          :order => "updated_at DESC")
         end
         
         # Finder to get annotations with a specific attribute by a specific source.
@@ -135,7 +135,7 @@ module Annotations
                                            :source_type => source.class.name,
                                            :source_id => source.id,
                                            :annotation_attributes =>  { :name => attrib.strip.downcase } },
-                          :order => "created_at DESC")
+                          :order => "updated_at DESC")
         end
         
         # Finder to get all annotations on this object excluding those that
@@ -154,7 +154,7 @@ module Annotations
                                            obj_type,
                                            self.id,
                                            attribs ],
-                          :order => "`annotations`.`created_at` DESC")
+                          :order => "`annotations`.`updated_at` DESC")
         end
         
         # Returns the number of annotations on this annotatable object by the source type specified.
