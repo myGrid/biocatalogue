@@ -111,6 +111,13 @@
 	<div id="tab-testscripts" class="tabbertab">
 		<h3>Test Scripts</h3>
 		<div class="monitoring_section">
+			<div class="box_info_standout" style="text-align:center;">
+				About <b>TestScripts</b> 
+				<%= link_to_function "Click here for more info on test scripts" + expand_image, visual_effect(:toggle_blind, "about_testscripts", :duration => 0.3), :style => "text-decoration:none;" %>
+				<div id="about_testscripts" style="display:none;">
+					<%= render :partial => "test_scripts/about_testscripts" -%>
+				</div>
+			</div>
 			<ul>
 				<!--<h4>Test Scripts for this Service</h4>-->
 

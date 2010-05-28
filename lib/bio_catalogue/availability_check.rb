@@ -88,6 +88,8 @@ module BioCatalogue
     
       def available?
         begin
+          
+          return true if (@fault && @fault.split[0]== '<?xml')
           return true if (@parser &&  @parser.soap_fault?)
           return false
         rescue Exception => ex
