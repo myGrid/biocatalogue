@@ -498,17 +498,6 @@ ActiveRecord::Schema.define(:version => 20100518124313) do
 
   add_index "soaplab_servers", ["location"], :name => "soaplab_servers_location_index"
 
-  create_table "test_results", :force => true do |t|
-    t.integer  "result"
-    t.string   "action"
-    t.text     "message"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "service_test_id"
-  end
-
-  add_index "test_results", ["service_test_id"], :name => "test_results_stest_id_index"
-
   create_table "test_scripts", :force => true do |t|
     t.string   "name",                                :null => false
     t.string   "exec_name",                           :null => false

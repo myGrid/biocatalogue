@@ -38,60 +38,98 @@ def field_or_annotation_has_value?(obj, field, annotation_attribute=field.to_s)
 end
 
 
-
 soap_services.each do |soap_service|
   
-  has_description = true
-  has_doc_url = true
-  all_ops_have_descriptions = true
-  all_inputs_have_descriptions = true
-  all_inputs_have_descriptions_and_data = true
-  all_outputs_have_descriptions = true
-  all_outputs_have_descriptions_and_data = true
-  
-  has_description = has_description && field_or_annotation_has_value?(soap_service, :description)
-  
-  has_doc_url = has_doc_url && field_or_annotation_has_value?(soap_service, :documentation_url)
-  
-  soap_service.soap_operations.each do |soap_operation|
-    all_ops_have_descriptions = all_ops_have_descriptions && field_or_annotation_has_value?(soap_operation, :description)
+  if soap_service.service.archived?
     
-    soap_operation.soap_inputs.each do |soap_input|
-      all_inputs_have_descriptions = all_inputs_have_descriptions && field_or_annotation_has_value?(soap_input, :description)
-      all_inputs_have_descriptions_and_data = all_inputs_have_descriptions_and_data && 
-                                              field_or_annotation_has_value?(soap_input, :description) &&
-                                              !soap_input.annotations_with_attribute("example_data").blank?
+    puts "\nService ID: #{soap_service.service.id} is archived so ignoring."
+    
+  else
+  
+    has_description = true
+    has_doc_url = true
+    all_ops_have_descriptions = true
+    all_inputs_have_descriptions = true
+    all_inputs_have_descriptions_and_data = true
+    all_outputs_have_descriptions = true
+    all_outputs_have_descriptions_and_data = true
+    
+    has_description = has_description && field_or_annotation_has_value?(soap_service, :description)
+    
+    has_doc_url = has_doc_url && field_or_annotation_has_value?(soap_service, :documentation_url)
+    
+    soap_service.soap_operations.each do |soap_operation|
+      
+      if soap_operation.archived?
+      
+        puts "\nSOAP Operation ID: #{soap_operation.id} is archived so ignoring."
+      
+      else
+      
+        all_ops_have_descriptions = all_ops_have_descriptions && field_or_annotation_has_value?(soap_operation, :description)
+        
+        soap_operation.soap_inputs.each do |soap_input|
+          
+          if soap_input.archived?
+            
+            puts "\nSOAP Input ID: #{soap_input.id} is archived so ignoring."
+            
+          else
+            
+            all_inputs_have_descriptions = all_inputs_have_descriptions && field_or_annotation_has_value?(soap_input, :description)
+            all_inputs_have_descriptions_and_data = all_inputs_have_descriptions_and_data && 
+                                                    field_or_annotation_has_value?(soap_input, :description) &&
+                                                    !soap_input.annotations_with_attribute("example_data").blank?
+            
+          end
+          
+        end
+        
+        soap_operation.soap_outputs.each do |soap_output|
+          
+          if soap_output.archived?
+            
+            puts "\nSOAP Output ID: #{soap_output.id} is archived so ignoring."
+            
+          else
+            
+            all_outputs_have_descriptions = all_outputs_have_descriptions && field_or_annotation_has_value?(soap_output, :description)
+            all_outputs_have_descriptions_and_data = all_outputs_have_descriptions_and_data && 
+                                                    field_or_annotation_has_value?(soap_output, :description) &&
+                                                    !soap_output.annotations_with_attribute("example_data").blank?
+          
+          end
+        
+        end
+      
+      end
+      
     end
     
-    soap_operation.soap_outputs.each do |soap_output|
-      all_outputs_have_descriptions = all_outputs_have_descriptions && field_or_annotation_has_value?(soap_output, :description)
-      all_outputs_have_descriptions_and_data = all_outputs_have_descriptions_and_data && 
-                                              field_or_annotation_has_value?(soap_output, :description) &&
-                                              !soap_output.annotations_with_attribute("example_data").blank?
+    puts ""
+    puts "> SOAP Service ID: #{soap_service.id}, name: #{soap_service.name}:"
+    puts "\t Has description? #{has_description}"
+    puts "\t Has documentation URL? #{has_doc_url}"
+    puts "\t No. of SOAP operations: #{soap_service.soap_operations.count}"
+    puts "\t ALL operations have descriptions? #{all_ops_have_descriptions}"
+    puts "\t ALL inputs have descriptions? #{all_inputs_have_descriptions}"
+    puts "\t ALL inputs have descriptions AND example data? #{all_inputs_have_descriptions_and_data}"
+    puts "\t ALL outputs have descriptions? #{all_outputs_have_descriptions}"
+    puts "\t ALL outputs have descriptions AND example data? #{all_outputs_have_descriptions_and_data}"
+    puts ""
+    
+    stats["soap_services_A"] += 1 if has_description
+    stats["soap_services_B"] += 1 if has_description && has_doc_url
+    stats["soap_services_C"] += 1 if has_description && all_ops_have_descriptions
+    stats["soap_services_D"] += 1 if has_description && all_ops_have_descriptions && all_inputs_have_descriptions && all_outputs_have_descriptions
+    
+    if has_description && all_ops_have_descriptions && all_inputs_have_descriptions_and_data && all_outputs_have_descriptions_and_data
+      stats["soap_services_E"] += 1
+      stats["soap_services_E_service_ids"] << soap_service.service.id
     end
+
   end
-  
-  puts ""
-  puts "> SOAP Service ID: #{soap_service.id}, name: #{soap_service.name}:"
-  puts "\t Has description? #{has_description}"
-  puts "\t Has documentation URL? #{has_doc_url}"
-  puts "\t No. of SOAP operations: #{soap_service.soap_operations.count}"
-  puts "\t ALL operations have descriptions? #{all_ops_have_descriptions}"
-  puts "\t ALL inputs have descriptions? #{all_inputs_have_descriptions}"
-  puts "\t ALL inputs have descriptions AND example data? #{all_inputs_have_descriptions_and_data}"
-  puts "\t ALL outputs have descriptions? #{all_outputs_have_descriptions}"
-  puts "\t ALL outputs have descriptions AND example data? #{all_outputs_have_descriptions_and_data}"
-  puts ""
-  
-  stats["soap_services_A"] += 1 if has_description
-  stats["soap_services_B"] += 1 if has_description && has_doc_url
-  stats["soap_services_C"] += 1 if has_description && all_ops_have_descriptions
-  stats["soap_services_D"] += 1 if has_description && all_ops_have_descriptions && all_inputs_have_descriptions && all_outputs_have_descriptions
-  
-  if has_description && all_ops_have_descriptions && all_inputs_have_descriptions_and_data && all_outputs_have_descriptions_and_data
-    stats["soap_services_E"] += 1
-    stats["soap_services_E_service_ids"] << soap_service.service.id
-  end
+
 end
 
 
@@ -99,6 +137,9 @@ def report_stats(stats)
   puts ""
   puts "SUMMARY:"
   puts "========"
+  puts ""
+  
+  puts "NOTE: all archived services, operations, inputs and outputs are ignored."
   puts ""
   
   puts "Total SOAP Services: #{stats["soap_services_count"]}"
