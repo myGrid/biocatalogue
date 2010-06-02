@@ -88,7 +88,7 @@ class ResponsibilityRequestsController < ApplicationController
         
         # notify responsible(s) about cancellation
         Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceResponsibilityRequestCancellation.new( @service.all_responsibles, 
-                                                                                                  base_host, @service, current_user))
+                                                                                                  base_host, @service, current_user, @req))
         format.html { redirect_to responsibility_requests_url }
         format.xml  { head :ok }
       else
@@ -104,9 +104,10 @@ class ResponsibilityRequestsController < ApplicationController
       if @req.user_can_approve(current_user)
         if @req.approve!(current_user)
           message = message + " approved!"
-          inform = @service.all_responsibles.dup
-          inform << @req.user
-          Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceResponsibilityRequestApproval.new(inform, base_host, @service, current_user))                                                                                          
+          to_be_informed = @service.all_responsibles.dup
+          to_be_informed << @req.user
+          Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceResponsibilityRequestApproval.new(to_be_informed, 
+                                                                                            base_host, @service, current_user, @req))                                                                                          
         else
             message = message + " There was a problem approving this request!"
         end
@@ -135,7 +136,7 @@ class ResponsibilityRequestsController < ApplicationController
           if @req.turn_down!(current_user)
             message = message + " Done!"
             Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceResponsibilityRequestRefusal.new(@service.all_responsibles, 
-                                                                                                base_host, @req, current_user))                                                                                              
+                                                                                                base_host, current_user, @req))                                                                                              
           else
             message = message + " There was a problem while turning down this request!"
           end

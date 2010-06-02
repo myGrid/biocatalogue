@@ -46,7 +46,7 @@ class UserMailer < ActionMailer::Base
     
   end
   
-  def responsibility_request_cancellation(owner, base_url, service, user)
+  def responsibility_request_cancellation(owner, base_url, service, user, req)
     content_type "text/html"
     recipients  owner.email
     from        SENDER_EMAIL_ADDRESS
@@ -54,11 +54,12 @@ class UserMailer < ActionMailer::Base
     body        :owner => owner,
                 :base_url => base_url,
                 :service => service,
-                :user => user # user is the one making the request
+                :user => user, # user is the one cancelling the request
+                :req => req
     
   end
   
-  def responsibility_request_approval(owner, base_url, service, user)
+  def responsibility_request_approval(owner, base_url, service, user, req )
     content_type "text/html"
     recipients  owner.email
     from        SENDER_EMAIL_ADDRESS
@@ -66,20 +67,21 @@ class UserMailer < ActionMailer::Base
     body        :owner => owner,
                 :base_url => base_url,
                 :service => service,
-                :user => user # user is the one making the request
+                :user => user, # user is the one approving the request
+                :req => req
     
   end
   
-  def responsibility_request_refusal(owner, base_url, request, user)
+  def responsibility_request_refusal(owner, base_url, user, req)
     content_type "text/html"
     recipients  owner.email
     from        SENDER_EMAIL_ADDRESS
     subject     "[BioCatalogue] Service Reponsibility Request Turned Down"
     body        :owner => owner,
                 :base_url => base_url,
-                :service => request.subject,
-                :user => user ,# user is the one making the request
-                :req => request
+                :service => req.subject,
+                :user => user ,# user is the one turning down the request
+                :req => req
     
   end
   

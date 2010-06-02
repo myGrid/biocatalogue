@@ -18,7 +18,7 @@ We have received a request from <%= link_to BioCatalogue::Util.display_name(@use
             															:action => 'show',
 																		:id => @user.id)  -%> 
 
-that they would like to be given permissions for the  <%= link_to BioCatalogue::Util.display_name(@service), url_for(:only_path => false,
+that they would like to be given permissions for the service,  <%= link_to BioCatalogue::Util.display_name(@service), url_for(:only_path => false,
 																							:host => @base_url,
             																				:controller => 'services',
             																				:action => 'show',

@@ -6,9 +6,9 @@
 
 module BioCatalogue
   module Jobs
-    class ServiceResponsibilityRequestCancellation < Struct.new(:owners, :base_host, :service, :current_user )
+    class ServiceResponsibilityRequestCancellation < Struct.new(:owners, :base_host, :service, :current_user, :req )
       def perform
-        owners.each{ |owner| UserMailer.deliver_responsibility_request_cancellation(owner, base_host, service, current_user) }
+        owners.each{ |owner| UserMailer.deliver_responsibility_request_cancellation(owner, base_host, service, current_user, req) }
       end    
     end
   end
