@@ -85,7 +85,9 @@ ActionController::Routing::Routes.draw do |map|
                 :member => { :annotations => :get,
                              :annotations_by => :get,
                              :services => :get }
-
+  
+  map.resources :service_provider_hostnames
+  
   map.resources :service_deployments,
                 :member => { :annotations => :get }
 

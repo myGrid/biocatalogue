@@ -15,7 +15,7 @@ class ServiceDeployment < ActiveRecord::Base
     index [ :submitter_type, :submitter_id ]
   end
   
-  after_destroy :mail_provider_if_required
+  after_destroy :mail_admins_if_required
 
   acts_as_trashable
   
@@ -119,7 +119,7 @@ protected
 
 private
   
-  def mail_provider_if_required    
+  def mail_admins_if_required    
     # send emails to biocat admins
     if self.provider.services.empty?
       recipients = []

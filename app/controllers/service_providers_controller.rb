@@ -78,12 +78,12 @@ class ServiceProvidersController < ApplicationController
     name.chomp!
     name.strip!
     
-    not_changed = name == @service_provider.name
+    not_changed = name.downcase == @service_provider.name.downcase
     
     success = true
     
     if name.blank? || not_changed # complain
-      flash[:error] = (not_changed ? "The new name cannot be the same as the old one" : "Please provide a valid endpoint URL")
+      flash[:error] = (not_changed ? "The new name cannot be the same as the old one" : "Please provide a valid provider name")
       success = false
     else # do MERGE OR RENAME
       existing_provider = ServiceProvider.find_by_name(name)
@@ -98,7 +98,7 @@ class ServiceProvidersController < ApplicationController
         flash[:notice] = "Service Provider '#{current_sp_name}' was successfully merged into '#{existing_provider.name}'"
         @service_provider = existing_provider
       else # complain
-        flash[:error] = "An error occured while merging this Service Provider into #{existing_provider.name}." +
+        flash[:error] = "An error occured while merging this Service Provider into #{existing_provider.name}.<br/>" +
                         "Please contact us if this error persists."
         success = false
       end

@@ -27,6 +27,46 @@ class ServiceProviderHostname < ActiveRecord::Base
     acts_as_activity_logged
   end
   
+  def services
+    # NOTE: this query has only been tested to work with MySQL 5.1.x    
+    sql = "SELECT DISTINCT services.* FROM services 
+           INNER JOIN service_deployments ON services.id = service_deployments.service_id 
+           WHERE ((service_deployments.endpoint LIKE '%#{self.hostname}%') 
+           AND (`service_deployments`.service_provider_id = #{self.service_provider.id}))"
+    
+    return Service.find_by_sql(sql)
+    # return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+  end
+  
+  def merge_into(provider, *args)
+    success = false
+
+    return success unless provider.class==ServiceProvider
+    
+    transaction do
+      #update deployments
+      self.services.each do |service|
+        service.service_deployments.each { |d|
+          d.service_provider_id = provider.id 
+          d.save!
+        } 
+      end
+      
+      # send emails if previously assigned service provider is now orphaned
+      self.service_provider.services(true)
+      self.service_provider.save!
+      
+      # update self
+      self.service_provider_id = provider.id
+      self.save!
+      provider.save!
+      
+      success = true
+    end
+    
+    return success
+  end
+
   protected
   
   def associated_service_provider_id

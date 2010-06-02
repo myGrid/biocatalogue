@@ -10,6 +10,8 @@ class ServiceProvider < ActiveRecord::Base
     index :name
   end
   
+  after_save :mail_admins_if_required
+  
   acts_as_trashable
   
   acts_as_annotatable
@@ -68,6 +70,8 @@ class ServiceProvider < ActiveRecord::Base
 
   def merge_into(provider, *args)
     success = false
+    
+    return success unless provider.class==ServiceProvider
 
     options = args.extract_options!    
     options.reverse_merge!(:print_log => false,
@@ -75,8 +79,8 @@ class ServiceProvider < ActiveRecord::Base
                            :migrate_annotations => true,
                            :migrate_hostnames => true)
     
-    options.each { |o| 
-      return success unless o[-1].class.name =~ /(True|False)Class/
+    options.each { |k, v| 
+      return success unless v.class==TrueClass || v.class==FalseClass
     }
     
     transaction do
@@ -148,5 +152,18 @@ class ServiceProvider < ActiveRecord::Base
     
     return success
   end
+
+private
+  
+  def mail_admins_if_required    
+    # send emails to biocat admins
+    if self.services.empty?
+      recipients = []
+      User.admins.each { |user| recipients << user.email }
+
+      UserMailer.deliver_orphaned_provider_notification(recipients.join(", "), SITE_BASE_HOST, self)
+    end
+  end
+  
   
 end
