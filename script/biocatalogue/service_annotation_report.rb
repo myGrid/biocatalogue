@@ -23,7 +23,10 @@ require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
 soap_services = SoapService.all
 
 stats = { }
-stats["soap_services_count"] = soap_services.length
+stats["soap_services_count"] = 0
+stats["soap_operations_count"] = 0
+stats["soap_inputs_count"] = 0
+stats["soap_outputs_count"] = 0
 stats["soap_services_A"] = 0
 stats["soap_services_B"] = 0
 stats["soap_services_C"] = 0
@@ -45,6 +48,8 @@ soap_services.each do |soap_service|
     puts "\nService ID: #{soap_service.service.id} is archived so ignoring."
     
   else
+    
+    stats["soap_services_count"] += 1
   
     has_description = true
     has_doc_url = true
@@ -66,6 +71,8 @@ soap_services.each do |soap_service|
       
       else
       
+        stats["soap_operations_count"] += 1
+      
         all_ops_have_descriptions = all_ops_have_descriptions && field_or_annotation_has_value?(soap_operation, :description)
         
         soap_operation.soap_inputs.each do |soap_input|
@@ -75,6 +82,8 @@ soap_services.each do |soap_service|
             puts "\nSOAP Input ID: #{soap_input.id} is archived so ignoring."
             
           else
+            
+            stats["soap_inputs_count"] += 1
             
             all_inputs_have_descriptions = all_inputs_have_descriptions && field_or_annotation_has_value?(soap_input, :description)
             all_inputs_have_descriptions_and_data = all_inputs_have_descriptions_and_data && 
@@ -92,6 +101,8 @@ soap_services.each do |soap_service|
             puts "\nSOAP Output ID: #{soap_output.id} is archived so ignoring."
             
           else
+            
+            stats["soap_outputs_count"] += 1
             
             all_outputs_have_descriptions = all_outputs_have_descriptions && field_or_annotation_has_value?(soap_output, :description)
             all_outputs_have_descriptions_and_data = all_outputs_have_descriptions_and_data && 
@@ -143,6 +154,10 @@ def report_stats(stats)
   puts ""
   
   puts "Total SOAP Services: #{stats["soap_services_count"]}"
+  puts "Total SOAP Operations: #{stats["soap_operations_count"]}"
+  puts "Total SOAP Inputs: #{stats["soap_inputs_count"]}"
+  puts "Total SOAP Outputs #{stats["soap_outputs_count"]}"
+  puts ""
   
   puts "A. How many SOAP Services have a description? #{stats["soap_services_A"]}"
   puts "B. How many SOAP Services have a description AND a documentation URL? #{stats["soap_services_B"]}"
