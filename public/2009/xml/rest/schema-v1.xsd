@@ -361,17 +361,20 @@
 						minOccurs="1" maxOccurs="1">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element
-									name="deployments" type="xsd:positiveInteger"
-									minOccurs="1" maxOccurs="1">
+								<xsd:element name="deployments"
+									type="xsd:positiveInteger" minOccurs="1" maxOccurs="1">
 								</xsd:element>
-								<xsd:element
-									name="variants" type="xsd:positiveInteger" minOccurs="1"
-									maxOccurs="1">
+								<xsd:element name="variants"
+									type="xsd:positiveInteger" minOccurs="1" maxOccurs="1">
 								</xsd:element>
-								<xsd:element
-									name="metadata" type="MetadataCount" minOccurs="0"
-									maxOccurs="unbounded">
+								<xsd:element name="metadata"
+									type="MetadataCount" minOccurs="0" maxOccurs="unbounded">
+								</xsd:element>
+								<xsd:element name="favourites"
+									type="xsd:nonNegativeInteger" maxOccurs="1" minOccurs="1">
+								</xsd:element>
+								<xsd:element name="views"
+									type="xsd:nonNegativeInteger" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>

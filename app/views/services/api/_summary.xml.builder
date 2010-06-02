@@ -23,6 +23,12 @@ parent_xml.tag! "summary",
       parent_xml.metadata m_count, :by => m_type
     end
     
+    # <favourites>
+    parent_xml.favourites service.favourites.count
+    
+    # <views>
+    parent_xml.views service.views_count
+    
   end
   
   # <alternativeName> *
