@@ -2,8 +2,18 @@
 
 # BioCatalogue: app/views/curation/show.html.erb
 #
-# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
 %>
+
+<h1>
+	Curation Dashboard
+</h1>
+
+<ul class="buttons">
+	<li>
+		<%= link_to "Copy annotations from one item to another", copy_annotations_curation_path -%>
+	</li>
+</ul>

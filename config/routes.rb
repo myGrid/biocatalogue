@@ -6,7 +6,9 @@
 
 ActionController::Routing::Routes.draw do |map|
   
-  map.resource :curation
+  map.resource :curation,
+               :controller => 'curation',
+               :collection => { :copy_annotations => [ :get, :post ] }
   
   map.api '/api.:format', :controller => 'api', :action => 'show' 
   

@@ -13,8 +13,14 @@ class CurationController < ApplicationController
   def show
     # show.html.erb
   end
+  
+  def copy_annotations
+    # copy_annotations.html.erb
+  end
     
-protected
+  
+  protected
+  
   
   def authorise    
     unless current_user.is_curator?
