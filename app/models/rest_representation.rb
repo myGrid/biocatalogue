@@ -32,6 +32,11 @@ class RestRepresentation < ActiveRecord::Base
 
 
   # ========================================
+  
+  # get all the RestMethodRepresentations that use this RestRepresentation
+  def rest_method_representations
+    RestMethodRepresentation.find_all_by_rest_representation_id(self.id)
+  end
 
 
   # For the given rest_method object, find duplicate entry based on 'representation' and http_cycle

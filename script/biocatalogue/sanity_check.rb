@@ -129,8 +129,37 @@ class SanityCheck
     SoapOutput.all.each do |soap_output|
       puts "ERROR: SoapOutput #{soap_output.id} does not have a valid associated SoapOperation" if soap_output.soap_operation.blank?
     end
+
+
+    # Check for "orphaned" RestResources, RestMethods, RestParameters, RestRepresentations, RestMethodParameters, and RestMethodRepresentations objects.
     
+    RestResource.all.each do |rest_resource|
+      puts "ERROR: RestResource #{rest_resource.id} does not have a valid associated RestService" if rest_resource.rest_service.blank?
+    end
+
+    RestMethod.all.each do |rest_method|
+      puts "ERROR: RestMethod #{rest_method.id} does not have a valid associated RestResource" if rest_method.rest_resource.blank?
+    end
     
+    RestParameter.all.each do |rest_parameter|
+      puts "ERROR: RestParameter #{rest_parameter.id} does not have a valid associated RestMethodParameter" if rest_parameter.rest_method_parameters.blank?
+    end
+    
+    RestRepresentation.all.each do |rest_representation|
+      puts "ERROR: RestRepresentation #{rest_representation.id} does not have a valid associated RestMethodRepresentation" if rest_representation.rest_method_representations.blank?
+    end    
+    
+    RestMethodParameter.all.each do |rest_method_parameter|
+      puts "ERROR: RestMethodParameter #{rest_method_parameter.id} does not have a valid associated RestMethod" if rest_method_parameter.rest_method.blank?
+      puts "ERROR: RestMethodParameter #{rest_method_parameter.id} does not have a valid associated RestParameter" if rest_method_parameter.rest_parameter.blank?
+    end
+    
+    RestMethodRepresentation.all.each do |rest_method_representation|
+      puts "ERROR: RestMethodRepresentation #{rest_method_representation.id} does not have a valid associated RestMethod" if rest_method_representation.rest_method.blank?
+      puts "ERROR: RestMethodRepresentation #{rest_method_representation.id} does not have a valid associated RestRepresentation" if rest_method_representation.rest_representation.blank?
+    end
+
+        
     # Check for providers with no associated Services
     
     ServiceProvider.all.each do |provider|

@@ -44,6 +44,11 @@ class RestParameter < ActiveRecord::Base
   
   # ===============
   
+  # get all the RestMethodParameters that use this RestParameter
+  def rest_method_parameters
+    RestMethodParameter.find_all_by_rest_parameter_id(self.id)
+  end
+  
   # For the given rest_method object, find duplicate entry based on 'param_name'
   def self.check_duplicate(rest_method, param_name, search_local_context=false)
     p = rest_method.request_parameters.find(:first, 
