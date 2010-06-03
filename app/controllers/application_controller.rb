@@ -21,6 +21,11 @@ class ApplicationController < ActionController::Base
     BioCatalogue::CacheHelper.set_base_host(controller.base_host)
   }
 
+  
+  # ============================================
+  # Configure the Exception Notification plugin:
+  # --------------------------------------------
+  
   include ExceptionNotifiable
 
   # This line ensures that templates and mailing is enabled for the Exception Notification plugin
@@ -28,10 +33,10 @@ class ApplicationController < ActionController::Base
   # Note: error templates will only show in production mode.
   #
   # Be aware of this when configuring the email settings in biocat_local.rb -
-  # in most cases you should disable email sending in your development setup (see biocat_local.rb.pre for more info).
+  # in most cases you should disable email sending in your development setup 
+  # (see config/initializers/mail.rb.pre for more info).
   local_addresses.clear
   
-  # Mainly for the Exception Notification plugin:
   self.rails_error_classes = { 
     ActiveRecord::RecordNotFound => "404",
     ::ActionController::UnknownController => "406",
@@ -40,7 +45,12 @@ class ApplicationController < ActionController::Base
     ::ActionView::MissingTemplate => "406",
     ::ActionView::TemplateError => "500"
   }
-
+  
+  self.error_layout = "application_error"
+  
+  # ============================================
+  
+  
   helper :all # include all helpers, all the time
   
   helper_method :render_to_string

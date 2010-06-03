@@ -507,7 +507,9 @@ module ApplicationHelper
   end
   
   def render_breadcrumbs_after_home
-    render :partial => "breadcrumbs" if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb'))
+    if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb')) 
+      render :partial => "#{controller.controller_name.downcase}/breadcrumbs"
+    end
   end
   
   def service_body_for_feed(service)
