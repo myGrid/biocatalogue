@@ -213,6 +213,38 @@ module Annotations
           
           return anns
         end
+
+        # When used with the default style (:simple), returns a Hash of the +annotations+ values
+        # grouped by attribute name.
+        #
+        # Example output:
+        # {
+        #   "Summary" => "Something interesting happens",
+        #   "length" => 345,
+        #   "Title" => "Harry Potter and the Exploding Men's Locker Room",
+        #   "Tag" => [ "amusing rhetoric", "wizadry" ],
+        #   "rating" => "4/5"
+        # }
+        def annotations_hash(style=:simple)
+          h = { }
+
+          unless self.annotations.blank?
+            self.annotations.each do |a|
+              if h.has_key?(a.attribute_name)
+                case h[a.attribute_name]
+                  when Array
+                    h[a.attribute_name] << a.value
+                  else
+                    h[a.attribute_name] = [ h[a.attribute_name], a.value ]
+                end
+              else
+                h[a.attribute_name] = a.value
+              end
+            end
+          end
+
+          return h
+        end
       end
       
     end

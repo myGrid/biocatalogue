@@ -35,7 +35,7 @@ bh_title_1:
   updated_at: <%= 1.minute.ago.to_s(:db) %>
 
 bh_rating_1:
-  annotatable_type: Rating
+  annotatable_type: Book
   annotatable_id: 1
   attribute_id: 9
   value: 4/5

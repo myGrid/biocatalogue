@@ -17,7 +17,7 @@ class ActsAsAnnotationSourceTest < ActiveSupport::TestCase
   end
   
   def test_annotations_for_class_method
-    assert_equal 3, User.annotations_for("Book", books(:h).id).length
+    assert_equal 4, User.annotations_for("Book", books(:h).id).length
     assert_equal 1, User.annotations_for("Chapter", chapters(:bh_c10).id).length
     assert_equal 1, Group.annotations_for("Book", books(:r).id).length
     assert_equal 1, Group.annotations_for("Chapter", chapters(:br_c2).id).length
@@ -51,6 +51,21 @@ class ActsAsAnnotationSourceTest < ActiveSupport::TestCase
     assert_not_nil(ann1)
     assert_not_nil(ann2)
     assert_equal 8, us.annotations_by(true).length
+  end
+
+  def test_annotations_by_hash_method
+    user1 = users(:jane)
+    expected_hash1 = {
+      "Tag" => [ "wizadry", "programming" ],
+      "Note" => "Remember to buy milk!",
+      "Title" => [ "And It All Falls Down", "Ruby Hashes" ],
+      "rating" => "4/5"
+    }
+    assert_equal expected_hash1, user1.annotations_by_hash
+
+    user2 = User.create(:name => "Jim")
+    expected_hash2 = { }
+    assert_equal expected_hash2, user2.annotations_by_hash
   end
   
 end

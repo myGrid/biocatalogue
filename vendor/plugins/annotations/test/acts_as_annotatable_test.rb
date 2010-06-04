@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 class ActsAsAnnotatableTest < ActiveSupport::TestCase
   
   def test_has_many_annotations_association
-    assert_equal 5, books(:h).annotations.length
+    assert_equal 6, books(:h).annotations.length
     assert_equal 5, books(:r).annotations.length
     assert_equal 2, chapters(:bh_c10).annotations.length
     assert_equal 4, chapters(:br_c2).annotations.length
@@ -22,14 +22,14 @@ class ActsAsAnnotatableTest < ActiveSupport::TestCase
   end
   
   def test_find_annotations_for_class_method
-    assert_equal 5, Book.find_annotations_for(books(:h).id).length
+    assert_equal 6, Book.find_annotations_for(books(:h).id).length
     assert_equal 5, Book.find_annotations_for(books(:r).id).length
     assert_equal 2, Chapter.find_annotations_for(chapters(:bh_c10).id).length
     assert_equal 4, Chapter.find_annotations_for(chapters(:br_c2).id).length 
   end
   
   def test_find_annotations_by_class_method
-    assert_equal 3, Book.find_annotations_by("User", users(:jane)).length
+    assert_equal 4, Book.find_annotations_by("User", users(:jane)).length
     assert_equal 1, Book.find_annotations_by("Group", groups(:sci_fi_geeks)).length
     assert_equal 3, Chapter.find_annotations_by("User", users(:john)).length
     assert_equal 2, Chapter.find_annotations_by("Group", groups(:classical_fans)).length
@@ -41,7 +41,7 @@ class ActsAsAnnotatableTest < ActiveSupport::TestCase
   end
   
   def test_latest_annotations_instance_method
-    assert_equal 5, books(:h).latest_annotations.length
+    assert_equal 6, books(:h).latest_annotations.length
     assert_equal 2, chapters(:bh_c10).latest_annotations.length
     
     assert_equal 2, books(:h).latest_annotations(2).length
@@ -69,14 +69,14 @@ class ActsAsAnnotatableTest < ActiveSupport::TestCase
   end
   
   def test_all_annotations_excluding_attributes
-    assert_equal 3, books(:h).all_annotations_excluding_attributes([ "TITLE", "length" ]).length
+    assert_equal 4, books(:h).all_annotations_excluding_attributes([ "TITLE", "length" ]).length
     assert_equal 5, books(:r).all_annotations_excluding_attributes([ "doesnt_exist" ]).length
     assert_equal 1, chapters(:bh_c10).all_annotations_excluding_attributes([ "endingType" ]).length
     assert_equal 2, chapters(:br_c202).all_annotations_excluding_attributes([ "tag", "doesn't exist but who cares" ]).length
   end
   
   def test_count_annotations_by_instance_method
-    assert_equal 5, books(:h).count_annotations_by("all")
+    assert_equal 6, books(:h).count_annotations_by("all")
     assert_equal 2, books(:h).count_annotations_by("Group")
     assert_equal 4, chapters(:br_c2).count_annotations_by("All")
     assert_equal 3, chapters(:br_c2).count_annotations_by("User")
@@ -114,6 +114,22 @@ class ActsAsAnnotatableTest < ActiveSupport::TestCase
     assert_not_nil(ann1)
     assert_not_nil(ann2)
     assert_equal 4, ch.annotations(true).length
+  end
+
+  def test_annotations_hash_method
+    book1 = books(:h)
+    expected_hash1 = {
+      "Summary" => "Something interesting happens",
+      "length" => "345",
+      "Title" => "Harry Potter and the Exploding Men's Locker Room",
+      "Tag" => [ "amusing rhetoric", "wizadry" ],
+      "rating" => "4/5"
+    }
+    assert_equal expected_hash1, book1.annotations_hash
+
+    book2 = Book.create(:title => "YAB")
+    expected_hash2 = { }
+    assert_equal expected_hash2, book2.annotations_hash
   end
   
 end

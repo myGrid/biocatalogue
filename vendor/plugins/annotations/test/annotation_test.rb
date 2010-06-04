@@ -75,7 +75,7 @@ class AnnotationTest < ActiveSupport::TestCase
   end
   
   def test_for_annotatable_named_scope_finder
-    assert_equal 5, Annotation.for_annotatable('Book', books(:h).id).length
+    assert_equal 6, Annotation.for_annotatable('Book', books(:h).id).length
     assert_equal 5, Annotation.for_annotatable('Book', books(:r).id).length
     assert_equal 3, Annotation.for_annotatable('Chapter', chapters(:br_c202).id).length
     assert_equal 0, Annotation.for_annotatable('Chapter', chapters(:bh_c1).id).length 
