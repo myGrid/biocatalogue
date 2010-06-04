@@ -12,8 +12,27 @@
 	Curation Dashboard
 </h1>
 
-<ul class="buttons">
-	<li>
-		<%= link_to "Copy annotations from one item to another", copy_annotations_curation_path -%>
-	</li>
-</ul>
+<div>
+	<div class="center" style="float: left; width: 48%;">
+		<h2 class="center">
+			Reports
+			<%= info_icon_with_tooltip "Please note that some of these reports can take a while to produce and can cause load on the server. Please try to avoid generating these reports during potentially busy hours." -%>
+		</h2>
+		
+		<br/>
+		
+		<%= link_to "Potential Duplicate SOAP Operations within a SOAP Service", curation_reports_potential_duplicate_operations_within_service_path, :class => "button_slim" -%>
+	</div>
+	
+	<div class="center" style="float: left; width: 48%;">
+		<h2 class="center">Tools</h2>
+		
+		<br/>
+		
+		<%= link_to "Copy Annotations From Item to Item", curation_tools_copy_annotations_path, :class => "button_slim" -%>
+	</div>
+	
+	<span class="clear"></span>
+</div>
+
+

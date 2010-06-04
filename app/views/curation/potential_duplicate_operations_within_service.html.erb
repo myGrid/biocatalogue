@@ -1,0 +1,61 @@
+<%
+
+# BioCatalogue: app/views/curation/potential_duplicate_operations_within_service.html.erb
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%= render :partial => 'header', :locals => { :sub => "- Reports - Potential Duplicate SOAP Operations within a SOAP Service" } %>
+
+<div class="box_info_standout" style="margin: 1.5em auto; width: 700px;">
+  This will idenfity, for each SOAP service, potentially duplicate/similar 
+	groups of SOAP operations that are candidates for copying of annotations. This is based on matching by name.
+	Use the	<%= link_to "Copy Annotations From Item to Item", curation_tools_copy_annotations_path, :style => "font-size: 85%;", :class => "button_slim", :popup => true -%>
+	tool to copy over annotations for operations you feel are similar.
+</div>
+
+<div style="margin: 0 auto; width: 700px;">
+	<% if @operations.nil? %>
+	  <p class="error_text center">Potential system error. Please contact an admin/developer with this message: "@operations collection was nil on the potential_duplicate_operations_within_service curation reports page"</p>
+	<% else %>
+	   
+		<p class="center" style="font-weight: bold; font-size: 108%;">
+			<%= pluralize(@operations.length, "group") -%> found
+		</p>
+	
+		<% @operations.each do |op_collection| %>
+		 
+		  <div style="margin-bottom: 2em;">
+		    <p style="font-weight: bold;">
+		    	In SOAP Service <%= link_to(display_name(op_collection.first.soap_service), op_collection.first.soap_service, :popup => true) -%>:
+				</p>
+				
+				<table class="biocat_table" style="width: 100%;">
+				  <thead>
+				  	<th>Operation</th>
+						<th>ID</th>
+						<th>Archived?</th>
+						<th>Parent Port Type</th>
+						<th>Last Updated</th>
+				  </thead>
+					<tbody>
+						<% op_collection.each do |op| %>
+			        <tr>
+			        	<td><%= link_to(display_name(op), op, :popup => true) -%></td>
+								<td><%= op.id -%></td>
+								<td><%= op.archived? ? '<span style="color: #990000;">Yes</span>' : 'No' -%></td>
+								<td><%= op.parent_port_type -%></td>
+								<td><%= distance_of_time_in_words_to_now(op.updated_at) -%> ago</td>
+			        </tr>
+			      <% end %>
+					</tbody>
+				</table>
+			</div>
+			
+		<% end %>
+	</div>
+<% end %>
+

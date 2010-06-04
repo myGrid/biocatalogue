@@ -73,4 +73,37 @@ class SoapOperation < ActiveRecord::Base
     
     return desc
   end
+  
+  # This will attempt to copy over as many annotations as possible from this 
+  # SoapOperation to another given SoapOperation.
+  # 
+  # This is useful to copy over, for example, annotations from an archived operation
+  # to another that may have been created as a result of a renamed in the WSDL.
+  #
+  # This includes annotations on inputs and outputs (matched by name), 
+  # excluding archived inputs and output on this operation.
+  def copy_annotations_to(op_to, culprit)
+    return [ ] if op_to.blank? or culprit.blank? or !op_to.is_a?(SoapOperation)
+    
+    total_annotations = [ ]
+    
+    self.annotations.each do |ann|
+      new_ann = ann.copy(op_to, culprit)
+      total_annotations << new_ann unless new_ann.nil?
+    end
+    
+    %w{ inputs outputs }.each do |t|
+      eval("self.soap_#{t}").each do |o1|
+        o2 = eval("op_to.soap_#{t}.find_by_name(o1.name)")
+        unless o2.nil?
+          o1.annotations.each do |ann|
+            new_ann = ann.copy(o2, culprit)
+            total_annotations << new_ann unless new_ann.nil?
+          end
+        end
+      end
+    end
+    
+    return total_annotations
+  end
 end

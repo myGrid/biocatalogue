@@ -2,7 +2,7 @@
 /**
  * BioCatalogue: app/public/stylesheets/styles.css
  *
- * Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+ * Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
  * Institute (EMBL-EBI) and the University of Southampton.
  * See license.txt for details
  */
@@ -1888,6 +1888,7 @@ ul.tabbernav li.tabberactive a:hover
 	font-weight: bold;
 	background: url(../images/box_title_bkgd_green_14.gif) repeat-x;
 	background-position: bottom;
+	background-color: #DBF0AF;
 }
 
 .biocat_table th.center {
@@ -1924,6 +1925,10 @@ ul.tabbernav li.tabberactive a:hover
 
 .biocat_table td.action_links a:hover {
 	background-color: #feffcf;
+}
+
+.vertical_top_cells td {
+	vertical-align: top !important;
 }
 /* END tables styles */
 
@@ -2290,7 +2295,7 @@ ul.tabbernav li.tabberactive a:hover
 /* Should be used with <ul> elements */
 
 .buttons {
-	margin: 2em 0;
+	margin: 0.5em 0;
 	font-weight: bold;
 	text-align: center;
 }
@@ -2301,7 +2306,7 @@ ul.tabbernav li.tabberactive a:hover
 	display: inline-block;	
 	margin: 0;
 	margin-left: 8px;
-	line-height: 2.0;
+	line-height: 1.6;
 }
 
 .buttons li.first {
@@ -2312,13 +2317,13 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 .buttons li * {
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 .buttons li a {
 	width: 100%;
-	padding: 6px 0.5em;
-	line-height: 2.0;
+	padding: 0.4em 0.6em;
+	line-height: 1.6;
 	font-weight: bold;
 	text-decoration: none;
 	border: 1px solid #99CCFF;

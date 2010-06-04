@@ -6,9 +6,35 @@
 
 ActionController::Routing::Routes.draw do |map|
   
-  map.resource :curation,
-               :controller => 'curation',
-               :collection => { :copy_annotations => [ :get, :post ] }
+  # =========================
+  # Curation Dashboard routes
+  # -------------------------
+  
+  # Main
+  
+  map.curation '/curation', :controller => 'curation', :action => 'show', :conditions => { :method => :get }
+  
+  # Reports
+  
+  map.curation_reports_potential_duplicate_operations_within_service '/curation/reports/potential_duplicate_operations_within_service', 
+    :controller => 'curation', 
+    :action => 'potential_duplicate_operations_within_service', 
+    :conditions => { :method => :get }
+  
+  # Tools
+  
+  map.curation_tools_copy_annotations '/curation/tools/copy_annotations',
+    :controller => 'curation', 
+    :action => 'copy_annotations', 
+    :conditions => { :method => [ :get, :post ] }
+  
+  map.curation_tools_copy_annotations_preview '/curation/tools/copy_annotations_preview',
+    :controller => 'curation', 
+    :action => 'copy_annotations_preview', 
+    :conditions => { :method => :post }
+  
+  # =========================
+  
   
   map.api '/api.:format', :controller => 'api', :action => 'show' 
   

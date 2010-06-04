@@ -8,8 +8,52 @@
 
 %>
 
-<h1>
-  Curation Dashboard - Copy Annotations
-</h1>
+<%= render :partial => 'header', :locals => { :sub => "- Tools - Copy Annotations" } %>
 
-<%= link_to(image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back to all options"), curation_path, :class => "button_slim") -%>
+<div class="box_form" style="width: 700px; margin: 1.5em auto 0 auto;">
+	
+	<div class="box_info_standout" style="margin-bottom: 1.5em;">
+	  This will attempt to copy over all relevant annotations on one item
+	  to another item. This includes any annotations on child resources 
+	  (e.g.: annotations on inputs and outputs of a SOAP operation).
+	</div>
+	
+	<% form_remote_tag(:url => curation_tools_copy_annotations_preview_path, 
+                   :update => { :success => 'copy_annotations_preview' }, 
+                   :success => "new Effect.Highlight('copy_annotations_preview', { duration: 1.0 });",
+                   :failure => "alert('Sorry, an error has occurred.');",
+                   :loading => "Element.show('spinner')",
+                   :complete => "Element.hide('spinner')") do %>
+    
+		<p class="step_text" style="margin-top: 0;">1. Specify the item type that want to work with:</p>
+   
+    <%= select_tag("type", options_for_select({ "SOAP Operations" => "SoapOperation" })) %>
+    
+    <p class="step_text">2. Specify the item IDs:</p>
+    
+		<table>
+			<tr>
+				<td class="high_linespaced center">
+		      <b>Item ID to copy from:</b>
+		      <br/>
+		      <%= text_field_tag("from_id", params[:from_id]) -%>
+				</td>
+				<td class="high_linespaced center" style="padding-left: 1em;">
+		      <b>Item ID to copy to:</b>
+		      <br/>
+		      <%= text_field_tag("to_id", params[:to_id]) -%>
+				</td>
+			</tr>
+		</table>
+		
+		<p class="step_text">3. Preview the items and potential annotations:</p>
+    
+    <%= submit_tag "Preview" -%>
+		<%= image_tag icon_filename_for(:spinner), :id => "spinner", :style => "display: none; vertical-align: middle; margin-left: 1.5em;" -%>
+		
+	<% end -%>
+	
+	<div id="copy_annotations_preview">
+	</div>
+	
+</div>

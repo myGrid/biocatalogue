@@ -100,6 +100,28 @@ class Annotation < ActiveRecord::Base
     return data
   end
   
+  # Copies this annotation to a new annotatable and gives it a new source as specified.
+  #
+  # Also creates an appropriate Relationship object to keep a provenance of the copy.
+  def copy(new_annotatable, new_source)
+    return nil if new_annotatable.blank? or new_source.blank?
+    
+    new_ann = Annotation.create(
+                :attribute => self.attribute,
+                :annotatable => new_annotatable,
+                :source => new_source,
+                :value => self.value,
+                :value_type => self.value_type)
+    
+    if !new_ann.nil? and new_ann.valid? 
+      Relationship.create(:subject => new_ann, :object => self, :predicate => "BioCatalogue:copiedFrom")
+    else
+      new_ann = nil
+    end
+    
+    return new_ann
+  end
+  
   protected
   
   def value_for_solr
