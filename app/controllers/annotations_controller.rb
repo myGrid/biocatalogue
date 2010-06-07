@@ -213,7 +213,7 @@ class AnnotationsController < ApplicationController
     
     respond_to do |format|
       format.html { disable_action }
-      format.xml  { render :xml => results.to_xml(:root => "bulkAnnotations", :camelize => true, :skip_types => true) }
+      # FIXME: format.xml  { render :xml => results.to_xml(:root => "bulkAnnotations", :camelize => true, :skip_types => true) }
       format.json { render :json => { "bulk_annotations" => results }.to_json }
     end
   end
