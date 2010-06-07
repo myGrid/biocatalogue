@@ -318,7 +318,12 @@ module BioCatalogue
             # TODO: how to prevent annotations being created on objects that they shouldn't be 
             result = { }
             result["resource"] = x["resource"]
-            result["annotations"] = obj.create_annotations(Annotations.preprocess_annotations_data(x["annotations"]), source)
+            
+            if x["annotations"].blank?
+              result["annotations"] = [ ]
+            else
+              result["annotations"] = obj.create_annotations(Annotations.preprocess_annotations_data(x["annotations"]), source)  
+            end
             
             results << result
           end
