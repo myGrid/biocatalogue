@@ -185,31 +185,24 @@ module Annotations
           
           annotations_data.each do |attrib, val|
             unless val.blank?
-              if val.is_a? Array
-                val.each do |val_inner|
-                  unless val_inner.blank?
-                    ann = self.annotations << Annotation.new(:attribute_name => attrib, 
-                                                 :value => val_inner, 
-                                                 :source_type => source.class.name, 
-                                                 :source_id => source.id)
-                    
-                    unless ann.nil? || ann == false
-                      anns << ann
-                    end
+              val = [ val ].flatten
+              val.each do |val_inner|
+                unless val_inner.blank?
+                  ann = self.annotations.create(:attribute_name => attrib,
+                                                :value => val_inner,
+                                                :source_type => source.class.name,
+                                                :source_id => source.id)
+
+                  if ann && ann.valid?
+                    anns << ann
                   end
-                end
-              else
-                ann = self.annotations << Annotation.new(:attribute_name => attrib, 
-                                             :value => val, 
-                                             :source_type => source.class.name, 
-                                             :source_id => source.id)
-                
-                unless ann.nil? || ann == false
-                  anns << ann
                 end
               end
             end
           end
+
+          # Reload annotations collection
+          self.annotations(true)
           
           return anns
         end
