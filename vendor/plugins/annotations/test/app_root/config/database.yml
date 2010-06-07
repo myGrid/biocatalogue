@@ -1,6 +1,6 @@
 mysql:
   :adapter: mysql
   :host: localhost
-  :username: root
-  :password: 
+  :username: annotations
+  :password: annotations_plugin           
   :database: annotations_plugin_test

@@ -83,19 +83,27 @@ class ActsAsAnnotatableTest < ActiveSupport::TestCase
   end
   
   def test_create_annotations_instance_method
-    data = {
+    bk = Book.create
+    
+    data1 = {
       :test1 => "test123",
       "test2" => nil,
       "  test3" => "",
       :foo => 1,
       :bar => [ "one", "two", 3, "", nil ]
     }
-    
-    bk = Book.create
-    anns = bk.create_annotations(data, users(:jane))
-    
-    assert_equal 5, anns.length
+
+    anns1 = bk.create_annotations(data1, users(:jane))
+
+    assert_equal 5, anns1.length
     assert_equal 5, bk.annotations.length
+
+    data2 = { :tagx => "ko", :tagy => [ "oii", "tuo" ] }
+
+    anns2 = bk.create_annotations(data2, users(:jane))
+
+    assert_equal 3, anns2.length
+    assert_equal 8, bk.annotations(true).length
   end
   
   def test_adding_of_annotation
