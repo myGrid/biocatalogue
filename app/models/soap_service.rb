@@ -603,6 +603,34 @@ class SoapService < ActiveRecord::Base
     
     return [ success, update_found, (update_found ? changes : nil) ]    
   end
+  
+  def update_description_from_soaplab!
+    if self.soaplab_service?
+      desc = nil 
+      begin
+        proxy = SOAP::WSDLDriverFactory.new(self.wsdl_location).create_rpc_driver
+        begin
+          desc = proxy.describe
+        rescue Exception => ex
+          logger.warn("Calling proxy.describe failed. Now trying proxy.describe('')")
+          desc = proxy.describe("")
+          logger.warn(ex)
+        end  
+        self.description_from_soaplab = Hash.better_from_xml(desc) if desc
+        self.save!
+      rescue Exception => ex
+        logger.warn("problems updating the description from soaplab")
+        logger.warn(ex)
+      end
+    else
+      logger.warn("Not a soaplab service. Nothing done!")
+    end
+  end
+  
+  def soaplab_service?
+    return true if self.service.soaplab_server
+    return false
+  end
 
   
   protected
