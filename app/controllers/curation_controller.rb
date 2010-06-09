@@ -64,6 +64,18 @@ class CurationController < ApplicationController
       format.html # potential_duplicate_operations_within_service.html.erb
     end
   end
+  
+  def services_missing_annotations
+    if params[:attribute_name].blank?
+      @services = nil
+    else
+      @services = BioCatalogue::Curation::Reports.services_missing_annotations(params[:attribute_name])
+    end
+    
+    respond_to do |format|
+      format.html # services_missing_annotations.html.erb
+    end
+  end
     
   
   protected

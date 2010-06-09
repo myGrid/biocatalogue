@@ -10,7 +10,7 @@
 
 <%= render :partial => 'header', :locals => { :sub => "- Reports - Potential Duplicate SOAP Operations within a SOAP Service" } %>
 
-<div class="box_info_standout" style="margin: 1.5em auto; width: 700px;">
+<div class="box_info_standout center" style="margin: 1.5em auto; width: 700px;">
   This will idenfity, for each SOAP service, potentially duplicate/similar 
 	groups of SOAP operations that are candidates for copying of annotations. This is based on matching by name.
 	Use the	<%= link_to "Copy Annotations From Item to Item", curation_tools_copy_annotations_path, :style => "font-size: 85%;", :class => "button_slim", :popup => true -%>

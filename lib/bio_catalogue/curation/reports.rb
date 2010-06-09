@@ -40,7 +40,27 @@ module BioCatalogue
         
         return results
       end
-    
+      
+      def self.services_missing_annotations(attribute_name)
+        return [ ] if attribute_name.blank?
+        
+        services = [ ]
+        
+        case attribute_name.downcase
+          when "description", "documentation_url"
+            s = SoapService.find(:all, :conditions => "#{attribute_name} IS NULL OR #{attribute_name} = ''")
+            s.concat(RestService.find(:all, :conditions => "#{attribute_name} IS NULL OR #{attribute_name} = ''"))
+            
+            s.each do |i|
+              if i.annotations_with_attribute(attribute_name).blank?
+                services << i.service
+              end
+            end
+        end
+        
+        return services
+      end
+      
     end
   end
 end
