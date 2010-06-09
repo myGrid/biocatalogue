@@ -59,7 +59,7 @@ soap_services.each do |soap_service|
     all_outputs_have_descriptions = true
     all_outputs_have_descriptions_and_data = true
     
-    has_description = has_description && field_or_annotation_has_value?(soap_service, :description)
+    has_description = has_description && (field_or_annotation_has_value?(soap_service, :description) || !soap_service.description_from_soaplab.blank?)
     
     has_doc_url = has_doc_url && field_or_annotation_has_value?(soap_service, :documentation_url)
     
