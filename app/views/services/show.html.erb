@@ -252,17 +252,14 @@
 			<div class="property">
 				<%= render :partial => "annotations/descriptions",
 									 :locals => { :annotatable => @latest_version_instance } -%>
-								 
-				<% if !@soaplab_service.nil? or is_soaplab_service?(@service) %>
-					<div class="box_info_standout" style="text-align:center;" > 
-						<%= link_to_function "Click here for a detailed description from soaplab server" + expand_image, visual_effect(:toggle_blind, "from_soaplab_description", :duration => 0.3) %>
-					</div> 
-					<div id="from_soaplab_description">
-						<%= render :partial => 'soap_services/description_from_soaplab',
-											:locals => {:thing => @latest_version_instance } -%>
-					</div>
-				<%end%>
 			</div>
+      
+      <% if !@soaplab_service.nil? or is_soaplab_service?(@service) %>
+        <div class="property">
+          <%= render :partial => 'soap_services/description_from_soaplab',
+                    :locals => {:thing => @latest_version_instance } -%>
+        </div>
+      <% end %>
 			
 			<div class="property">					 
 				<%= render :partial => "annotations/licenses",

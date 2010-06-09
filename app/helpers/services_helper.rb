@@ -58,11 +58,17 @@ module ServicesHelper
     return render_computational_type_details_entries([ details_hash['type'] ].flatten)
   end
   
-# Only services that have an associated soaplab server
-# are updated.
+  # Only services that have an associated soaplab server
+  # are updated.
   def render_description_from_soaplab(soap_service)
     if soap_service.soaplab_service?
       from_hash_to_html(soap_service.description_from_soaplab)
+    end
+  end
+  
+  def render_description_from_soaplab_snippet(soap_service)
+    if soap_service.soaplab_service?
+      from_hash_to_html(soap_service.description_from_soaplab, 3)
     end
   end
   
@@ -116,25 +122,28 @@ module ServicesHelper
   
 
   # convert to an html nested list
-  def from_hash_to_html(dict)
+  def from_hash_to_html(dict, depth_to_traverse=1000, start_depth=0)
+    depth = start_depth
     if dict.is_a?(Hash) && !dict.empty?
       str =''
       str << '<ul>'
+      depth += 1
       dict.each do |key, value|
-        out = ""
-        #case value.class.name
-        case value
-          when String
-            out << value
-          when Array
-            value.each do |v|
-              out << v if v.is_a?(String) 
-              out << from_hash_to_html(v) if v.is_a?(Hash)
-            end
-          end 
-        str << "<li> #{key}  : #{ out }</li> "
-        if value.is_a?(Hash) 
-          str << from_hash_to_html(value)
+        unless depth > depth_to_traverse
+          out = ""
+          case value
+            when String
+              out << value
+            when Array
+              value.each do |v|
+                out << v if v.is_a?(String) 
+                out << from_hash_to_html(v, depth_to_traverse, depth) if v.is_a?(Hash)
+              end
+            end 
+          str << "<li> #{key}  : #{ out }</li> "
+          if value.is_a?(Hash) 
+            str << from_hash_to_html(value, depth_to_traverse, depth)
+          end
         end
       end
       str << '</ul> '

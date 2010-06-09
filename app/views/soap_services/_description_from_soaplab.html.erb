@@ -11,11 +11,11 @@
 <% unless thing.nil? %>
 	<div class="annotations_container">
 		<div style="margin-top: 1em;">
-		  <b>Description from Soaplab:</b>
+		  <b>Details (from Soaplab server):</b>
 		</div>
 		
 		<div class="box_annotations">
-			<% if thing.description_from_soaplab.blank? and thing.soaplab_service? %>
+			<% if thing.description_from_soaplab.blank? %>
 				<span class="none_text">Not available</span>
 			<% else %>
 				<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
@@ -23,15 +23,24 @@
 						<span class="annotation_source_text annotation_source_provider">
 							<span>from </span>
 							<%= annotation_source_icon("ServiceProvider") -%>
-							<span><b>soaplab describe operation</b></span>
+							<span><b>Soaplab server</b></span>
 							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(thing.updated_at)} ago)" -%></span>
 						</span>
 						<div class="computational_type_details">
-							<% if thing.description_from_soaplab.blank? %>
-								<span class="none_text">Not available</span>
-							<% else %>
-								<%= render_description_from_soaplab(thing) -%>
-							<% end %>
+						  <div id="soaplab_description_snippet">
+						    <%= render_description_from_soaplab_snippet(thing) -%>
+                <br/>
+                <%= link_to_function("<span>Show all</span> " + expand_image, 
+                      visual_effect(:toggle_blind, "soaplab_description_more", :duration => 0.3), 
+                      :id => "soaplab_description_all_link", 
+                      :style => "text-decoration:none;",
+                      :class => "button_slim",
+                      :onclick => "$('soaplab_description_snippet').hide();") -%>
+              </div>
+              
+              <div id="soaplab_description_more" style="display: none;">
+						    <%= render_description_from_soaplab(thing) -%>
+              </div>
 						</div>
 					</div>
 				<% end %>
