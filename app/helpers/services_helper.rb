@@ -58,6 +58,14 @@ module ServicesHelper
     return render_computational_type_details_entries([ details_hash['type'] ].flatten)
   end
   
+# Only services that have an associated soaplab server
+# are updated.
+  def render_description_from_soaplab(soap_service)
+    if soap_service.soaplab_service?
+      from_hash_to_html(soap_service.description_from_soaplab)
+    end
+  end
+  
   protected
   
   def render_computational_type_details_entries(entries)
@@ -104,6 +112,35 @@ module ServicesHelper
     results = service_metadata_counts.keys.sort { |a,b| service_metadata_counts[b][:all] <=> service_metadata_counts[a][:all] }
     
     return results
+  end
+  
+
+  # convert to an html nested list
+  def from_hash_to_html(dict)
+    if dict.is_a?(Hash) && !dict.empty?
+      str =''
+      str << '<ul>'
+      dict.each do |key, value|
+        out = ""
+        #case value.class.name
+        case value
+          when String
+            out << value
+          when Array
+            value.each do |v|
+              out << v if v.is_a?(String) 
+              out << from_hash_to_html(v) if v.is_a?(Hash)
+            end
+          end 
+        str << "<li> #{key}  : #{ out }</li> "
+        if value.is_a?(Hash) 
+          str << from_hash_to_html(value)
+        end
+      end
+      str << '</ul> '
+      return str
+    end
+    return ''
   end
   
 end
