@@ -66,7 +66,7 @@ class SoapService < ActiveRecord::Base
                           :message => 'is not valid'
  
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :namespace, :description, :documentation_url, :wsdl_location, :service_type_name,
+    acts_as_solr(:fields => [ :name, :namespace, :description, :documentation_url, :wsdl_location, :service_type_name, :description_from_soaplab,
                               { :associated_service_id => :r_id } ] )
   end
   
