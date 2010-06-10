@@ -100,7 +100,7 @@ module BioCatalogue
         count = get_service_ids_with_category(category.id).length
         
         # Finally write it to the cache...
-        Rails.cache.write(cache_key, count)
+        Rails.cache.write(cache_key, count, :expires_in => 10.minutes)
       else
         count = cached_count
       end
