@@ -152,7 +152,17 @@ module BioCatalogue
         return doc_url
       end
       
+      def has_description?
+        return (!self.description.blank? or !self.annotations_with_attribute('description').blank?)
+      end
+
+      def has_documentation_url?
+        return (!self.documentation_url.blank? or !self.annotations_with_attribute('documentation_url').blank?)
+      end
+
+
       protected
+
       
       # This method should be used as part of the submission process, 
       # ideally wrapped in a transaction, 

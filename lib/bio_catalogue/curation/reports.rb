@@ -52,7 +52,7 @@ module BioCatalogue
             s.concat(RestService.find(:all, :conditions => "#{attribute_name} IS NULL OR #{attribute_name} = ''"))
             
             s.each do |i|
-              if i.annotations_with_attribute(attribute_name).blank?
+              unless eval("i.has_#{attribute_name.downcase}?")
                 services << i.service
               end
             end
