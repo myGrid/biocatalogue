@@ -24,8 +24,7 @@ module AnnotationsVersionFu
       # Setup versions association
       class_eval do
         has_many :versions, :class_name  => "#{self.to_s}::#{versioned_class_name}",
-                            :foreign_key => versioned_foreign_key,
-                            :dependent   => :destroy do
+                            :foreign_key => versioned_foreign_key do
           def latest
             find :first, :order=>'version desc'
           end                    
