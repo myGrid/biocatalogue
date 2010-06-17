@@ -13,8 +13,6 @@ class ServiceVersion < ActiveRecord::Base
     index [ :submitter_type, :submitter_id ]
   end
   
-  acts_as_trashable
-  
   acts_as_annotatable
   
   belongs_to :service

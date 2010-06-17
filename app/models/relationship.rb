@@ -13,7 +13,9 @@ class Relationship < ActiveRecord::Base
     index [ :object_type, :object_id ]
   end
   
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   validates_presence_of :subject_type,
                         :subject_id, 

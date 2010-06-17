@@ -9,7 +9,9 @@ class RestService < ActiveRecord::Base
     is_cached :repository => $cache
   end
   
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   acts_as_service_versionified  # This also mixes in acts_as_annotatable
   

@@ -19,7 +19,9 @@ class RestMethod < ActiveRecord::Base
   
   validates_existence_of :submitter # User must exist in the db beforehand.
 
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   acts_as_annotatable
   

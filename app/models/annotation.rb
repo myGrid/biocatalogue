@@ -21,7 +21,9 @@ class Annotation < ActiveRecord::Base
   has_many :annotation_properties, :dependent => :destroy
   has_one :annotation_parsed_type, :dependent => :destroy
 
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   validate :check_category_annotation
 

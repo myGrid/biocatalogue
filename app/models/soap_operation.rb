@@ -10,8 +10,6 @@ class SoapOperation < ActiveRecord::Base
     index :soap_service_id
   end
   
-  acts_as_trashable
-  
   acts_as_annotatable
   
   acts_as_archived

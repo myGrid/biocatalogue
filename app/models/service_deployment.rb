@@ -17,7 +17,9 @@ class ServiceDeployment < ActiveRecord::Base
   
   after_destroy :mail_admins_if_required
 
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   acts_as_annotatable
   

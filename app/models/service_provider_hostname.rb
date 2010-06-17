@@ -10,7 +10,9 @@ class ServiceProviderHostname < ActiveRecord::Base
     index :hostname
   end
   
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
     
   belongs_to :service_provider
   

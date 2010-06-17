@@ -15,7 +15,9 @@ class Service < ActiveRecord::Base
   
   after_create :tweet_create
     
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   acts_as_annotatable
   

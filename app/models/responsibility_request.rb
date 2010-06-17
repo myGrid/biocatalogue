@@ -14,7 +14,9 @@ class ResponsibilityRequest < ActiveRecord::Base
   validates_existence_of :user
   validates_existence_of :subject
   
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   if USE_EVENT_LOG
     acts_as_activity_logged(:models => { :culprit => { :model => :user } })

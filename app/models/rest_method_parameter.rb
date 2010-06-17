@@ -16,6 +16,10 @@ class RestMethodParameter < ActiveRecord::Base
   has_submitter
   
   validates_existence_of :submitter # User must exist in the db beforehand.
+  
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
 
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :submitter_name, { :associated_service_id => :r_id } ] )
@@ -24,8 +28,6 @@ class RestMethodParameter < ActiveRecord::Base
   if USE_EVENT_LOG
     acts_as_activity_logged(:models => { :culprit => { :model => :submitter } })
   end
-  
-  acts_as_trashable
   
   validates_presence_of :rest_method_id,
                         :rest_parameter_id,

@@ -10,8 +10,6 @@ class SoapOutput < ActiveRecord::Base
     index :soap_operation_id
   end
   
-  acts_as_trashable
-  
   acts_as_annotatable
   
   acts_as_archived

@@ -5,8 +5,6 @@
 # See license.txt for details.
 
 class SoapServicePort < ActiveRecord::Base
-  acts_as_trashable
-  
   acts_as_archived
   
   belongs_to :soap_service

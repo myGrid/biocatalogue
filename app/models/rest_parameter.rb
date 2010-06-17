@@ -10,7 +10,9 @@ class RestParameter < ActiveRecord::Base
     index [ :submitter_type, :submitter_id ]
   end
   
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   acts_as_annotatable
   

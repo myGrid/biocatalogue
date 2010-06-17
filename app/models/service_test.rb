@@ -29,6 +29,10 @@ class ServiceTest < ActiveRecord::Base
                         
   validates_associated :test
   
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
+  
   if USE_EVENT_LOG
     acts_as_activity_logged(:models => { :referenced => { :model => :service } })
   end

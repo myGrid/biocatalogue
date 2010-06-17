@@ -10,7 +10,9 @@ class Agent < ActiveRecord::Base
     index :name
   end
   
-  acts_as_trashable
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
   
   acts_as_annotatable
   acts_as_annotation_source

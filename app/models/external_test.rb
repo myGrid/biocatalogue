@@ -6,6 +6,10 @@
 
 class ExternalTest < ActiveRecord::Base
   
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
+  
   has_many :service_tests, 
            :as => :test, 
            :dependent => :destroy

@@ -6,6 +6,10 @@
 
 class Announcement < ActiveRecord::Base
   
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
+  
   belongs_to :user
 
   validates_presence_of :user_id,

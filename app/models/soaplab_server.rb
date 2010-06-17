@@ -14,8 +14,6 @@ class SoaplabServer < ActiveRecord::Base
     index :location
   end
   
-  acts_as_trashable
-  
   acts_as_annotatable
   
   has_many :relationships, :as => :object, :dependent => :destroy

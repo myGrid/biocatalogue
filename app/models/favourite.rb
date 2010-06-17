@@ -17,6 +17,10 @@ class Favourite < ActiveRecord::Base
     index [ :favouritable_type, :favouritable_id ], :limit => 2000, :buffer => 100
   end
   
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
+  
   if USE_EVENT_LOG
     acts_as_activity_logged :models => { :culprit => { :model => :user },
                                          :referenced => { :model => :favouritable } }
