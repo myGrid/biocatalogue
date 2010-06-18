@@ -15,7 +15,7 @@ module BioCatalogue
         Service.find(:all).each do |service|
           
           # deactivate service tests if archived
-          if service.archived_at
+          if service.archived?
             service.deactivate_service_tests!
           else
             service.activate_service_tests!
