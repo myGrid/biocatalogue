@@ -13,18 +13,26 @@ module BioCatalogue
     
       def self.run
         Service.find(:all).each do |service|
-        # get all service deploments
-        deployments = service.service_deployments
+          
+          # deactivate service tests if archived
+          if service.archived_at
+            service.deactivate_service_tests!
+          else
+            service.activate_service_tests!
+          end
+
+          # get all service deploments
+          deployments = service.service_deployments
     
-        #register the endpoints for monitoring
-        update_deployment_monitors(deployments)
+          #register the endpoints for monitoring
+          update_deployment_monitors(deployments)
     
-        #get all service instances(soap & rest)
-        instances = service.service_version_instances
+          #get all service instances(soap & rest)
+          instances = service.service_version_instances
     
-        soap_services = instances.delete_if{ |instance| instance.class.to_s != "SoapService" }
-        update_soap_service_monitors(soap_services)
-        update_rest_service_monitors
+          soap_services = instances.delete_if{ |instance| instance.class.to_s != "SoapService" }
+          update_soap_service_monitors(soap_services)
+          update_rest_service_monitors
         end
       end
   
@@ -63,25 +71,25 @@ module BioCatalogue
       # if these are not being monitored already
 
       def self.update_soap_service_monitors(soap_services)
-  
+        
         soap_services.each do |ss|
           monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ss.id, ss.class.to_s ])
           if monitor.nil?
-              mon = UrlMonitor.new(:parent_id => ss.id, 
+            mon = UrlMonitor.new(:parent_id => ss.id, 
                               :parent_type => ss.class.to_s, 
                               :property => "wsdl_location")
-              service_test = ServiceTest.new(:service_id => ss.service.id,
+            service_test = ServiceTest.new(:service_id => ss.service.id,
                                               :test_type => mon.class.name, :activated_at => Time.now )
-              mon.service_test = service_test
-              begin
-                if mon.save!
-                  Rails.logger.debug("Created new monitor for soap service id : #{ss.id}")
-                end
-              rescue Exception => ex
-                Rails.logger.warn("Failed to create a monitor for Service : #{ss.id}")
-                Rails.logger.warn(ex)
+            mon.service_test = service_test
+            begin
+              if mon.save!
+                Rails.logger.debug("Created new monitor for soap service id : #{ss.id}")
               end
-           end
+            rescue Exception => ex
+              Rails.logger.warn("Failed to create a monitor for Service : #{ss.id}")
+              Rails.logger.warn(ex)
+            end
+          end
         end
       end
       
@@ -94,7 +102,7 @@ module BioCatalogue
           
           if from_trusted_source?(ann)
             monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
-            if monitor.nil?
+            if monitor.nil? 
               mon = build_url_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
               if mon
                 begin
@@ -255,35 +263,36 @@ module BioCatalogue
         #UrlMonitor.find(:all).each do |monitor|
           # get all the attributes of the services to be monitors
           # and run the checks agains them
-          result = {}
-          pingable = UrlMonitor.find_parent(monitor.parent_type, monitor.parent_id)
-          if pingable
-            if monitor.property =="endpoint" and pingable.service_version.service_versionified_type =="SoapService"
-              # eg: check :soap_endpoint => pingable.endpoint
-              result = check :soap_endpoint => pingable.send(monitor.property)
-            else
-              # eg: check :url => pingable.wsdl_location
-              result = check :url => pingable.send(monitor.property)
-            end
+          if monitor.service_test.activated?
+            result = {}
+            pingable = UrlMonitor.find_parent(monitor.parent_type, monitor.parent_id)
+            if pingable
+              if monitor.property =="endpoint" and pingable.service_version.service_versionified_type =="SoapService"
+                # eg: check :soap_endpoint => pingable.endpoint
+                result = check :soap_endpoint => pingable.send(monitor.property)
+              else
+                # eg: check :url => pingable.wsdl_location
+                result = check :url => pingable.send(monitor.property)
+              end
     
-            # create a test result entry in the db to record
-            # the current check for this URL/endpoint
-            tr = TestResult.new(:result => result[:result],
+              # create a test result entry in the db to record
+              # the current check for this URL/endpoint
+              tr = TestResult.new(:result => result[:result],
                               :action => result[:action],
                               :message => result[:message],
                                :service_test_id => monitor.service_test.id)
-            begin
-              if tr.save!
-                Rails.logger.debug("Result for monitor id:  #{monitor.id} saved!")
+              begin
+                if tr.save!
+                  Rails.logger.debug("Result for monitor id:  #{monitor.id} saved!")
+                end
+              rescue Exception => ex
+                Rails.logger.warn("Result for monitor id:  #{monitor.id} could not be saved!")
+                Rails.logger.warn(ex)
               end
-            rescue Exception => ex
-              Rails.logger.warn("Result for monitor id:  #{monitor.id} could not be saved!")
-              Rails.logger.warn(ex)
             end
           end
         end
       end
-  
     end #CheckUrlStatus
     
   end

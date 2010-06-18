@@ -367,6 +367,22 @@ class Service < ActiveRecord::Base
       :limit => limit)
   end
   
+  def activate_service_tests!
+    self.service_tests.each do |t|
+      if !t.activated?
+        t.activate!
+      end
+    end
+  end
+  
+  def deactivate_service_tests!
+    self.service_tests.each do |t|
+      if t.activated?
+        t.deactivate!
+      end
+    end
+  end
+  
 protected
   
   def generate_unique_code
