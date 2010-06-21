@@ -52,30 +52,63 @@ class MonitoringReport
   
   def run
     stats = {:passed => [], :failed => [], :unchecked => [] }
+    failed_st_stats = []
     Service.all.each do |service|
-      case service.latest_status.label
-        when "PASSED"
-          stats[:passed] << service.id
-        when "UNCHECKED"
-          stats[:unchecked] << service.id
-        else
-          stats[:failed] << service.id
+      unless service.archived?
+        case service.latest_status.label
+          when "PASSED"
+            stats[:passed] << service.id
+          when "UNCHECKED"
+            stats[:unchecked] << service.id
+          else
+            stats[:failed] << service.id
+            service.service_tests.each do |st|
+              if st.latest_status.label =='FAILED' || st.latest_status.label =='WARNING'
+                failed_st_stats << {:service_id => service.id, :test_type => st.test_type, 
+                                    :st_action => st.test.property, :failing_since => st.failing_since} if st.test_type =='UrlMonitor'
+                failed_st_stats << {:service_id => service.id, :test_type => st.test_type, 
+                                    :st_action => st.test.exec_name, :failing_since => st.failing_since} if st.test_type =='TestScript'
+              end
+            end
+          end
       end
     end
     
-    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/update_soaplab_{current_time}.html' ..."
+    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/monitoring_report_{current_time}.html' ..."
     $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "monitoring_report_#{Time.now.strftime('%Y%m%d-%H%M')}.html"), "w")
     $stdout.sync = true
     
     puts "<html>"
-    puts "<h3> Failing Services List Generated on #{Time.now}</h3>"
+    puts "<h3> Failing Services List Generated on #{Time.now.strftime("%A %B %d , %Y")}</h3>"
     puts "<hr/>"
     
-    puts "<p> No of services that failed : #{stats[:failed].count }</p>"
     puts "<p>"
-    stats[:failed].each do |failed|
+    puts " No of failed services      : #{stats[:failed].count } <br/>"
+    puts " No of failed service tests : #{failed_st_stats.count} </br>"
+    
+    puts "<p>"
+    failed_st_stats.sort!{|a, b| a[:failing_since] <=> b[:failing_since]} # sort by failing since
+    service_ids = failed_st_stats.collect{|fts| fts[:service_id]}.compact.uniq
+    
+    puts '<table border=2>'
+    puts '<th> Service URL</th>'
+    puts '<th> Failing Tests</th>'
+    
+    
+    service_ids.each do |failed|
+      puts "<tr>"
+      puts "<td>"
       puts "<a href='#{SITE_BASE_HOST}/services/#{failed}'> #{SITE_BASE_HOST}/services/#{failed}</a> <br/>"
+      puts "</td>"
+      puts "<td>"
+      failed_st_stats.collect{|st| st if st[:service_id] == failed }.compact.each do |fst|
+        puts "#{fst[:test_type]} : #{fst[:st_action]}  <br/> "
+        puts "Failing Since : #{fst[:failing_since].strftime("%A %B %d , %Y")} <br/>"
+      end
+      puts "</td>"
+      puts "</tr>"
     end
+    puts "</table>"
     puts "</p>"
     puts "</html>"
     
