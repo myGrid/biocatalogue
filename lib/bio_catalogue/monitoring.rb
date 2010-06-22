@@ -14,25 +14,25 @@ module BioCatalogue
       def self.run
         Service.find(:all).each do |service|
           
-          # deactivate service tests if archived
+          # de-activate service tests if archived
           if service.archived?
             service.deactivate_service_tests!
           else
             service.activate_service_tests!
-          end
 
-          # get all service deploments
-          deployments = service.service_deployments
+            # get all service deployments
+            deployments = service.service_deployments
     
-          #register the endpoints for monitoring
-          update_deployment_monitors(deployments)
+            #register the end-points for monitoring
+            update_deployment_monitors(deployments)
     
-          #get all service instances(soap & rest)
-          instances = service.service_version_instances
+            #get all service instances(soap & rest)
+            instances = service.service_version_instances
     
-          soap_services = instances.delete_if{ |instance| instance.class.to_s != "SoapService" }
-          update_soap_service_monitors(soap_services)
-          update_rest_service_monitors
+            soap_services = instances.delete_if{ |instance| instance.class.to_s != "SoapService" }
+            update_soap_service_monitors(soap_services)
+            update_rest_service_monitors
+          end
         end
       end
   
@@ -270,6 +270,11 @@ module BioCatalogue
               if monitor.property =="endpoint" and pingable.service_version.service_versionified_type =="SoapService"
                 # eg: check :soap_endpoint => pingable.endpoint
                 result = check :soap_endpoint => pingable.send(monitor.property)
+                if result[:result] != 0
+                  if pingable.service_version.service_versionified.endpoint_available?
+                    result[:result] = 0
+                  end
+                end
               else
                 # eg: check :url => pingable.wsdl_location
                 result = check :url => pingable.send(monitor.property)
