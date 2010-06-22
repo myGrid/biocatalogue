@@ -606,19 +606,25 @@ class SoapService < ActiveRecord::Base
     return [ success, update_found, (update_found ? changes : nil) ]    
   end
   
-  def update_description_from_soaplab!
-    if self.soaplab_service?
+  def update_description_from_soaplab!(is_soaplab=false)
+    if self.soaplab_service? || is_soaplab
       desc = nil 
       begin
-        proxy = SOAP::WSDLDriverFactory.new(self.wsdl_location).create_rpc_driver
+        SystemTimer.timeout(60.seconds) do
+          proxy = SOAP::WSDLDriverFactory.new(self.wsdl_location).create_rpc_driver
+        end
+        if !proxy.respond_to?('describe')
+          logger.debug('Service has no describe operation')
+          return
+        end
         begin
-          desc = proxy.describe
+          desc = proxy.describe 
         rescue Exception => ex
-          logger.warn("Calling proxy.describe failed. Now trying proxy.describe('')")
-          desc = proxy.describe("")
           logger.warn(ex)
+          logger.warn("Calling proxy.describe failed. Now trying proxy.describe('')")
+          desc = proxy.describe("") 
         end  
-        self.description_from_soaplab = Hash.better_from_xml(desc) if desc
+        self.description_from_soaplab = Hash.better_from_xml(desc) if (desc && Hash.better_from_xml(desc).is_a?(Hash))
         self.save!
       rescue Exception => ex
         logger.warn("problems updating the description from soaplab")
@@ -633,9 +639,28 @@ class SoapService < ActiveRecord::Base
     return true if self.service.soaplab_server
     return false
   end
+  
+  def endpoint_available?
+    self.connect?
+  end
 
   
   protected
+  
+  def connect?
+    begin
+      SystemTimer.timeout(60.seconds) do
+        proxy = SOAP::WSDLDriverFactory.new(self.wsdl_location).create_rpc_driver
+        operations = proxy.methods(false)
+        return true if !operations.empty?
+      end
+    rescue Exception => ex
+      logger.warn("Failed to connect to service")
+      logger.warn(ex)
+      return false
+    end
+    return false
+  end
   
   
   # This builds the parts of the SOAP service 
