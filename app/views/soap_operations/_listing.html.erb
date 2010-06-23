@@ -11,7 +11,7 @@
 <div class="listings">
 	<% items.each do |op| %>
 	
-		<div id="<%= "soap_operation_#{op.id}" -%>" class="listing_item <%= op.archived? ? 'archived' : '' -%>"
+		<div id="<%= "soap_operation_#{op.id}" -%>" class="listing_item <%= op.archived? ? 'archived' : '' -%>">
 			
 			<div class="simple_listing">
 				
@@ -39,7 +39,7 @@
 						<%= pluralize(op.soap_inputs.length, 'input') -%>
 						<span class="faded" style="margin: 0 0.2em; vertical-align: middle;">|</span>
 						<%= pluralize(op.soap_outputs.length, 'output') -%>
-					</p
+					</p>
 				
 					<% if op.associated_service %>
 						<p class="detail">
