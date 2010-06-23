@@ -78,24 +78,24 @@
 			<p><b>Message</b></p>
 			<textarea id="feedback_content" name="content" rows="8" style="width: 99%;"><%= params[:content] %></textarea>
 			
-		  <br/><br/>
-		  <span style="padding:0.2em; background-color: #ffbb7f;">Security number: <span id="feedback_length" style="font-weight: bold;">0</span></span>
+		  <p>
+		    <span style="padding:0.2em; background-color: #ffbb7f;">Security number: <span id="feedback_length" style="font-weight: bold;">0</span></span>
+      </p>
 
 		  <script type="text/javascript">
 		    message = document.getElementById("feedback_content");
 		    message_length = document.getElementById("feedback_length");
 		    if (message && message_length) {
 		      message.onkeyup = window.onload = function() {message_length.innerHTML = message.value.split(/[biocat]/).length;}
+          message.onblur = window.onload = function() {message_length.innerHTML = message.value.split(/[biocat]/).length;}
 		    }
 		  </script>
-		  <br /><br />
-		  <center>
+		  
+      <p>
 		    <strong>Please enter the security number (shown above) to validate your message</strong>&nbsp;<%= help_icon_with_tooltip("This is to prevent bots from spamming us with automatically generated messages.") -%>
 		    <%= text_field_tag :length_check, "", :size => 6 %>
-		  </center>
+      </p>
 
-			<br/>
-		
     	<center><%= submit_tag "Submit", :disable_with => "Submitting&hellip;" %></center>
 		<% end %>
 	</div>
