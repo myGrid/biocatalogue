@@ -120,6 +120,7 @@ class RestMethod < ActiveRecord::Base
   end
   
   # for sort
+  # TODO: need to figure out whether this is really necessary now, considering the new grouping functionality.
   def <=>(other)
     order = {'GET' => 1, 'POST' => 2, 'PUT' => 3, 'DELETE' => 4 }
     
@@ -127,6 +128,33 @@ class RestMethod < ActiveRecord::Base
     other_order = order[other.method_type]
     
     return self_order <=> other_order
+  end
+  
+  # This returns an Array of Hashes that has the grouped (by group_name) 
+  # and sorted RestMethods (from the ones provided).
+  #
+  # Example output:
+  #   [ { :group_name => "..", :items => [ ... ] }, { :group_name => "..", :items => [ ... ] }  ]
+  def self.group_rest_methods(methods)
+    grouped = { }
+    grouped_and_sorted = [ ]
+    
+    return grouped_and_sorted if methods.blank?
+      
+    methods.each do |m|
+      group_name = m.group_name || "Other"
+      if grouped.has_key?(group_name)
+        grouped[group_name] << m          
+      else
+        grouped[group_name] = [ m ]
+      end
+    end
+    
+    grouped.keys.sort.each do |k|
+      grouped_and_sorted << { :group_name => k, :items => grouped[k].sort }
+    end
+    
+    return grouped_and_sorted
   end
   
 

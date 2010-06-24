@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100518124313) do
+ActiveRecord::Schema.define(:version => 20100624161658) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -259,6 +259,7 @@ ActiveRecord::Schema.define(:version => 20100518124313) do
     t.string   "submitter_type",    :default => "User"
     t.string   "endpoint_name"
     t.string   "documentation_url"
+    t.string   "group_name"
   end
 
   add_index "rest_methods", ["rest_resource_id", "method_type"], :name => "rest_methods_rest_resource_id_method_type_index"

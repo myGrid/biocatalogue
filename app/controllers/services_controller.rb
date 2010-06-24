@@ -56,6 +56,10 @@ class ServicesController < ApplicationController
     
     @pending_responsibility_requests = @service.pending_responsibility_requests
     
+    if @latest_version_instance.is_a?(RestService)
+      @grouped_rest_methods = @latest_version_instance.group_all_rest_methods_from_rest_resources
+    end
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder

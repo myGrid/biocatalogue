@@ -43,7 +43,8 @@
 				
 					<% if op.associated_service %>
 						<p class="detail">
-							Part of Service: <%= link_to display_name(op.associated_service), op.associated_service -%>
+							<b>Part of Service:</b> 
+              <%= link_to display_name(op.associated_service), op.associated_service -%>
 						</p>
 					<% end %>
 				

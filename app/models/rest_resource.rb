@@ -53,6 +53,14 @@ class RestResource < ActiveRecord::Base
   def <=>(other)
     return self.path <=> other.path
   end
+  
+  # This returns an Array of Hashes that has the grouped and sorted rest_methods of this .
+  #
+  # Example output:
+  #   [ { :group_name => "..", :items => [ ... ] }, { :group_name => "..", :items => [ ... ] }  ]
+  def rest_methods_grouped
+    return RestMethod.group_rest_methods(self.rest_methods)
+  end
 
   # =========================================
   

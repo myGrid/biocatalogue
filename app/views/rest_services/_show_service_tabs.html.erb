@@ -46,20 +46,31 @@
 			Quick Browse
 		</span>
     |
-		<% resources.each do |res| %>
-      <% res.rest_methods.sort.each do |meth| %>
+    
+    <% @grouped_rest_methods.each do |g| %>
+      <span class="group_name">
+        <%= h g[:group_name] -%>:
+      </span>
+      <% g[:items].each do |meth| %>
         <span class="entry">
           <%= link_to display_name(meth), meth -%>
         </span>
+        |
       <% end %>
-			|
-		<% end %>
+    <% end %>
+    
 	</div>
 	
   
-	<% resources.each do |res| %>
-	  <%= render :partial => "rest_methods/listing", 
-               :locals => { :items => res.rest_methods.sort, :resource => res, :base_endpoint => base_endpoint } -%>
+	<% @grouped_rest_methods.each do |g| %>
+  
+    <h4><%= h g[:group_name] -%></h4>  
+    
+    <div class="box_indented_with_bar">
+      <%= render :partial => "rest_methods/listing", 
+                 :locals => { :items => g[:items], :base_endpoint => base_endpoint } -%>
+    </div>
+	  
   <% end %>
 	
 	<p style="margin: 0 0 1.5em 0; font-size: 93%; text-align: right;">

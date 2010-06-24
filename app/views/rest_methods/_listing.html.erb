@@ -26,9 +26,19 @@
 			
 			<% if method.associated_service %>
         <p class="detail">
-          Part of Service: <%= link_to display_name(method.associated_service), method.associated_service -%>
+          <b>Part of Service:</b>
+          <%= link_to display_name(method.associated_service), method.associated_service -%>
         </p>
       <% end %>
+      
+      <p class="detail">
+        <b>Part of Endpoint Group:</b> 
+        <% unless method.group_name.blank? %>
+          <%= h method.group_name -%>
+        <% else %> 
+          <span class="none_text">none</span>         
+        <% end %>
+      </p>
               
       <p class="detail faded">
         <b>Template:</b>

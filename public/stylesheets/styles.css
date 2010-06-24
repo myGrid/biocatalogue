@@ -3421,6 +3421,12 @@ a:hover.make_optional_link  {
 	background-color: #FFF;
 }
 
+.operations_quick_browse_box .group_name {
+  color: #990000;
+  margin-left: 2em;
+  font-weight: bold;
+}
+
 .operations_quick_browse_box .entry a {
 	font-size: 93%;
 	vertical-align: middle;

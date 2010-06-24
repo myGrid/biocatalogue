@@ -201,6 +201,18 @@ class RestService < ActiveRecord::Base
             :error => @error_endpoints.uniq,
             :last_endpoint => (@redirect_endpoint || @extracted_method)}
   end # mine_for_resources
+  
+  def group_all_rest_methods_from_rest_resources
+    return [ ] if self.rest_resources.blank?
+    
+    methods = [ ]
+    
+    self.rest_resources.each do |res|
+      methods.concat(res.rest_methods)
+    end
+    
+    return RestMethod.group_rest_methods(methods)
+  end
 
 
   # =========================================
