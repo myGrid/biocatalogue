@@ -278,9 +278,11 @@ document.observe('dom:loaded', function() {
 
 // Make the search notice box slide down
 document.observe('dom:loaded', function(){
-	new Effect.BlindDown('last_search_notice', {
-		duration: 1.2
-	})
+  if ($('last_search_notice')) {
+    new Effect.BlindDown('last_search_notice', {
+      duration: 1.2
+    })
+  }
 });
 
 
