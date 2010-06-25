@@ -31,43 +31,55 @@
 </div>
 
 <a name='endpoints_top'></a>
-	
+
 <div class="operations_quick_browse_box">
-	<span class="heading">
-		Quick Browse
-	</span>
-	|
-  <% @rest_service.rest_resources.sort.each do |res| %>
-    <% res.rest_methods.sort.each do |meth| %>
+  <span class="heading">
+    Quick Browse
+  </span>
+  |
+  
+  <% @grouped_rest_methods.each do |g| %>
+    <% unless g[:group_name] == "Other" and @grouped_rest_methods.length == 1 %>
+      <span class="group_name">
+        <%= h g[:group_name] -%>:
+      </span>
+    <% end %>
+    <% g[:items].each do |meth| %>
       <span class="entry">
         <%= link_to(display_name(meth), meth, :class => (meth == @rest_method ? 'active' : '')) -%>
       </span>
-			|
+      |
     <% end %>
   <% end %>
+  
 </div>
-
+	
 <div class="vtabs_container">
 	
   <!-- TABS BAR -->  
   <div class="vtabs_tab_bar" style="width:25%;">
     <ul>
-      
-      <li class="active" title="<%= tooltip_title_attrib((@rest_method.endpoint_name.blank? ? '' : '<b>' + display_name(@rest_method) + '</b><br/>') + @rest_method.display_endpoint) -%>">
-        <% if @rest_method.endpoint_name %>
-          <% label = content_tag(:span, truncate(display_name(@rest_method), :length => 40), :class => 'name') + "<br/>" + 
-                     content_tag(:span, truncate(@rest_method.display_endpoint, :length => 48), :class => 'detail') %>
-        <% else %>
-          <% label = content_tag(:span, truncate(@rest_method.display_endpoint, :length => 40), :class => 'name') + "<br/>" %>
+      <% @grouped_rest_methods.each do |g| %>
+        
+        <% unless g[:group_name] == "Other" and @grouped_rest_methods.length == 1 %>
+          <li class="group_name"><%= h g[:group_name] -%></li>  
         <% end %>
         
-        <%= link_to  label, @rest_method -%>
-      </li>
-
-      
-       <% @rest_service.rest_resources.sort.each do |resource| %>
-        <% resource.rest_methods.sort.each do |meth| %>
-
+        <!-- Selected tab -->
+        <% if g[:items].include? @rest_method %>
+          <li class="active" title="<%= tooltip_title_attrib((@rest_method.endpoint_name.blank? ? '' : '<b>' + display_name(@rest_method) + '</b><br/>') + @rest_method.display_endpoint) -%>">
+            <% if @rest_method.endpoint_name %>
+              <% label = content_tag(:span, truncate(display_name(@rest_method), :length => 40), :class => 'name') + "<br/>" + 
+                         content_tag(:span, truncate(@rest_method.display_endpoint, :length => 48), :class => 'detail') %>
+            <% else %>
+              <% label = content_tag(:span, truncate(@rest_method.display_endpoint, :length => 40), :class => 'name') + "<br/>" %>
+            <% end %>
+            
+            <%= link_to  label, @rest_method -%>
+          </li>
+        <% end %>
+        
+        <% g[:items].each do |meth| %>
           <% next if meth == @rest_method %>
 
           <li title="<%= tooltip_title_attrib((meth.endpoint_name.blank? ? '' : '<b>' + display_name(meth) + '</b><br/>') + meth.display_endpoint) -%>">
@@ -80,10 +92,9 @@
 
             <%= link_to  label, meth -%>
           </li>
-
         <% end %>
+        
       <% end %>
-
     </ul>
   </div>
    
