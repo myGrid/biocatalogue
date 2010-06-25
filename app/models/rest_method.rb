@@ -30,6 +30,9 @@ class RestMethod < ActiveRecord::Base
   
   belongs_to :rest_resource
   
+  has_one :rest_service, 
+          :through => :rest_resource
+  
   # =====================
   # Associated Parameters
   # ---------------------

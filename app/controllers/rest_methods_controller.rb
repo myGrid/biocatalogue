@@ -14,6 +14,8 @@ class RestMethodsController < ApplicationController
   before_filter :find_rest_method
   
   before_filter :authorise, :except => [ :show ]
+  
+  skip_before_filter :verify_authenticity_token, :only => [ :group_name_auto_complete ]
     
   def update_resource_path
     error_msg = @rest_method.update_resource_path(params[:new_path], current_user)
@@ -165,6 +167,33 @@ class RestMethodsController < ApplicationController
     end
   end
   
+  def edit_group_name_popup
+    respond_to do |format|
+      format.js { render :layout => false }
+    end
+  end
+  
+  def update_group_name
+    group_name = params[:group_name]
+    
+    respond_to do |format|
+      if group_name.blank? or !@rest_method.update_attribute(:group_name, group_name)
+        flash[:error] = "Failed to set the group. Did you specify a group name? (If you continue having issues with this, please contact us)"
+        format.html { redirect_to @rest_method }
+      else
+        flash[:notice] = "Successfully set the group"
+        format.html { redirect_to @rest_method }
+      end
+    end
+  end
+  
+  def group_name_auto_complete
+    @name_fragment = params[:group_name] || ''
+    
+    @results = @rest_method.rest_service.endpoint_group_names_suggestions(@name_fragment, 10)
+                                    
+    render :inline => "<%= auto_complete_result @results, 'name', @name_fragment %>", :layout => false
+  end
   
   # ========================================
   

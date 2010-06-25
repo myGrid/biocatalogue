@@ -54,9 +54,6 @@ module RestMethodsHelper
   end
   
   
-  # ========================================
-
-
   # This method will create a link to a popup dialog, which allows the user to
   # add more representations to the given RestMethod.
   #
@@ -117,6 +114,46 @@ module RestMethodsHelper
                              :style => options[:style], 
                              :title => tooltip_title_attrib("Login to #{options[:tooltip_text].downcase}"))
     end
+    
+    return link_content
+  end
+  
+  
+  # This method will create a link to a popup dialog, which allows the user to
+  # set a REST Method's group name.
+  #
+  # CONFIGURATION OPTIONS (all these options are optional)
+  #  :tooltip_text - text that will be displayed in a tooltip over the text.
+  #    default: 'Set this endpoint's group'
+  #  :link_text - text to be displayed as part of the link.
+  #    default: 'Set Group'
+  #  :style - any CSS inline styles that need to be applied to the text.
+  #    default: ''
+  #  :class - any CSS class that need to be applied to the text.
+  #    default: nil
+  def edit_group_name_by_popup(rest_method, *args)
+    return '' unless rest_method.is_a? RestMethod
+    
+    options = args.extract_options!
+    
+    # default config options
+    options.reverse_merge!(:style => "",
+                           :class => nil,
+                           :link_text => "Set Group",
+                           :tooltip_text => "Set this endpoint's group")
+    
+    link_content = ''
+    
+    inner_html = content_tag(:span, options[:link_text])
+    
+    fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
+    id_value = "set_group_name_for_endpoint_redbox"
+    
+    redbox_hash = { :url => edit_group_name_popup_rest_method_url(rest_method), 
+                    :id => id_value, 
+                    :failure => fail_value }
+                   
+    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
     
     return link_content
   end

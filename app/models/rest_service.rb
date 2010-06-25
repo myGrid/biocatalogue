@@ -213,6 +213,25 @@ class RestService < ActiveRecord::Base
     
     return RestMethod.group_rest_methods(methods)
   end
+  
+  def endpoint_group_names_suggestions(fragment, limit=nil)
+    # NOTE: this query has only been tested to work with MySQL 5.0.x and 5.1.x
+    sql = [ "SELECT rest_methods.group_name AS name
+           FROM rest_methods 
+           INNER JOIN rest_resources ON rest_methods.rest_resource_id = rest_resources.id 
+           WHERE rest_resources.rest_service_id = ? AND rest_methods.group_name LIKE ?
+           GROUP BY rest_methods.group_name 
+           ORDER BY rest_methods.group_name ASC",
+           self.id,
+           "%#{fragment}%" ]
+    
+    # If limit has been provided then add that to query
+    if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
+      sql[0] = sql[0] + " LIMIT #{limit}"
+    end
+    
+    return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+  end
 
 
   # =========================================

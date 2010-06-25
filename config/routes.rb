@@ -168,7 +168,10 @@ ActionController::Routing::Routes.draw do |map|
                 :member => { :add_new_resources => :post }
 
   map.resources :rest_methods,
-                :member => { :inline_add_endpoint_name => :post }
+                :member => { :inline_add_endpoint_name => :post,
+                             :edit_group_name_popup => :post,
+                             :update_group_name => :post,
+                             :group_name_auto_complete => :post }
 
   map.resources :rest_parameters,
                 :member => { :add_new_parameters => :post }
