@@ -48,9 +48,11 @@
     |
     
     <% @grouped_rest_methods.each do |g| %>
-      <span class="group_name">
-        <%= h g[:group_name] -%>:
-      </span>
+      <% unless g[:group_name] == "Other" and @grouped_rest_methods.length == 1 %>
+        <span class="group_name">
+          <%= h g[:group_name] -%>:
+        </span>
+      <% end %>
       <% g[:items].each do |meth| %>
         <span class="entry">
           <%= link_to display_name(meth), meth -%>
@@ -63,10 +65,12 @@
 	
   
 	<% @grouped_rest_methods.each do |g| %>
-  
-    <h4><%= h g[:group_name] -%></h4>  
     
-    <div class="box_indented_with_bar">
+    <% unless g[:group_name] == "Other" and @grouped_rest_methods.length == 1 %>
+      <h4><%= h g[:group_name] -%></h4>  
+    <% end %>
+    
+    <div class="<%= (g[:group_name] == 'Other' and @grouped_rest_methods.length == 1) ? '' : 'box_indented_with_bar' -%>">
       <%= render :partial => "rest_methods/listing", 
                  :locals => { :items => g[:items], :base_endpoint => base_endpoint } -%>
     </div>
