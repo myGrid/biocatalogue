@@ -174,11 +174,11 @@ class RestMethodsController < ApplicationController
   end
   
   def update_group_name
-    group_name = params[:group_name]
+    group_name = params[:group_name].strip
     
     respond_to do |format|
-      if group_name.blank? or !@rest_method.update_attribute(:group_name, group_name)
-        flash[:error] = "Failed to set the group. Did you specify a group name? (If you continue having issues with this, please contact us)"
+      if !@rest_method.update_attribute(:group_name, group_name)
+        flash[:error] = "Failed to set the group. (If you continue having issues with this, please contact us)"
         format.html { redirect_to @rest_method }
       else
         flash[:notice] = "Successfully set the group"
