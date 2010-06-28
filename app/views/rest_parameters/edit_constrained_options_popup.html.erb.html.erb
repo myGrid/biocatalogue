@@ -24,7 +24,7 @@
     <div>
       <div class="box_info_standout" style="font-size:85%" >
         You are editing the constrained values for REST Parameter: 
-        <b><%= @rest_parameter.name -%></b><br /><br />
+        <b><%=h @rest_parameter.name -%></b><br /><br />
         
         Enter one value per line.<br /><br />
         
@@ -38,8 +38,8 @@
       
       <!--PARAMS CAPTURE TEXT AREA-->
       <p class="high_linespaced form_field_section">
-        <%= text_area_tag "new_constrained_options", @old_constrained_options, :size => "50x7", :style => "width: 99%;" %>
-        <%= hidden_field_tag "old_constrained_options", @old_constrained_options %>
+        <%= text_area_tag "new_constrained_options", h(@old_constrained_options), :size => "50x7", :style => "width: 99%;" %>
+        <%= hidden_field_tag "old_constrained_options", h(@old_constrained_options) %>
       </p>
       
       <!--SUBMIT-->

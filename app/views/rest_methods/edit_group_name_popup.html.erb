@@ -23,7 +23,7 @@
         </div>
         
         <p class="high_linespaced form_field_section">
-          <%= text_field_tag "group_name", @rest_method.group_name, :size => "50", :style => "width: 99%;", :id => "group_name_field", :autocomplete => "on", :style => "width: 99%;" %>
+          <%= text_field_tag "group_name", h(@rest_method.group_name), :size => "50", :style => "width: 99%;", :id => "group_name_field", :autocomplete => "on", :style => "width: 99%;" %>
           
           <div class="auto_complete" id="rest_method_group_name_auto_complete"></div>
 

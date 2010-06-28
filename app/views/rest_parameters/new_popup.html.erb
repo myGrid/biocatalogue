@@ -34,7 +34,7 @@
       
       <!--PARAMS CAPTURE TEXT AREA-->
       <p class="high_linespaced form_field_section">
-        <%= text_area_tag "rest_parameters", params[:rest_parameters],
+        <%= text_area_tag "rest_parameters", h(params[:rest_parameters]),
             :size => "50x7", :style => "width: 99%;" %>
       </p>
       

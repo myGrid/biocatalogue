@@ -33,9 +33,9 @@
         </div>
   
         <p class="high_linespaced form_field_section">
-          <%= text_field_tag "name", @service_provider.name, :id => "service_provider_name_field", 
-                                                             :autocomplete => "on",
-                                                             :style => "width: 99%;" -%>
+          <%= text_field_tag "name", h(@service_provider.name), :id => "service_provider_name_field", 
+                                                                :autocomplete => "on",
+                                                                :style => "width: 99%;" -%>
 
           <div class="auto_complete" id="service_provider_auto_complete"></div>
 

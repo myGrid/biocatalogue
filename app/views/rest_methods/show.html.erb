@@ -17,11 +17,11 @@
 
 <h1>
 	REST Endpoints on Service:
-	<%= link_to display_name(@rest_service.service), service_url(@rest_service.service, :anchor => "endpoints") -%>
+	<%= link_to h(display_name(@rest_service.service)), service_url(@rest_service.service, :anchor => "endpoints") -%>
 </h1>
 
 <div style="margin-bottom: 1.5em;">
-  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{display_name(@rest_service.service)}\""),
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{h(display_name(@rest_service.service))}\""),
 						  service_url(@rest_service.service, :anchor => "endpoints"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
 
 	<%= add_endpoints_by_popup(@rest_service, 
@@ -67,15 +67,15 @@
         
         <!-- Selected tab -->
         <% if g[:items].include? @rest_method %>
-          <li class="active" title="<%= tooltip_title_attrib((@rest_method.endpoint_name.blank? ? '' : '<b>' + display_name(@rest_method) + '</b><br/>') + @rest_method.display_endpoint) -%>">
+          <li class="active" title="<%= tooltip_title_attrib((@rest_method.endpoint_name.blank? ? '' : '<b>' + display_name(@rest_method) + '</b><br/>') + h(@rest_method.display_endpoint)) -%>">
             <% if @rest_method.endpoint_name %>
               <% label = content_tag(:span, truncate(display_name(@rest_method), :length => 40), :class => 'name') + "<br/>" + 
-                         content_tag(:span, truncate(@rest_method.display_endpoint, :length => 48), :class => 'detail') %>
+                         content_tag(:span, truncate(h(@rest_method.display_endpoint), :length => 48), :class => 'detail') %>
             <% else %>
-              <% label = content_tag(:span, truncate(@rest_method.display_endpoint, :length => 40), :class => 'name') + "<br/>" %>
+              <% label = content_tag(:span, truncate(h(@rest_method.display_endpoint), :length => 40), :class => 'name') + "<br/>" %>
             <% end %>
             
-            <%= link_to  label, @rest_method -%>
+            <%= link_to label, @rest_method -%>
           </li>
         <% end %>
         
@@ -85,12 +85,12 @@
           <li title="<%= tooltip_title_attrib((meth.endpoint_name.blank? ? '' : '<b>' + display_name(meth) + '</b><br/>') + meth.display_endpoint) -%>">
             <% if meth.endpoint_name %>
               <% label = content_tag(:span, truncate(display_name(meth), :length => 40), :class => 'name') + "<br/>" + 
-                         content_tag(:span, truncate(meth.display_endpoint, :length => 48), :class => 'detail') %>
+                         content_tag(:span, truncate(h(meth.display_endpoint), :length => 48), :class => 'detail') %>
             <% else %>
-              <% label = content_tag(:span, truncate(meth.display_endpoint, :length => 40), :class => 'name') + "<br/>" %>
+              <% label = content_tag(:span, truncate(h(meth.display_endpoint), :length => 40), :class => 'name') + "<br/>" %>
             <% end %>
 
-            <%= link_to  label, meth -%>
+            <%= link_to label, meth -%>
           </li>
         <% end %>
         

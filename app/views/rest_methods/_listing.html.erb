@@ -19,8 +19,8 @@
 		<% base_endpoint = resource.rest_service.service.latest_deployment.endpoint if base_endpoint.nil? %>
     <div class="listing_item">
       <p class="name">
-        <% link_text = "#{method.display_endpoint} " %>
-        <%= "<i style='font-size:80%;'>#{method.endpoint_name}</i> | " if method.endpoint_name -%>
+        <% link_text = "#{h(method.display_endpoint)} " %>
+        <%= "<i style='font-size:80%;'>#{h(method.endpoint_name)}</i> | " if method.endpoint_name -%>
         <%= link_to(link_text, method) -%>
       </p>
 			
@@ -34,7 +34,7 @@
       <p class="detail">
         <b>Part of Endpoint Group:</b> 
         <% unless method.group_name.blank? %>
-          <%= h method.group_name -%>
+          <%=h method.group_name -%>
         <% else %> 
           <span class="none_text">none</span>         
         <% end %>

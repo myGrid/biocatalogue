@@ -23,7 +23,7 @@
     <div>
       <div class="box_info_standout" style="font-size:90%" >
         You are editing the path for endpoint:
-        <b><%= @rest_method.display_endpoint -%></b>
+        <b><%=h @rest_method.display_endpoint -%></b>
         
         <br /><br />
         
@@ -34,9 +34,9 @@
       
       <p class="high_linespaced form_field_section">
         <span style="width:87%; float:right;">
-          <%= text_field_tag "new_path", @rest_method.rest_resource.path, :style => "width: 99%;" %>
+          <%= text_field_tag "new_path", h(@rest_method.rest_resource.path), :style => "width: 99%;" %>
         </span>
-        <b><%= @rest_method.method_type %></b>        
+        <b><%=h @rest_method.method_type %></b>        
       </p>
       
       <p style="margin-top: 1.5em; text-align: center;">

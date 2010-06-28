@@ -216,7 +216,7 @@ module RestServicesHelper
     url_template.squeeze!('/')
     url_template.sub!(':/', '://') # compensation of squeeze
     
-    return url_template
+    return h(url_template)
   end
   
   
