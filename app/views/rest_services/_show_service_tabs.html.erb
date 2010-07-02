@@ -72,7 +72,7 @@
     
     <div class="<%= (g[:group_name] == 'Other' and @grouped_rest_methods.length == 1) ? '' : 'box_indented_with_bar' -%>">
       <%= render :partial => "rest_methods/listing", 
-                 :locals => { :items => g[:items], :base_endpoint => base_endpoint } -%>
+                 :locals => { :items => g[:items] } -%>
     </div>
 	  
   <% end %>
