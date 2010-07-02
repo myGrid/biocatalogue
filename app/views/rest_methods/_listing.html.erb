@@ -8,15 +8,11 @@
 
 %>
 
-<%
-  resource = nil unless local_assigns.has_key?(:resource)
-  base_endpoint = nil unless local_assigns.has_key?(:base_endpoint)
-%>
-
 <div class="listings">
 	<% items.each do |method| %>
-	  <% resource = method.rest_resource if resource.nil?; %>
-		<% base_endpoint = resource.rest_service.service.latest_deployment.endpoint if base_endpoint.nil? %>
+	  <% resource = method.rest_resource %>
+		<% base_endpoint = resource.rest_service.service.latest_deployment.endpoint %>
+    
     <div class="listing_item">
       <p class="name">
         <% link_text = "#{h(method.display_endpoint)} " %>
@@ -43,7 +39,7 @@
       <p class="detail faded">
         <b>Template:</b>
         <%= help_icon_with_tooltip("This is an example of how the endpoint's URL will look. This includes the minimal set of parameters needed to be able to use the endpoint.") -%>
-        
+
         <%= create_url_template(base_endpoint, resource, method) -%>
       </p>
       
