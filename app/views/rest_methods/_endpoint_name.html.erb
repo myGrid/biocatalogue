@@ -24,18 +24,17 @@
           <%=h @rest_method.endpoint_name %>
 
           <span class="actions_link_container">
-            <%= link_to "delete", { :id => @rest_method.id, 
-                                    :action => :remove_endpoint_name},
-                                  :confirm => "Are you sure you want to clear this endpoint's name?  This cannot be undone.",
-                                  :method => :put,
-                                  :class => "delete_link button_slim",
-                                  :style => "width:45px; padding:3px;" if can_edit -%>
+            <%= link_to image_tag("delete_faded_darker.png", :mouseover => "delete.png") + content_tag(:span, " delete"),
+                        { :id => @rest_method.id, 
+                          :action => :remove_endpoint_name},
+                          :confirm => "Are you sure you want to clear this endpoint's name?  This cannot be undone.",
+                          :method => :put,
+                          :class => "button_slim" if can_edit -%>
             
             &nbsp; &nbsp;
 
             <%= edit_endpoint_property_by_popup(@rest_method, "endpoint_name", 
-                                                :class => "edit_link button_slim",
-                                                :style => "padding:3px;") -%>
+                                                :class => "button_slim") -%>
           </span>
         </span>
       <% else %>

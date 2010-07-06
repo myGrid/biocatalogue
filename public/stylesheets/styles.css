@@ -3337,43 +3337,12 @@ div.resize-handle {
 }
 
 .actions_link_container a {
-  color: grey;
-  text-decoration: none;
   float: right;
-  text-align: right;
-  font-size: 87%;
-  font-weight: normal;
-  line-height: 10px;  
-  background-repeat: no-repeat;
-  background-position: left center; 
+  font-size: 85%;
   margin: 0px 7px 0px 7px;
-  padding: 2px;
 }
 
-.actions_link_container a:hover {
-  font-weight: bold;
-}
-
-a.delete_link {
-  width: 50px;
-  background-image: url(/images/delete_faded_darker.png);
-}
-
-a:hover.delete_link  {
-  background-image: url(/images/delete.png);
-}
-
-a.edit_link, a:hover.edit_link {
-  width: 40px;
-  background-image: url(/images/pencil.gif);
-  background-repeat: no-repeat;
-  background-position: left center; 
-  font-weight: normal;
-}
-
-a:hover.edit_link{
-  font-weight:bold;
-}
+/*
 
 a.localise_param_link {
   width: 80px;
@@ -3385,24 +3354,6 @@ a.globalise_param_link {
   background-image: url(/images/link_add.png);
 }
 
-a.make_required_link {
-  width: 85px;
-  background-image: url(/images/circle_orange_small.png);
-}
-
-a.make_optional_link {
-  width: 85px;
-  background-image: url(/images/circle_blue_small.png);
-}
-
-/*
-a:hover.make_required_link  {
-  background-image: url(/images/circle_blue_small.png);
-}
-
-a:hover.make_optional_link  {
-  background-image: url(/images/circle_orange_small.png);
-}
 */
 
 /* END styles for REST Services support */

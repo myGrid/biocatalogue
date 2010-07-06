@@ -46,18 +46,19 @@
               <pre style="margin-bottom: 5px;"><%=h c %></pre>
             <% end %>
       
-            <div style="float:right;">
-              <%= edit_constraint_by_popup(parameter, :rest_method_id => rest_method_id) if logged_in? -%>
-              
-              &nbsp; &nbsp;
-                
-              <%= link_to "delete", {:id => parameter.id, 
-                                     :controller => :rest_parameters,
-                                     :action => :remove_constrained_options,
-                                     :rest_method_id => rest_method_id}, 
-                                    :confirm => "Are you you want to delete these constrained values?  This cannot be undone.",
-                                    :method => :put if can_edit -%>
-            </div>
+            <% if can_edit %>
+              <div class="actions">
+                <%= edit_constraint_by_popup(parameter, :rest_method_id => rest_method_id, :class => "button_slim") -%>
+                                      
+                <%= link_to "delete", {:id => parameter.id, 
+                                       :controller => :rest_parameters,
+                                       :action => :remove_constrained_options,
+                                       :rest_method_id => rest_method_id}, 
+                                      :confirm => "Are you you want to delete these constrained values?  This cannot be undone.",
+                                      :method => :put,
+                                      :class => "button_slim" -%>
+              </div>
+            <% end %>
           </div>
          <% end %>
       <% end %>

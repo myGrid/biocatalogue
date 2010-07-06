@@ -294,9 +294,7 @@ class RestMethod < ActiveRecord::Base
     return unless %w{ request response }.include?(options[:http_cycle])
     
     # sanitize user input
-    content_types.chomp!
-    content_types.strip!
-    content_types.squeeze!(" ")
+    chomp_strip_squeeze(content_types)
 
     # these lists will be returned in the form of a hash
     created_types = []
@@ -367,8 +365,7 @@ class RestMethod < ActiveRecord::Base
   # This method updates the resource path for this RestMethod's RestResource
   def update_resource_path(new_resource_path, user_submitting)
     # sanitize user input
-    new_resource_path.chomp!
-    new_resource_path.strip!
+    chomp_strip_squeeze(new_resource_path)
     new_resource_path.gsub!(' ', '+')
     
     return "Endpoint paths cannot be empty." if new_resource_path.blank?

@@ -234,9 +234,7 @@
 				<b>Base URL:</b>
 				<br/>
 				<% @service.service_deployments.each do |s_d| -%>
-          <%= edit_base_endpoint_by_popup(s_d, 
-                                          :style => "font-size:87%; text-align:right; line-height:10px; padding:3px;", 
-                                          :class => "edit_link button_slim") -%>
+          <%= edit_base_endpoint_by_popup(s_d, :class => "button_slim") -%>
 					<%= link_to(h(s_d.endpoint), s_d.endpoint, :popup => true) -%>
 				<% end %>
 			</p>

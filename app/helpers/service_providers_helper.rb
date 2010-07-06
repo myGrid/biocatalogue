@@ -31,11 +31,12 @@ module ServiceProvidersHelper
                            :link_text => "Rename",
                            :tooltip_text => "Give this service provider a new name")
 
-    options[:style] += "float: right;" unless options[:style].include?("float")
+    options[:style] += "float: right; " unless options[:style].include?('float')
+    options[:style] += "font-weight: bold; " unless options[:style].include?('font-weight')
 
     link_content = ''
     
-    inner_html = content_tag(:span, options[:link_text])
+    inner_html = image_tag("pencil.gif") + content_tag(:span, " " + options[:link_text])
     
     url_hash = {:controller => "service_providers", 
                 :action => "edit_by_popup",

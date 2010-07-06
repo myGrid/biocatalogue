@@ -14,10 +14,10 @@
   show_button = logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, method)
 %>
 
-<b>Input Parameters:</b>
 <%= add_endpoints_by_popup(method, 
                            :class => "button_slim", 
                            :link_text => "Add Query Parameters") if show_button %>
+<b>Input Parameters:</b>
 
 <div class="box_indented_with_bar" style="margin: 1em 0 0 1.5em;">
   <% unless method.request_parameters.blank? %>

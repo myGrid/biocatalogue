@@ -16,28 +16,30 @@
   <!--ACTION LINKS-->
   <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, param, :rest_method => method) && show_actions %>
     <div class="actions_link_container">
-      <%= link_to "Delete", rest_parameter_url(param, :rest_method_id => method.id),
-                                                      :confirm => "Are you you want to delete this parameter?",
-                                                      :method => :delete,
-                                                      :class => "delete_link",
-                                                      :style => "width:45px;" %>
+      <%= link_to image_tag("delete_faded_darker.png", :mouseover => "delete.png") + content_tag(:span, " Delete"),
+                  rest_parameter_url(param, :rest_method_id => method.id),
+                  :confirm => "Are you you want to delete this parameter?",
+                  :method => :delete,
+                  :class => "button_slim" %>
           
       <% if param.required %> <!--MAKE OPTIONAL-->
-        <%= link_to "Make optional", {:controller => "rest_parameters",
-                                      :action => 'make_optional_or_mandatory',
-                                      :id => param.id,
-                                      :rest_method_id => method.id,
-                                      :make_optional => true},            
-                                     :method => :put,
-                                     :class => "make_optional_link" -%>
+        <%= link_to image_tag("circle_blue_small.png") + content_tag(:span, " Make Optional"), 
+                    { :controller => "rest_parameters",
+                      :action => 'make_optional_or_mandatory',
+                      :id => param.id,
+                      :rest_method_id => method.id,
+                      :make_optional => true},            
+                    :method => :put,
+                    :class => "button_slim" -%>
       <% else %> <!--MAKE MANDATORY-->
-        <%= link_to "Make required", {:controller => "rest_parameters",
-                                      :action => 'make_optional_or_mandatory',
-                                      :id => param.id,
-                                      :rest_method_id => method.id,
-                                      :make_optional => false},
-                                     :method => :put,
-                                     :class => "make_required_link" -%>
+        <%= link_to image_tag("circle_orange_small.png") + content_tag(:span, " Make Required"),
+                    { :controller => "rest_parameters",
+                      :action => 'make_optional_or_mandatory',
+                      :id => param.id,
+                      :rest_method_id => method.id,
+                      :make_optional => false},
+                    :method => :put,
+                    :class => "button_slim" -%>
       <% end %>
     </div>
   <% end %>

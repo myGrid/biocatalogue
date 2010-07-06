@@ -99,11 +99,6 @@ module RestParametersHelper
                      :id => id_value, 
                      :failure => fail_value}
       link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
-    else
-      link_content = content_tag(:span, 
-                                 "You are not allowed to edit the default value of this parameter.", 
-                                 :class => "none_text", 
-                                 :style => "font-size: 90%;")
     end
     
     return link_content

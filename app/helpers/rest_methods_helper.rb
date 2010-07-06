@@ -32,10 +32,12 @@ module RestMethodsHelper
                            :link_text => "edit",
                            :tooltip_text => "Edit this endpoint's " + (property=="endpoint_name" ? "name":"path"))
     
+    options[:style] = mergeStylesWithDefaults(options[:style])
+    
     link_content = ''
     
     if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, rest_method)
-      inner_html = content_tag(:span, options[:link_text])
+      inner_html = image_tag("pencil.gif") + content_tag(:span, " " + options[:link_text])
       
       url_hash = {:controller => "rest_methods",
                   :action => (property=="endpoint_name" ? "edit_endpoint_name_popup" : "edit_resource_path_popup"),
@@ -80,18 +82,12 @@ module RestMethodsHelper
                            :link_text => "Add " + (http_cycle=='request' ? 'In':'Out') + "put Representations",
                            :tooltip_text => "Add new representations to this endpoint")
 
-    default_styles = ""
-    default_styles += "float: right; " unless options[:style].include?('float')
-    default_styles += "font-weight: bold; " unless options[:style].include?('font-weight')
-    
-    options[:style] = default_styles + options[:style]
+    options[:style] = mergeStylesWithDefaults(options[:style])
 
     link_content = ''
     
     if logged_in?
-      inner_html = image_tag("add.png")
-      inner_html += content_tag(:span, " " + options[:link_text])
-      
+      inner_html = image_tag("add.png") + content_tag(:span, " " + options[:link_text])
 
       url_hash = {:controller => "rest_representations",
                   :action => "new_popup", 
@@ -142,9 +138,11 @@ module RestMethodsHelper
                            :link_text => "Set Group",
                            :tooltip_text => "Set this endpoint's group")
     
+    options[:style] = mergeStylesWithDefaults(options[:style])
+
     link_content = ''
     
-    inner_html = content_tag(:span, options[:link_text])
+    inner_html = image_tag("pencil.gif") + content_tag(:span, " " + options[:link_text])
     
     fail_value = "alert('Sorry, an error has occurred.'); RedBox.close();"
     id_value = "set_group_name_for_endpoint_redbox"
@@ -158,4 +156,13 @@ module RestMethodsHelper
     return link_content
   end
   
+private
+  
+  def mergeStylesWithDefaults(user_styles)
+    default_styles = ""
+    default_styles += "float: right; " unless user_styles.include?('float')
+    default_styles += "font-weight: bold; " unless user_styles.include?('font-weight')
+    
+    return default_styles + user_styles
+  end
 end

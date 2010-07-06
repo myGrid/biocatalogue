@@ -159,14 +159,22 @@ module AnnotationsHelper
                            :icon_filename => 'note_edit.png')
 
     link_html = ''
-    link_html = link_html + "<span style='vertical-align: middle; text-decoration: underline;'>#{options[:link_text]}</span>" unless options[:link_text].blank?
-    link_html = image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.3em;') + link_html if options[:show_icon]
+    
+    options[:link_text] ||= 'edit'
+    if options[:show_icon]
+      link_html += image_tag(options[:icon_filename], :style => 'vertical-align:middle;margin-right:0.3em;') 
+      link_html += "<span style='vertical-align: middle; text-decoration: underline;'>#{options[:link_text]}</span>"
+    else
+      link_html += options[:link_text]
+    end
 
     return link_to_remote_redbox(link_html,
                                  { :url => edit_popup_annotation_url(annotation),
                                    :id => "edit_ann_#{annotation.id}_redbox",
                                    :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
-                                 { :style => "text-decoration: none; vertical-align: baseline; #{options[:style]}",
+                                 { :style => (options[:show_icon] ? 
+                                              "text-decoration: none; vertical-align: baseline; #{options[:style]}" : 
+                                              options[:style]),
                                    :alt => options[:tooltip_text],
                                    :title => tooltip_title_attrib(options[:tooltip_text]),
                                    :class => options[:class] })

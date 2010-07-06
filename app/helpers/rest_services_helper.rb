@@ -137,11 +137,12 @@ module RestServicesHelper
                            :link_text => "edit",
                            :tooltip_text => "Edit the base URL")
 
-    options[:style] += "float: right;"
+    options[:style] += "float: right; " unless options[:style].include?('float')
+    options[:style] += "font-weight: bold; " unless options[:style].include?('font-weight')
 
     link_content = ''
     
-    inner_html = content_tag(:span, options[:link_text])
+    inner_html = image_tag("pencil.gif") + content_tag(:span, " " + options[:link_text])
     
     url_hash = {:controller => "rest_services", 
                 :action => "edit_base_endpoint_by_popup", 

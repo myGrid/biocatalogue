@@ -13,7 +13,7 @@
     
   meth = RestMethod.find(rest_method_id)
   can_edit = BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, parameter, :rest_method => meth)  
-%>
+  %>
 
 <% unless parameter.nil? %>
 	<div id="<%= main_div_id -%>" class="annotations_container">
@@ -28,18 +28,21 @@
           <div class="text">
             <div style="margin-top: 0.7em;">
               <pre><%=h parameter.default_value %></pre>
-              
-              <span style="float:right;">
-                <%= edit_default_value_by_popup(parameter, :rest_method_id => rest_method_id) if logged_in? -%>
-                &nbsp; &nbsp;
-                
-                <%= link_to "delete", {:id => parameter.id,
-                                       :controller => :rest_parameters,
-                                       :action => :remove_default_value,
-                                       :rest_method_id => rest_method_id}, 
-                                      :confirm => "Are you you want to delete the default value.  This cannot be undone.",
-                                      :method => :put if can_edit -%>
-              </span>
+                            
+                <% if can_edit %>
+                  <div class="actions">
+                    <%= edit_default_value_by_popup(parameter, :rest_method_id => rest_method_id, :class => "button_slim") -%>
+                                        
+                    <%= link_to "delete", {:id => parameter.id,
+                                           :controller => :rest_parameters,
+                                           :action => :remove_default_value,
+                                           :rest_method_id => rest_method_id}, 
+                                          :confirm => "Are you you want to delete the default value.  This cannot be undone.",
+                                          :method => :put,
+                                          :class => "button_slim" -%>
+                  </div>
+                <% end %>
+
             </div>
           </div>  
         <% end %>

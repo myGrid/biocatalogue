@@ -8,6 +8,8 @@
 
 %>
 
+<!--TO BE USED IN "rest_parameters/listing"-->
+
 <div class="actions_link_container" style="margin-top:5px;">
   <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, param, :rest_method => method) %>
     <!--DELETE-->
