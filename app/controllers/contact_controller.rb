@@ -8,6 +8,8 @@ class ContactController < ApplicationController
   
   before_filter :disable_action_for_api
   
+  ssl_required :create
+  
   # GET /contact
   def index
     respond_to do |format|

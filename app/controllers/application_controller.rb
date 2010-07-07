@@ -17,6 +17,11 @@ require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/
 
 class ApplicationController < ActionController::Base
   
+  # Allow for SSL support
+  include SslRequirement
+  
+  # ============================================
+  
   before_filter { |controller|
     BioCatalogue::CacheHelper.set_base_host(controller.base_host)
   }

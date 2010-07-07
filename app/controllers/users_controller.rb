@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   before_filter :disable_action, :only => [ :destroy ]
   before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services ]
 
-  before_filter :login_required, :except => [ :index, :new, :create, :edit, :update, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, :services ]
+  before_filter :login_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, :services ]
   before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password ]
   
   before_filter :initialise_updated_user, :only => [ :edit, :update ]
@@ -23,6 +23,8 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
+
+  ssl_required :new, :create, :edit, :update, :activate_account, :forgot_password, :request_reset_password, :reset_password, :change_password, :rpx_merge_setup, :rpx_merge, :rpx_update
 
   # GET /users
   # GET /users.xml
