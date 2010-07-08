@@ -145,7 +145,7 @@ class RestMethod < ActiveRecord::Base
     return grouped_and_sorted if methods.blank?
       
     methods.each do |m|
-      group_name = (m.group_name.blank? ? "Other" : m.group_name)
+      group_name = (m.group_name.blank? ? "Other" : m.group_name.titleize)
       if grouped.has_key?(group_name)
         grouped[group_name] << m          
       else
