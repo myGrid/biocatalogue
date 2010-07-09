@@ -253,8 +253,8 @@ module AnnotationsHelper
     desc = strip_tags(desc) if do_strip_tags
     desc = truncate(desc, :length => truncate_length) unless truncate_length.nil?
     desc = simple_format(desc) if do_simple_format
-    desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if do_auto_link
     desc = white_list(desc)
+    desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if do_auto_link
 
     return desc
   end
