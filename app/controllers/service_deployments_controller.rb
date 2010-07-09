@@ -17,6 +17,7 @@ class ServiceDeploymentsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # show.xml.builder
+      format.json { render :json => @service_deployment.to_json }
     end
   end
 

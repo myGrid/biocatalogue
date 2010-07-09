@@ -103,6 +103,14 @@ class ServiceDeployment < ActiveRecord::Base
     return hostnames.strip
   end
   
+  def to_json
+    generate_json_and_make_inline(false)
+  end 
+
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end 
+
 protected
 
   def check_service_id
@@ -130,5 +138,22 @@ private
       UserMailer.deliver_orphaned_provider_notification(recipients.join(", "), SITE_BASE_HOST, provider)
     end
   end
+  
+  def generate_json_and_make_inline(make_inline)
+    data = {
+      "service_deployment" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
+        "endpoint" => self.endpoint,
+        "created_at" => self.created_at.iso8601,
+        "location" => BioCatalogue::JSON.location(self.country, self.city),
+        "provider" => JSON(self.provider.to_json)
+      }
+    }
+
+    data["service_deployment"]["provided_variant"] = JSON(self.service_version.service_versionified.to_inline_json) unless make_inline
+    
+    return data.to_json
+  end # generate_json_and_make_inline
   
 end

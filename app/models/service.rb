@@ -91,6 +91,25 @@ class Service < ActiveRecord::Base
               :limit => limit)
   end
   
+  def to_json
+    versions = []
+    self.service_versions.each{ |v| versions << v.service_versionified }
+    
+    {
+      "service" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => BioCatalogue::Util.display_name(self),
+        "description" => (self.preferred_description || ""),
+        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
+        "created_at" => self.created_at.iso8601,
+        "service_technology_types" => self.service_types,
+        "latest_monitoring_status" => BioCatalogue::JSON.monitoring_status(self.latest_status),
+        "variants" => BioCatalogue::JSON.collection(versions, true),
+        "deployments" => BioCatalogue::JSON.collection(self.service_deployments, true)
+      }
+    }.to_json
+  end 
+  
 #  def to_param
 #    "#{self.id}-#{self.unique_code}"
 #  end

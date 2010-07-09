@@ -236,8 +236,15 @@ class RestService < ActiveRecord::Base
 
   # =========================================
   
-  
-  protected
+  def to_json
+    generate_json_and_make_inline(false)
+  end 
+
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end
+
+protected
   
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
@@ -247,7 +254,7 @@ class RestService < ActiveRecord::Base
   # =========================================
   
   
-  private
+private
   
   def process_user_endpoint(user_endpoint, base_url, annotation_value)
     # remove the base endpoint so that we are left with the resource path only.
@@ -368,5 +375,23 @@ class RestService < ActiveRecord::Base
   
   # =========================================
 
+  def generate_json_and_make_inline(make_inline)
+    data = {
+      "rest_service" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => BioCatalogue::Util.display_name(self),
+        "submitter" => BioCatalogue::Api.uri_for_object(self.service_version.submitter),
+        "description" => (self.description || ""),
+        "documentation_url" => (self.preferred_documentation_url || ""),
+        "created_at" => self.created_at.iso8601
+      }
+    }
+
+    unless make_inline
+      data["rest_service"]["deployments"] = BioCatalogue::JSON.collection(self.service_deployments, true)
+    end
+    
+    return data.to_json
+  end # generate_json_and_make_inline
   
 end

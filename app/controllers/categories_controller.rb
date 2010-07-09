@@ -23,6 +23,7 @@ class CategoriesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # show.xml.builder
+      format.json { render :json => @category.to_json }
     end
   end
   

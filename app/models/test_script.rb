@@ -53,7 +53,24 @@ class TestScript < ActiveRecord::Base
   if USE_EVENT_LOG
     acts_as_activity_logged(:models => { :culprit => { :model => :submitter } })
   end        
-  
+
+  def to_json
+    {
+      "test_script" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => self.name,
+        "description" => self.description,
+        "content_type" => self.content_type,
+        "programming_language" => self.prog_language,
+        "executable_filename" => self.exec_name,
+        "download" => URI.parse(BioCatalogue::Api.uri_for_object(self).to_s.gsub(/\/$/, '') + "/download"),
+        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
+        "created_at" => self.created_at.iso8601,
+        "activated_at" => (self.activated_at ? self.activated_at.iso8601 : "")
+      }
+    }.to_json
+  end 
+
   # Helper class method to lookup all tests assigned
   # to all testable types for a given user.
   def self.find_tests_by_user(user)

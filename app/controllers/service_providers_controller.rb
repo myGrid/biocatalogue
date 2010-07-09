@@ -41,6 +41,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder
+      format.json { render :json => @service_provider.to_json }
     end
   end
   

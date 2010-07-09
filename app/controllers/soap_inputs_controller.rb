@@ -16,6 +16,7 @@ class SoapInputsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to url_for_web_interface(@soap_input) }
       format.xml  # show.xml.builder
+      format.json { render :json => @soap_input.to_json }
     end
   end
   

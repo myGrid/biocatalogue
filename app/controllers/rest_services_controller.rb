@@ -36,6 +36,7 @@ class RestServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # show.xml.builder
+      format.json { render :json => @rest_service.to_json }
     end
   end
 

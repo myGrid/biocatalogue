@@ -59,6 +59,19 @@ class User < ActiveRecord::Base
   before_create   :generate_activation_code,
                   :generate_default_display_name
 
+  def to_json
+    {
+      "user" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => BioCatalogue::Util.display_name(self),
+        "affiliation" => self.affiliation,
+        "public_email" => (self.public_email || ""),
+        "joined" => (self.activated_at ? self.activated_at.iso8601 : ""),
+        "location" => BioCatalogue::JSON.location(self.country)
+      }
+    }.to_json
+  end
+
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     return nil if login.blank? or password.blank?

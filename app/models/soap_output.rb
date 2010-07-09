@@ -28,6 +28,22 @@ class SoapOutput < ActiveRecord::Base
     acts_as_activity_logged(:models => { :referenced => { :model => :soap_operation } })
   end
   
+  def to_json
+    {
+      "soap_output" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => self.name,
+        "description" => (self.preferred_description || ""),
+        "computational_type" => (self.computational_type || ""),
+        "created_at" => self.created_at.iso8601
+      }
+    }.to_json
+  end
+  
+  def to_inline_json
+    self.to_json
+  end
+  
   def preferred_description
     # Either the description from the service description doc, 
     # or the last description annotation.
@@ -54,4 +70,5 @@ class SoapOutput < ActiveRecord::Base
   def computational_type_details_for_solr
     BioCatalogue::Util.all_values_from_hash(self.computational_type_details).collect {|i| i.downcase}.uniq.to_sentence(:words_connector => ' ', :last_word_connector => ' ', :two_words_connector => ' ')
   end
+  
 end

@@ -29,6 +29,17 @@ class Agent < ActiveRecord::Base
     acts_as_activity_logged
   end
   
+  def to_json
+    {
+      "agent" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => BioCatalogue::Util.display_name(self),
+        "description" => (self.preferred_description || ""),
+        "created_at" => self.created_at.iso8601
+      }
+    }.to_json
+  end 
+  
   def annotation_source_name
     self.display_name
   end

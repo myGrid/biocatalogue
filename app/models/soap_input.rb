@@ -28,6 +28,23 @@ class SoapInput < ActiveRecord::Base
     acts_as_activity_logged(:models => { :referenced => { :model => :soap_operation } })
   end
   
+  def to_json
+    {
+      "soap_input" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => self.name,
+        "description" => (self.preferred_description || ""),
+        "computational_type" => (self.computational_type || ""),
+        "created_at" => self.created_at.iso8601
+      }
+    }.to_json
+  end
+  
+  def to_inline_json
+    self.to_json
+  end
+
+  
   def preferred_description
     # Either the description from the service description doc, 
     # or the last description annotation.

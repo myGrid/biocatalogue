@@ -63,6 +63,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder
+      format.json { render :json => @service.to_json }
     end
   end
 

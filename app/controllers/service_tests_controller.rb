@@ -19,6 +19,7 @@ class ServiceTestsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # show.xml.builder
+      format.json { render :json => @service_test.to_json }
     end
   end
   

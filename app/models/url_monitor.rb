@@ -38,4 +38,14 @@ class UrlMonitor < ActiveRecord::Base
     self.service_test.activated?
   end
   
+  def to_json
+    {
+      "url_monitor" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "url" => self.url,
+        "resource" => BioCatalogue::Api.uri_for_object(self.parent)
+      }
+    }.to_json
+  end 
+
 end

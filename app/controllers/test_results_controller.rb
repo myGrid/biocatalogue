@@ -26,6 +26,7 @@ class TestResultsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # show.xml.builder
+      format.json { render :json => @test_result.to_json }
     end
   end
   

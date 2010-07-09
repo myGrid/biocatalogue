@@ -76,6 +76,14 @@ class SoapService < ActiveRecord::Base
     acts_as_activity_logged(:models => { :referenced => { :model => :service_version } })
   end
   
+  def to_json
+    generate_json_and_make_inline(false)
+  end 
+
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end 
+
   # ======================================
   # Class level method stubs reimplemented
   # from acts_as_service_versionified
@@ -645,7 +653,7 @@ class SoapService < ActiveRecord::Base
   end
 
   
-  protected
+protected
   
   def connect?
     begin
@@ -716,5 +724,28 @@ class SoapService < ActiveRecord::Base
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end
-  
+
+private
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
+      "soap_service" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => BioCatalogue::Util.display_name(self),
+        "wsdl_location" => self.wsdl_location,
+        "submitter" => BioCatalogue::Api.uri_for_object(self.service_version.submitter),
+        "description" => (self.description || ""),
+        "documentation_url" => (self.preferred_documentation_url || ""),
+        "created_at" => self.created_at.iso8601
+      }
+    }
+
+    unless make_inline
+      data["soap_service"]["deployments"] = BioCatalogue::JSON.collection(self.service_deployments, true) 
+      data["soap_service"]["operations"] = BioCatalogue::JSON.collection(self.soap_operations, true)
+    end
+
+    return data.to_json
+  end # generate_json_and_make_inline
+
 end

@@ -20,6 +20,7 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # show.xml.builder
+      format.json { render :json => @soap_service.to_json }
     end
   end
 

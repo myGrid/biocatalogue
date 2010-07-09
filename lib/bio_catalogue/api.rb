@@ -78,8 +78,8 @@ module BioCatalogue
       
       return obj
     end
-    
-    protected
+  
+  protected
       
     def self.append_params(uri, params)
       # Remove the special params

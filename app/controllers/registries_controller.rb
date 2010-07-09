@@ -35,6 +35,7 @@ class RegistriesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder
+      format.json { render :json => @registry.to_json }
     end
   end
   

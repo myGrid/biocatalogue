@@ -86,7 +86,23 @@ class Category < ActiveRecord::Base
     return hierarchy    
   end
   
-  protected
+  def to_json
+    data = category_hash(self)
+    
+    data["category"]["broader"] = category_hash(self.parent) if self.has_parent?
+    
+    if self.has_children?
+      narrower_data = []
+      
+      self.children.each { |cat| narrower_data << category_hash(cat) }
+      
+      data["category"]["narrower"] = narrower_data
+    end
+    
+    return data.to_json
+  end 
+
+protected
   
   # Loads all categories into memory, including parent => child relationships
   # to cut out any SQL queries and make processing more efficient
@@ -101,4 +117,15 @@ class Category < ActiveRecord::Base
     end
   end
  
+private
+
+  def category_hash(cat)
+    {
+      "category" => {
+        "self" => BioCatalogue::Api.uri_for_object(cat),
+        "name" => BioCatalogue::Util.display_name(cat),
+        "total_items_count" => BioCatalogue::Categorising.number_of_services_for_category(cat),
+      }
+    }
+  end
 end

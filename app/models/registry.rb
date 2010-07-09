@@ -33,6 +33,18 @@ class Registry < ActiveRecord::Base
     acts_as_solr(:fields => [ :name, :display_name, :description, :homepage ] )
   end
   
+  def to_json
+    {
+      "registry" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => BioCatalogue::Util.display_name(self),
+        "description" => (self.preferred_description || ""),
+        "homepage" => self.homepage,
+        "created_at" => self.created_at.iso8601
+      }
+    }.to_json
+  end
+  
   def preferred_description
     desc = self.description
         

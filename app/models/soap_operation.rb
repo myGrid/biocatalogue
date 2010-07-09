@@ -104,4 +104,34 @@ class SoapOperation < ActiveRecord::Base
     
     return total_annotations
   end
+  
+  def to_json
+    generate_json_and_make_inline(false)
+  end
+  
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end
+  
+private
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
+      "soap_operation" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => self.name,
+        "description" => (self.description || ""),
+        "parameter_order" => (self.parameter_order || ""),
+        "created_at" => self.created_at.iso8601
+      }
+    }
+
+    unless make_inline
+      data["soap_operation"]["inputs"] = BioCatalogue::JSON.collection(self.soap_inputs, true)
+      data["soap_operation"]["outputs"] = BioCatalogue::JSON.collection(self.soap_outputs, true)
+    end
+    
+    return data.to_json
+  end # generate_json_and_make_inline
+
 end
