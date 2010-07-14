@@ -18,7 +18,7 @@ module BioCatalogue
           if service.archived?
             service.deactivate_service_tests!
           else
-            service.activate_service_tests!
+            #service.activate_service_tests!
 
             # get all service deployments
             deployments = service.service_deployments
@@ -272,7 +272,9 @@ module BioCatalogue
                 result = check :soap_endpoint => pingable.send(monitor.property)
                 if result[:result] != 0
                   if pingable.service_version.service_versionified.endpoint_available?
-                    result[:result] = 0
+                    result[:result]   = 0
+                    result[:message]  = "Connected to service"
+                    result[:action]   = "soap_client"
                   end
                 end
               else

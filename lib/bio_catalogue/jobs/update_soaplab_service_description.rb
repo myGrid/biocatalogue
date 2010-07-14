@@ -8,12 +8,9 @@ module BioCatalogue
   module Jobs
     class UpdateSoaplabServiceDescription < Struct.new(:service_id)
       def perform
-        service = Service.find_by_id(service_id)
-        if service
-          soaps   = service.service_version_instances_by_type('SoapService')
-          if !soaps.empty?
-            soaps.last.update_description_from_soaplab! unless service.nil?
-          end
+        service = Service.find(service_id)
+        if service 
+          service.latest_version.service_versionified.update_description_from_soaplab!
         end
       end
     end    
