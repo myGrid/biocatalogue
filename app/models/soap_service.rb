@@ -616,9 +616,10 @@ class SoapService < ActiveRecord::Base
   
   def update_description_from_soaplab!(is_soaplab=false)
     if self.soaplab_service? || is_soaplab
-      desc = nil 
+      desc  = nil 
+      proxy = nil
       begin
-        SystemTimer.timeout(60.seconds) do
+        SystemTimer.timeout(30.seconds) do
           proxy = SOAP::WSDLDriverFactory.new(self.wsdl_location).create_rpc_driver
         end
         if !proxy.respond_to?('describe')
@@ -657,10 +658,21 @@ protected
   
   def connect?
     begin
-      SystemTimer.timeout(60.seconds) do
+      SystemTimer.timeout(30.seconds) do
         proxy = SOAP::WSDLDriverFactory.new(self.wsdl_location).create_rpc_driver
         operations = proxy.methods(false)
-        return true if !operations.empty?
+        if !operations.empty?
+          begin
+            puts operations.first
+            proxy.send(operations.first)
+            return true
+          rescue ArgumentError => ex
+            puts ex.class.name
+            puts ex
+            return true 
+          end
+        end
+        return false
       end
     rescue Exception => ex
       logger.warn("Failed to connect to service")

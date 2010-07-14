@@ -123,9 +123,9 @@ class ServiceTest < ActiveRecord::Base
       last_success = TestResult.find(:first, :conditions => ["service_test_id=? AND result=0 ", self.id], 
                                               :order => 'created_at DESC')
       unless last_success.nil?
-        return TestResult.find(:all, :conditions => ["service_test_id=? AND result=1 AND created_at > ? ", 
+        return TestResult.find(:first, :conditions => ["service_test_id=? AND result=1 AND created_at > ? ", 
                                                                           self.id, last_success.created_at],
-                                                            :order => 'created_at ASC').first.created_at
+                                                            :order => 'created_at ASC').created_at
       end
       return self.test_results.first.created_at
     end

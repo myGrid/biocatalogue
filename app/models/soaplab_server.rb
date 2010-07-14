@@ -9,6 +9,10 @@ require 'soap/wsdlDriver'
 require 'ftools'
 
 class SoaplabServer < ActiveRecord::Base
+  
+  after_create :update_relationships
+  before_destroy :archive_services
+  
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache
     index :location
@@ -22,6 +26,8 @@ class SoaplabServer < ActiveRecord::Base
   validates_uniqueness_of :location, :message => " for this server seems to exist in BioCatalogue"
   validates_url_format_of :location,
                           :allow_nil => false
+                  
+  
   
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :location ])
@@ -43,6 +49,9 @@ class SoaplabServer < ActiveRecord::Base
          dup = SoapService.check_duplicate(url, data["endpoint"])
       if success and dup != nil
          existing_services << dup
+         unless dup.latest_version.service_versionified.description_from_soaplab
+            dup.latest_version.service_versionified.update_description_from_soaplab!(true)
+         end
          logger.info("This service exists in the database")
       else
         transaction do
@@ -51,6 +60,7 @@ class SoaplabServer < ActiveRecord::Base
               c_success = soap_service.submit_service( data["endpoint"], current_user, {} )  
               if c_success
                 new_wsdls << url
+                soap_service.update_description_from_soaplab!(true) if soap_service
                 logger.info("Registered service - #{url}. SUCCESS:")
               else
                 error_urls << url
@@ -68,6 +78,7 @@ class SoaplabServer < ActiveRecord::Base
     end
     create_relationships(new_wsdls)
     create_tags(find_services_in_catalogue(new_wsdls), current_user)
+    self.update_descriptions_from_soaplab!
     return [new_wsdls, existing_services, error_urls]
   end
     
@@ -85,7 +96,7 @@ class SoaplabServer < ActiveRecord::Base
       proxy.wiredump_dev = STDERR
       categories.each{|cat| 
         data[cat] = proxy.getAvailableAnalysesInCategory(cat) 
-        proxy.wiredump_dev = STDERR
+        #proxy.wiredump_dev = STDERR
         data[cat].collect! {|a|
           analysis             = {}
           analysis['name']     = a
@@ -139,7 +150,7 @@ class SoaplabServer < ActiveRecord::Base
   # find all the services in catalogue for this server
   # given the list of wsdls
   def find_services_in_catalogue(wsdls =[])
-    return SoapService.find_all_by_wsdl_location(wsdls).collect{ |ss| ss.service }
+    return SoapService.find_all_by_wsdl_location(wsdls).collect{ |ss| ss.service }.compact
   end
  
   # the relationship table maps services to a soaplab instance 
@@ -213,6 +224,19 @@ class SoaplabServer < ActiveRecord::Base
   def update_descriptions_from_soaplab!
     self.services.each do |service|
       Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateSoaplabServiceDescription.new(service.id))
+    end
+  end
+  
+  def update_relationships
+    registered_wsdls = self.services.collect{|s| s.latest_version.service_versionified.wsdl_location }.compact
+    data  = services_factory().values.flatten
+    all_wsdls = data.collect{|d| d['location']}.compact
+    create_relationships(all_wsdls - registered_wsdls)  
+  end
+  
+  def archive_services
+    self.services.each do |service|
+      service.archive!
     end
   end
    
