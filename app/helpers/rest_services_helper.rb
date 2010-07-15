@@ -193,7 +193,7 @@ module RestServicesHelper
                       if resource_path == '/{parameters}' 
                         "#{base_url}#{required_params}"
                       elsif resource_path.start_with?('/')
-                        "<span class='none_text'>Could not generate URL template</span>"
+                        "Could not generate URL template"
                       else
                         "#{base_url}#{resource_path}#{required_params}"
                       end
