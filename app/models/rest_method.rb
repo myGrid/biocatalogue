@@ -141,16 +141,22 @@ class RestMethod < ActiveRecord::Base
   def self.group_rest_methods(methods)
     grouped = { }
     grouped_and_sorted = [ ]
-    
+        
     return grouped_and_sorted if methods.blank?
       
     methods.each do |m|
-      group_name = (m.group_name.blank? ? "Other" : m.group_name.titleize)
-      if grouped.has_key?(group_name)
-        grouped[group_name] << m          
-      else
-        grouped[group_name] = [ m ]
+      group_name = (m.group_name.blank? ? "Other" : m.group_name)
+
+      found = false
+      
+      grouped.each do |name, list|
+        if name.downcase==group_name.downcase
+          found = true
+          list << m
+        end
       end
+      
+      grouped[group_name] = [ m ] unless found
     end
     
     grouped.keys.sort.each do |k|
