@@ -36,7 +36,7 @@
 							</span>
 						</div>
 						<div style="margin-top: 0.7em;">
-							<pre><%= annotation_prepare_description(ann.value, false, nil, false, false) -%></pre>
+							<pre><%= annotation_prepare_description(ann.value, false, nil, false, false, false) -%></pre>
 						</div>
 						<%= render :partial => "annotations/common/default_modify_options",
 											 :locals => { :annotation => ann, :ann_type => "example data" } -%>
