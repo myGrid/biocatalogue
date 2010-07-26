@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
   
   # Allow for SSL support
   include SslRequirement
-#  require 'ensure_proper_protocol_override'
 
   # ============================================
   

@@ -143,7 +143,7 @@ class RestMethod < ActiveRecord::Base
     grouped_and_sorted = [ ]
         
     return grouped_and_sorted if methods.blank?
-      
+    
     methods.each do |m|
       group_name = (m.group_name.blank? ? "Other" : m.group_name)
 

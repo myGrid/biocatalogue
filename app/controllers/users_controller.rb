@@ -24,7 +24,10 @@ class UsersController < ApplicationController
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
 
-#  ssl_required :new, :create, :edit, :update, :activate_account, :forgot_password, :request_reset_password, :reset_password, :change_password, :rpx_merge_setup, :rpx_merge, :rpx_update
+  if ENABLE_SSL && Rails.env.production?
+#    ssl_required :new, :create, :edit, :update, :activate_account, :forgot_password, :request_reset_password, :reset_password, :change_password, :rpx_merge_setup, :rpx_merge, :rpx_update
+    ssl_allowed :new, :create
+  end
 
   # GET /users
   # GET /users.xml

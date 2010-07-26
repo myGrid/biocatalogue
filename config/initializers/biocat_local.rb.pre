@@ -140,3 +140,6 @@ MONITORING_STATUS_CHANGE_RECIPIENTS = [ "tom@example.org", "dick@example.org", "
 # submitters or anyone responsible for the service in 
 # addition to those included in the status recipients list above.
 NOTIFY_SERVICE_RESPONSIBLE = false
+
+# This setting determines whether SSL (via the ssl_requirement plugin) is used.
+ENABLE_SSL = true
