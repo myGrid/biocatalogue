@@ -15,7 +15,10 @@ class ResponsibilityRequestsController < ApplicationController
   before_filter :authorise_approval, :only => [ :approve ]
   before_filter :authorise_create , :only => [ :create ]
   
-  
+  if ENABLE_SSL && Rails.env.production?
+    ssl_required :index, :new, :create, :destroy, :cancel, :approve, :turn_down, :deny
+  end
+
   # GET /responsibility_requests
   # GET /responsibility_requests.xml
   def index
