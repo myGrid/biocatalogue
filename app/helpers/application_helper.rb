@@ -311,22 +311,22 @@ module ApplicationHelper
   # that are available for this service. If any of the check did not 
   # pass, the overall status is set to warning.
   
-  def service_latest_status_symbol(service)
+  def service_latest_status_symbol(service, small=false)
     
     return '' if service.nil?
     
     if ENABLE_STATUS_DISPLAY 
-      return status_symbol(service.latest_status)
+      return status_symbol(service.latest_status, small)
     end
     return ''
   end
   
-  def service_test_status_symbol(service_test)
+  def service_test_status_symbol(service_test, small=false)
     
     return '' if service_test.nil?
     
     if ENABLE_STATUS_DISPLAY 
-      return status_symbol(service_test.latest_status)
+      return status_symbol(service_test.latest_status, small)
     end
     return ''
     
@@ -340,33 +340,33 @@ module ApplicationHelper
 #    return image_tag(stat.symbol_url, :alt => stat.message, :title => tooltip_title_attrib(tooltip_text))
   end
 
-  def test_result_status_symbol(test_result)
+  def test_result_status_symbol(test_result, small=true)
     
     return '' if test_result.nil?
     
     if ENABLE_STATUS_DISPLAY 
-      return status_symbol(test_result.status, true)
+      return status_symbol(test_result.status, small)
     end
     return ''
   end
   
   
-  def status_symbol(status, history=false)
+  def status_symbol(status, small=false)
     last_checked_text = if status.last_checked.blank?
       ""
     else
-      "<br/><span style='color:#666'>" + (history ? "Checked: " : "Last checked: ") + "#{distance_of_time_in_words_to_now(status.last_checked)} ago</span>"
+      "<br/><span style='color:#666'>" + (small ? "Checked: " : "Last checked: ") + "#{distance_of_time_in_words_to_now(status.last_checked)} ago</span>"
     end
     
     
     
-    tooltip_text = if history
+    tooltip_text = if small
       "Status: "
     else
       "Monitoring status: "
     end + "<b>#{status.label}</b><br/>#{status.message}#{last_checked_text}"
     
-    symbol_filename = if history 
+    symbol_filename = if small 
       status.small_symbol_filename
     else
       status.symbol_filename

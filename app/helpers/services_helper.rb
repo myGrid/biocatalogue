@@ -152,4 +152,11 @@ module ServicesHelper
     return ''
   end
   
+  def service_tests_for_display(service_tests)
+    if logged_in? && current_user.is_admin?
+      return service_tests
+    end
+    return service_tests.collect{|st| st if st.enabled?}.compact
+  end
+  
 end

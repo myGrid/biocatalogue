@@ -1,0 +1,107 @@
+<%
+  
+  # BioCatalogue: app/views/service_tests/_testscript_show.html.erb
+  #
+  # Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+  # Institute (EMBL-EBI) and the University of Southampton.
+  # See license.txt for details
+  
+%>
+
+<div class="box_info_standout" style="text-align:center;">
+	About <b>TestScripts</b> 
+	<%= link_to_function "Click here for more info on test scripts" + expand_image, visual_effect(:toggle_blind, "about_testscripts", :duration => 0.3), :style => "text-decoration:none;" %>
+	<div id="about_testscripts" style="display:none;">
+		<%= render :partial => "test_scripts/about_testscripts" -%>
+	</div>
+</div>
+
+
+<div id="tab-testscripts" class="tabbertab">
+	<div class="monitoring_section">
+		<ul>
+		<!--<h4>Test Scripts for this Service</h4>-->
+		<div class="monitoring_section">		
+			<h5><%= h service_test.test.name -%> </h5>
+			<% unless service_test.unchecked? -%>
+				<div id="chart_info" style="float:right;" >
+					<span style="font-size: 3em;"><%= service_test.success_rate -%> % </span>
+					<%= info_icon_with_tooltip("Historical success rate for this test since its monitoring started.") -%>
+				</div>
+			<%end%>	
+			
+				<div style="text-align: left;">
+					<p>
+						<% if ms = service_test.monitored_since %> 
+							<b>Monitored Since : </b>  <%=h ms -%>
+						<%end%>
+					</p>
+				</div>
+				
+				<div style="padding-right: 1em;">
+					<%= service_test_status_symbol(service_test)%>
+				</div>	
+				
+				<div class="property">
+					<b>Submitter / Source:</b>
+					<%= submitter_link(service_test.test.submitter) %>
+					<span class="ago" style="vertical-align: baseline;">
+						(<%= distance_of_time_in_words_to_now(service_test.test.created_at) -%> ago)
+					</span>
+				</div>
+									
+				<div class="property">
+					<%= render :partial => "annotations/descriptions",
+									 			:locals => { :annotatable => service_test.test } -%>
+				</div>
+									
+					<!--history -->
+				<p>
+					<b>Recent History</b>
+				</p>
+				<div class="box_indented_with_bar">
+					<ul>
+						<% unless (script_hist = service_test.test.recent_test_results).blank? %>
+							<% script_hist.each  do |hist| %>
+								<% unless hist.result == -1  %>
+									<li>
+										<%= test_result_status_symbol(hist)  %> 
+										<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
+									</li>
+								<% end %>
+							<% end %>
+						<% else %>
+							<li class="none_text">No previous checks</li>
+						<% end %>
+					</ul>
+				</div>
+									
+				<div style="text-align: right;">
+					<%= link_to("Download", download_test_script_url(service_test.test), :class => "button_slim") -%>
+					<%if current_user && current_user.is_admin? %>
+						<% if service_test.activated? %>
+							<%= link_to("Disable", disable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
+						<% else %>
+							<%= link_to("Enable", enable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
+						<% end %>
+					<%end%>
+				</div>
+			</div>	
+	</ul>
+
+	<%unless service_test.latest_status.label.downcase == 'unchecked' %>
+		<div id="line_chart" style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;" ></div>
+	<%end%>
+</div>
+
+</div>
+<div>
+	<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service) -%>
+		<div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
+			<%= render :partial => 'shared/service_test', :locals => {:service => service_test.service} -%>
+		</div>
+	<% end %>
+</div>
+</div>
+
+<%=render :partial => 'line_chart', :locals => {:service_test => service_test } -%>

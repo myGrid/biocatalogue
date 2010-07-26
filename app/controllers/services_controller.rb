@@ -52,13 +52,18 @@ class ServicesController < ApplicationController
     @all_service_version_instances = @service.service_version_instances
     @all_service_types = @service.service_types
     
-    @soaplab_service = @service.soaplab_server
+    @soaplab_server = @service.soaplab_server
     
     @pending_responsibility_requests = @service.pending_responsibility_requests
     
     if @latest_version_instance.is_a?(RestService)
       @grouped_rest_methods = @latest_version_instance.group_all_rest_methods_from_rest_resources
     end
+    
+    @service_tests = @service.service_tests
+    
+    @test_script_service_tests  = @service.service_tests_by_type("TestScript")
+    @url_monitor_service_tests  = @service.service_tests_by_type("UrlMonitor")
     
     respond_to do |format|
       format.html # show.html.erb

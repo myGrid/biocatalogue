@@ -1,0 +1,31 @@
+<%
+  
+  # BioCatalogue: app/views/service_tests/_gauge_graph.html.erb
+  #
+  # Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+  # Institute (EMBL-EBI) and the University of Southampton.
+  # See license.txt for details
+  
+%>
+
+<!-- Gauge chart of percentage success of service test -->
+<%= Seer::visualize(
+           			[service_test], 
+           			:as => :gauge,
+           			:in_element => "chart",
+           			:series => {:series_label => 'graph_label', :data_method => 'success_rate'},
+           			:chart_options => {
+             		:red_from => 0,
+             		:red_to => 25,
+             		:yellow_from => 26,
+             		:yellow_to => 75,
+             		:green_from => 76,
+             		:green_to => 100,
+             		:width => 200,
+             		:height => 100,
+             		:max => 100,
+             		:min => 0,
+             		:minor_ticks => 5
+           				}
+         			)
+      			-%>

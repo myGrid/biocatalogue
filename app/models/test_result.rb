@@ -9,7 +9,7 @@ class TestResult < ActiveRecord::Base
   
   before_create :valid_result_range
   
-  after_create :update_status
+  after_create :update_status, :update_success_rate
   
   belongs_to :service_test
   
@@ -54,6 +54,20 @@ class TestResult < ActiveRecord::Base
   
   def responsible_emails
     [self.service_test.service.submitter.email]
+  end
+  
+  def date
+    self.created_at.to_date
+  end
+  
+  def update_success_rate
+    Delayed::Job.enqueue(BioCatalogue::Jobs::CalculateServiceTestSuccessRate.new(self))
+  end
+  
+  def success_rate
+    service_test = self.service_test
+    service_test.success_rate = service_test.success_rate
+    service_test.save
   end
   
   # previous result id is set to nil for new_with_unknown_status

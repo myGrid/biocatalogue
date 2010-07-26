@@ -6,7 +6,7 @@
 
 class SoaplabServersController < ApplicationController
   
-  before_filter :disable_action, :only => [:index, :edit, :update, :destroy ]
+  before_filter :disable_action, :only => [:edit, :update, :destroy ]
   before_filter :disable_action_for_api
   
   before_filter :login_required, :except => [ :index, :show ]
@@ -14,7 +14,9 @@ class SoaplabServersController < ApplicationController
   # GET /soaplab_servers
   # GET /soaplab_servers.xml
   def index
-    @soaplab_servers = SoaplabServer.find(:all, :order => 'id DESC')
+    @soaplab_servers = SoaplabServer.paginate(:page => @page,
+                                              :per_page => @per_page, 
+                                              :order => 'id DESC')
 
     respond_to do |format|
       format.html # index.html.erb
@@ -29,7 +31,7 @@ class SoaplabServersController < ApplicationController
     #@services = @soaplab_server.associated_services
     @services = Service.find(@soaplab_server.relationships.collect{ |r| r.subject_id})
     @services = @services.paginate(:page => params[:page],
-                                   :per_page => 10,
+                                   :per_page => @per_page,
                                    :order => 'created_at DESC',
                                    :include => [ :service_versions, :service_deployments ])
 
@@ -62,6 +64,7 @@ class SoaplabServersController < ApplicationController
     
     if existing_server.nil?
       @soaplab_server = SoaplabServer.new(params[:soaplab_server]) 
+      @soaplab_server.submitter = current_user if logged_in?
     else
       @soaplab_server = existing_server
     end

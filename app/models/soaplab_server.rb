@@ -18,10 +18,20 @@ class SoaplabServer < ActiveRecord::Base
     index :location
   end
   
+  if ENABLE_SEARCH
+    acts_as_solr(:fields => [ :location ])
+  end
+  
+  if ENABLE_TRASHING
+    acts_as_trashable
+  end
+  
   acts_as_annotatable
   
+  has_submitter
+  
   has_many :relationships, :as => :object, :dependent => :destroy
-
+  
   validates_presence_of :location
   validates_uniqueness_of :location, :message => " for this server seems to exist in BioCatalogue"
   validates_url_format_of :location,
@@ -29,9 +39,12 @@ class SoaplabServer < ActiveRecord::Base
                   
   
   
-  if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :location ])
-  end
+  virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
+  
+  after_create :update_relationships
+  before_destroy :archive_services
+  
+  
 
   # save the soap services from this server in
   # the database

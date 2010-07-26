@@ -8,22 +8,12 @@
 
 %>
 
-<h1>Listing soaplab_servers</h1>
-<%= link_to 'soap services', '/soap_services' %>
-<p/>
-<table>
-  <tr>
-    <th>Location</th>
-  </tr>
+<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @soaplab_servers } %>
 
-<% for soaplab_server in @soaplab_servers %>
-  <tr>
-    <td><%=h soaplab_server.location %></td>
-    <td><%= link_to 'Show all Services', soaplab_server %></td>
-  </tr>
-<% end %>
-</table>
+<div id="latest_soaplab_servers" style="margin: 1em 0;">
+	<%= render :partial => "listing", :locals => { :items => @soaplab_servers } %>
+</div>
 
-<br />
+<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @soaplab_servers } %>
 
 

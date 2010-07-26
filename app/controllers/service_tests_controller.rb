@@ -17,7 +17,7 @@ class ServiceTestsController < ApplicationController
   
   def show
     respond_to do |format|
-      format.html { disable_action }
+      format.html # show.html.erb
       format.xml  # show.xml.builder
       format.json { render :json => @service_test.to_json }
     end
@@ -93,9 +93,9 @@ class ServiceTestsController < ApplicationController
     @service_test = ServiceTest.find(params[:id])
   end
   
-  # TODO investigate why "error_to_back_or_home" is causing multiple redirect errors
+  #TODO investigate why "error_to_back_or_home" is causing multiple redirect errors
   def authorise
-    unless current_user && current_user.is_admin?
+    unless logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_test.service)
       flash[:error] = "You are not allowed to perform this action! "
       redirect_to @service_test.service
     end

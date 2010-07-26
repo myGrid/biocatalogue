@@ -1,0 +1,63 @@
+<%
+  
+  # BioCatalogue: app/views/service_tests/show.html.erb
+  #
+  # Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+  # Institute (EMBL-EBI) and the University of Southampton.
+  # See license.txt for details
+  
+%>
+
+<div style="margin-bottom: 1.5em;">
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service"),
+						  service_url(@service_test.service), :class => "button_slim", :style => "margin-right:1.5em;" -%>
+</div>
+
+	
+<div class="operations_quick_browse_box">
+	<span class="heading">
+		Quick Browse
+	</span>
+	|
+	<% service_tests_for_display(@service_test.service.service_tests).each do |st| %>
+		<span class="entry">
+			<%= link_to(display_name(st), st) -%>
+		</span>
+		|
+	<% end %>
+</div>
+
+
+<div class="vtabs_container">
+	
+	<!-- TABS BAR -->  
+  	<div class="vtabs_tab_bar">
+    	<div>
+    		<ul>
+    			<%unless @service_test && service_tests_for_display([@service_test]).empty? -%>
+					<li class='active' title="<%= tooltip_title_attrib(display_name(@service_test)) -%>">
+						<% st_label = content_tag(:span, service_test_status_symbol(@service_test, true) + truncate(display_name(@service_test), :length => 20), :class => 'name')  -%>
+	          			<%= link_to st_label, @service_test -%>
+	        		</li>
+    			<%end%>
+				
+      			<% service_tests_for_display(@service_test.service.service_tests).each do |st| %>
+			  		<% unless st == @service_test %>
+	        			<li title="<%= tooltip_title_attrib(display_name(st)) -%>">
+							<% st_label = content_tag(:span, service_test_status_symbol(st, true) + truncate(display_name(st), :length => 20), :class => 'name')  -%>
+	          				<%= link_to st_label, st -%>
+	        			</li>
+					<% end %>
+      			<% end %>
+			</ul>
+    	</div>
+  	</div>
+
+ 	<!-- MAIN AREA-->
+ 	<div class="vtabs_tab_content">
+  	
+		<%=render :partial => "#{@service_test.test.class.name.underscore}_show", :locals => {:service_test => @service_test }%>
+	
+	</div>
+</div>
+<span class="clear"></span>

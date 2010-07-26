@@ -8,195 +8,43 @@
 
 %>
 
-<% if current_user && current_user.is_admin?%>
-	<% script_view_options ={:active_only => false } %>
-<%else%>
-	<% script_view_options ={:active_only => true } %>
-<%end%>
-
 <div id="tab-monitoring" class="tabbertab">
 	
 	<h3>Monitoring</h3>
 	
-	<div style="text-align: right;">
-		<table style="text-align: right;">
-			<tr>
-				<td style="vertical-align: middle; padding-right: 0.6em;">
-					<b>Overall status:</b>
-				</td>
-				<td style="vertical-align: middle;">
-					<%  benchmark "Rendered services/_monitoring_tab (overall status)" do %>
-						<%= service_latest_status_symbol(@service) -%>
-					<% end %>
-				</td>
-			</tr>
-		</table>
+	<!-- Begin Listing Section --> 
+	
+	<div class="operations_quick_browse_box">
+		<span class="heading">
+			Quick Browse
+		</span>
+		|
+		<% service_tests_for_display(@service_tests).each do |st| -%>
+		 	<%if st.enabled? -%>
+				<span class="entry">
+					<%= link_to(display_name(st), st) -%>
+				</span>
+				|
+			<% end -%>
+		<% end -%>
 	</div>
 	
-	<div id="monitoring_inner_tabs" class="tabber" style="margin-top: 1.2em;">
-
-		<div id="tab-availability" class="tabbertab">
-			
-			<h3>Availability Checks</h3>
-			
-			<div>
-				
-				<%  benchmark "Rendered services/_monitoring_tab (URL monitors)" do %>
-				
-					<% if (url_monitor_tests = @service.service_tests_by_type("UrlMonitor")).empty? %>
-				 		<p class="none_text"> No availability monitoring yet. Please check back later. </p>
-					<% else %>
-						<% url_monitor_tests.each do |service_test| -%>
-							<% if service_test.activated? || (current_user && current_user.is_admin?) -%>
-								<div class="monitoring_section">
-									<h5>
-									<div style="text-align: left;"> 
-										<p>
-											<% if service_test.test.parent_type =="Annotation" %>
-												<%= h(service_test.test.parent.attribute.name.titleize) -%> : 
-											<%else%>
-												<%= h(service_test.test.property.titleize) -%> : 
-											<%end%>
-											<%= h(service_test.test.parent.send(service_test.test.property)) -%>
-										</p>
-									</div>	
-									</h5>
-									<div style="text-align: left;">
-										<p>
-											<% if ms = service_test.monitored_since %> 
-												<b></>Monitored Since :</b>  <%=h ms -%>
-											<%end%>
-										</p>
-									</div>
-									<div style="padding-right: 1em;">
-										<%= service_test_status_symbol(service_test)%>
-									</div>
+	<%unless service_tests_for_display(@test_script_service_tests).empty? -%>
+	<div class='listing_item'>
+		<span class="heading"> TestScripts </span>
+		<div id="latest_service_test" style="margin: 1em 0;">
+			<%= render :partial => "service_tests/listing", :locals => { :items => service_tests_for_display(@test_script_service_tests) } %>
+		</div>
+	 </div>
+	<%end%>
 	
-									<p>
-					    			<b>Recent History</b>
-									</p>
-						
-									<div class="box_indented_with_bar">
-										<ul>
-											<% unless (test_hist = service_test.recent_test_results).blank? %>
-						    					<% test_hist.each do |hist| %>
-													<li class="container_middled">
-														<%= test_result_status_symbol(hist) %> 
-									    				<span><%= distance_of_time_in_words_to_now(hist.created_at) -%> ago</span>
-													</li>
-							  					<% end %>
-											<% else %>
-												<li class="none_text">No previous checks</li>
-											<% end %>
-										</ul>
-									</div>
-									<div style="text-align: right;">
-										<%if current_user && current_user.is_admin? %>
-											<% if service_test.activated? %>
-												<%= link_to("Disable", disable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
-											<% else %>
-												<%= link_to("Enable", enable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
-											<% end %>
-										<% end %>
-									</div>
-								</div>
-			  				<% end -%>
-						<% end -%>		
-					<% end %>
-				<%end%>
+	<%unless service_tests_for_display(@url_monitor_service_tests).empty? -%>
+		<div class='listing_item'>
+			<span class="heading"> Availability Checks </span>	
+			<div id="latest_service_test" style="margin: 1em 0;">
+				<%= render :partial => "service_tests/listing", :locals => { :items => service_tests_for_display(@url_monitor_service_tests) } %>
 			</div>
 		</div>
-	
-		
-	<div id="tab-testscripts" class="tabbertab">
-		<h3>Test Scripts</h3>
-		<div class="monitoring_section">
-			<div class="box_info_standout" style="text-align:center;">
-				About <b>TestScripts</b> 
-				<%= link_to_function "Click here for more info on test scripts" + expand_image, visual_effect(:toggle_blind, "about_testscripts", :duration => 0.3), :style => "text-decoration:none;" %>
-				<div id="about_testscripts" style="display:none;">
-					<%= render :partial => "test_scripts/about_testscripts" -%>
-				</div>
-			</div>
-			<ul>
-				<!--<h4>Test Scripts for this Service</h4>-->
+	<%end%>
 
-				<% if @service.test_scripts(script_view_options).empty? -%>
-				 	<li class="none_text">No scripts uploaded yet or none activated </li>
-				<% else -%>
-					<% @service.test_scripts(script_view_options).each do |test| -%>  <br/>
-						<div class="monitoring_section">		
-							<h5><%= h test.name -%> </h5>	
-							<div style="text-align: left;">
-								<p>
-									<% if ms = test.service_test.monitored_since %> 
-										<b>Monitored Since : </b>  <%=h ms -%>
-									<%end%>
-								</p>
-							</div>
-							<table style="width: 99%; margin: 0.7em 0 0.3em 0;">
-								<tr>
-					 				<td style="padding-right: 1em;">
-										<%= service_test_status_symbol(test.service_test)%>
-									</td>
-								</tr>
-							</table>	
-							<div class="property">
-								<b>Submitter / Source:</b>
-								<%= submitter_link(test.submitter) %>
-								<span class="ago" style="vertical-align: baseline;">
-									(<%= distance_of_time_in_words_to_now(test.created_at) -%> ago)
-								</span>
-							</div>
-									
-							<div class="property">
-								<%= render :partial => "annotations/descriptions",
-									 				:locals => { :annotatable => test } -%>
-							</div>
-									
-							<!--history -->
-							<p>
-					  		<b>Recent History</b>
-							</p>
-							<div class="box_indented_with_bar">
-								<ul>
-									<% unless (script_hist = test.recent_test_results).blank? %>
-										<% script_hist.each  do |hist| %>
-											<% unless hist.result == -1  %>
-												<li>
-													<%= test_result_status_symbol(hist)  %> 
-										    		<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
-												</li>
-											<% end %>
-										<% end %>
-									<% else %>
-										<li class="none_text">No previous checks</li>
-									<% end %>
-								</ul>
-							</div>
-									
-							<div style="text-align: right;">
-								<%= link_to("Download", download_test_script_url(test), :class => "button_slim") -%>
-										
-								<%if current_user && current_user.is_admin? %>
-									<% if test.service_test.activated? %>
-										<%= link_to("Disable", disable_service_test_url(test.service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
-									<% else %>
-										<%= link_to("Enable", enable_service_test_url(test.service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
-									<% end %>
-								<%end%>
-							</div>
-						</div>	
-					<% end %>
-				<% end -%>
-			</ul>
-		</div>
-			<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) -%>
-				<div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
-					<%= render :partial => 'shared/service_test', :locals => {:service => @service} -%>
-				</div>
-			<% end %>
-		</div>
-	</div>
-</div>
-
+ </div>

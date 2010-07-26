@@ -10,8 +10,14 @@
 
 <% t "Soaplab Server Show Services" -%>
 
-
-<h1>Services in BioCatalogue from this Soaplab Server</h1>
+<p class="name">
+	<h1> <%= display_name(@soaplab_server) -%> </h1>
+	<span class="inline-block">
+		<%= render :partial => "annotations/name_aliases",
+								:locals => { :annotatable => @soaplab_server,
+												:name_annotations => all_alternative_name_annotations_for_soaplab_server(@soaplab_server) } -%>
+	</span>
+</p>
 
 <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
 

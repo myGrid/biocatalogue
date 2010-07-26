@@ -143,4 +143,73 @@ class ServiceTest < ActiveRecord::Base
     }.to_json
   end 
   
+  #synonym to activated
+  def enabled?
+    return activated?
+  end
+  
+  def pass_count
+    TestResult.find(:all, :select => 'id', :conditions => ["service_test_id=? AND result=?", self.id, 0]).count
+  end
+  
+  def fail_count
+    TestResult.find(:all, :select => 'id', :conditions => ["service_test_id=? AND result=?", self.id, 1]).count
+  end
+  
+  def success_rate
+    count = TestResult.find(:all, 
+                              :select => 'id', 
+                              :conditions => ["service_test_id=? ", self.id]).count
+    return 0 if count == 0
+    return (self.pass_count*100)/count
+  end
+  
+  def name
+    #return "TestScript"  if self.test.is_a?(TestScript)
+    return self.test.name  if self.test.is_a?(TestScript)
+    return self.test.parent.attribute.name if self.test.parent.is_a?(Annotation)
+    return self.test.property if self.test.is_a?(UrlMonitor)
+  end
+  
+  def graph_label
+    return '% Success'
+  end
+  
+  def result_data_points(all_data, step=6)
+    data_points = []
+    lower = 0
+    upper = lower+step
+    limit = all_data.count - 1
+    upper = limit-1 if upper > limit
+    
+    while upper < limit do
+      all_data[upper].result = results_sum(all_data[lower..upper])
+      data_points <<  all_data[upper]
+      lower = upper+1
+      upper = lower + step
+    end
+    
+    return data_points
+  end
+  
+  def results_sum(results)
+    results.collect{|r| r if  r.result > 0 }.compact.count
+  end
+  
+  # Use the the last number of results, determined by
+  # limit in the line graph
+  def result_values(limit = 185)
+    return [self].map{|s| result_data_points(s.test_results.last(limit))}
+  end
+  
+  # the creation date of this record
+  def date
+    self.created_at.to_date
+  end
+  
+  def unchecked?
+    return true if self.latest_status.label.downcase =='unchecked'
+    return false
+  end
+  
 end
