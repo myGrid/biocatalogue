@@ -8,7 +8,7 @@ class RestMethodsControllerTest < ActionController::TestCase
     get :edit_resource_path_popup
     assert_redirected_to :login
     
-    get :update_endpoint_name
+    get :update
     assert_redirected_to :login
     
     get :edit_endpoint_name_popup
@@ -76,14 +76,14 @@ class RestMethodsControllerTest < ActionController::TestCase
     @rest.service.destroy
   end
   
-  def test_update_endpoint_name
+  def test_update
     method = login_and_return_first_method("/{id}")
     
     method.endpoint_name = "name"
     method.save!
     
     # no name change
-    put :update_endpoint_name, :new_name => "name",
+    put :update, :new_name => "name",
                                :id => method.id
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
@@ -91,14 +91,14 @@ class RestMethodsControllerTest < ActionController::TestCase
     assert_redirected_to method
     
     # name changes
-    put :update_endpoint_name, :new_name => "name 2",
+    put :update, :new_name => "name 2",
                                :id => method.id
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
     assert_equal "name 2", method.endpoint_name
 
     # no name change
-    put :update_endpoint_name, :new_name => "  \r\n ",
+    put :update, :new_name => "  \r\n ",
                                :id => method.id
 
     method = @rest.rest_resources[0].rest_methods(true)[0]
