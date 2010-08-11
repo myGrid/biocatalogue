@@ -100,8 +100,16 @@ class Category < ActiveRecord::Base
     end
     
     return data.to_json
-  end 
-
+  end
+  
+  def to_inline_json
+    category_hash(self).to_json
+  end
+  
+  def to_minimal_json
+    category_hash(self, false).to_json
+  end
+  
 protected
   
   # Loads all categories into memory, including parent => child relationships
@@ -119,13 +127,15 @@ protected
  
 private
 
-  def category_hash(cat)
-    {
+  def category_hash(cat, include_count=true)
+    data = {
       "category" => {
         "self" => BioCatalogue::Api.uri_for_object(cat),
-        "name" => BioCatalogue::Util.display_name(cat),
-        "total_items_count" => BioCatalogue::Categorising.number_of_services_for_category(cat),
+        "name" => BioCatalogue::Util.display_name(cat)
       }
     }
+    
+    data["category"]["total_items_count"] = BioCatalogue::Categorising.number_of_services_for_category(cat) if include_count
+    return data
   end
 end

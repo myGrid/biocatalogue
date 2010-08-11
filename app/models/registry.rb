@@ -38,7 +38,7 @@ class Registry < ActiveRecord::Base
       "registry" => {
         "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => BioCatalogue::Util.display_name(self),
-        "description" => (self.preferred_description || ""),
+        "description" => self.preferred_description,
         "homepage" => self.homepage,
         "created_at" => self.created_at.iso8601
       }

@@ -7,6 +7,7 @@
 class ServiceProviderHostnamesController < ApplicationController
   
   before_filter :disable_action, :except => [ :reassign_provider_by_popup, :reassign_provider ]
+  before_filter :disable_action_for_api
   
   before_filter :find_service_provider_hostname
   

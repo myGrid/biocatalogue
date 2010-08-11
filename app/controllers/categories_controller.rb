@@ -11,11 +11,13 @@ class CategoriesController < ApplicationController
   before_filter :parse_roots_only_param, :only => [ :index ]
   
   before_filter :find_category, :only => [ :show ]
+  before_filter :find_categories, :only => [ :index ]
   
   def index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@categories, true).to_json }
     end
   end
   
@@ -31,6 +33,7 @@ class CategoriesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:cat, params[:id], "services", :xml)) }
+      format.json { redirect_to(generate_include_filter_url(:cat, params[:id], "services", :json)) }
     end
   end
   
@@ -53,4 +56,8 @@ class CategoriesController < ApplicationController
     raise ActiveRecord::RecordNotFound if @category.nil?
   end
   
+  def find_categories
+    @categories = Category.paginate(:page => @page,
+                                    :per_page => @per_page)
+  end
 end

@@ -92,23 +92,16 @@ class Service < ActiveRecord::Base
   end
   
   def to_json
-    versions = []
-    self.service_versions.each{ |v| versions << v.service_versionified }
-    
-    {
-      "service" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
-        "name" => BioCatalogue::Util.display_name(self),
-        "description" => (self.preferred_description || ""),
-        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
-        "created_at" => self.created_at.iso8601,
-        "service_technology_types" => self.service_types,
-        "latest_monitoring_status" => BioCatalogue::JSON.monitoring_status(self.latest_status),
-        "variants" => BioCatalogue::JSON.collection(versions, true),
-        "deployments" => BioCatalogue::JSON.collection(self.service_deployments, true)
-      }
-    }.to_json
+    generate_json_with_collections("default")
   end 
+  
+  def to_inline_json
+    generate_json_with_collections(nil)
+  end
+  
+  def to_custom_json(collections)
+    generate_json_with_collections(collections)
+  end
   
 #  def to_param
 #    "#{self.id}-#{self.unique_code}"
@@ -427,6 +420,113 @@ protected
       msg = "New #{self.service_types[0]} service: #{BioCatalogue::Util.display_name(self)} - #{BioCatalogue::Api.uri_for_object(self)}"
       Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), 0, 5.seconds.from_now)
     end
+  end
+  
+private
+
+  def generate_json_with_collections(collections)
+    collections ||= []
+
+    allowed = %w{ deployments variants monitoring }
+    
+    if collections.class==String
+      collections = case collections.strip.downcase
+                      when "deployments" : %w{ deployments }
+                      when "variants" : %w{ variants }
+                      when "monitoring" : %w{ monitoring }
+                      when "summary" : %w{ summary }
+                      when "default" : %w{ deployments variants }
+                      else []
+                    end
+    else
+      collections.each { |x| x.downcase! }
+      collections.uniq!
+      collections.reject! { |x| !allowed.include?(x) }
+    end
+        
+    data = {
+      "service" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => BioCatalogue::Util.display_name(self),
+        "description" => self.preferred_description,
+        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
+        "created_at" => self.created_at.iso8601,
+        "service_technology_types" => self.service_types,
+        "latest_monitoring_status" => BioCatalogue::Api::Json.monitoring_status(self.latest_status)
+      }
+    }
+
+    collections.each do |collection|
+      case collection.downcase
+        when "monitoring"
+          data["service"]["service_tests"] = BioCatalogue::Api::Json.collection(self.service_tests, false)
+        when "variants"
+          versions = []
+          self.service_versions.each{ |v| versions << v.service_versionified }
+          data["service"]["variants"] = BioCatalogue::Api::Json.collection(versions, true)
+        when "deployments"
+          data["service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments, true)
+        when "summary"
+          metadata_counts = {}
+          BioCatalogue::Annotations.metadata_counts_for_service(self).each { |meta_type, meta_count| metadata_counts.merge!("by_#{meta_type}" => meta_count) }
+                    
+          data["service"]["summary"] = {
+            "counts" => {
+              "deployments" => self.service_deployments.count,
+              "variants" => self.service_versions.count,
+              "metadata" => metadata_counts,
+              "favourites" => self.favourites.count,
+              "view" => self.views_count
+            },
+            "alternative_names" => list_for_attribute("alternative_name"),
+            "categories" => list_for_attribute("category"),
+            "providers" => list_for_attribute("providers"),
+            "endpoints" => list_for_attribute("endpoints"),
+            "wsdls" => list_for_attribute("wsdls"),
+            "locations" => list_for_attribute("locations"),
+            "documentation_urls" => list_for_attribute("documentation_url"),
+            "descriptions" => list_for_attribute("description"),
+            "tags" => list_for_attribute("tag"),
+            "cost" => list_for_attribute("cost"),
+            "licenses" => list_for_attribute("license"),
+            "usage_conditions" => list_for_attribute("usage_condition"),
+            "contacts" => list_for_attribute("contact"),
+            "publications" => list_for_attribute("publication"),
+            "citations" => list_for_attribute("citation")
+          }
+      end
+    end
+
+    return data.to_json
+  end # generate_json_with_collections
+
+  def list_for_attribute(attr)
+    list = []
+    
+    case attr.downcase
+      when "providers"
+        self.service_deployments.each { |item| list << item.provider }
+        list = BioCatalogue::Api::Json.collection(list, false)
+      when "endpoints"
+        self.service_deployments.each { |item| list << { "endpoint" => item.endpoint } }
+      when "wsdls"
+        soaps = service_version_instances_by_type("SoapService")
+        soaps.each { |item| list << BioCatalogue::Api::Json.wsdl_location(item.wsdl_location) } unless soaps.blank?
+      when "locations"
+        self.service_deployments.each { |item| list << BioCatalogue::Api::Json.location(item.country, item.city) }
+      when "tag"
+        BioCatalogue::Annotations.annotations_for_service_by_attribute(self, attr).each { |ann| list << { "name" => ann.value } }
+        list = BioCatalogue::Api::Json.tags_collection(list)
+      when "category"
+        self.annotations_with_attribute("category").each do |ann| 
+          cat = Category.find_by_id(ann.value)
+          list << JSON(cat.to_minimal_json) if cat
+        end
+      else
+        BioCatalogue::Annotations.annotations_for_service_by_attribute(self, attr).each { |ann| list << ann.value }
+    end
+    
+    return list
   end
   
 end

@@ -18,6 +18,9 @@ class User < ActiveRecord::Base
     acts_as_trashable
   end
   
+  has_many :client_applications
+  has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
+  
   acts_as_annotatable
   acts_as_annotation_source
   
@@ -65,9 +68,9 @@ class User < ActiveRecord::Base
         "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => BioCatalogue::Util.display_name(self),
         "affiliation" => self.affiliation,
-        "public_email" => (self.public_email || ""),
-        "joined" => (self.activated_at ? self.activated_at.iso8601 : ""),
-        "location" => BioCatalogue::JSON.location(self.country)
+        "public_email" => self.public_email,
+        "joined" => (self.activated_at ? self.activated_at.iso8601 : nil),
+        "location" => BioCatalogue::Api::Json.location(self.country)
       }
     }.to_json
   end

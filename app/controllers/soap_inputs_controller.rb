@@ -24,14 +24,14 @@ class SoapInputsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:asin, @soap_input.id, "annotations", :xml)) }
-      format.json { render :json => @soap_input.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:asin, @soap_input.id, "annotations", :json)) }
     end
   end
 
   protected
   
   def find_soap_input
-    @soap_input = SoapInput.find(params[:id])
+    @soap_input = SoapInput.find(params[:id], :include => :soap_operation)
   end
   
 end

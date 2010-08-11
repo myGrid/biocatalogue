@@ -8,7 +8,7 @@ class AnnouncementsController < ApplicationController
   
   before_filter :disable_action_for_api, :except => [ :index ]
   
-  before_filter :login_required, :except => [ :show, :index ]
+  before_filter :login_or_oauth_required, :except => [ :show, :index ]
   before_filter :authorise, :except => [ :show, :index ]
   
   before_filter :find_announcement, :only => [ :show, :edit, :update, :destroy ]

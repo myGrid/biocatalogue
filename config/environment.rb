@@ -31,7 +31,7 @@ Rails::Initializer.run do |config|
   config.gem 'onyx-cache-money', :version => '>= 0.2.6.1', :lib => 'cache_money', :source => "http://gems.github.com"
   config.gem 'geokit', :version => '>= 1.3.2'
   config.gem 'jnunemaker-twitter', :version => '>= 0.6.11', :lib => 'twitter', :source => "http://gems.github.com"
-  config.gem 'oauth', :version => '0.3.4'
+  config.gem 'oauth', :version => '0.4.1'
   config.gem 'mash', :version => '0.0.3'
   config.gem 'httparty', :version => '0.4.3'
   config.gem 'crack', :version => '0.1.2'

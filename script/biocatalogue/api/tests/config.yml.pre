@@ -1,85 +1,123 @@
 ---
 # Config settings for the API tests.
 
+# THIS DATA BELOW IS BASED ON A www.biocatalogue.org DB SNAPSHOT FOR 2010-07-07
+
 server: http://localhost:3000
-service_ids:
-  - 1
-  - 4
-  - 2083
-  - 1928
-  - 607
-  - 2157
-  - 2146
-service_deployment_ids:
-  - 1
-  - 2
-  - 1928
-soap_service_ids:
-  - 4
-  - 1926
-  - 2137
-soap_operation_ids:
-  - 11
-  - 12
-soap_input_ids:
-  - 12
-  - 21737
-soap_output_ids:
-  - 11
-  - 13243
-rest_service_ids:
-  - 1
-  - 36
-service_deployment_ids:
-  - 1
-  - 2
-  - 3
-category_ids:
-  - 1
-  - 2
-  - 4
-  - 10
-  - 43
-tag_endpoints:
-  - "/tags/ebi"
-  - "/tags/protein%20sequence"
-  - "/tags/simpleParameter?namespace=mygrid-service-ontology"
-  - "/tags/DDBJ_record?namespace=mygrid-domain-ontology"
-service_provider_ids:
-  - 1
-  - 4
-user_ids:
-  - 2
-  - 228
-  - 14
-  - 27
-registry_ids:
-  - 1
-  - 2
+
 agent_ids:
   - 1
+
 annotation_ids:
   - 1
   - 2
   - 3
   - 4
   - 5
+
 annotation_attribute_ids:
   - 1
   - 2
   - 41
-service_test_ids:
+
+category_ids:
+  - 1
+  - 2
+  - 4
+  - 10
+  - 43
+
+registry_ids:
   - 1
   - 2
   - 3
-service_test_ids_for_test_results:
+    
+rest_method_ids:
+  - 60
+  - 92
+
+rest_parameter_ids:
+  - 138
+  - 78
+  
+rest_representation_ids:
+  - 3
+  - 8
+
+rest_resource_ids:
+  - 50
+  - 71
+
+rest_service_ids:
   - 1
+  - 53
+  - 72
+
+search_queries:
+ - "wsprediction"
+ - "simpleParameter"
+ - "blahdihblahblah"
+
+service_ids:
+  - 2     # SOAP 1 Operation
+  - 4     # SOAP 7 Operations
+  - 2083  # SOAP 10 Operations
+  - 607   # REST 0 Endpoints
+  - 2625  # REST 7 Endpoints
+  
+service_deployment_ids:
+  - 2     # SOAP 
+  - 1928  # SOAP
+  - 2637  # REST
+
+service_provider_ids:
+  - 1
+  - 4
+
+service_test_ids:
+  - 3
+  - 2364
+
+soap_input_ids:
+  - 12
+  - 21737
+  
+soap_operation_ids:
+  - 11
+  - 12
+
+soap_output_ids:
+  - 11
+  - 13243
+  
+soap_service_ids:
   - 2
+  - 1926
+  - 2137
+   
+tag_endpoints:
+  - "/tags/ebi"
+  - "/tags/protein%20sequence"
+  - "/tags/simpleParameter?namespace=mygrid-service-ontology"
+  - "/tags/DDBJ_record?namespace=mygrid-domain-ontology"
+  
 test_result_ids:
-  - 1
-  - 5
+  - 10
+  - 50
   - 100
   - 500
   - 1000
   - 5000
   - 10000
+  
+user_ids:
+  - 2
+  - 228
+  - 14
+  - 27
+
+wsdl_locations:
+  - "http://api.bioinfo.no/wsdl/ELMdb.wsdl"
+  - "http://biomoby.org/services/wsdl/mpiz-koeln.mpg.de/runAFAWEAnalysesBySequenceAndOrganismAndGetAFAWE_URL"
+  - "http://mrs.cmbi.ru.nl/mrsws/clustal/wsdl"
+  

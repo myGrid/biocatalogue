@@ -29,6 +29,18 @@ class ServiceProviderHostname < ActiveRecord::Base
     acts_as_activity_logged
   end
   
+  def display_name
+    self.hostname
+  end
+  
+  def to_json
+    generate_json_and_make_inline(false)
+  end 
+  
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end
+  
   def services
     # NOTE: this query has only been tested to work with MySQL 5.1.x    
     sql = "SELECT DISTINCT services.* FROM services 
@@ -69,10 +81,28 @@ class ServiceProviderHostname < ActiveRecord::Base
     return success
   end
 
-  protected
+protected
   
   def associated_service_provider_id
     self.service_provider_id
   end
+
+private
+
+  def generate_json_and_make_inline(make_inline)
+      
+    data = {
+      "service_provider_hostname" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "hostname" => self.hostname
+      }
+    }
+
+    unless make_inline
+      data["service_provider_hostname"]["services"] = BioCatalogue::Api::Json.collection(self.services, true)
+    end
+
+    return data.to_json
+  end # generate_json_and_make_inline
 
 end

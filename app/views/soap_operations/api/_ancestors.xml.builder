@@ -8,9 +8,10 @@
 parent_xml.ancestors do
   
   # <service>
+  service = soap_operation.soap_service.service
   parent_xml.service nil, 
-    { :resourceName => display_name(soap_operation.soap_service.service, false), :resourceType => "Service" },
-    xlink_attributes(uri_for_object(soap_operation.soap_service.service), :title => xlink_title("The parent Service that this SOAP Operation - #{display_name(soap_operation, false)} - belongs to"))
+    { :resourceName => display_name(service, false), :resourceType => "Service" },
+    xlink_attributes(uri_for_object(service), :title => xlink_title("The parent Service that this SOAP Operation - #{display_name(soap_operation, false)} - belongs to"))
   
   # <soapService>
   parent_xml.soapService nil, 

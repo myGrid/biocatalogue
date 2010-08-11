@@ -8,6 +8,7 @@
 is_root = false unless local_assigns.has_key?(:is_root)
 show_core = true unless local_assigns.has_key?(:show_core)
 show_related = false unless local_assigns.has_key?(:show_related)
+show_hostnames = false unless local_assigns.has_key?(:show_hostnames)
 
 # <serviceProvider>
 parent_xml.tag! "serviceProvider",
@@ -17,6 +18,11 @@ parent_xml.tag! "serviceProvider",
   # Core elements
   if show_core
     render :partial => "service_providers/api/core_elements", :locals => { :parent_xml => parent_xml, :service_provider => service_provider }
+  end
+  
+  # <hostnames>
+  if show_hostnames
+    render :partial => "service_providers/api/hostnames", :locals => { :parent_xml => parent_xml, :service_provider => service_provider }
   end
   
   # <related>

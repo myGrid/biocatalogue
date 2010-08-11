@@ -125,7 +125,7 @@ class TestResult < ActiveRecord::Base
         "test_action" => self.action,
         "result_code" => self.result,
         "created_at" => self.created_at.iso8601,
-        "status" => BioCatalogue::JSON.monitoring_status(self.status)
+        "status" => BioCatalogue::Api::Json.monitoring_status(self.status)
       }
     }.to_json
   end 

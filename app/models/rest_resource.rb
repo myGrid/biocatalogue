@@ -54,6 +54,10 @@ class RestResource < ActiveRecord::Base
     return self.path <=> other.path
   end
   
+  def display_name
+    self.path
+  end
+  
   # This returns an Array of Hashes that has the grouped and sorted rest_methods of this .
   #
   # Example output:
@@ -64,11 +68,35 @@ class RestResource < ActiveRecord::Base
 
   # =========================================
   
-  
-  protected
-  
+  def to_json
+    generate_json_and_make_inline(false)
+  end 
+
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end 
+
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end
+
+private
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
+      "rest_resource" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "path" => self.path,
+        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
+        "created_at" => self.created_at.iso8601
+      }
+    }
+    
+    unless make_inline
+      data["rest_resource"]["methods"] = BioCatalogue::Api::Json.collection(self.rest_methods, true)
+    end 
+    
+    return data.to_json
+  end # generate_json_and_make_inline
 
 end

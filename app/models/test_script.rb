@@ -66,7 +66,7 @@ class TestScript < ActiveRecord::Base
         "download" => URI.parse(BioCatalogue::Api.uri_for_object(self).to_s.gsub(/\/$/, '') + "/download"),
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "created_at" => self.created_at.iso8601,
-        "activated_at" => (self.activated_at ? self.activated_at.iso8601 : "")
+        "activated_at" => (self.activated_at ? self.activated_at.iso8601 : nil)
       }
     }.to_json
   end 

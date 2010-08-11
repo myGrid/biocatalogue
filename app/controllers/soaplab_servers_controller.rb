@@ -9,7 +9,7 @@ class SoaplabServersController < ApplicationController
   before_filter :disable_action, :only => [:edit, :update, :destroy ]
   before_filter :disable_action_for_api
   
-  before_filter :login_required, :except => [ :index, :show ]
+  before_filter :login_or_oauth_required, :except => [ :index, :show ]
   
   # GET /soaplab_servers
   # GET /soaplab_servers.xml

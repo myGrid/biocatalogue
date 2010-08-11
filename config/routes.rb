@@ -5,6 +5,13 @@
 # See license.txt for details
 
 ActionController::Routing::Routes.draw do |map|
+  map.resources :oauth_clients
+
+  map.test_request '/oauth/test_request', :controller => 'oauth', :action => 'test_request'
+  map.access_token '/oauth/access_token', :controller => 'oauth', :action => 'access_token'
+  map.request_token '/oauth/request_token', :controller => 'oauth', :action => 'request_token'
+  map.authorize '/oauth/authorize', :controller => 'oauth', :action => 'authorize'
+  map.oauth '/oauth', :controller => 'oauth', :action => 'index'
   
   # =========================
   # Curation Dashboard routes
@@ -64,6 +71,7 @@ ActionController::Routing::Routes.draw do |map|
   # Stats
   map.stats_index '/stats', :controller => 'stats', :action => 'index'
   map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh', :conditions => { :method => :post }
+  map.resources :stats
   
   map.resources :categories,
                 :member => { :services => :get }
@@ -162,24 +170,32 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :rest_services,
                 :member => { :annotations => :get,
                              :deployments => :get,
-                             :update_base_endpoint => :post }
+                             :update_base_endpoint => :post,
+                             :resources => :get }
 
   map.resources :rest_resources, 
-                :member => { :add_new_resources => :post }
+                :member => { :add_new_resources => :post,
+                             :annotations => :get,
+                             :methods => :get }
 
   map.resources :rest_methods,
                 :member => { :inline_add_endpoint_name => :post,
                              :edit_group_name_popup => :post,
                              :update_group_name => :post,
-                             :group_name_auto_complete => :post }
+                             :group_name_auto_complete => :post,
+                             :inputs => :get,
+                             :outputs => :get,
+                             :annotations => :get }
 
   map.resources :rest_parameters,
-                :member => { :add_new_parameters => :post }
+                :member => { :add_new_parameters => :post,
+                             :annotations => :get }
 
   map.resources :rest_method_parameters
 
   map.resources :rest_representations,
-                :member => { :add_new_representations => :post }
+                :member => { :add_new_representations => :post,
+                             :annotations => :get }
 
   map.resources :rest_method_representations
 
@@ -194,7 +210,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :soap_operations,
                 :collection => { :filters => :get },
-                :member => { :annotations => :get }
+                :member => { :annotations => :get,
+                             :inputs => :get,
+                             :outputs => :get }
                 
   map.resources :soap_inputs,
                 :member => { :annotations => :get }

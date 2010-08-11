@@ -41,15 +41,12 @@ class ServiceProvider < ActiveRecord::Base
   end
   
   def to_json
-    {
-      "service_provider" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
-        "name" => BioCatalogue::Util.display_name(self),
-        "description" => (self.preferred_description || ""),
-        "created_at" => self.created_at.iso8601
-      }
-    }.to_json
+    generate_json_and_make_inline(false)
   end 
+  
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end
 
   def preferred_description
     self.annotations_with_attribute('description').last.try(:value)
@@ -178,5 +175,21 @@ private
     end
   end
   
-  
+  def generate_json_and_make_inline(make_inline)
+      
+    data = {
+      "service_provider" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => BioCatalogue::Util.display_name(self),
+        "description" => self.preferred_description
+      }
+    }
+
+    unless make_inline
+      data["service_provider"]["hostnames"] = BioCatalogue::Api::Json.collection(self.service_provider_hostnames, true)
+    end
+
+    return data.to_json
+  end # generate_json_and_make_inline
+
 end

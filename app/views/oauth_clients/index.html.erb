@@ -1,0 +1,92 @@
+<h1>OAuth Client Applications</h1>
+
+<% info_box_styles = "margin-top:1.5em; font-size:90%;" %>
+<% button_stlyes = "margin-left:0.3em; margin-right:0.3em; float:right;" %>
+
+<% unless @tokens.empty? %>
+
+  <h2>Issued Tokens</h2>
+
+  <div class="box_info_standout" <%=h "style='#{info_box_styles}'" %> >
+    <p>The following tokens have been issued to applications in your name</p>
+  </div>
+
+  <div class="listings">
+    
+    <% @tokens.each do |token|%>
+      <div class="listing_item">
+        <%= link_to image_tag("delete_faded_darker.png", :mouseover => "delete.png") + content_tag(:span, " Revoke Access"), 
+                    { :controller => :oauth, :action => :revoke, :token => token.token },
+                    :confirm => "Are you you want to revoke this client application's access.  This cannot be undone.",
+                    :class => "button_slim",
+                    :style => button_stlyes -%>
+        
+        <b><%= link_to h(token.client_application.name), oauth_client_path(token.client_application) %></b>
+        <div style="font-size:85%; margin-left:1.5em; margin-top:0.5em;">
+          <%= link_to h(token.client_application.url), token.client_application.url %> was issued a token on
+          <%= token.authorized_at %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+
+  <br/><br/><br/>
+
+<% end %>
+
+
+<%= link_to image_tag(icon_filename_for(:add)) + content_tag(:span, " Register Your Application"),
+            { :controller => :oauth_clients, :action => :new },
+            :class => "button_slim", 
+            :style => "float:right; font-weight:bold;" -%>
+
+<h2>Applications</h2>
+
+<% if @client_applications.empty? %>
+
+  <div class="box_info_standout" <%=h "style='#{info_box_styles}'" %> >
+    <p>
+      You must register your web application before it can make OAuth requests to this service.
+      <br/><br/>
+      Do you have an application you would like to register for use with us using the <a href="http://oauth.net">OAuth</a> standard?
+    </p>
+  </div>
+
+<% else %>
+
+  <div class="box_info_standout" <%=h "style='#{info_box_styles}'" %> >
+    <p>You have the following client applications registered</p>
+  </div>
+  
+  <div class="listings">
+    <% @client_applications.each do |client|%>
+
+      <div class="listing_item">
+        <%= link_to image_tag("delete_faded_darker.png", :mouseover => "delete.png") + content_tag(:span, " Delete"), 
+                    oauth_client_path(client),
+                    :confirm => "Are you you want to delete this client.  This cannot be undone.", 
+                    :method => :delete,
+                    :class => "button_slim",
+                    :style => button_stlyes -%>
+
+        <%= link_to image_tag('pencil.gif') + content_tag(:span, " Edit"),
+                    edit_oauth_client_path(client), 
+                    :class => "button_slim", 
+                    :style => button_stlyes -%>
+        
+        <%= link_to "View Details", 
+                    oauth_client_path(client), 
+                    :class => "button_slim",
+                    :style => button_stlyes -%>
+
+        <b><%= link_to h(client.name), oauth_client_path(client), :style => "line-height:20px;" %></b>
+        <div style="font-size:85%; margin-left:1.5em; margin-top:0.5em;">
+          <%= link_to h(client.url), client.url %></i>
+        </div>
+      </div>
+      
+    <% end %>
+  </div>
+  
+<% end %>

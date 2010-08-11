@@ -8,25 +8,29 @@ require 'addressable/uri'
 
 class RestServicesController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :edit, :update, :destroy ]
-  before_filter :disable_action_for_api, :except => [ :show, :annotations, :deployments ]
+  before_filter :disable_action, :only => [ :edit, :update, :destroy, :endpoints ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :create, :annotations, :deployments, :resources ]
   
-  before_filter :login_required, :except => [ :index, :show, :annotations, :deployments ]
+  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :deployments, :resources ]
 
   before_filter :find_service_deployment, :only => [ :edit_base_endpoint_by_popup, :update_base_endpoint ]
   
   before_filter :authorise, :only => [ :edit_base_endpoint_by_popup, :update_base_endpoint ]
   
-  before_filter :find_rest_service, :only => [ :show, :annotations, :deployments ]
+  before_filter :find_rest_service, :only => [ :show, :annotations, :deployments, :resources ]
+  
+  before_filter :parse_sort_params, :only => :index
+  before_filter :find_rest_services, :only => :index
+  
+  oauth_authorize :create
   
   # GET /rest_services
   # GET /rest_services.xml
   def index
-    #@rest_services = RestService.find(:all)
-
     respond_to do |format|
-#      format.html { disable_action }
-#      format.xml  { render :xml => @rest_services }
+      format.html { disable_action }
+      format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@rest_services, true).to_json }
     end
   end
 
@@ -53,7 +57,22 @@ class RestServicesController < ApplicationController
   end
 
   # POST /rest_services
-  # POST /rest_services.xml
+  # POST /rest_services.json
+  # Example Input:
+  #
+  #  {
+  #   "rest_service" => {
+  #      "name" => "official name"
+  #    },
+  #    "endpoint" => "http://www.example.com",
+  #    "annotations" => {
+  #      "documentation_url" => "doc",
+  #      "alternative_names" => ["alt1", "alt2", "alt3"],
+  #      "tags" => ["t1", "t3", "t2"],
+  #      "description" => "desc",
+  #      "categories" => [ <list of category URIs> ]
+  #    }
+  #  }
   def create
     endpoint = params[:endpoint] || ""
     endpoint.chomp!
@@ -65,9 +84,20 @@ class RestServicesController < ApplicationController
       flash.now[:error] = "Please provide a valid endpoint URL"
       respond_to do |format|
         format.html { render :action => "new" }
-        format.xml  { render :xml => '', :status => 406 }
+        # TODO: implement format.xml  { render :xml => '', :status => 406 }
+        format.json { render :json => { :error => { :message => "Please provide a valid endpoint URL", :status => 406 }}.to_json }
       end
     else
+      if is_api_request? # Sanitize for API Request
+        category_ids = []
+        
+        params[:annotations] ||= {}
+        params[:annotations][:categories] ||= []
+        
+        params[:annotations][:categories].compact.each { |cat| category_ids << BioCatalogue::Api.object_for_uri(cat.to_s).id if BioCatalogue::Api.object_for_uri(cat.to_s) }
+        params[:annotations][:categories] = category_ids
+      end
+
       # Check for a duplicate
       existing_service = RestService.check_duplicate(endpoint)
       
@@ -76,16 +106,9 @@ class RestServicesController < ApplicationController
 
         annotations_data = params[:annotations].clone
         
-        # Special case for alternative name annotations...
-        
-        name_annotations = [ ]
-        
+        # Special case for alternative name annotations...        
         main_name = params[:rest_service][:name]
-        name_annotations << params[:rest_service][:name] if !main_name.blank? && !existing_service.name.downcase.eql?(main_name.downcase)
-        
-        name_annotations << annotations_data[:alternative_name] if !annotations_data[:alternative_name].blank? and !existing_service.name.downcase.eql?(annotations_data[:alternative_name].downcase)
-        
-        annotations_data[:alternative_name] = name_annotations
+        annotations_data[:alternative_name] = params[:rest_service][:name] if !main_name.blank? && !existing_service.name.downcase.eql?(main_name.downcase)
         
         # Now create them...  
         existing_service.latest_version.service_versionified.process_annotations_data(annotations_data, current_user)
@@ -93,29 +116,57 @@ class RestServicesController < ApplicationController
         respond_to do |format|
           flash[:notice] = "The service you specified already exists in the BioCatalogue. See below. Any information you provided has been added to this service."
           format.html { redirect_to existing_service }
-          format.xml  { render :xml => '', :status => :unprocessable_entity }
+          # TODO: implement format.xml  { render :xml => '', :status => :unprocessable_entity }
+          format.json { 
+            render :json => { 
+              :success => { 
+                :message => "The REST service you specified already exists in the BioCatalogue. Any information you provided has been added to this service.", 
+                :resource => service_url(existing_service),
+                :status => 202
+              }
+            }.to_json 
+          }
         end
       else
-        # Now you can submit the service...
-        @rest_service = RestService.new
-        @rest_service.name = params[:rest_service][:name]
-        
-        respond_to do |format|
-          if @rest_service.submit_service(endpoint, current_user, params[:annotations].dup)
-            success_msg = 'Service was successfully submitted.'
-            success_msg += "<br/>You may now add endpoints via the Endpoints tab."
-            
-            flash[:notice] = success_msg
-            format.html { redirect_to(@rest_service.service(true)) }
-            
-            # TODO: should this return the top level Service resource or RestService? 
-            format.xml  { render :xml => @rest_service, :status => :created, :location => @rest_service }
-          else
-            err_text = "An error has occurred with the submission.<br/>" +
-              "Please <a href='/contact'>contact us</a> if you need assistance with this."
-            flash.now[:error] = err_text
-            format.html { render :action => "new" }
-            format.xml  { render :xml => '', :status => 500 }
+        has_missing_elements = params[:rest_service].blank? || params[:rest_service][:name].blank? || params[:rest_service][:name].chomp.strip.blank?
+        if is_api_request? && has_missing_elements
+          respond_to do |format|
+            format.html { disable_action }
+            format.json { render :json => { :error => { :message => "Please provide a valid name for the REST Service you wish to create.", :status => 406 }}.to_json }
+          end
+        else
+          # Now you can submit the service...
+          @rest_service = RestService.new
+          @rest_service.name = params[:rest_service][:name].chomp.strip
+          
+          respond_to do |format|
+            if @rest_service.submit_service(endpoint, current_user, params[:annotations].clone)
+              success_msg = 'Service was successfully submitted.'
+              success_msg += "<br/>You may now add endpoints via the Endpoints tab."
+              
+              flash[:notice] = success_msg
+              format.html { redirect_to(@rest_service.service(true)) }
+              # TODO: implement format.xml  { render :xml => @rest_service, :status => :created, :location => @rest_service }
+              # format.json { render :json => @rest_service.service(true).to_json }
+              format.json { 
+                render :json => { 
+                  :success => { 
+                    :message => "The REST Service '#{@rest_service.name}' has been successfully submitted.", 
+                    :resource => service_url(@rest_service.service(true)),
+                    :status => 201
+                  }
+                }.to_json 
+              }
+            else
+              err_text = "An error has occurred with the submission.<br/>" +
+                "Please <a href='/contact'>contact us</a> if you need assistance with this."
+              flash.now[:error] = err_text
+              format.html { render :action => "new" }
+              # TODO: implement format.xml  { render :xml => '', :status => 500 }
+              format.json { 
+                render :json => { :error => { :message => "An error has occurred with the submission.  Please contact us if need assistance with this.", :status => 500 }}.to_json 
+              }
+            end
           end
         end
       end
@@ -166,27 +217,40 @@ class RestServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:ars, @rest_service.id, "annotations", :xml)) }
-      format.json { render :json => @rest_service.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:ars, @rest_service.id, "annotations", :json)) }
     end
   end
   
+  def resources
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # deployments.xml.builder
+      format.json { render :json => @rest_service.to_custom_json("rest_resources") }
+    end
+  end
+
   def deployments
     respond_to do |format|
       format.html { disable_action }
       format.xml  # deployments.xml.builder
+      format.json { render :json => @rest_service.to_custom_json("deployments") }
     end
   end
   
-  
-  # ========================================
-  
-  
-  protected
-  
-  def find_rest_service
-    @rest_service = RestService.find(params[:id])
+  def endpoints
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # endpoints.xml.builder
+      format.json { render :json => @rest_service.to_custom_json("endpoints") }
+    end
   end
   
+protected # ========================================
+  
+  def find_rest_service
+    @rest_service = RestService.find(params[:id], :include => :service)
+  end
+    
   def authorise
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_deployment)
       error_to_back_or_home("You are not allowed to perform this action")
@@ -195,15 +259,54 @@ class RestServicesController < ApplicationController
     
     return true
   end
+  
+  def parse_sort_params
+    sort_by_allowed = [ "created" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
 
-  
-  # ========================================
-  
-  
-  private
-  
   def find_service_deployment
     @service_deployment = ServiceDeployment.find(params[:service_deployment_id])
+  end
+
+  def find_rest_services
+
+    # Sorting
+    
+    order = 'rest_services.created_at DESC'
+    order_field = nil
+    order_direction = nil
+    
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "rest_services.#{order_field} #{order_direction}"
+    end
+    
+    @rest_services = RestService.paginate(:page => @page,
+                                          :per_page => @per_page,
+                                          :order => order)
   end
 
 end

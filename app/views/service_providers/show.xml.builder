@@ -11,5 +11,6 @@ xml.instruct! :xml
 render :partial => "service_providers/api/service_provider", 
        :locals => { :parent_xml => xml,
                     :service_provider => @service_provider,
+                    :show_hostnames => true,
                     :is_root => true,
                     :show_related => true }

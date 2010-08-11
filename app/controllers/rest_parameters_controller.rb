@@ -6,15 +6,33 @@
 
 class RestParametersController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :show, :edit, :localise_globalise_parameter ]
-  before_filter :disable_action_for_api
+  before_filter :disable_action, :only => [ :index, :edit, :localise_globalise_parameter ]
+  before_filter :disable_action_for_api, :except => [ :show, :annotations ]
 
-  before_filter :login_required
+  before_filter :login_or_oauth_required, :except => [ :show, :annotations ]
   
   before_filter :find_rest_method, :only => [ :new_popup, :add_new_parameters ]
+
   before_filter :find_rest_parameter, :except => [ :new_popup, :add_new_parameters ]
+  before_filter :find_rest_methods, :only => [ :show ]
+    
+  before_filter :authorise, :except => [ :show, :annotations ]
+
+  def show
+    respond_to do |format|
+      format.html { redirect_to url_for_web_interface(@rest_parameter) }
+      format.xml  # show.xml.builder
+      format.json { render :json => @rest_parameter.to_json }
+    end
+  end
   
-  before_filter :authorise
+  def annotations
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:arp, @rest_parameter.id, "annotations", :xml)) }
+      format.json { redirect_to(generate_include_filter_url(:arp, @rest_parameter.id, "annotations", :json)) }
+    end
+  end
 
   def update_default_value  
     # sanitize user input to make it have characters that are only fit for URIs
@@ -133,9 +151,6 @@ class RestParametersController < ApplicationController
   end
 
   def add_new_parameters    
-    resource = @rest_method.rest_resource # for redirection
-    service = resource.rest_service.service # for redirection
-    
     results = @rest_method.add_parameters(params[:rest_parameters], current_user, :make_local => true)
     
     respond_to do |format|
@@ -267,6 +282,17 @@ class RestParametersController < ApplicationController
   
   def find_rest_method
     @rest_method = RestMethod.find(params[:rest_method_id])
+  end
+
+  def find_rest_methods
+    @rest_methods = []
+    
+    @rest_parameter.rest_method_parameters.each { |map|
+      method = RestMethod.find(map.rest_method_id, :include => [ :rest_resource, :rest_service ])
+      @rest_methods << method if method && !@rest_methods.include?(method)
+    }
+    
+    @rest_methods.uniq!
   end
 
 end

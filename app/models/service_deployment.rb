@@ -146,7 +146,7 @@ private
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "endpoint" => self.endpoint,
         "created_at" => self.created_at.iso8601,
-        "location" => BioCatalogue::JSON.location(self.country, self.city),
+        "location" => BioCatalogue::Api::Json.location(self.country, self.city),
         "provider" => JSON(self.provider.to_json)
       }
     }

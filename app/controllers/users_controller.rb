@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   before_filter :disable_action, :only => [ :destroy ]
   before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services ]
 
-  before_filter :login_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, :services ]
+  before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, :services ]
   before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password ]
   
   before_filter :initialise_updated_user, :only => [ :edit, :update ]
@@ -34,6 +34,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@users, false).to_json }
     end
   end
 
@@ -266,7 +267,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:sou, @user.id, "annotations", :xml)) }
-      format.json { render :json => @user.annotations_by.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:sou, @user.id, "annotations", :json)) }
     end
   end
   
@@ -274,6 +275,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:su, params[:id], "services", :xml)) }
+      format.json { redirect_to(generate_include_filter_url(:su, params[:id], "services", :json)) }
     end
   end
   

@@ -21,6 +21,7 @@ class RegistriesController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@registries, false).to_json }
     end
   end
 
@@ -43,7 +44,7 @@ class RegistriesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:sor, @registry.id, "annotations", :xml)) }
-      format.json { render :json => @registry.annotations_by.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:sor, @registry.id, "annotations", :json)) }
     end
   end
   
@@ -51,6 +52,7 @@ class RegistriesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:sr, params[:id], "services", :xml)) }
+      format.json { redirect_to(generate_include_filter_url(:sr, params[:id], "services", :json)) }
     end
   end
 

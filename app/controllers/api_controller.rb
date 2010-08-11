@@ -7,7 +7,11 @@
 class ApiController < ApplicationController
   
   def show
-    # show.xml.builder
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  # show.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.api_endpoint.to_json }
+    end
   end
   
 end

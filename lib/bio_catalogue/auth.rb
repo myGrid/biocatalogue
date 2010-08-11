@@ -73,6 +73,8 @@ module BioCatalogue
       case thing
         when Service
           return (!thing.all_responsibles.include?(user) && !existing_request_for_thing?(thing, user) )
+        when ClientApplication
+          return thing.user == user
       end
       return false
     end

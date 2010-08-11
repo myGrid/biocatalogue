@@ -23,7 +23,7 @@ module BioCatalogue
           @client ||= Twitter::Base.new(@httpauth)
           @client.update(tweet_text) 
         }
-      rescue TimeoutError
+      rescue TimeoutError => ex
         Rails.logger.error("Tweeting timed out! Exception: #{ex.message}")
         Rails.logger.error(ex.backtrace.join("\n"))
         return true

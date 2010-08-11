@@ -95,6 +95,18 @@ class RestMethod < ActiveRecord::Base
     return rest_resource.rest_methods(true).find_by_method_type(method_type) # RestMethod || nil
   end
   
+  def to_json
+    generate_json_with_collections("default")
+  end 
+  
+  def to_inline_json
+    generate_json_with_collections(nil)
+  end
+  
+  def to_custom_json(collections)
+    generate_json_with_collections(collections)
+  end
+  
   # Check that an endpoint name does not exist in the parent service
   def check_endpoint_name_exists(name)
     rest_service = self.rest_resource.rest_service
@@ -387,8 +399,7 @@ class RestMethod < ActiveRecord::Base
   
   # =========================================
   
-  
-  protected
+protected
   
   def rest_resource_search_terms
     return "#{self.rest_resource.path} #{self.rest_resource.description}"
@@ -397,8 +408,7 @@ class RestMethod < ActiveRecord::Base
 
   # ========================================
   
-  
-  private
+private
   
   def chomp_strip_squeeze(string)
     string.chomp!
@@ -456,5 +466,55 @@ class RestMethod < ActiveRecord::Base
     
     return nil
   end # do_resource_path_update
+  
+  # =========================================
+  
+  def generate_json_with_collections(collections)
+    collections ||= []
+
+    allowed = %w{ input_parameters input_representations output_representations }
+    
+    if collections.class==String
+      collections = case collections.strip.downcase
+                      when "inputs" : %w{ inputs }
+                      when "outputs" : %w{ outputs }
+                      when "default" : %w{ inputs outputs }
+                      else []
+                    end
+    else
+      collections.each { |x| x.downcase! }
+      collections.uniq!
+      collections.reject! { |x| !allowed.include?(x) }
+    end
+        
+    data = {
+      "rest_method" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => self.endpoint_name,
+        "endpoint" => self.display_endpoint,
+        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
+        "description" => self.description,
+        "documentation_url" => self.documentation_url,
+        "created_at" => self.created_at.iso8601
+      }
+    }
+
+    collections.each do |collection|
+      case collection.downcase
+        when "inputs"
+          data["rest_method"]["inputs"] = {
+            "parameters" => BioCatalogue::Api::Json.collection(self.request_parameters, false),
+            "representations" => BioCatalogue::Api::Json.collection(self.request_representations, false)            
+          }
+        when "outputs"
+          data["rest_method"]["outputs"] = {
+            "parameters" => BioCatalogue::Api::Json.collection(self.response_parameters, false),
+            "representations" => BioCatalogue::Api::Json.collection(self.response_representations, false)            
+          }
+      end
+    end
+
+    return data.to_json
+  end # generate_json_with_collections
   
 end

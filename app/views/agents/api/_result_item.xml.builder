@@ -4,7 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-# <serviceProvider>
+# <agent>
 render :partial => "agents/api/agent", 
        :locals => { :parent_xml => parent_xml,
                     :agent => agent,

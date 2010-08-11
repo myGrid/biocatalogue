@@ -13,7 +13,7 @@ class LookupController < ApplicationController
       respond_to do |format|
         format.html { redirect_to url_for_web_interface(obj) }
         format.xml  { redirect_to "#{url_for(obj)}.xml" }
-        format.json  { redirect_to "#{}url_for(obj)}.json" }
+        format.json  { redirect_to "#{url_for(obj)}.json" }
       end
     else
       raise ActiveRecord::RecordNotFound.new

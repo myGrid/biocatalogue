@@ -7,13 +7,26 @@
 
 class SoapServicesController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :edit, :update, :destroy, :bulk_new, :bulk_create ]
-  before_filter :disable_action_for_api, :except => [ :show, :annotations, :operations, :deployments, :wsdl_locations ]
+  before_filter :disable_action, :only => [ :edit, :update, :destroy, :bulk_new, :bulk_create ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :create, :annotations, :operations, :deployments, :wsdl_locations ]
   
-  before_filter :login_required, :except => [ :index, :show, :annotations, :operations, :deployments, :wsdl_locations, :latest_wsdl ]
+  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :operations, :deployments, :wsdl_locations, :latest_wsdl ]
   
   before_filter :find_soap_service, :only => [ :show, :annotations, :operations, :deployments, :latest_wsdl ]
+
+  before_filter :parse_sort_params, :only => :index
+  before_filter :find_soap_services, :only => :index
   
+  oauth_authorize :create
+
+  def index
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@soap_services, true).to_json }
+    end
+  end
+
   # GET /soap_services/1
   # GET /soap_services/1.xml
   def show
@@ -39,8 +52,23 @@ class SoapServicesController < ApplicationController
   end
 
   # POST /soap_services
-  # POST /soap_services.xml
+  # POST /soap_services.json
+  # Example Input
+  #
+  #  {
+  #    "soap_service" => {
+  #      "wsdl_location" => "http://webservices.genouest.org/typedservices/InterProScan.wsdl" 
+  #    },
+  #    "annotations" => {
+  #      "documentation_url" => "doc",
+  #      "alternative_names" => ["alt1", "alt2", "alt3"],
+  #      "tags" => ["t1", "t3", "t2"],
+  #      "description" => "desc",
+  #      "categories" => [ <list of category URIs> ]
+  #    }
+  #  }
   def create
+    params[:soap_service] ||= {} if is_api_request? # Sanitize for API Request
     wsdl_location = params[:soap_service][:wsdl_location] || ""
     wsdl_location = Addressable::URI.parse(wsdl_location).normalize.to_s unless wsdl_location.blank?
     
@@ -48,7 +76,8 @@ class SoapServicesController < ApplicationController
       @error_message = "Please provide a valid WSDL URL"
       respond_to do |format|
         format.html { render :action => "new" }
-        format.xml  { render :xml => '', :status => 406 }
+        # TODO: implement format.xml  { render :xml => '', :status => 406 }
+        format.json { render :json => { :error => { :message => "Please provide a valid WSDL URL", :status => 406 }}.to_json }
       end
     else
       @soap_service = SoapService.new(:wsdl_location => wsdl_location)
@@ -60,26 +89,53 @@ class SoapServicesController < ApplicationController
       if !@existing_service.nil?
         respond_to do |format|
           format.html { render :action => "new" }
-          format.xml  { render :xml => '', :status => :unprocessable_entity }
+          # TODO: implement format.xml  { render :xml => '', :status => :unprocessable_entity }
+          format.json { render :json => @existing_service.to_json }
         end
       else
         respond_to do |format|
           if success
+            if is_api_request? # Sanitize for API Request
+              category_ids = []
+              
+              params[:annotations] ||= {}
+              params[:annotations][:categories] ||= []
+              
+              params[:annotations][:categories].compact.each { |cat| category_ids << BioCatalogue::Api.object_for_uri(cat.to_s).id if BioCatalogue::Api.object_for_uri(cat.to_s) }
+              params[:annotations][:categories] = category_ids
+            end
+
+
             success = @soap_service.submit_service(data["endpoint"], current_user, params[:annotations].clone)
             if success
               flash[:notice] = 'Service was successfully submitted.'
               format.html { redirect_to(@soap_service.service(true)) }
-              
-              # TODO: should this return the top level Service resource or SoapService? 
-              format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
+              # TODO: implement format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
+              format.json { 
+                render :json => { 
+                  :success => { 
+                    :message => "The SOAP Service '#{@soap_service.name}' has been successfully submitted.", 
+                    :resource => service_url(@soap_service.service(true)),
+                    :status => 201
+                  }
+                }.to_json 
+              }
             else
               flash.now[:error] = 'An error has occurred with the submission. Please <a href="/contact">contact us</a> to report this. Thank you.'
               format.html { render :action => "new" }
-              format.xml  { render :xml => '', :status => 500 }
+              # TODO: implement format.xml  { render :xml => '', :status => 500 }
+              format.json { 
+                render :json => { :error => { :message => "An error has occurred with the submission.  Please contact us to report this. Thank you.", :status => 500 }}.to_json 
+              }
             end
           else
             format.html { render :action => "new" }
             format.xml  { render :xml => @soap_service.errors, :status => :unprocessable_entity }
+            format.json { 
+              error_list = []
+              @soap_service.errors.to_a.each { |e| error_list << {e[0] => e[1]} } 
+              render :json => { :errors => error_list }.to_json 
+            }
           end
         end
       end
@@ -203,7 +259,7 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:ass, @soap_service.id, "annotations", :xml)) }
-      format.json { render :json => @soap_service.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:ass, @soap_service.id, "annotations", :json)) }
     end
   end
   
@@ -211,6 +267,7 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # operations.xml.builder
+      format.json { render :json => @soap_service.to_custom_json("operations") }
     end
   end
   
@@ -218,6 +275,7 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # deployments.xml.builder
+      format.json { render :json => @soap_service.to_custom_json("deployments") }
     end
   end
   
@@ -226,6 +284,7 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml  # wsdl_locations.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.wsdl_locations(@wsdl_locations).to_json }
     end
   end
   
@@ -233,10 +292,55 @@ class SoapServicesController < ApplicationController
     send_data(@soap_service.latest_wsdl_contents, :type => "text/xml", :disposition => 'inline')
   end
   
-  protected
+protected # ========================================
   
   def find_soap_service
     @soap_service = SoapService.find(params[:id])
   end
   
+  def find_soap_services
+
+    # Sorting
+    
+    order = 'soap_services.created_at DESC'
+    order_field = nil
+    order_direction = nil
+    
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "soap_services.#{order_field} #{order_direction}"
+    end
+    
+    @soap_services = SoapService.paginate(:page => @page,
+                                          :per_page => @per_page,
+                                          :order => order)
+  end
+
+  def parse_sort_params
+    sort_by_allowed = [ "created" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+
 end

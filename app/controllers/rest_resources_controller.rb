@@ -6,14 +6,19 @@
 
 class RestResourcesController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :show, :edit ]
-  before_filter :disable_action_for_api
+  before_filter :disable_action, :only => [ :edit ]
+  before_filter :disable_action_for_api, :except => [ :show, :index, :annotations, :methods ]
   
-  before_filter :login_required
+  before_filter :login_or_oauth_required, :except => [ :show, :index, :annotations, :methods ]
   
-  before_filter :find_rest_service
+  before_filter :find_rest_service, :except => [ :show, :index, :annotations, :methods ]
+  
+  before_filter :find_rest_resource, :only => [ :show, :annotations, :methods ]
 
-  before_filter :authorise
+  before_filter :parse_sort_params, :only => :index
+  before_filter :find_rest_resources, :only => :index
+
+  before_filter :authorise, :except => [ :show, :index, :annotations, :methods ]
   
   def new_popup    
     respond_to do |format|
@@ -53,12 +58,57 @@ class RestResourcesController < ApplicationController
     end
   end
   
+  def index
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@rest_resources, true).to_json }
+    end
+  end
+
+  def show
+    respond_to do |format|
+      format.html { redirect_to url_for_web_interface(@rest_resource) }
+      format.xml  # show.xml.builder
+      format.json { render :json => @rest_resource.to_json }
+    end
+  end
   
-  # ========================================
+  def annotations
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:arres, @rest_resource.id, "annotations", :xml)) }
+      format.json { redirect_to(generate_include_filter_url(:arres, @rest_resource.id, "annotations", :json)) }
+    end
+  end
+
+  def methods
+    respond_to do |format|
+      format.html { redirect_to url_for_web_interface(@rest_resource) }
+      format.xml  # methods.xml.builder
+      format.json { render :json => @rest_resource.to_json }
+    end
+  end
+
   
+protected # ========================================
   
-  protected
-  
+  def parse_sort_params
+    sort_by_allowed = [ "created" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+
   def authorise    
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_service.service)
       error_to_back_or_home("You are not allowed to perform this action")
@@ -67,15 +117,44 @@ class RestResourcesController < ApplicationController
 
     return true
   end
-
-
-  # ========================================
   
-  
-  private
+private # ========================================
   
   def find_rest_service
     @rest_service = RestService.find(params[:rest_service_id])
+  end
+  
+  def find_rest_resource
+    @rest_resource = RestResource.find(params[:id], :include => :rest_service)
+  end
+  
+  def find_rest_resources
+    
+    # Sorting
+    
+    order = 'rest_resources.created_at DESC'
+    order_field = nil
+    order_direction = nil
+    
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "rest_resources.#{order_field} #{order_direction}"
+    end
+    
+    @rest_resources = RestResource.paginate(:page => @page,
+                                            :per_page => @per_page,
+                                            :order => order)
   end
 
 end

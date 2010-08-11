@@ -1,0 +1,16 @@
+<div style="margin-bottom: 1.5em;">
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Client List"),
+              oauth_clients_path, :class => "button_slim" -%>
+</div>            
+
+<h1>Register Your Application</h1>
+
+<% form_for :client_application, :url => { :action => :create } do |f| %>
+
+    <%= render :partial => "form", :locals => { :f => f } %>
+    
+    <p style="margin-top: 2.5em; text-align: center;">
+      <%= submit_tag "Register", :disable_with => "Registering..." %>
+    </p>
+  
+<% end %>

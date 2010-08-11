@@ -1,0 +1,26 @@
+<h1>Authorize access to your account</h1>
+
+<p style="margin:2.5em; text-align:center;">
+  Would you like to authorize 
+  <b><%= link_to h(@token.client_application.name), @token.client_application.url %></b>
+  (<i><%= link_to h(@token.client_application.url), @token.client_application.url %></i>) 
+  access to your account?
+</p>
+
+<% form_tag authorize_url do %>
+
+  <%= hidden_field_tag "oauth_token", @token.token %>
+  
+  <%- if params[:oauth_callback] -%>
+    <%= hidden_field_tag "oauth_callback", params[:oauth_callback] %>
+  <%- end -%>
+
+  <p style="text-align:center;">
+    <%= check_box_tag 'authorize' %> Authorize Access
+  </p>
+  
+  <p style="text-align:center;">
+    <%= submit_tag "Submit", :disable_with => "Submitting..." %>
+  </p>
+
+<% end %>

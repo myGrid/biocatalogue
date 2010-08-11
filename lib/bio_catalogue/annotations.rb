@@ -193,41 +193,14 @@ module BioCatalogue
         annotations_data.delete(attrib) if annotations_data.has_key?(attrib) && annotations_data[attrib].nil?
       end
       
-      # :tags to :tag
-      if annotations_data.has_key?(:tags)
-        annotations_data[:tag] = annotations_data[:tags].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
-        annotations_data.delete(:tags)
-      end
-      
-      # 'tags' to 'tag'
-      if annotations_data.has_key?('tags')
-        annotations_data['tag'] = annotations_data['tags'].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
-        annotations_data.delete('tags')
-      end
-      
-      # :categories to :category
-      if annotations_data.has_key?(:categories)
-        annotations_data[:category] = annotations_data[:categories].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
-        annotations_data.delete(:categories)
-      end
-      
-      # 'categories' to 'category'
-      if annotations_data.has_key?('categories')
-        annotations_data['category'] = annotations_data['categories'].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
-        annotations_data.delete('categories')
-      end
-      
-      # :alternative_names to :alternative_name
-      if annotations_data.has_key?(:alternative_names)
-        annotations_data[:alternative_name] = annotations_data[:alternative_names].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
-        annotations_data.delete(:alternative_names)
-      end
-      
-      # 'alternative_names' to 'alternative_name'
-      if annotations_data.has_key?('alternative_names')
-        annotations_data['alternative_name'] = annotations_data['alternative_names'].split(',').compact.map{|x| x.strip}.reject{|x| x == ""}
-        annotations_data.delete('alternative_names')
-      end
+      transform_attribute_for_annotations_data(:tags, :tag, annotations_data) # :tags to :tags
+      transform_attribute_for_annotations_data('tags', 'tag', annotations_data) # 'tags' to 'tags'
+
+      transform_attribute_for_annotations_data(:categories, :category, annotations_data) # :categories to :category
+      transform_attribute_for_annotations_data('categories', 'category', annotations_data) # 'categories' to 'category'
+
+      transform_attribute_for_annotations_data(:alternative_names, :alternative_name, annotations_data) # :alternative_names to :alternative_name
+      transform_attribute_for_annotations_data('alternative_names', 'alternative_name', annotations_data) # 'alternative_names' to 'alternative_name'
       
       return annotations_data
     end
@@ -331,6 +304,16 @@ module BioCatalogue
       end
       
       return results
+    end
+    
+  private
+  
+    def self.transform_attribute_for_annotations_data(from_attr, to_attr, annotations_data)
+      if annotations_data.has_key?(from_attr)
+        annotations_data[from_attr] = annotations_data[from_attr].split(',') if annotations_data[from_attr].is_a?(String)
+        annotations_data[to_attr] = annotations_data[from_attr].compact.map{|x| x.to_s.strip}.reject{|x| x == ""} if annotations_data[from_attr].is_a?(Array)
+        annotations_data.delete(from_attr)
+      end
     end
     
   end

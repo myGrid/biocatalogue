@@ -18,7 +18,7 @@ class AnnotationsController < ApplicationController
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :create, :create_multiple, :update, :destroy, :set_as_field ]
   
-  before_filter :login_required, :only => [ :new, :create, :edit, :update, :destroy, :edit_popup, :create_inline, :change_attribute, :bulk_create ]
+  before_filter :login_or_oauth_required, :only => [ :new, :create, :edit, :update, :destroy, :edit_popup, :create_inline, :change_attribute, :bulk_create ]
   
   before_filter :parse_current_filters, :only => [ :index ]
   
@@ -39,7 +39,7 @@ class AnnotationsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json =>  @annotations.to_json }
+      format.json { render :json => BioCatalogue::Api::Json.collection(@annotations, false).to_json }
     end
   end
   
@@ -165,6 +165,7 @@ class AnnotationsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # filters.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
     end
   end
   

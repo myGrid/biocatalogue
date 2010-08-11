@@ -1,0 +1,36 @@
+<div style="margin-bottom: 1.5em;">
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Client List"),
+              oauth_clients_path, :class => "button_slim" -%>
+
+  <%= link_to image_tag('pencil.gif') + content_tag(:span, " Edit Application Details"),
+              edit_oauth_client_path(@client_application), 
+              :class => "button_slim", 
+              :style => "margin-left:1.5em;" -%>
+</div>
+
+<h1>OAuth Details: <%=h @client_application.name %></h1>
+
+<p>
+  <strong>Consumer Key:</strong>
+  <code><%=@client_application.key %></code>
+</p>
+<p>
+  <strong>Consumer Secret:</strong>
+  <code><%=@client_application.secret %></code>
+</p>
+<p>
+  <strong>Request Token URL</strong>
+  <code>http<%='s' if request.ssl? %>://<%= request.host_with_port %><%=@client_application.oauth_server.request_token_path %></code>
+</p>
+<p>
+  <strong>Access Token URL</strong>
+  <code>http<%='s' if request.ssl? %>://<%= request.host_with_port %><%=@client_application.oauth_server.access_token_path %></code>
+</p>
+<p>
+  <strong>Authorize URL</strong>
+  <code>http<%='s' if request.ssl? %>://<%= request.host_with_port %><%=@client_application.oauth_server.authorize_path %></code>
+</p>
+
+<p>
+  We support hmac-sha1 (recommended) as well as plain text in ssl mode.
+</p>

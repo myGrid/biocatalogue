@@ -13,5 +13,6 @@ render :partial => "rest_services/api/rest_service",
                     :rest_service => @rest_service,
                     :is_root => true,
                     :show_deployments => true,
+                    :show_rest_resources => true,
                     :show_ancestors => true,
                     :show_related => true }

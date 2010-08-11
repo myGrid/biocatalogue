@@ -8,7 +8,7 @@
 class SoapOperationsController < ApplicationController
   
   before_filter :disable_action, :only => [ :new, :create, :edit, :update, :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :filters ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :filters, :inputs, :outputs ]
   
   before_filter :parse_current_filters, :only => [ :index ]
   
@@ -18,13 +18,13 @@ class SoapOperationsController < ApplicationController
   
   before_filter :find_soap_operations, :only => [ :index ]
   
-  before_filter :find_soap_operation, :only => [ :show, :annotations ]
+  before_filter :find_soap_operation, :only => [ :show, :annotations, :inputs, :outputs ]
   
   def index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { } #render :json =>  @soap_operations.to_json }
+      format.json { render :json => BioCatalogue::Api::Json.collection(@soap_operations, true).to_json }
     end
   end
   
@@ -35,6 +35,22 @@ class SoapOperationsController < ApplicationController
       format.html # show.html.erb
       format.xml  # show.xml.builder
       format.json { render :json => @soap_operation.to_json }
+    end
+  end
+
+  def inputs 
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # inputs.xml.builder
+      format.json { render :json => @soap_operation.to_custom_json("inputs") }
+    end
+  end
+
+  def outputs 
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # outputs.xml.builder
+      format.json { render :json => @soap_operation.to_custom_json("outputs") }
     end
   end
   
@@ -65,7 +81,7 @@ class SoapOperationsController < ApplicationController
       }
       format.json {
         # TODO: implement ?include=inputs,outputs
-        render :json => @soap_operation.annotations.paginate(:page => @page, :per_page => @per_page).to_json 
+        render :json => BioCatalogue::Api::Json.collection(@soap_operation.annotations.paginate(:page => @page, :per_page => @per_page), false).to_json 
       }
     end
   end
@@ -74,6 +90,7 @@ class SoapOperationsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # filters.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
     end
   end
 

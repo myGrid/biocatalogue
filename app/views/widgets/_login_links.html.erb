@@ -18,6 +18,9 @@
 			
 			<span class="sep">|</span>
 			<%= link_to "My Favourites", user_path(current_user, :anchor => 'favourites') -%>
+
+			<span class="sep">|</span>
+			<%= link_to "My Applications", oauth_clients_path -%>
 			
 			<span class="sep">|</span>
 			<%= link_to "Responsibility Requests", responsibility_requests_path -%>

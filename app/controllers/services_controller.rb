@@ -29,7 +29,7 @@ class ServicesController < ApplicationController
   
   before_filter :set_listing_type, :only => [ :index ]
   
-  before_filter :login_required, :only => [ :destroy, :check_updates, :archive, :unarchive ]
+  before_filter :login_or_oauth_required, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   before_filter :authorise, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   
   # GET /services
@@ -39,6 +39,7 @@ class ServicesController < ApplicationController
       format.html # index.html.erb
       format.xml  # index.xml.builder
       format.atom # index.atom.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@services, true).to_json }
     end
   end
 
@@ -152,6 +153,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # filters.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
     end
   end
   
@@ -159,6 +161,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # summary.xml.builder
+      format.json { render :json => @service.to_custom_json("summary") }
     end
   end
   
@@ -166,7 +169,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:as, @service.id, "annotations", :xml)) }
-      format.json { render :json => @service.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:as, @service.id, "annotations", :json)) }
     end
   end
   
@@ -174,6 +177,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # deployments.xml.builder
+      format.json { render :json => @service.to_custom_json("deployments") }
     end
   end
   
@@ -181,6 +185,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # versions.xml.builder
+      format.json { render :json => @service.to_custom_json("variants") }
     end
   end
   
@@ -188,6 +193,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # monitoring.xml.builder
+      format.json { render :json => @service.to_custom_json("monitoring") }
     end
   end
   

@@ -19,6 +19,7 @@ class TestResultsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@test_results, false).to_json }
     end
   end
   
@@ -29,9 +30,9 @@ class TestResultsController < ApplicationController
       format.json { render :json => @test_result.to_json }
     end
   end
-  
-  before_filter :login_required, :only => [:create]
-  
+
+  before_filter :login_or_oauth_required, :only => [ :create ]
+
   # POST /test_results
   def create
     # TODO: implement code for the submission of test_results via XML API

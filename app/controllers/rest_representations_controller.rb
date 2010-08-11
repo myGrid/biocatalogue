@@ -5,15 +5,34 @@
 # See license.txt for details.
 
 class RestRepresentationsController < ApplicationController
-  before_filter :disable_action, :only => [ :index, :show, :edit ]
+  before_filter :disable_action, :only => [ :index, :edit ]
+  before_filter :disable_action_for_api, :except => [ :show, :annotations ]
 
-  before_filter :login_required
+  before_filter :login_or_oauth_required, :except => [ :show, :annotations ]
   
-  before_filter :find_rest_representation, :only => [ :destroy ]
-  before_filter :find_rest_method, :except => [ :destroy ]
-  
-  before_filter :authorise
+  before_filter :find_rest_method, :except => [ :destroy, :show, :annotations ]
 
+  before_filter :find_rest_representation, :only => [ :destroy, :show, :annotations ]
+  before_filter :find_rest_methods, :only => [ :show ]
+
+  before_filter :authorise, :except => [ :show, :annotations ]
+
+  def show
+    respond_to do |format|
+      format.html { redirect_to url_for_web_interface(@rest_representation) }
+      format.xml  # show.xml.builder
+      format.json { render :json => @rest_representation.to_json }
+    end
+  end
+  
+  def annotations
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:arr, @rest_representation.id, "annotations", :xml)) }
+      format.json { redirect_to(generate_include_filter_url(:arr, @rest_representation.id, "annotations", :json)) }
+    end
+  end
+  
   def new_popup     
     respond_to do |format|
       format.js { render :layout => false }
@@ -21,9 +40,6 @@ class RestRepresentationsController < ApplicationController
   end
 
   def add_new_representations    
-    resource = @rest_method.rest_resource # for redirection
-    service = resource.rest_service.service # for redirection
-    
     results = @rest_method.add_representations(params[:rest_representations], current_user, :http_cycle => params[:http_cycle])
     
     respond_to do |format|
@@ -92,11 +108,22 @@ class RestRepresentationsController < ApplicationController
   def find_rest_method
     @rest_method = RestMethod.find(params[:rest_method_id])
   end
-
+  
   def find_rest_representation
     @rest_representation = RestRepresentation.find(params[:id])
   end
   
+  def find_rest_methods
+    @rest_methods = []
+    
+    @rest_representation.rest_method_representations.each { |map|
+      method = RestMethod.find(map.rest_method_id, :include => [ :rest_resource, :rest_service ])
+      @rest_methods << method if method && !@rest_methods.include?(method)
+    }
+    
+    @rest_methods.uniq!
+  end
+    
   def get_redirect_url()
     method_rep_map = RestMethodRepresentation.find(:first, 
                          :conditions => {:rest_representation_id => @rest_representation.id, 

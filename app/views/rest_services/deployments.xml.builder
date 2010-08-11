@@ -12,5 +12,7 @@ render :partial => "rest_services/api/rest_service",
        :locals => { :parent_xml => xml,
                     :rest_service => @rest_service,
                     :is_root => true,
+                    :show_deployments => true,
+                    :show_endpoints => false,
                     :show_ancestors => false,
                     :show_related => true }

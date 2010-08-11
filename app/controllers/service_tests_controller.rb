@@ -12,7 +12,8 @@ class ServiceTestsController < ApplicationController
   before_filter :find_service_test, :only => [ :show, :results, :enable, :disable ]
   
   # Only logged in users can add tests
-  before_filter :login_required, :only => [ :create, :enable, :disable ]
+  before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable ]
+
   before_filter :authorise, :only => [ :enable, :disable ]
   
   def show
@@ -51,6 +52,7 @@ class ServiceTestsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(test_results_url(:service_test_id => @service_test.id, :format => :xml)) }
+      format.json { redirect_to(test_results_url(:service_test_id => @service_test.id, :format => :json)) }
     end
   end
   

@@ -15,236 +15,331 @@ class JsonTests < Test::Unit::TestCase
   include JsonTestHelper
 
   def setup
+    required_config_elements = %w{ agent_ids annotation_ids annotation_attribute_ids category_ids registry_ids
+                                   rest_method_ids rest_parameter_ids rest_representation_ids rest_resource_ids
+                                   rest_service_ids search_queries service_ids service_deployment_ids 
+                                   service_provider_ids service_test_ids soap_input_ids soap_operation_ids 
+                                   soap_output_ids  soap_service_ids tag_endpoints test_result_ids user_ids wsdl_locations }.freeze
+    
+    required_config_elements.each { |element|
+      assert config[element].length > 0, "No '#{element}' element found in config.yml"
+    }
+  end
+  # TODO: add more tests (include query parameters)
+  
+  # --------------------
+
+  # TODO: def test_root
+  
+  # agent
+  def test_agents
+    validate_collection_from_path("/agents")
   end
 
-  def test_annotations
-    data1 = load_data_from_endpoint(make_url("/annotations"))
-    assert data1.is_a?(Array), "Result not of the correct data type. Is a #{data1.class.name}."
-    assert !data1.empty?, "No annotations JSON data found"
-    assert data1.length <= 10, "Too many annotations"
-    
-    data2 = load_data_from_endpoint(make_url("/annotations?page=2"))
-    assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-    assert !data2.empty?, "No annotations JSON data found"
-    assert data2.length <= 10, "Too many annotations"
+  def test_agent
+    config["agent_ids"].each { |id| 
+      validate_agent_from_path("/agents/#{id}") 
+      validate_collection_from_path("/agents/#{id}/annotations_by")
+    }
   end
   
-  def test_annotation
-    assert config["annotation_ids"].length > 0, "No annotation_ids found in config.yml"
-    config["annotation_ids"].each do |id|
-      data = load_data_from_endpoint(make_url("/annotations/#{id}"))
-      assert data.is_a?(Hash), "Result not of the correct data type. Is a #{data.class.name}."
-      assert !data.empty?, "No annotations JSON data found for Annotation ID: #{id}"
-      # TODO: test the internals a little bit more
-    end
-  end
-  
+  # annotation_attribute
   def test_annotation_attributes
-    data1 = load_data_from_endpoint(make_url("/annotation_attributes"))
-    assert data1.is_a?(Array), "Result not of the correct data type. Is a #{data1.class.name}."
-    assert !data1.empty?, "No annotation attributes JSON data found"
-    assert data1.length <= 10, "Too many annotation attributes"
-    
-    data2 = load_data_from_endpoint(make_url("/annotation_attributes?page=2"))
-    assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-    assert !data2.empty?, "No annotation attributes JSON data found"
-    assert data2.length <= 10, "Too many annotation attributes"
+    validate_collection_from_path("/annotation_attributes")
+    validate_collection_from_path("/annotation_attributes?page=2")
   end
   
   def test_annotation_attribute
-    assert config["annotation_attribute_ids"].length > 0, "No annotation_attribute_ids found in config.yml"
-    config["annotation_attribute_ids"].each do |id|
-      
-      data1 = load_data_from_endpoint(make_url("/annotation_attributes/#{id}"))
-      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-      assert !data1.empty?, "No annotation attributes JSON data found for AnnotationAttribute ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/annotation_attributes/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for AnnotationAttribute ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["annotation_attribute_ids"].each { |id|
+      validate_annotation_attribute_from_path("/annotation_attributes/#{id}") 
+      validate_collection_from_path("/annotation_attributes/#{id}/annotations")
+    }
+  end
+
+  # annotation
+  def test_annotations
+    validate_collection_from_path("/annotations")
+    validate_collection_from_path("/annotations?page=2")
+    validate_collection_from_path("/annotations?page=3")    
+    validate_collection_from_path("/annotations?page=4") 
+    validate_collection_from_path("/annotations?page=5")
+  end
+
+  def test_annotation
+    config["annotation_ids"].each { |id| validate_annotation_from_path("/annotations/#{id}") }
+  end
+  
+  # TODO: def test_annotations_filters
+  
+  # category
+  def test_categories
+    validate_collection_from_path("/categories")
+    validate_collection_from_path("/categories?page=2")
+  end
+  
+  def test_category
+    config["category_ids"].each { |id| 
+      validate_category_from_path("/categories/#{id}") 
+      validate_collection_from_path("/categories/#{id}/services")
+    }
+  end
+
+  # lookup
+  def test_lookup
+    config["wsdl_locations"].each { |wsdl| validate_lookup_from_path("/lookup?wsdl_location=#{wsdl}") }
+  end
+
+  # registry
+  def test_registries
+    validate_collection_from_path("/registries")
+    validate_collection_from_path("/registries?sort_by=created&sort_order=asc")
+    validate_collection_from_path("/registries?sort_by=created&sort_order=asc&page=2", true)
   end
   
   def test_registry
-    assert config["registry_ids"].length > 0, "No registry_ids found in config.yml"
-    config["registry_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/registries/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No registries JSON data found for Registry ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/registries/#{id}/annotations_by"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations_by JSON data found for Registry ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["registry_ids"].each { |id| 
+      validate_registry_from_path("/registries/#{id}") 
+      validate_collection_from_path("/registries/#{id}/annotations_by")
+      validate_collection_from_path("/registries/#{id}/services") 
+    }
+  end
+
+  # rest_method
+  def test_rest_methods
+    validate_collection_from_path("/rest_methods")
+    validate_collection_from_path("/rest_methods?page=2")
+  end
+  
+  def test_rest_method
+    config["rest_method_ids"].each { |id| 
+      validate_rest_method_from_path("/rest_methods/#{id}") 
+      validate_rest_method_from_path("/rest_methods/#{id}/inputs", :inputs)
+      validate_rest_method_from_path("/rest_methods/#{id}/outputs", :outputs)
+      validate_collection_from_path("/rest_methods/#{id}/annotations")
+    }
+  end
+
+  # rest_parameter
+  def test_rest_parameter
+    config["rest_parameter_ids"].each { |id| 
+      validate_rest_parameter_from_path("/rest_parameters/#{id}") 
+      validate_collection_from_path("/rest_parameters/#{id}/annotations", true)
+    }
+  end
+
+  # rest_representation
+  def test_rest_representation
+    config["rest_representation_ids"].each { |id| 
+      validate_rest_representation_from_path("/rest_representations/#{id}") 
+      validate_collection_from_path("/rest_representations/#{id}/annotations", true)
+    }
+  end
+
+  # rest_resource
+  def test_rest_resources
+    validate_collection_from_path("/rest_resources")
+    validate_collection_from_path("/rest_resources?page=2")
+  end
+  
+  def test_rest_resource
+    config["rest_resource_ids"].each { |id| 
+      validate_rest_resource_from_path("/rest_resources/#{id}") 
+      validate_rest_resource_from_path("/rest_resources/#{id}/methods", :methods) 
+      validate_collection_from_path("/rest_resources/#{id}/annotations", true)
+    }
+  end
+  
+  # rest_service
+  def test_rest_services
+    validate_collection_from_path("/rest_services")
+    validate_collection_from_path("/rest_services?page=2")
   end
   
   def test_rest_service
-    assert config["rest_service_ids"].length > 0, "No rest_service_ids found in config.yml"
-    config["rest_service_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/rest_services/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No rest_services JSON data found for RestService ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/rest_services/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for RestService ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["rest_service_ids"].each { |id|
+      validate_rest_service_from_path("/rest_services/#{id}") 
+      validate_rest_service_from_path("/rest_services/#{id}/deployments", :deployments) 
+      validate_rest_service_from_path("/rest_services/#{id}/resources", :resources) 
+      validate_collection_from_path("/rest_services/#{id}/annotations")
+    }
   end
-  
-  def test_service_deployment
-    assert config["service_deployment_ids"].length > 0, "No service_deployment_ids found in config.yml"
-    config["service_deployment_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/service_deployments/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No service_deployments JSON data found for ServiceDeployment ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/service_deployments/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for ServiceDeployment ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+
+  # search
+  def test_search
+    config["search_queries"].each { |query| 
+      validate_collection_from_path("/search?q=#{query}", true)
+      validate_collection_from_path("/search?q=#{query}&page=2", true)
+      validate_collection_from_path("/search?q=#{query}&page=3", true)
+      validate_collection_from_path("/search?q=#{query}&page=4", true)
+      validate_collection_from_path("/search?q=#{query}&page=5", true)
+      validate_collection_from_path("/search?q=#{query}&scope=services", true)
+      validate_collection_from_path("/search?q=#{query}&scope=services&page=2", true)
+      validate_collection_from_path("/search?q=#{query}&scope=service_providers", true)
+      validate_collection_from_path("/search?q=#{query}&scope=services,service_providers", true)
+      validate_collection_from_path("/search?q=#{query}&scope=services&include=summary", true)
+      validate_collection_from_path("/search?q=#{query}&scope=services&include=summary,related", true)
+    }
   end
-  
-  def test_service_provider
-    assert config["service_provider_ids"].length > 0, "No service_provider_ids found in config.yml"
-    config["service_provider_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/service_providers/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No service_providers JSON data found for ServiceProvider ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/service_providers/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for ServiceProvider ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-      data3 = load_data_from_endpoint(make_url("/service_providers/#{id}/annotations_by"))
-      assert data3.is_a?(Array), "Result not of the correct data type. Is a #{data3.class.name}."
-      assert !data3.empty?, "No annotations_by JSON data found for ServiceProvider ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+
+  # service
+  def test_services
+    validate_collection_from_path("/services")
+    validate_collection_from_path("/services?page=2")
+    validate_collection_from_path("/services?per_page=5&page=3")
+    validate_collection_from_path("/services?t=[SOAP]")
+    validate_collection_from_path("/services?t=[SOAP]&per_page=5&page=3")
   end
   
   def test_service
-    assert config["service_ids"].length > 0, "No service_ids found in config.yml"
-    config["service_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/services/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No services JSON data found for Service ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/services/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for Service ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["service_ids"].each { |id| 
+      validate_service_from_path("/services/#{id}") 
+      validate_service_from_path("/services/#{id}/deployments", :deployments) 
+      validate_service_from_path("/services/#{id}/variants", :variants) 
+      validate_service_from_path("/services/#{id}/monitoring", :monitoring) 
+      validate_collection_from_path("/services/#{id}/annotations")
+    }
+  end
+
+  # TODO: def test_services_filters
+  
+  # service_deployment
+  def test_service_deployment
+    config["service_deployment_ids"].each { |id|
+      validate_service_deployment_from_path("/service_deployments/#{id}") 
+      validate_collection_from_path("/service_deployments/#{id}/annotations", true)
+    }
+  end
+
+  # service_provider
+  def test_service_providers
+    validate_collection_from_path("/service_providers")
+    validate_collection_from_path("/service_providers?page=2")
+    validate_collection_from_path("/service_providers?sort_by=created&sort_order=asc")
+    validate_collection_from_path("/service_providers?sort_by=created&sort_order=asc&page=2")
   end
   
+  def test_service_provider
+    config["service_provider_ids"].each { |id| validate_service_provider_from_path("/service_providers/#{id}") }
+  end
+
+  def test_service_provider_annotations
+    config["service_provider_ids"].each { |id|
+      validate_collection_from_path("/service_providers/#{id}/annotations") 
+      validate_collection_from_path("/service_providers/#{id}/annotations_by", true)
+      validate_collection_from_path("/service_providers/#{id}/services")
+    }
+  end
+
+  # service_test
+  def test_service_test
+    config["service_test_ids"].each { |id| 
+      validate_service_test_from_path("/service_tests/#{id}") 
+      validate_collection_from_path("/service_tests/#{id}/results")
+    }
+  end
+  
+  # soap_input
   def test_soap_input
-    assert config["soap_input_ids"].length > 0, "No soap_input_ids found in config.yml"
-    config["soap_input_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/soap_inputs/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No soap_inputs JSON data found for SoapInput ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/soap_inputs/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for SoapInput ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["soap_input_ids"].each { |id|
+      validate_soap_input_from_path("/soap_inputs/#{id}") 
+      validate_collection_from_path("/soap_inputs/#{id}/annotations", true)
+    }
+  end
+
+  # soap_operation
+  def test_soap_operations
+    validate_collection_from_path("/soap_operations")
+    validate_collection_from_path("/soap_operations?page=2")
+    validate_collection_from_path("/soap_operations?page=3&per_page=5")
+    validate_collection_from_path("/soap_operations?page=2&include=inputs,ancestors&per_page=3")
+    validate_collection_from_path("/soap_operations?sort_by=created&sort_order=asc")
+    validate_collection_from_path("/soap_operations?tag=[blast]")
+    validate_collection_from_path("/soap_operations?tag=[blast],[predicting]")
+    validate_collection_from_path("/soap_operations?tag_ins=[blast],[predicting]&tag_outs=[blast_report]", true)
   end
   
   def test_soap_operation
-    assert config["soap_operation_ids"].length > 0, "No soap_operation_ids found in config.yml"
-    config["soap_operation_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/soap_operations/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No soap_operationss JSON data found for SoapOperation ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/soap_operations/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for SoapOperation ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["soap_operation_ids"].each { |id| 
+      validate_soap_operation_from_path("/soap_operations/#{id}") 
+      validate_soap_operation_from_path("/soap_operations/#{id}/inputs", :inputs) 
+      validate_soap_operation_from_path("/soap_operations/#{id}/outputs", :outputs) 
+      validate_collection_from_path("/soap_operations/#{id}/annotations")
+    }
   end
+
+  # TODO: def test_soap_operations_filters
   
+  # soap_output
   def test_soap_output
-    assert config["soap_output_ids"].length > 0, "No soap_output_ids found in config.yml"
-    config["soap_output_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/soap_outputs/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No soap_outputs JSON data found for SoapOutput ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/soap_outputs/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for SoapOutput ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["soap_output_ids"].each { |id|
+      validate_soap_output_from_path("/soap_outputs/#{id}") 
+      validate_collection_from_path("/soap_outputs/#{id}/annotations", true)
+    }
+  end
+
+  # soap_service
+  def test_soap_services
+    validate_collection_from_path("/soap_services")
+    validate_collection_from_path("/soap_services?page=2")
   end
   
   def test_soap_service
-    assert config["soap_service_ids"].length > 0, "No soap_service_ids found in config.yml"
-    config["soap_service_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/soap_services/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No soap_servicess JSON data found for SoapService ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/soap_services/#{id}/annotations"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations JSON data found for SoapService ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["soap_service_ids"].each { |id| 
+      validate_soap_service_from_path("/soap_services/#{id}") 
+      validate_soap_service_from_path("/soap_services/#{id}/deployments", :deployments) 
+      validate_soap_service_from_path("/soap_services/#{id}/operations", :operations) 
+      validate_collection_from_path("/soap_services/#{id}/annotations")
+    }
+  end
+
+  # tags
+  def test_tags
+    validate_collection_from_path("/tags")
+    validate_collection_from_path("/tags?page=2")
+    validate_collection_from_path("/tags?per_page=20", false, 20)
+    validate_collection_from_path("/tags?per_page=25&page=3", false, 25)
+    validate_collection_from_path("/tags?sort=name&page=3")
+    validate_collection_from_path("/tags?sort=counts&page=2")
+  end
+  
+  def test_tag
+    config["tag_endpoints"].each { |path| validate_tag_from_path(path) }
+  end
+
+  # test_results
+  def test_test_results
+    validate_collection_from_path("/test_results")
+    validate_collection_from_path("/test_results?page=2")
+    
+    config["service_test_ids"].each { |id|
+      validate_collection_from_path("/test_results?service_test_id=#{id}")
+    }
+  end
+  
+  def test_test_result
+    config["test_result_ids"].each { |id| validate_test_result_from_path("/test_results/#{id}") }
+  end
+
+  # user
+  def test_users
+    validate_collection_from_path("/users")
+    validate_collection_from_path("/users?page=2")
+    validate_collection_from_path("/users?sort_by=activated&sort_order=asc")
+    validate_collection_from_path("/users?sort_by=activated&sort_order=asc&page=2")
   end
   
   def test_user
-    assert config["user_ids"].length > 0, "No user_ids found in config.yml"
-    config["user_ids"].each do |id|
-      
-#      data1 = load_data_from_endpoint(make_url("/users/#{id}"))
-#      assert data1.is_a?(Hash), "Result not of the correct data type. Is a #{data1.class.name}."
-#      assert !data1.empty?, "No userss JSON data found for User ID: #{id}"
-#      # TODO: test the internals a little bit more
-      
-      data2 = load_data_from_endpoint(make_url("/users/#{id}/annotations_by"))
-      assert data2.is_a?(Array), "Result not of the correct data type. Is a #{data2.class.name}."
-      assert !data2.empty?, "No annotations_by JSON data found for User ID: #{id}"
-      # TODO: test the internals a little bit more
-      
-    end
+    config["user_ids"].each { |id| 
+      validate_user_from_path("/users/#{id}") 
+      validate_collection_from_path("/users/#{id}/annotations_by", true)
+      validate_collection_from_path("/users/#{id}/services", true)
+    }
   end
+
+  # --------------------
   
   def teardown
   end
-  
+
 end
 

@@ -1,0 +1,19 @@
+<div style="margin-bottom: 1.5em;">
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Client List"),
+              oauth_clients_path, :class => "button_slim", :style => "margin-right:1.5em;" -%>
+
+  <%= link_to "Cancel Editing", oauth_client_path(@client_application), :class => "button_slim" -%>
+</div>
+
+<h1>Editing OAuth Details: <%=h @client_application.name %></h1>
+
+<% form_for :client_application, @client_application, :url => oauth_client_path(@client_application), :html => {:method => :put}  do |f| %>
+
+  <%= render :partial => "form", :locals => { :f => f } %>
+  
+  <p style="margin-top: 2.5em; text-align: center;">
+    <%= submit_tag "Submit", :disable_with => "Submitting..." %>
+  </p>
+
+<% end %>
+

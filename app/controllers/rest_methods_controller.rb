@@ -6,17 +6,20 @@
 
 class RestMethodsController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :edit ]
-  before_filter :disable_action_for_api
+  before_filter :disable_action, :only => [ :edit ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :inputs, :outputs ]
 
-  before_filter :login_required, :except => [ :show ]
+  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :inputs, :outputs ]
   
-  before_filter :find_rest_method
+  before_filter :find_rest_method, :except => :index
   
-  before_filter :authorise, :except => [ :show ]
+  before_filter :parse_sort_params, :only => :index
+  before_filter :find_rest_methods, :only => :index
+  
+  before_filter :authorise, :except => [ :index, :show, :annotations, :inputs, :outputs ]
   
   skip_before_filter :verify_authenticity_token, :only => [ :group_name_auto_complete ]
-    
+  
   def update_resource_path
     error_msg = @rest_method.update_resource_path(params[:new_path], current_user)
     
@@ -110,10 +113,48 @@ class RestMethodsController < ApplicationController
     end # respond  
   end
   
+  def index
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@rest_methods, true).to_json }
+    end
+  end
+  
   def show
     @rest_service = @rest_method.rest_resource.rest_service
     @base_endpoint = @rest_service.service.latest_deployment.endpoint
     @grouped_rest_methods = @rest_service.group_all_rest_methods_from_rest_resources
+    
+    respond_to do |format|
+      format.html
+      format.xml  # show.xml.builder
+      format.json { render :json => @rest_method.to_json }
+    end
+  end
+
+  def inputs
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # inputs.xml.builder
+      format.json { render :json => @rest_method.to_custom_json("inputs") }
+    end
+  end
+
+  def outputs
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml  # outputs.xml.builder
+      format.json { render :json => @rest_method.to_custom_json("outputs") }
+    end
+  end
+  
+  def annotations
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml { redirect_to(generate_include_filter_url(:arm, @rest_method.id, "annotations", :xml)) }
+      format.json { redirect_to(generate_include_filter_url(:arm, @rest_method.id, "annotations", :json)) }
+    end
   end
   
   def destroy
@@ -198,7 +239,7 @@ class RestMethodsController < ApplicationController
   # ========================================
   
   
-  protected
+protected
 
   def authorise
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method)
@@ -213,10 +254,55 @@ class RestMethodsController < ApplicationController
   # ========================================
   
   
-  private
+private
   
+  def parse_sort_params
+    sort_by_allowed = [ "created" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+
   def find_rest_method
-    @rest_method = RestMethod.find(params[:id])
+    @rest_method = RestMethod.find(params[:id], :include => :rest_resource)
+  end
+  
+  def find_rest_methods
+    
+    # Sorting
+    
+    order = 'rest_methods.created_at DESC'
+    order_field = nil
+    order_direction = nil
+    
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "rest_methods.#{order_field} #{order_direction}"
+    end
+    
+    @rest_methods = RestMethod.paginate(:page => @page,
+                                              :per_page => @per_page,
+                                              :order => order)
   end
   
   def destroy_unused_objects(id_list, is_parameter=true)

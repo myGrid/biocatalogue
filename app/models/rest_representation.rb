@@ -33,6 +33,10 @@ class RestRepresentation < ActiveRecord::Base
   end
 
 
+  def display_name 
+    return self.content_type
+  end
+
   # ========================================
   
   # get all the RestMethodRepresentations that use this RestRepresentation
@@ -80,6 +84,18 @@ class RestRepresentation < ActiveRecord::Base
   
   def associated_rest_method_id
     return RestMethodRepresentation.find_by_rest_representation_id(self.id).try(:rest_method_id)
+  end
+
+  def to_json
+    {
+      "rest_representation" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "content_type" => self.content_type,
+        "description" => self.description,
+        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
+        "created_at" => self.created_at.iso8601
+      }
+    }.to_json
   end
 
 end

@@ -16,7 +16,7 @@ class AnnotationAttributesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json =>  @annotation_attributes.to_json }
+      format.json { render :json => BioCatalogue::Api::Json.collection(@annotation_attributes, false).to_json }
     end
   end
   
@@ -24,7 +24,7 @@ class AnnotationAttributesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # show.xml.builder
-      format.json { render :json =>  @annotation_attribute.to_json }
+      format.json { render :json => @annotation_attribute.to_json }
     end
   end
   
@@ -32,7 +32,7 @@ class AnnotationAttributesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:attrib, @annotation_attribute.id, "annotations", :xml)) }
-      format.json { render :json => @annotation_attribute.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:attrib, @annotation_attribute.id, "annotations", :json)) }
     end
   end
   

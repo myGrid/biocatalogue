@@ -25,6 +25,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.collection(@service_providers, true).to_json }
     end
   end
 
@@ -49,7 +50,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:asp, @service_provider.id, "annotations", :xml)) }
-      format.json { render :json => @service_provider.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:asp, @service_provider.id, "annotations", :json)) }
     end
   end
   
@@ -57,7 +58,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:sosp, @service_provider.id, "annotations", :xml)) }
-      format.json { render :json => @service_provider.annotations_by.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:sosp, @service_provider.id, "annotations", :json)) }
     end
   end
   
@@ -65,6 +66,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:p, params[:id], "services", :xml)) }
+      format.json { redirect_to(generate_include_filter_url(:p, params[:id], "services", :json)) }
     end
   end
 

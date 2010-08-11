@@ -137,7 +137,7 @@ class ServiceTest < ActiveRecord::Base
       "service_test" => {
         "self" => BioCatalogue::Api.uri_for_object(self),
         "created_at" => self.created_at.iso8601,
-        "status" => BioCatalogue::JSON.monitoring_status(self.latest_status),
+        "status" => BioCatalogue::Api::Json.monitoring_status(self.latest_status),
         "test_type" => JSON(self.test.to_json)
       }
     }.to_json

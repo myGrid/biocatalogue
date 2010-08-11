@@ -6,7 +6,7 @@
 
 class ResponsibilityRequestsController < ApplicationController
   
-  before_filter :login_required, :only => [ :create, :index, :show, 
+  before_filter :login_or_oauth_required, :only => [ :create, :index, :show, 
                                             :destroy, :new, :approve ]
   before_filter :find_request, :only => [ :approve, :destroy, :deny, :turn_down, :cancel ]
   before_filter :find_service, :only => [ :new ]

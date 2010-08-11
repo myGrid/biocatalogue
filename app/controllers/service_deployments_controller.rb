@@ -25,7 +25,7 @@ class ServiceDeploymentsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml { redirect_to(generate_include_filter_url(:asd, @service_deployment.id, "annotations", :xml)) }
-      format.json { render :json => @service_deployment.annotations.paginate(:page => @page, :per_page => @per_page).to_json }
+      format.json { redirect_to(generate_include_filter_url(:asd, @service_deployment.id, "annotations", :json)) }
     end
   end
   

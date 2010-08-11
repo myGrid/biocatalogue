@@ -27,7 +27,7 @@ module BioCatalogue
                     :soap_operations => [ :tag, :tag_ops, :tag_ins, :tag_outs ],
                     :annotations => [ :attrib,
                                       :as, :asd, :asp, :ars, :ass, :asop, :asin, :asout,
-                                      :soa, :sor, :sosp, :sou ] }.freeze
+                                      :soa, :sor, :sosp, :sou, :arm, :arp, :arr, :arres ] }.freeze
     
     ALL_FILTER_KEYS = FILTER_KEYS.values.flatten.uniq.freeze
     
@@ -48,33 +48,37 @@ module BioCatalogue
                                             { "Tags (on Inputs)" => [ :tag_ins ] },
                                             { "Tags (on Outputs)" => [ :tag_outs ] } ],
                       :annotations => [ { "Annotation Attributes" => [ :attrib ] },
-                                        { "Annotatables" => [ :as, :asd, :asp, :ars, :ass, :asop, :asin, :asout ] },
+                                        { "Annotatables" => [ :as, :asd, :asp, :ars, :arres, :arm, :arp, :arr, :ass, :asop, :asin, :asout ] },
                                         { "Sources" => [ :soa, :sor, :sosp, :sou ] } ] }.freeze
     
     FILTER_KEY_DISPLAY_NAMES = { :cat => "Service Categories",
-                                   :t => "Service Types",
-                                   :p => "Service Providers",
-                                   :su => "Members",
-                                   :sr => "Registries", 
-                                   :tag => "Tags",
-                                   :tag_s => "Tags (on Services)",
-                                   :tag_ops => "Tags (on Operations)",
-                                   :tag_ins => "Tags (on Inputs)",
-                                   :tag_outs => "Tags (on Outputs)",
-                                   :c => "Countries",
-                                   :as => "Services",
-                                   :asd => "Service Deployments",
-                                   :asp => "Service Providers",
-                                   :ars => "REST Services",
-                                   :ass => "SOAP Services",
-                                   :asop => "SOAP Operations",
-                                   :asin => "SOAP Inputs",
-                                   :asout => "SOAP Outputs",
-                                   :soa => "Agents",
-                                   :sor => "Registries",
-                                   :sosp => "Service Providers",
-                                   :sou => "Members",
-                                   :attrib => "Annotation Attributes" }.freeze
+                                 :t => "Service Types",
+                                 :p => "Service Providers",
+                                 :su => "Members",
+                                 :sr => "Registries", 
+                                 :tag => "Tags",
+                                 :tag_s => "Tags (on Services)",
+                                 :tag_ops => "Tags (on Operations)",
+                                 :tag_ins => "Tags (on Inputs)",
+                                 :tag_outs => "Tags (on Outputs)",
+                                 :c => "Countries",
+                                 :as => "Services",
+                                 :asd => "Service Deployments",
+                                 :asp => "Service Providers",
+                                 :ars => "REST Services",
+                                 :arm => "REST Methods",
+                                 :arp => "REST Parameters", 
+                                 :arr => "REST Representations",
+                                 :arres => "REST Resources",
+                                 :ass => "SOAP Services",
+                                 :asop => "SOAP Operations",
+                                 :asin => "SOAP Inputs",
+                                 :asout => "SOAP Outputs",
+                                 :soa => "Agents",
+                                 :sor => "Registries",
+                                 :sosp => "Service Providers",
+                                 :sou => "Members",
+                                 :attrib => "Annotation Attributes" }.freeze
   
   
     protected
@@ -240,6 +244,18 @@ module BioCatalogue
           when :asout
             a = SoapOperation.find_by_id(filter_id)
             (a.nil? ? "(unknown SOAP output)" : BioCatalogue::Util.display_name(a, false))
+          when :arm
+            a = RestMethod.find_by_id(filter_id)
+            (a.nil? ? "(unknown REST method)" : BioCatalogue::Util.display_name(a, false))
+          when :arp
+            a = RestParameter.find_by_id(filter_id)
+            (a.nil? ? "(unknown REST parameter)" : BioCatalogue::Util.display_name(a, false))
+          when :arr
+            a = RestRepresentation.find_by_id(filter_id)
+            (a.nil? ? "(unknown REST representation)" : BioCatalogue::Util.display_name(a, false))
+          when :arres
+            a = RestResource.find_by_id(filter_id)
+            (a.nil? ? "(unknown REST resource)" : BioCatalogue::Util.display_name(a, false))
         end
       end
       

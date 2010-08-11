@@ -33,17 +33,13 @@ class SoapOutput < ActiveRecord::Base
       "soap_output" => {
         "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => self.name,
-        "description" => (self.preferred_description || ""),
-        "computational_type" => (self.computational_type || ""),
+        "description" => self.preferred_description,
+        "computational_type" => self.computational_type,
         "created_at" => self.created_at.iso8601
       }
     }.to_json
   end
-  
-  def to_inline_json
-    self.to_json
-  end
-  
+    
   def preferred_description
     # Either the description from the service description doc, 
     # or the last description annotation.
@@ -57,8 +53,6 @@ class SoapOutput < ActiveRecord::Base
     return desc
   end
   
-  protected
-  
   def associated_service_id
     BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end
@@ -66,6 +60,8 @@ class SoapOutput < ActiveRecord::Base
   def associated_soap_operation_id
     self.soap_operation_id
   end
+
+protected
   
   def computational_type_details_for_solr
     BioCatalogue::Util.all_values_from_hash(self.computational_type_details).collect {|i| i.downcase}.uniq.to_sentence(:words_connector => ' ', :last_word_connector => ' ', :two_words_connector => ' ')

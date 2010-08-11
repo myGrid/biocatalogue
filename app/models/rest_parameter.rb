@@ -83,4 +83,21 @@ class RestParameter < ActiveRecord::Base
     return RestMethodParameter.find_by_rest_parameter_id(self.id).try(:rest_method_id)
   end
 
+  def to_json
+    {
+      "rest_parameter" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "name" => self.name,
+        "description" => self.description,
+        "param_style" => self.param_style,
+        "computational_type" => self.computational_type,        
+        "default_value" => self.default_value,
+        "is_optional" => !self.required,
+        "constrained_values" => self.constrained_options.reject { |x| x.blank? },
+        "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
+        "created_at" => self.created_at.iso8601
+      }
+    }.to_json
+  end
+
 end

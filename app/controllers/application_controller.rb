@@ -21,7 +21,12 @@ class ApplicationController < ActionController::Base
   include SslRequirement
 
   # ============================================
-  
+
+  # OAuth support
+  include OauthAuthorize
+
+  # ============================================
+
   before_filter { |controller|
     BioCatalogue::CacheHelper.set_base_host(controller.base_host)
   }
@@ -67,7 +72,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
-  layout "application_wide"
+  layout :auto_select_layout
   
   before_filter :debug_messages
   
@@ -618,4 +623,24 @@ class ApplicationController < ActionController::Base
     end
   end
   
+private # ===============================
+
+  def auto_select_layout
+    # this code was based on
+    # http://www.arctickiwi.com/blog/2-mobile-enable-your-ruby-on-rails-site-for-small-screens
+    
+    # TODO: return "application_wide" if current controller is not oauth related
+    
+    agent = request.headers["HTTP_USER_AGENT"].downcase
+    
+    return "application_oauth" if agent.include?("oauth_client") || 
+                                  agent.include?("oauth-client") || 
+                                  agent.include?("oauth client")
+
+    oauth_clients = ClientApplication.find(:all, :select => :name)
+    oauth_clients.each { |a| return "application_oauth" if agent.match(a.name) }
+    
+    return "application_wide"
+  end
+
 end

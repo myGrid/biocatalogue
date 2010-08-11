@@ -19,7 +19,6 @@ class SearchController < ApplicationController
   before_filter :set_listing_type, :only => [ :show ]
   
   def show
-    
     if @query.blank?
       
       if is_api_request?
@@ -49,6 +48,12 @@ class SearchController < ApplicationController
       respond_to do |format|
         format.html # show.html.erb
         format.xml  # show.xml.builder
+        format.json { 
+          paged_item_compound_ids = @results.paged_all_item_ids(@page, @per_page)
+          items = BioCatalogue::Mapper.compound_ids_to_model_objects(paged_item_compound_ids)
+          
+          render :json => BioCatalogue::Api::Json.collection(items, true).to_json 
+        }
       end
     end
   

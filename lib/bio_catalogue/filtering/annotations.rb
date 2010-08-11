@@ -42,6 +42,14 @@ module BioCatalogue
             get_filters_for_sources("ServiceProvider", limit)
           when :sou
             get_filters_for_sources("User", limit)
+          when :arm
+            get_filters_for_annotatables("RestMethod", limit)
+          when :arp
+            get_filters_for_annotatables("RestParameter", limit)
+          when :arr
+            get_filters_for_annotatables("RestRepresentation", limit)
+          when :arres
+            get_filters_for_annotatables("RestResource", limit)
           else
             [ ]
         end
@@ -87,7 +95,7 @@ module BioCatalogue
         results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, [ sql, annotatable_type ]))
         
         # Need to now fetch all these object so we can figure out their display names!
-        
+        # TODO: optimize the retrieval of display names
         objs = { }
         item_ids = results.map { |x| x['id'] }
         
@@ -194,6 +202,14 @@ module BioCatalogue
                   annotation_ids_for_sources[filter_type] = get_annotation_ids_with_sources("ServiceProvider", filter_values)
                 when :sou
                   annotation_ids_for_sources[filter_type] = get_annotation_ids_with_sources("User", filter_values)
+                when :arm
+                  annotation_ids_for_annotatables[filter_type] = get_annotation_ids_with_annotatables("RestMethod", filter_values)
+                when :arp
+                  annotation_ids_for_annotatables[filter_type] = get_annotation_ids_with_annotatables("RestParameter", filter_values)
+                when :arr
+                  annotation_ids_for_annotatables[filter_type] = get_annotation_ids_with_annotatables("RestRepresentation", filter_values)
+                when :arres
+                  annotation_ids_for_annotatables[filter_type] = get_annotation_ids_with_annotatables("RestResource", filter_values)
               end
             end
           end

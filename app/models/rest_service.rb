@@ -204,14 +204,7 @@ class RestService < ActiveRecord::Base
   
   def group_all_rest_methods_from_rest_resources
     return [ ] if self.rest_resources.blank?
-    
-    methods = [ ]
-    
-    self.rest_resources.each do |res|
-      methods.concat(res.rest_methods)
-    end
-    
-    return RestMethod.group_rest_methods(methods)
+    return RestMethod.group_rest_methods(self.rest_methods)
   end
   
   def endpoint_group_names_suggestions(fragment, limit=nil)
@@ -233,15 +226,28 @@ class RestService < ActiveRecord::Base
     return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
   end
 
-
+  def rest_methods
+    methods = [ ]
+    
+    self.rest_resources.each do |res|
+      methods.concat(res.rest_methods)
+    end
+    
+    return methods
+  end
+  
   # =========================================
   
   def to_json
-    generate_json_and_make_inline(false)
+    generate_json_with_collections("default")
   end 
-
+  
   def to_inline_json
-    generate_json_and_make_inline(true)
+    generate_json_with_collections(nil)
+  end
+  
+  def to_custom_json(collections)
+    generate_json_with_collections(collections)
   end
 
 protected
@@ -375,23 +381,48 @@ private
   
   # =========================================
 
-  def generate_json_and_make_inline(make_inline)
+  def generate_json_with_collections(collections)
+    collections ||= []
+
+    allowed = %w{ deployments endpoints rest_resources }
+    
+    if collections.class==String
+      collections = case collections.strip.downcase
+                      when "deployments" : %w{ deployments }
+                      when "endpoints" : %w{ endpoints }
+                      when "rest_resources" : %w{ rest_resources }
+                      when "default" : %w{ deployments rest_resources }
+                      else []
+                    end
+    else
+      collections.each { |x| x.downcase! }
+      collections.uniq!
+      collections.reject! { |x| !allowed.include?(x) }
+    end
+        
     data = {
       "rest_service" => {
         "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => BioCatalogue::Util.display_name(self),
         "submitter" => BioCatalogue::Api.uri_for_object(self.service_version.submitter),
-        "description" => (self.description || ""),
-        "documentation_url" => (self.preferred_documentation_url || ""),
+        "description" => self.description,
+        "documentation_url" => self.preferred_documentation_url,
         "created_at" => self.created_at.iso8601
       }
     }
 
-    unless make_inline
-      data["rest_service"]["deployments"] = BioCatalogue::JSON.collection(self.service_deployments, true)
+    collections.each do |collection|
+      case collection.downcase
+        when "deployments"
+          data["rest_service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments, true)
+        when "endpoints"
+          data["rest_service"]["endpoints"] = BioCatalogue::Api::Json.collection(self.rest_methods, true)
+        when "rest_resources"
+          data["rest_service"]["resources"] = BioCatalogue::Api::Json.collection(self.rest_resources, true)
+      end
     end
-    
+
     return data.to_json
-  end # generate_json_and_make_inline
+  end # generate_json_with_collections
   
 end

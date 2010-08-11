@@ -106,32 +106,57 @@ class SoapOperation < ActiveRecord::Base
   end
   
   def to_json
-    generate_json_and_make_inline(false)
-  end
+    generate_json_with_collections("default")
+  end 
   
   def to_inline_json
-    generate_json_and_make_inline(true)
+    generate_json_with_collections(nil)
+  end
+  
+  def to_custom_json(collections)
+    generate_json_with_collections(collections)
   end
   
 private
 
-  def generate_json_and_make_inline(make_inline)
+  def generate_json_with_collections(collections)
+    collections ||= []
+
+    allowed = %w{ inputs outputs }
+    
+    if collections.class==String
+      collections = case collections.strip.downcase
+                      when "inputs" : %w{ inputs }
+                      when "outputs" : %w{ outputs }
+                      when "default" : %w{ inputs outputs }
+                      else []
+                    end
+    else
+      collections.each { |x| x.downcase! }
+      collections.uniq!
+      collections.reject! { |x| !allowed.include?(x) }
+    end
+        
     data = {
       "soap_operation" => {
         "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => self.name,
-        "description" => (self.description || ""),
-        "parameter_order" => (self.parameter_order || ""),
+        "description" => self.description,
+        "parameter_order" => self.parameter_order,
         "created_at" => self.created_at.iso8601
       }
     }
 
-    unless make_inline
-      data["soap_operation"]["inputs"] = BioCatalogue::JSON.collection(self.soap_inputs, true)
-      data["soap_operation"]["outputs"] = BioCatalogue::JSON.collection(self.soap_outputs, true)
+    collections.each do |collection|
+      case collection.downcase
+        when "inputs"
+          data["soap_operation"]["inputs"] = BioCatalogue::Api::Json.collection(self.soap_inputs, false)
+        when "outputs"
+          data["soap_operation"]["outputs"] = BioCatalogue::Api::Json.collection(self.soap_outputs, false)
+      end
     end
-    
+
     return data.to_json
-  end # generate_json_and_make_inline
+  end # generate_json_with_collections
 
 end

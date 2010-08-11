@@ -24,6 +24,7 @@ class HomeController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml { redirect_to api_url(:format => :xml), :status => 303 }
+      format.json { redirect_to api_url(:format => :json), :status => 303 }
       format.atom # index.atom.builder
     end
   end
