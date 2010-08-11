@@ -82,7 +82,7 @@ class RestMethod < ActiveRecord::Base
   
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :method_type, :description, :submitter_name, :rest_resource_search_terms, { :associated_service_id => :r_id } ])
+    acts_as_solr(:fields => [ :endpoint_name, :group_name, :display_endpoint, :method_type, :description, :submitter_name, :rest_resource_search_terms, { :associated_service_id => :r_id } ])
   end
   
   if USE_EVENT_LOG
