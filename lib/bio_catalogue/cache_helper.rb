@@ -46,6 +46,10 @@ module BioCatalogue
     #     Takes 2 args:
     #       - the parent object's type.
     #       - the parent object's ID.
+    #    
+    #   :search_items_from_solr
+    #     Takes 1 arg:
+    #       - the search query.
     #
     def self.cache_key_for(type, *args)
       case type
@@ -61,6 +65,8 @@ module BioCatalogue
           "tags_index_#{args.to_sentence(:words_connector => '_', :two_words_connector => '_', :last_word_connector => '_')}"
         when :associated_object_ids
           "associated_object_ids_#{args[0]}_#{args[1]}"
+        when :search_items_from_solr
+          "search_items_from_solr_#{args[0]}"
       end
     end
     

@@ -116,6 +116,11 @@ module BioCatalogue
     #
     # 'scope' can be a string representing one of the search scopes from VALID_SEARCH_SCOPES_INCL_ALL
     # OR an Array of the different scopes required.
+    #
+    # NOTE: the results obtained from Solr are cached for SEARCH_ITEMS_FROM_SOLR_CACHE_TIME amount of time 
+    # so as to reduce the load coming in from many simultaneous searches of the same kind 
+    # (eg: when the BioCatalogue plugin for Taverna searches for Services, SOAP operations, REST endpoints, etc
+    # all at the same time but as separate scoped requests).
     def self.search(query, scope=ALL_SCOPE_SYNONYMS[0], ignore_scope=nil)
       return nil unless Search.on?
       
@@ -135,11 +140,23 @@ module BioCatalogue
       
       query = self.preprocess_query(query)
       
-      search_result_docs = @@models_for_search.first.multi_solr_search(query, 
-        :limit => @@limit, 
-        :models => @@models_for_search[1...@@models_for_search.length], 
-        :results_format => :ids, 
-        :incl_all_fields => true).docs
+      search_result_docs = nil
+      
+      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, query)
+      
+      # Try and get it from the cache...
+      search_result_docs = Rails.cache.read(cache_key)
+      
+      if search_result_docs.nil?
+        search_result_docs = @@models_for_search.first.multi_solr_search(query, 
+          :limit => @@limit, 
+          :models => @@models_for_search[1...@@models_for_search.length], 
+          :results_format => :ids, 
+          :incl_all_fields => true).docs
+        
+        # Finally write it to the cache...
+        Rails.cache.write(cache_key, search_result_docs, :expires_in => SEARCH_ITEMS_FROM_SOLR_CACHE_TIME)
+      end
       
       scopes_for_results = nil
       

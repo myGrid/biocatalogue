@@ -96,6 +96,8 @@ HOMEPAGE_ACTIVITY_FEED_ENTRIES_CACHE_TIME = 5*60  # 5 minutes, in seconds.
 
 TAGS_INDEX_CACHE_TIME = 5*60  # 5 minutes, in seconds.
 
+SEARCH_ITEMS_FROM_SOLR_CACHE_TIME = 30  # 30 seconds
+
 BOT_IGNORE_LIST = "Googlebot",
                   "Slurp",
                   "Yahoo",
