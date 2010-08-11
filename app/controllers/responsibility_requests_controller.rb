@@ -16,7 +16,7 @@ class ResponsibilityRequestsController < ApplicationController
   before_filter :authorise_create , :only => [ :create ]
   
   if ENABLE_SSL && Rails.env.production?
-    ssl_required :index, :new, :create, :destroy, :cancel, :approve, :turn_down, :deny
+    ssl_required :all
   end
 
   # GET /responsibility_requests

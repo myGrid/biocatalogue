@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [ :rpx_token ]
 
   if ENABLE_SSL && Rails.env.production?
-    ssl_required :new, :create, :destroy, :rpx_token
+    ssl_required :all
   end
   
   def new
