@@ -81,7 +81,7 @@ xml.tag! "search",
     xml.searches do 
       
       # <scoped> *
-      BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.reject { |t| t == "rest_methods" }.each do |result_scope|
+      BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.each do |result_scope|
         unless result_scope == @scope
           xml.scoped "", 
                      { :scope => BioCatalogue::Search.scope_to_visible_search_type(result_scope), :resourceType => "Search" },

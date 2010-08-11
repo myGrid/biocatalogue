@@ -19,6 +19,7 @@
 			<xsd:enumeration value="users"></xsd:enumeration>
 			<xsd:enumeration value="registries"></xsd:enumeration>
 			<xsd:enumeration value="soap_operations"></xsd:enumeration>
+			<xsd:enumeration value="rest_methods"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -221,6 +222,7 @@
 			<xsd:enumeration value="Users"></xsd:enumeration>
 			<xsd:enumeration value="Registries"></xsd:enumeration>
 			<xsd:enumeration value="SOAP Operations"></xsd:enumeration>
+			<xsd:enumeration value="REST Endpoints"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -238,20 +240,23 @@
 	<xsd:complexType name="SearchResults">
 		<xsd:sequence>
 			<xsd:choice maxOccurs="unbounded" minOccurs="0">
-				<xsd:element name="service" type="Service" maxOccurs="unbounded"
-					minOccurs="0">
+				<xsd:element name="service" type="Service"
+					maxOccurs="unbounded" minOccurs="0">
 				</xsd:element>
 				<xsd:element name="soapOperation" type="SoapOperation"
 					maxOccurs="unbounded" minOccurs="0">
 				</xsd:element>
-				<xsd:element name="serviceProvider" type="ServiceProvider"
+				<xsd:element name="serviceProvider"
+					type="ServiceProvider" maxOccurs="unbounded" minOccurs="0">
+				</xsd:element>
+				<xsd:element name="user" type="User"
 					maxOccurs="unbounded" minOccurs="0">
 				</xsd:element>
-				<xsd:element name="user" type="User" maxOccurs="unbounded"
-					minOccurs="0">
+				<xsd:element name="registry" type="Registry"
+					maxOccurs="unbounded" minOccurs="0">
 				</xsd:element>
-				<xsd:element name="registry" type="Registry" maxOccurs="unbounded"
-					minOccurs="0">
+				<xsd:element name="restMethod" type="RestMethod"
+					maxOccurs="unbounded" minOccurs="0">
 				</xsd:element>
 			</xsd:choice>
 

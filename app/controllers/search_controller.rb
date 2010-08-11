@@ -31,11 +31,7 @@ class SearchController < ApplicationController
       
     else
       begin
-        if is_api_request?
-          @results = BioCatalogue::Search.search(@query, @scope, "rest_methods")
-        else
-          @results = BioCatalogue::Search.search(@query, @scope)
-        end
+        @results = BioCatalogue::Search.search(@query, @scope)
         
         raise "nil @results object returned" if @results.nil?
       rescue Exception => ex
@@ -181,19 +177,6 @@ class SearchController < ApplicationController
         
       end
       
-      # For now, ignore 'rest_methods' scope if it's an API call
-      if is_api_request?
-        case scope
-          when Array
-            scope = scope.reject { |i| i == "rest_methods" } 
-          when String
-            if scope == "rest_methods"
-              error("'#{scope}' is an invalid search scope")
-              return false
-            end
-        end
-      end
-
       # Scope(s) is fine
       @scope = scope
       
