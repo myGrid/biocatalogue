@@ -8,8 +8,7 @@
 render :partial => "rest_methods/api/rest_method", 
        :locals => { :parent_xml => parent_xml,
                     :rest_method => rest_method,
-                    :show_input_parameters => false,
-                    :show_input_representations => false,
-                    :show_ouput_representations => false,
+                    :show_inputs => false,
+                    :show_outputs => false,
                     :show_ancestors => false,
                     :show_related => false }
