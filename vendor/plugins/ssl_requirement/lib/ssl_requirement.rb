@@ -52,7 +52,7 @@ module SslRequirement
   private
   
     def ssl_check(actions)
-      a = self.class.read_inheritable_attribute(actions)
+      a = self.class.read_inheritable_attribute(actions) || []
       a.include?(:all) || a.include?(action_name.to_sym)
     end
     
