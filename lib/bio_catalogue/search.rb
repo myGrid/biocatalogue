@@ -118,7 +118,7 @@ module BioCatalogue
     # OR an Array of the different scopes required.
     #
     # NOTE: the results obtained from Solr are cached for SEARCH_ITEMS_FROM_SOLR_CACHE_TIME amount of time 
-    # so as to reduce the load coming in from many simultaneous searches of the same kind 
+    # so as to reduce the load coming in from many simultaneous searches of the same query but different scope 
     # (eg: when the BioCatalogue plugin for Taverna searches for Services, SOAP operations, REST endpoints, etc
     # all at the same time but as separate scoped requests).
     def self.search(query, scope=ALL_SCOPE_SYNONYMS[0], ignore_scope=nil)
