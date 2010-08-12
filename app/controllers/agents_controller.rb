@@ -15,10 +15,6 @@ class AgentsController < ApplicationController
   
   before_filter :find_agent, :only => [ :show, :annotations_by ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   # GET /agents
   # GET /agents.xml
   def index

@@ -11,10 +11,6 @@ class ServiceDeploymentsController < ApplicationController
   
   before_filter :find_service_deployment, :only => [ :show, :annotations ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   # GET /service_deployments/1
   # GET /service_deployments/1.xml
   def show

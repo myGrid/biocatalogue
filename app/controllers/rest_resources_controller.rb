@@ -20,10 +20,6 @@ class RestResourcesController < ApplicationController
 
   before_filter :authorise, :except => [ :show, :index, :annotations, :methods ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def new_popup    
     respond_to do |format|
       format.js { render :layout => false }

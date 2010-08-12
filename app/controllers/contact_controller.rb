@@ -10,7 +10,6 @@ class ContactController < ApplicationController
   
   if ENABLE_SSL && Rails.env.production?
     ssl_required :create
-    ssl_allowed :all
   end
   
   # GET /contact

@@ -24,10 +24,6 @@ class RestMethodsController < ApplicationController
   
   skip_before_filter :verify_authenticity_token, :only => [ :group_name_auto_complete ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def update_resource_path
     error_msg = @rest_method.update_resource_path(params[:new_path], current_user)
     

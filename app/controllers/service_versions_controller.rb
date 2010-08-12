@@ -8,10 +8,6 @@ class ServiceVersionsController < ApplicationController
   
   before_filter :disable_action
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   # GET /service_versions
   # GET /service_versions.xml
   def index

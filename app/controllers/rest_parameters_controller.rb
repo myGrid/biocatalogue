@@ -18,10 +18,6 @@ class RestParametersController < ApplicationController
     
   before_filter :authorise, :except => [ :show, :annotations ]
 
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def show
     respond_to do |format|
       format.html { redirect_to url_for_web_interface(@rest_parameter) }
@@ -38,10 +34,6 @@ class RestParametersController < ApplicationController
     end
   end
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def update_default_value  
     # sanitize user input to make it have characters that are only fit for URIs
     params[:new_value].chomp!

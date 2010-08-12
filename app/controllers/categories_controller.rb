@@ -13,10 +13,6 @@ class CategoriesController < ApplicationController
   before_filter :find_category, :only => [ :show ]
   before_filter :find_categories, :only => [ :index ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def index
     respond_to do |format|
       format.html { disable_action }

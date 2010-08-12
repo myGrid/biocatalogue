@@ -15,10 +15,6 @@ class RegistriesController < ApplicationController
   
   before_filter :find_registry, :only => [ :show, :annotations_by ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   # GET /registries
   # GET /registries.xml
   def index

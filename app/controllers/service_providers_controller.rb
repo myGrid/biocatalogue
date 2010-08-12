@@ -19,10 +19,6 @@ class ServiceProvidersController < ApplicationController
   
   before_filter :authorise, :only => [ :edit_by_popup, :update ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   # GET /service_providers
   # GET /service_providers.xml
   def index

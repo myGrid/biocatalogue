@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
   
   # Allow for SSL support
   include SslRequirement
-
   # ============================================
 
   # OAuth support

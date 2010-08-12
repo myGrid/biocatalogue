@@ -10,10 +10,6 @@ class RatingsController < ApplicationController
   
   before_filter :login_or_oauth_required
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   # POST /ratings
   def create
     annotatable = Annotation.find_annotatable(params[:annotatable_type], params[:annotatable_id])

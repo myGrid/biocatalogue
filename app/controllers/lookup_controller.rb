@@ -6,10 +6,6 @@
 
 class LookupController < ApplicationController
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def show
     obj = BioCatalogue::Util.lookup(params)
     

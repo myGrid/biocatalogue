@@ -15,10 +15,6 @@ class TestResultsController < ApplicationController
   
   before_filter :find_test_result, :only => [ :show ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def index
     respond_to do |format|
       format.html { disable_action }

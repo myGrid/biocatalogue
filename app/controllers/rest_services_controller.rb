@@ -22,10 +22,6 @@ class RestServicesController < ApplicationController
   before_filter :parse_sort_params, :only => :index
   before_filter :find_rest_services, :only => :index
 
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   oauth_authorize :create
   
   # GET /rest_services

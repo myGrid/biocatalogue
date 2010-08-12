@@ -18,10 +18,6 @@ class SearchController < ApplicationController
   
   before_filter :set_listing_type, :only => [ :show ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def show
     if @query.blank?
       

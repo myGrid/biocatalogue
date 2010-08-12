@@ -8,10 +8,6 @@ class HomeController < ApplicationController
   
   before_filter :disable_action_for_api, :except => [ :index, :status_changes ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def index
     unless is_api_request?
       ActivityLog.benchmark "ActivityLog entries for /home", Logger::INFO, false do

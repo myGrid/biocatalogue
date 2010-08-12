@@ -32,10 +32,6 @@ class ServicesController < ApplicationController
   before_filter :login_or_oauth_required, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   before_filter :authorise, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   # GET /services
   # GET /services.xml
   def index

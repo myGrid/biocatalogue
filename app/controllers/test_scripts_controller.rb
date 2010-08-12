@@ -12,10 +12,6 @@ class TestScriptsController < ApplicationController
   before_filter :authorise_on_service, :only => [ :create ]
   before_filter :authorise_on_script, :only => [ :destroy ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   # POST /test_scripts
   def create
     # FIXME & TODO: need to redo this code - need's to handle both creation of test script 

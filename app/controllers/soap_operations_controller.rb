@@ -20,10 +20,6 @@ class SoapOperationsController < ApplicationController
   
   before_filter :find_soap_operation, :only => [ :show, :annotations, :inputs, :outputs ]
   
-  if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-  end
-
   def index
     respond_to do |format|
       format.html { disable_action }
