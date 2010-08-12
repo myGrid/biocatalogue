@@ -48,8 +48,9 @@ class SearchController < ApplicationController
           paged_item_compound_ids = @results.paged_all_item_ids(@page, @per_page)
           items = BioCatalogue::Mapper.compound_ids_to_model_objects(paged_item_compound_ids)
           
-          @json_api_params[:query] = @query
-          render :json => BioCatalogue::Api::Json.index("search", @json_api_params, items, true).to_json 
+          local_json_api_params = json_api_params
+          local_json_api_params[:query] = @query
+          render :json => BioCatalogue::Api::Json.index("search", local_json_api_params, items, true).to_json 
         }
       end
     end

@@ -30,7 +30,7 @@ class RestServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("rest_services", @json_api_params, @rest_services, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("rest_services", json_api_params, @rest_services, true).to_json }
     end
   end
 

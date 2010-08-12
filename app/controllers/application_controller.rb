@@ -80,7 +80,6 @@ class ApplicationController < ActionController::Base
   before_filter :set_per_page
   before_filter :set_limit
   before_filter :set_api_params
-  before_filter :set_json_api_params
   before_filter :update_last_active
   prepend_before_filter :initialise_use_tab_cookie_in_session
   
@@ -285,8 +284,8 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def set_json_api_params
-    @json_api_params = {
+  def json_api_params
+    {
       :query => params[:q],
       :sort_by => @sort_by,
       :sort_order => @sort_order,

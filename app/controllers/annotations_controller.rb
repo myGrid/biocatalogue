@@ -39,7 +39,7 @@ class AnnotationsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("annotations", @json_api_params, @annotations, false).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("annotations", json_api_params, @annotations, false).to_json }
     end
   end
   

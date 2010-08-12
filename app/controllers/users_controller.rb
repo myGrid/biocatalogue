@@ -35,7 +35,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("users", @json_api_params, @users, false).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("users", json_api_params, @users, false).to_json }
     end
   end
 
@@ -283,7 +283,7 @@ class UsersController < ApplicationController
   private
   
   def parse_sort_params
-    sort_by_allowed = [ "activated" ]
+    sort_by_allowed = [ "activated", "name" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase
     else
@@ -309,6 +309,8 @@ class UsersController < ApplicationController
     case @sort_by
       when 'activated'
         order_field = "activated_at"
+      when 'name'
+        order_field = "display_name"
     end
     
     case @sort_order

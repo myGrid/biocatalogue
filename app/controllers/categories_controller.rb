@@ -17,7 +17,7 @@ class CategoriesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("categories", @json_api_params, @categories, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("categories", json_api_params, @categories, true).to_json }
     end
   end
   

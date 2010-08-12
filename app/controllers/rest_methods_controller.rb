@@ -121,7 +121,7 @@ class RestMethodsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("rest_methods", @json_api_params, @rest_methods, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("rest_methods", json_api_params, @rest_methods, true).to_json }
     end
   end
   
@@ -262,7 +262,7 @@ protected # ========================================
 private # ========================================
   
   def parse_sort_params
-    sort_by_allowed = [ "created" ]
+    sort_by_allowed = [ "created", "name" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase
     else
@@ -292,6 +292,8 @@ private # ========================================
     case @sort_by
       when 'created'
         order_field = "created_at"
+      when 'name'
+        order_field = "endpoint_name"
     end
     
     case @sort_order
@@ -304,16 +306,19 @@ private # ========================================
     unless order_field.blank? or order_direction.nil?
       order = "rest_methods.#{order_field} #{order_direction}"
     end
-
+    
+    order = "rest_methods.endpoint_name #{order_direction}, rest_resources.path" if @sort_by=="name"
+    
     # Filtering
     
     conditions, joins = BioCatalogue::Filtering::RestMethods.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-        
+    joins << "INNER JOIN rest_resources ON rest_methods.rest_resource_id = rest_resources.id"
+    
     @rest_methods = RestMethod.paginate(:page => @page,
                                         :per_page => @per_page,
-                                              :order => order,
-                                              :conditions => conditions,
-                                              :joins => joins)
+                                        :order => order,
+                                        :conditions => conditions,
+                                        :joins => joins)
   end
   
   def destroy_unused_objects(id_list, is_parameter=true)

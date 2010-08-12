@@ -25,7 +25,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("service_providers", @json_api_params, @service_providers, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("service_providers", json_api_params, @service_providers, true).to_json }
     end
   end
 
@@ -133,7 +133,7 @@ class ServiceProvidersController < ApplicationController
   protected
   
   def parse_sort_params
-    sort_by_allowed = [ "created" ]
+    sort_by_allowed = [ "created", "name" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase
     else
@@ -159,6 +159,8 @@ class ServiceProvidersController < ApplicationController
     case @sort_by
       when 'created'
         order_field = "created_at"
+      when 'name'
+        order_field = "name"
     end
     
     case @sort_order

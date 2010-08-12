@@ -39,7 +39,7 @@ class ServicesController < ApplicationController
       format.html # index.html.erb
       format.xml  # index.xml.builder
       format.atom # index.atom.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("services", @json_api_params, @services, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("services", json_api_params, @services, true).to_json }
     end
   end
 

@@ -19,7 +19,7 @@ class TestResultsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("test_results", @json_api_params, @test_results, false).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("test_results", json_api_params, @test_results, false).to_json }
     end
   end
   

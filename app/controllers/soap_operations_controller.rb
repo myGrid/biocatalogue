@@ -24,7 +24,7 @@ class SoapOperationsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("soap_operations", @json_api_params, @soap_operations, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("soap_operations", json_api_params, @soap_operations, true).to_json }
     end
   end
   
@@ -73,7 +73,7 @@ class SoapOperationsController < ApplicationController
 protected
   
   def parse_sort_params
-    sort_by_allowed = [ "created" ]
+    sort_by_allowed = [ "created", "name" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase
     else
@@ -99,6 +99,8 @@ protected
     case @sort_by
       when 'created'
         order_field = "created_at"
+      when 'name'
+        order_field = "name"
     end
     
     case @sort_order
