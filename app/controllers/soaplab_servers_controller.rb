@@ -11,6 +11,10 @@ class SoaplabServersController < ApplicationController
   
   before_filter :login_or_oauth_required, :except => [ :index, :show ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   # GET /soaplab_servers
   # GET /soaplab_servers.xml
   def index

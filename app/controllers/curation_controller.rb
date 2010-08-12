@@ -11,6 +11,10 @@ class CurationController < ApplicationController
   before_filter :login_or_oauth_required
   
   before_filter :authorise
+  
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
 
   def show
     # show.html.erb

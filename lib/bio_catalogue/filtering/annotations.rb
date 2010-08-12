@@ -155,7 +155,7 @@ module BioCatalogue
         conditions = { }
         joins = [ ]
         
-        return [ conditions, joins ] if filters.blank?
+        return [ conditions, joins ] if filters.blank? && search_query.blank?
         
         # Replace the unknown filter with nil
         filters.each do |k,v|

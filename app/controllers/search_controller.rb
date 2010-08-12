@@ -18,6 +18,10 @@ class SearchController < ApplicationController
   
   before_filter :set_listing_type, :only => [ :show ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def show
     if @query.blank?
       
@@ -48,7 +52,8 @@ class SearchController < ApplicationController
           paged_item_compound_ids = @results.paged_all_item_ids(@page, @per_page)
           items = BioCatalogue::Mapper.compound_ids_to_model_objects(paged_item_compound_ids)
           
-          render :json => BioCatalogue::Api::Json.collection(items, true).to_json 
+          @json_api_params[:query] = @query
+          render :json => BioCatalogue::Api::Json.index("search", @json_api_params, items, true).to_json 
         }
       end
     end

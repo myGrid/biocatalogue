@@ -6,6 +6,10 @@
 
 class ApiController < ApplicationController
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def show
     respond_to do |format|
       format.html # show.html.erb

@@ -179,6 +179,7 @@ ActionController::Routing::Routes.draw do |map|
                              :methods => :get }
 
   map.resources :rest_methods,
+                :collection => { :filters => :get },
                 :member => { :inline_add_endpoint_name => :post,
                              :edit_group_name_popup => :post,
                              :update_group_name => :post,
@@ -237,11 +238,11 @@ ActionController::Routing::Routes.draw do |map|
                              :activity => [ :get, :post ] }
                              
   map.resources :responsibility_requests,
-                  :member => { :approve => :put,
-                               :deny    => :put,
-                               :turn_down => :get,
-                               :cancel => :put}
-  
+                :member => { :approve => :put,
+                             :deny    => :put,
+                             :turn_down => :get,
+                             :cancel => :put}
+
   # Root of website
   map.root :controller => 'home', :action => 'index'
 

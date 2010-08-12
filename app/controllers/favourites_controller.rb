@@ -18,4 +18,8 @@ class FavouritesController < ApplicationController
   
   #before_filter :add_use_tab_cookie_to_session, :only => [ :create, :update, :destroy ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
 end

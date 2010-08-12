@@ -7,19 +7,27 @@
 class RestMethodsController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :inputs, :outputs ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters ]
 
-  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :inputs, :outputs ]
+  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters ]
   
-  before_filter :find_rest_method, :except => :index
+  before_filter :parse_current_filters, :only => [ :index ]
   
+  before_filter :get_filter_groups, :only => [ :filters ]
+    
   before_filter :parse_sort_params, :only => :index
   before_filter :find_rest_methods, :only => :index
+
+  before_filter :find_rest_method, :except => [ :index, :filters ]
   
-  before_filter :authorise, :except => [ :index, :show, :annotations, :inputs, :outputs ]
+  before_filter :authorise, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters ]
   
   skip_before_filter :verify_authenticity_token, :only => [ :group_name_auto_complete ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def update_resource_path
     error_msg = @rest_method.update_resource_path(params[:new_path], current_user)
     
@@ -117,7 +125,7 @@ class RestMethodsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.collection(@rest_methods, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("rest_methods", @json_api_params, @rest_methods, true).to_json }
     end
   end
   
@@ -236,10 +244,15 @@ class RestMethodsController < ApplicationController
     render :inline => "<%= auto_complete_result @results, 'name', @name_fragment %>", :layout => false
   end
   
-  # ========================================
+  def filters
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # filters.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
+    end
+  end
   
-  
-protected
+protected # ========================================
 
   def authorise
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_method)
@@ -249,12 +262,8 @@ protected
     
     return true
   end
-
-
-  # ========================================
   
-  
-private
+private # ========================================
   
   def parse_sort_params
     sort_by_allowed = [ "created" ]
@@ -299,10 +308,16 @@ private
     unless order_field.blank? or order_direction.nil?
       order = "rest_methods.#{order_field} #{order_direction}"
     end
+
+    # Filtering
     
+    conditions, joins = BioCatalogue::Filtering::RestMethods.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
+        
     @rest_methods = RestMethod.paginate(:page => @page,
-                                              :per_page => @per_page,
-                                              :order => order)
+                                        :per_page => @per_page,
+                                              :order => order,
+                                              :conditions => conditions,
+                                              :joins => joins)
   end
   
   def destroy_unused_objects(id_list, is_parameter=true)
@@ -316,4 +331,5 @@ private
       end
     end # id_list.each
   end
+  
 end

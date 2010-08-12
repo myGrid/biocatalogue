@@ -1,4 +1,4 @@
-# BioCatalogue: lib/bio_catalogue/filtering/soap_operations.rb
+# BioCatalogue: lib/bio_catalogue/filtering/rest_methods.rb
 #
 # Copyright (c) 2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -8,7 +8,7 @@
 
 module BioCatalogue
   module Filtering
-    module SoapOperations
+    module RestMethods
       
       
       # ======================
@@ -19,12 +19,12 @@ module BioCatalogue
         case filter_type
           when :tag
             get_filters_for_all_tags(limit)
-          when :tag_ops
-            get_filters_for_soap_operation_tags(limit)
+          when :tag_rms
+            get_filters_for_rest_method_tags(limit)
           when :tag_ins
-            get_filters_for_soap_input_tags(limit)
+            get_filters_for_rest_input_tags(limit)
           when :tag_outs
-            get_filters_for_soap_output_tags(limit)
+            get_filters_for_rest_output_tags(limit)
           else
             [ ]
         end
@@ -35,44 +35,44 @@ module BioCatalogue
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
       def self.get_filters_for_all_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapOperation", "SoapInput", "SoapOutput" ], limit)
+        get_filters_for_tags_by_service_models([ "RestMethod", "RestRepresentation", "RestParameter" ], limit, :all)
       end
       
-      # Gets an ordered list of all the tags on SoapOperations.
+      # Gets an ordered list of all the tags on RestMethods.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_soap_operation_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapOperation" ], limit)
+      def self.get_filters_for_rest_method_tags(limit=nil)
+        get_filters_for_tags_by_service_models([ "RestMethod" ], limit)
       end
       
-      # Gets an ordered list of all the tags on SoapInputs.
+      # Gets an ordered list of all the tags on rest inputs i.e. request_parameters and request_representations.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_soap_input_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapInput" ], limit)
+      def self.get_filters_for_rest_input_tags(limit=nil)
+        get_filters_for_tags_by_service_models([ "RestRepresentation", "RestParameter" ], limit, :request)
       end
       
-      # Gets an ordered list of all the tags on SoapOutputs.
+      # Gets an ordered list of all the tags on rest outputs i.e. response_parameters, response_representations
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_soap_output_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapOutput" ], limit)
+      def self.get_filters_for_rest_output_tags(limit=nil)
+        get_filters_for_tags_by_service_models([ "RestRepresentation", "RestParameter" ], limit, :response)
       end
       
       # ======================
       
       # Returns:
       #   [ conditions, joins ] for use in an ActiveRecord .find method (or .paginate).
-      # TODO: implement use of the search_query, so you can search within SoapOperations too!
+      # TODO: implement use of the search_query, so you can search within RestMethods too!
       def self.generate_conditions_and_joins_from_filters(filters, search_query=nil)
         conditions = { }
         joins = [ ]
         
         return [ conditions, joins ] if filters.blank? && search_query.blank?
-        
+
         # Replace the unknown filter with nil
         filters.each do |k,v|
           v.each do |f|
@@ -85,41 +85,41 @@ module BioCatalogue
               
         # Now build the conditions and joins...
         
-        soap_operation_ids_for_tag_filters = { }
+        rest_method_ids_for_tag_filters = { }
         
         unless filters.blank?
           filters.each do |filter_type, filter_values|
             unless filter_values.blank?
               case filter_type
                 when :tag
-                  soap_operation_ids_for_tag_filters[filter_type] = get_soap_operation_ids_with_tag_on_models([ "SoapOperation", "SoapInput", "SoapOutput" ], filter_values)
-                when :tag_ops
-                  soap_operation_ids_for_tag_filters[filter_type] = get_soap_operation_ids_with_tag_on_models([ "SoapOperation" ], filter_values)
+                  rest_method_ids_for_tag_filters[filter_type] = get_rest_method_ids_with_tag_on_models([ "RestMethod", "RestRepresentation", "RestParameter" ], filter_values, :all)
+                when :tag_rms
+                  rest_method_ids_for_tag_filters[filter_type] = get_rest_method_ids_with_tag_on_models([ "RestMethod" ], filter_values)
                 when :tag_ins
-                  soap_operation_ids_for_tag_filters[filter_type] = get_soap_operation_ids_with_tag_on_models([ "SoapInput" ], filter_values)
+                  rest_method_ids_for_tag_filters[filter_type] = get_rest_method_ids_with_tag_on_models([ "RestRepresentation", "RestParameter" ], filter_values, :request)
                 when :tag_outs
-                  soap_operation_ids_for_tag_filters[filter_type] = get_soap_operation_ids_with_tag_on_models([ "SoapOutput" ], filter_values)
+                  rest_method_ids_for_tag_filters[filter_type] = get_rest_method_ids_with_tag_on_models([ "RestRepresentation", "RestParameter" ], filter_values, :response)
               end
             end
           end
         end
         
-#        soap_operation_ids_for_tag_filters.each do |k,v| 
-#          Util.say "*** soap_operation_ids found for tags filter '#{k.to_s}' = #{v.inspect}" 
+#        rest_method_ids_for_tag_filters.each do |k,v| 
+#          Util.say "*** rest_method_ids found for tags filter '#{k.to_s}' = #{v.inspect}" 
 #        end
         
-        soap_operation_ids_search_query = [ ]
+        rest_method_ids_search_query = [ ]
         
         # Take into account search query if present
         unless search_query.blank?
-          search_results = Search.search(search_query, "soap_operations")
+          search_results = Search.search(search_query, "rest_methods")
           unless search_results.blank?
-            soap_operation_ids_search_query = search_results.item_ids_for("soap_operations")
+            rest_method_ids_search_query = search_results.item_ids_for("rest_methods")
           end
-#          Util.say "*** soap_operation_ids_search_query = #{soap_operation_ids_search_query.inspect}" 
+#          Util.say "*** rest_method_ids_search_query = #{rest_method_ids_search_query.inspect}" 
         end
         
-        # Need to go through the various soap operation IDs found for the different criterion 
+        # Need to go through the various rest method IDs found for the different criterion 
         # and add to the conditions collection (if common ones are found).
         
         # The logic is as follows:
@@ -128,57 +128,57 @@ module BioCatalogue
         
         # This will hold...
         # [ [ IDs from search ], [ IDs from tag filter xx ], [ IDs from tag filter yy ], ... ]
-        soap_operation_id_arrays_to_process = [ ]
-        soap_operation_id_arrays_to_process << soap_operation_ids_search_query.uniq unless search_query.blank?
-        soap_operation_id_arrays_to_process.concat(soap_operation_ids_for_tag_filters.values)
+        rest_method_id_arrays_to_process = [ ]
+        rest_method_id_arrays_to_process << rest_method_ids_search_query.uniq unless search_query.blank?
+        rest_method_id_arrays_to_process.concat(rest_method_ids_for_tag_filters.values)
                
         # To carry out this process properly, we set a dummy value of 0 to any array where relevant filters were specified but no matches were found.
-        soap_operation_id_arrays_to_process.each do |x|
+        rest_method_id_arrays_to_process.each do |x|
           x = [ 0 ] if x.blank?
         end
         
         # Now work out final combination of IDs 
         
-        final_soap_operation_ids = nil
+        final_rest_method_ids = nil
         
-        soap_operation_id_arrays_to_process.each do |a|
-          if final_soap_operation_ids.nil?
-            final_soap_operation_ids = a
+        rest_method_id_arrays_to_process.each do |a|
+          if final_rest_method_ids.nil?
+            final_rest_method_ids = a
           else
-            final_soap_operation_ids = (final_soap_operation_ids & a)
+            final_rest_method_ids = (final_rest_method_ids & a)
           end
         end
         
-#        Util.say "*** final_soap_operation_ids (after combining all soap operations IDs found) = #{final_soap_operation_ids.inspect}"
+#        Util.say "*** final_rest_method_ids (after combining all rest methods IDs found) = #{final_rest_method_ids.inspect}"
         
-        unless final_soap_operation_ids.nil?
+        unless final_rest_method_ids.nil?
           # Remove the dummy value of 0 in case it is in there
-          final_soap_operation_ids.delete(0)
+          final_rest_method_ids.delete(0)
           
           # If filter(s) / query were specified but nothing was found that means we have an empty result set
-          final_soap_operation_ids = [ -1 ] if final_soap_operation_ids.blank? and 
-                                               (!soap_operation_ids_for_tag_filters.keys.blank? or !search_query.blank?)
+          final_rest_method_ids = [ -1 ] if final_rest_method_ids.blank? and 
+                                               (!rest_method_ids_for_tag_filters.keys.blank? or !search_query.blank?)
           
-#          Util.say "*** final_soap_operation_ids (after cleanup) = #{final_soap_operation_ids.inspect}"
+#          Util.say "*** final_rest_method_ids (after cleanup) = #{final_rest_method_ids.inspect}"
           
-          conditions[:id] = final_soap_operation_ids unless final_soap_operation_ids.blank?
+          conditions[:id] = final_rest_method_ids unless final_rest_method_ids.blank?
         end
         
         return [ conditions, joins ]
       end
       
       
-      protected
+    protected
       
       
       # Gets an ordered list of all the tags on a particular set of models 
-      # (should be restricted to "SoapOperation", "SoapInput" and "SoapOutput").
-      # The counts that are returned reflect the number of soap operations that match 
-      # (taking into account mapping of soap inputs and soap outputs to soap operations).
+      # (should be restricted to "RestMethod", "RestParameter" and "RestRepresentation").
+      # The counts that are returned reflect the number of rest methods that match 
+      # (taking into account mapping of rest inputs and rest outputs to rest methods).
       # 
       # Example return data:
       # [ { "id" => "bio", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_tags_by_service_models(model_names, limit=nil)
+      def self.get_filters_for_tags_by_service_models(model_names, limit=nil, http_cycle=nil)
         # NOTE: this query has only been tested to work with MySQL 5.0.x
         sql = [ "SELECT annotations.value AS name, annotations.annotatable_id AS id, annotations.annotatable_type AS type
                 FROM annotations 
@@ -201,6 +201,9 @@ module BioCatalogue
         grouped_tags = { }
         
         items.each do |item|
+          next unless validate_item(item, http_cycle)
+                    
+          # FIND TAGS
           found = false
           
           tag_name = item['name']
@@ -222,9 +225,9 @@ module BioCatalogue
         filters = [ ]
         
         grouped_tags.each do |tag_name, ids|
-          soap_operation_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(ids, "SoapOperation")
-          soap_operation_ids = soap_operation_ids.compact.uniq
-          filters << { 'id' => tag_name, 'name' => tag_name, 'count' => soap_operation_ids.length.to_s }
+          rest_method_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(ids, "RestMethod")
+          rest_method_ids = rest_method_ids.compact.uniq
+          filters << { 'id' => tag_name, 'name' => tag_name, 'count' => rest_method_ids.length.to_s }
         end
         
         filters.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }
@@ -232,7 +235,7 @@ module BioCatalogue
         return filters
       end
       
-      def self.get_soap_operation_ids_with_tag_on_models(model_names, tag_values)
+      def self.get_rest_method_ids_with_tag_on_models(model_names, tag_values, http_cycle=nil)
         # NOTE: this query has only been tested to work with MySQL 5.0.x
         sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
                 FROM annotations 
@@ -242,8 +245,34 @@ module BioCatalogue
                 tag_values ]
         
         results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results.reject! { |item| !validate_item(item, http_cycle) }        
+                
+        return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "RestMethod").uniq     
+      end
+      
+    private
+      
+      def self.validate_item(item, http_cycle)
+        # CHECK WHETHER item IS THE REQUIRED REST_PARAMETER OR REST_REPRESENTATION
+        valid_http_cycle = !http_cycle.nil? && http_cycle.is_a?(Symbol) && [ :request, :response, :all ].include?(http_cycle)
+        return false if item['type']!="RestMethod" && !valid_http_cycle
         
-        return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "SoapOperation").uniq     
+        unless item['type']=="RestMethod"
+          return true if http_cycle==:all
+          
+          sql = case item['type']
+                  when "RestParameter"
+                    [ "SELECT id FROM rest_method_parameters WHERE rest_parameter_id = ?", item['id'] ]
+                  when "RestRepresentation"
+                    [ "SELECT id FROM rest_method_representations WHERE rest_representation_id = ?", item['id'] ]
+                end
+          sql[0] = sql[0] + " AND http_cycle = '#{http_cycle.to_s}' LIMIT 1"
+          
+          results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+          return false if results.empty?
+        end
+        
+        return true
       end
       
     end

@@ -16,6 +16,12 @@ xml.tag! "restMethods",
   # <parameters>
   xml.parameters do 
 
+    # Filtering parameters
+    render :partial => "api/filtering/parameters", :locals => { :parent_xml => xml, :resource_type => "RestMethods" }
+    
+    # <query>
+    xml.query params[:q], :urlKey => "q"
+    
     # Sorting parameters
     render :partial => "api/sorting/parameters", :locals => { :parent_xml => xml, :sort_by => @sort_by, :sort_order => @sort_order }
     
@@ -61,7 +67,18 @@ xml.tag! "restMethods",
                         :total_pages => @rest_methods.total_pages,
                         :params_clone => params_clone,
                         :resource_url_lambda => lambda { |params| uri_for_collection("rest_methods", :params => params) } }
-        
+    
+    # <filters>
+    xml.filters xlink_attributes(uri_for_collection("rest_methods/filters"), 
+                                 :title => xlink_title("Filters for the REST Methods index")),
+                :resourceType => "Filters"
+    
+    # <filtersOnCurrentResults>
+    xml.filtersOnCurrentResults xlink_attributes(uri_for_collection("rest_methods/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
+                                 :title => xlink_title("Filters for the REST Methods index that will be applied on top of the current results set")),
+                :resourceType => "Filters"
+    
+
   end
 
 end

@@ -12,6 +12,10 @@ class SoapInputsController < ApplicationController
   
   before_filter :find_soap_input, :only => [ :show, :annotations ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def show
     respond_to do |format|
       format.html { redirect_to url_for_web_interface(@soap_input) }

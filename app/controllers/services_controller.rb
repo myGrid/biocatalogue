@@ -32,6 +32,10 @@ class ServicesController < ApplicationController
   before_filter :login_or_oauth_required, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   before_filter :authorise, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   # GET /services
   # GET /services.xml
   def index
@@ -39,7 +43,7 @@ class ServicesController < ApplicationController
       format.html # index.html.erb
       format.xml  # index.xml.builder
       format.atom # index.atom.builder
-      format.json { render :json => BioCatalogue::Api::Json.collection(@services, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("services", @json_api_params, @services, true).to_json }
     end
   end
 

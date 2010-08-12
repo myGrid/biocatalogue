@@ -18,6 +18,10 @@ class RestParametersController < ApplicationController
     
   before_filter :authorise, :except => [ :show, :annotations ]
 
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def show
     respond_to do |format|
       format.html { redirect_to url_for_web_interface(@rest_parameter) }
@@ -32,6 +36,10 @@ class RestParametersController < ApplicationController
       format.xml { redirect_to(generate_include_filter_url(:arp, @rest_parameter.id, "annotations", :xml)) }
       format.json { redirect_to(generate_include_filter_url(:arp, @rest_parameter.id, "annotations", :json)) }
     end
+  end
+  
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
   end
 
   def update_default_value  

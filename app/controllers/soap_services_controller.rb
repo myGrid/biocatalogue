@@ -16,14 +16,18 @@ class SoapServicesController < ApplicationController
 
   before_filter :parse_sort_params, :only => :index
   before_filter :find_soap_services, :only => :index
-  
+
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   oauth_authorize :create
 
   def index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.collection(@soap_services, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("soap_services", @json_api_params, @soap_services, true).to_json }
     end
   end
 

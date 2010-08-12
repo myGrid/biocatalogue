@@ -15,11 +15,15 @@ class TestResultsController < ApplicationController
   
   before_filter :find_test_result, :only => [ :show ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.collection(@test_results, false).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("test_results", @json_api_params, @test_results, false).to_json }
     end
   end
   

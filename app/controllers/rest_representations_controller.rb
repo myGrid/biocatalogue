@@ -17,6 +17,10 @@ class RestRepresentationsController < ApplicationController
 
   before_filter :authorise, :except => [ :show, :annotations ]
 
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def show
     respond_to do |format|
       format.html { redirect_to url_for_web_interface(@rest_representation) }

@@ -15,6 +15,10 @@ class TagsController < ApplicationController
   before_filter :find_tag_results, :only => [ :show ]
   before_filter :get_tag_items_count, :only => [ :show ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def index
     respond_to do |format|
       format.html # index.html.erb

@@ -17,6 +17,10 @@ class AnnouncementsController < ApplicationController
   
   before_filter :setup_for_feed, :only => [ :index ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def index
     respond_to do |format|
       format.html # index.html.erb

@@ -61,7 +61,10 @@ class User < ActiveRecord::Base
   before_save     :encrypt_password
   before_create   :generate_activation_code,
                   :generate_default_display_name
-
+  def to_inline_json
+    self.to_json
+  end
+  
   def to_json
     {
       "user" => {

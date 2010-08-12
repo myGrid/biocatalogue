@@ -23,15 +23,16 @@ module BioCatalogue
     
     UNKNOWN_TEXT = "(unknown)".freeze
     
-    FILTER_KEYS = { :services => [ :cat, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ],
+    FILTER_KEYS = { :services => [ :cat, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_rms, :tag_ins, :tag_outs, :c ],
                     :soap_operations => [ :tag, :tag_ops, :tag_ins, :tag_outs ],
+                    :rest_methods => [ :tag, :tag_rms, :tag_ins, :tag_outs ],
                     :annotations => [ :attrib,
                                       :as, :asd, :asp, :ars, :ass, :asop, :asin, :asout,
                                       :soa, :sor, :sosp, :sou, :arm, :arp, :arr, :arres ] }.freeze
     
     ALL_FILTER_KEYS = FILTER_KEYS.values.flatten.uniq.freeze
     
-    TAG_FILTER_KEYS = [ :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs ].freeze
+    TAG_FILTER_KEYS = [ :tag, :tag_s, :tag_ops, :tag_rms, :tag_ins, :tag_outs ].freeze
     
     FILTER_GROUPS = { :services => [ { "Service Categories" => [ :cat ] },
                                      { "Service Types" => [ :t ] },
@@ -40,6 +41,7 @@ module BioCatalogue
                                      { "Tags" => [ :tag ] },
                                      { "Tags (on Services)" => [ :tag_s ] },
                                      { "Tags (on Operations)" => [ :tag_ops ] },
+                                     { "Tags (on REST Methods)" => [ :tag_rms ] },
                                      { "Tags (on Inputs)" => [ :tag_ins ] },
                                      { "Tags (on Outputs)" => [ :tag_outs ] },
                                      { "Locations" => [ :c ] } ],
@@ -47,6 +49,10 @@ module BioCatalogue
                                             { "Tags (on Operations)" => [ :tag_ops ] },
                                             { "Tags (on Inputs)" => [ :tag_ins ] },
                                             { "Tags (on Outputs)" => [ :tag_outs ] } ],
+                      :rest_methods => [ { "Tags" => [ :tag ] },
+                                         { "Tags (on REST Methods)" => [ :tag_rms ] },
+                                         { "Tags (on Inputs)" => [ :tag_ins ] },
+                                         { "Tags (on Outputs)" => [ :tag_outs ] } ],
                       :annotations => [ { "Annotation Attributes" => [ :attrib ] },
                                         { "Annotatables" => [ :as, :asd, :asp, :ars, :arres, :arm, :arp, :arr, :ass, :asop, :asin, :asout ] },
                                         { "Sources" => [ :soa, :sor, :sosp, :sou ] } ] }.freeze
@@ -107,6 +113,7 @@ module BioCatalogue
     
     FILTER_GROUP_NAMES_FOR_KEYS = { :services => Filtering.hash_for_filter_keys_to_group_names(:services),
                                     :soap_operations => Filtering.hash_for_filter_keys_to_group_names(:soap_operations),
+                                    :rest_methods => Filtering.hash_for_filter_keys_to_group_names(:rest_methods),
                                     :annotations => Filtering.hash_for_filter_keys_to_group_names(:annotations) }
     
     
@@ -203,7 +210,7 @@ module BioCatalogue
     def self.display_name_for_filter(filter_type, filter_id)
       name = filter_id
       
-      unless [ :t, :tag, :tag_s, :tag_ops, :tag_ins, :tag_outs, :c ].include?(filter_type)
+      unless [ :t, :tag, :tag_s, :tag_ops, :tag_rms, :tag_ins, :tag_outs, :c ].include?(filter_type)
         name = case filter_type
           when :cat
             c = Category.find_by_id(filter_id)

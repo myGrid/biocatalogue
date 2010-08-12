@@ -20,6 +20,10 @@ class RestResourcesController < ApplicationController
 
   before_filter :authorise, :except => [ :show, :index, :annotations, :methods ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def new_popup    
     respond_to do |format|
       format.js { render :layout => false }
@@ -62,7 +66,7 @@ class RestResourcesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.collection(@rest_resources, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("rest_resources", @json_api_params, @rest_resources, true).to_json }
     end
   end
 

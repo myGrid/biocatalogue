@@ -27,18 +27,50 @@ module BioCatalogue
       # ========================================
       
       def self.location(country, city="")
-        country_code = (CountryCodes.code(country) || "")
+        country_code = CountryCodes.code(country)
         
         {
-          "city" => (city || ""),
-          "country" => (country || ""),
+          "city" => city,
+          "country" => country,
           "country_code" => country_code,
-          "flag" => (BioCatalogue::Api.uri_for_path(BioCatalogue::Resource.flag_icon_path(country_code)) || "")
+          "flag" => BioCatalogue::Api.uri_for_path(BioCatalogue::Resource.flag_icon_path(country_code))
         }
       end # self.location
       
       # ========================================
+      
+      def self.index(name, params, collection, make_inline)
+        has_filter = BioCatalogue::Filtering::FILTER_GROUPS.include?(name.to_sym) # FIXME
+        
+        if name=='search'
+          total_pages = (collection.size / params[:per_page].to_f).ceil
+          total_entries = collection.size
           
+          has_filter = true
+        else
+          total_pages = collection.total_pages
+          total_entries = collection.total_entries
+        end
+        
+        data = {
+          name => {
+            "search_query" => has_filter ? params[:query] : nil,
+            "current_page" => params[:page],
+            "per_page" => params[:per_page],
+            "pages" => total_pages, 
+            "total" => total_entries,
+            "results" => self.collection(collection, make_inline)
+          }
+        }
+        
+        if params[:sort_by] && params[:sort_order]
+          data[name]["sort_by"] = params[:sort_by]
+          data[name]["sort_order"] = params[:sort_order]
+        end
+        
+        return data
+      end
+      
       def self.collection(collection, make_inline)
         make_inline = true unless make_inline.class.name =~ /TrueClass|FalseClass/
         

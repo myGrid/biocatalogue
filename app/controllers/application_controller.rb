@@ -81,6 +81,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_per_page
   before_filter :set_limit
   before_filter :set_api_params
+  before_filter :set_json_api_params
   before_filter :update_last_active
   prepend_before_filter :initialise_use_tab_cookie_in_session
   
@@ -276,14 +277,24 @@ class ApplicationController < ActionController::Base
     @api_params[:include] = [ ]
     unless params[:include].blank?
        @api_params[:include] = params[:include].split(',').map{|s| s.strip.downcase}.compact
-   end
+    end
    
-   # 'also'
+    # 'also'
     @api_params[:also] = [ ]
     unless params[:also].blank?
        @api_params[:also] = params[:also].split(',').map{|s| s.strip.downcase}.compact
     end
   end
+  
+  def set_json_api_params
+    @json_api_params = {
+      :query => params[:q],
+      :sort_by => @sort_by,
+      :sort_order => @sort_order,
+      :page => @page,
+      :per_page => @per_page
+    }
+  end  
   
   # Generic method to raise / proceed from errors. 
   #

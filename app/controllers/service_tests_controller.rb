@@ -15,7 +15,11 @@ class ServiceTestsController < ApplicationController
   before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable ]
 
   before_filter :authorise, :only => [ :enable, :disable ]
-  
+
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def show
     respond_to do |format|
       format.html # show.html.erb

@@ -162,6 +162,8 @@ module BioCatalogue
                 Mapper.get_ancestor_service_id(source_model_name, source_id)
               when "SoapOperation"
                 Mapper.get_ancestor_soap_operation_id(source_model_name, source_id)
+              when "RestMethod"
+                Mapper.get_ancestor_rest_method_id(source_model_name, source_id)
             end
           end
           
@@ -212,6 +214,17 @@ module BioCatalogue
           return source_id
         else
           return self.get_id_value_from_sql_query(self.sql_query_to_get_soap_operation_id_for_source_model_item(source_model_name, source_id))
+      end
+    end
+
+    # NOTE: this is NOT cached, and hence it is not a public method.
+    # Use Mapper::map_compound_id_to_associated_model_object_id
+    def self.get_ancestor_rest_method_id(source_model_name, source_id)
+      case source_model_name.to_s
+        when "RestMethod"
+          return source_id
+        else
+          return self.get_id_value_from_sql_query(self.sql_query_to_get_rest_method_id_for_source_model_item(source_model_name, source_id))
       end
     end
     
@@ -361,6 +374,33 @@ module BioCatalogue
           ann = Annotation.find(source_id)
           unless ann.nil?
             sql = self.sql_query_to_get_soap_operation_id_for_source_model_item(ann.annotatable_type, ann.annotatable_id)
+          end
+      end
+      
+      return sql
+    end
+
+    # NOTE: the SQL queries here have only been tested to work with MySQL 5.0.x
+    def self.sql_query_to_get_rest_method_id_for_source_model_item(source_model_name, source_id)
+      sql = nil
+      
+      case source_model_name
+        when "RestMethod"
+          sql = [ "SELECT ? AS id", source_id ]
+        when "RestParameter"
+          sql = [ "SELECT rest_method_parameters.rest_method_id AS id 
+                  FROM rest_method_parameters
+                  WHERE rest_method_parameters.id = ?",
+                  source_id ]
+        when "RestRepresentation"
+          sql = [ "SELECT rest_method_representations.rest_method_id AS id 
+                  FROM rest_method_representations
+                  WHERE rest_method_representations.id = ?",
+                  source_id ]
+        when "Annotation"
+          ann = Annotation.find(source_id)
+          unless ann.nil?
+            sql = self.sql_query_to_get_rest_method_id_for_source_model_item(ann.annotatable_type, ann.annotatable_id)
           end
       end
       

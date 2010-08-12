@@ -35,11 +35,15 @@ class AnnotationsController < ApplicationController
   skip_before_filter :authorise_action
   before_filter :authorise, :only =>  [ :edit, :edit_popup, :update, :destroy, :change_attribute, :bulk_create ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.collection(@annotations, false).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("annotations", @json_api_params, @annotations, false).to_json }
     end
   end
   

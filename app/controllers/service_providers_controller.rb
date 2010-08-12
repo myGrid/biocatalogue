@@ -19,13 +19,17 @@ class ServiceProvidersController < ApplicationController
   
   before_filter :authorise, :only => [ :edit_by_popup, :update ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   # GET /service_providers
   # GET /service_providers.xml
   def index
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.collection(@service_providers, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("service_providers", @json_api_params, @service_providers, true).to_json }
     end
   end
 

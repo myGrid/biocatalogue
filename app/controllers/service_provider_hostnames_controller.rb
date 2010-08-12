@@ -13,6 +13,10 @@ class ServiceProviderHostnamesController < ApplicationController
   
   before_filter :authorise
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def reassign_provider_by_popup
     respond_to do |format|
       format.js { render :layout => false }

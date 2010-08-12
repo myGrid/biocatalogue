@@ -20,11 +20,15 @@ class SoapOperationsController < ApplicationController
   
   before_filter :find_soap_operation, :only => [ :show, :annotations, :inputs, :outputs ]
   
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+  end
+
   def index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.collection(@soap_operations, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("soap_operations", @json_api_params, @soap_operations, true).to_json }
     end
   end
   
@@ -57,32 +61,8 @@ class SoapOperationsController < ApplicationController
   def annotations
     respond_to do |format|
       format.html { disable_action }
-      format.xml {
-        
-        # Add SoapOperation filter
-        new_params = BioCatalogue::Filtering.add_filter_to_params(params, :asop, @soap_operation.id)
-        
-        # Now add any other filters, if specified by "also=..."
-        
-        if @api_params[:also].include?('inputs')
-          @soap_operation.soap_inputs.find(:all, :select => "id").each do |input|
-            new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asin, input.id)
-          end
-        end
-        
-        if @api_params[:also].include?('outputs')
-          @soap_operation.soap_outputs.find(:all, :select => "id").each do |output|
-            new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asout, output.id)
-          end
-        end
-        
-        redirect_to(generate_filter_url(new_params, "annotations", :xml))
-        
-      }
-      format.json {
-        # TODO: implement ?include=inputs,outputs
-        render :json => BioCatalogue::Api::Json.collection(@soap_operation.annotations.paginate(:page => @page, :per_page => @per_page), false).to_json 
-      }
+      format.xml { redirect_to(generate_filter_url(get_new_params_with_also_filter, "annotations", :xml)) }
+      format.json { redirect_to(generate_filter_url(get_new_params_with_also_filter, "annotations", :json)) }
     end
   end
   
@@ -94,7 +74,7 @@ class SoapOperationsController < ApplicationController
     end
   end
 
-  protected
+protected
   
   def parse_sort_params
     sort_by_allowed = [ "created" ]
@@ -139,7 +119,7 @@ class SoapOperationsController < ApplicationController
     # Filtering
     
     conditions, joins = BioCatalogue::Filtering::SoapOperations.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-    
+        
     @soap_operations = SoapOperation.paginate(:page => @page,
                                               :per_page => @per_page,
                                               :order => order,
@@ -149,6 +129,31 @@ class SoapOperationsController < ApplicationController
   
   def find_soap_operation
     @soap_operation = SoapOperation.find(params[:id], :include => [ :soap_inputs, :soap_outputs ])
+  end
+  
+private
+
+  def get_new_params_with_also_filter
+    # TODO: implement ?include=inputs,outputs
+    
+    # Add SoapOperation filter
+    new_params = BioCatalogue::Filtering.add_filter_to_params(params, :asop, @soap_operation.id)
+    
+    # Now add any other filters, if specified by "also=..."
+    
+    if @api_params[:also].include?('inputs')
+      @soap_operation.soap_inputs.find(:all, :select => "id").each do |input|
+        new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asin, input.id)
+      end
+    end
+    
+    if @api_params[:also].include?('outputs')
+      @soap_operation.soap_outputs.find(:all, :select => "id").each do |output|
+        new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asout, output.id)
+      end
+    end
+    
+    return new_params
   end
   
 end
