@@ -7,14 +7,18 @@
 class UsersController < ApplicationController
 
   before_filter :disable_action, :only => [ :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters ]
 
-  before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, :services ]
+  before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, :services, :filters ]
   before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password ]
   
   before_filter :initialise_updated_user, :only => [ :edit, :update ]
   
   skip_before_filter :verify_authenticity_token, :only => [ :rpx_update ]
+
+  before_filter :parse_current_filters, :only => [ :index ]
+  
+  before_filter :get_filter_groups, :only => [ :filters ]
   
   before_filter :parse_sort_params, :only => [ :index ]
   
@@ -279,8 +283,16 @@ class UsersController < ApplicationController
       format.json { redirect_to(generate_include_filter_url(:su, params[:id], "services", :json)) }
     end
   end
-  
-  private
+
+  def filters
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # filters.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
+    end
+  end
+
+private
   
   def parse_sort_params
     sort_by_allowed = [ "activated", "name" ]
@@ -324,10 +336,14 @@ class UsersController < ApplicationController
       order = "users.#{order_field} #{order_direction}"
     end
     
+    conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
+
     @users = User.paginate(:page => @page,
                            :per_page => @per_page,
                            :conditions => "activated_at IS NOT NULL",
-                           :order => order)
+                           :order => order,
+                           :conditions => conditions,
+                           :joins => joins)
   
   end
   

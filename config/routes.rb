@@ -123,6 +123,7 @@ ActionController::Routing::Routes.draw do |map|
   map.search_by_data '/search/by_data', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :post, :get ] }
 
   map.resources :service_providers,
+                :collection => { :filters => :get },
                 :member => { :annotations => :get,
                              :annotations_by => :get,
                              :services => :get }
@@ -137,7 +138,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :users, 
                 :collection => { :activate_account => :get,
                                  :rpx_merge_setup => :get,
-                                 :rpx_merge => :post }, 
+                                 :rpx_merge => :post,
+                                 :filters => :get }, 
                 :member => { :change_password => [ :get, :post ],
                              :rpx_update => [ :get, :post ],
                              :annotations_by => :get,

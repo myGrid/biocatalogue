@@ -7,9 +7,13 @@
 class ServiceProvidersController < ApplicationController
   
   before_filter :disable_action, :only => [ :new, :edit, :create, :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :annotations_by, :services ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :annotations_by, :services, :filters ]
   
   skip_before_filter :verify_authenticity_token, :only => [ :auto_complete ]
+
+  before_filter :parse_current_filters, :only => [ :index ]
+  
+  before_filter :get_filter_groups, :only => [ :filters ]
 
   before_filter :parse_sort_params, :only => [ :index ]
   
@@ -130,7 +134,15 @@ class ServiceProvidersController < ApplicationController
     render :inline => "<%= auto_complete_result @results, 'name', @name_fragment %>", :layout => false
   end
 
-  protected
+  def filters
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # filters.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
+    end
+  end
+
+protected
   
   def parse_sort_params
     sort_by_allowed = [ "created", "name" ]
@@ -174,9 +186,13 @@ class ServiceProvidersController < ApplicationController
       order = "service_providers.#{order_field} #{order_direction}"
     end
     
+    conditions, joins = BioCatalogue::Filtering::ServiceProviders.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
+
     @service_providers = ServiceProvider.paginate(:page => @page,
-                                 :per_page => @per_page,
-                                 :order => order)
+                                                  :per_page => @per_page,
+                                                  :order => order,
+                                                  :conditions => conditions,
+                                                  :joins => joins)
   end
   
   def find_service_provider

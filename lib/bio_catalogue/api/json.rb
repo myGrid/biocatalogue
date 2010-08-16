@@ -63,11 +63,11 @@ module BioCatalogue
           }
         }
         
-        if params[:sort_by] && params[:sort_order]
+        if !params[:sort_by].blank? && !params[:sort_order].blank?
           data[name]["sort_by"] = params[:sort_by]
           data[name]["sort_order"] = params[:sort_order]
         end
-        
+                
         return data
       end
       

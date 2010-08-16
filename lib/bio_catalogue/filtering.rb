@@ -26,6 +26,8 @@ module BioCatalogue
     FILTER_KEYS = { :services => [ :cat, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_rms, :tag_ins, :tag_outs, :c ],
                     :soap_operations => [ :tag, :tag_ops, :tag_ins, :tag_outs ],
                     :rest_methods => [ :tag, :tag_rms, :tag_ins, :tag_outs ],
+                    :users => [ :c ],
+                    :service_providers => [ ],
                     :annotations => [ :attrib,
                                       :as, :asd, :asp, :ars, :ass, :asop, :asin, :asout,
                                       :soa, :sor, :sosp, :sou, :arm, :arp, :arr, :arres ] }.freeze
@@ -53,6 +55,8 @@ module BioCatalogue
                                          { "Tags (on REST Methods)" => [ :tag_rms ] },
                                          { "Tags (on Inputs)" => [ :tag_ins ] },
                                          { "Tags (on Outputs)" => [ :tag_outs ] } ],
+                      :users => [ { "Locations" => [ :c ] } ],
+                      :service_providers => [ ],
                       :annotations => [ { "Annotation Attributes" => [ :attrib ] },
                                         { "Annotatables" => [ :as, :asd, :asp, :ars, :arres, :arm, :arp, :arr, :ass, :asop, :asin, :asout ] },
                                         { "Sources" => [ :soa, :sor, :sosp, :sou ] } ] }.freeze
@@ -115,6 +119,8 @@ module BioCatalogue
     FILTER_GROUP_NAMES_FOR_KEYS = { :services => Filtering.hash_for_filter_keys_to_group_names(:services),
                                     :soap_operations => Filtering.hash_for_filter_keys_to_group_names(:soap_operations),
                                     :rest_methods => Filtering.hash_for_filter_keys_to_group_names(:rest_methods),
+                                    :users => Filtering.hash_for_filter_keys_to_group_names(:users),
+                                    :service_providers => Filtering.hash_for_filter_keys_to_group_names(:service_providers),
                                     :annotations => Filtering.hash_for_filter_keys_to_group_names(:annotations) }
     
     

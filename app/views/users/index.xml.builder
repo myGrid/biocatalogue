@@ -16,6 +16,12 @@ xml.tag! "users",
   # <parameters>
   xml.parameters do
     
+    # Filtering parameters
+    render :partial => "api/filtering/parameters", :locals => { :parent_xml => xml, :resource_type => "Users" }
+    
+    # <query>
+    xml.query params[:q], :urlKey => "q"
+    
     # Sorting parameters
     render :partial => "api/sorting/parameters", :locals => { :parent_xml => xml, :sort_by => @sort_by, :sort_order => @sort_order }
     
@@ -62,6 +68,16 @@ xml.tag! "users",
                         :params_clone => params_clone,
                         :resource_url_lambda => lambda { |params| uri_for_collection("users", :params => params) } }
     
+    # <filters>
+    xml.filters xlink_attributes(uri_for_collection("users/filters"), 
+                                 :title => xlink_title("Filters for the Users index")),
+                :resourceType => "Filters"
+    
+    # <filtersOnCurrentResults>
+    xml.filtersOnCurrentResults xlink_attributes(uri_for_collection("users/filters", :params => params_clone.reject{|k,v| k.to_s.downcase == "page" }), 
+                                 :title => xlink_title("Filters for the Users index that will be applied on top of the current results set")),
+                :resourceType => "Filters"
+
     # TODO: <sorted> *
     
   end
