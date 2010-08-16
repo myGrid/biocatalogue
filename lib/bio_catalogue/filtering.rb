@@ -65,6 +65,7 @@ module BioCatalogue
                                  :tag => "Tags",
                                  :tag_s => "Tags (on Services)",
                                  :tag_ops => "Tags (on Operations)",
+                                 :tag_rms => "Tags (on REST Methods)",
                                  :tag_ins => "Tags (on Inputs)",
                                  :tag_outs => "Tags (on Outputs)",
                                  :c => "Countries",

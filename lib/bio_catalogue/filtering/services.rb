@@ -32,10 +32,12 @@ module BioCatalogue
             get_filters_for_service_tags(limit)
           when :tag_ops
             get_filters_for_soap_operation_tags(limit)
+          when :tag_rms
+            get_filters_for_rest_method_tags(limit)
           when :tag_ins
-            get_filters_for_soap_input_tags(limit)
+            get_filters_for_input_tags(limit)
           when :tag_outs
-            get_filters_for_soap_output_tags(limit)
+            get_filters_for_output_tags(limit)
           when :c
             get_filters_for_countries(limit)
           else
@@ -180,7 +182,7 @@ module BioCatalogue
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
       def self.get_filters_for_all_tags(limit=nil)
         service_models = Mapper::SERVICE_STRUCTURE_MODELS.map{|m| m.to_s}
-        get_filters_for_tags_by_service_models(service_models, limit)
+        get_filters_for_tags_by_service_models(service_models, limit, :all)
       end
       
       # Gets an ordered list of all the tags on Services, ServiceVersions, 
@@ -200,21 +202,29 @@ module BioCatalogue
       def self.get_filters_for_soap_operation_tags(limit=nil)
         get_filters_for_tags_by_service_models([ "SoapOperation" ], limit)
       end
-      
-      # Gets an ordered list of all the tags on SoapInputs.
+
+      # Gets an ordered list of all the tags on RestMethods.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_soap_input_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapInput" ], limit)
+      def self.get_filters_for_rest_method_tags(limit=nil)
+        get_filters_for_tags_by_service_models([ "RestMethod" ], limit)
       end
       
-      # Gets an ordered list of all the tags on SoapOutputs.
+      # Gets an ordered list of all the tags on SoapInputs, RestParameters, and RestRepresentations.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_soap_output_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapOutput" ], limit)
+      def self.get_filters_for_input_tags(limit=nil)
+        get_filters_for_tags_by_service_models([ "SoapInput", "RestParameter", "RestRepresentation" ], limit, :request)
+      end
+      
+      # Gets an ordered list of all the tags on SoapOutputs, RestParameters, and RestRepresentations.
+      #
+      # Example return data:
+      # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
+      def self.get_filters_for_output_tags(limit=nil)
+        get_filters_for_tags_by_service_models([ "SoapOutput", "RestParameter", "RestRepresentation" ], limit, :response)
       end
       
       # ======================
@@ -245,6 +255,7 @@ module BioCatalogue
         service_ids_all_tags = [ ]
         service_ids_tags_s = [ ]
         service_ids_tags_ops = [ ]
+        service_ids_tags_rms = [ ]
         service_ids_tags_ins = [ ]
         service_ids_tags_outs = [ ]
         service_ids_search_query = [ ]
@@ -293,16 +304,18 @@ module BioCatalogue
                   service_ids_submitters.concat(get_service_ids_with_submitter_registries(filter_values))
                 when :tag
                   service_models = Mapper::SERVICE_STRUCTURE_MODELS.map{|m| m.to_s}
-                  service_ids_all_tags = get_service_ids_with_tag_on_service_models(service_models, filter_values)
+                  service_ids_all_tags = get_service_ids_with_tag_on_service_models(service_models, filter_values, :all)
                 when :tag_s
                   service_models = [ "Service", "ServiceVersion", "ServiceDeployment" ] + Mapper::SERVICE_TYPE_ROOT_MODELS.map{|m| m.to_s}
-                  service_ids_tags_s = get_service_ids_with_tag_on_service_models(service_models, filter_values)
+                  service_ids_tags_s = get_service_ids_with_tag_on_service_models(service_models, filter_values, :all)
                 when :tag_ops
                   service_ids_tags_ops = get_service_ids_with_tag_on_service_models([ "SoapOperation" ], filter_values)
+                when :tag_rms
+                  service_ids_tags_rms = get_service_ids_with_tag_on_service_models([ "RestMethod" ], filter_values)
                 when :tag_ins
-                  service_ids_tags_ins = get_service_ids_with_tag_on_service_models([ "SoapInput" ], filter_values)
+                  service_ids_tags_ins = get_service_ids_with_tag_on_service_models([ "SoapInput", "RestRepresentation", "RestParameter" ], filter_values, :request)
                 when :tag_outs
-                  service_ids_tags_outs = get_service_ids_with_tag_on_service_models([ "SoapOutput" ], filter_values)
+                  service_ids_tags_outs = get_service_ids_with_tag_on_service_models([ "SoapOutput", "RestRepresentation", "RestParameter" ], filter_values, :response)
               end
             end
           end
@@ -326,6 +339,7 @@ module BioCatalogue
         service_ids_all_tags = [ 0 ] if service_ids_all_tags.empty? and filters.has_key?(:tag)
         service_ids_tags_s = [ 0 ] if service_ids_tags_s.empty? and filters.has_key?(:tag_s)
         service_ids_tags_ops = [ 0 ] if service_ids_tags_ops.empty? and filters.has_key?(:tag_ops)
+        service_ids_tags_rms = [ 0 ] if service_ids_tags_rms.empty? and filters.has_key?(:tag_rms)
         service_ids_tags_ins = [ 0 ] if service_ids_tags_ins.empty? and filters.has_key?(:tag_ins)
         service_ids_tags_outs = [ 0 ] if service_ids_tags_outs.empty? and filters.has_key?(:tag_outs)
         service_ids_search_query = [ 0 ] if service_ids_search_query.empty? and !search_query.blank?
@@ -335,6 +349,7 @@ module BioCatalogue
 #        Util.say "*** service_ids_all_tags = #{service_ids_all_tags.inspect}"
 #        Util.say "*** service_ids_tags_s = #{service_ids_tags_s.inspect}"
 #        Util.say "*** service_ids_tags_ops = #{service_ids_tags_ops.inspect}"
+#        Util.say "*** service_ids_tags_rms = #{service_ids_tags_rms.inspect}"
 #        Util.say "*** service_ids_tags_ins = #{service_ids_tags_ins.inspect}"
 #        Util.say "*** service_ids_tags_outs = #{service_ids_tags_outs.inspect}"
 #        Util.say "*** service_ids_search_query = #{service_ids_tags_outs.inspect}"
@@ -345,6 +360,7 @@ module BioCatalogue
         service_id_arrays_to_process << service_ids_all_tags unless service_ids_all_tags.blank?
         service_id_arrays_to_process << service_ids_tags_s unless service_ids_tags_s.blank?
         service_id_arrays_to_process << service_ids_tags_ops unless service_ids_tags_ops.blank?
+        service_id_arrays_to_process << service_ids_tags_rms unless service_ids_tags_rms.blank?
         service_id_arrays_to_process << service_ids_tags_ins unless service_ids_tags_ins.blank?
         service_id_arrays_to_process << service_ids_tags_outs unless service_ids_tags_outs.blank?
         service_id_arrays_to_process << service_ids_search_query unless service_ids_search_query.blank?
@@ -373,6 +389,7 @@ module BioCatalogue
                                          filters.has_key?(:tag) or
                                          filters.has_key?(:tag_s) or
                                          filters.has_key?(:tag_ops) or 
+                                         filters.has_key?(:tag_rms) or 
                                          filters.has_key?(:tag_ins) or 
                                          filters.has_key?(:tag_outs) or 
                                          !search_query.blank?)
@@ -386,7 +403,7 @@ module BioCatalogue
       end
     
       
-      protected
+    protected
       
       
       def self.build_categories_filters(categories)
@@ -419,7 +436,7 @@ module BioCatalogue
       # 
       # Example return data:
       # [ { "id" => "bio", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_tags_by_service_models(model_names, limit=nil)
+      def self.get_filters_for_tags_by_service_models(model_names, limit=nil, http_cycle=nil)
         # NOTE: this query has only been tested to work with MySQL 5.0.x
         sql = [ "SELECT annotations.value AS name, annotations.annotatable_id AS id, annotations.annotatable_type AS type
                 FROM annotations 
@@ -442,6 +459,8 @@ module BioCatalogue
         grouped_tags = { }
         
         items.each do |item|
+          next unless validate_item(item, http_cycle)
+
           found = false
           
           tag_name = item['name']
@@ -509,7 +528,7 @@ module BioCatalogue
         return results.map{|r| r['id'].to_i}.uniq
       end
       
-      def self.get_service_ids_with_tag_on_service_models(model_names, tag_values)
+      def self.get_service_ids_with_tag_on_service_models(model_names, tag_values, http_cycle=nil)
         # NOTE: this query has only been tested to work with MySQL 5.0.x
         sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
                 FROM annotations 
@@ -519,8 +538,34 @@ module BioCatalogue
                 tag_values ]
         
         results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
-        
+        results.reject! { |item| !validate_item(item, http_cycle) }        
+
         return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "Service").uniq     
+      end
+    
+    private
+      
+      def self.validate_item(item, http_cycle)
+        # CHECK WHETHER item IS THE REQUIRED REST_PARAMETER OR REST_REPRESENTATION
+        valid_http_cycle = !http_cycle.nil? && http_cycle.is_a?(Symbol) && [ :request, :response, :all ].include?(http_cycle)
+        return false if %{ RestRepresentation RestParameter }.include?(item['type']) && !valid_http_cycle
+        
+        if %{ RestRepresentation RestParameter }.include?(item['type'])
+          return true if http_cycle==:all
+          
+          sql = case item['type']
+                  when "RestParameter"
+                    [ "SELECT id FROM rest_method_parameters WHERE rest_parameter_id = ?", item['id'] ]
+                  when "RestRepresentation"
+                    [ "SELECT id FROM rest_method_representations WHERE rest_representation_id = ?", item['id'] ]
+                end
+          sql[0] = sql[0] + " AND http_cycle = '#{http_cycle.to_s}' LIMIT 1"
+          
+          results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+          return false if results.empty?
+        end
+        
+        return true
       end
     
     end
