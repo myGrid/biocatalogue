@@ -256,7 +256,7 @@ class XmlSchemaValidations < Test::Unit::TestCase
     assert validate_endpoint_xml_output(make_url("/service_providers?sort_by=name&sort_order=desc"))
     assert validate_endpoint_xml_output(make_url("/service_providers?sort_by=name&sort_order=asc"))
     assert validate_endpoint_xml_output(make_url("/service_providers?q=ddbj"))
-    assert validate_endpoint_xml_output(make_url("/service_providers?c='japan'"))
+    assert validate_endpoint_xml_output(make_url("/service_providers?c=[japan]"))
   end
 
   def test_service_providers_filters
@@ -378,7 +378,7 @@ class XmlSchemaValidations < Test::Unit::TestCase
     assert validate_endpoint_xml_output(make_url("/users?sort_by=name&sort_order=desc"))
     assert validate_endpoint_xml_output(make_url("/users?sort_by=name&sort_order=asc"))
     assert validate_endpoint_xml_output(make_url("/users?q=franck"))
-    assert validate_endpoint_xml_output(make_url("/users?c='japan'"))
+    assert validate_endpoint_xml_output(make_url("/users?c=[japan]"))
   end
   
   def test_users_filters

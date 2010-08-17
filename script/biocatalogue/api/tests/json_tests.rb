@@ -245,7 +245,7 @@ class JsonTests < Test::Unit::TestCase
     validate_index_from_path("/service_providers?sort_by=name&sort_order=desc")
     validate_index_from_path("/service_providers?sort_by=name&sort_order=asc")
     validate_index_from_path("/service_providers?q=ddbj", true)
-    validate_index_from_path("/service_providers?c='japan'")
+    validate_index_from_path("/service_providers?c=[japan]")
   end
   
   def test_service_providers_filters
@@ -363,7 +363,7 @@ class JsonTests < Test::Unit::TestCase
     validate_index_from_path("/users?sort_by=name&sort_order=desc")
     validate_index_from_path("/users?sort_by=name&sort_order=asc")
     validate_index_from_path("/users?q=franck", true)
-    validate_index_from_path("/users?c='japan'")
+    validate_index_from_path("/users?c=[japan]")
   end
 
   def test_users_filters

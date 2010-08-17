@@ -20,15 +20,15 @@ module JsonTestHelper
   # ========================================
   
   def element_nil_msg(element, path)
-    "Element '#{element}' is nil: #{path}"
+    "The element '#{element}' at path '#{path}' was found to be nil."
   end
   
   def data_incorrect_class_msg(data, path)
-    "'#{path}' result is not of the correct data type. Found #{data.class.name}."
+    "The result of path '#{path}' is not of the correct data type. Found #{data.class.name}."
   end
   
-  def data_empty_msg(path)
-    "No JSON data found for path '#{path}'"
+  def data_empty_msg(path, required_class)
+    "The path '#{path}' yielded an empty #{required_class.name}."
   end
   
   # ========================================
@@ -36,7 +36,7 @@ module JsonTestHelper
   def validate_data_from_path(path)
     data = load_data_from_endpoint(make_url(path))
     assert data.is_a?(Hash), data_incorrect_class_msg(data, path)
-    assert !data.empty?, data_empty_msg(path)
+    assert !data.empty?, data_empty_msg(path, Hash)
     return data
   end
 

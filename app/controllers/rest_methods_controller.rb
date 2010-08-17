@@ -307,12 +307,14 @@ private # ========================================
       order = "rest_methods.#{order_field} #{order_direction}"
     end
     
-    order = "rest_methods.endpoint_name #{order_direction}, rest_resources.path" if @sort_by=="name"
-    
     # Filtering
     
     conditions, joins = BioCatalogue::Filtering::RestMethods.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-    joins << "INNER JOIN rest_resources ON rest_methods.rest_resource_id = rest_resources.id"
+    
+    if @sort_by=="name"
+      joins << :rest_resource
+      order = "rest_methods.endpoint_name #{order_direction}, rest_resources.path"
+    end
     
     @rest_methods = RestMethod.paginate(:page => @page,
                                         :per_page => @per_page,

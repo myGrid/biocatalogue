@@ -13,7 +13,7 @@
 		<%= link_to image_tag("close.gif", :alt => "Close login box"), "#", :onclick => "closeLoginBox('login_box', 'login_link'); return false;" %>
 	</div>
 	
-	<% form_tag session_path(:secure => true) do %>
+	<% form_tag session_path(:protocol => default_protocol) do %>
     <span>
       <%= text_field_tag :login, params[:login], :class => 'small_login' %>
       <label for="login">Email:</label>

@@ -19,6 +19,18 @@ class ApplicationController < ActionController::Base
   
   # Allow for SSL support
   include SslRequirement
+  if ENABLE_SSL && Rails.env.production?
+    ssl_allowed :all
+    DEFAULT_PROTOCOL = 'https'
+  else
+    DEFAULT_PROTOCOL = 'http'
+  end
+  
+  def default_protocol
+    DEFAULT_PROTOCOL
+  end
+  helper_method :default_protocol
+  
   # ============================================
 
   # OAuth support
@@ -71,7 +83,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
-  layout :auto_select_layout
+  layout "application_wide"
   
   before_filter :debug_messages
   
@@ -632,24 +644,4 @@ class ApplicationController < ActionController::Base
     end
   end
   
-private # ===============================
-
-  def auto_select_layout
-    # this code was based on
-    # http://www.arctickiwi.com/blog/2-mobile-enable-your-ruby-on-rails-site-for-small-screens
-    
-    # TODO: return "application_wide" if current controller is not oauth related
-    
-    agent = request.headers["HTTP_USER_AGENT"].downcase
-    
-    return "application_oauth" if agent.include?("oauth_client") || 
-                                  agent.include?("oauth-client") || 
-                                  agent.include?("oauth client")
-
-    oauth_clients = ClientApplication.find(:all, :select => :name)
-    oauth_clients.each { |a| return "application_oauth" if agent.match(a.name) }
-    
-    return "application_wide"
-  end
-
 end

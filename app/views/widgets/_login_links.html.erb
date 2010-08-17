@@ -20,7 +20,7 @@
 			<%= link_to "My Favourites", user_path(current_user, :anchor => 'favourites') -%>
 
 			<span class="sep">|</span>
-			<%= link_to "My Applications", oauth_clients_path -%>
+			<%= link_to "OAuth Applications", oauth_clients_path -%>
 			
 			<span class="sep">|</span>
 			<%= link_to "Responsibility Requests", responsibility_requests_path -%>
@@ -31,12 +31,12 @@
 			<% end %>
 			
       <span class="sep">|</span>
-			<%= link_to 'Sign out', logout_url, :id => "logout_link", :class => "red_arrow", :method => :delete -%>
+			<%= link_to 'Sign out', logout_url(:protocol => default_protocol), :id => "logout_link", :class => "red_arrow", :method => :delete -%>
 		<% else -%>
-			<%= link_to 'Sign up', "/signup", :id => "signup_link", :class => "signup" -%>
+			<%= link_to 'Sign up', signup_url(:protocol => default_protocol), :id => "signup_link", :class => "signup" -%>
 			
 			<span class="sep">|</span>
-			<%= link_to 'Sign in', login_url, :id => "login_link", :class => "login", :onclick => "showLoginBox(this, 'login_box'); return false;" -%>
+			<%= link_to 'Sign in', login_url(:protocol => default_protocol), :id => "login_link", :class => "login", :onclick => "showLoginBox(this, 'login_box'); return false;" -%>
 		<% end %>
 	</div>
-</div>             
+</div>
