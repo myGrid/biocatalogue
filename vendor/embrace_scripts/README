@@ -1,0 +1,73 @@
+# BioCatalogue: vendor/embrace_scripts/README
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+#
+#################################################
+
+Attribution
+===========
+This package is based on the ideas developed for the EMBRACE Registry for 
+functional testing of web services. This has been written for BioCatalogue
+to improve portability.
+
+Notes
+============
+
+These notes are mainly intended for anyone setting up monitoring with
+test scripts for their own BioCatalogue instance.
+
+
+This package can be checked out from the BioCatalogue repository
+into an area when it can execute semi-independently. It is however
+required that the machine running the scripts has access to the 
+BioCatalogue instance database in order to import the scripts.
+
+Before running the harness, you need to setup the configuration file.
+There is a sample file in the config directory with notes to help you set it 
+up for your instance. This file is called "tests_script_runner.config.pre". 
+Copy this file into "tests_script_runner.config" and modify it accordingly.
+
+After creating this configuration file, you are now ready to setup the
+environment for running the test scripts. Run the scripts indicated below
+in order (from src dir):
+
+1) Setup the run directories by running:
+	
+	python make_run_dirs.py
+	
+	This will import the scripts from the database into your execution directory
+	creating a sub directory for each test. The pattern for the sub-directory names
+	are <service_id>/<test_id>. It will also de-compress any zip archives.
+
+2) Create a listing of the scripts in the from the database by running:
+	
+	python script_listing_writer.py
+	
+	This will create a file in config directory called "script_listing.xml"
+	
+	NOTE: 
+	====
+	This is created from the BioCatalogue instance database so will contain all
+	the tests available in the db. It is advisable to configure only a small number
+	of test while setting up initially. This can be achieve by commenting out some 
+	tests in the "script_listing.xml" xml file
+	
+3) Now run the harness script. This should be run with the option to get the tests to run from the 
+   xml file created in 2). This is achieved by running
+   
+   python biocat_harness.py --fromFile=../config/script_listing.xml ../config/tests_script_runner.config
+   
+   This will run the tests and post the results to your BioCatalogue instance. If all goes well, you will
+   see the statuses of the configured tests updated in your BioCatalogue instance.
+   
+Each of the tests has a job execution directory as created in 1). If you find any doubtful test status posted,
+you should check in these directories for the job log files.
+
+Thanks for using the BioCatalogue TestHarness.
+
+The BioCatalogue Team
+	
+
+
