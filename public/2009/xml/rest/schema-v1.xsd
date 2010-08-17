@@ -719,6 +719,8 @@
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="created"></xsd:enumeration>
 			<xsd:enumeration value="activated"></xsd:enumeration>
+			<xsd:enumeration value="name"></xsd:enumeration>
+			<xsd:enumeration value="modified"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -1294,6 +1296,12 @@
 
 	<xsd:complexType name="ServiceProvidersParameters">
 		<xsd:sequence>
+			<xsd:element name="filters" type="FiltersParameters"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="query" type="SearchQueryParameter"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
 			<xsd:element ref="sortBy" maxOccurs="1" minOccurs="1"></xsd:element>
 			<xsd:element ref="sortOrder" maxOccurs="1" minOccurs="1"></xsd:element>
 			<xsd:element ref="page" maxOccurs="1" minOccurs="1"></xsd:element>
@@ -1318,7 +1326,16 @@
 
 	<xsd:complexType name="ServiceProvidersRelatedLinks">
 		<xsd:complexContent>
-			<xsd:extension base="CollectionCoreRelatedLinks"></xsd:extension>
+			<xsd:extension base="CollectionCoreRelatedLinks">
+				<xsd:sequence>
+					<xsd:element name="filters" type="ResourceLink"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="filtersOnCurrentResults"
+						type="ResourceLink" maxOccurs="1" minOccurs="1">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 
@@ -1562,6 +1579,10 @@
 
 	<xsd:complexType name="UsersParameters">
 		<xsd:sequence>
+			<xsd:element name="filters" type="FiltersParameters"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="query" type="SearchQueryParameter" maxOccurs="1" minOccurs="1"></xsd:element>
 			<xsd:element ref="sortBy" maxOccurs="1" minOccurs="1"></xsd:element>
 			<xsd:element ref="sortOrder" maxOccurs="1" minOccurs="1"></xsd:element>
 			<xsd:element ref="page" maxOccurs="1" minOccurs="1"></xsd:element>
@@ -1586,7 +1607,16 @@
 
 	<xsd:complexType name="UsersRelatedLinks">
 		<xsd:complexContent>
-			<xsd:extension base="CollectionCoreRelatedLinks"></xsd:extension>
+			<xsd:extension base="CollectionCoreRelatedLinks">
+				<xsd:sequence>
+					<xsd:element name="filters" type="ResourceLink"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="filtersOnCurrentResults"
+						type="ResourceLink" maxOccurs="1" minOccurs="1">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 
@@ -2709,6 +2739,12 @@
 
 	<xsd:complexType name="RestMethodsParameters">
 		<xsd:sequence>
+			<xsd:element name="filters" type="FiltersParameters"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="query" type="SearchQueryParameter"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
 			<xsd:element name="sortBy" type="SortByParameter"
 				maxOccurs="1" minOccurs="1">
 			</xsd:element>
@@ -2740,7 +2776,16 @@
 
 	<xsd:complexType name="RestMethodsRelatedLinks">
 		<xsd:complexContent>
-			<xsd:extension base="CollectionCoreRelatedLinks"></xsd:extension>
+			<xsd:extension base="CollectionCoreRelatedLinks">
+				<xsd:sequence>
+					<xsd:element name="filters" type="ResourceLink"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="filtersOnCurrentResults"
+						type="ResourceLink" maxOccurs="1" minOccurs="1">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
 
