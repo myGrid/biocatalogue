@@ -119,6 +119,14 @@ class XmlSchemaValidations < Test::Unit::TestCase
   def test_rest_methods
     assert validate_endpoint_xml_output(make_url("/rest_methods"))
     assert validate_endpoint_xml_output(make_url("/rest_methods?page=2"))
+    assert validate_endpoint_xml_output(make_url("/rest_methods?sort_by=name"))
+    assert validate_endpoint_xml_output(make_url("/rest_methods?sort_by=name&sort_order=desc"))
+    assert validate_endpoint_xml_output(make_url("/rest_methods?sort_by=name&sort_order=asc"))
+    assert validate_endpoint_xml_output(make_url("/rest_methods?q=database"))
+  end
+  
+  def test_rest_methods_filters
+    assert validate_endpoint_xml_output(make_url("/rest_methods/filters"))
   end
   
   def test_rest_method
@@ -244,8 +252,17 @@ class XmlSchemaValidations < Test::Unit::TestCase
     assert validate_endpoint_xml_output(make_url("/service_providers?page=2"))
     assert validate_endpoint_xml_output(make_url("/service_providers?sort_by=created&sort_order=asc"))
     assert validate_endpoint_xml_output(make_url("/service_providers?sort_by=created&sort_order=asc&page=2"))
+    assert validate_endpoint_xml_output(make_url("/service_providers?sort_by=name"))
+    assert validate_endpoint_xml_output(make_url("/service_providers?sort_by=name&sort_order=desc"))
+    assert validate_endpoint_xml_output(make_url("/service_providers?sort_by=name&sort_order=asc"))
+    assert validate_endpoint_xml_output(make_url("/service_providers?q=ddbj"))
+    assert validate_endpoint_xml_output(make_url("/service_providers?c='japan'"))
   end
-  
+
+  def test_service_providers_filters
+    assert validate_endpoint_xml_output(make_url("/service_providers/filters"))
+  end
+
   def test_service_provider
     config["service_provider_ids"].each do |id|
       assert validate_endpoint_xml_output(make_url("/service_providers/#{id}"))
@@ -357,10 +374,18 @@ class XmlSchemaValidations < Test::Unit::TestCase
     assert validate_endpoint_xml_output(make_url("/users?page=2"))
     assert validate_endpoint_xml_output(make_url("/users?sort_by=activated&sort_order=asc"))
     assert validate_endpoint_xml_output(make_url("/users?sort_by=activated&sort_order=asc&page=2"))
+    assert validate_endpoint_xml_output(make_url("/users?sort_by=name"))
+    assert validate_endpoint_xml_output(make_url("/users?sort_by=name&sort_order=desc"))
+    assert validate_endpoint_xml_output(make_url("/users?sort_by=name&sort_order=asc"))
+    assert validate_endpoint_xml_output(make_url("/users?q=franck"))
+    assert validate_endpoint_xml_output(make_url("/users?c='japan'"))
   end
   
+  def test_users_filters
+    assert validate_endpoint_xml_output(make_url("/users/filters"))
+  end
+
   def test_user
-    assert config["user_ids"].length > 0, "No user_ids found in config.yml"
     config["user_ids"].each do |id|
       assert validate_endpoint_xml_output(make_url("/users/#{id}"))
       assert validate_endpoint_xml_output(make_url("/users/#{id}/services"))

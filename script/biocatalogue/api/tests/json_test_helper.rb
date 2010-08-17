@@ -40,16 +40,43 @@ module JsonTestHelper
     return data
   end
 
+  def validate_filters_from_path(path)
+    # TODO: validate internals some more
+    data = load_data_from_endpoint(make_url(path))
+    assert data.is_a?(Array), data_incorrect_class_msg(data, path)
+    return data
+  end
+
   # ========================================
+  
+  def validate_index_from_path(path, allow_empty=false, allowed_size=10)
+    data = load_data_from_endpoint(make_url(path))
+    resource_name = data.keys.first
+    
+    assert !data[resource_name].nil?, element_nil_msg(resource_name, path)
+
+    assert !data[resource_name]['per_page'].nil?, element_nil_msg("#{resource_name}:per_page", path)
+    assert data[resource_name]['per_page'].is_a?(Fixnum), data_incorrect_class_msg(data[resource_name]['per_page'], path)
+    assert !data[resource_name]['pages'].nil?, element_nil_msg("#{resource_name}:pages", path)
+    assert data[resource_name]['pages'].is_a?(Fixnum), data_incorrect_class_msg(data[resource_name]['pages'], path)
+    assert !data[resource_name]['current_page'].nil?, element_nil_msg("#{resource_name}:current_page", path)
+    assert data[resource_name]['current_page'].is_a?(Fixnum), data_incorrect_class_msg(data[resource_name]['current_page'], path)
+    assert !data[resource_name]['total'].nil?, element_nil_msg("#{resource_name}:total", path)
+    assert data[resource_name]['total'].is_a?(Fixnum), data_incorrect_class_msg(data[resource_name]['total'], path)
+    
+    assert !data[resource_name]['results'].nil?, element_nil_msg("#{resource_name}:results", path)
+    assert data[resource_name]['results'].is_a?(Array), data_incorrect_class_msg(data[resource_name]['results'], path)
+    assert !data[resource_name]['results'].empty?, data_empty_msg(path) unless allow_empty
+    assert data[resource_name]['results'].length <= allowed_size, "'#{path}' yields too many elements."
+  end
   
   def validate_collection_from_path(path, allow_empty=false, allowed_size=10)
     data = load_data_from_endpoint(make_url(path))
-
     assert data.is_a?(Array), data_incorrect_class_msg(data, path)
     assert !data.empty?, data_empty_msg(path) unless allow_empty
     assert data.length <= allowed_size, "'#{path}' yields too many elements."
   end
-
+  
   # ========================================
   
   # TODO: test the model internals a little bit more
