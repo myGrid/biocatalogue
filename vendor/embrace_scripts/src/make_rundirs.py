@@ -1,21 +1,36 @@
 #!/usr/bin/python
+
+# BioCatalogue: vendor/embrace_scripts/make_rundirs.py
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+# *************************************************************************
 #
 # This script builds the run directories that will be used by
 # harness.py and wrapper.py to run the test scripts.
 # The scripts uses the biocatalogue registry database to build the directories 
 # using the pattern 
 # <base_dir>/<service id>/<test_id>/package/>
+# 
+# The <base_dir> directory is configured in ../config/tests_script_config.config
+# and the service ids and test ids are obtained from the database.
+#
+# Usage:
+#   python make_rundirs.py
 #
 
 # task to manage embrace tests scripts
 import os
 import MySQLdb
 from config_reader import ConfigReader
+from setup_logger import SetupLogger
 
 
 class DirectoryMaker:
     def __init__(self, fn):
         self.configs = ConfigReader(fn).read()
+        self.logger  = SetupLogger().logger("DirectoryMaker")
         
     def get_script_references(self, db):
         
@@ -24,7 +39,7 @@ class DirectoryMaker:
         stmt += "FROM service_tests,test_scripts,content_blobs  "
         stmt += "WHERE service_tests.test_id = test_scripts.id AND service_tests.test_type ='TestScript' "
         stmt += "AND test_scripts.content_blob_id = content_blobs.id AND service_tests.activated_at IS NOT NULL; " 
-        
+        self.logger.debug(stmt)
         results    = db.execute(stmt)
         references = db.fetchall()
         return references 
@@ -39,9 +54,9 @@ class DirectoryMaker:
             
             if not os.path.exists(run_dir):
                 self.create_run_dir(run_dir, result[2], result[3])
-                print "Created test script run directory %s"%run_dir
+                self.logger.debug("Created test script run directory %s"%run_dir)
             else:
-                print "Test script run directory %s already exists "%run_dir
+                self.logger.debug("Test script run directory %s already exists "%run_dir)
             
     # create the directory to run the jobs
     def create_run_dir(self, dir, fname, data):
@@ -70,10 +85,10 @@ class DirectoryMaker:
                         os.system("unzip %s"%fname )
                         os.chdir(cwd)
                     cmd = "chmod -R u=rxw  %s"%dir
-                    print cmd
+                    self.logger.debug(cmd)
                     os.system(cmd)
                 except Exception, e:
-                    print str(e)
+                    self.logger.debug(str(e))
     
     def is_zip(self, fname):
         ext = fname.split('.')[-1]
@@ -85,7 +100,7 @@ class DirectoryMaker:
     def connect_to_db(self, host, port, user, passwd, db):
         conn = MySQLdb.connect(host=host, port=port, user=user, passwd=passwd, db=db)
         cursor = conn.cursor()
-        print "Connected to db"
+        self.logger.info("Connected to db")
         return cursor
     
 

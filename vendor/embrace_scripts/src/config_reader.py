@@ -1,10 +1,19 @@
+# BioCatalogue: vendor/embrace_scripts/config_reader.py
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+# *************************************************************************
+
+from setup_logger import SetupLogger
 
 class ConfigReader:
     def __init__(self, config_file):
         self.config = config_file
+        self.logger = SetupLogger().logger("ConfigReader")
         
     def read(self):
-        #print "Reading the config file"
+        self.logger.debug("Reading the config file")
         params = {}
         lines = open(self.config,'r').readlines()
         lines = [line.strip() for line in lines]

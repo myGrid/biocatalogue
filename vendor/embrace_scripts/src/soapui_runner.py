@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
 #BioCatalogue : /vendor/embrace_scripts/src/soapui_runner.py
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+# *************************************************************************
 
 # This script uses the soapUI command line tool to
 # run tests against web services. The tests are configured
@@ -17,6 +22,7 @@ from optparse import OptionParser
 
 from config_reader import ConfigReader
 from test_result import TestResult
+from setup_logger import SetupLogger
 
 
 class SoapUIRunner:
@@ -28,6 +34,7 @@ class SoapUIRunner:
         self.summary    = ''
         self.configs    = configs
         self.configure()
+        self.logger     = SetupLogger().logger("SoapUIRunner")
     
     def configure(self):
         self.runner_location = self.configs.get('soapui_runner_dir')
@@ -46,7 +53,7 @@ class SoapUIRunner:
         cmd +=' %s ' %options
         cmd +=' %s ' %os.path.join(self.work_dir, self.project_file)
         self.cmd = cmd
-        print cmd
+        self.logger.debug( cmd)
         return cmd
     
     def parse_log(self, log=''):

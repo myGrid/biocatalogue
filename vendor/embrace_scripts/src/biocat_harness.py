@@ -1,8 +1,10 @@
 #!/usr/bin/python
-
-#################################################################################
 # BioCatalogue : /vendor/embrace_scripts/src/biocat_harness.py
-
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+#
 # This script uses a biocatalogue db to select test scripts to run.
 # It is dependent on the scripts which create the run directories 
 # from the same database.[make_biocat_test_script_run_dirs.py]
@@ -27,6 +29,7 @@ from optparse import OptionParser
 
 from config_reader import ConfigReader
 from script_listing_reader import ScriptListingReader
+from setup_logger import SetupLogger
 
 
 MAX_PROCESS_TIME = 60*5           # Scripts should not run run for more than set no of seconds
@@ -42,12 +45,13 @@ passed          = []                    # sucessful processes
 failed          = []                    # failed processes
 total_scripts   = 0
 total_soapui    = 0
+logger          = SetupLogger().logger("biocat_harness")
 
 # command line options
 usage  = "usage: %prog [options] configuration_file"
 parser = OptionParser(usage=usage)
 parser.add_option("-l", "--log", dest="logfile",
-                  help="send output to logfile", metavar="FILE", default="harness-%s.log" %(time.strftime("%d%m-%Y-%H%M%S", time.gmtime())))
+                  help="send output to logfile", metavar="FILE", default="harness-status-%s.log" %(time.strftime("%m%d-%Y-%H%M%S", time.gmtime())))
 parser.add_option("-f", "--fromFile", dest="fromFile",
                   help="XML file containing the scripts to be run", metavar="FILE")
 parser.add_option("-d", "--database", dest="db", default=False,
@@ -68,6 +72,7 @@ if len(args) != 1:
 if options.logfile != None:
     log = '../log/' + options.logfile
     print "Sending output to log file ../log/%s"%options.logfile
+    logger.info("Sending output to log file ../log/%s"%options.logfile)
     try:
         pass
         log_handle = open(log, 'w')

@@ -1,10 +1,18 @@
+# BioCatalogue: vendor/embrace_scripts/script_listing_reader.py
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+# *************************************************************************
 
 from xml.dom.minidom import parse
+from setup_logger import SetupLogger
 
 class ScriptListingReader:
     
     def __init__(self, filename):
         self.filename = filename
+        self.logger   = SetupLogger().logger("ScriptListingReader")
     
     def parse(self):
         dom = parse(self.filename)

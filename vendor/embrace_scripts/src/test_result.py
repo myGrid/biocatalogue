@@ -1,19 +1,29 @@
 #BioCatalogue : /vendor/embrace_scripts/src/test_result.py
+# BioCatalogue: vendor/embrace_scripts/biocat_wrapper.py
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+# *************************************************************************
+
 # Usage:
 # Create a test result object and call the post
 # method on it to post the results of a test script execution
-# to a remote server.
-
+# to a remote server. Underneath, it uses curl to post results
+# to a url
 
 import subprocess
 import sys
+from setup_logger import SetupLogger
 
 
 class TestResult:
     def __init__(self, configs):
         self.configs = configs
+        self.logger  = SetupLogger().logger("TestResult")
         
     def post(self, url, user, password):
+        self.logger.info("posting result using curl")
         test_type ="TestScript"
         test_id   = self.configs['test_id']
         result    = self.configs['result']
@@ -30,8 +40,7 @@ class TestResult:
         data +='<service_test_id>%d</service_test_id>'%(test_id)
         data +='</test_result>'   
         curl = "curl -X POST -u %s:%s -d '%s' -H 'Content-Type:application/xml' %s" %(user, password,data, url)
-        print curl
-    
+        #self.logger.debug(curl)
         #os.system(curl)
     
         try:

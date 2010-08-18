@@ -1,6 +1,10 @@
 #!/usr/bin/python
-
 #BioCatalogue : /vendor/embrace_scripts/src/testscript_runner.py
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+# *************************************************************************
 
 # This script runs test scripts against web services. 
 # Tests are scripts that are executable on the command line and take no arguments 
@@ -23,6 +27,7 @@ from optparse import OptionParser
 
 from config_reader import ConfigReader
 from test_result import TestResult
+from setup_logger import SetupLogger
 
 class TestScriptRunner:
     def __init__(self, configs):
@@ -33,6 +38,7 @@ class TestScriptRunner:
         self.result     = 1              # 1 = there were problems, 0 = everything was fine
         self.summary    = ''
         self.configure()
+        self.logger     = SetupLogger().logger("TestScriptRunner")
     
     def configure(self):
         self.runner_location = self.configs.get('script_runner_dir')
@@ -47,11 +53,11 @@ class TestScriptRunner:
         self.log          = os.path.join(self.test_dir, os.path.join("logs", ("%s.tmp.log" % datetime.datetime.now()))) 
         
         self.cmd = os.path.join(self.work_dir, self.script_name)
-        print self.cmd +' %s'%conf_file
+        self.logger.debug( self.cmd +' %s'%conf_file )
         return self.cmd +' %s'%conf_file
     
     def post_result(self, url, user, psswd):
-        print "Posting result to  %s"%url
+        self.logger.debug( "Posting result to  %s"%url)
         conf = {'result' : int(self.result),
                 'message' : self.summary,
                 'action'  : self.script_name,
@@ -100,11 +106,11 @@ if __name__ =='__main__':
     child   = None
     
     try:
-        print "running job : %s "%runner.script_name
+        runner.logger.debug( "running job : %s "%runner.script_name )
         logfile = open(runner.log, 'w')
         prev_handler = signal.signal(signal.SIGALRM, runner.signal_handler)
         signal.alarm(runner.timeout)
-        print runner.cmd
+        self.logger.debug( runner.cmd)
         child = subprocess.Popen("%s" % runner.cmd, stdout= logfile, stderr= logfile, close_fds = True, shell= True, cwd=runner.work_dir)
         
         runner.returncode = child.wait()
@@ -115,7 +121,7 @@ if __name__ =='__main__':
         #runner.summary = "".join(logfile.readlines())
         runner.summary = runner.status_message(runner.returncode)
         logfile.close()
-        print runner.returncode
+        self.logger.debug("Return code: %s "%str(runner.returncode))
     except Exception, e:
         #sys.stdout = stdout_bak
         runner.summary  += "Test Wrapper failure"
@@ -130,4 +136,4 @@ if __name__ =='__main__':
 
     #signal.signal(signal.SIGALRM, runner.prev_handler)
     runner.post_result(configs['result_url'], configs['api_user'], configs['api_pass'])
-    print "Wrapper completed with child status", runner.returncode
+    runner.logger.debug( "Wrapper completed with child status %s" %str(runner.returncode) )

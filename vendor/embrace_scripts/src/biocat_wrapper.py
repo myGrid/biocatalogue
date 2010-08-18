@@ -1,13 +1,19 @@
 #!/usr/bin/python
-################################################################
+
+# BioCatalogue: vendor/embrace_scripts/biocat_wrapper.py
 #
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+# *************************************************************************
+
 # This scripts wraps a test scripts and executes it
-# as a sub process. If the script does not complete within
-# half an hour, it is kill and a corresponding message inserted
+# as a sub process. If the test does not complete within
+# half an hour, it is killed and a corresponding message inserted
 # in the log
 #
 # The script then posts the result (exit code) of the script to 
-# to a url specified in a config file under ../config/
+# to a url specified in ../config/tests_scripts_config.config
 
 
 import datetime
@@ -22,6 +28,7 @@ import signal
 from optparse import OptionParser
 
 from config_reader import ConfigReader
+from setup_logger import SetupLogger
 
 timeout    = 30 * 60		# length of timeout (in seconds)
 kill_delay = 2			    # number of seconds that have to pass before proceeding after a process is killed
