@@ -320,11 +320,14 @@ private # ========================================
     if self.request.format == :bljson
       joins << :rest_resource unless joins.include?(:rest_resource)
       
-      @rest_methods = RestMethod.find(:all,
-                                      :select => "rest_methods.id, rest_methods.name, rest_resources.path",
-                                      :order => order,
-                                      :conditions => conditions,
-                                      :joins => joins) 
+      finder_options = {
+        :select => "rest_methods.id, rest_methods.endpoint_name, rest_resources.path",
+        :order => order,
+        :conditions => conditions,
+        :joins => joins
+      }
+      
+      @rest_methods = ActiveRecord::Base.connection.select_all(RestMethod.send(:construct_finder_sql, finder_options))
     else
       @rest_methods = RestMethod.paginate(:page => @page,
                                           :per_page => @per_page,

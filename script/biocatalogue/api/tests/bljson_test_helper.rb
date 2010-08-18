@@ -14,13 +14,13 @@ module BljsonTestHelper
   include TestHelper
   
   def load_data_from_endpoint(endpoint_url)
-    JSON.parse(open(endpoint_url, "Accept" => "application/json", "User-Agent" => HTTP_USER_AGENT).read)
+    JSON.parse(open(endpoint_url, "Accept" => "application/biocat-lean+json", "User-Agent" => HTTP_USER_AGENT).read)
   end
   
-  def validate_data_from_path(path)
+  def validate_data_from_path(path, allow_empty=false)
     data = load_data_from_endpoint(make_url(path))
     assert data.is_a?(Hash), data_incorrect_class_msg(data, path)
-    assert !data.empty?, data_empty_msg(path, Hash)
+    assert !data.empty?, data_empty_msg(path, Hash) unless allow_empty
     return data
   end
   
@@ -41,7 +41,7 @@ module BljsonTestHelper
   # ========================================
 
   def validate_index_from_path(path, allow_empty=false)
-    data = validate_data_from_path(path)
+    data = validate_data_from_path(path, allow_empty)
     resource_name = data.keys.first
     
     assert !data[resource_name].nil?, element_nil_msg(resource_name, path)

@@ -10,11 +10,15 @@ module BioCatalogue
   module Api
     module Bljson
       
-      def self.index(resource_type, results, params={})
-        output = Hash.new { |h,k| h[k] = [ ] }
+      # 'results' should be a Hash with an "id" + anything that can be deemed a display_name. 
+      def self.index(resource_type, results)
+        output = { }
+        
+        output[resource_type.pluralize] = [ ]
         
         results.each do |item|
-          item_json = { :resource => BioCatalogue::Api.uri_for_object(item), :name => BioCatalogue::Util.display_name(item) }
+          puts "\n**\n#{item.inspect}\n**\n"
+          item_json = { :resource => BioCatalogue::Api.uri_for_path("/#{resource_type}/#{item["id"]}"), :name => BioCatalogue::Util.display_name(item) }
           output[resource_type.pluralize] << item_json
         end
         

@@ -284,11 +284,14 @@ class ServicesController < ApplicationController
     @filter_message = "The services index has been filtered" unless @current_filters.blank?
     
     if self.request.format == :bljson
-      @services = Service.find(:all,
-                               :select => "services.id, services.name",
-                               :order => order,
-                               :conditions => conditions,
-                               :joins => joins) 
+      finder_options = {
+        :select => "services.id, services.name",
+        :order => order,
+        :conditions => conditions,
+        :joins => joins
+      }
+      
+      @services = ActiveRecord::Base.connection.select_all(Service.send(:construct_finder_sql, finder_options))
     else
       @services = Service.paginate(:page => @page,
                                    :per_page => @per_page,

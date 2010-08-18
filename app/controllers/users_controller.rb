@@ -340,12 +340,15 @@ private
     conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
 
     if self.request.format == :bljson
-      @users = User.find(:all,
-                         :select => "users.id, users.display_name",
-                         # FIXME: need to make sure this gets added in: conditions => "activated_at IS NOT NULL",
-                         :order => order,
-                         :conditions => conditions,
-                         :joins => joins) 
+      finder_options = {
+        :select => "users.id, users.display_name",
+        :order => order,
+        :conditions => conditions,
+        # FIXME: need to make sure this gets added in: conditions => "activated_at IS NOT NULL",
+        :joins => joins
+      }
+      
+      @users = ActiveRecord::Base.connection.select_all(User.send(:construct_finder_sql, finder_options))
     else
       @users = User.paginate(:page => @page,
                              :per_page => @per_page,

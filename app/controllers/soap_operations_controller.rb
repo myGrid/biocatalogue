@@ -120,11 +120,15 @@ protected
     conditions, joins = BioCatalogue::Filtering::SoapOperations.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
     
     if self.request.format == :bljson
-      @soap_operations = SoapOperation.find(:all,
-                                            :select => "soap_operations.id, soap_operations.name",
-                                            :order => order,
-                                            :conditions => conditions,
-                                            :joins => joins) 
+      
+      finder_options = {
+        :select => "soap_operations.id, soap_operations.name",
+        :order => order,
+        :conditions => conditions,
+        :joins => joins
+      }
+      
+      @soap_operations = ActiveRecord::Base.connection.select_all(SoapOperation.send(:construct_finder_sql, finder_options))
     else
       @soap_operations = SoapOperation.paginate(:page => @page,
                                                 :per_page => @per_page,

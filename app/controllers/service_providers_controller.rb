@@ -190,11 +190,14 @@ protected
     conditions, joins = BioCatalogue::Filtering::ServiceProviders.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
     
     if self.request.format == :bljson
-      @service_providers = ServiceProvider.find(:all,
-                                                :select => "service_providers.id, service_providers.name",
-                                                :order => order,
-                                                :conditions => conditions,
-                                                :joins => joins) 
+      finder_options = {
+        :select => "service_providers.id, service_providers.name",
+        :order => order,
+        :conditions => conditions,
+        :joins => joins
+      }
+      
+      @service_providers = ActiveRecord::Base.connection.select_all(ServiceProvider.send(:construct_finder_sql, finder_options))
     else
       @service_providers = ServiceProvider.paginate(:page => @page,
                                                     :per_page => @per_page,
