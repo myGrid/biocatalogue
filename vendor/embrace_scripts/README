@@ -35,7 +35,7 @@ in order (from src dir):
 
 1) Setup the run directories by running:
 	
-	python make_run_dirs.py
+	python make_rundirs.py
 	
 	This will import the scripts from the database into your execution directory
 	creating a sub directory for each test. The pattern for the sub-directory names
