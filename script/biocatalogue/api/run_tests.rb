@@ -16,4 +16,5 @@
 require 'test/unit'
 require File.join(File.dirname(__FILE__), 'tests', 'xml_schema_validations')
 require File.join(File.dirname(__FILE__), 'tests', 'json_tests')
+require File.join(File.dirname(__FILE__), 'tests', 'bljson_tests')
 

@@ -17,6 +17,9 @@ end
 # This is not loaded in Rails 2.3 anymore (apparently).
 require 'net/smtp'
 
+# Register the custom BioCatalogue "lean" API mime type
+Mime::Type.register 'application/biocat-lean+json', :bljson
+
 # Require additional libraries
 require 'array'
 require 'object'

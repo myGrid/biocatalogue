@@ -286,7 +286,7 @@ module BioCatalogue
     
     def self.display_name(item, escape_html=true)
       # NOTE: the order below matters!
-      %w{ preferred_name display_name title name }.each do |w|
+      %w{ preferred_name display_name title name path }.each do |w|
         if escape_html
           return eval("CGI.escapeHTML(item.#{w})") if item.respond_to?(w)
           return CGI.escapeHTML(item[w]) if item.is_a?(Hash) && item.has_key?(w)

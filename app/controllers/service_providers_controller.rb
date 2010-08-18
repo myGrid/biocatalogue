@@ -30,6 +30,7 @@ class ServiceProvidersController < ApplicationController
       format.html # index.html.erb
       format.xml  # index.xml.builder
       format.json { render :json => BioCatalogue::Api::Json.index("service_providers", json_api_params, @service_providers, true).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("service_providers", @service_providers).to_json }
     end
   end
 
@@ -187,12 +188,20 @@ protected
     end
     
     conditions, joins = BioCatalogue::Filtering::ServiceProviders.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-
-    @service_providers = ServiceProvider.paginate(:page => @page,
-                                                  :per_page => @per_page,
-                                                  :order => order,
-                                                  :conditions => conditions,
-                                                  :joins => joins)
+    
+    if self.request.format == :bljson
+      @service_providers = ServiceProvider.find(:all,
+                                                :select => "service_providers.id, service_providers.name",
+                                                :order => order,
+                                                :conditions => conditions,
+                                                :joins => joins) 
+    else
+      @service_providers = ServiceProvider.paginate(:page => @page,
+                                                    :per_page => @per_page,
+                                                    :order => order,
+                                                    :conditions => conditions,
+                                                    :joins => joins)
+    end
   end
   
   def find_service_provider

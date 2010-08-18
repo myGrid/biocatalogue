@@ -40,6 +40,7 @@ class ServicesController < ApplicationController
       format.xml  # index.xml.builder
       format.atom # index.atom.builder
       format.json { render :json => BioCatalogue::Api::Json.index("services", json_api_params, @services, true).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("services", @services).to_json }
     end
   end
 
@@ -282,11 +283,20 @@ class ServicesController < ApplicationController
     
     @filter_message = "The services index has been filtered" unless @current_filters.blank?
     
-    @services = Service.paginate(:page => @page,
-                                 :per_page => @per_page,
-                                 :order => order,
-                                 :conditions => conditions,
-                                 :joins => joins)
+    if self.request.format == :bljson
+      @services = Service.find(:all,
+                               :select => "services.id, services.name",
+                               :order => order,
+                               :conditions => conditions,
+                               :joins => joins) 
+    else
+      @services = Service.paginate(:page => @page,
+                                   :per_page => @per_page,
+                                   :order => order,
+                                   :conditions => conditions,
+                                   :joins => joins)
+    end
+    
   end
   
   def find_service

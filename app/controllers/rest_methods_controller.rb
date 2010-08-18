@@ -122,6 +122,7 @@ class RestMethodsController < ApplicationController
       format.html { disable_action }
       format.xml # index.xml.builder
       format.json { render :json => BioCatalogue::Api::Json.index("rest_methods", json_api_params, @rest_methods, true).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("rest_methods", @rest_methods).to_json }
     end
   end
   
@@ -316,11 +317,21 @@ private # ========================================
       order = "rest_methods.endpoint_name #{order_direction}, rest_resources.path"
     end
     
-    @rest_methods = RestMethod.paginate(:page => @page,
-                                        :per_page => @per_page,
-                                        :order => order,
-                                        :conditions => conditions,
-                                        :joins => joins)
+    if self.request.format == :bljson
+      joins << :rest_resource unless joins.include?(:rest_resource)
+      
+      @rest_methods = RestMethod.find(:all,
+                                      :select => "rest_methods.id, rest_methods.name, rest_resources.path",
+                                      :order => order,
+                                      :conditions => conditions,
+                                      :joins => joins) 
+    else
+      @rest_methods = RestMethod.paginate(:page => @page,
+                                          :per_page => @per_page,
+                                          :order => order,
+                                          :conditions => conditions,
+                                          :joins => joins)
+    end
   end
   
   def destroy_unused_objects(id_list, is_parameter=true)

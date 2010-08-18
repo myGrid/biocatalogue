@@ -25,6 +25,7 @@ class SoapOperationsController < ApplicationController
       format.html { disable_action }
       format.xml # index.xml.builder
       format.json { render :json => BioCatalogue::Api::Json.index("soap_operations", json_api_params, @soap_operations, true).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("soap_operations", @soap_operations).to_json }
     end
   end
   
@@ -117,12 +118,20 @@ protected
     # Filtering
     
     conditions, joins = BioCatalogue::Filtering::SoapOperations.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-        
-    @soap_operations = SoapOperation.paginate(:page => @page,
-                                              :per_page => @per_page,
-                                              :order => order,
-                                              :conditions => conditions,
-                                              :joins => joins)
+    
+    if self.request.format == :bljson
+      @soap_operations = SoapOperation.find(:all,
+                                            :select => "soap_operations.id, soap_operations.name",
+                                            :order => order,
+                                            :conditions => conditions,
+                                            :joins => joins) 
+    else
+      @soap_operations = SoapOperation.paginate(:page => @page,
+                                                :per_page => @per_page,
+                                                :order => order,
+                                                :conditions => conditions,
+                                                :joins => joins)
+    end
   end
   
   def find_soap_operation

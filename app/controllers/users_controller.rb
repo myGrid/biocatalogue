@@ -40,6 +40,7 @@ class UsersController < ApplicationController
       format.html # index.html.erb
       format.xml  # index.xml.builder
       format.json { render :json => BioCatalogue::Api::Json.index("users", json_api_params, @users, false).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("users", @users).to_json }
     end
   end
 
@@ -338,13 +339,22 @@ private
     
     conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
 
-    @users = User.paginate(:page => @page,
-                           :per_page => @per_page,
-                           :conditions => "activated_at IS NOT NULL",
-                           :order => order,
-                           :conditions => conditions,
-                           :joins => joins)
+    if self.request.format == :bljson
+      @users = User.find(:all,
+                         :select => "users.id, users.display_name",
+                         # FIXME: need to make sure this gets added in: conditions => "activated_at IS NOT NULL",
+                         :order => order,
+                         :conditions => conditions,
+                         :joins => joins) 
+    else
+      @users = User.paginate(:page => @page,
+                             :per_page => @per_page,
+                             # FIXME: need to make sure this gets added in: conditions => "activated_at IS NOT NULL",
+                             :order => order,
+                             :conditions => conditions,
+                             :joins => joins)
   
+    end
   end
   
   def find_user

@@ -83,7 +83,7 @@ class LinkedDataHandler
         
         format = Mime::Type.parse(env["HTTP_ACCEPT"]).first
         
-        if [ :xml, :atom, :json ].include?(format.to_sym)
+        if [ :xml, :atom, :json, :bljson ].include?(format.to_sym)
           
           url = if env['REQUEST_URI'].include?("?")
             "#{env["rack.url_scheme"]}://#{env['HTTP_HOST']}#{env['REQUEST_URI'].gsub(/(.+)\?(.*)/) { |m| $1 + '.' + format.to_sym.to_s + '?' + $2 }}"
