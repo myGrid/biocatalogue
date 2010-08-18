@@ -17,6 +17,10 @@ module BljsonTestHelper
     JSON.parse(open(endpoint_url, "Accept" => "application/biocat-lean+json", "User-Agent" => HTTP_USER_AGENT).read)
   end
   
+  def load_data_from_main_json_endpoint(endpoint_url)
+    JSON.parse(open(endpoint_url, "Accept" => "application/json", "User-Agent" => HTTP_USER_AGENT).read)
+  end
+  
   def validate_data_from_path(path, allow_empty=false)
     data = load_data_from_endpoint(make_url(path))
     assert data.is_a?(Hash), data_incorrect_class_msg(data, path)
@@ -45,6 +49,12 @@ module BljsonTestHelper
     resource_name = data.keys.first
     
     assert !data[resource_name].nil?, element_nil_msg(resource_name, path)
+    
+    # Get the main JSON API version and compare the numbers
+    # (this assumes the JSON API is working as expected!)
+    data2 = load_data_from_main_json_endpoint(make_url(path))
+    
+    assert data[resource_name].length == data2[resource_name]["total"], "Different number of results found between the bljson and json endpoints"
   end
   
   # ========================================
