@@ -1978,6 +1978,7 @@
 			<xsd:enumeration value="RestServices"></xsd:enumeration>
 			<xsd:enumeration value="RestResources"></xsd:enumeration>
 			<xsd:enumeration value="RestResource"></xsd:enumeration>
+			<xsd:enumeration value="SavedSearch"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -3144,4 +3145,58 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 
+
+	<xsd:element name="savedSearch" type="SavedSearch"></xsd:element>
+
+	<xsd:complexType name="SavedSearch">
+		<xsd:complexContent>
+			<xsd:extension base="ResourceLink">
+				<xsd:sequence>
+					<xsd:element ref="dc:title" maxOccurs="1"
+						minOccurs="1">
+					</xsd:element>
+					<xsd:element name="name" type="xsd:string"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="anyScope" type="xsd:boolean"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="query" type="xsd:string"
+						maxOccurs="1" minOccurs="1" nillable="true">
+					</xsd:element>
+					<xsd:element name="scopes" maxOccurs="1"
+						minOccurs="1">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="scope"
+									maxOccurs="unbounded" minOccurs="0">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="resource"
+												maxOccurs="1" minOccurs="1">
+												<xsd:complexType>
+													<xsd:simpleContent>
+														<xsd:extension
+															base="ResourceType">
+														</xsd:extension>
+													</xsd:simpleContent>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="filters"
+												type="FiltersParameters" maxOccurs="1" minOccurs="1">
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="user" type="ResourceLink"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element ref="dcterms:created" maxOccurs="1" minOccurs="1"></xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 </xsd:schema>
