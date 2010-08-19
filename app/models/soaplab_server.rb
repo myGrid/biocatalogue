@@ -11,7 +11,8 @@ require 'ftools'
 class SoaplabServer < ActiveRecord::Base
   
   after_create :update_relationships
-  before_destroy :archive_services
+  #before_destroy :archive_services
+  before_destroy :delete_services
   
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache
@@ -42,8 +43,8 @@ class SoaplabServer < ActiveRecord::Base
   virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
   
   after_create :update_relationships
-  before_destroy :archive_services
-  
+  #before_destroy :archive_services
+  before_destroy :delete_services_from_server
   
 
   # save the soap services from this server in
@@ -250,6 +251,14 @@ class SoaplabServer < ActiveRecord::Base
   def archive_services
     self.services.each do |service|
       service.archive!
+    end
+  end
+  
+  def delete_services
+    self.services.each do |service|
+      if BioCatalogue::Auth.allow_user_to_curate_thing?(self.submitter, service)
+        service.destroy
+      end
     end
   end
    

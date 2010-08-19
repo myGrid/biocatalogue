@@ -75,7 +75,7 @@ class SoaplabServersController < ApplicationController
         if existing_server
           flash[:notice] = 'This Soaplab server is known to BioCatalogue. Any additional services will be registered.'
         else
-          flash[:notice] = 'Your request for the submission of a Soaplab server was successfully received. Please check in short while to view the services'
+          flash[:notice] = 'Your Soaplab server submission was successfully received. Services are being submitted in the background. Please check in short while to view the services'
         end
         format.html { redirect_to(@soaplab_server) }
         format.xml  { render :xml => @soaplab_server, :status => :created, :location => @soaplab_server }
