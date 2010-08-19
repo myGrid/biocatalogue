@@ -93,7 +93,7 @@ class LinkedDataHandler
             "#{env["rack.url_scheme"]}://#{env['HTTP_HOST']}#{env['REQUEST_URI']}.#{format.to_sym}"
           end
           
-          puts "Linked Data compliance: XML, ATOM or JSON request, so 303'ing to '#{url}'"
+          puts "Linked Data compliance: XML, ATOM, JSON or BLJSON request, so 303'ing to '#{url}'"
           
           return [ 303, { 'Content-Type' => 'text/plain', 'Content-Length' => '0',
                    'Location' => url },
@@ -101,7 +101,7 @@ class LinkedDataHandler
           
         else
           
-          puts "Linked Data compliance: non XML, ATOM or JSON request, so not 303'ing for now..."
+          puts "Linked Data compliance: non XML, ATOM, JSON or BLJSON request, so not 303'ing for now..."
           return [ 404, { "Content-Type" => "text/html" }, "Not Found" ]
           
         end

@@ -14,7 +14,7 @@ module BljsonTestHelper
   include TestHelper
   
   def load_data_from_endpoint(endpoint_url)
-    JSON.parse(open(endpoint_url, "Accept" => "application/biocat-lean+json", "User-Agent" => HTTP_USER_AGENT).read)
+    JSON.parse(open(endpoint_url, "Accept" => "application/biocat-lite+json", "User-Agent" => HTTP_USER_AGENT).read)
   end
   
   def load_data_from_main_json_endpoint(endpoint_url)
