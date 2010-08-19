@@ -351,6 +351,18 @@ module BioCatalogue
       return filters
     end
     
+    # Takes in a hash of filters, and determines its validity for the given scope
+    def self.are_filters_valid_for_scope?(filters, scope)
+      return false unless filters.is_a?(Hash)
+      
+      filters.each { |k,v| 
+        return false unless FILTER_KEYS[scope.to_s.to_sym].include?(k.to_s.to_sym) 
+      }
+      
+      return true
+    end
+    
+    
     # Remember the query format (mentioned above):
     # ...?filter_type_1=[value1],[value2],[value3]&filter_type_2=[value4]&filter_type_3=[value5],[value6]&...
     #

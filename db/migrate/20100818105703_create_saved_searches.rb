@@ -1,0 +1,16 @@
+class CreateSavedSearches < ActiveRecord::Migration
+  def self.up
+    create_table :saved_searches do |t|
+      t.string :name
+      t.boolean :unbound, :null => false
+      t.string :query
+      t.integer :user_id, :null => false
+      
+      t.timestamps
+    end
+  end
+
+  def self.down
+    drop_table :saved_searches
+  end
+end

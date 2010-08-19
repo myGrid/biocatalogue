@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100728150722) do
+ActiveRecord::Schema.define(:version => 20100818105723) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -195,6 +195,10 @@ ActiveRecord::Schema.define(:version => 20100728150722) do
   add_index "favourites", ["favouritable_type", "favouritable_id"], :name => "favourites_favouritable_index"
   add_index "favourites", ["user_id"], :name => "favourites_user_id_index"
 
+  create_table "innodb_lock_monitor", :id => false, :force => true do |t|
+    t.integer "a"
+  end
+
   create_table "oauth_nonces", :force => true do |t|
     t.string   "nonce"
     t.integer  "timestamp"
@@ -352,6 +356,23 @@ ActiveRecord::Schema.define(:version => 20100728150722) do
     t.datetime "updated_at"
     t.string   "interface_doc_url"
     t.string   "documentation_url"
+  end
+
+  create_table "saved_search_scopes", :force => true do |t|
+    t.integer  "saved_search_id", :null => false
+    t.string   "resource"
+    t.text     "filters"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "saved_searches", :force => true do |t|
+    t.string   "name"
+    t.boolean  "unbound",    :null => false
+    t.string   "query"
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "service_deployments", :force => true do |t|
