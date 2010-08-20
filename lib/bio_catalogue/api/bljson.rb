@@ -17,7 +17,6 @@ module BioCatalogue
         output[resource_type.pluralize] = [ ]
         
         results.each do |item|
-          puts "\n**\n#{item.inspect}\n**\n"
           item_json = { :resource => BioCatalogue::Api.uri_for_path("/#{resource_type}/#{item["id"]}"), :name => BioCatalogue::Util.display_name(item) }
           output[resource_type.pluralize] << item_json
         end
