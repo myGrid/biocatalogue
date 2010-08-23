@@ -57,7 +57,6 @@ class RestServicesController < ApplicationController
   end
 
   # POST /rest_services
-  # POST /rest_services.json
   # Example Input:
   #
   #  {
@@ -85,7 +84,7 @@ class RestServicesController < ApplicationController
       respond_to do |format|
         format.html { render :action => "new" }
         # TODO: implement format.xml  { render :xml => '', :status => 406 }
-        format.json { render :json => { :error => { :message => "Please provide a valid endpoint URL", :status => 406 }}.to_json }
+        format.json { render :json => { :error => "Please provide a valid endpoint URL" }.to_json, :status => 406 }
       end
     else
       if is_api_request? # Sanitize for API Request
@@ -121,10 +120,9 @@ class RestServicesController < ApplicationController
             render :json => { 
               :success => { 
                 :message => "The REST service you specified already exists in the BioCatalogue. Any information you provided has been added to this service.", 
-                :resource => service_url(existing_service),
-                :status => 202
+                :resource => service_url(existing_service)
               }
-            }.to_json 
+            }.to_json, :status => 202
           }
         end
       else
@@ -132,7 +130,7 @@ class RestServicesController < ApplicationController
         if is_api_request? && has_missing_elements
           respond_to do |format|
             format.html { disable_action }
-            format.json { render :json => { :error => { :message => "Please provide a valid name for the REST Service you wish to create.", :status => 406 }}.to_json }
+            format.json { render :json => { :error => "Please provide a valid name for the REST Service you wish to create." }.to_json, :status => 406 }
           end
         else
           # Now you can submit the service...
@@ -152,10 +150,9 @@ class RestServicesController < ApplicationController
                 render :json => { 
                   :success => { 
                     :message => "The REST Service '#{@rest_service.name}' has been successfully submitted.", 
-                    :resource => service_url(@rest_service.service(true)),
-                    :status => 201
+                    :resource => service_url(@rest_service.service(true))
                   }
-                }.to_json 
+                }.to_json, :status => 201
               }
             else
               err_text = "An error has occurred with the submission.<br/>" +
@@ -164,7 +161,7 @@ class RestServicesController < ApplicationController
               format.html { render :action => "new" }
               # TODO: implement format.xml  { render :xml => '', :status => 500 }
               format.json { 
-                render :json => { :error => { :message => "An error has occurred with the submission.  Please contact us if need assistance with this.", :status => 500 }}.to_json 
+                render :json => { :error => "An error has occurred with the submission.  Please contact us if need assistance with this." }.to_json, :status => 500
               }
             end
           end

@@ -183,6 +183,10 @@ class XmlSchemaValidations < Test::Unit::TestCase
     end
   end
 
+  # TODO: saved_search
+  def test_saved_search
+  end
+
   # search
   def test_search
     assert validate_endpoint_xml_output(make_url("/search?q=ebi"))
@@ -388,6 +392,7 @@ class XmlSchemaValidations < Test::Unit::TestCase
   def test_user
     config["user_ids"].each do |id|
       assert validate_endpoint_xml_output(make_url("/users/#{id}"))
+# TODO:      assert validate_endpoint_xml_output(make_url("/users/#{id}/saved_searches"))
       assert validate_endpoint_xml_output(make_url("/users/#{id}/services"))
       assert validate_endpoint_xml_output(make_url("/users/#{id}/annotations_by"))
     end

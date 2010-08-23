@@ -52,7 +52,6 @@ class SoapServicesController < ApplicationController
   end
 
   # POST /soap_services
-  # POST /soap_services.json
   # Example Input
   #
   #  {
@@ -77,7 +76,7 @@ class SoapServicesController < ApplicationController
       respond_to do |format|
         format.html { render :action => "new" }
         # TODO: implement format.xml  { render :xml => '', :status => 406 }
-        format.json { render :json => { :error => { :message => "Please provide a valid WSDL URL", :status => 406 }}.to_json }
+        format.json { render :json => { :error => "Please provide a valid WSDL URL" }.to_json, :status => 406 }
       end
     else
       @soap_service = SoapService.new(:wsdl_location => wsdl_location)
@@ -115,17 +114,16 @@ class SoapServicesController < ApplicationController
                 render :json => { 
                   :success => { 
                     :message => "The SOAP Service '#{@soap_service.name}' has been successfully submitted.", 
-                    :resource => service_url(@soap_service.service(true)),
-                    :status => 201
+                    :resource => service_url(@soap_service.service(true))
                   }
-                }.to_json 
+                }.to_json, :status => 201
               }
             else
               flash.now[:error] = 'An error has occurred with the submission. Please <a href="/contact">contact us</a> to report this. Thank you.'
               format.html { render :action => "new" }
               # TODO: implement format.xml  { render :xml => '', :status => 500 }
               format.json { 
-                render :json => { :error => { :message => "An error has occurred with the submission.  Please contact us to report this. Thank you.", :status => 500 }}.to_json 
+                render :json => { :error => "An error has occurred with the submission.  Please contact us to report this. Thank you." }.to_json,  :status => 500
               }
             end
           else
@@ -134,7 +132,7 @@ class SoapServicesController < ApplicationController
             format.json { 
               error_list = []
               @soap_service.errors.to_a.each { |e| error_list << {e[0] => e[1]} } 
-              render :json => { :errors => error_list }.to_json 
+              render :json => { :errors => error_list }.to_json,  :status => 500
             }
           end
         end

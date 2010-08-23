@@ -39,6 +39,38 @@ class SavedSearch < ActiveRecord::Base
     generate_json_and_make_inline(true)
   end
   
+  def submit(params)    
+    success = false
+    return success if params.blank?
+    
+    begin
+      transaction do
+        self.name ||= params[:name]
+        self.all_scopes ||= params[:all_scopes]
+        self.query ||= params[:query]
+
+        self.user_id ||= params[:user_id]
+                
+        unless params[:scopes].blank?
+          params[:scopes].each { |scope|
+            self.add_scope(scope[:resource], scope[:filters])
+          }
+        end
+                                        
+        self.save!
+        
+        success = true
+      end
+    rescue Exception => ex
+      #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
+      logger.error("Failed to submit SavedSearch. Exception:")
+      logger.error(ex.message)
+      logger.error(ex.backtrace.join("\n"))
+    end  
+    
+    return success
+  end
+  
 private
 
   def combinatory_logic

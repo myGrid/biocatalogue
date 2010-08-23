@@ -25,7 +25,6 @@ class JsonTests < Test::Unit::TestCase
       assert config[element].length > 0, "No '#{element}' element found in config.yml"
     }
   end
-  # TODO: add more tests (include query parameters)
   
   # --------------------
   
@@ -177,7 +176,11 @@ class JsonTests < Test::Unit::TestCase
       validate_index_from_path("/rest_services/#{id}/annotations")
     }
   end
-
+  
+  # TODO: saved_search
+  def test_saved_search
+  end
+  
   # search
   def test_search
     config["search_queries"].each { |query| 
@@ -374,6 +377,7 @@ class JsonTests < Test::Unit::TestCase
     config["user_ids"].each { |id| 
       validate_user_from_path("/users/#{id}") 
       validate_index_from_path("/users/#{id}/annotations_by", true)
+# TODO:      validate_index_from_path("/users/#{id}/saved_searches", true)
       validate_index_from_path("/users/#{id}/services", true)
     }
   end

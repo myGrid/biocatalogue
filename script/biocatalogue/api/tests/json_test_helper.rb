@@ -66,7 +66,7 @@ module JsonTestHelper
     
     validate_collection_from_data_given_path(data[resource_name]['results'], path, allow_empty, allowed_size)
   end
-    
+  
   def validate_collection_from_data_given_path(data, path, allow_empty=true, allowed_size=50)
     assert !data.nil?, element_nil_msg("results::collection", path)
     assert data.is_a?(Array), data_incorrect_class_msg(data, path)
