@@ -103,4 +103,15 @@ class UserMailer < ActionMailer::Base
     body        :base_url => base_url,
                 :provider => provider
   end
+  
+  def service_test_disable_notification(user, service_test, to_emails, base_url)
+    content_type "text/html"
+    recipients  to_emails
+    from        SENDER_EMAIL_ADDRESS
+    subject     "[BioCatalogue] A service test has been disabled! "
+    body        :user => user,
+                :service_test => service_test,
+                :base_url => base_url
+  end
+  
 end

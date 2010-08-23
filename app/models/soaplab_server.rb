@@ -42,11 +42,6 @@ class SoaplabServer < ActiveRecord::Base
   
   virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
   
-  after_create :update_relationships
-  #before_destroy :archive_services
-  before_destroy :delete_services_from_server
-  
-
   # save the soap services from this server in
   # the database
   def save_services(current_user)
@@ -254,6 +249,12 @@ class SoaplabServer < ActiveRecord::Base
     end
   end
   
+  # Delete only the services which the
+  # submitter of the soaplab server is 
+  # responsible for. Reason is that if
+  # someone else submitted some of the services
+  # in this server through normal soap mechanism
+  # those services should not be deleted.
   def delete_services
     self.services.each do |service|
       if BioCatalogue::Auth.allow_user_to_curate_thing?(self.submitter, service)

@@ -42,7 +42,7 @@ namespace :biocatalogue do
       services.each do |service|
         service.service_version_instances_by_type('SoapService').each do |soap|
           begin
-            info, error, data = BioCatalogue::WSDLUtils::WSDLParser.parse(soap.wsdl_location)
+            info, error, data = BioCatalogue::WsdlUtils::ParserClient.parse(soap.wsdl_location)
             if info.empty?
               raise "wsdl info hash is empty! "
             end

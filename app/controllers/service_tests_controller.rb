@@ -62,6 +62,8 @@ class ServiceTestsController < ApplicationController
       if @service_test.deactivate!
         flash[:notice] = "<div class=\"flash_header\">Service test has been deactivated</div><div class=\"flash_body\">.</div>"
         format.html{redirect_to(service_url(@service_test.service, :id => @service_test.service.id, :anchor => "testscripts")) }
+        Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceTestDisableNotification.new(current_user, @service_test, 
+                                                                                      MONITORING_STATUS_CHANGE_RECIPIENTS, base_host))
         format.xml { disable_action }
       else
         flash[:notice] = "<div class=\"flash_header\">Could not deactivate service test</div><div class=\"flash_body\">.</div>"

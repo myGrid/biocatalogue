@@ -1,0 +1,39 @@
+<%
+
+# BioCatalogue: app/views/user_mailer/service_test_disable_notification.erb
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+You are receiving this mail because your email is included in the list of those receiving
+monitoring notifications on <%= link_to SITE_BASE_HOST, SITE_BASE_HOST -%>.
+<br/>
+
+We have noticed that the service test with id  <%= @service_test.id %> has been disabled by
+
+<%= link_to BioCatalogue::Util.display_name(@user), url_for( :only_path => false,
+											:host => @base_url,
+            								:controller => 'users',
+            								:action => 'show',
+											:id => @user.id)  -%> 
+
+Would be nice if you could 
+
+<%= link_to("check",
+            url_for(:only_path => false,
+            :host => @base_url,
+            :controller => 'service_tests',
+            :action => 'show',
+            :id => @service_test.id) ) %> that this is legitimate.
+
+<p>		
+Kind Regards,</br>
+
+- The BioCatalogue Team
+</p>	
+
+<p/>
+<%= link_to SITE_BASE_HOST, SITE_BASE_HOST -%>

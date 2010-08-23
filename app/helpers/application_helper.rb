@@ -379,6 +379,7 @@ module ApplicationHelper
   # Hack: helper method to check if the service is a soaplab
   # services. Checks for 'soaplab' in wsdl url
   def is_soaplab_service?(service)
+    return true if service.soaplab_server
     service.service_version_instances_by_type('SoapService').each do |soap|
       return true if soap.wsdl_location=~ /soaplab/
     end
