@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/soap_input.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -27,17 +27,13 @@ class SoapInput < ActiveRecord::Base
   if USE_EVENT_LOG
     acts_as_activity_logged(:models => { :referenced => { :model => :soap_operation } })
   end
-  
+
   def to_json
-    {
-      "soap_input" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
-        "name" => self.name,
-        "description" => self.preferred_description,
-        "computational_type" => self.computational_type,
-        "created_at" => self.created_at.iso8601
-      }
-    }.to_json
+    generate_json_and_make_inline(false)
+  end 
+  
+  def to_inline_json
+    generate_json_and_make_inline(true)
   end
   
   def preferred_description
@@ -66,4 +62,26 @@ protected
   def computational_type_details_for_solr
     BioCatalogue::Util.all_values_from_hash(self.computational_type_details).collect {|i| i.downcase}.uniq.to_sentence(:words_connector => ' ', :last_word_connector => ' ', :two_words_connector => ' ')
   end
+  
+private
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
+      "soap_input" => {
+        "name" => self.name,
+        "description" => self.preferred_description,
+        "computational_type" => self.computational_type,
+        "created_at" => self.created_at.iso8601
+      }
+    }
+
+    unless make_inline
+      data["soap_input"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["soap_input"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["soap_input"].to_json
+    end
+  end # generate_json_and_make_inline
+  
 end

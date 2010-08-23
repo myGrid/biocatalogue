@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/rest_parameter.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -84,9 +84,18 @@ class RestParameter < ActiveRecord::Base
   end
 
   def to_json
-    {
+    generate_json_and_make_inline(false)
+  end 
+  
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end
+
+private
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
       "rest_parameter" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => self.name,
         "description" => self.description,
         "param_style" => self.param_style,
@@ -97,7 +106,15 @@ class RestParameter < ActiveRecord::Base
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "created_at" => self.created_at.iso8601
       }
-    }.to_json
-  end
+    }
+
+    unless make_inline
+      data["rest_parameter"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["rest_parameter"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["rest_parameter"].to_json
+    end
+  end # generate_json_and_make_inline
 
 end

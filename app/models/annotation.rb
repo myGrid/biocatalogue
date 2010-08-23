@@ -47,33 +47,11 @@ class Annotation < ActiveRecord::Base
   end
   
   def to_json
-    data = {
-      "annotation" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
-        "version" => self.version,
-        "annotatable" => {
-          "resource" => BioCatalogue::Api.uri_for_object(self.annotatable),
-          "type" => self.annotatable_type,
-          "name" => BioCatalogue::Util.display_name(self.annotatable)
-        },
-        "source" => {
-          "resource" => BioCatalogue::Api.uri_for_object(self.source),
-          "type" => self.source_type,
-          "name" => BioCatalogue::Util.display_name(self.source)
-        },
-        "attribute" => {
-          "resource" => BioCatalogue::Api.uri_for_object(self.attribute),
-          "name" => self.attribute.name.downcase,
-          "identifier" => self.attribute.identifier.downcase
-        },
-        "value" => self.value_hash,
-        "created" => self.created_at.iso8601,
-      }
-    }
-    
-    data["annotation"]["modified"] = self.updated_at.iso8601 unless self.created_at == self.updated_at
-    
-    return data.to_json
+    generate_json_and_make_inline(false)
+  end 
+  
+  def to_inline_json
+    generate_json_and_make_inline(true)
   end
   
   def value_hash
@@ -219,4 +197,42 @@ class Annotation < ActiveRecord::Base
     end
   end
   
+private
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
+      "annotation" => {
+        "self" => BioCatalogue::Api.uri_for_object(self),
+        "version" => self.version,
+        "annotatable" => {
+          "resource" => BioCatalogue::Api.uri_for_object(self.annotatable),
+          "type" => self.annotatable_type,
+          "name" => BioCatalogue::Util.display_name(self.annotatable)
+        },
+        "source" => {
+          "resource" => BioCatalogue::Api.uri_for_object(self.source),
+          "type" => self.source_type,
+          "name" => BioCatalogue::Util.display_name(self.source)
+        },
+        "attribute" => {
+          "resource" => BioCatalogue::Api.uri_for_object(self.attribute),
+          "name" => self.attribute.name.downcase,
+          "identifier" => self.attribute.identifier.downcase
+        },
+        "value" => self.value_hash,
+        "created" => self.created_at.iso8601,
+      }
+    }
+
+    data["annotation"]["modified"] = self.updated_at.iso8601 unless self.created_at == self.updated_at
+
+    unless make_inline
+      data["annotation"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["annotation"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["annotation"].to_json
+    end
+  end # generate_json_and_make_inline
+
 end

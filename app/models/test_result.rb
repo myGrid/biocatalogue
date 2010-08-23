@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/test_result.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -117,17 +117,34 @@ class TestResult < ActiveRecord::Base
       end
     end
   end
-    
+  
   def to_json
-    {
+    generate_json_and_make_inline(false)
+  end 
+  
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end
+  
+private
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
       "test_result" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "test_action" => self.action,
         "result_code" => self.result,
         "created_at" => self.created_at.iso8601,
         "status" => BioCatalogue::Api::Json.monitoring_status(self.status)
       }
-    }.to_json
-  end 
+    }
+
+    unless make_inline
+      data["test_result"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["test_result"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["test_result"].to_json
+    end
+  end # generate_json_and_make_inline
 
 end

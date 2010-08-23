@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/service.rb
 #
-# Copyright (c) 2008-2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -96,7 +96,7 @@ class Service < ActiveRecord::Base
   end 
   
   def to_inline_json
-    generate_json_with_collections(nil)
+    generate_json_with_collections(nil, true)
   end
   
   def to_custom_json(collections)
@@ -424,7 +424,7 @@ protected
   
 private
 
-  def generate_json_with_collections(collections)
+  def generate_json_with_collections(collections, make_inline=false)
     collections ||= []
 
     allowed = %w{ deployments variants monitoring }
@@ -497,7 +497,13 @@ private
       end
     end
 
-    return data.to_json
+    unless make_inline
+      data["service"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["service"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["service"].to_json
+    end
   end # generate_json_with_collections
 
   def list_for_attribute(attr)
@@ -511,7 +517,7 @@ private
         self.service_deployments.each { |item| list << { "endpoint" => item.endpoint } }
       when "wsdls"
         soaps = service_version_instances_by_type("SoapService")
-        soaps.each { |item| list << BioCatalogue::Api::Json.wsdl_location(item.wsdl_location) } unless soaps.blank?
+        soaps.each { |item| list << item.wsdl_location } unless soaps.blank?
       when "locations"
         self.service_deployments.each { |item| list << BioCatalogue::Api::Json.location(item.country, item.city) }
       when "tag"
@@ -520,7 +526,7 @@ private
       when "category"
         self.annotations_with_attribute("category").each do |ann| 
           cat = Category.find_by_id(ann.value)
-          list << JSON(cat.to_minimal_json) if cat
+          list << JSON(cat.to_countless_inline_json) if cat
         end
       else
         BioCatalogue::Annotations.annotations_for_service_by_attribute(self, attr).each { |ann| list << ann.value }

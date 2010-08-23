@@ -39,8 +39,8 @@ module BioCatalogue
       
       # ========================================
       
-      def self.index(name, params, collection, make_inline)
-        has_filter = BioCatalogue::Filtering::FILTER_GROUPS.include?(name.to_sym) # FIXME
+      def self.index(name, params, collection)
+        has_filter = BioCatalogue::Filtering::FILTER_GROUPS.include?(name.to_sym)
         
         if name=='search'
           total_pages = (collection.size / params[:per_page].to_f).ceil
@@ -52,6 +52,12 @@ module BioCatalogue
           total_entries = collection.total_entries
         end
         
+        if name=='tags'
+          results = self.tags_collection(collection)
+        else
+          results = self.collection(collection)
+        end
+        
         data = {
           name => {
             "search_query" => has_filter ? params[:query] : nil,
@@ -59,7 +65,7 @@ module BioCatalogue
             "per_page" => params[:per_page],
             "pages" => total_pages, 
             "total" => total_entries,
-            "results" => self.collection(collection, make_inline)
+            "results" => results
           }
         }
         
@@ -71,7 +77,7 @@ module BioCatalogue
         return data
       end
       
-      def self.collection(collection, make_inline)
+      def self.collection(collection, make_inline=true)
         make_inline = true unless make_inline.class.name =~ /TrueClass|FalseClass/
         
         list = []
@@ -98,27 +104,28 @@ module BioCatalogue
             },
 
             "collections" => [
-              self.generate_hash('agents', 'Agents', self.uri_for("agents"), 'Agents index'),
-              self.generate_hash('annotation_attributes', 'AnnotationAttributes', self.uri_for("annotation_attributes"), 'Annotation attributes index'),
-              self.generate_hash('annotations', 'Annotations', self.uri_for("annotations"), 'Annotations index'),
-              self.generate_hash('categories', 'Categories', self.uri_for("categories"), 'Categories index'),
-              self.generate_hash('registries', 'Registries', self.uri_for("registries"), 'Registries index'),
-              self.generate_hash('rest_methods', 'RestMethods', self.uri_for("rest_methods"), 'REST Methods index'),
-              self.generate_hash('rest_resources', 'RestResources', self.uri_for("rest_resources"), 'REST Resources index'),
-              self.generate_hash('rest_services', 'RestServices', self.uri_for("rest_services"), 'REST Services index'),
-              self.generate_hash('search', 'Search', self.uri_for("search"), 'Search everything in the BioCatalogue'),
-              self.generate_hash('services', 'Services', self.uri_for("services"), 'Services index'),
-              self.generate_hash('service_providers', 'ServiceProviders', self.uri_for("service_providers"), 'Service providers index'),
-              self.generate_hash('soap_operations', 'SoapOperations', self.uri_for("soap_operations"), 'Soap operations index'),
-              self.generate_hash('soap_services', 'SoapServices', self.uri_for("soap_services"), 'SOAP Services index'),
-              self.generate_hash('tags', 'Tags', self.uri_for("tags"), 'Tags index'),
-              self.generate_hash('test_results', 'TestResults', self.uri_for("test_results"), 'Test results index'),
-              self.generate_hash('users', 'Users', self.uri_for("users"), 'Users index'),
+              self.api_endpoint_item('agents', 'Agents', 'Agents index'),
+              self.api_endpoint_item('annotation_attributes', 'AnnotationAttributes', 'Annotation attributes index'),
+              self.api_endpoint_item('annotations', 'Annotations', 'Annotations index'),
+              self.api_endpoint_item('categories', 'Categories', 'Categories index'),
+              self.api_endpoint_item('registries', 'Registries', 'Registries index'),
+              self.api_endpoint_item('rest_methods', 'RestMethods', 'REST Methods index'),
+              self.api_endpoint_item('rest_resources', 'RestResources', 'REST Resources index'),
+              self.api_endpoint_item('rest_services', 'RestServices', 'REST Services index'),
+              self.api_endpoint_item('search', 'Search', 'Search everything in the BioCatalogue'),
+              self.api_endpoint_item('services', 'Services', 'Services index'),
+              self.api_endpoint_item('service_providers', 'ServiceProviders', 'Service providers index'),
+              self.api_endpoint_item('soap_operations', 'SoapOperations', 'Soap operations index'),
+              self.api_endpoint_item('soap_services', 'SoapServices', 'SOAP Services index'),
+              self.api_endpoint_item('tags', 'Tags', 'Tags index'),
+              self.api_endpoint_item('test_results', 'TestResults', 'Test results index'),
+              self.api_endpoint_item('users', 'Users', 'Users index'),
               {
                 "filters" => [
-                  self.generate_hash('services', 'Filters', self.uri_for("services/filters"), 'Filters for the services index'),
-                  self.generate_hash('soap_operations', 'Filters', self.uri_for("soap_operations/filters"), 'Filters for the SOAP operations index'),
-                  self.generate_hash('annotations', 'Filters', self.uri_for("annotations/filters"), 'Filters for the annotations index')
+                  self.api_endpoint_item('services', 'Filters', 'Filters for the services index', "services/filters"),
+                  self.api_endpoint_item('soap_operations', 'Filters', 'Filters for the SOAP operations index', "soap_operations/filters"),
+                  self.api_endpoint_item('rest_methods', 'Filters', 'Filters for the REST methods index', "rest_methods/filters"),
+                  self.api_endpoint_item('annotations', 'Filters', 'Filters for the annotations index', "annotations/filters")
                 ]
               }
             ]
@@ -128,13 +135,16 @@ module BioCatalogue
       
       # ========================================
       
-      def self.tags_collection(collection)
+      def self.tags_collection(collection, make_inline=true)
+        make_inline = true unless make_inline.class.name =~ /TrueClass|FalseClass/
+        
         list = []
-        collection.each { |tag| list << self.tag(tag['name'], tag['count']) }
+        collection.each { |tag| list << self.tag(tag['name'], tag['count'], make_inline) }
+        
         return list
       end # self.tags_collection
       
-      def self.tag(tag_name, total_items_count)
+      def self.tag(tag_name, total_items_count, make_inline=false)
         data = {
           "tag" => {
             "name" => tag_name,
@@ -143,22 +153,23 @@ module BioCatalogue
         }
         
         data["tag"]["total_items_count"] = total_items_count if total_items_count
-        return data
+        
+        unless make_inline
+          return data
+        else
+          return data["tag"]
+        end
       end # self.tag
       
       # ========================================
       
       def self.wsdl_locations(locations)
         list = []
-        locations.each { |location| list << self.wsdl_location(location) }
+        locations.each { |location| list << location }
         
-        return list
+        return { "wsdl_locations" => list }
       end # self.wsdl_locations
-      
-      def self.wsdl_location(location)
-        { "wsdl_location" => location }
-      end
-      
+            
       # ========================================
       
       def self.filter_groups(groups)
@@ -215,7 +226,13 @@ module BioCatalogue
       
   private # ========================================
       
-      def self.generate_hash(resource, resource_type, resource_uri, description)
+      def self.api_endpoint_item(resource, resource_type, description, resource_uri=nil)
+        if resource_uri.blank?
+          resource_uri = self.uri_for(resource)
+        else
+          resource_uri = self.uri_for(resource_uri)
+        end
+        
         data = {
           "#{resource}" => {
             "resource" => "#{resource_uri}",
@@ -226,7 +243,7 @@ module BioCatalogue
         data["#{resource}"]["resource_type"] = "#{resource_type}" if resource_type
         
         return data
-      end # self.generate_hash
+      end # self.api_endpoint_item
           
       def self.uri_for(collection)
         BioCatalogue::Api.uri_for_collection(collection)

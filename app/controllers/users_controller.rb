@@ -1,16 +1,18 @@
 # BioCatalogue: app/controllers/users_controller.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
 class UsersController < ApplicationController
 
   before_filter :disable_action, :only => [ :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters, :saved_searches ]
 
-  before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, :services, :filters ]
-  before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password ]
+  before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, 
+                                                       :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, 
+                                                       :services, :filters ]
+  before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password, :saved_searches ]
   
   before_filter :initialise_updated_user, :only => [ :edit, :update ]
   
@@ -24,13 +26,13 @@ class UsersController < ApplicationController
   
   before_filter :find_users, :only => [ :index ]
   
-  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by ]
+  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by, :saved_searches ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
 
   if ENABLE_SSL && Rails.env.production?
     ssl_required :new, :create, :edit, :update, :activate_account, :forgot_password, :request_reset_password, 
-                 :reset_password, :change_password, :rpx_merge_setup, :rpx_merge, :rpx_update
+                 :reset_password, :change_password, :rpx_merge_setup, :rpx_merge, :rpx_update, :saved_searches
   end
 
   # GET /users
@@ -39,7 +41,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("users", json_api_params, @users, false).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("users", json_api_params, @users).to_json }
       format.bljson { render :json => BioCatalogue::Api::Bljson.index("users", @users).to_json }
     end
   end
@@ -293,6 +295,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def saved_searches
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # saved_searches.xml.builder
+      format.json { render :json => @user.to_custom_json("saved_searches") }
+    end
+  end
+
 private
   
   def parse_sort_params
@@ -371,6 +381,7 @@ private
         flash[:error] = "You don't have the rights to perform this action."
         format.html { redirect_to :users }
         format.xml  { redirect_to :users => @user.errors, :status => :unprocessable_entity }
+        format.json  { error_to_back_or_home("You are not allowed to perform this action") }
       end
     end
   end

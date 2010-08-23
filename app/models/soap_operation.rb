@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/soap_operation.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -110,7 +110,7 @@ class SoapOperation < ActiveRecord::Base
   end 
   
   def to_inline_json
-    generate_json_with_collections(nil)
+    generate_json_with_collections(nil, true)
   end
   
   def to_custom_json(collections)
@@ -119,7 +119,7 @@ class SoapOperation < ActiveRecord::Base
   
 private
 
-  def generate_json_with_collections(collections)
+  def generate_json_with_collections(collections, make_inline=false)
     collections ||= []
 
     allowed = %w{ inputs outputs }
@@ -139,7 +139,6 @@ private
         
     data = {
       "soap_operation" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => self.name,
         "description" => self.description,
         "parameter_order" => self.parameter_order,
@@ -150,13 +149,19 @@ private
     collections.each do |collection|
       case collection.downcase
         when "inputs"
-          data["soap_operation"]["inputs"] = BioCatalogue::Api::Json.collection(self.soap_inputs, false)
+          data["soap_operation"]["inputs"] = BioCatalogue::Api::Json.collection(self.soap_inputs)
         when "outputs"
-          data["soap_operation"]["outputs"] = BioCatalogue::Api::Json.collection(self.soap_outputs, false)
+          data["soap_operation"]["outputs"] = BioCatalogue::Api::Json.collection(self.soap_outputs)
       end
     end
 
-    return data.to_json
+    unless make_inline
+      data["soap_operation"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["soap_operation"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["soap_operation"].to_json
+    end
   end # generate_json_with_collections
 
 end

@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/category.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -89,12 +89,12 @@ class Category < ActiveRecord::Base
   def to_json
     data = category_hash(self)
     
-    data["category"]["broader"] = category_hash(self.parent) if self.has_parent?
+    data["category"]["broader"] = category_hash(self.parent, true) if self.has_parent?
     
     if self.has_children?
       narrower_data = []
       
-      self.children.each { |cat| narrower_data << category_hash(cat) }
+      self.children.each { |cat| narrower_data << category_hash(cat, true) }
       
       data["category"]["narrower"] = narrower_data
     end
@@ -103,11 +103,11 @@ class Category < ActiveRecord::Base
   end
   
   def to_inline_json
-    category_hash(self).to_json
+    category_hash(self, true).to_json
   end
   
-  def to_minimal_json
-    category_hash(self, false).to_json
+  def to_countless_inline_json
+    category_hash(self, true, false).to_json
   end
   
 protected
@@ -127,15 +127,21 @@ protected
  
 private
 
-  def category_hash(cat, include_count=true)
+  def category_hash(cat, make_inline=false, include_count=true)
     data = {
       "category" => {
-        "self" => BioCatalogue::Api.uri_for_object(cat),
         "name" => BioCatalogue::Util.display_name(cat)
       }
     }
     
     data["category"]["total_items_count"] = BioCatalogue::Categorising.number_of_services_for_category(cat) if include_count
-    return data
+
+    unless make_inline
+      data["category"]["self"] = BioCatalogue::Api.uri_for_object(cat)
+			return data
+    else
+      data["category"]["resource"] = BioCatalogue::Api.uri_for_object(cat)
+			return data["category"]
+    end
   end
 end

@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/service_provider.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -176,20 +176,23 @@ private
   end
   
   def generate_json_and_make_inline(make_inline)
-      
     data = {
       "service_provider" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => BioCatalogue::Util.display_name(self),
         "description" => self.preferred_description
       }
     }
 
     unless make_inline
-      data["service_provider"]["hostnames"] = BioCatalogue::Api::Json.collection(self.service_provider_hostnames, true)
+      list = []
+      self.service_provider_hostnames.each { |hostname| list << hostname.hostname }
+      data["service_provider"]["hostnames"] = list
+      data["service_provider"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["service_provider"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["service_provider"].to_json
     end
-
-    return data.to_json
   end # generate_json_and_make_inline
 
 end

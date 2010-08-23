@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/rest_representation.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -87,15 +87,31 @@ class RestRepresentation < ActiveRecord::Base
   end
 
   def to_json
-    {
+    generate_json_and_make_inline(false)
+  end 
+  
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end
+
+private
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
       "rest_representation" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "content_type" => self.content_type,
         "description" => self.description,
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "created_at" => self.created_at.iso8601
       }
-    }.to_json
-  end
+    }
 
+    unless make_inline
+      data["rest_representation"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["rest_representation"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["rest_representation"].to_json
+    end
+  end # generate_json_and_make_inline
 end

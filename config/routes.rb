@@ -143,7 +143,8 @@ ActionController::Routing::Routes.draw do |map|
                 :member => { :change_password => [ :get, :post ],
                              :rpx_update => [ :get, :post ],
                              :annotations_by => :get,
-                             :services => :get }
+                             :services => :get,
+                             :saved_searches => :get }
                 
   map.resource :session
 
@@ -244,6 +245,8 @@ ActionController::Routing::Routes.draw do |map|
                              :deny    => :put,
                              :turn_down => :get,
                              :cancel => :put}
+  
+  map.resources :saved_searches
 
   # Root of website
   map.root :controller => 'home', :action => 'index'

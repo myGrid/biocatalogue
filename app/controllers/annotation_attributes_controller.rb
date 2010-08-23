@@ -16,7 +16,7 @@ class AnnotationAttributesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("annotation_attributes", json_api_params, @annotation_attributes, false).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("annotation_attributes", json_api_params, @annotation_attributes).to_json }
     end
   end
   

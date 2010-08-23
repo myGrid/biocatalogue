@@ -8,7 +8,7 @@
 is_root = false unless local_assigns.has_key?(:is_root)
 show_core = true unless local_assigns.has_key?(:show_core)
 show_inputs = true unless local_assigns.has_key?(:show_inputs)
-show_ouputs = true unless local_assigns.has_key?(:show_ouputs)
+show_ouputs = true unless local_assigns.has_key?(:show_outputs)
 show_ancestors = false unless local_assigns.has_key?(:show_ancestors)
 show_related = false unless local_assigns.has_key?(:show_related)
 

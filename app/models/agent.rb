@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/agent.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -30,16 +30,13 @@ class Agent < ActiveRecord::Base
   end
   
   def to_json
-    {
-      "agent" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
-        "name" => BioCatalogue::Util.display_name(self),
-        "description" => self.preferred_description,
-        "created_at" => self.created_at.iso8601
-      }
-    }.to_json
+    generate_json_and_make_inline(false)
   end 
   
+  def to_inline_json
+    generate_json_and_make_inline(true)
+  end
+
   def annotation_source_name
     self.display_name
   end
@@ -55,9 +52,28 @@ class Agent < ActiveRecord::Base
     service_ids.compact.uniq
   end
   
-  private
+private
   
   def generate_default_display_name
     self.display_name = self.name.humanize if self.display_name.blank?
   end
+
+  def generate_json_and_make_inline(make_inline)
+    data = {
+      "agent" => {
+        "name" => BioCatalogue::Util.display_name(self),
+        "description" => self.preferred_description,
+        "created_at" => self.created_at.iso8601
+      }
+    }
+    
+    unless make_inline
+      data["agent"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["agent"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["agent"].to_json
+    end
+  end # generate_json_and_make_inline
+
 end

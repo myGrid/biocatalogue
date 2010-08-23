@@ -1,6 +1,6 @@
 # BioCatalogue: app/controllers/search_controller.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -50,7 +50,7 @@ class SearchController < ApplicationController
           
           local_json_api_params = json_api_params
           local_json_api_params[:query] = @query
-          render :json => BioCatalogue::Api::Json.index("search", local_json_api_params, items, true).to_json 
+          render :json => BioCatalogue::Api::Json.index("search", local_json_api_params, items).to_json 
         }
       end
     end

@@ -50,7 +50,7 @@ module JsonTestHelper
   # ========================================
   
   def validate_index_from_path(path, allow_empty=false, allowed_size=10)
-    data = load_data_from_endpoint(make_url(path))
+    data = validate_data_from_path(make_url(path))
     resource_name = data.keys.first
     
     assert !data[resource_name].nil?, element_nil_msg(resource_name, path)
@@ -64,17 +64,22 @@ module JsonTestHelper
     assert !data[resource_name]['total'].nil?, element_nil_msg("#{resource_name}:total", path)
     assert data[resource_name]['total'].is_a?(Fixnum), data_incorrect_class_msg(data[resource_name]['total'], path)
     
-    assert !data[resource_name]['results'].nil?, element_nil_msg("#{resource_name}:results", path)
-    assert data[resource_name]['results'].is_a?(Array), data_incorrect_class_msg(data[resource_name]['results'], path)
-    assert !data[resource_name]['results'].empty?, data_empty_msg(path) unless allow_empty
-    assert data[resource_name]['results'].length <= allowed_size, "'#{path}' yields too many elements."
+    validate_collection_from_data_given_path(data[resource_name]['results'], path, allow_empty, allowed_size)
   end
-  
-  def validate_collection_from_path(path, allow_empty=false, allowed_size=10)
-    data = load_data_from_endpoint(make_url(path))
+    
+  def validate_collection_from_data_given_path(data, path, allow_empty=true, allowed_size=50)
+    assert !data.nil?, element_nil_msg("results::collection", path)
     assert data.is_a?(Array), data_incorrect_class_msg(data, path)
-    assert !data.empty?, data_empty_msg(path) unless allow_empty
+
+    assert !data.empty?, data_empty_msg(path, Array) unless allow_empty    
     assert data.length <= allowed_size, "'#{path}' yields too many elements."
+    
+    if !path.include?('/services') && !path.include?('/annotations')
+      data.each do |listing|
+        assert listing['self'].nil?, "The collection at path '#{path}' contains an object with 'self'"
+        assert !listing['resource'].nil?, element_nil_msg("results::collection:resource", path)
+      end
+    end
   end
   
   # ========================================
@@ -144,15 +149,15 @@ module JsonTestHelper
     if action==:show || action==:inputs
       assert data['rest_method']['inputs'].is_a?(Hash), data_incorrect_class_msg(data['rest_method']['inputs'], path)
 
-      assert data['rest_method']['inputs']['parameters'].is_a?(Array), data_incorrect_class_msg(data['rest_method']['inputs']['parameters'], path)
-      assert data['rest_method']['inputs']['representations'].is_a?(Array), data_incorrect_class_msg(data['rest_method']['inputs']['representations'], path)
+      validate_collection_from_data_given_path(data['rest_method']['inputs']['parameters'], path)
+      validate_collection_from_data_given_path(data['rest_method']['inputs']['representations'], path)
     end
 
     if action==:show || action==:outputs
       assert data['rest_method']['outputs'].is_a?(Hash), data_incorrect_class_msg(data['rest_method']['outputs'], path)
 
-      assert data['rest_method']['outputs']['parameters'].is_a?(Array), data_incorrect_class_msg(data['rest_method']['outputs']['parameters'], path)
-      assert data['rest_method']['outputs']['representations'].is_a?(Array), data_incorrect_class_msg(data['rest_method']['outputs']['representations'], path)
+      validate_collection_from_data_given_path(data['rest_method']['outputs']['parameters'], path)
+      validate_collection_from_data_given_path(data['rest_method']['outputs']['representations'], path)
     end
   end
 
@@ -164,7 +169,7 @@ module JsonTestHelper
     assert !data['rest_parameter']['name'].nil?, element_nil_msg('rest_parameter:name', path)
     assert !data['rest_parameter']['param_style'].nil?, element_nil_msg('rest_parameter:param_style', path)
 
-    assert data['rest_parameter']['constrained_values'].is_a?(Array), data_incorrect_class_msg(data['rest_parameter']['constrained_values'], path)
+    validate_collection_from_data_given_path(data['rest_parameter']['constrained_values'], path, true, 100)
   end
 
   def validate_rest_representation_from_path(path)
@@ -184,7 +189,7 @@ module JsonTestHelper
     assert !data['rest_resource']['submitter'].nil?, element_nil_msg('rest_resource:submitter', path)
     
     if action==:methods || action==:show
-      assert data['rest_resource']['methods'].is_a?(Array), data_incorrect_class_msg(data['rest_resource']['methods'], path)
+      validate_collection_from_data_given_path(data['rest_resource']['methods'], path)
     end
   end
 
@@ -197,11 +202,11 @@ module JsonTestHelper
     assert !data['rest_service']['submitter'].nil?, element_nil_msg('rest_service:submitter', path)
 
     if action==:show || action==:deployments
-      assert data['rest_service']['deployments'].is_a?(Array), data_incorrect_class_msg(data['rest_service']['deployments'], path)
+      validate_collection_from_data_given_path(data['rest_service']['deployments'], path)
     end
 
     if action==:show || action==:resources
-      assert data['rest_service']['resources'].is_a?(Array), data_incorrect_class_msg(data['rest_service']['resources'], path)
+      validate_collection_from_data_given_path(data['rest_service']['resources'], path)
     end
   end
 
@@ -214,14 +219,14 @@ module JsonTestHelper
     assert !data['service']['latest_monitoring_status'].nil?, element_nil_msg('service:latest_monitoring_status', path)
     assert !data['service']['submitter'].nil?, element_nil_msg('service:submitter', path)
     
-    assert data['service']['service_technology_types'].is_a?(Array), data_incorrect_class_msg(data['service']['service_technology_types'], path)
+    validate_collection_from_data_given_path(data['service']['service_technology_types'], path)
     
     if action==:show || action==:deployments
-      assert data['service']['deployments'].is_a?(Array), data_incorrect_class_msg(data['service']['deployments'], path)
+      validate_collection_from_data_given_path(data['service']['deployments'], path)
     end
 
     if action==:show || action==:variants
-      assert data['service']['variants'].is_a?(Array), data_incorrect_class_msg(data['service']['variants'], path)
+      validate_collection_from_data_given_path(data['service']['variants'], path)
     end
     
     if action==:summary
@@ -229,7 +234,7 @@ module JsonTestHelper
     end
 
     if action==:monitoring
-      assert data['service']['service_tests'].is_a?(Array), data_incorrect_class_msg(data['service']['service_tests'], path)
+      validate_collection_from_data_given_path(data['service']['service_tests'], path)
     end
   end
 
@@ -252,7 +257,7 @@ module JsonTestHelper
     assert !data['service_provider']['self'].nil?, element_nil_msg('service_provider:self', path)
     assert !data['service_provider']['name'].nil?, element_nil_msg('service_provider:name', path)
     
-    assert data['service_provider']['hostnames'].is_a?(Array), data_incorrect_class_msg(data['service_provider']['hostnames'], path)
+    validate_collection_from_data_given_path(data['service_provider']['hostnames'], path)
   end
 
   def validate_service_test_from_path(path)
@@ -288,11 +293,11 @@ module JsonTestHelper
     assert !data['soap_operation']['name'].nil?, element_nil_msg('soap_operation:name', path)
     
     if action==:show || :action==:inputs
-      assert data['soap_operation']['inputs'].is_a?(Array), data_incorrect_class_msg(data['soap_operation']['inputs'], path)
+      validate_collection_from_data_given_path(data['soap_operation']['inputs'], path)
     end
     
     if action==:show || :action==:outputs
-      assert data['soap_operation']['outputs'].is_a?(Array), data_incorrect_class_msg(data['soap_operation']['outputs'], path)
+      validate_collection_from_data_given_path(data['soap_operation']['outputs'], path)
     end
   end
 
@@ -306,11 +311,11 @@ module JsonTestHelper
     assert !data['soap_service']['wsdl_location'].nil?, element_nil_msg('soap_service:wsdl_location', path)
 
     if action==:show || :action==:deployments
-      assert data['soap_service']['deployments'].is_a?(Array), data_incorrect_class_msg(data['soap_service']['deployments'], path)
+      validate_collection_from_data_given_path(data['soap_service']['deployments'], path)
     end
     
     if action==:show || :action==:operations
-      assert data['soap_service']['operations'].is_a?(Array), data_incorrect_class_msg(data['soap_service']['operations'], path)
+      validate_collection_from_data_given_path(data['soap_service']['operations'], path)
     end
   end
 

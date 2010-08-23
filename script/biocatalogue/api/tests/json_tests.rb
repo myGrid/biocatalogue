@@ -327,12 +327,12 @@ class JsonTests < Test::Unit::TestCase
 
   # tags
   def test_tags
-    validate_collection_from_path("/tags")
-    validate_collection_from_path("/tags?page=2")
-    validate_collection_from_path("/tags?per_page=20", false, 20)
-    validate_collection_from_path("/tags?per_page=25&page=3", false, 25)
-    validate_collection_from_path("/tags?sort=name&page=3")
-    validate_collection_from_path("/tags?sort=counts&page=2")
+    validate_index_from_path("/tags")
+    validate_index_from_path("/tags?page=2")
+    validate_index_from_path("/tags?per_page=20", false, 20)
+    validate_index_from_path("/tags?per_page=25&page=3", false, 25)
+    validate_index_from_path("/tags?sort=name&page=3")
+    validate_index_from_path("/tags?sort=counts&page=2")
   end
   
   def test_tag

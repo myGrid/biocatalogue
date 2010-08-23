@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/user.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -65,21 +65,17 @@ class User < ActiveRecord::Base
   before_save     :encrypt_password
   before_create   :generate_activation_code,
                   :generate_default_display_name
-  def to_inline_json
-    self.to_json
-  end
   
   def to_json
-    {
-      "user" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
-        "name" => BioCatalogue::Util.display_name(self),
-        "affiliation" => self.affiliation,
-        "public_email" => self.public_email,
-        "joined" => (self.activated_at ? self.activated_at.iso8601 : nil),
-        "location" => BioCatalogue::Api::Json.location(self.country)
-      }
-    }.to_json
+    generate_json_with_collections("default")
+  end 
+  
+  def to_inline_json
+    generate_json_with_collections(nil, true)
+  end
+  
+  def to_custom_json(collections)
+    generate_json_with_collections(collections)
   end
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
@@ -276,5 +272,48 @@ private
       self.display_name = (email.blank? ? "[no name]" : self.email.split("@")[0])
     end
   end
+
+  def generate_json_with_collections(collections, make_inline=false)    
+    collections ||= []
+
+    allowed = %w{ saved_searches }
+    
+    if collections.class==String
+      collections = case collections.strip.downcase
+                      when "saved_searches" : %w{ saved_searches }
+                      when "default" : %w{ }
+                      else []
+                    end
+    else
+      collections.each { |x| x.downcase! }
+      collections.uniq!
+      collections.reject! { |x| !allowed.include?(x) }
+    end
+        
+    data =     {
+      "user" => {
+        "name" => BioCatalogue::Util.display_name(self),
+        "affiliation" => self.affiliation,
+        "public_email" => self.public_email,
+        "joined" => (self.activated_at ? self.activated_at.iso8601 : nil),
+        "location" => BioCatalogue::Api::Json.location(self.country)
+      }
+    }
+
+    collections.each do |collection|
+      case collection.downcase
+        when "saved_searches"
+          data["user"]["saved_searches"] = BioCatalogue::Api::Json.collection(self.saved_searches, true)
+      end
+    end
+
+    unless make_inline
+      data["user"]["self"] = BioCatalogue::Api.uri_for_object(self)
+      return data.to_json
+    else
+      data["user"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+      return data["user"].to_json
+    end
+  end # generate_json_with_collections
 
 end

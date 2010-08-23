@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/rest_resource.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -85,7 +85,6 @@ private
   def generate_json_and_make_inline(make_inline)
     data = {
       "rest_resource" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "path" => self.path,
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "created_at" => self.created_at.iso8601
@@ -93,10 +92,13 @@ private
     }
     
     unless make_inline
-      data["rest_resource"]["methods"] = BioCatalogue::Api::Json.collection(self.rest_methods, true)
-    end 
-    
-    return data.to_json
+      data["rest_resource"]["methods"] = BioCatalogue::Api::Json.collection(self.rest_methods)
+      data["rest_resource"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["rest_resource"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["rest_resource"].to_json
+    end
   end # generate_json_and_make_inline
 
 end

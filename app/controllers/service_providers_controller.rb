@@ -29,7 +29,7 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("service_providers", json_api_params, @service_providers, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("service_providers", json_api_params, @service_providers).to_json }
       format.bljson { render :json => BioCatalogue::Api::Bljson.index("service_providers", @service_providers).to_json }
     end
   end

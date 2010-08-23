@@ -1,6 +1,6 @@
 # BioCatalogue: app/controllers/rest_resources_controller.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -62,7 +62,7 @@ class RestResourcesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("rest_resources", json_api_params, @rest_resources, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("rest_resources", json_api_params, @rest_resources).to_json }
     end
   end
 

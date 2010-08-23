@@ -360,7 +360,7 @@ ActiveRecord::Schema.define(:version => 20100818105723) do
 
   create_table "saved_search_scopes", :force => true do |t|
     t.integer  "saved_search_id", :null => false
-    t.string   "resource"
+    t.string   "resource_type"
     t.text     "filters"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -368,7 +368,7 @@ ActiveRecord::Schema.define(:version => 20100818105723) do
 
   create_table "saved_searches", :force => true do |t|
     t.string   "name"
-    t.boolean  "unbound",    :null => false
+    t.boolean  "all_scopes", :null => false
     t.string   "query"
     t.integer  "user_id",    :null => false
     t.datetime "created_at"

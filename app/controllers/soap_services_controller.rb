@@ -23,7 +23,7 @@ class SoapServicesController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("soap_services", json_api_params, @soap_services, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("soap_services", json_api_params, @soap_services).to_json }
     end
   end
 

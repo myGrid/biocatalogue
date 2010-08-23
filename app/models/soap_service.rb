@@ -81,7 +81,7 @@ class SoapService < ActiveRecord::Base
   end 
   
   def to_inline_json
-    generate_json_with_collections(nil)
+    generate_json_with_collections(nil, true)
   end
   
   def to_custom_json(collections)
@@ -743,7 +743,7 @@ protected
 
 private
 
-  def generate_json_with_collections(collections)
+  def generate_json_with_collections(collections, make_inline=false)
     collections ||= []
 
     allowed = %w{ deployments operations }
@@ -763,7 +763,6 @@ private
         
     data = {
       "soap_service" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => BioCatalogue::Util.display_name(self),
         "wsdl_location" => self.wsdl_location,
         "submitter" => BioCatalogue::Api.uri_for_object(self.service_version.submitter),
@@ -776,13 +775,19 @@ private
     collections.each do |collection|
       case collection.downcase
         when "deployments"
-          data["soap_service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments, true)
+          data["soap_service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments)
         when "operations"
-          data["soap_service"]["operations"] = BioCatalogue::Api::Json.collection(self.soap_operations, true)
+          data["soap_service"]["operations"] = BioCatalogue::Api::Json.collection(self.soap_operations)
       end
     end
 
-    return data.to_json
+    unless make_inline
+      data["soap_service"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["soap_service"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["soap_service"].to_json
+    end
   end # generate_json_with_collections
 
 end

@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/rest_method.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -100,7 +100,7 @@ class RestMethod < ActiveRecord::Base
   end 
   
   def to_inline_json
-    generate_json_with_collections(nil)
+    generate_json_with_collections(nil, true)
   end
   
   def to_custom_json(collections)
@@ -469,7 +469,7 @@ private
   
   # =========================================
   
-  def generate_json_with_collections(collections)
+  def generate_json_with_collections(collections, make_inline=false)
     collections ||= []
 
     allowed = %w{ input_parameters input_representations output_representations }
@@ -489,7 +489,6 @@ private
         
     data = {
       "rest_method" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => self.endpoint_name,
         "endpoint" => self.display_endpoint,
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
@@ -503,18 +502,24 @@ private
       case collection.downcase
         when "inputs"
           data["rest_method"]["inputs"] = {
-            "parameters" => BioCatalogue::Api::Json.collection(self.request_parameters, false),
-            "representations" => BioCatalogue::Api::Json.collection(self.request_representations, false)            
+            "parameters" => BioCatalogue::Api::Json.collection(self.request_parameters),
+            "representations" => BioCatalogue::Api::Json.collection(self.request_representations)            
           }
         when "outputs"
           data["rest_method"]["outputs"] = {
-            "parameters" => BioCatalogue::Api::Json.collection(self.response_parameters, false),
-            "representations" => BioCatalogue::Api::Json.collection(self.response_representations, false)            
+            "parameters" => BioCatalogue::Api::Json.collection(self.response_parameters),
+            "representations" => BioCatalogue::Api::Json.collection(self.response_representations)            
           }
       end
     end
 
-    return data.to_json
+    unless make_inline
+      data["rest_method"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["rest_method"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["rest_method"].to_json
+    end
   end # generate_json_with_collections
   
 end

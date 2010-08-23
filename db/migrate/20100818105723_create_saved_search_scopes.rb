@@ -2,7 +2,7 @@ class CreateSavedSearchScopes < ActiveRecord::Migration
   def self.up
     create_table :saved_search_scopes do |t|
       t.integer :saved_search_id, :null => false
-      t.string :resource
+      t.string :resource_type
       t.text :filters
       
       t.timestamps

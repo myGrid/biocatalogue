@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/service_deployment.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -142,18 +142,22 @@ private
   def generate_json_and_make_inline(make_inline)
     data = {
       "service_deployment" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "endpoint" => self.endpoint,
         "created_at" => self.created_at.iso8601,
         "location" => BioCatalogue::Api::Json.location(self.country, self.city),
-        "provider" => JSON(self.provider.to_json)
+        "provider" => JSON(self.provider.to_inline_json)
       }
     }
-
-    data["service_deployment"]["provided_variant"] = JSON(self.service_version.service_versionified.to_inline_json) unless make_inline
-    
-    return data.to_json
+  
+    unless make_inline
+      data["service_deployment"]["provided_variant"] = JSON(self.service_version.service_versionified.to_inline_json) 
+      data["service_deployment"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["service_deployment"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["service_deployment"].to_json
+    end
   end # generate_json_and_make_inline
   
 end

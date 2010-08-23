@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/rest_service.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -243,7 +243,7 @@ class RestService < ActiveRecord::Base
   end 
   
   def to_inline_json
-    generate_json_with_collections(nil)
+    generate_json_with_collections(nil, true)
   end
   
   def to_custom_json(collections)
@@ -381,7 +381,7 @@ private
   
   # =========================================
 
-  def generate_json_with_collections(collections)
+  def generate_json_with_collections(collections, make_inline=false)
     collections ||= []
 
     allowed = %w{ deployments endpoints rest_resources }
@@ -402,7 +402,6 @@ private
         
     data = {
       "rest_service" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => BioCatalogue::Util.display_name(self),
         "submitter" => BioCatalogue::Api.uri_for_object(self.service_version.submitter),
         "description" => self.description,
@@ -414,15 +413,21 @@ private
     collections.each do |collection|
       case collection.downcase
         when "deployments"
-          data["rest_service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments, true)
+          data["rest_service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments)
         when "endpoints"
-          data["rest_service"]["endpoints"] = BioCatalogue::Api::Json.collection(self.rest_methods, true)
+          data["rest_service"]["endpoints"] = BioCatalogue::Api::Json.collection(self.rest_methods)
         when "rest_resources"
-          data["rest_service"]["resources"] = BioCatalogue::Api::Json.collection(self.rest_resources, true)
+          data["rest_service"]["resources"] = BioCatalogue::Api::Json.collection(self.rest_resources)
       end
     end
 
-    return data.to_json
+    unless make_inline
+      data["rest_service"]["self"] = BioCatalogue::Api.uri_for_object(self)
+			return data.to_json
+    else
+      data["rest_service"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+			return data["rest_service"].to_json
+    end
   end # generate_json_with_collections
   
 end

@@ -19,7 +19,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.tags_collection(@tags).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("tags", json_api_params, @tags).to_json }
     end
   end
   

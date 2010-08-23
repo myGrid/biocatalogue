@@ -1,6 +1,6 @@
 # BioCatalogue: app/controllers/rest_methods_controller.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -121,7 +121,7 @@ class RestMethodsController < ApplicationController
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("rest_methods", json_api_params, @rest_methods, true).to_json }
+      format.json { render :json => BioCatalogue::Api::Json.index("rest_methods", json_api_params, @rest_methods).to_json }
       format.bljson { render :json => BioCatalogue::Api::Bljson.index("rest_methods", @rest_methods).to_json }
     end
   end
