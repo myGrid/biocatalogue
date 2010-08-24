@@ -392,9 +392,11 @@ class XmlSchemaValidations < Test::Unit::TestCase
   def test_user
     config["user_ids"].each do |id|
       assert validate_endpoint_xml_output(make_url("/users/#{id}"))
-# TODO:      assert validate_endpoint_xml_output(make_url("/users/#{id}/saved_searches"))
       assert validate_endpoint_xml_output(make_url("/users/#{id}/services"))
       assert validate_endpoint_xml_output(make_url("/users/#{id}/annotations_by"))
+
+      # FIXME: REQUIRES AUTHENTICATION
+      # assert validate_endpoint_xml_output(make_url("/users/#{id}/saved_searches")) 
     end
   end
 

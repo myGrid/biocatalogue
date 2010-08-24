@@ -95,13 +95,13 @@ private
         "all_scopes" => self.all_scopes,
         "query" => self.query,
         "user" => BioCatalogue::Api.uri_for_object(self.user),
-        "scopes" => BioCatalogue::Api::Json.collection(self.scopes, true),
         "created_at" => self.created_at.iso8601
       }
     }
 
     unless make_inline
       data["saved_search"]["self"] = BioCatalogue::Api.uri_for_object(self)
+      data["saved_search"]["scopes"] = BioCatalogue::Api::Json.collection(self.scopes)
       return data.to_json
     else
       data["saved_search"]["resource"] = BioCatalogue::Api.uri_for_object(self)

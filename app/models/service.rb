@@ -463,9 +463,9 @@ private
         when "variants"
           versions = []
           self.service_versions.each{ |v| versions << v.service_versionified }
-          data["service"]["variants"] = BioCatalogue::Api::Json.collection(versions, true)
+          data["service"]["variants"] = BioCatalogue::Api::Json.collection(versions)
         when "deployments"
-          data["service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments, true)
+          data["service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments)
         when "summary"
           metadata_counts = {}
           BioCatalogue::Annotations.metadata_counts_for_service(self).each { |meta_type, meta_count| metadata_counts.merge!("by_#{meta_type}" => meta_count) }

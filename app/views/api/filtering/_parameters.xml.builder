@@ -4,11 +4,13 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
+filters = @current_filters unless local_assigns.has_key?(:filters)
+
 # <filters>
 parent_xml.filters do
-  
+
   # <group> *
-  BioCatalogue::Filtering.filter_groups_from(@current_filters, resource_type).each do |g|
+  BioCatalogue::Filtering.filter_groups_from(filters, resource_type).each do |g|
     parent_xml.group :name => g.name do
       
       # <type> *

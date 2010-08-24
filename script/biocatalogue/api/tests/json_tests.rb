@@ -377,8 +377,10 @@ class JsonTests < Test::Unit::TestCase
     config["user_ids"].each { |id| 
       validate_user_from_path("/users/#{id}") 
       validate_index_from_path("/users/#{id}/annotations_by", true)
-# TODO:      validate_index_from_path("/users/#{id}/saved_searches", true)
       validate_index_from_path("/users/#{id}/services", true)
+
+      # FIXME: REQUIRES AUTHENTICATION
+      # validate_index_from_path("/users/#{id}/saved_searches", true)
     }
   end
 

@@ -18,8 +18,24 @@ parent_xml.query saved_search.query
 
 if show_scopes
   # <scopes>
-  parent_xml.scopes do |xml_node|
-    saved_search.scopes.each { |value| xml_node.scope }
+  parent_xml.scopes do |scopes_node|
+    saved_search.scopes.each { |scope| 
+      scopes_node.scope do |s_node|
+        # <scopeName>
+        s_node.scopeName BioCatalogue::Search.scope_to_visible_search_type(scope.resource_type.underscore.pluralize)
+        
+        # <scopeUrlValue>
+        s_node.scopeUrlValue scope.resource_type.underscore.pluralize
+        
+        # <scopeResourceType>
+        s_node.scopeResourceType scope.resource_type.camelize.singularize
+        
+        # <filters>
+        render :partial => "api/filtering/parameters", :locals => { :parent_xml => s_node, 
+                                                                    :resource_type => scope.resource_type.camelize.pluralize, 
+                                                                    :filters => scope.filters }
+      end
+    }
   end
 end
 

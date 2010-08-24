@@ -23,7 +23,7 @@ class SavedSearchScope < ActiveRecord::Base
   
   def to_json
     {
-      "resource_type" => self.resource_type.camelize.singularize,
+      "scope_resource_type" => self.resource_type.camelize.singularize,
       "scope_url_value" => self.resource_type.underscore.pluralize,
       "scope_name" => BioCatalogue::Search.scope_to_visible_search_type(self.resource_type.underscore.pluralize),
       "filters" => self.filters

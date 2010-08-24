@@ -303,7 +303,7 @@ private
     collections.each do |collection|
       case collection.downcase
         when "saved_searches"
-          data["user"]["saved_searches"] = BioCatalogue::Api::Json.collection(self.saved_searches, true)
+          data["user"]["saved_searches"] = BioCatalogue::Api::Json.collection(self.saved_searches)
       end
     end
 
