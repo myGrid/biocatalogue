@@ -15,6 +15,8 @@ class ServiceTestsController < ApplicationController
   before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable ]
 
   before_filter :authorise, :only => [ :enable, :disable ]
+  
+  before_filter :authorise_for_disabled, :only => [ :show ]
 
   def show
     respond_to do |format|
@@ -102,6 +104,12 @@ class ServiceTestsController < ApplicationController
     unless logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_test.service)
       flash[:error] = "You are not allowed to perform this action! "
       redirect_to @service_test.service
+    end
+  end
+  
+  def authorise_for_disabled
+    unless logged_in? || @service_test.enabled?
+      login_or_oauth_required
     end
   end
 

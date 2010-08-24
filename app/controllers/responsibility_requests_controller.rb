@@ -185,7 +185,7 @@ class ResponsibilityRequestsController < ApplicationController
 
   def authorise_approval
     @service = ResponsibilityRequest.find(params[:id]).subject
-    unless @service.all_responsibles.include?(current_user)
+    unless logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)
       flash[:error] = "You are not allowed to perform this action"
       redirect_to responsibility_requests_url
     end

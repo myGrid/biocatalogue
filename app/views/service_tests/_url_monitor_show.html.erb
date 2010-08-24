@@ -10,8 +10,27 @@
 
 <div id="tab-availability" class="tabbertab">
 	<div>
-		<% if service_test.activated? || (logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service)) -%>		
+		<% if service_test.activated? || logged_in? || (logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service)) -%>		
 			<div class="monitoring_section">
+				
+				<div style="text-align: right;">
+					<%if logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service) %>
+						<% if service_test.activated? %>
+							<%= link_to("Disable", disable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
+						<% else %>
+							<%= link_to("Enable", enable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
+						<% end %>
+					<% end %>
+				</div>	
+				
+				
+				<% if !service_test.activated? %>
+					<div id="disable_test" style="text-align:center; color:red" >
+					 	<span style="font-size: 3em;">DISABLED </span>
+					 	<%= info_icon_with_tooltip("This service test has been disabled. It is status does not affect the current service status.") -%>
+					</div>
+				<%end%>
+				
 				<h5>
 					<div style="text-align: left;"> 
 						<p>
@@ -61,16 +80,6 @@
 						<% end %>
 					</ul>
 				</div>
-				<div style="text-align: right;">
-					<%if logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service) %>
-						<% if service_test.activated? %>
-							<%= link_to("Disable", disable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
-						<% else %>
-							<b>This test has been disabled. Click button to re-enable. </b>
-							<%= link_to("Enable", enable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
-						<% end %>
-					<% end %>
-				</div>	
 				
 				<%unless service_test.latest_status.label.downcase == 'unchecked' %>
 					<div id="line_chart" style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;" ></div>
