@@ -446,7 +446,6 @@ private
         
     data = {
       "service" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "name" => BioCatalogue::Util.display_name(self),
         "description" => self.preferred_description,
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),

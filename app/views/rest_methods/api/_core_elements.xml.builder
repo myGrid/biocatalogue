@@ -13,6 +13,9 @@ parent_xml.name rest_method.endpoint_name
 # <endpointLabel>
 parent_xml.endpointLabel rest_method.display_endpoint
 
+# <urlTemplate>
+parent_xml.urlTemplate BioCatalogue::Util.generate_rest_endpoint_url_template(rest_method) 
+
 # <description>
 dc_xml_tag parent_xml, :description, rest_method.description
 

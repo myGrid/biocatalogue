@@ -36,7 +36,7 @@ class SavedSearchesController < ApplicationController
       respond_to do |format|
         format.html { disable_action }
         # TODO: implement format.xml  { render :xml => '', :status => 406 }
-        format.json { render :json => { :error => "Please provide a valid search definition" }.to_json, :status => 406  }
+        format.json { error_to_back_or_home("Please provide a valid search definition", false, 406) } 
       end
     else
       @saved_search = SavedSearch.new
@@ -60,8 +60,8 @@ class SavedSearchesController < ApplicationController
           # TODO: implement format.xml  { render :xml => '', :status => 500 }
             format.json { 
               error_list = []
-              @saved_search.errors.to_a.each { |e| error_list << {e[0] => e[1]} } 
-              render :json => { :errors => error_list }.to_json,  :status => 500
+              @saved_search.errors.to_a.each { |e| error_list << e[1] } 
+              error_to_back_or_home(error_list, false, 500)
             }
         end
       end

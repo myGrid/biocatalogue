@@ -376,6 +376,9 @@ class RestMethod < ActiveRecord::Base
     @associated_service ||= Service.find_by_id(associated_service_id)
   end
   
+  def associated_service_base_url
+    @associated_service_base_url ||= self.associated_service.latest_deployment.endpoint
+  end
   
   # =========================================
 
@@ -490,7 +493,8 @@ private
     data = {
       "rest_method" => {
         "name" => self.endpoint_name,
-        "endpoint" => self.display_endpoint,
+        "endpoint_label" => self.display_endpoint,
+        "url_template" => BioCatalogue::Util.generate_rest_endpoint_url_template(self),
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "description" => self.description,
         "documentation_url" => self.documentation_url,

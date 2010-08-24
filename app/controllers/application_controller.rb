@@ -161,21 +161,21 @@ class ApplicationController < ActionController::Base
   # Check if an object belongs to the user logged in
   def mine?(thing)
     return false if thing.nil?
-    return false unless logged_in?
+    return false if !is_api_request? && !logged_in?
 
     c_id = current_user.id.to_i
 
     case thing
-    when User
-      return c_id == thing.id
-    when Annotation
-      return thing.source == current_user
-    when Service
-      return c_id == thing.submitter_id.to_i
-    when Favourite
-      return c_id == thing.user_id
-    else
-      return false
+      when User
+        return c_id == thing.id
+      when Annotation
+        return thing.source == current_user
+      when Service
+        return c_id == thing.submitter_id.to_i
+      when Favourite
+        return c_id == thing.user_id
+      else
+        return false
     end
   end
   helper_method :mine?

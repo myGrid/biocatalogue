@@ -12,6 +12,7 @@ class UsersController < ApplicationController
   before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, 
                                                        :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, 
                                                        :services, :filters ]
+
   before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password, :saved_searches ]
   
   before_filter :initialise_updated_user, :only => [ :edit, :update ]
@@ -26,7 +27,7 @@ class UsersController < ApplicationController
   
   before_filter :find_users, :only => [ :index ]
   
-  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by, :saved_searches ]
+  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
 
@@ -378,7 +379,7 @@ private
 
   def check_user_rights
     find_user if !defined?(@user) or @user.nil?
-    unless mine?(@user)
+    unless mine?(@user)     
       respond_to do |format|
         flash[:error] = "You don't have the rights to perform this action."
         format.html { redirect_to :users }

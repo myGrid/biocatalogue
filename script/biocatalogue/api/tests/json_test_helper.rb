@@ -74,7 +74,13 @@ module JsonTestHelper
     assert !data.empty?, data_empty_msg(path, Array) unless allow_empty    
     assert data.length <= allowed_size, "'#{path}' yields too many elements."
     
-    if !path.include?('/services') && !path.include?('/annotations')
+    proceed = !path.include?('/services') && 
+              !path.include?('/annotations') && 
+              !path.include?('/tags') && 
+              !path.include?('/rest_parameters') && 
+              !path.include?('/service_providers')
+              
+    if proceed
       data.each do |listing|
         assert listing['self'].nil?, "The collection at path '#{path}' contains an object with 'self'"
         assert !listing['resource'].nil?, element_nil_msg("results::collection:resource", path)
@@ -143,7 +149,8 @@ module JsonTestHelper
     assert !data['rest_method'].nil?, element_nil_msg('rest_method', path)
 
     assert !data['rest_method']['self'].nil?, element_nil_msg('rest_method:self', path)
-    assert !data['rest_method']['endpoint'].nil?, element_nil_msg('rest_method:endpoint', path)
+    assert !data['rest_method']['endpoint_label'].nil?, element_nil_msg('rest_method:endpoint_label', path)
+    assert !data['rest_method']['url_template'].nil?, element_nil_msg('rest_method:url_template', path)    
     assert !data['rest_method']['submitter'].nil?, element_nil_msg('rest_method:submitter', path)
     
     if action==:show || action==:inputs

@@ -161,63 +161,9 @@ module RestServicesHelper
   # ========================================
   
   
-  # This method creates a url template string which can be used to show how a REST
-  # Service can be used.
-  def create_url_template(base_url, resource, method, resource_path=nil) # 'resource_path' overrides 'resource'
-    return '' if base_url.blank? || (resource.blank? && resource_path.blank?) || method.blank?
-
-    base_url.sub!(/\/$/, '') # remove trailing '/' from base endpoint
-    
-    required_params = []
-    
-    if resource_path.blank? # use path from var 'resource'
-      resource_path = resource.path.sub(/^\/\?/, '?') # change "/?" to "?"
-    else # use path from var 'resource_path'
-      resource_path.sub!(/^\/\?/, '?') # change "/?" to "?"
-    end
-    
-    resource_path.sub!(/^\/\&/, '&') # change "/&" to "&"
-    
-    method.request_parameters.select{ |p| 
-      p.param_style=="query" && p.required }.each do |p| 
-        required_params << "#{p.name}={#{p.name}}"
-    end
-    
-    required_params = required_params.join('&')
-    required_params = '?' + required_params unless required_params.blank?
-
-    url_template = (if base_url.include?('?') # base url has non configurable query params
-                      required_params.gsub!('?', '&')
-                      resource_path.gsub!('?', '&')
-                      
-                      if resource_path == '/{parameters}' 
-                        "#{base_url}#{required_params}"
-                      elsif resource_path.start_with?('/')
-                        "Could not generate URL template"
-                      else
-                        "#{base_url}#{resource_path}#{required_params}"
-                      end
-                    else # base url does not have query params
-                      if resource_path == '/{parameters}' 
-                        "#{base_url}#{required_params}"
-                      elsif resource_path == '/{id}'
-                        "#{base_url}/{id}#{required_params}"
-                      elsif resource_path.include?('?')
-                        "#{base_url + resource_path}#{required_params.gsub('?', '&')}"
-                      elsif resource_path.start_with?('&')
-                        "#{base_url + resource_path.sub('&', '?')}#{required_params.gsub('?', '&')}"
-                      else
-                        "#{base_url + resource_path}#{required_params}"
-                      end
-                    end)
-
-    # TODO: fix double slash bug in template
-    # this is a temporary hack to remove "//" that appear in some templates.
-    # i have not figure out exactly what is causing it, hence this dirty patch.
-    url_template.squeeze!('/')
-    url_template.sub!(':/', '://') # compensation of squeeze
-    
-    return h(url_template)
+  # This generates a url template string which can be used to show how a REST Endpoint can be used.
+  def create_url_template(rest_method)
+    BioCatalogue::Util.generate_rest_endpoint_url_template(rest_method)
   end
   
   

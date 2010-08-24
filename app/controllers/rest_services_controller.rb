@@ -84,7 +84,7 @@ class RestServicesController < ApplicationController
       respond_to do |format|
         format.html { render :action => "new" }
         # TODO: implement format.xml  { render :xml => '', :status => 406 }
-        format.json { render :json => { :error => "Please provide a valid endpoint URL" }.to_json, :status => 406 }
+        format.json { error_to_back_or_home("Please provide a valid endpoint URL", false, 406) } 
       end
     else
       if is_api_request? # Sanitize for API Request
@@ -130,7 +130,7 @@ class RestServicesController < ApplicationController
         if is_api_request? && has_missing_elements
           respond_to do |format|
             format.html { disable_action }
-            format.json { render :json => { :error => "Please provide a valid name for the REST Service you wish to create." }.to_json, :status => 406 }
+            format.json { error_to_back_or_home("Please provide a valid name for the REST Service you wish to create.", false, 406) } 
           end
         else
           # Now you can submit the service...
@@ -160,9 +160,7 @@ class RestServicesController < ApplicationController
               flash.now[:error] = err_text
               format.html { render :action => "new" }
               # TODO: implement format.xml  { render :xml => '', :status => 500 }
-              format.json { 
-                render :json => { :error => "An error has occurred with the submission.  Please contact us if need assistance with this." }.to_json, :status => 500
-              }
+              format.json { error_to_back_or_home("An error has occurred with the submission.", false, 500) } 
             end
           end
         end

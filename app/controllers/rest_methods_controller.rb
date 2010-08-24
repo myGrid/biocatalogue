@@ -128,7 +128,6 @@ class RestMethodsController < ApplicationController
   
   def show
     @rest_service = @rest_method.rest_resource.rest_service
-    @base_endpoint = @rest_service.service.latest_deployment.endpoint
     @grouped_rest_methods = @rest_service.group_all_rest_methods_from_rest_resources
     
     respond_to do |format|
