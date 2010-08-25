@@ -123,6 +123,8 @@ class XmlSchemaValidations < Test::Unit::TestCase
     assert validate_endpoint_xml_output(make_url("/rest_methods?sort_by=name&sort_order=desc"))
     assert validate_endpoint_xml_output(make_url("/rest_methods?sort_by=name&sort_order=asc"))
     assert validate_endpoint_xml_output(make_url("/rest_methods?q=database"))
+    assert validate_endpoint_xml_output(make_url("/rest_methods.xml?include=all"))
+    assert validate_endpoint_xml_output(make_url("/rest_methods.xml?include=ancestors,outputs"))
   end
   
   def test_rest_methods_filters

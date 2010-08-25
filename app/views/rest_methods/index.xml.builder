@@ -49,7 +49,7 @@ xml.tag! "restMethods",
     
     # <restMethod> *
     @rest_methods.each do |meth|
-      render :partial => "rest_methods/api/inline_item", :locals => { :parent_xml => xml, :rest_method => meth }
+      render :partial => "rest_methods/api/result_item", :locals => { :parent_xml => xml, :rest_method => meth }
     end
     
   end

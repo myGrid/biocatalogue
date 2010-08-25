@@ -8,7 +8,7 @@
 is_root = false unless local_assigns.has_key?(:is_root)
 show_core = true unless local_assigns.has_key?(:show_core)
 show_inputs = true unless local_assigns.has_key?(:show_inputs)
-show_ouputs = true unless local_assigns.has_key?(:show_outputs)
+show_outputs = true unless local_assigns.has_key?(:show_outputs)
 show_ancestors = false unless local_assigns.has_key?(:show_ancestors)
 show_related = false unless local_assigns.has_key?(:show_related)
 
@@ -30,7 +30,7 @@ parent_xml.tag! "restMethod",
   end
   
   # <outputs>
-  if show_ouputs
+  if show_outputs
     parent_xml.outputs xlink_attributes(uri_for_object(rest_method, :sub_path => "outputs")), :resourceType => "RestMethod" do |sub_node|
       render :partial => "rest_methods/api/outputs", :locals => { :parent_xml => sub_node, :rest_method => rest_method }
     end
