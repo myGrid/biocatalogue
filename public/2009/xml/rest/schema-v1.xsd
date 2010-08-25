@@ -145,14 +145,20 @@
 								<xsd:element name="filters" maxOccurs="1" minOccurs="1">
 									<xsd:complexType>
 										<xsd:sequence>
-											<xsd:element name="annotations" type="ResourceLink"
-												maxOccurs="1" minOccurs="1">
+											<xsd:element
+												name="annotations" type="ResourceLink" maxOccurs="1"
+												minOccurs="1">
 											</xsd:element>
-											<xsd:element name="services" type="ResourceLink"
-												maxOccurs="1" minOccurs="1">
+											<xsd:element
+												name="restMethods" type="ResourceLink" maxOccurs="1"
+												minOccurs="1">
 											</xsd:element>
-											<xsd:element name="soapOperations" type="ResourceLink"
-												maxOccurs="1" minOccurs="1">
+											<xsd:element name="services"
+												type="ResourceLink" maxOccurs="1" minOccurs="1">
+											</xsd:element>
+											<xsd:element
+												name="soapOperations" type="ResourceLink" maxOccurs="1"
+												minOccurs="1">
 											</xsd:element>
 										</xsd:sequence>
 									</xsd:complexType>
@@ -483,22 +489,33 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element ref="dc:title" maxOccurs="1" minOccurs="1">
+					<xsd:element ref="dc:title" maxOccurs="1"
+						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="name" type="xsd:string" minOccurs="1"
-						maxOccurs="1">
+					<xsd:element name="name" type="xsd:string"
+						minOccurs="1" maxOccurs="1">
 					</xsd:element>
 					<xsd:element name="affiliation" type="xsd:string"
 						maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="location" type="Location" maxOccurs="1"
-						minOccurs="1">
+					<xsd:element name="location" type="Location"
+						maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element name="publicEmail" type="xsd:string"
 						maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element name="joined" type="xsd:dateTime"
 						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="savedSeaches" maxOccurs="1"
+						minOccurs="0">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="savedSearch"
+									type="SavedSearch" maxOccurs="unbounded" minOccurs="0">
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
 					</xsd:element>
 					<xsd:element name="related" type="UserRelatedLinks"
 						maxOccurs="1" minOccurs="0">
@@ -1236,6 +1253,9 @@
 				maxOccurs="1" minOccurs="1">
 			</xsd:element>
 			<xsd:element name="soapOperations" type="ResourceLink"
+				maxOccurs="1" minOccurs="1">
+			</xsd:element>
+			<xsd:element name="restMethods" type="ResourceLink"
 				maxOccurs="1" minOccurs="1">
 			</xsd:element>
 		</xsd:sequence>
