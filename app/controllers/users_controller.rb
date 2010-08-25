@@ -351,13 +351,13 @@ private
     end
     
     conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
+    conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL")
 
     if self.request.format == :bljson
       finder_options = {
         :select => "users.id, users.display_name",
         :order => order,
         :conditions => conditions,
-        # FIXME: need to make sure this gets added in: conditions => "activated_at IS NOT NULL",
         :joins => joins
       }
       
@@ -365,7 +365,6 @@ private
     else
       @users = User.paginate(:page => @page,
                              :per_page => @per_page,
-                             # FIXME: need to make sure this gets added in: conditions => "activated_at IS NOT NULL",
                              :order => order,
                              :conditions => conditions,
                              :joins => joins)
