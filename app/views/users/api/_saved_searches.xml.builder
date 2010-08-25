@@ -5,11 +5,14 @@
 # See license.txt for details
 
 # <savedSearches>
-parent_xml.savedSearches do |node|
+parent_xml.savedSearches xlink_attributes(uri_for_object(user, :sub_path => "saved_searches"), 
+                                          :title => xlink_title("This User's saved searches")), 
+                         :resourceType => "User" do |saved_searches_node|  
                   
   user.saved_searches.each do |saved_search|
     # <savedSearch>
-    render :partial => "saved_searches/api/inline_item", :locals => { :parent_xml => node, :saved_search => saved_search }
+    render :partial => "saved_searches/api/inline_item", :locals => { :parent_xml => saved_searches_node, 
+                                                                      :saved_search => saved_search }
   end
   
 end

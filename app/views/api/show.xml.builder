@@ -89,6 +89,10 @@ xml.tag! "biocatalogue",
       # <annotations>
       xml.annotations xlink_attributes(uri_for_collection("annotations/filters"), :title => xlink_title("Filters for the annotations index")),
                           :resourceType => "Filters" 
+
+      # <restMethods>
+      xml.restMethods xlink_attributes(uri_for_collection("rest_methods/filters"), :title => xlink_title("Filters for the REST methods index")),
+                          :resourceType => "Filters" 
       
       # <services>
       xml.services xlink_attributes(uri_for_collection("services/filters"), :title => xlink_title("Filters for the services index")),
@@ -96,10 +100,6 @@ xml.tag! "biocatalogue",
       
       # <soapOperations>
       xml.soapOperations xlink_attributes(uri_for_collection("soap_operations/filters"), :title => xlink_title("Filters for the SOAP operations index")),
-                          :resourceType => "Filters" 
-
-      # <restMethods>
-      xml.restMethods xlink_attributes(uri_for_collection("rest_methods/filters"), :title => xlink_title("Filters for the REST methods index")),
                           :resourceType => "Filters" 
                           
     end

@@ -345,7 +345,7 @@ module JsonTestHelper
     assert !data['test_result']['result_code'].nil?, element_nil_msg('test_result:result_code', path)
   end
 
-  def validate_user_from_path(path)
+  def validate_user_from_path(path, action=:show)
     data = validate_data_from_path(path)
     assert !data['user'].nil?, element_nil_msg('user', path)
 
@@ -353,6 +353,11 @@ module JsonTestHelper
     assert !data['user']['name'].nil?, element_nil_msg('user:name', path)
     assert !data['user']['location'].nil?, element_nil_msg('user:location', path)
     assert !data['user']['joined'].nil?, element_nil_msg('user:joined', path)
+    
+    if action==:saved_searches
+      validate_collection_from_data_given_path(data['user']['saved_searches'], path)
+    end
+
   end
   
 end

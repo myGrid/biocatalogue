@@ -507,7 +507,7 @@
 					<xsd:element name="joined" type="xsd:dateTime"
 						maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="savedSeaches" maxOccurs="1"
+					<xsd:element name="savedSearches" maxOccurs="1"
 						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>

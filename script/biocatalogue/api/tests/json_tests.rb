@@ -380,7 +380,7 @@ class JsonTests < Test::Unit::TestCase
       validate_index_from_path("/users/#{id}/services", true)
 
       # FIXME: REQUIRES AUTHENTICATION
-      # validate_index_from_path("/users/#{id}/saved_searches", true)
+      # validate_user_from_path("/users/#{id}/saved_searches", :saved_searches)
     }
   end
 
