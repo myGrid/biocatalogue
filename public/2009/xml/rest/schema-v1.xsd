@@ -510,11 +510,15 @@
 					<xsd:element name="savedSearches" maxOccurs="1"
 						minOccurs="0">
 						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="savedSearch"
-									type="SavedSearch" maxOccurs="unbounded" minOccurs="0">
-								</xsd:element>
-							</xsd:sequence>
+							<xsd:complexContent>
+								<xsd:extension base="ResourceLink">
+									<xsd:sequence>
+										<xsd:element name="savedSearch"
+											type="SavedSearch" maxOccurs="unbounded" minOccurs="0">
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:extension>
+							</xsd:complexContent>
 						</xsd:complexType>
 					</xsd:element>
 					<xsd:element name="related" type="UserRelatedLinks"
