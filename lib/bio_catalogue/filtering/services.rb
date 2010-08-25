@@ -459,7 +459,7 @@ module BioCatalogue
         grouped_tags = { }
         
         items.each do |item|
-          next unless validate_item(item, http_cycle)
+          next unless BioCatalogue::Util.validate_as_rest_input_output_else_true(item, http_cycle)
 
           found = false
           
@@ -538,36 +538,11 @@ module BioCatalogue
                 tag_values ]
         
         results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
-        results.reject! { |item| !validate_item(item, http_cycle) }        
+        results.reject! { |item| !BioCatalogue::Util.validate_as_rest_input_output_else_true(item, http_cycle) }        
 
         return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "Service").uniq     
       end
-    
-    private
-      
-      def self.validate_item(item, http_cycle)
-        # CHECK WHETHER item IS THE REQUIRED REST_PARAMETER OR REST_REPRESENTATION
-        valid_http_cycle = !http_cycle.nil? && http_cycle.is_a?(Symbol) && [ :request, :response, :all ].include?(http_cycle)
-        return false if %{ RestRepresentation RestParameter }.include?(item['type']) && !valid_http_cycle
         
-        if %{ RestRepresentation RestParameter }.include?(item['type'])
-          return true if http_cycle==:all
-          
-          sql = case item['type']
-                  when "RestParameter"
-                    [ "SELECT id FROM rest_method_parameters WHERE rest_parameter_id = ?", item['id'] ]
-                  when "RestRepresentation"
-                    [ "SELECT id FROM rest_method_representations WHERE rest_representation_id = ?", item['id'] ]
-                end
-          sql[0] = sql[0] + " AND http_cycle = '#{http_cycle.to_s}' LIMIT 1"
-          
-          results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
-          return false if results.empty?
-        end
-        
-        return true
-      end
-    
     end
   end
 end

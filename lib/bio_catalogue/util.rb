@@ -419,5 +419,31 @@ module BioCatalogue
       return url_template
     end
 
+    # This method checks whether the provided item Hash is valid for the given http_cycle
+    # Example Input:
+    # item = { 'type' => 'RestParameter', 'id' => 2 }
+    # http_cycle is any value from [ :request, :response, :all ]
+    def self.validate_as_rest_input_output_else_true(item, http_cycle)
+      valid_http_cycle = !http_cycle.nil? && http_cycle.is_a?(Symbol) && [ :request, :response, :all ].include?(http_cycle)
+      return false if %{ RestRepresentation RestParameter }.include?(item['type']) && !valid_http_cycle
+      
+      if %{ RestRepresentation RestParameter }.include?(item['type'])
+        return true if http_cycle==:all
+        
+        sql = case item['type']
+                when "RestParameter"
+                  [ "SELECT id FROM rest_method_parameters WHERE rest_parameter_id = ?", item['id'] ]
+                when "RestRepresentation"
+                  [ "SELECT id FROM rest_method_representations WHERE rest_representation_id = ?", item['id'] ]
+              end
+        sql[0] = sql[0] + " AND http_cycle = '#{http_cycle.to_s}' LIMIT 1"
+        
+        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        return false if results.empty?
+      end
+      
+      return true
+    end
+
   end
 end
