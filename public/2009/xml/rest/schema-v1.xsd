@@ -2843,7 +2843,12 @@
 					<xsd:element name="endpointLabel" type="xsd:string"
 						maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="urlTemplate" type="xsd:string" maxOccurs="1" minOccurs="1"></xsd:element>
+					<xsd:element name="httpMethodType" type="HttpVerb"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="urlTemplate" type="xsd:string"
+						maxOccurs="1" minOccurs="1">
+					</xsd:element>
 					<xsd:element ref="dc:description" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
@@ -3181,4 +3186,17 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+
+	<xsd:simpleType name="HttpVerb">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OPTIONS"></xsd:enumeration>
+			<xsd:enumeration value="GET"></xsd:enumeration>
+			<xsd:enumeration value="HEAD"></xsd:enumeration>
+			<xsd:enumeration value="POST"></xsd:enumeration>
+			<xsd:enumeration value="PUT"></xsd:enumeration>
+			<xsd:enumeration value="DELETE"></xsd:enumeration>
+			<xsd:enumeration value="TRACE"></xsd:enumeration>
+			<xsd:enumeration value="CONNECT"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
 </xsd:schema>
