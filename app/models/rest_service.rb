@@ -277,7 +277,7 @@ private
       @http_method = "GET"
     elsif endpoint_components.size == 2
       # skip if given HTTP method contains other values other than GET, PUT, POST, and DELETE
-      if %w{ GET PUT POST DELETE }.include?(endpoint_components[0].upcase)
+      if RestMethod::SUPPORTED_HTTP_METHODS.include?(endpoint_components[0].upcase)
         @http_method = endpoint_components[0].upcase
       else 
         @error_endpoints << user_endpoint
@@ -293,7 +293,6 @@ private
       @error_endpoints << user_endpoint
       return false
     end
-
     case @resource_path.split('?').size
       when 1
         if @resource_path.split('?')[0].start_with?('/') # yes == a resource path

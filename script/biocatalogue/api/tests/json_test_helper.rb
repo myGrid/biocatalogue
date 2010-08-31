@@ -150,6 +150,7 @@ module JsonTestHelper
 
     assert !data['rest_method']['self'].nil?, element_nil_msg('rest_method:self', path)
     assert !data['rest_method']['endpoint_label'].nil?, element_nil_msg('rest_method:endpoint_label', path)
+    assert !data['rest_method']['http_method_type'].nil?, element_nil_msg('rest_method:http_method_type', path)    
     assert !data['rest_method']['url_template'].nil?, element_nil_msg('rest_method:url_template', path)    
     assert !data['rest_method']['submitter'].nil?, element_nil_msg('rest_method:submitter', path)
     

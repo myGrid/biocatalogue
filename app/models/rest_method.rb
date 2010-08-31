@@ -13,8 +13,10 @@ class RestMethod < ActiveRecord::Base
   end
   
   # See http://www.iana.org/assignments/media-types/ for more information.
-  SUPPORTED_CONTENT_TYPES = %w{ application audio example image message model multipart text video }
+  SUPPORTED_CONTENT_TYPES = %w{ application audio example image message model multipart text video }.freeze
 
+  SUPPORTED_HTTP_METHODS = [ 'OPTIONS', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'TRACE', 'CONNECT' ].freeze
+  
   has_submitter
   
   validates_existence_of :submitter # User must exist in the db beforehand.
@@ -137,12 +139,10 @@ class RestMethod < ActiveRecord::Base
   # for sort
   # TODO: need to figure out whether this is really necessary now, considering the new grouping functionality.
   def <=>(other)
-    order = {'GET' => 1, 'POST' => 2, 'PUT' => 3, 'DELETE' => 4 }
+    order = { 'GET' => 1, 'PUT' => 2, 'POST' => 3, 'DELETE' => 4, 
+              'CONNECT' => 5, 'HEAD' => 6, 'OPTIONS' => 7, 'TRACE' => 8 }
     
-    self_order = order[self.method_type]
-    other_order = order[other.method_type]
-    
-    return self_order <=> other_order
+    return order[self.method_type] <=> order[other.method_type]
   end
   
   # This returns an Array of Hashes that has the grouped (by group_name) 
@@ -380,6 +380,19 @@ class RestMethod < ActiveRecord::Base
     @associated_service_base_url ||= self.associated_service.latest_deployment.endpoint
   end
   
+  def preferred_description
+    # Either the description from the service description doc, 
+    # or the last description annotation.
+    
+    desc = self.description
+    
+    if desc.blank?
+      desc = self.annotations_with_attribute("description").first.try(:value)
+    end
+    
+    return desc
+  end
+
   # =========================================
 
   
@@ -494,9 +507,10 @@ private
       "rest_method" => {
         "name" => self.endpoint_name,
         "endpoint_label" => self.display_endpoint,
+        "http_method_type" => self.method_type,
         "url_template" => BioCatalogue::Util.generate_rest_endpoint_url_template(self),
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
-        "description" => self.description,
+        "description" => self.preferred_description,
         "documentation_url" => self.documentation_url,
         "created_at" => self.created_at.iso8601
       }
