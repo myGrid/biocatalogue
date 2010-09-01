@@ -46,7 +46,7 @@ module SslRequirement
     end
     
     def ssl_allowed?
-      ssl_check(:ssl_allowed_actions) 
+      !ssl_required? && ssl_check(:ssl_allowed_actions) 
     end
 
   private
