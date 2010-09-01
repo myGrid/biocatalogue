@@ -33,10 +33,10 @@
       <span class="sep">|</span>
 			<%= link_to 'Sign out', logout_url(:protocol => default_protocol), :id => "logout_link", :class => "red_arrow", :method => :delete -%>
 		<% else -%>
-			<%= link_to 'Sign up', signup_url(:protocol => default_protocol), :id => "signup_link", :class => "signup" -%>
+			<%= link_to 'Sign up', signup_path, :id => "signup_link", :class => "signup" -%>
 			
 			<span class="sep">|</span>
-			<%= link_to 'Sign in', login_url(:protocol => default_protocol), :id => "login_link", :class => "login", :onclick => "showLoginBox(this, 'login_box'); return false;" -%>
+			<%= link_to 'Sign in', login_path, :id => "login_link", :class => "login", :onclick => "showLoginBox(this, 'login_box'); return false;" -%>
 		<% end %>
 	</div>
 </div>
