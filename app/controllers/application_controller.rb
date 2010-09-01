@@ -444,6 +444,21 @@ class ApplicationController < ActionController::Base
     puts "*** @current_filters = #{@current_filters.inspect}"
   end
   
+  def parse_filtered_index_params
+    params["filters"] ||= {}
+    params["filters"].each { |key, value|
+      if value.is_a?(Array)
+        newValues = []
+        value.each { |v| newValues << "[#{v}]" }
+        params[key] = newValues.join(",")
+      else
+        params[key] = value.to_s
+      end
+    }
+    
+    params.reject! { |k,v| k=="filters" }
+  end
+  
   def generate_include_filter_url(filter_type, filter_value, resource, format=nil)
     new_params = BioCatalogue::Filtering.add_filter_to_params(params, filter_type, filter_value)
     return generate_filter_url(new_params, resource, format)

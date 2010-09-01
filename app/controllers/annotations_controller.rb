@@ -14,19 +14,21 @@ class AnnotationsController < ApplicationController
   
   # Disable some of the actions provided in the controller in the plugin.
   before_filter :disable_action, :only => [ :new, :edit ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :bulk_create ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :bulk_create, :filtered_index ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :create, :create_multiple, :update, :destroy, :set_as_field ]
   
   before_filter :login_or_oauth_required, :only => [ :new, :create, :edit, :update, :destroy, :edit_popup, :create_inline, :change_attribute, :bulk_create ]
+
+  before_filter :parse_filtered_index_params, :only => :filtered_index
   
-  before_filter :parse_current_filters, :only => [ :index ]
+  before_filter :parse_current_filters, :only => [ :index, :filtered_index ]
   
   before_filter :get_filter_groups, :only => [ :filters ]
   
-  before_filter :parse_sort_params, :only => [ :index ]
+  before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
   
-  before_filter :find_annotations, :only => [ :index ]
+  before_filter :find_annotations, :only => [ :index, :filtered_index ]
   
   before_filter :find_annotation, :only => [ :show, :edit, :update, :destroy, :edit_popup, :download, :change_attribute ]
   
@@ -36,6 +38,14 @@ class AnnotationsController < ApplicationController
   before_filter :authorise, :only =>  [ :edit, :edit_popup, :update, :destroy, :change_attribute, :bulk_create ]
   
   def index
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.index("annotations", json_api_params, @annotations).to_json }
+    end
+  end
+
+  def filtered_index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder

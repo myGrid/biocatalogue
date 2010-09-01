@@ -7,15 +7,17 @@
 class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity, :filtered_index ]
+
+  before_filter :parse_filtered_index_params, :only => :filtered_index
   
-  before_filter :parse_current_filters, :only => [ :index ]
+  before_filter :parse_current_filters, :only => [ :index, :filtered_index ]
   
   before_filter :get_filter_groups, :only => [ :filters ]
   
-  before_filter :parse_sort_params, :only => [ :index ]
+  before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
   
-  before_filter :find_services, :only => [ :index ]
+  before_filter :find_services, :only => [ :index, :filtered_index ]
   
   before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity ]
   
@@ -35,6 +37,16 @@ class ServicesController < ApplicationController
   # GET /services
   # GET /services.xml
   def index
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  # index.xml.builder
+      format.atom # index.atom.builder
+      format.json { render :json => BioCatalogue::Api::Json.index("services", json_api_params, @services).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("services", @services).to_json }
+    end
+  end
+  
+  def filtered_index
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder

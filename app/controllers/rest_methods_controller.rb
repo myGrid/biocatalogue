@@ -7,20 +7,22 @@
 class RestMethodsController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters, :filtered_index ]
 
-  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters ]
-  
-  before_filter :parse_current_filters, :only => [ :index ]
+  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters, :filtered_index ]
+
+  before_filter :parse_filtered_index_params, :only => :filtered_index
+
+  before_filter :parse_current_filters, :only => [ :index, :filtered_index ]
   
   before_filter :get_filter_groups, :only => [ :filters ]
     
-  before_filter :parse_sort_params, :only => :index
-  before_filter :find_rest_methods, :only => :index
+  before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
+  before_filter :find_rest_methods, :only => [ :index, :filtered_index ]
 
-  before_filter :find_rest_method, :except => [ :index, :filters ]
+  before_filter :find_rest_method, :except => [ :index, :filters, :filtered_index ]
   
-  before_filter :authorise, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters ]
+  before_filter :authorise, :except => [ :index, :show, :annotations, :inputs, :outputs, :filters, :filtered_index ]
   
   skip_before_filter :verify_authenticity_token, :only => [ :group_name_auto_complete ]
   
@@ -118,6 +120,15 @@ class RestMethodsController < ApplicationController
   end
   
   def index
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.index("rest_methods", json_api_params, @rest_methods).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("rest_methods", @rest_methods).to_json }
+    end
+  end
+
+  def filtered_index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder

@@ -7,11 +7,11 @@
 class UsersController < ApplicationController
 
   before_filter :disable_action, :only => [ :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters, :saved_searches ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters, :filtered_index, :saved_searches ]
 
   before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, 
                                                        :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, 
-                                                       :services, :filters ]
+                                                       :services, :filtered_index, :filters ]
 
   before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password, :saved_searches ]
   
@@ -19,13 +19,15 @@ class UsersController < ApplicationController
   
   skip_before_filter :verify_authenticity_token, :only => [ :rpx_update ]
 
-  before_filter :parse_current_filters, :only => [ :index ]
+  before_filter :parse_filtered_index_params, :only => :filtered_index
+  
+  before_filter :parse_current_filters, :only => [ :index, :filtered_index ]
   
   before_filter :get_filter_groups, :only => [ :filters ]
   
-  before_filter :parse_sort_params, :only => [ :index ]
+  before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
   
-  before_filter :find_users, :only => [ :index ]
+  before_filter :find_users, :only => [ :index, :filtered_index ]
   
   before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by ]
   
@@ -34,12 +36,22 @@ class UsersController < ApplicationController
   oauth_authorize :saved_searches
 
   if ENABLE_SSL && Rails.env.production?
-    ssl_required :all
+    ssl_required :new, :create, :edit, :update, :activate_account, :forgot_password, :request_reset_password, 
+                 :reset_password, :change_password, :rpx_merge_setup, :rpx_merge, :rpx_update, :saved_searches
   end
 
   # GET /users
   # GET /users.xml
   def index
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.index("users", json_api_params, @users).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("users", @users).to_json }
+    end
+  end
+
+  def filtered_index
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
@@ -296,7 +308,7 @@ class UsersController < ApplicationController
       format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
     end
   end
-
+    
   def saved_searches
     respond_to do |format|
       format.html { disable_action }

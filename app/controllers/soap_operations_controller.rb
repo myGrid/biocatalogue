@@ -8,19 +8,30 @@
 class SoapOperationsController < ApplicationController
   
   before_filter :disable_action, :only => [ :new, :create, :edit, :update, :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :filters, :inputs, :outputs ]
+  before_filter :disable_action_for_api, :except => [ :index, :filtered_index, :show, :annotations, :filters, :inputs, :outputs ]
   
-  before_filter :parse_current_filters, :only => [ :index ]
+  before_filter :parse_filtered_index_params, :only => :filtered_index
+
+  before_filter :parse_current_filters, :only => [ :index, :filtered_index ]
   
   before_filter :get_filter_groups, :only => [ :filters ]
   
-  before_filter :parse_sort_params, :only => [ :index ]
+  before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
   
-  before_filter :find_soap_operations, :only => [ :index ]
+  before_filter :find_soap_operations, :only => [ :index, :filtered_index ]
   
   before_filter :find_soap_operation, :only => [ :show, :annotations, :inputs, :outputs ]
   
   def index
+    respond_to do |format|
+      format.html { disable_action }
+      format.xml # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.index("soap_operations", json_api_params, @soap_operations).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("soap_operations", @soap_operations).to_json }
+    end
+  end
+
+  def filtered_index
     respond_to do |format|
       format.html { disable_action }
       format.xml # index.xml.builder

@@ -7,17 +7,19 @@
 class ServiceProvidersController < ApplicationController
   
   before_filter :disable_action, :only => [ :new, :edit, :create, :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :annotations_by, :services, :filters ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :annotations_by, :services, :filters, :filtered_index ]
   
   skip_before_filter :verify_authenticity_token, :only => [ :auto_complete ]
 
-  before_filter :parse_current_filters, :only => [ :index ]
+  before_filter :parse_filtered_index_params, :only => :filtered_index
+
+  before_filter :parse_current_filters, :only => [ :index, :filtered_index ]
   
   before_filter :get_filter_groups, :only => [ :filters ]
 
-  before_filter :parse_sort_params, :only => [ :index ]
+  before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
   
-  before_filter :find_service_providers, :only => [ :index ]
+  before_filter :find_service_providers, :only => [ :index, :filtered_index ]
   
   before_filter :find_service_provider, :only => [ :show, :edit, :update, :destroy, :annotations, :annotations_by, :edit_by_popup ]
   
@@ -26,6 +28,15 @@ class ServiceProvidersController < ApplicationController
   # GET /service_providers
   # GET /service_providers.xml
   def index
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  # index.xml.builder
+      format.json { render :json => BioCatalogue::Api::Json.index("service_providers", json_api_params, @service_providers).to_json }
+      format.bljson { render :json => BioCatalogue::Api::Bljson.index("service_providers", @service_providers).to_json }
+    end
+  end
+
+  def filtered_index
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder

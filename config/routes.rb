@@ -91,6 +91,7 @@ ActionController::Routing::Routes.draw do |map|
                          { :new_popup => :post,
                            :create_inline => :post,
                            :filters => :get,
+                           :filtered_index => :post,
                            :bulk_create => :post },
                          { :edit_popup => :post,
                            :download => :get,
@@ -123,7 +124,8 @@ ActionController::Routing::Routes.draw do |map|
   map.search_by_data '/search/by_data', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :post, :get ] }
 
   map.resources :service_providers,
-                :collection => { :filters => :get },
+                :collection => { :filters => :get,
+                                 :filtered_index => :post },
                 :member => { :annotations => :get,
                              :annotations_by => :get,
                              :services => :get }
@@ -139,7 +141,8 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { :activate_account => :get,
                                  :rpx_merge_setup => :get,
                                  :rpx_merge => :post,
-                                 :filters => :get }, 
+                                 :filters => :get,
+                                 :filtered_index => :post }, 
                 :member => { :change_password => [ :get, :post ],
                              :rpx_update => [ :get, :post ],
                              :annotations_by => :get,
@@ -182,7 +185,8 @@ ActionController::Routing::Routes.draw do |map|
                              :methods => :get }
 
   map.resources :rest_methods,
-                :collection => { :filters => :get },
+                :collection => { :filters => :get,
+                                 :filtered_index => :post },
                 :member => { :inline_add_endpoint_name => :post,
                              :edit_group_name_popup => :post,
                              :update_group_name => :post,
@@ -213,7 +217,8 @@ ActionController::Routing::Routes.draw do |map|
                              :latest_wsdl => :get }
 
   map.resources :soap_operations,
-                :collection => { :filters => :get },
+                :collection => { :filters => :get,
+                                 :filtered_index => :post },
                 :member => { :annotations => :get,
                              :inputs => :get,
                              :outputs => :get }
@@ -228,7 +233,8 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { :load_wsdl => :post}
 
   map.resources :services,
-                :collection => { :filters => :get },
+                :collection => { :filters => :get,
+                                 :filtered_index => :post },
                 :member => { :categorise => :post,
                              :summary => :get,
                              :annotations => :get,
