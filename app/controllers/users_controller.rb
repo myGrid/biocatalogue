@@ -34,8 +34,7 @@ class UsersController < ApplicationController
   oauth_authorize :saved_searches
 
   if ENABLE_SSL && Rails.env.production?
-    ssl_required :new, :create, :edit, :update, :activate_account, :forgot_password, :request_reset_password, 
-                 :reset_password, :change_password, :rpx_merge_setup, :rpx_merge, :rpx_update, :saved_searches
+    ssl_required :all
   end
 
   # GET /users
