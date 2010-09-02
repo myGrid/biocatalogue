@@ -147,8 +147,8 @@ class RestMethodTest < ActiveSupport::TestCase
     methods = rest.rest_resources[0].rest_methods.sort
     
     assert_equal methods[0].method_type, "GET"
-    assert_equal methods[1].method_type, "POST"
-    assert_equal methods[2].method_type, "PUT"
+    assert_equal methods[1].method_type, "PUT"
+    assert_equal methods[2].method_type, "POST"
     assert_equal methods[3].method_type, "DELETE"
 
     rest.service.destroy

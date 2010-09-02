@@ -295,7 +295,8 @@ module BioCatalogue
             if x["annotations"].blank?
               result["annotations"] = [ ]
             else
-              result["annotations"] = obj.create_annotations(Annotations.preprocess_annotations_data(x["annotations"]), source)  
+              anns = obj.create_annotations(Annotations.preprocess_annotations_data(x["annotations"]), source)
+              result["annotations"] = BioCatalogue::Api::Json.collection(anns)
             end
             
             results << result
