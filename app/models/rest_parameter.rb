@@ -76,11 +76,19 @@ class RestParameter < ActiveRecord::Base
   end
   
   def associated_service_id
-    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+    @associated_service_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+  
+  def associated_service
+    @associated_service ||= Service.find_by_id(associated_service_id)
   end
 
   def associated_rest_method_id
-    return RestMethodParameter.find_by_rest_parameter_id(self.id).try(:rest_method_id)
+    @associated_rest_method_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "RestMethod")
+  end
+  
+  def associated_rest_method
+    @associated_rest_method ||= RestMethod.find_by_id(associated_rest_method_id)
   end
 
   def to_json

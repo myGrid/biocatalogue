@@ -657,6 +657,13 @@ class SoapService < ActiveRecord::Base
     self.connect?
   end
 
+  def associated_service_id
+    @associated_service_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+  
+  def associated_service
+    @associated_service ||= Service.find_by_id(associated_service_id)
+  end
   
 protected
   
@@ -737,10 +744,7 @@ protected
     return built_ports
   end
   
-  def associated_service_id
-    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
-  end
-
+  
 private
 
   def generate_json_with_collections(collections, make_inline=false)

@@ -72,11 +72,13 @@ class ServiceProviderHostname < ActiveRecord::Base
     
     return success
   end
-
-protected
   
   def associated_service_provider_id
     self.service_provider_id
   end
+
+  def associated_service_provider
+    @associated_service_provider ||= ServiceProvider.find_by_id(associated_service_provider_id)
+  end    
 
 end

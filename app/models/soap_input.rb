@@ -50,11 +50,19 @@ class SoapInput < ActiveRecord::Base
   end
     
   def associated_service_id
-    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+    @associated_service_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
+  
+  def associated_service
+    @associated_service ||= Service.find_by_id(associated_service_id)
   end
   
   def associated_soap_operation_id
     self.soap_operation_id
+  end
+  
+  def associated_soap_operation
+    @associated_soap_operation = SoapOperation.find_by_id(associated_soap_operation_id)
   end
 
 protected

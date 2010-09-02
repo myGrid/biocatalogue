@@ -101,8 +101,72 @@ class Annotation < ActiveRecord::Base
     
     return new_ann
   end
+
+  def associated_service_id
+    @associated_service_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
+  end
   
-  protected
+  def associated_service
+    @associated_service ||= Service.find_by_id(associated_service_id)
+  end
+
+  def associated_soap_operation_id
+    case self.annotatable_type
+      when "SoapOperation"
+        return self.annotatable_id
+      when "SoapInput", "SoapOutput"
+        return self.annotatable.soap_operation_id unless self.annotatable.nil?
+      else
+        nil
+    end
+  end
+
+  def associated_soap_operation
+    @associated_soap_operation ||= SoapOperation.find_by_id(associated_soap_operation_id)
+  end
+  
+  def associated_rest_method_id
+    case self.annotatable_type
+      when "RestMethod"
+        return self.annotatable_id
+      when "RestMethodParameter", "RestMethodParameter"
+        return self.annotatable.rest_method_id unless self.annotatable.nil?
+      when "RestParameter", "RestRepresentation"
+        return self.annotatable.associated_rest_method_id unless self.annotatable.nil?
+      else
+        nil
+    end
+  end
+
+  def associated_rest_method
+    @associated_rest_method ||= RestMethod.find_by_id(associated_rest_method_id)
+  end
+  
+  def associated_service_provider_id
+    @associated_service_provider_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "ServiceProvider")
+  end
+
+  def associated_service_provider
+    @associated_service_provider ||= ServiceProvider.find_by_id(associated_service_provider_id)
+  end
+  
+  def associated_user_id
+    @associated_user_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "User")
+  end
+
+  def associated_user
+    @associated_user ||= User.find_by_id(associated_user_id)
+  end
+  
+  def associated_registry_id
+    @associated_registry_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Registry")
+  end
+
+  def associated_registry
+    @associated_registry ||= Registry.find_by_id(associated_registry_id)
+  end
+  
+protected
   
   def value_for_solr
     val = ''
@@ -126,47 +190,7 @@ class Annotation < ActiveRecord::Base
     end
     return true
   end
-  
-  def associated_service_id
-    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
-  end
-  
-  def associated_soap_operation_id
-    case self.annotatable_type
-      when "SoapOperation"
-        return self.annotatable_id
-      when "SoapInput", "SoapOutput"
-        return self.annotatable.soap_operation_id unless self.annotatable.nil?
-      else
-        nil
-    end
-  end
-  
-  def associated_rest_method_id
-    case self.annotatable_type
-      when "RestMethod"
-        return self.annotatable_id
-      when "RestMethodParameter", "RestMethodParameter"
-        return self.annotatable.rest_method_id unless self.annotatable.nil?
-      when "RestParameter", "RestRepresentation"
-        return self.annotatable.associated_rest_method_id unless self.annotatable.nil?
-      else
-        nil
-    end
-  end
-  
-  def associated_service_provider_id
-    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "ServiceProvider")
-  end
-  
-  def associated_user_id
-    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "User")
-  end
-  
-  def associated_registry_id
-    BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Registry")
-  end
-  
+    
   def process_post_save_custom_logic
     if self.attribute_name.downcase == 'display_name'
       
