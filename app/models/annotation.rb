@@ -202,7 +202,6 @@ private
   def generate_json_and_make_inline(make_inline)
     data = {
       "annotation" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
         "version" => self.version,
         "annotatable" => {
           "resource" => BioCatalogue::Api.uri_for_object(self.annotatable),
