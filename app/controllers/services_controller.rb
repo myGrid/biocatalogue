@@ -46,14 +46,18 @@ class ServicesController < ApplicationController
     end
   end
   
+  # POST /filtered_index
+  # Example Input (differs based on available filters):
+  #
+  # { 
+  #   :filters => { 
+  #     :p => [ 67, 23 ], 
+  #     :tag => [ "database" ], 
+  #     :c => ["Austria", "south Africa"] 
+  #   }
+  # }
   def filtered_index
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  # index.xml.builder
-      format.atom # index.atom.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("services", json_api_params, @services).to_json }
-      format.bljson { render :json => BioCatalogue::Api::Bljson.index("services", @services).to_json }
-    end
+    index
   end
 
   # GET /services/1

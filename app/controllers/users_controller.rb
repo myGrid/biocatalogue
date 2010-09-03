@@ -50,14 +50,19 @@ class UsersController < ApplicationController
       format.bljson { render :json => BioCatalogue::Api::Bljson.index("users", @users).to_json }
     end
   end
-
+  
+  # POST /filtered_index
+  # Example Input (differs based on available filters):
+  #
+  # { 
+  #   :filters => { 
+  #     :p => [ 67, 23 ], 
+  #     :tag => [ "database" ], 
+  #     :c => ["Austria", "south Africa"] 
+  #   }
+  # }
   def filtered_index
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("users", json_api_params, @users).to_json }
-      format.bljson { render :json => BioCatalogue::Api::Bljson.index("users", @users).to_json }
-    end
+    index
   end
 
   # GET /users/1

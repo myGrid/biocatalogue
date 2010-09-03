@@ -45,12 +45,18 @@ class AnnotationsController < ApplicationController
     end
   end
 
+  # POST /filtered_index
+  # Example Input (differs based on available filters):
+  #
+  # { 
+  #   :filters => { 
+  #     :p => [ 67, 23 ], 
+  #     :tag => [ "database" ], 
+  #     :c => ["Austria", "south Africa"] 
+  #   }
+  # }
   def filtered_index
-    respond_to do |format|
-      format.html { disable_action }
-      format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("annotations", json_api_params, @annotations).to_json }
-    end
+    index
   end
   
   def show

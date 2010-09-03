@@ -31,13 +31,18 @@ class SoapOperationsController < ApplicationController
     end
   end
 
+  # POST /filtered_index
+  # Example Input (differs based on available filters):
+  #
+  # { 
+  #   :filters => { 
+  #     :p => [ 67, 23 ], 
+  #     :tag => [ "database" ], 
+  #     :c => ["Austria", "south Africa"] 
+  #   }
+  # }
   def filtered_index
-    respond_to do |format|
-      format.html { disable_action }
-      format.xml # index.xml.builder
-      format.json { render :json => BioCatalogue::Api::Json.index("soap_operations", json_api_params, @soap_operations).to_json }
-      format.bljson { render :json => BioCatalogue::Api::Bljson.index("soap_operations", @soap_operations).to_json }
-    end
+    index
   end
   
   def show
