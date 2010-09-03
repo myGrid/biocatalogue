@@ -389,7 +389,7 @@ private
     if collections.class==String
       collections = case collections.strip.downcase
                       when "deployments" : %w{ deployments }
-                      when "endpoints" : %w{ endpoints }
+                      when "rest_methods" : %w{ rest_methods }
                       when "rest_resources" : %w{ rest_resources }
                       when "default" : %w{ deployments rest_resources }
                       else []
@@ -414,8 +414,8 @@ private
       case collection.downcase
         when "deployments"
           data["rest_service"]["deployments"] = BioCatalogue::Api::Json.collection(self.service_deployments)
-        when "endpoints"
-          data["rest_service"]["endpoints"] = BioCatalogue::Api::Json.collection(self.rest_methods)
+        when "rest_methods"
+          data["rest_service"]["methods"] = BioCatalogue::Api::Json.collection(self.rest_methods)
         when "rest_resources"
           data["rest_service"]["resources"] = BioCatalogue::Api::Json.collection(self.rest_resources)
       end

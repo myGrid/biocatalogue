@@ -181,6 +181,7 @@ class XmlSchemaValidations < Test::Unit::TestCase
       assert validate_endpoint_xml_output(make_url("/rest_services/#{id}"))
       assert validate_endpoint_xml_output(make_url("/rest_services/#{id}/deployments"))
       assert validate_endpoint_xml_output(make_url("/rest_services/#{id}/resources"))
+      assert validate_endpoint_xml_output(make_url("/rest_services/#{id}/methods"))
       assert validate_endpoint_xml_output(make_url("/rest_services/#{id}/annotations"))
     end
   end

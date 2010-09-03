@@ -9,6 +9,7 @@ is_root = false unless local_assigns.has_key?(:is_root)
 show_core = true unless local_assigns.has_key?(:show_core)
 show_deployments = true unless local_assigns.has_key?(:show_deployments)
 show_rest_resources = false unless local_assigns.has_key?(:show_rest_resources)
+show_rest_methods = false unless local_assigns.has_key?(:show_rest_methods)
 show_ancestors = false unless local_assigns.has_key?(:show_ancestors)
 show_related = false unless local_assigns.has_key?(:show_related)
 
@@ -26,10 +27,15 @@ parent_xml.tag! "restService",
   if show_deployments
     render :partial => "rest_services/api/deployments", :locals => { :parent_xml => parent_xml, :rest_service => rest_service }
   end
-  
+
   # <resources>
   if show_rest_resources
     render :partial => "rest_services/api/rest_resources", :locals => { :parent_xml => parent_xml, :rest_service => rest_service }
+  end
+  
+  # <methods>
+  if show_rest_methods
+    render :partial => "rest_services/api/rest_methods", :locals => { :parent_xml => parent_xml, :rest_service => rest_service }
   end
   
   # <ancestors>

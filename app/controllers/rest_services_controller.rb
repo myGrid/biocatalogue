@@ -8,16 +8,16 @@ require 'addressable/uri'
 
 class RestServicesController < ApplicationController
   
-  before_filter :disable_action, :only => [ :edit, :update, :destroy, :endpoints ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :create, :annotations, :deployments, :resources ]
+  before_filter :disable_action, :only => [ :edit, :update, :destroy ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :create, :annotations, :deployments, :resources, :methods ]
   
-  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :deployments, :resources ]
+  before_filter :login_or_oauth_required, :except => [ :index, :show, :annotations, :deployments, :resources, :methods ]
 
   before_filter :find_service_deployment, :only => [ :edit_base_endpoint_by_popup, :update_base_endpoint ]
   
   before_filter :authorise, :only => [ :edit_base_endpoint_by_popup, :update_base_endpoint ]
   
-  before_filter :find_rest_service, :only => [ :show, :annotations, :deployments, :resources ]
+  before_filter :find_rest_service, :only => [ :show, :annotations, :deployments, :resources, :methods ]
   
   before_filter :parse_sort_params, :only => :index
   before_filter :find_rest_services, :only => :index
@@ -232,11 +232,11 @@ class RestServicesController < ApplicationController
     end
   end
   
-  def endpoints
+  def methods
     respond_to do |format|
       format.html { disable_action }
-      format.xml  # endpoints.xml.builder
-      format.json { render :json => @rest_service.to_custom_json("endpoints") }
+      format.xml  # methods.xml.builder
+      format.json { render :json => @rest_service.to_custom_json("rest_methods") }
     end
   end
   

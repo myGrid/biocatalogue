@@ -216,6 +216,11 @@ module JsonTestHelper
     if action==:show || action==:resources
       validate_collection_from_data_given_path(data['rest_service']['resources'], path)
     end
+
+    if action==:methods
+      validate_collection_from_data_given_path(data['rest_service']['methods'], path)
+    end
+
   end
 
   def validate_service_from_path(path, action=:show)

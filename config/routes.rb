@@ -177,7 +177,8 @@ ActionController::Routing::Routes.draw do |map|
                 :member => { :annotations => :get,
                              :deployments => :get,
                              :update_base_endpoint => :post,
-                             :resources => :get }
+                             :resources => :get,
+                             :methods => :get }
 
   map.resources :rest_resources, 
                 :member => { :add_new_resources => :post,

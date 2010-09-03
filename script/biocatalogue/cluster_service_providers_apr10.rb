@@ -2,7 +2,7 @@
 
 # BioCatalogue: script/biocatalogue/cluster_service_providers_apr10.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 

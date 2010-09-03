@@ -173,6 +173,7 @@ class JsonTests < Test::Unit::TestCase
       validate_rest_service_from_path("/rest_services/#{id}") 
       validate_rest_service_from_path("/rest_services/#{id}/deployments", :deployments) 
       validate_rest_service_from_path("/rest_services/#{id}/resources", :resources) 
+      validate_rest_service_from_path("/rest_services/#{id}/methods", :methods) 
       validate_index_from_path("/rest_services/#{id}/annotations")
     }
   end
