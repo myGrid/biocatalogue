@@ -33,8 +33,18 @@ class RestResource < ActiveRecord::Base
   
   has_many :rest_methods, 
            :dependent => :destroy,
-           :include => [ :rest_method_parameters, :rest_method_representations ]
+           :include => [ :rest_method_parameters, :rest_method_representations ],
+           :conditions => "rest_methods.archived_at IS NULL",
+           :order => "rest_methods.method_type ASC"
            
+  has_many :archived_rest_methods,
+           :class_name => "RestMethod",
+           :foreign_key => "rest_resource_id",
+           :dependent => :destroy,
+           :include => [ :rest_method_parameters, :rest_method_representations ],
+           :conditions => "rest_methods.archived_at IS NOT NULL",
+           :order => "rest_methods.method_type ASC"
+
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :path, :description, :submitter_name, { :associated_service_id => :r_id } ])
   end

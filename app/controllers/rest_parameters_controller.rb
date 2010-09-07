@@ -277,18 +277,21 @@ class RestParametersController < ApplicationController
   end
   
   def find_rest_parameter
-    @rest_parameter = RestParameter.find(params[:id])
+    conditions = "archived_at IS NULL" if is_api_request?
+    @rest_parameter = RestParameter.find(params[:id], :conditions => conditions)
   end
   
   def find_rest_method
-    @rest_method = RestMethod.find(params[:rest_method_id])
+    conditions = "archived_at IS NULL" if is_api_request?
+    @rest_method = RestMethod.find(params[:rest_method_id], :conditions => conditions)
   end
 
   def find_rest_methods
     @rest_methods = []
-    
+    conditions = "archived_at IS NULL" if is_api_request?
+
     @rest_parameter.rest_method_parameters.each { |map|
-      method = RestMethod.find(map.rest_method_id, :include => [ :rest_resource, :rest_service ])
+      method = RestMethod.find(map.rest_method_id, :include => [ :rest_resource, :rest_service ], :conditions => conditions)
       @rest_methods << method if method && !@rest_methods.include?(method)
     }
     

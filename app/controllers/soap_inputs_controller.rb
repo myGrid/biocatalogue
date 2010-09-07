@@ -31,7 +31,8 @@ class SoapInputsController < ApplicationController
   protected
   
   def find_soap_input
-    @soap_input = SoapInput.find(params[:id], :include => :soap_operation)
+    conditions = "archived_at IS NULL" if is_api_request?
+    @soap_input = SoapInput.find(params[:id], :include => :soap_operation, :conditions => conditions)
   end
   
 end

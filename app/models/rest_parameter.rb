@@ -15,7 +15,9 @@ class RestParameter < ActiveRecord::Base
   end
   
   acts_as_annotatable
-  
+
+  acts_as_archived
+
   validates_presence_of :name, 
                         :param_style
                         

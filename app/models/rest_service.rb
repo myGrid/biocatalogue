@@ -36,7 +36,16 @@ class RestService < ActiveRecord::Base
            :dependent => :destroy
            
   has_many :rest_resources,
-           :dependent => :destroy
+           :dependent => :destroy,
+           :conditions => "rest_resources.archived_at IS NULL",
+           :order => "rest_resources.path ASC"
+
+  has_many :archived_rest_resources,
+           :class_name => "RestResource",
+           :foreign_key => "rest_service_id",
+           :dependent => :destroy,
+           :conditions => "rest_resources.archived_at IS NOT NULL",
+           :order => "rest_resources.path ASC"
 
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :description, :interface_doc_url, :documentation_url, :service_type_name,
@@ -231,6 +240,16 @@ class RestService < ActiveRecord::Base
     
     self.rest_resources.each do |res|
       methods.concat(res.rest_methods)
+    end
+    
+    return methods
+  end
+
+  def archived_rest_methods
+    methods = [ ]
+    
+    self.archived_rest_resources.each do |res|
+      methods.concat(res.archived_rest_methods)
     end
     
     return methods

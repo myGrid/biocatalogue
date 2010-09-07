@@ -291,7 +291,8 @@ class SoapServicesController < ApplicationController
 protected # ========================================
   
   def find_soap_service
-    @soap_service = SoapService.find(params[:id])
+    conditions = "archived_at IS NULL" if is_api_request?
+    @soap_service = SoapService.find(params[:id], :conditions => conditions)
   end
   
   def find_soap_services
@@ -318,9 +319,16 @@ protected # ========================================
       order = "soap_services.#{order_field} #{order_direction}"
     end
     
-    @soap_services = SoapService.paginate(:page => @page,
-                                          :per_page => @per_page,
-                                          :order => order)
+    if is_api_request?
+      @soap_services = SoapService.paginate(:page => @page,
+                                            :per_page => @per_page,
+                                            :conditions => "archived_at IS NULL",
+                                            :order => order)
+    else
+      @soap_services = SoapService.paginate(:page => @page,
+                                            :per_page => @per_page,
+                                            :order => order)
+    end
   end
 
   def parse_sort_params

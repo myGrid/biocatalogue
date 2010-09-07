@@ -16,6 +16,8 @@ class RestRepresentation < ActiveRecord::Base
   
   acts_as_annotatable
 
+  acts_as_archived
+
   validates_presence_of :content_type
   
   has_submitter

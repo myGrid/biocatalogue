@@ -31,7 +31,8 @@ class SoapOutputsController < ApplicationController
   protected
   
   def find_soap_output
-    @soap_output = SoapOutput.find(params[:id], :include => :soap_operation)
+    conditions = "archived_at IS NULL" if is_api_request?
+    @soap_output = SoapOutput.find(params[:id], :include => :soap_operation, :conditions => conditions)
   end
   
 end

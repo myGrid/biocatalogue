@@ -243,7 +243,8 @@ class RestServicesController < ApplicationController
 protected # ========================================
   
   def find_rest_service
-    @rest_service = RestService.find(params[:id], :include => :service)
+    conditions = "archived_at IS NULL" if is_api_request?
+    @rest_service = RestService.find(params[:id], :include => :service, :conditions => conditions)
   end
     
   def authorise
@@ -299,9 +300,16 @@ protected # ========================================
       order = "rest_services.#{order_field} #{order_direction}"
     end
     
-    @rest_services = RestService.paginate(:page => @page,
-                                          :per_page => @per_page,
-                                          :order => order)
+    if is_api_request?
+      @rest_services = RestService.paginate(:page => @page,
+                                            :per_page => @per_page,
+                                            :conditions => "archived_at IS NULL",
+                                            :order => order)
+    else
+      @rest_services = RestService.paginate(:page => @page,
+                                            :per_page => @per_page,
+                                            :order => order)
+    end
   end
 
 end

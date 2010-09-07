@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100818105723) do
+ActiveRecord::Schema.define(:version => 20100907111822) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -303,6 +303,7 @@ ActiveRecord::Schema.define(:version => 20100818105723) do
     t.string   "endpoint_name"
     t.string   "documentation_url"
     t.string   "group_name"
+    t.datetime "archived_at"
   end
 
   add_index "rest_methods", ["rest_resource_id", "method_type"], :name => "rest_methods_rest_resource_id_method_type_index"
@@ -323,6 +324,7 @@ ActiveRecord::Schema.define(:version => 20100818105723) do
     t.integer  "submitter_id"
     t.string   "submitter_type",      :default => "User"
     t.boolean  "is_global",           :default => true,   :null => false
+    t.datetime "archived_at"
   end
 
   create_table "rest_representations", :force => true do |t|
@@ -333,6 +335,7 @@ ActiveRecord::Schema.define(:version => 20100818105723) do
     t.datetime "updated_at"
     t.integer  "submitter_id"
     t.string   "submitter_type", :default => "User"
+    t.datetime "archived_at"
   end
 
   create_table "rest_resources", :force => true do |t|
@@ -344,6 +347,7 @@ ActiveRecord::Schema.define(:version => 20100818105723) do
     t.datetime "updated_at"
     t.integer  "submitter_id"
     t.string   "submitter_type",     :default => "User"
+    t.datetime "archived_at"
   end
 
   add_index "rest_resources", ["parent_resource_id"], :name => "rest_resources_rest_parent_resource_id_index"
@@ -356,6 +360,7 @@ ActiveRecord::Schema.define(:version => 20100818105723) do
     t.datetime "updated_at"
     t.string   "interface_doc_url"
     t.string   "documentation_url"
+    t.datetime "archived_at"
   end
 
   create_table "saved_search_scopes", :force => true do |t|
@@ -545,6 +550,7 @@ ActiveRecord::Schema.define(:version => 20100818105723) do
     t.datetime "updated_at"
     t.string   "namespace"
     t.text     "description_from_soaplab"
+    t.datetime "archived_at"
   end
 
   add_index "soap_services", ["name"], :name => "soap_services_name_index"

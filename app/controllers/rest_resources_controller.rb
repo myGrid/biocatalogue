@@ -125,7 +125,8 @@ private # ========================================
   end
   
   def find_rest_resource
-    @rest_resource = RestResource.find(params[:id], :include => :rest_service)
+    conditions = "archived_at IS NULL" if is_api_request?
+    @rest_resource = RestResource.find(params[:id], :include => :rest_service, :conditions => conditions)
   end
   
   def find_rest_resources
@@ -152,9 +153,16 @@ private # ========================================
       order = "rest_resources.#{order_field} #{order_direction}"
     end
     
-    @rest_resources = RestResource.paginate(:page => @page,
-                                            :per_page => @per_page,
-                                            :order => order)
+    if is_api_request?
+      @rest_resources = RestResource.paginate(:page => @page,
+                                              :per_page => @per_page,
+                                              :conditions => "archived_at IS NULL",
+                                              :order => order)
+    else
+      @rest_resources = RestResource.paginate(:page => @page,
+                                              :per_page => @per_page,
+                                              :order => order)
+    end
   end
 
 end

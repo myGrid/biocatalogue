@@ -25,6 +25,8 @@ class RestMethod < ActiveRecord::Base
     acts_as_trashable
   end
   
+  acts_as_archived
+  
   acts_as_annotatable
   
   validates_presence_of :rest_resource_id, 
