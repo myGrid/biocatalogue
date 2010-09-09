@@ -104,8 +104,8 @@ class JsonTests < Test::Unit::TestCase
   def test_registry
     config["registry_ids"].each { |id| 
       validate_registry_from_path("/registries/#{id}") 
-      validate_index_from_path("/registries/#{id}/annotations_by")
-      validate_index_from_path("/registries/#{id}/services") 
+      validate_index_from_path("/registries/#{id}/annotations_by", true)
+      validate_index_from_path("/registries/#{id}/services", true)
     }
   end
 

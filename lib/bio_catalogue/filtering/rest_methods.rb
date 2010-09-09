@@ -227,7 +227,11 @@ module BioCatalogue
         grouped_tags.each do |tag_name, ids|
           rest_method_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(ids, "RestMethod")
           rest_method_ids = rest_method_ids.compact.uniq
-          filters << { 'id' => tag_name, 'name' => tag_name, 'count' => rest_method_ids.length.to_s }
+          filters << { 
+            'id' => tag_name, 
+            'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
+            'count' => rest_method_ids.length.to_s 
+          }
         end
         
         filters.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }

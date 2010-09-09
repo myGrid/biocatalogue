@@ -224,7 +224,11 @@ module BioCatalogue
         grouped_tags.each do |tag_name, ids|
           soap_operation_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(ids, "SoapOperation")
           soap_operation_ids = soap_operation_ids.compact.uniq
-          filters << { 'id' => tag_name, 'name' => tag_name, 'count' => soap_operation_ids.length.to_s }
+          filters << { 
+            'id' => tag_name, 
+            'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
+            'count' => soap_operation_ids.length.to_s 
+          }
         end
         
         filters.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }

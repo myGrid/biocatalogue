@@ -211,7 +211,7 @@ module BioCatalogue
           data = {
             "filter" => {
               "name" => filter['name'],
-              "id" => filter['id'],
+              "url_value" => filter['id'],
               "count" => filter['count'].to_i
             }
           }

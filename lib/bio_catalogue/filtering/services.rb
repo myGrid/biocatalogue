@@ -484,7 +484,11 @@ module BioCatalogue
         grouped_tags.each do |tag_name, op_ids|
           service_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(op_ids, "Service")
           service_ids = service_ids.compact.uniq
-          filters << { 'id' => tag_name, 'name' => tag_name, 'count' => service_ids.length.to_s }
+          filters << { 
+            'id' => tag_name, 
+            'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
+            'count' => service_ids.length.to_s 
+          }
         end
         
         filters.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }
