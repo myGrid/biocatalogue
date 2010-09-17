@@ -1,0 +1,22 @@
+<div>
+<%= Seer::visualize(
+           				[service], 
+           				:as => :gauge,
+           				:in_element => "chart_#{service.id}",
+           				:series => {:series_label => 'label_for', :data_method => 'annotation_level'},
+           				:chart_options => {
+             			:red_from => 0,
+             			:red_to => service.annotation_level,
+             			:height => 50,
+             			:max => 100,
+             			:min => 0,
+             			:minor_ticks => 5,
+             			:grey_from => 76,
+             			:grey_to => 100,
+             			:width => 100,
+             			:grey_from => 26,
+             			:grey_to => 75
+           				}
+         			)
+      			-%>
+</div>

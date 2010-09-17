@@ -395,6 +395,26 @@ class Service < ActiveRecord::Base
     end
   end
   
+  def annotation_level
+    if self.latest_version.service_versionified.respond_to?(:annotation_level)
+      return self.latest_version.service_versionified.annotation_level
+    end
+    return nil
+  end
+  
+  def label_for(attribute='annotation_level')
+    case attribute
+      when 'annotation_level'
+        return ''
+    end
+  end
+  
+  def availability
+    return 0 if self.service_tests.count == 0
+    successes = self.service_tests.collect{|st| st.success_rate}.compact
+    return (successes.sum/self.service_tests.count).to_i
+  end
+  
 protected
   
   def generate_unique_code

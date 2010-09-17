@@ -656,6 +656,10 @@ class SoapService < ActiveRecord::Base
   def endpoint_available?
     self.connect?
   end
+  
+  def annotation_level
+    BioCatalogue::Curation::AnnotationLevel.percentage_description_annotation_level_for_soap_service(self)
+  end
 
   def associated_service_id
     @associated_service_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
@@ -743,8 +747,8 @@ protected
     end
     return built_ports
   end
-  
-  
+
+
 private
 
   def generate_json_with_collections(collections, make_inline=false)

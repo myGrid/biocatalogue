@@ -277,6 +277,10 @@ class RestService < ActiveRecord::Base
     @associated_service ||= Service.find_by_id(associated_service_id)
   end    
   
+  def annotation_level
+    BioCatalogue::Curation::AnnotationLevel.percentage_description_annotation_level_for_rest_service(self)
+  end
+  
   # =========================================
   
   
