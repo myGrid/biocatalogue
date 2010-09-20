@@ -19,7 +19,7 @@
 		<div>
 			<%= service_test_status_symbol(st)%>
 			
-			<% unless st.unchecked? -%>
+			<% unless st.unchecked? || !st.success_rate-%>
 				<div id="chart_info" style="float:right;" >
 					<span style="font-size: 3em;"><%= st.success_rate -%>%</span>
 					<%= info_icon_with_tooltip("Historical success rate for this test since its monitoring started.") -%>

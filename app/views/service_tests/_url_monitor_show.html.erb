@@ -20,6 +20,7 @@
 						<% else %>
 							<%= link_to("Enable", enable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
 						<% end %>
+						<%= link_to("Remove", service_test_url(service_test), :method => :delete, :confirm => "Are you sure you want to remove this test?", :class => "button_slim") -%>
 					<% end %>
 				</div>	
 				

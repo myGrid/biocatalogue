@@ -65,9 +65,7 @@ class TestResult < ActiveRecord::Base
   end
   
   def success_rate
-    service_test = self.service_test
-    service_test.success_rate = service_test.success_rate
-    service_test.save
+    self.service_test.update_success_rate
   end
   
   # previous result id is set to nil for new_with_unknown_status

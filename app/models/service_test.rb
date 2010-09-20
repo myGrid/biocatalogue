@@ -156,12 +156,16 @@ class ServiceTest < ActiveRecord::Base
     TestResult.find(:all, :select => 'id', :conditions => ["service_test_id=? AND result=?", self.id, 1]).count
   end
   
-  def success_rate
+  def update_success_rate!
     count = TestResult.find(:all, 
                               :select => 'id', 
                               :conditions => ["service_test_id=? ", self.id]).count
-    return 0 if count == 0
-    return (self.pass_count*100)/count
+    if count == 0
+      self.success_rate = 0
+    else
+      self.success_rate = (self.pass_count*100)/count
+    end
+    self.save
   end
   
   def name
