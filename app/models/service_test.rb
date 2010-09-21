@@ -175,9 +175,6 @@ class ServiceTest < ActiveRecord::Base
     return self.test.property if self.test.is_a?(UrlMonitor)
   end
   
-  def graph_label
-    return '% Success'
-  end
   
   def result_data_points(all_data, step=6)
     data_points = []
