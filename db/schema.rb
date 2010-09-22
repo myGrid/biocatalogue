@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100907111822) do
+ActiveRecord::Schema.define(:version => 20100922092023) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -432,6 +432,7 @@ ActiveRecord::Schema.define(:version => 20100907111822) do
     t.datetime "updated_at"
     t.datetime "activated_at"
     t.integer  "success_rate"
+    t.datetime "hidden_at"
   end
 
   add_index "service_tests", ["service_id"], :name => "s_tests_service_id_index"
@@ -625,12 +626,12 @@ ActiveRecord::Schema.define(:version => 20100907111822) do
     t.string   "display_name"
     t.string   "openid_url"
     t.integer  "role_id"
-    t.text     "affiliation"
+    t.text     "affiliation",           :limit => 16777215
     t.string   "country"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "public_email"
-    t.boolean  "receive_notifications", :default => false
+    t.boolean  "receive_notifications",                     :default => false
     t.string   "identifier"
     t.datetime "last_active"
   end

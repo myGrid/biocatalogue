@@ -154,9 +154,13 @@ module ServicesHelper
   
   def service_tests_for_display(service_tests)
     if logged_in? 
-      return service_tests
+      if current_user.is_admin?
+        return service_tests
+      else
+        return service_tests.collect{|st| st if !st.hidden? }.compact
+      end
     end
-    return service_tests.collect{|st| st if st.enabled?}.compact
+    return service_tests.collect{|st| st if (st.enabled? && !st.hidden?) }.compact
   end
   
 end

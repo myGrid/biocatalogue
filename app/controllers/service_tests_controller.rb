@@ -9,14 +9,16 @@ class ServiceTestsController < ApplicationController
   before_filter :disable_action, :only => [ :index, :new, :edit, :update ]
   before_filter :disable_action_for_api, :except => [ :show, :create, :results ]
   
-  before_filter :find_service_test, :only => [ :show, :results, :enable, :disable, :destroy ]
+  before_filter :find_service_test, :only => [ :show, :results, :enable, :disable, :destroy, :hide ]
   
   # Only logged in users can add tests
   before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable ]
 
-  before_filter :authorise, :only => [ :enable, :disable, :destroy ]
+  before_filter :authorise, :only => [ :enable, :disable, :destroy, :hide ]
   
   before_filter :authorise_for_disabled, :only => [ :show ]
+  
+  before_filter :authorise_for_hidden, :only => [:show ]
 
   def show
     respond_to do |format|
@@ -108,6 +110,22 @@ class ServiceTestsController < ApplicationController
   end
   
   
+  # DELETE /service_test/1
+  # DELETE /service_service/1.xml
+  def hide
+    respond_to do |format|
+      if @service_test.hide!
+        flash[:notice] = "ServiceTest with id '#{@service_test.id}' has been deleted"
+        format.html { redirect_to service_url(@service_test.service) }
+        format.xml  { head :ok }
+      else
+        flash[:error] = "Failed to delete ServiceTest with id '#{@service_test.id}'"
+        format.html { redirect_to service_url(@service_test.service) }
+      end
+    end
+  end
+  
+  
   protected
   
   def find_service_test
@@ -126,6 +144,13 @@ class ServiceTestsController < ApplicationController
   def authorise_for_disabled
     unless logged_in? || @service_test.enabled?
       login_or_oauth_required
+    end
+  end
+  
+  def authorise_for_hidden
+    unless logged_in? && current_user.is_admin?
+      flash[:error] = "You are not allowed to perform this action! "
+      redirect_to @service_test.service
     end
   end
 

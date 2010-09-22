@@ -55,18 +55,39 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def activate!
-    unless !self.activated_at.blank?
+    unless !self.activated_at.blank? 
+      if self.hidden?
+        logger.error("Can't activate a hidden service_test #{self.id} !")
+        return false
+      end
       begin
         self.activated_at = Time.now
         self.save!
         return true
       rescue Exception => ex
-        logger.error("Failed to activate service_test #{self.id}. Exception:")
+        logger.error("Failed to activate service_test #{self.id}. Exception")
         logger.error(ex)
         return false
       end
     end
-    logger.error("Service test with #{self.id} was already activated. Exception:")
+    logger.error("Service test with #{self.id} was already activated !")
+    return false
+  end
+  
+  def hide!
+    unless !self.hidden_at.blank?
+      begin
+        self.hidden_at = Time.now
+        self.deactivate!
+        self.save!
+        return true
+      rescue Exception => ex
+        logger.error("Failed to hide service_test #{self.id}. Exception:")
+        logger.error(ex)
+        return false
+      end
+    end
+    logger.error("Service test with #{self.id} was already hidden. Exception:")
     return false
   end
   
@@ -146,6 +167,10 @@ class ServiceTest < ActiveRecord::Base
   #synonym to activated
   def enabled?
     return activated?
+  end
+  
+  def hidden?
+    return hidden_at
   end
   
   def pass_count

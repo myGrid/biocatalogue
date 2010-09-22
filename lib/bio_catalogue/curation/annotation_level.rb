@@ -70,6 +70,7 @@ module BioCatalogue
       def self.total_annotation_points_for_rest_service(service)
         points = []
         points << @attribute_weighting['service_description']
+        points << @attribute_weighting['operation_description'] if service.rest_resources.empty?  # should have at least one resource
         service.rest_resources.each do |res|
           points << @attribute_weighting['operation_description'] 
         end  

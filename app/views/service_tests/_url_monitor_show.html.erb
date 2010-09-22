@@ -15,12 +15,14 @@
 				
 				<div style="text-align: right;">
 					<%if logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service) %>
-						<% if service_test.activated? %>
+						<% if (service_test.activated? && !service_test.hidden?) %>
 							<%= link_to("Disable", disable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
 						<% else %>
 							<%= link_to("Enable", enable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
 						<% end %>
-						<%= link_to("Remove", service_test_url(service_test), :method => :delete, :confirm => "Are you sure you want to remove this test?", :class => "button_slim") -%>
+						<% unless service_test.hidden? -%>
+							<%= link_to("Remove", hide_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to remove this test?", :class => "button_slim") -%>
+						<% end -%>
 					<% end %>
 				</div>	
 				
