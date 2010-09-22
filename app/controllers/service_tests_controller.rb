@@ -133,7 +133,6 @@ class ServiceTestsController < ApplicationController
     @service      = @service_test.service
   end
   
-  #TODO investigate why "error_to_back_or_home" is causing multiple redirect errors
   def authorise
     unless logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_test.service)
       flash[:error] = "You are not allowed to perform this action! "
@@ -147,10 +146,13 @@ class ServiceTestsController < ApplicationController
     end
   end
   
+  # Only admins should access hidden tests
   def authorise_for_hidden
-    unless logged_in? && current_user.is_admin?
-      flash[:error] = "You are not allowed to perform this action! "
-      redirect_to @service_test.service
+    if @service_test.hidden?
+      unless logged_in? && current_user.is_admin?
+        flash[:error] = "You are not allowed to perform this action! "
+        redirect_to @service_test.service
+      end
     end
   end
 
