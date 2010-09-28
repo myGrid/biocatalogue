@@ -35,9 +35,9 @@
 				<div class="listing_item">
 					
 					<% if listing_type == :detailed %>
-					
+						
 						<%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
-				
+						
 						<table style="width: 100%; table-layout: fixed;">
 							<tr>
 								<td>
@@ -67,15 +67,6 @@
 								</td>
 							</tr>
 						</table>
-						
-						<!-- Annotation level Start -->
-						
-						<div title="Annotation coverage currently at <%= service.annotation_level %> %. Total coverage (100%) is achieved by providing descriptions for a service and its components(resources or operations, inputs and outputs). ">
-							<div id="chart_<%= service.id %>" style="float:right;"></div>
-		   					<%= render :partial => "annotations/annotation_level", :locals => {:service => service } -%>
-						</div>
-						
-						<!-- Annotation Level End -->
 						
 						<% cache(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service.id) do -%>
 							<div style="margin-top: 1em; font-size: 85%;">
@@ -128,13 +119,12 @@
 									 	 				 :locals => { :service_version_instance =>  service_version_instance } %>
 									
 								</td>
-								<!--
+								
 								<%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
 									<td style="width: 60px; text-align: right; vertical-align: bottom; padding-bottom: 0.5em;">
 										<%= service_latest_status_symbol(service) -%>
 									</td>
 								<% end %>
-								-->
 							</tr>
 						</table>
 						
@@ -155,13 +145,11 @@
 											</div>
 										<% end %>
 									</td>
-									<!--
 									<%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
 										<td style="width: 60px; text-align: right; vertical-align: top; padding-bottom: 0.5em;">
 											<%= service_latest_status_symbol(service) -%>
 										</td>
 									<% end %>
-									-->
 									</td>
 								</tr>
 							</table>
