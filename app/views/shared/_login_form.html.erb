@@ -13,11 +13,11 @@
 	show_other_links = true unless local_assigns.has_key?(:show_other_links)
 	redirect_to_url = nil unless local_assigns.has_key?(:redirect_to_url)
 
-	form_post_url = (redirect_to_url.blank? ? session_path : session_path(:redirect_to => redirect_to_url))
+	form_post_url = (redirect_to_url.blank? ? session_path(:protocol => default_protocol) : session_path(:redirect_to => redirect_to_url, :protocol => default_protocol))
 %>
 
 <div class="box_form login_form" style="float: left; width: 350px;">
-	<% form_tag form_post_url(:protocol => default_protocol) do %>
+	<% form_tag form_post_url do %>
 		<span>
 			<%= text_field_tag :login, params[:login], :class => 'login_field' %>
     	<label for="login">Email address:</label>
