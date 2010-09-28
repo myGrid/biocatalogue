@@ -1,4 +1,4 @@
-# BioCatalogue: lib/tasks/check_wsdl_parse.rake
+# BioCatalogue: lib/tasks/update_test_success_rates.rake
 #
 # Copyright (c) 2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.

@@ -174,17 +174,15 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def pass_count
-    TestResult.find(:all, :select => 'id', :conditions => ["service_test_id=? AND result=?", self.id, 0]).count
+    TestResult.count(:conditions => ["service_test_id=? AND result=?", self.id, 0])
   end
   
   def fail_count
-    TestResult.find(:all, :select => 'id', :conditions => ["service_test_id=? AND result=?", self.id, 1]).count
+    TestResult.count(:conditions => ["service_test_id=? AND result=?", self.id, 1])
   end
   
   def update_success_rate!
-    count = TestResult.find(:all, 
-                              :select => 'id', 
-                              :conditions => ["service_test_id=? ", self.id]).count
+    count = TestResult.count(:conditions => ["service_test_id=? ", self.id])
     if count == 0
       self.success_rate = 0
     else

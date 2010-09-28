@@ -1,4 +1,4 @@
-# BioCatalogue: lib/bio_catalogue/jobs/calculate_service_test_success_rate.rb
+# BioCatalogue: lib/bio_catalogue/jobs/update_service_test_success_rate.rb
 #
 # Copyright (c) 2010, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
@@ -6,9 +6,9 @@
 
 module BioCatalogue
   module Jobs
-    class CalculateServiceTestSuccessRate < Struct.new(:test_result)
+    class UpdateServiceTestSuccessRate < Struct.new(:test_result)
       def perform
-        test_result.success_rate
+        test_result.update_success_rate!
       end    
     end
   end

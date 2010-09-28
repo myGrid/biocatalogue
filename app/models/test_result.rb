@@ -9,8 +9,9 @@ class TestResult < ActiveRecord::Base
   
   before_create :valid_result_range
   
-  after_create :update_status, :update_success_rate
-  
+  after_create :update_status, 
+               :submit_update_success_rate_job
+               
   belongs_to :service_test
   
   validates_presence_of :result,
@@ -60,12 +61,12 @@ class TestResult < ActiveRecord::Base
     self.created_at.to_date
   end
   
-  def update_success_rate
-    Delayed::Job.enqueue(BioCatalogue::Jobs::CalculateServiceTestSuccessRate.new(self))
+  def submit_update_success_rate_job
+    Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateServiceTestSuccessRate.new(self))
   end
   
-  def success_rate
-    self.service_test.update_success_rate
+  def update_success_rate!
+    self.service_test.update_success_rate!
   end
   
   # previous result id is set to nil for new_with_unknown_status
