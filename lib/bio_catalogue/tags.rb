@@ -108,6 +108,10 @@ module BioCatalogue
       return ActiveRecord::Base.connection.select_one(ActiveRecord::Base.send(:sanitize_sql, sql))['count'].to_i
     end
     
+    def self.get_total_taggings_count
+      Annotation.count(:conditions => { :annotation_attributes => { :name => "tag" } }, :joins => :attribute)
+    end
+    
     # This will return a set of tags found from the annotations in the database.
     # The return format is the general tag data structure described above, EXCLUDING the "submitters".
     #
@@ -169,6 +173,21 @@ module BioCatalogue
       end
       
       return results
+    end
+    
+    # This gets ALL the tags in the system is performance intensive 
+    # so not recommended for regular Web UI use.
+    #
+    # NOTE: no sorting etc. is applied to the results.
+    def self.get_all_tags
+      # NOTE: this query has only been tested to work with MySQL 5.0.x and MySQL 5.1.x
+      sql = "SELECT annotations.value AS name, COUNT(*) AS count 
+            FROM annotations 
+            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
+            WHERE annotation_attributes.name = 'tag' 
+            GROUP BY annotations.value"
+            
+      return ActiveRecord::Base.connection.select_all(sql)
     end
     
     # Returns an array of suggested tag names given the tag fragment.

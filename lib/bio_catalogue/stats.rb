@@ -208,23 +208,25 @@ module BioCatalogue
       end
       
       def load_tags
-        @taggings_count = Annotation.count(:conditions => { :annotation_attributes => { :name => "tag" } }, :joins => :attribute)
+        @taggings_count = BioCatalogue::Tags.get_total_taggings_count
         
         @tags = { }
-        tags1 = BioCatalogue::Tags.get_tags
+        tags1 = BioCatalogue::Tags.get_all_tags
         tags2 = BioCatalogue::Filtering::Services.get_filters_for_all_tags
         
         tags1.each do |t|
           @tags[t['name']] = { :all => t['count'] }
         end
         
-        tags2.each do |t|
-          if @tags.has_key?(t['name'])
-            @tags[t['name']].store(:services, t['count'])
-          else
-            @tags[t['name']] = { :services => t['count'] }
-          end
-        end
+        # FIXME: this needs to take into account grouping of tag names and lowercase/uppercase.
+        # Right now the .has_key? matching is out of sync and therefore messing things up.
+#        tags2.each do |t|
+#          if @tags.has_key?(t['name'])
+#            @tags[t['name']][:services] = t['count']
+#          else
+#            @tags[t['name']] = { :all => -1, :services => t['count'] }
+#          end
+#        end
       end
       
     end
