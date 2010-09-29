@@ -1,175 +1,191 @@
 #!/usr/bin/env ruby
 
-# Reports on the statistics of service annotations.
+# This script generates a report (in the log folder) on the coverage/levels of
+# of service annotation.
 #
-# Currently this just tells you: 
-# A. How many SOAP Services that have a description.
-# B. How many SOAP Services that have a description AND a documentation URL.
-# C. How many SOAP Services that have a description AND all operations have a description.
-# D. How many SOAP Services that have a description AND all operations have a description and ALL inputs/outputs have a description.
-# E. How many SOAP Services that have a description AND all operations have a description and ALL inputs/outputs have a description AND example data.
+# Usage: service_annotation_report [options]
+#
+#    -e, --environment=name           Specifies the environment to run this script under (test|development|production).
+#                                     Default: production
+#
+#    -h, --help                       Show this help message.
+#
+# Depedencies:
+# - All dependencies for the BioCatalogue application
+# - Haml
+# - Hashie
 
-env = "production"
+require 'rubygems'
+require 'optparse'
+require 'benchmark'
+require 'ostruct'
+require 'hashie'
 
-unless ARGV[0].nil? or ARGV[0] == ''
-  env = ARGV[0]
-end
+require File.join(File.dirname(__FILE__), "shared", "counter")
 
-RAILS_ENV = env
-
-# Load up the Rails app
-require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
-
-soap_services = SoapService.all
-
-stats = { }
-stats["soap_services_count"] = 0
-stats["soap_operations_count"] = 0
-stats["soap_inputs_count"] = 0
-stats["soap_outputs_count"] = 0
-stats["soap_services_A"] = 0
-stats["soap_services_B"] = 0
-stats["soap_services_C"] = 0
-stats["soap_services_D"] = 0
-stats["soap_services_E"] = 0
-
-stats["soap_services_E_service_ids"] = [ ] 
-
-
-def field_or_annotation_has_value?(obj, field, annotation_attribute=field.to_s)
-  return (!obj.send(field).blank? || !obj.annotations_with_attribute(annotation_attribute).blank?)
-end
-
-
-soap_services.each do |soap_service|
+class ServiceAnnotationReporter
   
-  if soap_service.service.archived?
-    
-    puts "\nService ID: #{soap_service.service.id} is archived so ignoring."
-    
-  else
-    
-    stats["soap_services_count"] += 1
+  attr_accessor :options, :stats, :errors
   
-    has_description = true
-    has_doc_url = true
-    all_ops_have_descriptions = true
-    all_inputs_have_descriptions = true
-    all_inputs_have_descriptions_and_data = true
-    all_outputs_have_descriptions = true
-    all_outputs_have_descriptions_and_data = true
+  def initialize(args)
+    @options = {
+      :environment => (ENV['RAILS_ENV'] || "production").dup,
+    }
     
-    has_description = has_description && (field_or_annotation_has_value?(soap_service, :description) || !soap_service.description_from_soaplab.blank?)
+    args.options do |opts|
+      opts.on("-e", "--environment=name", String,
+              "Specifies the environment to run this script under (test|development|production).",
+              "Default: production") { |v| @options[:environment] = v }
     
-    has_doc_url = has_doc_url && field_or_annotation_has_value?(soap_service, :documentation_url)
+      opts.separator ""
     
-    soap_service.soap_operations.each do |soap_operation|
+      opts.on("-h", "--help", "Show this help message.") { puts opts; exit }
       
-      if soap_operation.archived?
+      opts.parse!
+    end
+    
+    @resource_types = [ OpenStruct.new({ :key => :services, :name => "All Services" }), 
+                        OpenStruct.new({ :key => :soap_services, :name => "SOAP Services" }), 
+                        OpenStruct.new({ :key => :rest_services, :name => "REST Services" }),
+                        OpenStruct.new({ :key => :soap_operations, :name => "SOAP Operations" }),
+                        OpenStruct.new({ :key => :soap_inputs, :name => "SOAP Inputs" }),
+                        OpenStruct.new({ :key => :soap_output, :name => "SOAP Output" }),
+                        OpenStruct.new({ :key => :rest_resources, :name => "REST Resources" }),
+                        OpenStruct.new({ :key => :rest_methods, :name => "REST Methods" }),
+                        OpenStruct.new({ :key => :rest_parameters, :name => "REST Parameters" }),
+                        OpenStruct.new({ :key => :rest_representations, :name => "REST Representations" }) ]
+    
+    # @stats is a special kind of hash that allow Javascript like
+    # property accessors on the keys.
+    @stats = Hashie::Mash.new
+    
+    @errors = [ ]
+    
+    # Start the Rails app
+    
+    ENV["RAILS_ENV"] = @options[:environment]
+    RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
+    
+    require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
+    
+    # Set up Haml
+    gem 'haml'
+    require 'haml'
+    require 'haml/template'
+    Haml::Template.options[:escape_html] = true
+    @haml_engine = Haml::Engine.new(IO.read(File.join(File.dirname(__FILE__), "service_annotation_report", "template.haml")))
+  end  
+  
+  def run
+    current_time = Time.now.strftime('%Y%m%d-%H%M')
+    
+    calculate_stats
+    
+    puts "\n*****\nStoring report in: 'log/service_annotation_report_#{current_time}.html'\n*****\n"
+    
+    File.open(File.join(File.dirname(__FILE__), '..', '..', 'log', "service_annotation_report_#{current_time}.html"), "w") { |f| 
+      f.write generate_html_content(current_time)
+    }
+  end
+  
+  # Calculates all the required stats for the report.
+  #
+  # Contains:
+  #   - @stats.resources
+  #     - @stats.resources.{resource_type}
+  #       - @stats.resources.{resource_type}.id
+  #       - @stats.resources.{resource_type}.name
+  #       - @stats.resources.{resource_type}.url
+  #       - @stats.resources.{resource_type}.has_description
+  #       - @stats.resources.{resource_type}.has_tag
+  #       - @stats.resources.services.service_type
+  #       - @stats.resources.services.service_instance
+  #       - @stats.resources.soap_services.has_documentation_url
+  #       - @stats.resources.rest_services.has_documentation_url
+  #       - @stats.resources.soap_services.operations
+  #       - @stats.resources.rest_services.methods
+  #   - @stats.summary
+  #     - @stats.summary.resources
+  #       - @stats.summary.resources.{resource_type}
+  #         - @stats.summary.resources.{resource_type}.total
+  #         - @stats.summary.resources.{resource_type}.has_descriptions
+  #         - @stats.summary.resources.{resource_type}.has_tags
+  #
+  # NOTE: some statistics are not relevant for individual resource types since only certain annotations
+  #       should be on certain resource types. See http://www.biocatalogue.org/wiki/doku.php?id=development:annotation.
+  def calculate_stats
+    @stats = Hashie::Mash.new
+    
+    @stats.resources = Hashie::Mash.new
+    @stats.summary = Hashie::Mash.new
+    @stats.summary.resources = Hashie::Mash.new
+    
+    # Initialise some of the collections
+    @resource_types.each do |r|
+      @stats.resources[r.key] = [ ]
+      @stats.summary.resources[r.key] = [ ]
+    end
+    
+    @stats.summary.resources.services = Service.count
+    @stats.summary.resources.soap_services = SoapService.count
+    @stats.summary.resources.soap_operations = SoapOperation.count
+    @stats.summary.resources.soap_inputs = SoapInput.count
+    @stats.summary.resources.soap_output = SoapOutput.count
+    @stats.summary.resources.rest_services = RestService.count
+    @stats.summary.resources.rest_resources = RestResource.count
+    @stats.summary.resources.rest_methods = RestMethod.count
+    @stats.summary.resources.rest_parameters = RestParameter.count
+    @stats.summary.resources.rest_representations = RestRepresentation.count
+    
+    Service.all.each do |service|
       
-        puts "\nSOAP Operation ID: #{soap_operation.id} is archived so ignoring."
+      s = Hashie::Mash.new
+      s.id = service.id
+      s.name = BioCatalogue::Util.display_name(service)
+      s.url = BioCatalogue::Api.uri_for_object(service)
+      s.has_description = "N/A"
+      s.has_tag = field_or_annotation_has_value?(service, :tag)
       
-      else
+      service_instance = service.latest_version.service_versionified
       
-        stats["soap_operations_count"] += 1
+      s.service_type = service_instance.service_type_name
       
-        all_ops_have_descriptions = all_ops_have_descriptions && field_or_annotation_has_value?(soap_operation, :description)
-        
-        soap_operation.soap_inputs.each do |soap_input|
-          
-          if soap_input.archived?
-            
-            puts "\nSOAP Input ID: #{soap_input.id} is archived so ignoring."
-            
-          else
-            
-            stats["soap_inputs_count"] += 1
-            
-            all_inputs_have_descriptions = all_inputs_have_descriptions && field_or_annotation_has_value?(soap_input, :description)
-            all_inputs_have_descriptions_and_data = all_inputs_have_descriptions_and_data && 
-                                                    field_or_annotation_has_value?(soap_input, :description) &&
-                                                    !soap_input.annotations_with_attribute("example_data").blank?
-            
-          end
-          
-        end
-        
-        soap_operation.soap_outputs.each do |soap_output|
-          
-          if soap_output.archived?
-            
-            puts "\nSOAP Output ID: #{soap_output.id} is archived so ignoring."
-            
-          else
-            
-            stats["soap_outputs_count"] += 1
-            
-            all_outputs_have_descriptions = all_outputs_have_descriptions && field_or_annotation_has_value?(soap_output, :description)
-            all_outputs_have_descriptions_and_data = all_outputs_have_descriptions_and_data && 
-                                                    field_or_annotation_has_value?(soap_output, :description) &&
-                                                    !soap_output.annotations_with_attribute("example_data").blank?
-          
-          end
-        
-        end
+      si = Hashie::Mash.new
+      si.id = service_instance.id
+      si.name = BioCatalogue::Util.display_name(service_instance)
+      si.url = BioCatalogue::Api.uri_for_object(service_instance)
+      si.has_tag = "N/A"
       
+      case service_instance
+        when SoapService
+          si.has_description = (field_or_annotation_has_value?(service_instance, :description) || service_instance.description_from_soaplab.blank?)
+          @stats.resources.soap_services << si
+        when RestService
+          si.has_description = field_or_annotation_has_value?(service_instance, :description)
+          @stats.resources.rest_services << si
       end
       
+      s.service_instance = si 
+      
+      @stats.resources.services << s
+      
     end
-    
-    puts ""
-    puts "> SOAP Service ID: #{soap_service.id}, name: #{soap_service.name}:"
-    puts "\t Has description? #{has_description}"
-    puts "\t Has documentation URL? #{has_doc_url}"
-    puts "\t No. of SOAP operations: #{soap_service.soap_operations.count}"
-    puts "\t ALL operations have descriptions? #{all_ops_have_descriptions}"
-    puts "\t ALL inputs have descriptions? #{all_inputs_have_descriptions}"
-    puts "\t ALL inputs have descriptions AND example data? #{all_inputs_have_descriptions_and_data}"
-    puts "\t ALL outputs have descriptions? #{all_outputs_have_descriptions}"
-    puts "\t ALL outputs have descriptions AND example data? #{all_outputs_have_descriptions_and_data}"
-    puts ""
-    
-    stats["soap_services_A"] += 1 if has_description
-    stats["soap_services_B"] += 1 if has_description && has_doc_url
-    stats["soap_services_C"] += 1 if has_description && all_ops_have_descriptions
-    stats["soap_services_D"] += 1 if has_description && all_ops_have_descriptions && all_inputs_have_descriptions && all_outputs_have_descriptions
-    
-    if has_description && all_ops_have_descriptions && all_inputs_have_descriptions_and_data && all_outputs_have_descriptions_and_data
-      stats["soap_services_E"] += 1
-      stats["soap_services_E_service_ids"] << soap_service.service.id
-    end
-
   end
-
+  
+  def generate_html_content(timestamp)
+    @haml_engine.render Object.new, :timestamp => timestamp, :resource_types => @resource_types, :stats => @stats, :errors => @errors
+  end
+  
+  def field_or_annotation_has_value?(obj, field, annotation_attribute=field.to_s)
+    if obj.respond_to? field
+      return (!obj.send(field).blank? || !obj.annotations_with_attribute(annotation_attribute).blank?)  
+    else
+      return !obj.annotations_with_attribute(annotation_attribute).blank?
+    end
+  end
+  
 end
 
-
-def report_stats(stats)
-  puts ""
-  puts "SUMMARY:"
-  puts "========"
-  puts ""
-  
-  puts "NOTE: all archived services, operations, inputs and outputs are ignored."
-  puts ""
-  
-  puts "Total SOAP Services: #{stats["soap_services_count"]}"
-  puts "Total SOAP Operations: #{stats["soap_operations_count"]}"
-  puts "Total SOAP Inputs: #{stats["soap_inputs_count"]}"
-  puts "Total SOAP Outputs #{stats["soap_outputs_count"]}"
-  puts ""
-  
-  puts "A. How many SOAP Services have a description? #{stats["soap_services_A"]}"
-  puts "B. How many SOAP Services have a description AND a documentation URL? #{stats["soap_services_B"]}"
-  puts "C. How many SOAP Services have a description AND all operations have a description? #{stats["soap_services_C"]}"
-  puts "D. How many SOAP Services have a description AND all operations have a description and ALL inputs/outputs have a description? #{stats["soap_services_D"]}"
-  puts "E. How many SOAP Services have a description AND all operations have a description and ALL inputs/outputs have a description AND example data? #{stats["soap_services_E"]}"
-  
-  puts "Service IDs for E - #{stats["soap_services_E_service_ids"].to_sentence}"
-end
-
-
-report_stats(stats)
-
-
-
+puts Benchmark.measure {
+  ServiceAnnotationReporter.new(ARGV.clone).run
+}

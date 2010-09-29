@@ -24,6 +24,7 @@ Mime::Type.register 'application/biocat-lite+json', :bljson
 require 'array'
 require 'object'
 require 'hash'
+require 'numeric'
 require 'mime_type'
 require 'auto_link_override'
 require 'addressable/uri'

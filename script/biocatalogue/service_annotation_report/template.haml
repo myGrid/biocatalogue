@@ -1,0 +1,44 @@
+!!! Strict
+%html
+  %head
+    %meta{'http-equiv' => 'Content-Type', :content => "text/html; charset=iso-8859-1"}
+    %title 
+      Service Annotation Report - 
+      = timestamp
+    %link{'rel' => 'icon', 'href' => 'http://www.biocatalogue.org/favicon.ico', 'type' => 'image/x-icon'}
+    %link{'rel' => 'shortcut icon', 'href' => 'http://www.biocatalogue.org/favicon.ico', 'type' => 'image/x-icon'}
+    %link{'href' => 'http://sandbox.biocatalogue.org/stylesheets/base_packaged.css', 'media' => 'screen', 'rel' => 'stylesheet', 'type' => 'text/css'} 
+  %body
+    %div{:style => "width: 800px; margin: 1em auto; background-color: #F5F5F5; border: 1px solid #DDD; padding: 1em 1.5em;"}
+      %h1 
+        Service Annotation Report - 
+        = timestamp
+      - if !errors.empty?
+        %p
+          %b Problem producing report!
+        %p
+          %b Errors:
+        %ul.simple_list
+          - errors.each do |e|
+            %li= e
+      - else
+        %div
+          %div{:style => "padding: 0.6em 0; border: 1px solid #DDD; border-width: 1px 0;"}
+            %p{:style => "margin-top: 0.3em;"}
+              %b Notes:
+            %ul.simple_list
+              %li The information harvested from Soaplab services counts as a description.
+          %br
+          %h2.center Individual Resource Types
+          %table.biocat_table{:style => "margin: 1em auto;"}
+            %tr 
+              %th Resource type
+              %th Total count
+              %th Has a descriptions
+              %th Has tags
+            - resource_types.each do |r|
+              %tr
+                %td= r.name
+                %td.center= stats.summary.resources[r.key]
+                %td.center 0
+                %td.center 0
