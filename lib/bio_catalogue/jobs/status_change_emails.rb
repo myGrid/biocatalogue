@@ -8,7 +8,12 @@ module BioCatalogue
   module Jobs
     class StatusChangeEmails < Struct.new(:subject, :text, :emails)
       def perform
-        emails.each { |e| StatusChangeMailer.deliver_text_to_email(subject, text, e) }
+        begin
+          emails.each { |e| StatusChangeMailer.deliver_text_to_email(subject, text, e) }
+        rescue Exception => ex
+          logger.warn("Exception raised while trying to deliver email to : #{e}")
+          logger.debug("#{ex}")
+        end
       end    
     end
   end

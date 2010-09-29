@@ -9,17 +9,17 @@ class ServiceTestsController < ApplicationController
   before_filter :disable_action, :only => [ :index, :new, :edit, :update ]
   before_filter :disable_action_for_api, :except => [ :show, :create, :results ]
   
-  before_filter :find_service_test, :only => [ :show, :results, :enable, :disable, :destroy, :hide ]
+  before_filter :find_service_test, :only => [ :show, :results, :enable, :disable, :destroy]
   
   # Only logged in users can add tests
   before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable ]
 
-  before_filter :authorise, :only => [ :enable, :disable, :destroy, :hide ]
+  before_filter :authorise, :only => [ :enable, :disable, :destroy ]
   
   before_filter :authorise_for_disabled, :only => [ :show ]
   
-  before_filter :authorise_for_hidden, :only => [:show ]
-
+  before_filter :authorise_for_destroy, :only => [ :destroy ]
+  
   def show
     respond_to do |format|
       format.html # show.html.erb
@@ -109,23 +109,6 @@ class ServiceTestsController < ApplicationController
     end
   end
   
-  
-  # DELETE /service_test/1
-  # DELETE /service_service/1.xml
-  def hide
-    respond_to do |format|
-      if @service_test.hide!
-        flash[:notice] = "ServiceTest with id '#{@service_test.id}' has been deleted"
-        format.html { redirect_to service_url(@service_test.service) }
-        format.xml  { head :ok }
-      else
-        flash[:error] = "Failed to delete ServiceTest with id '#{@service_test.id}'"
-        format.html { redirect_to service_url(@service_test.service) }
-      end
-    end
-  end
-  
-  
   protected
   
   def find_service_test
@@ -146,13 +129,10 @@ class ServiceTestsController < ApplicationController
     end
   end
   
-  # Only admins should access hidden tests
-  def authorise_for_hidden
-    if @service_test.hidden?
-      unless logged_in? && current_user.is_admin?
-        flash[:error] = "You are not allowed to perform this action! "
-        redirect_to @service_test.service
-      end
+  def authorise_for_destroy
+    if (@service_test.test.is_a?(UrlMonitor))
+      flash[:error] = "You are not allowed to perform this action! "
+      redirect_to @service_test.service
     end
   end
 
