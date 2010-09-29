@@ -62,7 +62,12 @@ class TestResult < ActiveRecord::Base
   end
   
   def submit_update_success_rate_job
-    Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateServiceTestSuccessRate.new(self))
+    begin
+      Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateServiceTestSuccessRate.new(self))
+    rescue Exception => ex
+      logger.error("Could not submit job to update service test success rate")
+      logger.error(ex)
+    end
   end
   
   def update_success_rate!
@@ -71,49 +76,54 @@ class TestResult < ActiveRecord::Base
   
   # previous result id is set to nil for new_with_unknown_status
   def update_status
-    if self.service_test.status_changed?
-      results = self.service_test.test_results.last(2)
-      unless results.empty?
-        case results.length
-          when 1
-            previous = TestResult.new_with_unknown_status
-          when 2
-            previous = results[0]    
-        end
+    begin
+      if self.service_test.status_changed?
+        results = self.service_test.test_results.last(2)
+        unless results.empty?
+          case results.length
+            when 1
+              previous = TestResult.new_with_unknown_status
+            when 2
+              previous = results[0]    
+          end
         
-        if USE_EVENT_LOG
+          if USE_EVENT_LOG
           
-          service = self.service_test.service
+            service = self.service_test.service
         
-          ActivityLog.create(:action => "status_change",
+            ActivityLog.create(:action => "status_change",
                            :data =>{:current_result_id => self.id, :previous_result_id =>previous.id },
                            :activity_loggable => self.service_test,
                            :referenced => service)
           
-          current_status = BioCatalogue::Monitoring::TestResultStatus.new(self)
-          previous_status = BioCatalogue::Monitoring::TestResultStatus.new(previous)
+            current_status = BioCatalogue::Monitoring::TestResultStatus.new(self)
+            previous_status = BioCatalogue::Monitoring::TestResultStatus.new(previous)
           
           
-          if ENABLE_TWITTER
-            BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so submitting a job to tweet about..."
-            msg = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label} (#{self.created_at.strftime("%Y-%m-%d %H:%M %Z")})"
-            Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), 0, 5.seconds.from_now)
-          end
-          
-          unless MONITORING_STATUS_CHANGE_RECIPIENTS.empty?
-            status_recipients_emails = MONITORING_STATUS_CHANGE_RECIPIENTS.dup
-            
-            if NOTIFY_SERVICE_RESPONSIBLE
-              status_recipients_emails = status_recipients_emails + self.responsible_emails
+            if ENABLE_TWITTER
+              BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so submitting a job to tweet about..."
+              msg = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label} (#{self.created_at.strftime("%Y-%m-%d %H:%M %Z")})"
+              Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), 0, 5.seconds.from_now)
             end
-            BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so emailing the special set of recipients about it..."
-            subject = "[BioCatalogue] Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label}"
-            text = "A monitoring test status change has occurred! Service '#{BioCatalogue::Util.display_name(service)}' has a test (#{self.service_test.test_type}, ID: #{self.service_test.test_id}) change status from #{previous_status.label} to #{current_status.label}. Last test result message: #{current_status.message}. Go to Service: #{BioCatalogue::Api.uri_for_object(service)}"
-            Delayed::Job.enqueue(BioCatalogue::Jobs::StatusChangeEmails.new(subject, text, status_recipients_emails), 0, 5.seconds.from_now)
-          end
           
+            unless MONITORING_STATUS_CHANGE_RECIPIENTS.empty?
+              status_recipients_emails = MONITORING_STATUS_CHANGE_RECIPIENTS.dup
+            
+              if NOTIFY_SERVICE_RESPONSIBLE
+                status_recipients_emails = status_recipients_emails + self.responsible_emails
+              end
+              BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so emailing the special set of recipients about it..."
+              subject = "[BioCatalogue] Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label}"
+              text = "A monitoring test status change has occurred! Service '#{BioCatalogue::Util.display_name(service)}' has a test (#{self.service_test.test_type}, ID: #{self.service_test.test_id}) change status from #{previous_status.label} to #{current_status.label}. Last test result message: #{current_status.message}. Go to Service: #{BioCatalogue::Api.uri_for_object(service)}"
+              Delayed::Job.enqueue(BioCatalogue::Jobs::StatusChangeEmails.new(subject, text, status_recipients_emails), 0, 5.seconds.from_now)
+            end
+          
+          end
         end
       end
+    rescue Exception => ex
+      logger.error("There was problems updating the status for service test : #{self.service_test.id}")
+      logger.error(ex)
     end
   end
   
