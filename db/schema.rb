@@ -432,7 +432,6 @@ ActiveRecord::Schema.define(:version => 20100928132446) do
     t.datetime "updated_at"
     t.datetime "activated_at"
     t.integer  "success_rate"
-    t.datetime "archived_at"
   end
 
   add_index "service_tests", ["service_id"], :name => "s_tests_service_id_index"
@@ -626,12 +625,12 @@ ActiveRecord::Schema.define(:version => 20100928132446) do
     t.string   "display_name"
     t.string   "openid_url"
     t.integer  "role_id"
-    t.text     "affiliation",           :limit => 16777215
+    t.text     "affiliation"
     t.string   "country"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "public_email"
-    t.boolean  "receive_notifications",                     :default => false
+    t.boolean  "receive_notifications", :default => false
     t.string   "identifier"
     t.datetime "last_active"
   end

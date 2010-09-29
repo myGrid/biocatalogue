@@ -12,7 +12,7 @@ class ServiceTestsController < ApplicationController
   before_filter :find_service_test, :only => [ :show, :results, :enable, :disable, :destroy]
   
   # Only logged in users can add tests
-  before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable ]
+  before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable, :destroy ]
 
   before_filter :authorise, :only => [ :enable, :disable, :destroy ]
   
@@ -117,21 +117,22 @@ class ServiceTestsController < ApplicationController
   end
   
   def authorise
-    unless logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_test.service)
-      flash[:error] = "You are not allowed to perform this action! "
+    unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_test.service)
+      flash[:error] = "You are not allowed to perform this action!"
       redirect_to @service_test.service
     end
   end
   
   def authorise_for_disabled
-    unless logged_in? || @service_test.enabled?
-      login_or_oauth_required
+    unless @service_test.enabled?
+      flash[:error] = "Service test is already disabled!"
+      redirect_to @service_test.service
     end
   end
   
   def authorise_for_destroy
-    if (@service_test.test.is_a?(UrlMonitor))
-      flash[:error] = "You are not allowed to perform this action! "
+    if @service_test.test.is_a?(UrlMonitor)
+      flash[:error] = "You are not allowed to perform this action!"
       redirect_to @service_test.service
     end
   end
