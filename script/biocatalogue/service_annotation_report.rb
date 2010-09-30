@@ -397,7 +397,7 @@ class ServiceAnnotationReporter
       when 3
         @stats.resources.services.each do |s|
           if s.service_instance.has_description == true
-            collection = s.service_instance.try(:soap_operations)
+            collection = s.service_instance.soap_operations
             collection ||= s.service_instance.rest_methods
             
             has = true
@@ -412,7 +412,7 @@ class ServiceAnnotationReporter
       when 4
         @stats.resources.services.each do |s|
           if s.service_instance.has_description == true
-            collection = s.service_instance.try(:soap_operations)
+            collection = s.service_instance.soap_operations
             collection ||= s.service_instance.rest_methods
             
             has = true
@@ -437,7 +437,7 @@ class ServiceAnnotationReporter
       when 5
         @stats.resources.services.each do |s|
           if s.service_instance.has_description == true
-            collection = s.service_instance.try(:soap_operations)
+            collection = s.service_instance.soap_operations
             collection ||= s.service_instance.rest_methods
             
             has = true
@@ -472,7 +472,7 @@ class Helper
     case value
       when Numeric
         if total and total.is_a? Numeric
-          return "#{value} (#{value.percent_of(total).round_with_precision(2)})%"
+          return "#{value}&nbsp;&nbsp;(<b>#{value.percent_of(total).round_with_precision(2)}</b>)%"
         end
     end
     
