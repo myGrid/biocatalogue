@@ -20,6 +20,7 @@ require 'optparse'
 require 'benchmark'
 require 'ostruct'
 require 'hashie'
+require 'pp'
 
 require File.join(File.dirname(__FILE__), "shared", "counter")
 
@@ -88,6 +89,12 @@ class ServiceAnnotationReporter
     
     calculate_stats
     
+    puts "\n*****\nStoring raw stats in: 'log/service_annotation_stats_#{current_time}.json'\n*****\n"
+    
+    File.open(File.join(File.dirname(__FILE__), '..', '..', 'log', "service_annotation_stats_#{current_time}.json"), "w") { |f| 
+      f.write @stats.to_json
+    }
+    
     puts "\n*****\nStoring report in: 'log/service_annotation_report_#{current_time}.html'\n*****\n"
     
     File.open(File.join(File.dirname(__FILE__), '..', '..', 'log', "service_annotation_report_#{current_time}.html"), "w") { |f| 
@@ -110,8 +117,8 @@ class ServiceAnnotationReporter
   #       - @stats.resources.services.service_instance
   #       - @stats.resources.soap_services.has_documentation_url
   #       - @stats.resources.rest_services.has_documentation_url
-  #       - @stats.resources.soap_services.operations
-  #       - @stats.resources.rest_services.methods
+  #       - @stats.resources.soap_services.soap_operations
+  #       - @stats.resources.rest_services.rest_methods
   #       - @stats.resources.soap_operations.inputs
   #       - @stats.resources.soap_operations.outputs
   #       - @stats.resources.rest_methods.inputs
@@ -168,10 +175,10 @@ class ServiceAnnotationReporter
       
       case service_instance
         when SoapService
-          si.merge!(more_stats_hash_for_soap_service(service_instance))
+          si = stats_hash_for_soap_service(si, service_instance)
           @stats.resources.soap_services << si
         when RestService
-          si.merge!(more_stats_hash_for_rest_service(service_instance))
+          si = stats_hash_for_rest_service(si, service_instance)
           @stats.resources.rest_services << si
       end
       
@@ -212,12 +219,10 @@ class ServiceAnnotationReporter
                         :errors => @errors
   end
   
-  def more_stats_hash_for_soap_service(soap_service)
-    h = Hashie::Mash.new
+  def stats_hash_for_soap_service(container, soap_service)
+    container.has_description = (BioCatalogue::Util.field_or_annotation_has_value?(soap_service, :description) || soap_service.description_from_soaplab.blank?)
     
-    h.has_description = (BioCatalogue::Util.field_or_annotation_has_value?(soap_service, :description) || soap_service.description_from_soaplab.blank?)
-    
-    h.operations = [ ]
+    container.soap_operations = [ ]
     
     soap_service.soap_operations.each do |soap_operation|
       sop = Hashie::Mash.new
@@ -259,20 +264,18 @@ class ServiceAnnotationReporter
         @stats.resources.soap_outputs << sout
       end
       
-      h.operations << sop
+      container.soap_operations << sop
       
       @stats.resources.soap_services << sop
     end
     
-    return h
+    return container
   end
   
-  def more_stats_hash_for_rest_service(rest_service)
-    h = Hashie::Mash.new
+  def stats_hash_for_rest_service(container, rest_service)
+    container.has_description = BioCatalogue::Util.field_or_annotation_has_value?(rest_service, :description)
     
-    h.has_description = BioCatalogue::Util.field_or_annotation_has_value?(rest_service, :description)
-    
-    h.methods = [ ]
+    container.rest_methods = [ ]
     
     rest_service.rest_methods.each do |rest_method|
       rm = Hashie::Mash.new
@@ -342,12 +345,12 @@ class ServiceAnnotationReporter
         @stats.resources.rest_representations << routrep
       end
       
-      h.methods << rm
+      container.rest_methods << rm
       
       @stats.resources.rest_methods << rm
     end
     
-    return h
+    return container
   end
   
   def calculate_summary_total_for(resource_type_key, field)
@@ -393,13 +396,13 @@ class ServiceAnnotationReporter
       when 3
         @stats.resources.services.each do |s|
           if s.service_instance.has_description == true
-            collection = s.service_instance.try(:operations)
-            collection ||= s.service_instance.methods
+            collection = s.service_instance.try(:soap_operations)
+            collection ||= s.service_instance.rest_methods
             
             has = true
             
             collection.each do |c|
-              has = has && c.has_description
+              has = has && c.has_description == true
             end
             
             counter.increment if has
@@ -408,22 +411,22 @@ class ServiceAnnotationReporter
       when 4
         @stats.resources.services.each do |s|
           if s.service_instance.has_description == true
-            collection = s.service_instance.try(:operations)
-            collection ||= s.service_instance.methods
+            collection = s.service_instance.try(:soap_operations)
+            collection ||= s.service_instance.rest_methods
             
             has = true
             
             collection.each do |c|
-              has = has && c.has_description
-            end
-            
-            if has
-              c.inputs.each do |i|
-                has = has && i.has_description
-              end
+              has = has && c.has_description == true
               
-              c.outputs.each do |o|
-                has = has && o.has_description
+              if has
+                c.inputs.each do |i|
+                  has = has && i.has_description == true
+                end
+                
+                c.outputs.each do |o|
+                  has = has && o.has_description == true
+                end
               end
             end
             
@@ -433,22 +436,22 @@ class ServiceAnnotationReporter
       when 5
         @stats.resources.services.each do |s|
           if s.service_instance.has_description == true
-            collection = s.service_instance.try(:operations)
-            collection ||= s.service_instance.methods
+            collection = s.service_instance.try(:soap_operations)
+            collection ||= s.service_instance.rest_methods
             
             has = true
             
             collection.each do |c|
-              has = has && c.has_description
-            end
-            
-            if has
-              c.inputs.each do |i|
-                has = has && i.has_description && i.has_example
-              end
+              has = has && c.has_description == true
               
-              c.outputs.each do |o|
-                has = has && o.has_description && o.has_example
+              if has
+                c.inputs.each do |i|
+                  has = has && i.has_description == true && i.has_example == true
+                end
+                
+                c.outputs.each do |o|
+                  has = has && o.has_description == true && o.has_example == true
+                end
               end
             end
             
