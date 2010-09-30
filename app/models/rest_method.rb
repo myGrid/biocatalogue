@@ -50,13 +50,13 @@ class RestMethod < ActiveRecord::Base
            :through => :rest_method_parameters,
            :source => :rest_parameter,
            :class_name => "RestParameter",
-           :conditions => [ "rest_method_parameters.http_cycle = ?", "request" ]
+           :conditions => [ "rest_method_parameters.http_cycle = ? AND rest_parameters.archived_at IS NULL", "request" ]
   
   has_many :response_parameters,
            :through => :rest_method_parameters,
            :source => :rest_parameter,
            :class_name => "RestParameter",
-           :conditions => [ "rest_method_parameters.http_cycle = ?", "response" ]
+           :conditions => [ "rest_method_parameters.http_cycle = ? AND rest_parameters.archived_at IS NULL", "response" ]
            
   # =====================
   
@@ -74,13 +74,13 @@ class RestMethod < ActiveRecord::Base
            :through => :rest_method_representations,
            :source => :rest_representation,
            :class_name => "RestRepresentation",
-           :conditions => [ "rest_method_representations.http_cycle = ?", "request" ]
+           :conditions => [ "rest_method_representations.http_cycle = ? AND rest_representations.archived_at IS NULL", "request" ]
   
   has_many :response_representations,
            :through => :rest_method_representations,
            :source => :rest_representation,
            :class_name => "RestRepresentation",
-           :conditions => [ "rest_method_representations.http_cycle = ?", "response" ]
+           :conditions => [ "rest_method_representations.http_cycle = ? AND rest_representations.archived_at IS NULL", "response" ]
   
   # ==========================
   
