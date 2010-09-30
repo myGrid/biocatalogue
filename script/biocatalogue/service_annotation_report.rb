@@ -227,7 +227,7 @@ class ServiceAnnotationReporter
   end
   
   def stats_hash_for_soap_service(container, soap_service)
-    container.has_description = (BioCatalogue::Util.field_or_annotation_has_value?(soap_service, :description) || soap_service.description_from_soaplab.blank?)
+    container.has_description = (BioCatalogue::Util.field_or_annotation_has_value?(soap_service, :description) || !soap_service.description_from_soaplab.blank?)
     
     container.soap_operations = [ ]
     
