@@ -27,7 +27,7 @@ NOT_APPLICABLE = "N/A".freeze
 
 class ServiceAnnotationReporter
   
-  attr_accessor :options, :stats, :errors
+  attr_accessor :options, :stats, :errors, :resource_types, :annotation_levels
   
   def initialize(args)
     @options = {
@@ -54,7 +54,13 @@ class ServiceAnnotationReporter
                         OpenStruct.new({ :key => :soap_outputs, :name => "SOAP Outputs" }),
                         OpenStruct.new({ :key => :rest_methods, :name => "REST Methods" }),
                         OpenStruct.new({ :key => :rest_parameters, :name => "REST Parameters" }),
-                        OpenStruct.new({ :key => :rest_representations, :name => "REST Representations" }) ]
+                        OpenStruct.new({ :key => :rest_representations, :name => "REST Representations" }) ].freeze
+    
+    @annotation_levels = [ OpenStruct.new({ :key => :a, :level => 1, :description => "Services that have a description" }),
+                           OpenStruct.new({ :key => :b, :level => 2, :description => "Services that have a description AND a documentation URL" }),
+                           OpenStruct.new({ :key => :c, :level => 3, :description => "Services that have a description AND all operations/methods have a description" }),
+                           OpenStruct.new({ :key => :d, :level => 4, :description => "Services that have a description AND all operations/methods have a description AND all inputs/outputs have a description" }),
+                           OpenStruct.new({ :key => :e, :level => 5, :description => "Services that have a description AND all operations/methods have a description AND all inputs/outputs have a description and an example" }) ].freeze
     
     # @stats is a special kind of hash that allow Javascript like
     # property accessors on the keys.
@@ -108,10 +114,8 @@ class ServiceAnnotationReporter
   #       - @stats.resources.rest_services.methods
   #       - @stats.resources.soap_operations.inputs
   #       - @stats.resources.soap_operations.outputs
-  #       - @stats.resources.rest_methods.input_parameters
-  #       - @stats.resources.rest_methods.input_representations
-  #       - @stats.resources.rest_methods.output_parameters
-  #       - @stats.resources.rest_methods.output_representations
+  #       - @stats.resources.rest_methods.inputs
+  #       - @stats.resources.rest_methods.outputs
   #   - @stats.summary
   #     - @stats.summary.resources
   #       - @stats.summary.resources.{resource_type}
@@ -119,6 +123,8 @@ class ServiceAnnotationReporter
   #         - @stats.summary.resources.{resource_type}.has_descriptions
   #         - @stats.summary.resources.{resource_type}.has_tags
   #         - @stats.summary.resources.{resource_type}.has_examples
+  #   - @stats.summary.levels
+  #     - @stats.summary.levels.{level_key}
   #
   # NOTE: some statistics are not relevant for individual resource types since only certain annotations
   #       should be on certain resource types. See http://www.biocatalogue.org/wiki/doku.php?id=development:annotation.
@@ -128,6 +134,7 @@ class ServiceAnnotationReporter
     @stats.resources = Hashie::Mash.new
     @stats.summary = Hashie::Mash.new
     @stats.summary.resources = Hashie::Mash.new
+    @stats.summary.levels = Hashie::Mash.new
     
     # Initialise some of the collections
     
@@ -181,7 +188,6 @@ class ServiceAnnotationReporter
     @stats.summary.resources.soap_inputs.total = SoapInput.count
     @stats.summary.resources.soap_outputs.total = SoapOutput.count
     @stats.summary.resources.rest_services.total = RestService.count
-    @stats.summary.resources.rest_resources.total = RestResource.count
     @stats.summary.resources.rest_methods.total = RestMethod.count
     @stats.summary.resources.rest_parameters.total = RestParameter.count
     @stats.summary.resources.rest_representations.total = RestRepresentation.count
@@ -191,10 +197,19 @@ class ServiceAnnotationReporter
       @stats.summary.resources[r.key].has_tags = calculate_summary_total_for(r.key, :has_tag)
       @stats.summary.resources[r.key].has_examples = calculate_summary_total_for(r.key, :has_example)
     end
+    
+    @annotation_levels.each do |l|
+      @stats.summary.levels[l.key] = calculate_summary_level_for(l.level)
+    end
   end
   
   def generate_html_content(timestamp)
-    @haml_engine.render Object.new, :timestamp => timestamp, :resource_types => @resource_types, :stats => @stats, :errors => @errors
+    @haml_engine.render Object.new, 
+                        :timestamp => timestamp, 
+                        :resource_types => @resource_types, 
+                        :annotation_levels => @annotation_levels, 
+                        :stats => @stats, 
+                        :errors => @errors
   end
   
   def more_stats_hash_for_soap_service(soap_service)
@@ -268,10 +283,8 @@ class ServiceAnnotationReporter
       rm.has_tag = BioCatalogue::Util.field_or_annotation_has_value?(rest_method, :tag)
       rm.has_example = BioCatalogue::Util.field_or_annotation_has_value?(rest_method, :example_endpoint)
       
-      rm.input_parameters = [ ]
-      rm.input_representations = [ ]
-      rm.output_parameters = [ ]
-      rm.output_representations = [ ]
+      rm.inputs = [ ]
+      rm.outputs = [ ]
       
       rest_method.request_parameters.each do |rest_parameter|
         rinp = Hashie::Mash.new
@@ -282,7 +295,7 @@ class ServiceAnnotationReporter
         rinp.has_tag = BioCatalogue::Util.field_or_annotation_has_value?(rest_parameter, :tag)
         rinp.has_example = BioCatalogue::Util.field_or_annotation_has_value?(rest_parameter, :example_data)
         
-        rm.input_parameters << rinp
+        rm.inputs << rinp
         
         @stats.resources.rest_parameters << rinp
       end
@@ -296,7 +309,7 @@ class ServiceAnnotationReporter
         rinrep.has_tag = BioCatalogue::Util.field_or_annotation_has_value?(rest_representation, :tag)
         rinrep.has_example = BioCatalogue::Util.field_or_annotation_has_value?(rest_representation, :example_data)
         
-        rm.input_representations << rinrep
+        rm.inputs << rinrep
         
         @stats.resources.rest_representations << rinrep
       end
@@ -310,7 +323,7 @@ class ServiceAnnotationReporter
         routp.has_tag = BioCatalogue::Util.field_or_annotation_has_value?(rest_parameter, :tag)
         routp.has_example = BioCatalogue::Util.field_or_annotation_has_value?(rest_parameter, :example_data)
         
-        rm.output_parameters << routp
+        rm.outputs << routp
         
         @stats.resources.rest_parameters << routp
       end
@@ -324,7 +337,7 @@ class ServiceAnnotationReporter
         routrep.has_tag = BioCatalogue::Util.field_or_annotation_has_value?(rest_representation, :tag)
         routrep.has_example = BioCatalogue::Util.field_or_annotation_has_value?(rest_representation, :example_data)
         
-        rm.output_representations << routrep
+        rm.outputs << routrep
         
         @stats.resources.rest_representations << routrep
       end
@@ -361,6 +374,92 @@ class ServiceAnnotationReporter
     return value
   end
   
+  def calculate_summary_level_for(level)
+    counter = Counter.new
+    
+    case level
+      when 1
+        @stats.resources.services.each do |s|
+          if s.service_instance.has_description == true
+            counter.increment
+          end
+        end
+      when 2
+        @stats.resources.services.each do |s|
+          if s.service_instance.has_description == true && s.service_instance.has_documentation_url
+            counter.increment
+          end
+        end
+      when 3
+        @stats.resources.services.each do |s|
+          if s.service_instance.has_description == true
+            collection = s.service_instance.try(:operations)
+            collection ||= s.service_instance.methods
+            
+            has = true
+            
+            collection.each do |c|
+              has = has && c.has_description
+            end
+            
+            counter.increment if has
+          end
+        end
+      when 4
+        @stats.resources.services.each do |s|
+          if s.service_instance.has_description == true
+            collection = s.service_instance.try(:operations)
+            collection ||= s.service_instance.methods
+            
+            has = true
+            
+            collection.each do |c|
+              has = has && c.has_description
+            end
+            
+            if has
+              c.inputs.each do |i|
+                has = has && i.has_description
+              end
+              
+              c.outputs.each do |o|
+                has = has && o.has_description
+              end
+            end
+            
+            counter.increment if has
+          end
+        end
+      when 5
+        @stats.resources.services.each do |s|
+          if s.service_instance.has_description == true
+            collection = s.service_instance.try(:operations)
+            collection ||= s.service_instance.methods
+            
+            has = true
+            
+            collection.each do |c|
+              has = has && c.has_description
+            end
+            
+            if has
+              c.inputs.each do |i|
+                has = has && i.has_description && i.has_example
+              end
+              
+              c.outputs.each do |o|
+                has = has && o.has_description && o.has_example
+              end
+            end
+            
+            counter.increment if has
+          end
+        end
+    end
+    
+    return counter.count
+  end
+  
 end
 
 module Util
@@ -369,11 +468,15 @@ module Util
     case value
       when Float
         if total and total.is_a? Numeric
-          return "#{value.percent_of(total).round_with_precision(2)}%"
+          return "#{value} (#{value.percent_of(total).round_with_precision(2)})%"
         end
     end
     
     return value.try(:to_s)
+  end
+  
+  def self.total_service_instances(stats)
+    return stats.summary.resources.soap_services.total + stats.summary.resources.rest_services.total
   end
   
 end

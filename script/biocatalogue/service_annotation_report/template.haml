@@ -29,7 +29,7 @@
             %ul.simple_list
               %li The information harvested from Soaplab services counts as a description.
           %br
-          %h2.center Individual Resource Types
+          %h2.center Summary of Individual Resource Types
           %table.biocat_table{:style => "margin: 1em auto;"}
             %tr 
               %th Resource type
@@ -44,3 +44,16 @@
                 %td.center= Util.format_value(stats.summary.resources[r.key].has_descriptions, stats.summary.resources[r.key].total)
                 %td.center= Util.format_value(stats.summary.resources[r.key].has_tags, stats.summary.resources[r.key].total)
                 %td.center= Util.format_value(stats.summary.resources[r.key].has_examples, stats.summary.resources[r.key].total)
+          %br
+          %h2.center Annotation Levels
+          %table.biocat_table{:style => "margin: 1em auto;"}
+            %tr
+              %th Level
+              %th Description
+              %th Value
+            - annotation_levels.each do |l|
+              %tr
+                %td.center
+                  %b= l.level
+                %td= l.description
+                %td.center= Util.format_value(stats.summary.levels[l.key], stats.summary.resources.services.total)
