@@ -148,6 +148,7 @@ class ServiceAnnotationReporter
     @resource_types.each do |r|
       @stats.resources[r.key] = [ ]
       @stats.summary.resources[r.key] = Hashie::Mash.new
+      @stats.summary.resources[r.key].total = 0
     end
     
     # Build the information about the resources
@@ -178,28 +179,31 @@ class ServiceAnnotationReporter
           when SoapService
             si = stats_hash_for_soap_service(si, service_instance)
             @stats.resources.soap_services << si
+            @stats.summary.resources.soap_services.total += 1
           when RestService
             si = stats_hash_for_rest_service(si, service_instance)
             @stats.resources.rest_services << si
+            @stats.summary.resources.rest_services.total += 1
         end
         
         s.service_instance = si
         
         @stats.resources.services << s
+        @stats.summary.resources.services.total += 1
       end
     end
     
     # Now generate the summary stats
     
-    @stats.summary.resources.services.total = Service.count(:conditions => "archived_at IS NULL")
-    @stats.summary.resources.soap_services.total = SoapService.count(:conditions => "archived_at IS NULL")
-    @stats.summary.resources.soap_operations.total = SoapOperation.count(:conditions => "archived_at IS NULL")
-    @stats.summary.resources.soap_inputs.total = SoapInput.count(:conditions => "archived_at IS NULL")
-    @stats.summary.resources.soap_outputs.total = SoapOutput.count(:conditions => "archived_at IS NULL")
-    @stats.summary.resources.rest_services.total = RestService.count(:conditions => "archived_at IS NULL")
-    @stats.summary.resources.rest_methods.total = RestMethod.count(:conditions => "archived_at IS NULL")
-    @stats.summary.resources.rest_parameters.total = RestParameter.count(:conditions => "archived_at IS NULL")
-    @stats.summary.resources.rest_representations.total = RestRepresentation.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.services.total = Service.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.soap_services.total = SoapService.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.soap_operations.total = SoapOperation.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.soap_inputs.total = SoapInput.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.soap_outputs.total = SoapOutput.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.rest_services.total = RestService.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.rest_methods.total = RestMethod.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.rest_parameters.total = RestParameter.count(:conditions => "archived_at IS NULL")
+#    @stats.summary.resources.rest_representations.total = RestRepresentation.count(:conditions => "archived_at IS NULL")
     
     @resource_types.each do |r|
       @stats.summary.resources[r.key].has_descriptions = calculate_summary_total_for(r.key, :has_description)
@@ -251,6 +255,7 @@ class ServiceAnnotationReporter
         sop.inputs << sin
         
         @stats.resources.soap_inputs << sin
+        @stats.summary.resources.soap_inputs.total += 1
       end
       
       soap_operation.soap_outputs.each do |soap_output|
@@ -265,11 +270,13 @@ class ServiceAnnotationReporter
         sop.outputs << sout
         
         @stats.resources.soap_outputs << sout
+        @stats.summary.resources.soap_outputs.total += 1
       end
       
       container.soap_operations << sop
       
       @stats.resources.soap_operations << sop
+      @stats.summary.resources.soap_operations.total += 1
     end
     
     return container
@@ -304,6 +311,7 @@ class ServiceAnnotationReporter
         rm.inputs << rinp
         
         @stats.resources.rest_parameters << rinp
+        @stats.summary.resources.rest_parameters.total += 1
       end
       
       rest_method.request_representations.each do |rest_representation|
@@ -318,6 +326,7 @@ class ServiceAnnotationReporter
         rm.inputs << rinrep
         
         @stats.resources.rest_representations << rinrep
+        @stats.summary.resources.rest_representations.total += 1
       end
       
       rest_method.response_parameters.each do |rest_parameter|
@@ -332,6 +341,7 @@ class ServiceAnnotationReporter
         rm.outputs << routp
         
         @stats.resources.rest_parameters << routp
+        @stats.summary.resources.rest_parameters.total += 1
       end
       
       rest_method.response_representations.each do |rest_representation|
@@ -346,11 +356,13 @@ class ServiceAnnotationReporter
         rm.outputs << routrep
         
         @stats.resources.rest_representations << routrep
+        @stats.summary.resources.rest_representations.total += 1
       end
       
       container.rest_methods << rm
       
       @stats.resources.rest_methods << rm
+      @stats.summary.resources.rest_methods.total += 1
     end
     
     return container
@@ -469,12 +481,13 @@ class ServiceAnnotationReporter
 end
 
 class Helper
-  
   def format_value(value, total=nil)
     case value
       when Numeric
         if total and total.is_a? Numeric
-          return "#{value}&nbsp;&nbsp;-&nbsp;&nbsp;<b>#{value.percent_of(total).round_with_precision(2)}%</b>"
+          return "#{number_with_delimiter(value)}&nbsp;&nbsp;[<b>#{value.percent_of(total).round_with_precision(1)}%</b>]"
+        else
+          return number_with_delimiter(value)
         end
     end
     
@@ -485,6 +498,27 @@ class Helper
     return stats.summary.resources.soap_services.total + stats.summary.resources.rest_services.total
   end
   
+  def number_with_delimiter(number, options = {})
+    options.symbolize_keys!
+    
+    begin
+      Float(number)
+    rescue ArgumentError, TypeError
+      if options[:raise]
+        raise InvalidNumberError, number
+      else
+        return number
+      end
+    end
+    
+    defaults = I18n.translate(:'number.format', :locale => options[:locale], :default => {})
+    options = options.reverse_merge(defaults)
+    
+    parts = number.to_s.split('.')
+    parts[0].gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1#{options[:delimiter]}")
+    parts.join(options[:separator])
+    
+  end
 end
 
 puts Benchmark.measure {
