@@ -34,11 +34,13 @@
             %tr 
               %th Resource type
               %th Total count
-              %th Has a descriptions
+              %th Has descriptions
               %th Has tags
+              %th Has examples
             - resource_types.each do |r|
               %tr
                 %td= r.name
-                %td.center= stats.summary.resources[r.key]
-                %td.center 0
-                %td.center 0
+                %td.center= Util.format_value(stats.summary.resources[r.key].total)
+                %td.center= Util.format_value(stats.summary.resources[r.key].has_descriptions, stats.summary.resources[r.key].total)
+                %td.center= Util.format_value(stats.summary.resources[r.key].has_tags, stats.summary.resources[r.key].total)
+                %td.center= Util.format_value(stats.summary.resources[r.key].has_examples, stats.summary.resources[r.key].total)

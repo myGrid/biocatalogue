@@ -444,6 +444,14 @@ module BioCatalogue
       
       return true
     end
+    
+    def self.field_or_annotation_has_value?(obj, field, annotation_attribute=field.to_s)
+      if obj.respond_to? field
+        return (!obj.send(field).blank? || !obj.annotations_with_attribute(annotation_attribute).blank?)  
+      else
+        return !obj.annotations_with_attribute(annotation_attribute).blank?
+      end
+    end
 
   end
 end
