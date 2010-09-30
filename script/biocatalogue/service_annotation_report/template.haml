@@ -40,10 +40,10 @@
             - resource_types.each do |r|
               %tr
                 %td= r.name
-                %td.center= Util.format_value(stats.summary.resources[r.key].total)
-                %td.center= Util.format_value(stats.summary.resources[r.key].has_descriptions, stats.summary.resources[r.key].total)
-                %td.center= Util.format_value(stats.summary.resources[r.key].has_tags, stats.summary.resources[r.key].total)
-                %td.center= Util.format_value(stats.summary.resources[r.key].has_examples, stats.summary.resources[r.key].total)
+                %td.center= helper.format_value(stats.summary.resources[r.key].total)
+                %td.center= helper.format_value(stats.summary.resources[r.key].has_descriptions, stats.summary.resources[r.key].total)
+                %td.center= helper.format_value(stats.summary.resources[r.key].has_tags, stats.summary.resources[r.key].total)
+                %td.center= helper.format_value(stats.summary.resources[r.key].has_examples, stats.summary.resources[r.key].total)
           %br
           %h2.center Annotation Levels
           %table.biocat_table{:style => "margin: 1em auto;"}
@@ -56,4 +56,4 @@
                 %td.center
                   %b= l.level
                 %td= l.description
-                %td.center= Util.format_value(stats.summary.levels[l.key], stats.summary.resources.services.total)
+                %td.center= helper.format_value(stats.summary.levels[l.key], stats.summary.resources.services.total)

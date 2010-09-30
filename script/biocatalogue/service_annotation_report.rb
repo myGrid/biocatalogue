@@ -150,6 +150,8 @@ class ServiceAnnotationReporter
       @stats.summary.resources[r.key] = Hashie::Mash.new
     end
     
+    return
+    
     # Build the information about the resources
     
     Service.all.each do |service|
@@ -216,7 +218,8 @@ class ServiceAnnotationReporter
                         :resource_types => @resource_types, 
                         :annotation_levels => @annotation_levels, 
                         :stats => @stats, 
-                        :errors => @errors
+                        :errors => @errors,
+                        :helper => Helper.new
   end
   
   def stats_hash_for_soap_service(container, soap_service)
@@ -465,9 +468,9 @@ class ServiceAnnotationReporter
   
 end
 
-module Util
+class Helper
   
-  def self.format_value(value, total=nil)
+  def format_value(value, total=nil)
     case value
       when Float
         if total and total.is_a? Numeric
@@ -478,7 +481,7 @@ module Util
     return value.try(:to_s)
   end
   
-  def self.total_service_instances(stats)
+  def total_service_instances(stats)
     return stats.summary.resources.soap_services.total + stats.summary.resources.rest_services.total
   end
   
