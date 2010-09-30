@@ -472,7 +472,7 @@ class Helper
     case value
       when Numeric
         if total and total.is_a? Numeric
-          return "#{value}&nbsp;&nbsp;(<b>#{value.percent_of(total).round_with_precision(2)}</b>)%"
+          return "#{value}&nbsp;&nbsp;-&nbsp;&nbsp;<b>#{value.percent_of(total).round_with_precision(2)}%</b>"
         end
     end
     
