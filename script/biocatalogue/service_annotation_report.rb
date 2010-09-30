@@ -153,51 +153,53 @@ class ServiceAnnotationReporter
     # Build the information about the resources
     
     Service.all.each do |service|
-      s = Hashie::Mash.new
-      s.id = service.id
-      s.name = BioCatalogue::Util.display_name(service)
-      s.url = BioCatalogue::Api.uri_for_object(service)
-      s.has_description = NOT_APPLICABLE
-      s.has_tag = BioCatalogue::Util.field_or_annotation_has_value?(service, :tag)
-      s.has_example = NOT_APPLICABLE
-      
-      service_instance = service.latest_version.service_versionified
-      
-      s.service_type = service_instance.service_type_name
-      
-      si = Hashie::Mash.new
-      si.id = service_instance.id
-      si.name = BioCatalogue::Util.display_name(service_instance)
-      si.url = BioCatalogue::Api.uri_for_object(service_instance)
-      si.has_tag = NOT_APPLICABLE
-      si.has_example = NOT_APPLICABLE
-      si.has_documentation_url = BioCatalogue::Util.field_or_annotation_has_value?(service_instance, :documentation_url)
-      
-      case service_instance
-        when SoapService
-          si = stats_hash_for_soap_service(si, service_instance)
-          @stats.resources.soap_services << si
-        when RestService
-          si = stats_hash_for_rest_service(si, service_instance)
-          @stats.resources.rest_services << si
+      unless service.archived?
+        s = Hashie::Mash.new
+        s.id = service.id
+        s.name = BioCatalogue::Util.display_name(service)
+        s.url = BioCatalogue::Api.uri_for_object(service)
+        s.has_description = NOT_APPLICABLE
+        s.has_tag = BioCatalogue::Util.field_or_annotation_has_value?(service, :tag)
+        s.has_example = NOT_APPLICABLE
+        
+        service_instance = service.latest_version.service_versionified
+        
+        s.service_type = service_instance.service_type_name
+        
+        si = Hashie::Mash.new
+        si.id = service_instance.id
+        si.name = BioCatalogue::Util.display_name(service_instance)
+        si.url = BioCatalogue::Api.uri_for_object(service_instance)
+        si.has_tag = NOT_APPLICABLE
+        si.has_example = NOT_APPLICABLE
+        si.has_documentation_url = BioCatalogue::Util.field_or_annotation_has_value?(service_instance, :documentation_url)
+        
+        case service_instance
+          when SoapService
+            si = stats_hash_for_soap_service(si, service_instance)
+            @stats.resources.soap_services << si
+          when RestService
+            si = stats_hash_for_rest_service(si, service_instance)
+            @stats.resources.rest_services << si
+        end
+        
+        s.service_instance = si
+        
+        @stats.resources.services << s
       end
-      
-      s.service_instance = si
-      
-      @stats.resources.services << s
     end
     
     # Now generate the summary stats
     
-    @stats.summary.resources.services.total = Service.count
-    @stats.summary.resources.soap_services.total = SoapService.count
-    @stats.summary.resources.soap_operations.total = SoapOperation.count
-    @stats.summary.resources.soap_inputs.total = SoapInput.count
-    @stats.summary.resources.soap_outputs.total = SoapOutput.count
-    @stats.summary.resources.rest_services.total = RestService.count
-    @stats.summary.resources.rest_methods.total = RestMethod.count
-    @stats.summary.resources.rest_parameters.total = RestParameter.count
-    @stats.summary.resources.rest_representations.total = RestRepresentation.count
+    @stats.summary.resources.services.total = Service.count(:conditions => "archived_at IS NULL")
+    @stats.summary.resources.soap_services.total = SoapService.count(:conditions => "archived_at IS NULL")
+    @stats.summary.resources.soap_operations.total = SoapOperation.count(:conditions => "archived_at IS NULL")
+    @stats.summary.resources.soap_inputs.total = SoapInput.count(:conditions => "archived_at IS NULL")
+    @stats.summary.resources.soap_outputs.total = SoapOutput.count(:conditions => "archived_at IS NULL")
+    @stats.summary.resources.rest_services.total = RestService.count(:conditions => "archived_at IS NULL")
+    @stats.summary.resources.rest_methods.total = RestMethod.count(:conditions => "archived_at IS NULL")
+    @stats.summary.resources.rest_parameters.total = RestParameter.count(:conditions => "archived_at IS NULL")
+    @stats.summary.resources.rest_representations.total = RestRepresentation.count(:conditions => "archived_at IS NULL")
     
     @resource_types.each do |r|
       @stats.summary.resources[r.key].has_descriptions = calculate_summary_total_for(r.key, :has_description)
