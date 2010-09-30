@@ -150,8 +150,6 @@ class ServiceAnnotationReporter
       @stats.summary.resources[r.key] = Hashie::Mash.new
     end
     
-    return
-    
     # Build the information about the resources
     
     Service.all.each do |service|
