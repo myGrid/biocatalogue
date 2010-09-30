@@ -267,7 +267,7 @@ class ServiceAnnotationReporter
       
       container.soap_operations << sop
       
-      @stats.resources.soap_services << sop
+      @stats.resources.soap_operations << sop
     end
     
     return container
@@ -359,7 +359,7 @@ class ServiceAnnotationReporter
     
     # Check the first one of these resources to see if the field is applicable for this resource
     
-    unless @stats.resources[resource_type_key].empty? or @stats.resources[resource_type_key].first[field].blank?
+    unless @stats.resources[resource_type_key].empty? or @stats.resources[resource_type_key].first[field].nil? 
       if @stats.resources[resource_type_key].first[field] == NOT_APPLICABLE
         value = NOT_APPLICABLE
       else
@@ -390,7 +390,7 @@ class ServiceAnnotationReporter
         end
       when 2
         @stats.resources.services.each do |s|
-          if s.service_instance.has_description == true && s.service_instance.has_documentation_url
+          if (s.service_instance.has_description == true) && (s.service_instance.has_documentation_url == true)
             counter.increment
           end
         end
@@ -403,7 +403,7 @@ class ServiceAnnotationReporter
             has = true
             
             collection.each do |c|
-              has = has && c.has_description == true
+              has = has && (c.has_description == true)
             end
             
             counter.increment if has
@@ -418,15 +418,15 @@ class ServiceAnnotationReporter
             has = true
             
             collection.each do |c|
-              has = has && c.has_description == true
+              has = has && (c.has_description == true)
               
               if has
                 c.inputs.each do |i|
-                  has = has && i.has_description == true
+                  has = has && (i.has_description == true)
                 end
                 
                 c.outputs.each do |o|
-                  has = has && o.has_description == true
+                  has = has && (o.has_description == true)
                 end
               end
             end
@@ -443,15 +443,15 @@ class ServiceAnnotationReporter
             has = true
             
             collection.each do |c|
-              has = has && c.has_description == true
+              has = has && (c.has_description == true)
               
               if has
                 c.inputs.each do |i|
-                  has = has && i.has_description == true && i.has_example == true
+                  has = has && (i.has_description == true) && (i.has_example == true)
                 end
                 
                 c.outputs.each do |o|
-                  has = has && o.has_description == true && o.has_example == true
+                  has = has && (o.has_description == true) && (o.has_example == true)
                 end
               end
             end
@@ -470,7 +470,7 @@ class Helper
   
   def format_value(value, total=nil)
     case value
-      when Float
+      when Numeric
         if total and total.is_a? Numeric
           return "#{value} (#{value.percent_of(total).round_with_precision(2)})%"
         end
