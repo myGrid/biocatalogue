@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
-
-# Generate a list of links found in descriptions and other annotations
-# and check the status of the links
+#
+# This script generate a list of links found in descriptions and other annotations
+# and checks the status of the links . It then produces an html file with a table of links which
+# might no longer be accessible. It is expected that a human would follow up on
+# the flags raised by this script. The html file generated is place in the /public folder 
+# 
 #
 # NOTE : This is meant to only flag links that might need to be checked
 #        by a human curator
@@ -14,9 +17,6 @@
 # Depedencies:
 # - Rails (v2.3.2)
 #
-# TODO : add documentation URLs to the list of links
-# TODO : parse URLs before check
-# TODO : Extend to Rest services. These are failing bec of a bug with the rest service models!
 
 require 'optparse'
 require 'benchmark'
@@ -52,25 +52,66 @@ class LinksChecker
   end  
   
   
-    
-  #puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/link_checker_{current_time}.log' ..."
-  #$stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "links_checker_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
-  #$stdout.sync = true
-  
   def run 
-    all_links = []
+    @all_links           = []
+    @all_data_with_links = []
     Service.all.each do |service|
-      unless service.latest_version.service_versionified.is_a?(RestService)
-        puts "Getting links in descriptions for service : #{service.name}"
-        #pp self.check_all(links_for_service(service))
-        all_links << links_for_service_h(service) unless links_for_service_h(service).empty?
-      end
+      puts "Searching link for service : #{service.name}"
+      @all_links.concat(links_for_service(service))
+      @all_data_with_links << links_for_service_h(service) unless links_for_service_h(service).empty?
     end
-    pp all_links
+    @checked_links = self.check_all(@all_links.uniq)
+    self.report(@all_data_with_links, @checked_links )
   end
   
   protected
   
+  def report(all_data_with_links, all_links_with_status)
+    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/public/link_checker_{current_time}.html' ..."
+    $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'public', "links_checker_#{Time.now.strftime('%Y%m%d-%H%M')}.html"), "w")
+    $stdout.sync = true
+    puts '<html>'
+    
+    puts "<h3> List of links that need curator attention : Generated on #{Time.now.strftime("%A %B %d , %Y")}</h3>"
+    puts "<hr/>"
+    
+    puts '<table border=2>'
+    puts '<th> Service Name </th>'
+    puts '<th> Component Name </th>'
+    puts '<th> Link </th>'
+    puts '<th> Link Status </th>'
+    
+    count =0
+    all_data_with_links.each do |service_item|
+      bg = "#ffbb2A"
+      if count % 2 == 0
+        bg = "#aabbcc"
+      end
+      self.report_for_service(service_item, all_links_with_status , bg)
+      count = count + 1
+    end
+    
+    puts '</table>'
+    puts '</html>'
+    $stdout = STDOUT
+  end
+  
+  def report_for_service(service_item,  all_links_with_status, bg="#aabbcc")
+    service_item.each do |name, component_links| # service_item is a hash
+      component_links.each do |cl| # each cl is a hash
+        cl.each do |cname, links|
+          links.each do |link|
+            if all_links_with_status[link] == false
+              puts "<tr bgcolor='#{bg}'>"
+              puts "<td>#{name}</td>  <td>#{cname} </td>  <td>#{link} </td>  <td>#{all_links_with_status[link]} </td>"
+              puts '</tr>'
+            end
+          end
+        end
+      end
+    end
+  end
+    
   def service_annotatables(service)
     annotatables     = []
     service_instance = service.latest_version.service_versionified
@@ -98,12 +139,30 @@ class LinksChecker
   
   def get_links_from_text(text)
     pieces = text.split
-    pieces.collect!{ |p| p if p.match('http|www')}.compact
+    pieces.collect!{ |p| self.parse_link(p) if p.match('http|www')}.compact
   end
   
-  #TODO : parse the urls before running check
+  # This is attempt to put links into format.
+  # It is anecdotal as it is designed looking at the
+  # the data. May not work for all links
   def parse_link(link)
+    return nil if link.nil?
+    while link.match('^\(|^\[')  # remove leading '(', '[' 
+      link = link[1, (link.size-1)]
+    end
+    while link.match('\)$|\.$|\\$')
+      link = link[0, (link.size-1)]
+    end
+    if link.match('^www')
+      link = 'http://' + link
+    end
     
+    if link.match("^href|^HREF")
+      pieces = link.split('"')
+      pieces = link.split("'") if pieces.size == 1
+      link = pieces.collect!{ |p| p if p.match('http|www')}.compact.first
+    end
+    return link
   end
   
   def links_for_annotatable(annotatable)
@@ -115,7 +174,14 @@ class LinksChecker
       self.non_provider_annotations(annotatable).each do |ann|
         links.concat(self.get_links_from_text(ann))  
       end
+      if annotatable.is_a?(SoapService) || annotatable.is_a?(RestService)
+        self.non_provider_annotations(annotatable, 'documentation_url').each do |ann|
+          links.concat(self.get_links_from_text(ann))  
+        end
+      end
     end
+    #puts "Found #{links.count} links for #{annotatable.class.name + annotatable.id.to_s}"
+    #pp links
     return links
   end
   
@@ -135,8 +201,8 @@ class LinksChecker
     return links
   end
   
-  # Returns a hash of services and the links of links
-  # found in the service components like soap
+  # Returns a hash of services and the list of links
+  # found in the description of service components like soap
   # operations and inputs & outputs.
   # Has structure:
   #  { service_name+id => [ { component_class+id => [ list of urls]},
