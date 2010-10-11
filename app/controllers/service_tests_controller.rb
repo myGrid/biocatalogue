@@ -6,19 +6,29 @@
 
 class ServiceTestsController < ApplicationController
   
-  before_filter :disable_action, :only => [ :index, :new, :edit, :update ]
-  before_filter :disable_action_for_api, :except => [ :show, :create, :results ]
+  before_filter :disable_action, :only => [ :new, :edit, :update ]
+  before_filter :disable_action_for_api, :except => [ :show, :create, :results, :index ]
   
   before_filter :find_service_test, :only => [ :show, :results, :enable, :disable, :destroy]
   
   # Only logged in users can add tests
-  before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable, :destroy ]
+  before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable, :destroy, :index ]
 
   before_filter :authorise, :only => [ :enable, :disable, :destroy ]
   
   before_filter :authorise_for_disabled, :only => [ :show ]
   
   before_filter :authorise_for_destroy, :only => [ :destroy ]
+  
+  before_filter :find_service_tests, :only => [ :index ]
+  
+  def index
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  # index.xml.builder
+      format.atom # index.atom.builder
+    end
+  end
   
   def show
     respond_to do |format|
@@ -135,6 +145,30 @@ class ServiceTestsController < ApplicationController
       flash[:error] = "You are not allowed to perform this action!"
       redirect_to @service_test.service
     end
+  end
+  
+  def find_service_tests
+    sort        = 'created_at'
+    conditions  = 'activated_at IS NOT NULL'
+    
+    sort = case params['sort']
+            when "created_at" then "created_at"
+            when "created_at_reverse"   then "created_at DESC"
+            when "success_rate" then "success_rate DESC"
+            when "success_rate_reverse" then "success_rate ASC"
+          else
+            params['sort'] = 'created_at'
+           end
+       
+    @service_tests = ServiceTest.paginate(  :page => @page,
+                                              :per_page => @per_page, 
+                                              :conditions => conditions,
+                                              :order => sort)
+                              
+    if request.xml_http_request?
+      render :partial => "service_tests/listing", :locals => {:items => @service_tests }, :layout => false
+    end
+    
   end
 
 end

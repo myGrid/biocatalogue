@@ -1,0 +1,69 @@
+<%
+  
+  # BioCatalogue: app/views/service_tests/index.html.erb
+  #
+  # Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+  # Institute (EMBL-EBI) and the University of Southampton.
+  # See license.txt for details
+  
+%>
+
+<span class="header_left_bar" style="float:right">
+	<span class="actions_button">
+		<ul class="p7menubar">
+        	<li>
+              	<a href="#" class="trigger">
+                	<span style="vertical-align: middle;">Sort by</span>
+                	<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+              	</a>
+			 	<ul>
+	  				<li <%= sort_li_class_helper "created_at" %>>
+        				<%= sort_link_helper "Created", "created_at" -%>
+      				</li>
+					<li <%= sort_li_class_helper "success_rate" %>>
+        				<%= sort_link_helper "Success Rate", "success_rate" -%>
+      				</li>
+       			</ul>
+            </li>
+		</ul>
+	</span>
+</span>
+<!--
+<div style="float:right;">
+<span style="vertical-align: middle; font-weight: bold;">
+	Sort by: 
+</span>
+	<span id="sort_dropdown_button" style="vertical-align: middle; margin-left: 0.3em;"> 
+		<ul class="p7menubar"> 
+			<li>
+				<a href="#" class="trigger">
+					<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+				</a>
+				<ul>
+					<li <%= sort_li_class_helper "id" %>>
+        				<%= sort_link_helper "Identity", "id" -%>
+      				</li>
+	  				<li <%= sort_li_class_helper "created_at" %>>
+        				<%= sort_link_helper "Created", "created_at" -%>
+      				</li>
+					<li <%= sort_li_class_helper "success_rate" %>>
+        				<%= sort_link_helper "Success Rate", "success_rate" -%>
+      				</li>
+				</ul>
+			</li>
+		</ul>
+	</span>
+</div>
+-->
+
+<div>
+	<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_tests } %>
+</div>
+
+<div>
+	<div id="service_tests" style="margin: 1em 0;">
+		<%= render :partial => "service_tests/listing", :locals => { :items => @service_tests } %>
+   </div>
+</div>
+
+<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @service_tests } %>
