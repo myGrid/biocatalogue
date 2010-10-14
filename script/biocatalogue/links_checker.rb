@@ -252,8 +252,7 @@ class LinksChecker
   def check_all(links=[])
     checked = {}
     links.each do |link|
-      checked[link] = false
-      #checked[link] = self.accessible?(link)
+      checked[link] = self.accessible?(link)
     end
     return checked
   end
