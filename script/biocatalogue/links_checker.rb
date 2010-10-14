@@ -103,7 +103,10 @@ class LinksChecker
           links.each do |link|
             if all_links_with_status[link] == false
               puts "<tr bgcolor='#{bg}'>"
-              puts "<td>#{name}</td>  <td>#{cname} </td>  <td>#{link} </td>  <td>#{all_links_with_status[link]} </td>"
+              puts "<td><a href='#{SITE_BASE_HOST}/services/#{name.split('_')[1]}' target='_blank'> #{name}</a></td> " 
+              puts "<td><a href='#{SITE_BASE_HOST}/#{cname.split('_')[0].underscore.pluralize}/#{cname.split('_')[1]}' target='_blank'> #{cname}</a></td> " 
+              puts "<td><a href='#{link}' target='_blank'>#{link}</a> </td>  "     
+              puts "<td>#{all_links_with_status[link]} </td>"    
               puts '</tr>'
             end
           end
@@ -188,7 +191,7 @@ class LinksChecker
   def links_for_annotatable_h(annotatable)
     links = {}
     unless self.links_for_annotatable(annotatable).empty?
-      links[annotatable.class.name+(annotatable.id.to_s)] = self.links_for_annotatable(annotatable)
+      links[annotatable.class.name+'_'+(annotatable.id.to_s)] = self.links_for_annotatable(annotatable)
     end
     return links
   end
@@ -237,7 +240,7 @@ class LinksChecker
         links << links_for_annotatable_h(ann)
       end
     end
-    s_links[service.name+(service.id.to_s)] = links unless links.empty?
+    s_links[service.name+'_'+(service.id.to_s)] = links unless links.empty?
     return s_links
   end
   
@@ -249,7 +252,8 @@ class LinksChecker
   def check_all(links=[])
     checked = {}
     links.each do |link|
-      checked[link] = self.accessible?(link)
+      checked[link] = false
+      #checked[link] = self.accessible?(link)
     end
     return checked
   end
