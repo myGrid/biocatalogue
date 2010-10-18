@@ -478,7 +478,7 @@ private
     collections.each do |collection|
       case collection.downcase
         when "monitoring"
-          data["service"]["service_tests"] = BioCatalogue::Api::Json.collection(self.service_tests, false)
+          data["service"]["service_tests"] = BioCatalogue::Api::Json.collection(self.service_tests)
         when "variants"
           versions = []
           self.service_versions.each{ |v| versions << v.service_versionified }

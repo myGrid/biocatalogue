@@ -132,15 +132,12 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def to_json
-    {
-      "service_test" => {
-        "self" => BioCatalogue::Api.uri_for_object(self),
-        "created_at" => self.created_at.iso8601,
-        "status" => BioCatalogue::Api::Json.monitoring_status(self.latest_status),
-        "test_type" => JSON(self.test.to_json)
-      }
-    }.to_json
-  end 
+    generate_json_with_collections("default")
+  end
+  
+  def to_inline_json
+    generate_json_with_collections(nil, true)
+  end
   
   #synonym to activated
   def enabled?
@@ -213,5 +210,51 @@ class ServiceTest < ActiveRecord::Base
     return true if self.latest_status.label.downcase =='unchecked'
     return false
   end
+  
+  
+  protected
+  
+  
+  def generate_json_with_collections(collections, make_inline=false)
+    collections ||= []
+
+    allowed = %w{ }
+    
+    if collections.class==String
+      collections = case collections.strip.downcase
+                      when "default" : %w{ }
+                      else []
+                    end
+    else
+      collections.each { |x| x.downcase! }
+      collections.uniq!
+      collections.reject! { |x| !allowed.include?(x) }
+    end
+    
+    data = {
+      "service_test" => {
+        "created_at" => self.created_at.iso8601,
+        "status" => BioCatalogue::Api::Json.monitoring_status(self.latest_status),
+        "test_type" => JSON(self.test.to_json)
+      }
+    }
+        
+    collections.each do |collection|
+#      case collection.downcase
+#        when "inputs"
+#          data["soap_operation"]["inputs"] = BioCatalogue::Api::Json.collection(self.soap_inputs)
+#        when "outputs"
+#          data["soap_operation"]["outputs"] = BioCatalogue::Api::Json.collection(self.soap_outputs)
+#      end
+    end
+
+    unless make_inline
+      data["service_test"]["self"] = BioCatalogue::Api.uri_for_object(self)
+      return data.to_json
+    else
+      data["service_test"]["resource"] = BioCatalogue::Api.uri_for_object(self)
+      return data["service_test"].to_json
+    end
+  end # generate_json_with_collections
   
 end
