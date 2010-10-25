@@ -20,6 +20,8 @@ class ServiceTestsController < ApplicationController
   
   before_filter :authorise_for_destroy, :only => [ :destroy ]
   
+  before_filter :parse_sort_params, :only => [ :index ]
+  
   before_filter :find_service_tests, :only => [ :index ]
   
   def index
@@ -147,23 +149,51 @@ class ServiceTestsController < ApplicationController
     end
   end
   
-  def find_service_tests
-    sort        = 'created_at'
-    conditions  = 'activated_at IS NOT NULL'
+  
+  def parse_sort_params
+    sort_by_allowed = [ "created", "availability" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
     
-    sort = case params['sort']
-            when "created_at" then "created_at"
-            when "created_at_reverse"   then "created_at DESC"
-            when "success_rate" then "success_rate DESC"
-            when "success_rate_reverse" then "success_rate ASC"
-          else
-            params['sort'] = 'created_at'
-           end
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+  
+  
+  def find_service_tests
+    
+    conditions  = 'activated_at IS NOT NULL'
+
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+      when 'availability'
+        order_field = 'success_rate'
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "service_tests.#{order_field} #{order_direction}"
+    end
+    
        
     @service_tests = ServiceTest.paginate(  :page => @page,
                                               :per_page => @per_page, 
                                               :conditions => conditions,
-                                              :order => sort)
+                                              :order => order)
                               
     if request.xml_http_request?
       render :partial => "service_tests/listing", :locals => {:items => @service_tests }, :layout => false

@@ -16,45 +16,19 @@
                 	<span style="vertical-align: middle;">Sort by</span>
                 	<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
               	</a>
-			 	<ul>
-	  				<li <%= sort_li_class_helper "created_at" %>>
-        				<%= sort_link_helper "Created", "created_at" -%>
+				<ul>
+	  				<li <%= sort_li_class_helper "created", "desc" %>>
+        				<%= sort_link_helper "Created", "created", "desc"-%>
       				</li>
-					<li <%= sort_li_class_helper "success_rate" %>>
-        				<%= sort_link_helper "Success Rate", "success_rate" -%>
+					<li <%= sort_li_class_helper "availability", "desc"%>>
+        				<%= sort_link_helper "Availability", "availability", "desc"-%>
       				</li>
        			</ul>
             </li>
 		</ul>
 	</span>
 </span>
-<!--
-<div style="float:right;">
-<span style="vertical-align: middle; font-weight: bold;">
-	Sort by: 
-</span>
-	<span id="sort_dropdown_button" style="vertical-align: middle; margin-left: 0.3em;"> 
-		<ul class="p7menubar"> 
-			<li>
-				<a href="#" class="trigger">
-					<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
-				</a>
-				<ul>
-					<li <%= sort_li_class_helper "id" %>>
-        				<%= sort_link_helper "Identity", "id" -%>
-      				</li>
-	  				<li <%= sort_li_class_helper "created_at" %>>
-        				<%= sort_link_helper "Created", "created_at" -%>
-      				</li>
-					<li <%= sort_li_class_helper "success_rate" %>>
-        				<%= sort_link_helper "Success Rate", "success_rate" -%>
-      				</li>
-				</ul>
-			</li>
-		</ul>
-	</span>
-</div>
--->
+
 
 <div>
 	<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_tests } %>
