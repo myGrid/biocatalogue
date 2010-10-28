@@ -31,7 +31,7 @@ class SoapServicesController < ApplicationController
   # GET /soap_services/1.xml
   def show
     respond_to do |format|
-      format.html { disable_action }
+      format.html { redirect_to url_for_web_interface(@soap_service), :status => 303 }
       format.xml  # show.xml.builder
       format.json { render :json => @soap_service.to_json }
     end

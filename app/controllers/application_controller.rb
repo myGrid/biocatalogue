@@ -197,6 +197,8 @@ class ApplicationController < ActionController::Base
       when RestParameter, RestRepresentation
         service_id = BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(item.class.name, item.id), "Service")
         return service_url(service_id, :anchor => "endpoints") unless service_id.nil?
+      when SoapService
+        return service_url(item.service)
       else
         return url_for(item)  
     end

@@ -55,8 +55,9 @@ class LinksChecker
   def run 
     @all_links           = []
     @all_data_with_links = []
-    Service.all.each do |service|
-      puts "Searching link for service : #{service.name}"
+    conditions           = 'archived_at IS NULL'
+    Service.find(:all, :conditions => conditions ).each do |service|
+      puts "Searching links for service : #{service.name}"
       @all_links.concat(links_for_service(service))
       @all_data_with_links << links_for_service_h(service) unless links_for_service_h(service).empty?
     end
@@ -67,43 +68,38 @@ class LinksChecker
   protected
   
   def report(all_data_with_links, all_links_with_status)
-    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/public/link_checker_{current_time}.html' ..."
-    $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'public', "links_checker_#{Time.now.strftime('%Y%m%d-%H%M')}.html"), "w")
+    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/public/link_checker_report.html' ..."
+    $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'public', "links_checker_report.html"), "w")
     $stdout.sync = true
-    puts '<html>'
-    
-    puts "<h3> List of links that need curator attention : Generated on #{Time.now.strftime("%A %B %d , %Y")}</h3>"
+    puts '<html >'
+    puts '<body bgcolor="#A6D785" width="70%">'
+    puts "<h3> Web links in BioCatalogue data that need curator attention : Generated on #{Time.now.strftime("%A %B %d , %Y")}</h3>"
     puts "<hr/>"
     
-    puts '<table border=2>'
+    puts '<table border=2 bgcolor="#ffffff">'
     puts '<th> Service Name </th>'
     puts '<th> Component Name </th>'
     puts '<th> Link </th>'
     puts '<th> Link Status </th>'
     
-    count =0
     all_data_with_links.each do |service_item|
-      bg = "#ffbb2A"
-      if count % 2 == 0
-        bg = "#aabbcc"
-      end
-      self.report_for_service(service_item, all_links_with_status , bg)
-      count = count + 1
+      self.report_for_service(service_item, all_links_with_status )
     end
     
     puts '</table>'
+    puts '</body>'
     puts '</html>'
     $stdout = STDOUT
   end
   
-  def report_for_service(service_item,  all_links_with_status, bg="#aabbcc")
+  def report_for_service(service_item,  all_links_with_status, bg="#ffffff")
     service_item.each do |name, component_links| # service_item is a hash
       component_links.each do |cl| # each cl is a hash
         cl.each do |cname, links|
           links.each do |link|
             if all_links_with_status[link] == false
               puts "<tr bgcolor='#{bg}'>"
-              puts "<td><a href='#{SITE_BASE_HOST}/services/#{name.split('_')[1]}' target='_blank'> #{name}</a></td> " 
+              puts "<td><a href='#{SITE_BASE_HOST}/services/#{name.split('_')[-1]}' target='_blank'> #{name}</a></td> " 
               puts "<td><a href='#{SITE_BASE_HOST}/#{cname.split('_')[0].underscore.pluralize}/#{cname.split('_')[1]}' target='_blank'> #{cname}</a></td> " 
               puts "<td><a href='#{link}' target='_blank'>#{link}</a> </td>  "     
               puts "<td>#{all_links_with_status[link]} </td>"    
@@ -150,6 +146,7 @@ class LinksChecker
   # the data. May not work for all links
   def parse_link(link)
     return nil if link.nil?
+    return nil if link.split('?').size > 1 # skip links with parameters
     while link.match('^\(|^\[')  # remove leading '(', '[' 
       link = link[1, (link.size-1)]
     end
@@ -165,7 +162,8 @@ class LinksChecker
       pieces = link.split("'") if pieces.size == 1
       link = pieces.collect!{ |p| p if p.match('http|www')}.compact.first
     end
-    return link
+    return link if link.match('^http')
+    return nil
   end
   
   def links_for_annotatable(annotatable)
