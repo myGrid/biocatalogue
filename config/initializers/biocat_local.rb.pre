@@ -143,3 +143,9 @@ NOTIFY_SERVICE_RESPONSIBLE = false
 
 # This setting determines whether SSL (via the ssl_requirement plugin) is used.
 ENABLE_SSL = true
+
+# Attribute identifier template to distinguish if terms come from a controlled
+# vocabulary or not.
+# Note: Default value would work for most instances, so you probably do not need
+# to set this.
+IDENTIFIER_TEMPLATE= "http://biocatalogue.org/attribute/%s"
