@@ -69,10 +69,10 @@ ENABLE_CACHE_MONEY = false
 
 
 # The sender email address for emails sent from the application.
-SENDER_EMAIL_ADDRESS = "biocatalogue-support@rubyforge.org"
+SENDER_EMAIL_ADDRESS = "biocatalogue-support@example.com"
 
 # The email address used for sending feedback from users to.
-FEEDBACK_EMAIL_ADDRESS = "contact@biocatalogue.org"
+FEEDBACK_EMAIL_ADDRESS = "contact@example.com"
 
 
 # reCAPTCHA settings:
