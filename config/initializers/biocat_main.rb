@@ -141,7 +141,7 @@ Annotations::Config.attribute_names_to_allow_duplicates.concat([ "tag",
 Annotations::Config.value_restrictions.update({ "rating.documentation" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
                                                 "test_xyz" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid test_xyz" } })
 
-Annotations::Config.default_attribute_identifier_template = ATTRIBUTE_IDENTIFIER_TEMPLATE
+Annotations::Config.default_attribute_identifier_template = ANNOTATION_ATTRIBUTE_DEFAULT_IDENTIFIER_TEMPLATE
 Annotations::Config.attribute_name_transform_for_identifier = Proc.new { |name|
   regex = /\.|-|:/
   if name.match(regex)
