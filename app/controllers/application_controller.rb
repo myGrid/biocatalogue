@@ -661,4 +661,14 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  # redirect to the last page user
+  # was on or to home page
+  def redirect_to_back_or_home
+    begin
+      redirect_to :back
+    rescue RedirectBackError
+      redirect_to home_url
+    end
+  end
+  
 end

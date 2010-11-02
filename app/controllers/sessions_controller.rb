@@ -31,7 +31,7 @@ class SessionsController < ApplicationController
   def destroy
     reset_session
     flash[:notice] = "You've been signed out."
-    redirect_to home_url
+    redirect_to_back_or_home
   end
   
   def rpx_token
