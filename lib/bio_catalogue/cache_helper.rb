@@ -66,7 +66,7 @@ module BioCatalogue
         when :associated_object_ids
           "associated_object_ids_#{args[0]}_#{args[1]}"
         when :search_items_from_solr
-          "search_items_from_solr_#{args[0]}"
+          "search_items_from_solr_#{args[0].gsub(" ", "_")}"
       end
     end
     
