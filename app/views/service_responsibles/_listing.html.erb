@@ -1,0 +1,38 @@
+<%
+
+# BioCatalogue: app/views/service_responsibles/_listing.html.erb
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div class="listings">
+	<% items.each do |sr| %>
+	
+	<div class="listing_item" style="height:20%;width:90%">
+
+		<b><%= link_to(sr.service.display_name, service_url(sr.service)) -%></b>
+		
+		<div style="float:right;">
+			<% if (logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, sr.service)) -%>
+				<% if sr.is_active? %>
+					<%= link_to("Unsubscribe", deactivate_service_responsible_url(sr), 
+																			:title => "Unsubscribe to notification from this service",
+																			:method => :put,
+																			:confirm => "Do you want unsubscribe from notifications for this service?") -%>
+				<%else%>
+						<%= link_to("Re-subscribe", activate_service_responsible_url(sr), 
+																			:title => "Re-subscrible to receive notifications from this service",
+																			:method => :put,
+																			:confirm => "Do you want re-subscribe to notifications for this service?") -%>
+																			
+				<%end%>
+			<% end -%>
+		</div>
+
+	</div>
+	<%end%>	
+	
+</div>

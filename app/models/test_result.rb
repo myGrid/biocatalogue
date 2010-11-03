@@ -54,7 +54,7 @@ class TestResult < ActiveRecord::Base
   end
   
   def responsible_emails
-    self.service_test.service.all_responsibles.collect{|r| r.email}.compact
+    self.service_test.service.service_responsibles.collect{|r| r.user.email if r.is_active?}.compact
   end
   
   def date

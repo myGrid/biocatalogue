@@ -19,7 +19,10 @@ ActionController::Routing::Routes.draw do |map|
   
   # Main
   
-  map.curation '/curation', :controller => 'curation', :action => 'show', :conditions => { :method => :get }
+  map.curation '/curation', 
+  :controller => 'curation', 
+  :action => 'show', 
+  :conditions => { :method => :get }
   
   # Reports
   
@@ -253,6 +256,10 @@ ActionController::Routing::Routes.draw do |map|
                              :deny    => :put,
                              :turn_down => :get,
                              :cancel => :put}
+  
+  map.resources :service_responsibles,
+                :member => {:activate => :put,
+                            :deactivate => :put }
   
   map.resources :saved_searches
 

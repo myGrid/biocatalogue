@@ -24,8 +24,48 @@ class ServiceResponsible < ActiveRecord::Base
   end
   
   def self.add(user_id, service_id)
-    resp = ServiceResponsible.create(:user_id =>user_id, :service_id => service_id, :status => 'active')
-    return ServiceResponsible.exists?(resp.id)
-  end
+    unless ServiceResponsible.find(:first, :conditions => ["user_id=? AND service_id=?", user_id, service_id])
+      resp = ServiceResponsible.create(:user_id =>user_id, :service_id => service_id, :status => 'active')
+      return ServiceResponsible.exists?(resp.id)
+    end
+  return false
+end
+
+def is_active?
+  return true if self.status=='active'
+  return false
+end
+
+def deactivate!
+  unless !self.is_active?
+    begin
+        self.status = 'inactive'
+        self.save!
+        return true
+      rescue Exception => ex
+        logger.error("Failed to remove #{self.user.display_name} from reponsibility list for service #{self.service.name}:")
+        logger.error(ex)
+        return false
+      end
+    end
+    logger.error("User #{self.user.display_name} is not currently responsible for service #{self.service.name}")
+    return false
+end
+
+def activate!
+  unless self.is_active?
+    begin
+        self.status = 'active'
+        self.save!
+        return true
+      rescue Exception => ex
+        logger.error("Failed to activate #{self.user.display_name} in reponsibility list for service #{self.service.name}:")
+        logger.error(ex)
+        return false
+      end
+    end
+    logger.error("User #{self.user.display_name} is already responsible for service #{self.service.name}")
+    return false
+end
   
 end

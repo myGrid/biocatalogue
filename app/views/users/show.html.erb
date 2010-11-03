@@ -164,15 +164,15 @@
   </div>
 	
 	<div id="tab-other-services-responsible" class="tabbertab">
-    <h3><%= "Other Services Responsible For (#{@users_other_services_responsible.total_entries})" -%></h3>
+    <h3><%= "Services Responsible For (#{@users_services_responsible_for.total_entries})" -%></h3>
     
-    <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_other_services_responsible } %>
+    <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_services_responsible_for } %>
     
     <div id="users_responsible_services" style="margin: 1em 0;">
-      <%= render :partial => "services/listing", :locals => { :items => @users_other_services_responsible } %>
+      <%= render :partial => "services/listing", :locals => { :items => @users_services_responsible_for } %>
     </div>
     
-    <%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users_other_services_responsible } %>
+    <%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users_services_responsible_for } %>
   </div>
   
   <div id="tab-annotated-services" class="tabbertab">
@@ -212,5 +212,25 @@
 			<p class="none_text">None</p>
 		<% end %>		
 	</div>
+	
+	<% if mine?(@user) || (logged_in? && current_user.is_admin?) -%>
+		<div id="tab-status-notifications" class="tabbertab">
+    	
+			<h3><%= "Service Status Notifications (#{@users_services_responsible_for.total_entries}/#{@service_responsibles.total_entries}) " -%></h3>
+		
+			<div>
+				<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_responsibles } %>
+			</div>
+
+			<div>
+				<div id="service_responsibles" style="margin: 1em 0;">
+					<%= render :partial => "service_responsibles/listing", :locals => { :items => @service_responsibles } %>
+   				</div>
+			</div>
+			<div>
+				<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @service_responsibles } %>
+			</div>
+		</div>
+	<% end %>
 
 </div>
