@@ -26,7 +26,6 @@ module ServiceTestsHelper
       :title => "Sort by this field",
       :href => url_for(:action => 'index', :params => params.merge({:sort_by => key, :sort_order => order })) #:page => params[:page]
       }
-    order  = reverse_order(order)
     link_to_remote(text, options, html_options)
   end
   
