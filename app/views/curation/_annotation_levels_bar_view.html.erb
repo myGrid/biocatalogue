@@ -1,0 +1,25 @@
+<div>
+	<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => services } %>
+</div>
+
+
+<div id="annotation_level"></div>
+
+  <%= Seer::visualize(
+        services,
+        :as => :column_chart,
+        :in_element => 'annotation_level',
+        :series => {:series_label => 'id', :data_method => 'annotation_level'},
+        :chart_options => {
+          :height => 600,
+          :width => 10 * services.size ,
+          :is_3_d => false,
+          :legend => 'none',
+          :colors => ["#990000"],
+          :title => "Service Annotation Levels",
+          :title_x => 'Service ID',
+          :title_y => 'Annotations Levels'
+        }
+      )
+   -%>
+   

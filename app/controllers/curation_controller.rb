@@ -78,6 +78,19 @@ class CurationController < ApplicationController
       format.html # services_missing_annotations.html.erb
     end
   end
+  
+  def annotation_level
+    conditions  = "archived_at IS NULL "
+    order       = 'id DESC'
+    per_page    = 100
+    @services = Service.paginate(:conditions => conditions, 
+                                      :page => @page,   
+                                      :per_page => per_page, 
+                                      :order => order)
+    respond_to do |format|
+      format.html # annotation_level.html.erb
+    end
+  end
     
   
   protected
@@ -86,7 +99,7 @@ class CurationController < ApplicationController
   def authorise    
     unless current_user.is_curator?
       error_to_back_or_home("You are not allowed to perform this action")
-      return false
+      redirect_to_back_or_home
     end
 
     return true

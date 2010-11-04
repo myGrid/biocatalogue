@@ -415,6 +415,10 @@ class Service < ActiveRecord::Base
     return (successes.sum/self.service_tests.count).to_i
   end
   
+  def annotation_level
+    BioCatalogue::Curation::AnnotationLevel.annotation_level_for_service(self)
+  end
+  
 protected
   
   def generate_unique_code

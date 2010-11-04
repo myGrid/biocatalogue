@@ -47,6 +47,11 @@ ActionController::Routing::Routes.draw do |map|
     :controller => 'curation', 
     :action => 'copy_annotations_preview', 
     :conditions => { :method => :post }
+    
+  map.curation_annotation_level '/curation/reports/annotation_level', 
+    :controller => 'curation', 
+    :action => 'annotation_level', 
+    :conditions => { :method => :get }
   
   # =========================
   
