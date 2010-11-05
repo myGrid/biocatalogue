@@ -12,6 +12,10 @@ class CurationController < ApplicationController
   
   before_filter :authorise
   
+  before_filter :parse_sort_params, :only => [:annotation_level]
+  
+  before_filter :find_services, :only => [:annotation_level]
+  
   def show
     # show.html.erb
   end
@@ -80,13 +84,7 @@ class CurationController < ApplicationController
   end
   
   def annotation_level
-    conditions  = "archived_at IS NULL "
-    order       = 'id DESC'
-    per_page    = 100
-    @services = Service.paginate(:conditions => conditions, 
-                                      :page => @page,   
-                                      :per_page => per_page, 
-                                      :order => order)
+
     respond_to do |format|
       format.html # annotation_level.html.erb
     end
@@ -94,6 +92,55 @@ class CurationController < ApplicationController
     
   
   protected
+  
+  def parse_sort_params
+    sort_by_allowed = [ "created", "ann_level" ]
+    @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
+      params[:sort_by].downcase
+    else
+      "created"
+    end
+    
+    sort_order_allowed = [ "asc", "desc" ]
+    @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
+      params[:sort_order].downcase
+    else
+      "desc"
+    end
+  end
+  
+  def find_services
+    
+    conditions  = 'archived_at IS NULL'
+    per_page        = 100
+
+    case @sort_by
+      when 'created'
+        order_field = "created_at"
+      when 'ann_level'
+        order_field = 'annotation_level'
+    end
+    
+    case @sort_order
+      when 'asc'
+        order_direction = 'ASC'
+      when 'desc'
+        order_direction = "DESC"
+    end
+    
+    unless order_field.blank? or order_direction.nil?
+      order = "services.#{order_field} #{order_direction}"
+    end
+    
+       
+    @services  = Service.paginate(:page => @page,
+                                  :per_page => per_page, 
+                                  :conditions => conditions,
+                                  :order => order)
+                              
+    
+  end
+
   
   
   def authorise    

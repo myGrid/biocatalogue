@@ -657,10 +657,6 @@ class SoapService < ActiveRecord::Base
     self.connect?
   end
   
-  def annotation_level
-    BioCatalogue::Curation::AnnotationLevel.percentage_description_annotation_level_for_soap_service(self)
-  end
-
   def associated_service_id
     @associated_service_id ||= BioCatalogue::Mapper.map_compound_id_to_associated_model_object_id(BioCatalogue::Mapper.compound_id_for(self.class.name, self.id), "Service")
   end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100928132446) do
+ActiveRecord::Schema.define(:version => 20101104164807) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -463,6 +463,7 @@ ActiveRecord::Schema.define(:version => 20100928132446) do
     t.integer  "submitter_id"
     t.string   "submitter_type"
     t.datetime "archived_at"
+    t.integer  "annotation_level"
   end
 
   add_index "services", ["name"], :name => "services_name_index"

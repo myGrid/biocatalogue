@@ -15,7 +15,31 @@
   Provides a graphical view of the annotation level for services in BioCatalogue.
 </div>
 
-<div>
+<span class="header_left_bar" style="float:left;width:25%">
+	<span class="actions_button">
+		<ul class="p7menubar">
+        	<li>
+              	<a href="#" class="trigger">
+                	<span style="vertical-align: middle;">Sort by</span>
+                	<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+              	</a>
+				<ul>
+	  				<li <%= sort_li_class_helper "created", "desc" %>>
+        				<%= sort_link_helper "Created", "created", "desc"-%>
+      				</li> <br/>
+					<li <%= sort_li_class_helper "ann_level", "desc"%>>
+        				<%= sort_link_helper "Annotation Level", "ann_level", "desc"-%>
+      				</li>
+       			</ul>
+            </li>
+		</ul>
+	</span>
+</span>
+
+<div id="annotation_level">
 	<%= render :partial => 'annotation_levels_bar_view', :locals => {:services => @services} %>
 </div>
 
+<div>
+	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @services } %>
+</div>
