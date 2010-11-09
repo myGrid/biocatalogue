@@ -29,22 +29,52 @@
 		<% end -%>
 	</div>
 	
-	<%unless service_tests_for_display(@test_script_service_tests).empty? -%>
-	<div class='listing_item'>
-		<span class="heading"> TestScripts </span>
-		<div id="latest_service_test" style="margin: 1em 0;">
-			<%= render :partial => "service_tests/listing", :locals => { :items => service_tests_for_display(@test_script_service_tests) } %>
+	<div id="service-test-tabs" class="tabber">
+		
+		<div id="tab-availability-checks" class="tabbertab">
+    	 	<h3><%= "Availability Checks (#{@url_monitor_service_tests.count})" -%></h3> 
+		 
+			<%if service_tests_for_display(@url_monitor_service_tests).empty? -%>
+				<p class="none_text"> No availability monitoring yet. Please check back later. </p>
+			<%else%>
+				<div class='listing_item'>
+					<span class="heading"> Availability Checks </span>	
+					<div id="latest_service_test" style="margin: 1em 0;">
+						<%= render :partial => "service_tests/listing", :locals => { :items => service_tests_for_display(@url_monitor_service_tests) } %>
+					</div>
+				</div>
+			<%end%>
 		</div>
-	 </div>
-	<%end%>
 	
-	<%unless service_tests_for_display(@url_monitor_service_tests).empty? -%>
-		<div class='listing_item'>
-			<span class="heading"> Availability Checks </span>	
-			<div id="latest_service_test" style="margin: 1em 0;">
-				<%= render :partial => "service_tests/listing", :locals => { :items => service_tests_for_display(@url_monitor_service_tests) } %>
-			</div>
+	 <div id="tab-test-scripts" class="tabbertab">
+    	<h3><%= "TestScripts (#{@test_script_service_tests.count})" -%></h3>  
+	
+		<%if service_tests_for_display(@test_script_service_tests).empty? -%>
+			<p class="none_text"> None available yet. Please check back later. Also, you could upload one now if the service is yours </p>
+		<%else%>
+			<div class='listing_item'>
+				<span class="heading"> TestScripts </span>
+				<div id="latest_service_test" style="margin: 1em 0;">
+					<%= render :partial => "service_tests/listing", :locals => { :items => service_tests_for_display(@test_script_service_tests) } %>
+				</div>
+	 		</div>
+		<%end%>	
+		 
+	 	<div>
+ 			<%if logged_in? -%>
+				<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) -%>
+					<div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
+						<%= render :partial => 'shared/service_test', :locals => {:service => @service} -%>
+					</div>
+				<% end %>
+			<%end%>
 		</div>
-	<%end%>
+	</div>
+	
+	</div>
+	
+</div>
 
- </div>
+
+ 
+ 
