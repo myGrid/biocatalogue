@@ -16,6 +16,7 @@ module CurationHelper
     key   = param
     order = order
     order = reverse_order(params[:sort_order]) if params[:sort_by] == param
+    params.delete(:page) # reset page
     options = {
       :url => {:action => 'annotation_level', :params => params.merge({:sort_by => key , :sort_order => order})}, #:page =>param[:page]
       :update => 'annotation_level',

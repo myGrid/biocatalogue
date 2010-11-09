@@ -665,9 +665,13 @@ class ApplicationController < ActionController::Base
   # was on or to home page
   def redirect_to_back_or_home
     begin
-      redirect_to :back
-    rescue RedirectBackError
-      redirect_to home_url
+      if request.env["HTTP_REFERER"]
+        redirect_to :back
+      else
+        redirect_to home_url
+      end
+    rescue Exception => ex
+      logger.warn(ex.to_s)
     end
   end
   

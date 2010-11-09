@@ -16,6 +16,7 @@ module ServiceTestsHelper
     key   = param
     order = order
     order = reverse_order(params[:sort_order]) if params[:sort_by] == param
+    params.delete(:page) # reset page
     options = {
       :url => {:action => 'index', :params => params.merge({:sort_by => key , :sort_order => order})}, #:page =>param[:page]
       :update => 'service_tests',

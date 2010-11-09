@@ -141,11 +141,9 @@ class CurationController < ApplicationController
     
   end
 
-  
-  
   def authorise    
     unless current_user.is_curator?
-      error_to_back_or_home("You are not allowed to perform this action")
+      flash[:error] = "You are not allowed to perform this action"
       redirect_to_back_or_home
     end
 

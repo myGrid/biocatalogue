@@ -23,22 +23,26 @@
 					<li <%= sort_li_class_helper "availability", "desc"%>>
         				<%= sort_link_helper "Availability", "availability", "desc"-%>
       				</li>
+					<li <%= sort_li_class_helper "bytype", "desc"%>>
+        				<%= sort_link_helper "TestType(Testscript, A.Check)", "bytype", "desc"-%>
+      				</li>
        			</ul>
             </li>
 		</ul>
 	</span>
 </span>
 
+<div>
+	<div>
+		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_tests } %>
+	</div>
 
-<div>
-	<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_tests } %>
-</div>
-
-<div>
-	<div id="service_tests" style="margin: 1em 0;">
-		<%= render :partial => "service_tests/listing", :locals => { :items => @service_tests } %>
-   </div>
-</div>
-<div>
-	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @service_tests } %>
+	<div>
+		<div id="service_tests" style="margin: 1em 0;">
+			<%= render :partial => "service_tests/listing", :locals => { :items => @service_tests } %>
+   		</div>
+	</div>
+	<div>
+		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @service_tests } %>
+	</div>
 </div>

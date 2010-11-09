@@ -151,7 +151,7 @@ class ServiceTestsController < ApplicationController
   
   
   def parse_sort_params
-    sort_by_allowed = [ "created", "availability" ]
+    sort_by_allowed = [ "created", "availability", "bytype" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase
     else
@@ -176,6 +176,8 @@ class ServiceTestsController < ApplicationController
         order_field = "created_at"
       when 'availability'
         order_field = 'success_rate'
+      when 'bytype'
+        order_field = 'test_type'
     end
     
     case @sort_order
