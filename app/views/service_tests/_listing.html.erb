@@ -13,8 +13,8 @@
 	
 	<div class="listing_item">
 		
-		<div class="name">
-			<%= link_to(display_name(st), service_test_path(st)) -%>
+		<div class=name>
+			<%= link_to(display_name(st), service_test_path(st)) -%> 
 		</div>
 		<div>
 			<%= service_test_status_symbol(st)%>
@@ -29,9 +29,19 @@
 		
 
 		<div class="detail" style="text-align: left;">
-			<% if ms = st.monitored_since %> 
-				<b></>Monitored Since :</b>  <%=h ms -%>
-			<%end%>
+		   <table width="50%">
+		   	  <tr>
+		   	  	<td width="25%">
+		   	  	<b>Monitored Since :</b>
+				<% if ms = st.monitored_since %> 
+					  <%=h ms -%>
+				<%else%>
+					<b>Not yet!<b/>
+				<%end%>
+				</td>
+				<td width="25%"><%= info_icon_with_tooltip("parent service for this test") -%><%= link_to(display_name(st.service), service_path(st.service)) -%></td>
+			  </tr>
+		  </table>
 		</div>
 	</div>
 	<%end%>	
