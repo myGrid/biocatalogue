@@ -166,6 +166,15 @@ class ServiceTest < ActiveRecord::Base
     self.save
   end
   
+  def update_cached_status!
+    self.cached_status = self.latest_test_result.result
+    begin
+      self.save!
+    rescue Exception => ex
+      logger.error(ex.to_s)
+    end
+  end
+  
   def name
     #return "TestScript"  if self.test.is_a?(TestScript)
     return self.test.name  if self.test.is_a?(TestScript)
