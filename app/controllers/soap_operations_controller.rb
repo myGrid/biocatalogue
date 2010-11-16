@@ -135,8 +135,6 @@ protected
     
     conditions, joins = BioCatalogue::Filtering::SoapOperations.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
 
-    conditions = SoapOperation.merge_conditions(conditions, "archived_at IS NULL") if is_api_request?
-
     if self.request.format == :bljson
       
       finder_options = {
@@ -157,8 +155,7 @@ protected
   end
   
   def find_soap_operation
-    conditions = "archived_at IS NULL" if is_api_request?
-    @soap_operation = SoapOperation.find(params[:id], :include => [ :soap_inputs, :soap_outputs ], :conditions => conditions)
+    @soap_operation = SoapOperation.find(params[:id], :include => [ :soap_inputs, :soap_outputs ])
   end
   
 private

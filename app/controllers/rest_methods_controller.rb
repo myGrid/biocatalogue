@@ -294,8 +294,7 @@ private # ========================================
   end
 
   def find_rest_method
-    conditions = "archived_at IS NULL" if is_api_request?
-    @rest_method = RestMethod.find(params[:id], :include => :rest_resource, :conditions => conditions)
+    @rest_method = RestMethod.find(params[:id], :include => :rest_resource)
   end
   
   def find_rest_methods
@@ -333,9 +332,6 @@ private # ========================================
       order = "rest_methods.endpoint_name #{order_direction}, rest_resources.path"
     end
     
-    # FIXME
-    # conditions = RestMethod.merge_conditions(conditions, "archived_at IS NULL") if is_api_request?
-
     if self.request.format == :bljson
       joins << :rest_resource unless joins.include?(:rest_resource)
       

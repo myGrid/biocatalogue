@@ -297,8 +297,6 @@ class ServicesController < ApplicationController
     
     conditions, joins = BioCatalogue::Filtering::Services.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
     
-    conditions = Service.merge_conditions(conditions, "archived_at IS NULL") if is_api_request?
-
     @filter_message = "The services index has been filtered" unless @current_filters.blank?
     
     if self.request.format == :bljson
@@ -321,8 +319,7 @@ class ServicesController < ApplicationController
   end
   
   def find_service
-    conditions = "archived_at IS NULL" if is_api_request?
-    @service = Service.find(params[:id], :conditions => conditions)
+    @service = Service.find(params[:id])
   end
   
   def check_if_user_wants_to_categorise
