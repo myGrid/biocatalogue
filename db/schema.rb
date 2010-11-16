@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101109145416) do
+ActiveRecord::Schema.define(:version => 20101116144723) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -360,7 +360,6 @@ ActiveRecord::Schema.define(:version => 20101109145416) do
     t.datetime "updated_at"
     t.string   "interface_doc_url"
     t.string   "documentation_url"
-    t.datetime "archived_at"
   end
 
   create_table "saved_search_scopes", :force => true do |t|
@@ -464,7 +463,7 @@ ActiveRecord::Schema.define(:version => 20101109145416) do
     t.integer  "submitter_id"
     t.string   "submitter_type"
     t.datetime "archived_at"
-    t.integer  "annotation_level"
+    t.integer  "annotation_level", :default => 0
   end
 
   add_index "services", ["name"], :name => "services_name_index"
@@ -552,7 +551,6 @@ ActiveRecord::Schema.define(:version => 20101109145416) do
     t.datetime "updated_at"
     t.string   "namespace"
     t.text     "description_from_soaplab"
-    t.datetime "archived_at"
   end
 
   add_index "soap_services", ["name"], :name => "soap_services_name_index"
