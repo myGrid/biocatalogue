@@ -8,7 +8,12 @@ module BioCatalogue
   module Jobs
     class ServiceClaimantRequestNotification < Struct.new(:current_user, :base_host, :service )
       def perform
-         UserMailer.deliver_claimant_responsibility_notification(current_user, base_host, service ) 
+        begin
+          UserMailer.deliver_claimant_responsibility_notification(current_user, base_host, service )
+        rescue Exception => ex
+          Rails.logger.error("Failed to deliver mail to :#{current_user.email}") if current_user.email
+          Rails.logger.error(ex.to_s)
+        end
       end    
     end
   end

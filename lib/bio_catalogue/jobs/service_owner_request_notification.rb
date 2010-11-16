@@ -8,7 +8,14 @@ module BioCatalogue
   module Jobs
     class ServiceOwnerRequestNotification < Struct.new(:owners, :base_host, :service, :current_user)
       def perform
-        owners.each { |owner| UserMailer.deliver_responsibility_request_notification(owner, base_host, service, current_user) }
+        owners.each  do |owner|
+          begin
+            UserMailer.deliver_responsibility_request_notification(owner, base_host, service, current_user)
+          rescue Exception => ex
+            Rails.logger.error("Failed to deliver mail")
+            Rails.logger.error(ex.to_s)
+          end
+        end
       end    
     end
   end

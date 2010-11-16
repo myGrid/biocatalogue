@@ -8,7 +8,12 @@ module BioCatalogue
   module Jobs
     class UpdateServiceTestSuccessRate < Struct.new(:test_result)
       def perform
-        test_result.update_success_rate!
+        begin
+          test_result.update_success_rate!
+        rescue Exception =>ex
+          Rails.logger.error("There was a problem updating success rate for a test ")
+          Rails.logger.error(ex.to_s)
+        end
       end    
     end
   end

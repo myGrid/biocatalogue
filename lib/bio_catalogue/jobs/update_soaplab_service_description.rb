@@ -10,7 +10,12 @@ module BioCatalogue
       def perform
         service = Service.find(service_id)
         if service 
-          service.latest_version.service_versionified.update_description_from_soaplab!
+          begin
+            service.latest_version.service_versionified.update_description_from_soaplab!
+          rescue Exception => ex
+            Rails.logger.error("There was a problem updating descriptions from soaplab")
+            Rails.logger.error(ex.to_s)
+          end
         end
       end
     end    

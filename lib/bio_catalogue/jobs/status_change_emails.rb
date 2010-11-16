@@ -12,7 +12,8 @@ module BioCatalogue
           begin
           	StatusChangeMailer.deliver_text_to_email(subject, text, email) 
          	rescue Exception => ex
-          	puts("Failed to deliver email to #{email}") 
+          	Rails.logger.error("Failed to deliver email to #{email}") 
+            Rails.logger.error(ex.to_s)
          	end
         end
       end   
