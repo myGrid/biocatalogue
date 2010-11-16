@@ -22,6 +22,8 @@ class RestResource < ActiveRecord::Base
   
   acts_as_annotatable
   
+  acts_as_archived
+  
   validates_presence_of :rest_service_id, 
                         :path
                         
