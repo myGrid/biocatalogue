@@ -34,6 +34,7 @@ module BioCatalogue
           return true if options[:tag_submitters].include?("User:#{user.id}") 
         when Annotation
           return true if thing.source == user
+          return true if check_user_is_responsible_for_service_with_thing(user, thing)
         when Service
           return true if thing.all_responsibles.include?(user)
         when TestScript
