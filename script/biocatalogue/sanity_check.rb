@@ -95,6 +95,7 @@ class SanityCheck
     
     ServiceDeployment.all.each do |service_deployment|
       puts "ERROR: ServiceDeployment #{service_deployment.id} does not have a valid associated ServiceProvider" if service_deployment.provider.blank?
+      puts "ERROR: ServiceDeployment #{service_deployment.id} does not have a valid associated Service" if service_deployment.associated_service.blank?
     end
     
     
@@ -109,10 +110,12 @@ class SanityCheck
     
     SoapService.all.each do |soap_service|
       puts "ERROR: SoapService #{soap_service.id} does not have a valid associated ServiceVersion" if soap_service.service_version.blank?
+      puts "ERROR: SoapService #{soap_service.id} does not have a valid associated Service" if soap_service.associated_service.blank?
     end
     
     RestService.all.each do |rest_service|
       puts "ERROR: RestService #{rest_service.id} does not have a valid associated ServiceVersion" if rest_service.service_version.blank?
+      puts "ERROR: RestService #{rest_service.id} does not have a valid associated Service" if rest_service.associated_service.blank?
     end
     
     
@@ -120,14 +123,17 @@ class SanityCheck
     
     SoapOperation.all.each do |soap_operation|
       puts "ERROR: SoapOperation #{soap_operation.id} does not have a valid associated SoapService" if soap_operation.soap_service.blank?
+      puts "ERROR: SoapOperation #{soap_operation.id} does not have a valid associated Service" if soap_operation.associated_service.blank?
     end
     
     SoapInput.all.each do |soap_input|
       puts "ERROR: SoapInput #{soap_input.id} does not have a valid associated SoapOperation" if soap_input.soap_operation.blank?
+      puts "ERROR: SoapInput #{soap_input.id} does not have a valid associated Service" if soap_input.associated_service.blank?
     end
     
     SoapOutput.all.each do |soap_output|
       puts "ERROR: SoapOutput #{soap_output.id} does not have a valid associated SoapOperation" if soap_output.soap_operation.blank?
+      puts "ERROR: SoapOutput #{soap_output.id} does not have a valid associated Service" if soap_output.associated_service.blank?
     end
 
 
@@ -135,18 +141,22 @@ class SanityCheck
     
     RestResource.all.each do |rest_resource|
       puts "ERROR: RestResource #{rest_resource.id} does not have a valid associated RestService" if rest_resource.rest_service.blank?
+      puts "ERROR: RestResource #{rest_resource.id} does not have a valid associated Service" if rest_resource.associated_service.blank?
     end
 
     RestMethod.all.each do |rest_method|
       puts "ERROR: RestMethod #{rest_method.id} does not have a valid associated RestResource" if rest_method.rest_resource.blank?
+      puts "ERROR: RestMethod #{rest_method.id} does not have a valid associated RestResource" if rest_method.associated_service.blank?
     end
     
     RestParameter.all.each do |rest_parameter|
       puts "ERROR: RestParameter #{rest_parameter.id} does not have a valid associated RestMethodParameter" if rest_parameter.rest_method_parameters.blank?
+      puts "ERROR: RestParameter #{rest_parameter.id} does not have a valid associated Service" if rest_parameter.associated_service.blank?
     end
     
     RestRepresentation.all.each do |rest_representation|
       puts "ERROR: RestRepresentation #{rest_representation.id} does not have a valid associated RestMethodRepresentation" if rest_representation.rest_method_representations.blank?
+      puts "ERROR: RestRepresentation #{rest_representation.id} does not have a valid associated Service" if rest_representation.associated_service.blank?
     end    
     
     RestMethodParameter.all.each do |rest_method_parameter|
