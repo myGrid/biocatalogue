@@ -3,7 +3,7 @@
 # This script generate a list of links found in descriptions and other annotations
 # and checks the status of the links . It then produces an html file with a table of links which
 # might no longer be accessible. It is expected that a human would follow up on
-# the flags raised by this script. The html file generated is place in the /public folder 
+# the flags raised by this script. The html file generated is placed in the /public folder 
 # 
 #
 # NOTE : This is meant to only flag links that might need to be checked
@@ -51,6 +51,11 @@ class LinksChecker
     require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
   end  
   
+  # Find all the services that have not been archived from the database
+  # and extract any url from the descriptions and other annotatable attributes
+  # of the service and its components. Then check if these links are accessible
+  # or not. Flag the ones that are not accessible and generate an html report of
+  # those.
   
   def run 
     @all_links           = []
@@ -73,7 +78,7 @@ class LinksChecker
     $stdout.sync = true
     puts '<html >'
     puts '<body bgcolor="#A6D785" width="70%">'
-    puts "<h3> Web links in BioCatalogue data that need curator attention : Generated on #{Time.now.strftime("%A %B %d , %Y")}</h3>"
+    puts "<h3> Web links in BioCatalogue data that need curator attention : Generated on #{Time.now.strftime("%A %B %d  %Y.")}</h3>"
     puts "<hr/>"
     
     puts '<table border=2 bgcolor="#ffffff">'
@@ -110,7 +115,16 @@ class LinksChecker
       end
     end
   end
-    
+  
+  # Generates a list of child object of a Service for which
+  # links need to be checked. Return the empty list if there
+  # are no child objects.
+  #  
+  # param Service object for which links need to be checked < br/>
+  #
+  # return List of child objects of the service for which links 
+  # need to be checked. Default is empty list
+  #   
   def service_annotatables(service)
     annotatables     = []
     service_instance = service.latest_version.service_versionified
@@ -129,6 +143,13 @@ class LinksChecker
     return annotatables
   end
   
+  # Get all annotations attached to a given object for a 
+  # given attribute.
+  #
+  # param Parent object to which the annotations are attached.  
+  # param Attribute of the parent object that is annotated. 
+  #
+  # return List of the values of those annotations. Defualt is empty list<br />
   def non_provider_annotations(parent, attr='description')
     if parent.respond_to?(:annotations)
       return  parent.annotations.collect{|a| a.value if a.attribute.name.downcase == attr}.compact 
