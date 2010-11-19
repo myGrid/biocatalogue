@@ -10,6 +10,7 @@ namespace :biocatalogue do
     task :update_cached_service_test_status => :environment do
       ServiceTest.all.each  do |st|
         puts "Updating cached status for test : #{st.id}"
+        Rails.logger.info("Updating cached status for test : #{st.id}")
         st.update_cached_status!
       end
     end

@@ -14,8 +14,8 @@ namespace :biocatalogue do
         begin
         	service.save!
         rescue Exception => ex
-        	logger.error("Could not update annotation level for service : #{service.id}")
-        	logger.error("ex.to_s")
+        	Rails.logger.error("Could not update annotation level for service : #{service.id}")
+        	Rails.logger.error(ex.to_s)
         end
       end
     end
