@@ -254,7 +254,7 @@ class ServicesController < ApplicationController
   protected
   
   def parse_sort_params
-    sort_by_allowed = [ "created" ]
+    sort_by_allowed = [ "created", "annotated" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase
     else
@@ -280,6 +280,12 @@ class ServicesController < ApplicationController
     case @sort_by
       when 'created'
         order_field = "created_at"
+      when 'annotated' # only  curators can sort by annotation level
+        if logged_in? && current_user.is_curator?
+          order_field = "annotation_level"
+        else
+          order_field = "created_at"
+        end
     end
     
     case @sort_order

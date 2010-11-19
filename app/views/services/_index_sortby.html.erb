@@ -20,5 +20,10 @@
 		<option value="<%= generate_sort_url('created', 'asc') -%>" <%= "selected" if is_sort_selected('created', 'asc') -%>>
 			Earliest
 		</option>
+		<% if logged_in? && current_user.is_curator? -%>
+			<option value="<%= generate_sort_url('annotated', 'desc') -%>" <%= "selected" if is_sort_selected('annotated', 'desc') -%>>
+				Annotated(High - Low)
+			</option>
+		<% end -%>
 	</select>
 </span>
