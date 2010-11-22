@@ -47,7 +47,7 @@
 		</div>
 	
 	 <div id="tab-test-scripts" class="tabbertab">
-    	<h3><%= "TestScripts (#{@test_script_service_tests.count})" -%></h3>  
+    	<h3><%= "TestScripts (#{service_tests_for_display(@test_script_service_tests).count})" -%></h3>  
 		
 		<div class="box_info_standout" style="text-align:center;">
 			About <b>TestScripts</b> 
@@ -58,7 +58,7 @@
 		</div>
 	
 		<%if service_tests_for_display(@test_script_service_tests).empty? -%>
-			<p class="none_text"> None available yet. Please check back later. Also, you could upload one now if the service is yours </p>
+			<p class="none_text"> None available yet. Please check back later. </p>
 		<%else%>
 			<div class='listing_item'>
 				<span class="heading"> TestScripts </span>
