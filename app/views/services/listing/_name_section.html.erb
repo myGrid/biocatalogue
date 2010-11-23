@@ -8,6 +8,10 @@
 
 %>
 
+<%
+  show_stats = true unless local_assigns.has_key?(:show_stats) 
+%>
+
 <table style="width: 100%;">
 	<tr>
 		<td>
@@ -25,8 +29,10 @@
 			  </tr>
 			</table>
 		</td>
-		<td style="text-align: right; padding-top: 0.4em;">
-			<%= render :partial => 'services/stats_bar', :locals => { :service => service } -%>
-		</td>
+    <% if show_stats %>
+  		<td style="text-align: right; padding-top: 0.4em;">
+  			<%= render :partial => 'services/stats_bar', :locals => { :service => service } -%>
+  		</td>
+    <% end %>
 	</tr>
 </table>

@@ -13,7 +13,7 @@
 	<% unless (base_endpoint = service_version_instance.service.latest_deployment.endpoint).nil? %>
 		<b>Base URL:</b>
 		<%= link_to(h(base_endpoint), base_endpoint, :popup => true) -%>
-		|
+		<span class="separator">|</span>
 	<% end %>
 	
   <% count = 0 %>

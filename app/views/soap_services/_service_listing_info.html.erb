@@ -13,12 +13,12 @@
 	<% unless (soaplab_server = service_version_instance.service.soaplab_server).nil? %>
 		<b>Soaplab Server Base URL:</b>
 		<%= link_to(h(soaplab_server.endpoint), soaplab_server.endpoint, :popup => true) -%>
-		|
+		<span class="separator">|</span>
 	<% end %>
 	
 	<b>WSDL Location:</b>
 	<%= link_to(h(service_version_instance.wsdl_location), service_version_instance.wsdl_location, :popup => true) -%>
-	|
+	<span class="separator">|</span>
 	
 	<b><%= pluralize(service_version_instance.soap_operations.size, "SOAP Operation") -%></b>
 	

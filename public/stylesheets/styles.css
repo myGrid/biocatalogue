@@ -257,6 +257,12 @@ img, a img {
 	color: #BBB;
 }
 
+.separator {
+  color: #888;
+  margin: 0 0.5em; 
+  vertical-align: middle;
+}
+
 .green_box {
 	border: 1px dotted #999999;
 	background-color: #e9f7cc;
@@ -1279,12 +1285,6 @@ body.sidebar-right #login_box {
 }
 
 .listing_item .name {
-	font-size: 138.5%;
-	font-weight: bold;
-	line-height: 1.8;
-}
-
-.listing_item .simple_listing .name {
 	font-size: 123.1%;
 	font-weight: bold;
 	line-height: 1.6;
@@ -2214,6 +2214,7 @@ ul.tabbernav li.tabberactive a:hover
 	margin: 0.1em 0 0.2em 0;
 	margin-left: 1em;
 	line-height: 1.6;
+  color: #555;
 }
 
 .aliases * {

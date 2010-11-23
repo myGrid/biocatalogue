@@ -12,13 +12,13 @@
 
 <div class="listing_item">
   
-  <%= render :partial => "services/listing/name_section", :locals => { :service => service } -%>
+  <%= render :partial => "services/listing/name_section", :locals => { :service => service }, :inline => true -%>
   
   <table style="width: 100%; table-layout: fixed;">
     <tr>
       <td>
         <% cache(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service.id) do -%>
-          <div>
+          <div style="margin-top: 0.3em;">
             <%= render :partial => "annotations/name_aliases",
                        :locals => { :annotatable => service,
                                     :name_annotations => all_alternative_name_annotations_for_service(service),
@@ -29,15 +29,16 @@
         <% end %>
         
         <% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
-          <div style="margin-top: 0.8em;">
+          <div style="margin-top: 1em;">
             <%= render :partial => "annotations/categories", 
                        :locals => { :service => service,
                                     :show_add_option => false,
-                                    :show_modify_options => false } -%>
+                                    :show_modify_options => false,
+                                    :small => true } -%>
           </div>
         <% end %>
       </td>
-      <td style="text-align: right; width: 300px; vertical-align: top;">
+      <td style="text-align: right; width: 300px; vertical-align: middle; padding-top: 0.4em;">
         <%= render :partial => "services/annotation_counts",
                  :locals => { :service => service } -%>
       </td>
@@ -67,7 +68,7 @@
             <%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
           <% end %>
           
-          <span class="faded" style="margin: 0 0.2em; vertical-align: middle;">|</span>
+          <span class="separator">|</span>
           
           <b>Submitter / Source:</b>
           <%= submitter_link(service.submitter) %>
@@ -80,12 +81,11 @@
         <div class="detail">
           <table>
             <tr>
-              <td style="width: 12em; line-height: 1.5; padding-top: 1px; text-align: left;">
+              <td style="width: 11em; line-height: 1.5; text-align: left;">
                 <b>Tags on this service:</b>
               </td>
               <td>
-                <%= render :partial => "annotations/tags_flat",
-                           :locals => { :annotatable => service } -%>
+                <%= render :partial => "annotations/tags_flat", :locals => { :annotatable => service }, :inline => true -%>
               </td>
             </tr>
           </table>

@@ -12,6 +12,7 @@
 	# Set defaults for optional parameters to this partial...
 	show_add_option = true unless local_assigns.has_key?(:show_add_option)
 	show_modify_options = true unless local_assigns.has_key?(:show_modify_options)
+  small = false unless local_assigns.has_key?(:small)
 %>
 
 <div class="annotations_container">
@@ -19,10 +20,10 @@
 	<div class="categories_box">
 		<table style="width: auto;">
 			<tr>
-				<td style="padding-right: 1em; padding-top: 2px;">
-					<b>Categories: </b>
+				<td style="vertical-align: top; padding-right: 0.6em; <%= small ? 'font-size: 85%;' : '' -%>">
+					<span><b>Categories: </b></span>
 				</td>
-				<td>
+				<td style="vertical-align: top;">
 					
 					<% unless (category_annotations = service.annotations_with_attribute("category")).empty? %>
 						<ul class="categories">
@@ -34,6 +35,7 @@
 											<%= link_to(h(category.name),
 																	services_path(:cat => "[#{category.id}]"),
 																	:class => "category",
+                                  :style => (small ? 'font-size: 85%;' : ''),
 																	:title => tooltip_title_attrib(category_hierachy_text(category))) -%>
 										
 											<% if show_modify_options %>
@@ -54,12 +56,9 @@
 							<% end %>
 						</ul>
 					<% else %>
-						<div class="none_text" style="padding-right: 1em; margin-top: 2px;">
-							<% if show_add_option %>
-								Not categorised yet
-							<% else %>
-								<%= link_to("Help categorise this...", "#{service_path(service)}?categorise") -%>
-							<% end %>
+						<div class="none_text" style="padding-right: 1em; <%= small ? 'font-size: 85%;' : '' -%>">
+              <span style="margin-right: 2em; ">none</span>
+							<%= link_to("Help categorise this...", "#{service_path(service)}?categorise") -%>
 						</div>
 					<% end %>
 					
