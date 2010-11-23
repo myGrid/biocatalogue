@@ -23,6 +23,7 @@ Mime::Type.register 'application/biocat-lite+json', :bljson
 # Require additional libraries
 require 'array'
 require 'object'
+require 'string'
 require 'hash'
 require 'numeric'
 require 'mime_type'

@@ -13,6 +13,8 @@
 	show_add_option = true unless local_assigns.has_key?(:show_add_option)
 	show_modify_options = true unless local_assigns.has_key?(:show_modify_options)
   small = false unless local_assigns.has_key?(:small)
+  show_title = true unless local_assigns.has_key?(:show_title)
+  show_none = true unless local_assigns.has_key?(:show_none)
 %>
 
 <div class="annotations_container">
@@ -20,9 +22,11 @@
 	<div class="categories_box">
 		<table style="width: auto;">
 			<tr>
-				<td style="vertical-align: top; padding-right: 0.6em; <%= small ? 'font-size: 85%;' : '' -%>">
-					<span><b>Categories: </b></span>
-				</td>
+			  <% if show_title %>
+  				<td style="vertical-align: top; padding-right: 0.6em; <%= small ? 'font-size: 85%;' : '' -%>">
+  					<span><b>Categories: </b></span>
+  				</td>
+        <% end %>
 				<td style="vertical-align: top;">
 					
 					<% unless (category_annotations = service.annotations_with_attribute("category")).empty? %>
@@ -56,10 +60,12 @@
 							<% end %>
 						</ul>
 					<% else %>
-						<div class="none_text" style="padding-right: 1em; <%= small ? 'font-size: 85%;' : '' -%>">
-              <span style="margin-right: 2em; ">none</span>
-							<%= link_to("Help categorise this...", "#{service_path(service)}?categorise") -%>
-						</div>
+            <% if show_none %>
+  						<div class="none_text" style="padding-right: 1em; <%= small ? 'font-size: 85%;' : '' -%>">
+                <span style="margin-right: 2em; ">none</span>
+  							<%= link_to("Help categorise this...", "#{service_path(service)}?categorise") -%>
+  						</div>
+            <% end %>
 					<% end %>
 					
 				</td>

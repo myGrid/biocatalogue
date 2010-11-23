@@ -11,30 +11,38 @@
 <%
 	# Set defaults for optional parameters to this partial...
 
-	# listing_type can be: :detailed, :simple or :table
-	listing_type = (@listing_type.blank? ? :simple : @listing_type)  unless local_assigns.has_key?(:listing_type)
+	# listing_type can be: :detailed, :simple or :grid
+	listing_type = (@listing_type.blank? ? :simple : @listing_type) unless local_assigns.has_key?(:listing_type)
 %>
 
-<div class="listings">
-	<% items.each do |service| %>
-		<% unless service.nil? %>
-			
-      <% if service.archived? %>
-			  
-				<div class="listing_item archived">
-					<%= render :partial => "services/listing/name_section", :locals => { :service => service }, :inline => true -%>
-					
-					<p class="archived_status_text">
-						This service has been archived because it may not be active anymore (or is close to being non active).
-					</p>
-				</div>
-			 
-			<% else %>			
-			
-        <%= render :partial => "services/listing/#{listing_type.to_s}", :locals => { :service => service }, :inline => true -%>
-			
-			<% end %>
-			
-		<% end %>
-	<% end %>
-</div>
+<% if [ :simple, :detailed ].include?(listing_type) %>
+
+  <div class="listings">
+    <% items.each do |service| %>
+      <% unless service.nil? %>
+        
+        <% if service.archived? %>
+          
+          <div class="listing_item archived">
+            <%= render :partial => "services/listing/name_section", :locals => { :service => service }, :inline => true -%>
+            
+            <p class="archived_status_text">
+              This service has been archived because it may not be active anymore (or is close to being non active).
+            </p>
+          </div>
+         
+        <% else %>      
+        
+          <%= render :partial => "services/listing/#{listing_type.to_s}", :locals => { :service => service }, :inline => true -%>
+        
+        <% end %>
+        
+      <% end %>
+    <% end %>
+  </div>
+
+<% elsif listing_type == :grid %>
+  
+  <%= render :partial => "services/listing/grid", :locals => { :services => items }, :inline => true -%>
+  
+<% end %>

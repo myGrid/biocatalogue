@@ -361,7 +361,7 @@ class ServicesController < ApplicationController
   end
   
   def set_listing_type_local
-    default_type = :simple
+    default_type = :grid
     session_key = "services_#{action_name}_listing_type"
     set_listing_type(default_type, session_key)
   end

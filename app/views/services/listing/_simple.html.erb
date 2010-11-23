@@ -47,12 +47,10 @@
   </div>
   
   <p class="detail">
-        
     <b>Provider:</b>
     <% service.providers.each do |provider| %>
       <%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
     <% end %>
-    
   </p>
     
 </div>

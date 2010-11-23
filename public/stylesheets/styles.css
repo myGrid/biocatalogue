@@ -1261,17 +1261,22 @@ body.sidebar-right #login_box {
 }
 
 .listing_item { 
-	margin-bottom: 1.5em;
+	margin-bottom: 1.2em;
 	padding: 0.4em 0.8em;
 	border: 1px solid #CCC;
 	background-color: #F5F5F5;
+  -moz-box-shadow: 1px 1px 1px #CCC;
+  -webkit-box-shadow: 1px 1px 1px #CCC;
+  box-shadow: 1px 1px 1px #CCC;
 }
 
-.listing_item p {
+.listing_item p,
+.listings_table p {
 	margin: 0;
 }
 
-.listing_item p * {
+.listing_item p *,
+.listings_table p * {
 	vertical-align: middle;
 }
 
@@ -1284,13 +1289,15 @@ body.sidebar-right #login_box {
 	vertical-align: middle;
 }
 
-.listing_item .name {
+.listing_item .name,
+.listings_table .name {
 	font-size: 123.1%;
 	font-weight: bold;
 	line-height: 1.6;
 }
 
-.listing_item .desc {
+.listing_item .desc,
+.listings_table .desc {
 	color: #333333;
 	padding: 0.6em 1em; 
 	margin: 1em 0; 
@@ -1298,29 +1305,87 @@ body.sidebar-right #login_box {
 	border: 1px dotted #DDD;
 }
 
-.listing_item .detail {
+.listing_item .detail,
+.listings_table .detail {
 	color: #333333;
 	font-size: 85%;
 	margin-top: 0.6em;
 }
 
-.listing_item .detail_simple {
+.listing_item .detail_simple,
+.listings_table .detail_simple {
 	color: #333333;
 	font-size: 93%;
 	margin-top: 0.6em;
 }
 
-.listing_item .detail_simple * {
+.listing_item .detail_simple *,
+.listings_table .detail_simple * {
 	vertical-align: baseline;
 }
 
-.listing_item .extra_detail_box {
+.listing_item .extra_detail_box,
+.listings_table .extra_detail_box  {
 	color: #333333;
 	font-size: 85%;
 	margin-top: 1.2em; 
 	padding-top: 0.8em; 
 	border-top: 1px solid #DDD;
 	line-height: 1.5;
+}
+
+.listings_table {
+  border-collapse: separate;
+  border-spacing: 14px;
+  border: none;
+  margin: -14px;
+}
+
+.listings_table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.7em;
+  border: 1px solid #CCC;
+  background-color: #F5F5F5;
+  width: 300px;
+  -moz-box-shadow: 1px 1px 1px #CCC;
+  -webkit-box-shadow: 1px 1px 1px #CCC;
+  box-shadow: 1px 1px 1px #CCC;
+}
+
+.listings_table td * {
+}
+
+.listings_table th {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px;
+  background-color: #DDDDDD;
+  font-weight: bold;
+}
+
+.listings_table td.blank {
+  border: 0px solid #CCC;
+  background-color: transparent;
+  -moz-box-shadow: 0px 0px 0px #CCC;
+  -webkit-box-shadow: 0px 0px 0px #CCC;
+  box-shadow: 0px 0px 0px #CCC;
+}
+
+.listings_table table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  border: none;
+}
+
+.listings_table table td {
+  border: none;
+  padding: 0;
+  -moz-box-shadow: 0px 0px 0px #CCC;
+  -webkit-box-shadow: 0px 0px 0px #CCC;
+  box-shadow: 0px 0px 0px #CCC;
+  width: auto;
+  vertical-align: middle;
 }
 
 /* END listing styles */

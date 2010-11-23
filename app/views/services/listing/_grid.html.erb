@@ -1,0 +1,71 @@
+<%
+
+# BioCatalogue: app/views/services/listing/_grid.html.erb
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% tableize services, 
+  :header => nil,
+  :name => "listings",
+  :generate_css => 'false' do |service| %>
+  
+  <div style="position: relative;">
+  
+    <span style="float: right; text-align: right;">
+      <span>
+        <%= service_type_badges(service.service_types) -%>
+      </span>
+      <br/>
+      <span style="margin-top: 1em; margin-bottom; 0.4em;">
+        <%= service_location_flags(service) -%>
+      </span>
+    </span>
+    
+    <p class="name">
+      <%= link_to(display_name(service).ellipsisize(20, 12), 
+            service_path(service), 
+            :title => tooltip_title_attrib(display_name(service), 200)) -%>
+    </p>
+    
+    <% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
+      <div style="margin-top: 0.8em;">
+        <%= render :partial => "annotations/categories", 
+                   :locals => { :service => service,
+                                :show_add_option => false,
+                                :show_modify_options => false,
+                                :small => true,
+                                :show_title => false,
+                                :show_none => false } -%>
+      </div>
+    <% end %>
+    
+    <div class="box_annotations detail">
+      <% unless (desc = service.preferred_description).blank? %>
+        <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+          <div class="text">
+            <%= annotation_prepare_description(desc, true, 120, false) -%>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    
+    <% benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
+      <span style="position: absolute; bottom: 0; right: 0; margin-left: 0.4em;">
+        <%= service_latest_status_symbol(service) -%>
+      </span>
+    <% end %>
+    
+    <p class="detail">
+      <b>Provider:</b>
+      <% service.providers.each do |provider| %>
+        <%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
+      <% end %>
+    </p>
+    
+  </div>
+  
+<% end %>

@@ -676,7 +676,7 @@ class ApplicationController < ActionController::Base
   end
   
   def set_listing_type(default_type, session_key)
-    @allowed_listing_types ||= [ "simple", "detailed", "table" ]
+    @allowed_listing_types ||= %w{ grid simple detailed }
     
     if !params[:listing].blank? and @allowed_listing_types.include?(params[:listing].downcase)
       @listing_type = params[:listing].downcase.to_sym
