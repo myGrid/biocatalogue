@@ -161,7 +161,7 @@ class ApplicationController < ActionController::Base
   # Check if an object belongs to the user logged in
   def mine?(thing)
     return false if thing.nil?
-    return false if !is_api_request? && !logged_in?
+    return false unless logged_in?
 
     c_id = current_user.id.to_i
 
