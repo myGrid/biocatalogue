@@ -13,9 +13,19 @@
 	style = "" unless local_assigns.has_key?(:style)
 %>
 
-<% if @listing_type == :simple %>
-	<%= link_to content_tag(:span, "Switch to Detailed View"), base_url_lambda.call({ :listing => :detailed, :page => @page }), :class => "button_slim", :style => "#{style}" -%>
-<% elsif @listing_type == :detailed %>
-	<%= link_to content_tag(:span, "Switch to Simple View"), base_url_lambda.call({ :listing => :simple , :page => @page }), :class => "button_slim", :style => "#{style}"  -%>
+<% content_tag(:div, :style => style) do %>
+  <span style="vertical-align: middle; font-weight: bold;">
+    View: 
+  </span>
+  
+  <span style="vertical-align: middle; margin-left: 0.3em;">
+    <select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
+      <% @allowed_listing_types.map { |l| l.to_sym }.each do |t| %>
+        <option value="<%= base_url_lambda.call({ :listing => t, :page => @page }) -%>" <%= "selected" if @listing_type == t -%>>
+          <%= t.to_s.humanize -%>
+        </option>
+      <% end %>
+    </select>
+  </span>
 <% end %>
 

@@ -29,7 +29,7 @@ class ServicesController < ApplicationController
   
   before_filter :set_page_title_suffix, :only => [ :index ]
   
-  before_filter :set_listing_type, :only => [ :index ]
+  before_filter :set_listing_type_local, :only => [ :index ]
   
   before_filter :login_or_oauth_required, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   before_filter :authorise, :only => [ :destroy, :check_updates, :archive, :unarchive ]
@@ -360,21 +360,10 @@ class ServicesController < ApplicationController
     @page_title_suffix = (BioCatalogue::Filtering.filters_text_if_filters_present(@current_filters) || "Browse All Services")
   end
   
-  def set_listing_type
-    @allowed_listing_types ||= [ "simple", "detailed" ]
-    
-    default_type = :detailed
+  def set_listing_type_local
+    default_type = :simple
     session_key = "services_#{action_name}_listing_type"
-    
-    if !params[:listing].blank? and @allowed_listing_types.include?(params[:listing].downcase)
-      @listing_type = params[:listing].downcase.to_sym
-      session[session_key] = params[:listing].downcase
-    elsif !session[session_key].blank?
-      @listing_type = session[session_key].to_sym
-    else
-      @listing_type = default_type
-      session[session_key] = default_type.to_s 
-    end
+    set_listing_type(default_type, session_key)
   end
   
   def authorise

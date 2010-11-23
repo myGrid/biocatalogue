@@ -16,7 +16,7 @@ class SearchController < ApplicationController
   
   after_filter :remember_search, :only => [ :show ]
   
-  before_filter :set_listing_type, :only => [ :show ]
+  before_filter :set_listing_type_local, :only => [ :show ]
   
   def show
     if @query.blank?
@@ -195,21 +195,10 @@ class SearchController < ApplicationController
     end
   end
   
-  def set_listing_type
-    @allowed_listing_types ||= [ "simple", "detailed" ]
-    
+  def set_listing_type_local
     default_type = :simple
     session_key = "search_#{action_name}_listing_type"
-    
-    if !params[:listing].blank? and @allowed_listing_types.include?(params[:listing].downcase)
-      @listing_type = params[:listing].downcase.to_sym
-      session[session_key] = params[:listing].downcase
-    elsif !session[session_key].blank?
-      @listing_type = session[session_key].to_sym
-    else
-      @listing_type = default_type
-      session[session_key] = default_type.to_s 
-    end
+    set_listing_type(default_type, session_key)
   end
 
 end
