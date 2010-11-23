@@ -675,7 +675,7 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def set_listing_type(default, session_key)
+  def set_listing_type(default_type, session_key)
     @allowed_listing_types ||= [ "simple", "detailed", "table" ]
     
     if !params[:listing].blank? and @allowed_listing_types.include?(params[:listing].downcase)
