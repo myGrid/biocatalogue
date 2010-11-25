@@ -19,8 +19,12 @@
 	<center>
 		<% rounded "#E9F7CC", "#333", "80%" do %>
 		
-			<div class="box_info" style="padding: 0.4em 1em 0 1em; margin: 0;">
-				<span style="float:right; font-size: 85%;">[ <%= link_to("See All Tags", tags_path) -%> ]</span>
+			<div class="box_info" style="padding: 0.2em 1em 0 1em; margin: 0;">
+        
+				<span style="float:right; font-size: 85%;">
+          <%= link_to("See All Tags", tags_path) -%>
+        </span>
+        
 				<h3 style="font-size: 116%;">
 					<span style="vertical-align:middle;">
 						<span id="tag_cloud_title_normal">
@@ -32,9 +36,21 @@
 							</span>
 						<% end %>
 					</span>
-					<span style="vertical-align:middle; margin-left:0.5em;">
+					<span style="vertical-align:middle; margin: 0 0.5em;">
 						<%= help_icon_with_tooltip(help_text_for_tag_clouds) -%>
 					</span>
+          <% if @tags.length > initial_number_of_tags %>
+            <span style="vertical-align:middle; font-weight: normal; font-size: 85%; margin-left: 1.5em;">
+              (
+              <%= link_to_function("more" + expand_image("0.5em"), :id => 'tag_cloud_more_link', :style => "text-decoration: none;") do |page| 
+                page.toggle 'tag_cloud_more_link', 'tag_cloud_less_link', 'tag_cloud_normal', 'tag_cloud_bigger', 'tag_cloud_title_normal', 'tag_cloud_title_bigger'
+              end -%>
+              
+              <%= link_to_function("less" + collapse_image("0.5em"), :id => 'tag_cloud_less_link', :style => "text-decoration: none; display:none;") do |page| 
+                page.toggle 'tag_cloud_more_link', 'tag_cloud_less_link', 'tag_cloud_normal', 'tag_cloud_bigger', 'tag_cloud_title_normal', 'tag_cloud_title_bigger'
+              end -%>)
+            </span>
+          <% end %>
 				</h3>
 				
 				<div id="tag_cloud_normal">
@@ -45,18 +61,6 @@
 					<div id="tag_cloud_bigger" style="display:none;">
 						<%= generate_tag_cloud(BioCatalogue::Tags.sort_tags_alphabetically(@tags), :weighted, :max_font => max_font_size, :tag_cloud_style => "margin-top: 0.3em; margin-bottom: 0.5em;") -%>
 					</div>
-				<% end %>
-				
-				<% if @tags.length > initial_number_of_tags %>
-					<p class="more_less_links">
-						<%= link_to_function("more" + expand_image("0.5em"), :id => 'tag_cloud_more_link') do |page| 
-				      page.toggle 'tag_cloud_more_link', 'tag_cloud_less_link', 'tag_cloud_normal', 'tag_cloud_bigger', 'tag_cloud_title_normal', 'tag_cloud_title_bigger'
-				    end -%>
-						
-						<%= link_to_function("less" + collapse_image("0.5em"), :id => 'tag_cloud_less_link', :style => "display:none;") do |page| 
-				      page.toggle 'tag_cloud_more_link', 'tag_cloud_less_link', 'tag_cloud_normal', 'tag_cloud_bigger', 'tag_cloud_title_normal', 'tag_cloud_title_bigger'
-				    end -%>
-					</p>
 				<% end %>
 				
 			</div>
