@@ -25,6 +25,8 @@ class Annotation < ActiveRecord::Base
     acts_as_trashable
   end
   
+  before_save :validate_doc_url
+  
   validate :check_category_annotation
 
   after_save :process_post_save_custom_logic
@@ -257,5 +259,14 @@ private
 			return data["annotation"].to_json
     end
   end # generate_json_and_make_inline
+  
+  def validate_doc_url
+    if self.attribute_name.downcase =="documentation_url"
+      return true if self.value.downcase.match(URI::regexp(%w(http https)))
+      self.errors.add_to_base("url is not valid. Should start with http or https ")
+      return false
+    end
+    return true
+  end
 
 end
