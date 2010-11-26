@@ -34,4 +34,25 @@ module CurationHelper
     orders ={'asc' => 'desc', 'desc' => 'asc'}
     return orders[order]
   end
+  
+  # convert to an html nested list
+  def from_list_to_html(list, depth_to_traverse=1000, start_depth=0)
+    depth = start_depth
+    if list.is_a?(Array) && !list.empty?
+      str =''
+      str << '<ul>'
+      depth += 1
+      list.each do |value|
+        unless depth > depth_to_traverse
+          str << "<li> #{value} </li> "
+          if value.is_a?(Array) 
+            str << from_hash_to_html(value, depth_to_traverse, depth)
+          end
+        end
+      end
+      str << '</ul> '
+      return str
+    end
+    return ''
+  end
 end

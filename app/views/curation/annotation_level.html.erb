@@ -13,6 +13,16 @@
 
 <div class="box_info_standout center" style="margin: 1.5em auto; width: 680px;">
   Provides a graphical view of the annotation level for services in BioCatalogue.
+  <%= link_to_function "...more" + expand_image, visual_effect(:toggle_blind, "about_ann_level", :duration => 0.3), :style => "text-decoration:none;" %>
+	<div id="about_ann_level" style="display:none;text-align:left;">
+		<h4>Annotation Level</h4>
+			The annotation level is calculated as a ratio of the expected
+			to the actual annotation coverage. The attributes
+			taken into account for the calculation are :
+			<div class="computational_type_details">
+				<%= from_list_to_html(BioCatalogue::Curation::AnnotationLevel.unique_ann_attribute_list) -%>
+			</div>
+	</div>
 </div>
 
 <span class="header_left_bar" style="float:left;width:25%">
@@ -36,10 +46,12 @@
 	</span>
 </span>
 
-<div id="annotation_level">
+<div id="annotation_level" style="float:left;">
 	<%= render :partial => 'annotation_levels_bar_view', :locals => {:services => @services} %>
 </div>
 
-<div>
+
+
+<div style="float:left">
 	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @services } %>
 </div>

@@ -49,7 +49,12 @@ module BioCatalogue
       # level
       def self.annotatable_attributes_for(annotatable)
         
-        attrs = { 'Service'           =>  ['category', 'display_name', 'tag'],              # ['alternative_name','category', 'display_name', 'tag' ]
+        return all_ann_attributes[annotatable.class.name]
+      end
+      
+      def self.all_ann_attributes
+        
+        attrs = { 'Service'           =>  ['category', 'tag'],                              # ['alternative_name','category', 'display_name', 'tag' ]
                   'ServiceDeployment' =>  ['contact', 'cost', ],                            # ['contact', 'cost', 'usage_condition']
                   'SoapService'       =>  ['description', 'documentation_url', 'license'],  # ['citation','description', 'documentation_url', 'license', 'publication']
                   'RestService'       =>  ['description', 'documentation_url', 'license'],  # ['citation','description', 'documentation_url', 'license', 'publication']
@@ -58,7 +63,15 @@ module BioCatalogue
                   'SoapOutput'        =>  ['description', 'example_data', 'format'],        # ['alternative_name', 'description', 'example_data', 'format', 'tag'],
                   'ServiceProvider'   =>  ['contact', 'description','display_name']         # ['alternative_name', 'contact', 'description','display_name', 'website']
                   }
-        return attrs[annotatable.class.name]
+        return attrs
+      end
+      
+      def self.unique_ann_attribute_list
+        attrs = []
+        all_ann_attributes.values.each do |a|
+          attrs.concat(a)
+        end
+        return attrs.uniq
       end
       
       def self.service_annotatables(service)
