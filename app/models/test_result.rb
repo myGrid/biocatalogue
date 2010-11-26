@@ -10,7 +10,8 @@ class TestResult < ActiveRecord::Base
   before_create :valid_result_range
   
   after_create :update_status, 
-               :submit_update_success_rate_job
+               :submit_update_success_rate_job,
+               :update_service_test_cached_status
                
   belongs_to :service_test
   
@@ -155,5 +156,13 @@ private
 			return data["test_result"].to_json
     end
   end # generate_json_and_make_inline
+  
+  def update_service_test_cached_status
+    begin
+      self.service_test.update_cached_status!
+    rescue Exception => ex
+      logger.error(ex.to_s)
+    end
+  end
 
 end

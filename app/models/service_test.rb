@@ -9,7 +9,7 @@ class ServiceTest < ActiveRecord::Base
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache
     index :test_type
-    index [ :test_type, :test_id ]
+    index [ :test_type, :test_id, :service_id ]
   end
   
   belongs_to :service
@@ -220,6 +220,11 @@ class ServiceTest < ActiveRecord::Base
     return false
   end
   
+  # Helper class method to find a "testable" object
+  # given the testable object class name and id 
+  def self.find_testable(testable_str, testable_id)
+    testable_str.constantize.find(testable_id)
+  end 
   
   protected
   
