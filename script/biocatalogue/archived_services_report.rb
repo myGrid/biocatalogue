@@ -31,7 +31,8 @@ def report_stats
   puts ""
   
   provider_name_length_max = stats[:providers].map {|p| p['name'].length}.max.to_i
-  format = "%#{provider_name_length_max}s\t%s\n"
+  provider_counts_length_max = stats[:providers].map {|p| p['count'].to_s.length}.max.to_i
+  format = "%#{provider_name_length_max}s\t%#{provider_counts_length_max}s\n"
   printf(format, "Provider", "Count")
   printf(format, '-' * provider_name_length_max, '-----')
   stats[:providers].each do |p|
