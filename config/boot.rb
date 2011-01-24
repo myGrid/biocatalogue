@@ -25,7 +25,7 @@ module Rails
     end
 
     def preinitialize
-      load(preinitializer_path) if File.exist?(preinitializer_path)
+      load(preinitializer_path) #if File.exist?(preinitializer_path)
     end
 
     def preinitializer_path

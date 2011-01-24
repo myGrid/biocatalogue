@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "aws-s3", :lib => "aws/s3" 
   config.gem 'disqus', :version => '1.0.1'
-  config.gem 'soap4r', :version => '1.5.8'
+  #config.gem 'soap4r', :version => '1.5.8'
   config.gem 'mperham-memcache-client', :version => '>= 1.7.4', :lib => 'memcache', :source => "http://gems.github.com"
   config.gem 'onyx-cache-money', :version => '>= 0.2.6.1', :lib => 'cache_money', :source => "http://gems.github.com"
   config.gem 'geokit', :version => '>= 1.3.2'
@@ -86,7 +86,19 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   config.active_record.observers = :annotation_observer
+  
+  # Use cronolog for log rotation in production
+  # ROTATE_LOGS & CRONOLOG_PARAMS  constants
+  # are set in config/preinitializer.rb
+  # By default log rotation is switched off
+  if ROTATE_LOGS && CRONOLOG_PARAMS
+    config.logger       = Logger.new(IO.popen( CRONOLOG_PARAMS, "w" ))
+    config.logger.level = Logger::DEBUG
+  end
+  
 end
+
+
 
 # Code to handle the issue of unintential file descriptor sharing in Phusion Passenger.
 # Ref: http://www.modrails.com/documentation/Users%20guide.html#_example_1_memcached_connection_sharing_harmful

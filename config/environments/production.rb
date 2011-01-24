@@ -9,13 +9,13 @@ config.cache_classes = true
 
 # Use cronolog for log rotation in production
 # Set ROTATE_LOGS=false to turn off log rotation.
-ROTATE_LOGS     = false
-cronolog_params = "/my/server/cronolog /my/application/file/log/production.log.%Y%m%d"
+#ROTATE_LOGS     = false
+#cronolog_params = "/my/server/cronolog /my/application/file/log/production.log.%Y%m%d"
 
-if ROTATE_LOGS
-  config.logger       = Logger.new(IO.popen( cronolog_params, "w" ))
-  config.logger.level = Logger::INFO
-end
+#if ROTATE_LOGS && CRONOLOG_PARAMS
+#  config.logger       = Logger.new(IO.popen( CRONOLOG_PARAMS, "w" ))
+#  config.logger.level = Logger::INFO
+#end
 
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
