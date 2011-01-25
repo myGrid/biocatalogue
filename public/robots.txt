@@ -2,5 +2,20 @@
 #
 # To ban all spiders from the entire site uncomment the next two lines:
 User-Agent: *
-Disallow: /   # prevent bots accessing application
-
+Disallow: /services?cat=*
+Disallow: /services?c=*
+Disallow: /login
+Disallow: /signup
+Disallow: /logout
+Disallow: /curation/tools
+Disallow: /curation/reports
+Disallow: /service_tests
+Disallow: /tags
+Disallow: /session
+Disallow: /rest_parameters
+Disallow: /rest_method_parameters
+Disallow: /rest_representations
+Disallow: /soap_inputs
+Disallow: /soap_outputs
+Disallow: /responsibility_requests
+Disallow: /service_responsibles
