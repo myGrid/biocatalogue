@@ -11,24 +11,38 @@
 <div class="listings">
 	<% items.each do |sr| %>
 	
-	<div class="listing_item" style="height:20%;width:90%">
+	<% bgc='#CCFF99' if sr.is_active?%>
+	
+	<div class="listing_item" style="height:20%;width:90%;background-color:<%= bgc %>">
 
 		<b><%= link_to(sr.service.display_name, service_url(sr.service)) -%></b>
 		
 		<div style="float:right;">
 			<% if (logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, sr.service)) -%>
-				<% if sr.is_active? %>
-					<%= link_to("Unsubscribe", deactivate_service_responsible_url(sr), 
+				<span class="actions_button">
+					<ul class="p7menubar">
+						<li>
+							<a href="#" class="trigger">
+								<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+							</a>
+							<ul>
+								<li>
+									<% if sr.is_active? %>
+										<%= link_to("Unsubscribe", deactivate_service_responsible_url(sr), 
 																			:title => "Unsubscribe to notification from this service",
 																			:method => :put,
 																			:confirm => "Do you want unsubscribe from notifications for this service?") -%>
-				<%else%>
-						<%= link_to("Re-subscribe", activate_service_responsible_url(sr), 
-																			:title => "Re-subscrible to receive notifications from this service",
+									<%else%>
+										<%= link_to("Subscribe", activate_service_responsible_url(sr), 
+																			:title => "Subscrible to receive notifications from this service",
 																			:method => :put,
-																			:confirm => "Do you want re-subscribe to notifications for this service?") -%>
-																			
-				<%end%>
+																			:confirm => "Do you want subscribe to notifications for this service?") -%>				
+									<%end%>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</span>		
 			<% end -%>
 		</div>
 
