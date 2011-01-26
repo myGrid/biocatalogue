@@ -6,14 +6,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-# Note
-# Before running this script, you should check that
-# you have a file call soaplab_submmitters.rb in the 
-# data directory under the application root.
-# data/soaplab_submitters.rb
-
 require 'optparse'
-require 'data/soaplab_submitters'
 
 class UpdateSoaplabServerSubmitters0710
 
@@ -39,8 +32,6 @@ attr_accessor :options
       opts.parse!
     end
     
-    @submitter_for_server = SoaplabSubmitters.new().submitters
-    
     # Start the Rails app
       
     ENV["RAILS_ENV"] = @options[:environment]
@@ -50,10 +41,17 @@ attr_accessor :options
     
   end
   
+  def get_server_info(location)
+    server = SoaplabServer.find_by_location(location)
+    submitter = server.services.last.submitter
+    return {:submitter => submitter, :server => server}
+  end
+  
   def update_submitter_for_server(server_url)
-    submitter = User.find_by_email(@submitter_for_server[server_url])
-    server    = SoaplabServer.find_by_location(server_url)
-    if submitter && server
+    server_info = get_server_info(server_url)
+    if server_info[:submitter] && server_info[:server]
+      server    = server_info[:server]
+      submitter = server_info[:submitter]
       unless server.submitter
         server.submitter = submitter
         server.save
