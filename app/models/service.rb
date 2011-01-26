@@ -13,7 +13,7 @@ class Service < ActiveRecord::Base
     index [ :submitter_type, :submitter_id ]
   end
   
-  after_create :tweet_create
+  after_create :tweet_create, :responsible_create
     
   if ENABLE_TRASHING
     acts_as_trashable
@@ -72,8 +72,6 @@ class Service < ActiveRecord::Base
   
   validates_associated :service_deployments
   
-  # This causes a "stack level too deep" error because of recursive validates_associated calls in ServiceTest
-  #validates_associated :service_tests
   
   validates_existence_of :submitter   # User must exist in the db beforehand.
   
@@ -401,6 +399,28 @@ class Service < ActiveRecord::Base
     return (successes.sum/self.service_tests.count).to_i
   end
   
+  # Helper method to get the categories for this service
+  # By default, at most 10 categories will be returned
+  def categories(limit=10)
+    category_attribute = AnnotationAttribute.find_by_name("category")
+    cat_ids = Annotation.find(:all, :limit=> limit,
+                      :conditions => ["annotatable_type=? AND annotatable_id=? AND attribute_id=?",
+                                      self.class.name, self.id, category_attribute.id ]).collect{|a| a.value}.compact
+    return Category.find(cat_ids)   
+  end
+  
+  # Submit a job to submit this service in the 
+  # background.
+  def submit_delete_job
+    begin
+      Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceDelete.new(self), 0, 5.seconds.from_now)
+      return true
+    rescue Exception => ex
+      logger.error(ex.to_s)
+      return false
+    end
+    return false
+  end
   
 protected
   
@@ -539,6 +559,23 @@ private
     end
     
     return list
+  end
+  
+  # This give the submitter the possibility to 
+  # to subscribe to notifications from this 
+  # service. Submitters are no longer automatically
+  # added to the notification list for the services.
+  # Rather they now need to activate a subscription
+  # through their user profile.
+  def responsible_create
+    BioCatalogue::Util.say "Called Service#responsible_create to submit job to tweet"
+    begin
+      ServiceResponsible.create(:user_id => self.submitter.id, :service_id => self.id, :status =>"inactive")
+    rescue Exception => ex
+      logger.error(ex)
+      return false
+    end
+    return true
   end
   
 end
