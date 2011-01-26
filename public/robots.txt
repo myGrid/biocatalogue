@@ -4,6 +4,11 @@
 User-Agent: *
 Disallow: /services?cat=*
 Disallow: /services?c=*
+Disallow: /services?p=*
+Disallow: /services?*sort_by=*
+Disallow: /services?t=*
+Disallow: /services?*
+Disallow: /services/*?
 Disallow: /login
 Disallow: /signup
 Disallow: /logout
