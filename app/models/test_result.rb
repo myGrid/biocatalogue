@@ -10,8 +10,8 @@ class TestResult < ActiveRecord::Base
   before_create :valid_result_range
   
   after_create :update_status, 
-               :submit_update_success_rate_job,
-               :update_service_test_cached_status
+                :update_success_rate!
+                :update_service_test_cached_status
                
   belongs_to :service_test
   

@@ -172,7 +172,9 @@ class ServiceTest < ActiveRecord::Base
       self.save!
     rescue Exception => ex
       logger.error(ex.to_s)
+      return false
     end
+    return true
   end
   
   def name
