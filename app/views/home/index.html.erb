@@ -130,7 +130,7 @@
 								<b><%= link_to display_name(a), a -%></b>
 								<br/>
 								By <%= link_to display_name(a.user), a.user -%>
-								<span class="ago">(<%= distance_of_time_in_words_to_now(a.created_at) -%> ago</span>
+								<span class="ago">(<%= distance_of_time_in_words_to_now(a.created_at) -%> ago)</span>
 							</p>
 						<% end %>
 					<% else %>
