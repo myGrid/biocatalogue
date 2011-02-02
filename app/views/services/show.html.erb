@@ -304,13 +304,13 @@
 				
 			<%= render :partial => "annotations/tags_box",
 								 :locals => { :annotatable => @service } -%>
-			
+			<!--
 			<div id="ratings">
 				<%= render :partial => "annotations/ratings_box",
 								 	 :locals => { :annotatable => @service,
 																:categories_config => BioCatalogue::Annotations.get_ratings_categories_config_for_model("Service") } -%>
 			</div>
-			
+			-->
 			<%= render :partial => "favourited_box" -%>
 			
 			<%= render :partial => "similar_services_box" -%>
@@ -329,15 +329,6 @@
 	<%= render :partial => "services/news_tab" -%>
  
 </div>
-
-<div style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
-	<h2>Comments</h2>
-	
-	<a name="comments"><%= disqus_comment_counts -%></a>
-	
-	<%= disqus_thread -%>
-</div>
-
 
 <% # Load activity feed content %>
 <script>
