@@ -5,6 +5,8 @@
 
 require 'rubygems'
 require 'daemons'
+require 'optparse'
+require 'pp'
 
 app_dir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
  
@@ -13,9 +15,21 @@ daemon_options = {
   :dir_mode => :normal,
   :dir => File.join(app_dir, 'tmp', 'pids'),
   :backtrace => true,
-  :log_output => true
+  :log_output => true,
+  :environment => 'production'
+  
 }
- 
+
+# Set the application environment
+optparse = OptionParser.new do |opts|
+  opts.on("-e", "--environment=[environment]", "rails environment") do |env|
+  	daemon_options[:environment] = env
+  end
+end
+optparse.parse!
+
+#pp daemon_options
+
 Daemons.run_proc('biocatalogue_worker', daemon_options) do
   if ARGV.include?('--')
     ARGV.slice! 0..ARGV.index('--')
@@ -25,11 +39,11 @@ Daemons.run_proc('biocatalogue_worker', daemon_options) do
   
   Dir.chdir app_dir
   
-  # Should run only in production mode.
-  # So if you are testing locally then ensure that your database config
-  # has the same database for both development and production modes
-  # (though it is not recommend to keep this config at all times!)
-  RAILS_ENV = 'production'
+  # Should run in production mode by default.
+  # So if you are testing locally (in development mode) then then you should pass
+  # the environment variable as a command line option.
+  # Example : script/worker start --environment=development
+  RAILS_ENV=daemon_options[:environment]
   
   puts "Starting in Rails #{RAILS_ENV} mode"
   
