@@ -178,10 +178,10 @@ SERVICE_RATINGS_CATEGORIES = { "rating.documentation" => [ "Documentation",  "Ra
 # Configure global settings for the Disqus integration
 # ----------------------------------------------------
 
-Disqus::defaults[:avatar_size] = 48
-Disqus::defaults[:color] = "green"
-Disqus::defaults[:default_tab] = "recent"
-Disqus::defaults[:num_items] = 15
+#Disqus::defaults[:avatar_size] = 48
+#Disqus::defaults[:color] = "green"
+#Disqus::defaults[:default_tab] = "recent"
+#Disqus::defaults[:num_items] = 15
 
 # ====================================================
 
