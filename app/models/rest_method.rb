@@ -514,7 +514,8 @@ private
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "description" => self.preferred_description,
         "documentation_url" => self.documentation_url,
-        "created_at" => self.created_at.iso8601
+        "created_at" => self.created_at.iso8601,
+        "archived_at" => self.archived? ? self.archived_at.iso8601 : nil
       }
     }
 

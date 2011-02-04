@@ -18,3 +18,8 @@ parent_xml.submitter xlink_attributes(uri_for_object(rest_resource.submitter),
 
 # <dcterms:created>
 dcterms_xml_tag parent_xml, :created, rest_resource.created_at
+
+# <archived>
+if rest_resource.archived?
+  parent_xml.archived rest_resource.archived_at.iso8601
+end

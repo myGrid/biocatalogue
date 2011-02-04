@@ -37,3 +37,8 @@ render :partial => "monitoring/api/status",
 
 # <dcterms:created>
 dcterms_xml_tag parent_xml, :created, service.created_at
+
+# <archived>
+if service.archived?
+  parent_xml.archived service.archived_at.iso8601
+end

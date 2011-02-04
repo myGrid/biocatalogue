@@ -21,3 +21,8 @@ parent_xml.computationalTypeDetails soap_output.computational_type_details.blank
 
 # <dcterms:created>
 dcterms_xml_tag parent_xml, :created, soap_output.created_at
+
+# <archived>
+if soap_output.archived?
+  parent_xml.archived soap_output.archived_at.iso8601
+end

@@ -79,7 +79,8 @@ private
         "name" => self.name,
         "description" => self.preferred_description,
         "computational_type" => self.computational_type,
-        "created_at" => self.created_at.iso8601
+        "created_at" => self.created_at.iso8601,
+        "archived_at" => self.archived? ? self.archived_at.iso8601 : nil
       }
     }
 

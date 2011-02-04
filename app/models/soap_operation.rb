@@ -142,7 +142,8 @@ private
         "name" => self.name,
         "description" => self.description,
         "parameter_order" => self.parameter_order,
-        "created_at" => self.created_at.iso8601
+        "created_at" => self.created_at.iso8601,
+        "archived_at" => self.archived? ? self.archived_at.iso8601 : nil
       }
     }
 

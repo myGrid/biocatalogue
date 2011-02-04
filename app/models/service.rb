@@ -477,6 +477,7 @@ private
         "description" => self.preferred_description,
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "created_at" => self.created_at.iso8601,
+        "archived_at" => self.archived? ? self.archived_at.iso8601 : nil,
         "service_technology_types" => self.service_types,
         "latest_monitoring_status" => BioCatalogue::Api::Json.monitoring_status(self.latest_status)
       }

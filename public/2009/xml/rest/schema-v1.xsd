@@ -280,35 +280,40 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element ref="dc:title" maxOccurs="1" minOccurs="1">
+					<xsd:element ref="dc:title" maxOccurs="1"
+						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="name" type="xsd:string" minOccurs="1"
-						maxOccurs="1">
-					</xsd:element>
-					<xsd:element name="originalSubmitter" type="ResourceLink"
+					<xsd:element name="name" type="xsd:string"
 						minOccurs="1" maxOccurs="1">
+					</xsd:element>
+					<xsd:element name="originalSubmitter"
+						type="ResourceLink" minOccurs="1" maxOccurs="1">
 					</xsd:element>
 					<xsd:element ref="dc:description" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="serviceTechnologyTypes" maxOccurs="1"
-						minOccurs="1">
+					<xsd:element name="serviceTechnologyTypes"
+						maxOccurs="1" minOccurs="1">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="type" type="ServiceTechnologyType"
-									maxOccurs="unbounded" minOccurs="1">
+								<xsd:element name="type"
+									type="ServiceTechnologyType" maxOccurs="unbounded"
+									minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="latestMonitoringStatus" type="MonitoringStatus"
-						maxOccurs="1" minOccurs="1">
+					<xsd:element name="latestMonitoringStatus"
+						type="MonitoringStatus" maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element ref="dcterms:created" minOccurs="0"
+					<xsd:element ref="dcterms:created" minOccurs="1"
 						maxOccurs="1">
 					</xsd:element>
-					<xsd:element name="summary" minOccurs="0" maxOccurs="1"
-						type="ServiceSummary">
+					<xsd:element name="archived" type="xsd:dateTime"
+						maxOccurs="1" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="summary" minOccurs="0"
+						maxOccurs="1" type="ServiceSummary">
 					</xsd:element>
 					<xsd:element name="deployments" minOccurs="0"
 						maxOccurs="1">
@@ -316,7 +321,8 @@
 							<xsd:complexContent>
 								<xsd:extension base="ResourceLink">
 									<xsd:sequence>
-										<xsd:element name="serviceDeployment" type="ServiceDeployment"
+										<xsd:element
+											name="serviceDeployment" type="ServiceDeployment"
 											minOccurs="1" maxOccurs="unbounded">
 										</xsd:element>
 									</xsd:sequence>
@@ -324,17 +330,21 @@
 							</xsd:complexContent>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="variants" minOccurs="0" maxOccurs="1">
+					<xsd:element name="variants" minOccurs="0"
+						maxOccurs="1">
 						<xsd:complexType>
 							<xsd:complexContent>
 								<xsd:extension base="ResourceLink">
 									<xsd:sequence>
-										<xsd:choice maxOccurs="unbounded" minOccurs="1">
-											<xsd:element name="soapService" type="SoapService"
-												maxOccurs="unbounded" minOccurs="0">
+										<xsd:choice
+											maxOccurs="unbounded" minOccurs="1">
+											<xsd:element
+												name="soapService" type="SoapService" maxOccurs="unbounded"
+												minOccurs="0">
 											</xsd:element>
-											<xsd:element name="restService" type="RestService"
-												maxOccurs="unbounded" minOccurs="0">
+											<xsd:element
+												name="restService" type="RestService" maxOccurs="unbounded"
+												minOccurs="0">
 											</xsd:element>
 										</xsd:choice>
 									</xsd:sequence>
@@ -342,15 +352,18 @@
 							</xsd:complexContent>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="monitoring" maxOccurs="1" minOccurs="0">
+					<xsd:element name="monitoring" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:complexContent>
 								<xsd:extension base="ResourceLink">
 									<xsd:sequence>
-										<xsd:element name="tests" maxOccurs="1" minOccurs="1">
+										<xsd:element name="tests"
+											maxOccurs="1" minOccurs="1">
 											<xsd:complexType>
 												<xsd:sequence>
-													<xsd:element name="serviceTest" type="ServiceTest"
+													<xsd:element
+														name="serviceTest" type="ServiceTest"
 														maxOccurs="unbounded" minOccurs="0">
 													</xsd:element>
 												</xsd:sequence>
@@ -361,8 +374,8 @@
 							</xsd:complexContent>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="related" type="ServiceRelatedLinks"
-						minOccurs="0" maxOccurs="1">
+					<xsd:element name="related"
+						type="ServiceRelatedLinks" minOccurs="0" maxOccurs="1">
 					</xsd:element>
 				</xsd:sequence>
 			</xsd:extension>
@@ -1755,10 +1768,11 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element ref="dc:title" maxOccurs="1" minOccurs="1">
-					</xsd:element>
-					<xsd:element name="name" type="xsd:string" maxOccurs="1"
+					<xsd:element ref="dc:title" maxOccurs="1"
 						minOccurs="1">
+					</xsd:element>
+					<xsd:element name="name" type="xsd:string"
+						maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element ref="dc:description" maxOccurs="1"
 						minOccurs="1">
@@ -1769,58 +1783,65 @@
 					<xsd:element ref="dcterms:created" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="inputs" maxOccurs="1" minOccurs="0">
+					<xsd:element name="archived" type="xsd:dateTime"
+						maxOccurs="1" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="inputs" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:complexContent>
 								<xsd:extension base="ResourceLink">
 									<xsd:sequence>
-										<xsd:element name="soapInput" type="SoapInput"
-											maxOccurs="unbounded" minOccurs="0">
+										<xsd:element name="soapInput"
+											type="SoapInput" maxOccurs="unbounded" minOccurs="0">
 										</xsd:element>
 									</xsd:sequence>
 								</xsd:extension>
 							</xsd:complexContent>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="outputs" maxOccurs="1" minOccurs="0">
+					<xsd:element name="outputs" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:complexContent>
 								<xsd:extension base="ResourceLink">
 									<xsd:sequence>
-										<xsd:element name="soapOutput" type="SoapOutput"
-											maxOccurs="unbounded" minOccurs="0">
+										<xsd:element name="soapOutput"
+											type="SoapOutput" maxOccurs="unbounded" minOccurs="0">
 										</xsd:element>
 									</xsd:sequence>
 								</xsd:extension>
 							</xsd:complexContent>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="ancestors" maxOccurs="1" minOccurs="0">
+					<xsd:element name="ancestors" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="service" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="service"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="soapService" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="soapService"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="related" maxOccurs="1" minOccurs="0">
+					<xsd:element name="related" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="inputs" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="inputs"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="outputs" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="outputs"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="annotations" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="annotationsOnAll" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotationsOnAll"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
@@ -1838,43 +1859,49 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element ref="dc:title" maxOccurs="1" minOccurs="1">
-					</xsd:element>
-					<xsd:element name="name" type="xsd:string" maxOccurs="1"
+					<xsd:element ref="dc:title" maxOccurs="1"
 						minOccurs="1">
+					</xsd:element>
+					<xsd:element name="name" type="xsd:string"
+						maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element ref="dc:description" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="computationalType" type="xsd:string"
-						maxOccurs="1" minOccurs="1">
+					<xsd:element name="computationalType"
+						type="xsd:string" maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="computationalTypeDetails" type="xsd:string"
-						maxOccurs="1" minOccurs="1">
+					<xsd:element name="computationalTypeDetails"
+						type="xsd:string" maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element ref="dcterms:created" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="ancestors" maxOccurs="1" minOccurs="0">
+					<xsd:element name="archived" type="xsd:dateTime"
+						maxOccurs="1" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="ancestors" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="service" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="service"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="soapService" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="soapService"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="soapOperation" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="soapOperation"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="related" maxOccurs="1" minOccurs="0">
+					<xsd:element name="related" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="annotations" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
@@ -1890,43 +1917,49 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element ref="dc:title" maxOccurs="1" minOccurs="1">
-					</xsd:element>
-					<xsd:element name="name" type="xsd:string" maxOccurs="1"
+					<xsd:element ref="dc:title" maxOccurs="1"
 						minOccurs="1">
+					</xsd:element>
+					<xsd:element name="name" type="xsd:string"
+						maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element ref="dc:description" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="computationalType" type="xsd:string"
-						maxOccurs="1" minOccurs="1">
+					<xsd:element name="computationalType"
+						type="xsd:string" maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="computationalTypeDetails" type="xsd:string"
-						maxOccurs="1" minOccurs="1">
+					<xsd:element name="computationalTypeDetails"
+						type="xsd:string" maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element ref="dcterms:created" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="ancestors" maxOccurs="1" minOccurs="0">
+					<xsd:element name="archived" type="xsd:dateTime"
+						maxOccurs="1" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="ancestors" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="service" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="service"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="soapService" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="soapService"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="soapOperation" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="soapOperation"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="related" maxOccurs="1" minOccurs="0">
+					<xsd:element name="related" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="annotations" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
@@ -2800,10 +2833,11 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element ref="dc:title" maxOccurs="1" minOccurs="1">
-					</xsd:element>
-					<xsd:element name="path" type="xsd:string" maxOccurs="1"
+					<xsd:element ref="dc:title" maxOccurs="1"
 						minOccurs="1">
+					</xsd:element>
+					<xsd:element name="path" type="xsd:string"
+						maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element name="submitter" type="ResourceLink"
 						maxOccurs="1" minOccurs="1">
@@ -2811,40 +2845,44 @@
 					<xsd:element ref="dcterms:created" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="methods" maxOccurs="1" minOccurs="0">
+					<xsd:element name="archived" type="xsd:dateTime" maxOccurs="1" minOccurs="0"></xsd:element>
+					<xsd:element name="methods" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:complexContent>
 								<xsd:extension base="ResourceLink">
 									<xsd:sequence>
-										<xsd:element name="restMethod" type="RestMethod"
-											maxOccurs="unbounded" minOccurs="1">
+										<xsd:element name="restMethod"
+											type="RestMethod" maxOccurs="unbounded" minOccurs="1">
 										</xsd:element>
 									</xsd:sequence>
 								</xsd:extension>
 							</xsd:complexContent>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="ancestors" maxOccurs="1" minOccurs="0">
+					<xsd:element name="ancestors" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="service" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="service"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="restService" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="restService"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="related" maxOccurs="1" minOccurs="0">
+					<xsd:element name="related" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="restMethods" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="restMethods"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="annotations" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
@@ -2884,6 +2922,9 @@
 					</xsd:element>
 					<xsd:element ref="dcterms:created" maxOccurs="1"
 						minOccurs="1">
+					</xsd:element>
+					<xsd:element name="archived" type="xsd:dateTime"
+						maxOccurs="1" minOccurs="0">
 					</xsd:element>
 					<xsd:element name="inputs" maxOccurs="1"
 						minOccurs="0">
@@ -2999,22 +3040,23 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element ref="dc:title" maxOccurs="1" minOccurs="1">
-					</xsd:element>
-					<xsd:element name="name" type="xsd:string" maxOccurs="1"
+					<xsd:element ref="dc:title" maxOccurs="1"
 						minOccurs="1">
+					</xsd:element>
+					<xsd:element name="name" type="xsd:string"
+						maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element ref="dc:description" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="computationalType" type="xsd:string"
-						maxOccurs="1" minOccurs="1">
+					<xsd:element name="computationalType"
+						type="xsd:string" maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element name="defaultValue" type="xsd:string"
 						maxOccurs="1" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="paramStyle" type="RestParameterStyle"
-						maxOccurs="1" minOccurs="1">
+					<xsd:element name="paramStyle"
+						type="RestParameterStyle" maxOccurs="1" minOccurs="1">
 					</xsd:element>
 					<xsd:element name="isOptional" type="xsd:boolean"
 						maxOccurs="1" minOccurs="1">
@@ -3023,8 +3065,8 @@
 						minOccurs="1">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string"
-									maxOccurs="unbounded" minOccurs="0">
+								<xsd:element name="value"
+									type="xsd:string" maxOccurs="unbounded" minOccurs="0">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
@@ -3035,31 +3077,37 @@
 					<xsd:element ref="dcterms:created" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="ancestors" maxOccurs="1" minOccurs="0">
+					<xsd:element name="archived" type="xsd:dateTime"
+						maxOccurs="1" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="ancestors" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="service" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="service"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="restService" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="restService"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="restResources" maxOccurs="1"
-									minOccurs="1">
+								<xsd:element name="restResources"
+									maxOccurs="1" minOccurs="1">
 									<xsd:complexType>
 										<xsd:sequence>
-											<xsd:element name="restResource" type="ResourceLink"
+											<xsd:element
+												name="restResource" type="ResourceLink"
 												maxOccurs="unbounded" minOccurs="1">
 											</xsd:element>
 										</xsd:sequence>
 									</xsd:complexType>
 								</xsd:element>
-								<xsd:element name="restMethods" maxOccurs="1"
-									minOccurs="1">
+								<xsd:element name="restMethods"
+									maxOccurs="1" minOccurs="1">
 									<xsd:complexType>
 										<xsd:sequence>
-											<xsd:element name="restMethod" type="ResourceLink"
-												maxOccurs="unbounded" minOccurs="1">
+											<xsd:element
+												name="restMethod" type="ResourceLink" maxOccurs="unbounded"
+												minOccurs="1">
 											</xsd:element>
 										</xsd:sequence>
 									</xsd:complexType>
@@ -3067,11 +3115,12 @@
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="related" maxOccurs="1" minOccurs="0">
+					<xsd:element name="related" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="annotations" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
@@ -3096,7 +3145,8 @@
 		<xsd:complexContent>
 			<xsd:extension base="ResourceLink">
 				<xsd:sequence>
-					<xsd:element ref="dc:title" maxOccurs="1" minOccurs="1">
+					<xsd:element ref="dc:title" maxOccurs="1"
+						minOccurs="1">
 					</xsd:element>
 					<xsd:element ref="dc:description" maxOccurs="1"
 						minOccurs="1">
@@ -3110,31 +3160,37 @@
 					<xsd:element ref="dcterms:created" maxOccurs="1"
 						minOccurs="1">
 					</xsd:element>
-					<xsd:element name="ancestors" maxOccurs="1" minOccurs="0">
+					<xsd:element name="archived" type="xsd:dateTime"
+						maxOccurs="1" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="ancestors" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="service" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="service"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="restService" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="restService"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="restResources" maxOccurs="1"
-									minOccurs="1">
+								<xsd:element name="restResources"
+									maxOccurs="1" minOccurs="1">
 									<xsd:complexType>
 										<xsd:sequence>
-											<xsd:element name="restResource" type="ResourceLink"
+											<xsd:element
+												name="restResource" type="ResourceLink"
 												maxOccurs="unbounded" minOccurs="1">
 											</xsd:element>
 										</xsd:sequence>
 									</xsd:complexType>
 								</xsd:element>
-								<xsd:element name="restMethods" maxOccurs="1"
-									minOccurs="1">
+								<xsd:element name="restMethods"
+									maxOccurs="1" minOccurs="1">
 									<xsd:complexType>
 										<xsd:sequence>
-											<xsd:element name="restMethod" type="ResourceLink"
-												maxOccurs="unbounded" minOccurs="1">
+											<xsd:element
+												name="restMethod" type="ResourceLink" maxOccurs="unbounded"
+												minOccurs="1">
 											</xsd:element>
 										</xsd:sequence>
 									</xsd:complexType>
@@ -3142,11 +3198,12 @@
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="related" maxOccurs="1" minOccurs="0">
+					<xsd:element name="related" maxOccurs="1"
+						minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="annotations" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
 							</xsd:sequence>
 						</xsd:complexType>
@@ -3223,4 +3280,5 @@
 			<xsd:enumeration value="CONNECT"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
+
 </xsd:schema>

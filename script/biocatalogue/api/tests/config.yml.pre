@@ -64,6 +64,7 @@ service_ids:
   - 2083  # SOAP 10 Operations
   - 607   # REST 0 Endpoints
   - 2625  # REST 7 Endpoints
+  - 6     # Archived
   
 service_deployment_ids:
   - 2     # SOAP 
@@ -81,14 +82,17 @@ service_test_ids:
 soap_input_ids:
   - 12
   - 21737
+  - 597
   
 soap_operation_ids:
   - 11
   - 12
+  - 428
 
 soap_output_ids:
   - 11
   - 13243
+  - 421
   
 soap_service_ids:
   - 2

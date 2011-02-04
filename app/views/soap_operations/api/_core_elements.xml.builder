@@ -18,3 +18,8 @@ parent_xml.parameterOrder soap_operation.parameter_order
 
 # <dcterms:created>
 dcterms_xml_tag parent_xml, :created, soap_operation.created_at
+
+# <archived>
+if soap_operation.archived?
+  parent_xml.archived soap_operation.archived_at.iso8601
+end

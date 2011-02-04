@@ -138,7 +138,7 @@ protected
     if self.request.format == :bljson
       
       finder_options = {
-        :select => "soap_operations.id, soap_operations.name",
+        :select => "soap_operations.id, soap_operations.name, soap_operations.archived_at",
         :order => order,
         :conditions => conditions,
         :joins => joins

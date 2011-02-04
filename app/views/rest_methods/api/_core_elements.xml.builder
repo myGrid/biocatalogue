@@ -33,3 +33,8 @@ parent_xml.submitter xlink_attributes(uri_for_object(rest_method.submitter),
 
 # <dcterms:created>
 dcterms_xml_tag parent_xml, :created, rest_method.created_at
+
+# <archived>
+if rest_method.archived?
+  parent_xml.archived rest_method.archived_at.iso8601
+end

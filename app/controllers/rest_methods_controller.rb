@@ -336,7 +336,7 @@ private # ========================================
       joins << :rest_resource unless joins.include?(:rest_resource)
       
       finder_options = {
-        :select => "rest_methods.id, rest_methods.endpoint_name, rest_resources.path",
+        :select => "rest_methods.id, rest_methods.endpoint_name, rest_resources.path, rest_resources.archived_at",
         :order => order,
         :conditions => conditions,
         :joins => joins

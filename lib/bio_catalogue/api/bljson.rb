@@ -17,7 +17,15 @@ module BioCatalogue
         output[resource_type.pluralize] = [ ]
         
         results.each do |item|
-          item_json = { :resource => BioCatalogue::Api.uri_for_path("/#{resource_type}/#{item["id"]}"), :name => BioCatalogue::Util.display_name(item) }
+          item_json = { 
+            :resource => BioCatalogue::Api.uri_for_path("/#{resource_type}/#{item["id"]}"), 
+            :name => BioCatalogue::Util.display_name(item) 
+          }
+          
+          if item["archived_at"] 
+            item_json[:archived] = true 
+          end
+          
           output[resource_type.pluralize] << item_json
         end
         

@@ -307,7 +307,7 @@ class ServicesController < ApplicationController
     
     if self.request.format == :bljson
       finder_options = {
-        :select => "services.id, services.name",
+        :select => "services.id, services.name, services.archived_at",
         :order => order,
         :conditions => conditions,
         :joins => joins
