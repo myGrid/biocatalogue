@@ -94,55 +94,56 @@
 						minOccurs="1">
 						<xsd:complexType>
 							<xsd:sequence>
-								<xsd:element name="agents" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="agents"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="annotationAttributes" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotationAttributes"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="annotations" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="annotations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="categories" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="categories"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="registries" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="registries"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="restMethods" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="restMethods"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="restResources" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="restResources"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="restServices" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="restServices"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="search" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="search"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="serviceProviders" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="serviceProviders"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="services" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="services"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="soapOperations" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="soapOperations"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="soapServices" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="soapServices"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="tags" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="tags"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="testResults" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="testResults"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="users" type="ResourceLink"
-									maxOccurs="1" minOccurs="1">
+								<xsd:element name="users"
+									type="ResourceLink" maxOccurs="1" minOccurs="1">
 								</xsd:element>
-								<xsd:element name="filters" maxOccurs="1" minOccurs="1">
+								<xsd:element name="filters"
+									maxOccurs="1" minOccurs="1">
 									<xsd:complexType>
 										<xsd:sequence>
 											<xsd:element
@@ -168,6 +169,10 @@
 						</xsd:complexType>
 					</xsd:element>
 				</xsd:sequence>
+				<xsd:attribute name="version" type="xsd:string"
+					use="required">
+				</xsd:attribute>
+				<xsd:attribute name="apiVersion" type="xsd:string" use="required"></xsd:attribute>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

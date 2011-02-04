@@ -10,7 +10,9 @@ xml.instruct! :xml
 # <biocatalogue>
 xml.tag! "biocatalogue", 
          xlink_attributes(uri_for_collection("/"), :title => "The BioCatalogue"), 
-         xml_root_attributes, 
+         xml_root_attributes,
+         :version => BioCatalogue::VERSION,
+         :apiVersion => BioCatalogue::API_VERSION,
          :resourceType => "BioCatalogue" do
   
   # <documentation>
