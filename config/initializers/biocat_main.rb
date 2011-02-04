@@ -14,6 +14,11 @@ if "irb" == $0
   ActiveRecord::Base.logger = Logger.new(STDOUT)
 end
 
+module BioCatalogue
+  include VersionInfo
+  VERSION.file_name = File.expand_path("version_info.yml", ".")
+end
+
 # This is not loaded in Rails 2.3 anymore (apparently).
 require 'net/smtp'
 

@@ -41,6 +41,7 @@ Rails::Initializer.run do |config|
   config.gem 'factory_girl', :version => '1.2.3', :source => "http://gemcutter.org"
   config.gem 'mocha', :version => '0.9.8'
   config.gem 'seer', :version => '0.6.1'
+  config.gem 'version_info', :version => '0.7.1'
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
