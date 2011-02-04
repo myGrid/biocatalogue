@@ -49,7 +49,7 @@ module JsonTestHelper
 
   # ========================================
   
-  def validate_index_from_path(path, allow_empty=false, allowed_size=10)
+  def validate_index_from_path(path, allow_empty=false, allowed_size=20)
     data = validate_data_from_path(make_url(path))
     resource_name = data.keys.first
     
