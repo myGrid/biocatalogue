@@ -6,6 +6,8 @@
 
 class RatingsController < ApplicationController
   
+  before_filter :disable_action
+  
   before_filter :disable_action_for_api
   
   before_filter :login_or_oauth_required
