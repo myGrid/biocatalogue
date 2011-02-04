@@ -379,7 +379,7 @@ class RestMethod < ActiveRecord::Base
   end
   
   def associated_service_base_url
-    @associated_service_base_url ||= self.associated_service.latest_deployment.endpoint
+    @associated_service_base_url ||= (self.associated_service.blank? ? "" : self.associated_service.latest_deployment.endpoint) 
   end
   
   def preferred_description
