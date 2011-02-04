@@ -25,6 +25,8 @@ class ServiceProvidersController < ApplicationController
   
   before_filter :authorise, :only => [ :edit_by_popup, :update ]
   
+  before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
+  
   # GET /service_providers
   # GET /service_providers.xml
   def index
