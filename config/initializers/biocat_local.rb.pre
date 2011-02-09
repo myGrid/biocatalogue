@@ -30,13 +30,6 @@ USE_EVENT_LOG = true
 HTTP_PROXY = true
 
 # ====================================================
-# Configure local settings for the Disqus integration
-# ----------------------------------------------------
-
-#Disqus::defaults[:account] = "biocatalogue-test"
-#Disqus::defaults[:developer] = true # allows for threads to work on localhost during dev. Should be set to false on production sites!
-
-# ====================================================
 
 
 # Enable or disable status display in view
