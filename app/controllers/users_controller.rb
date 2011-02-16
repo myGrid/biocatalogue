@@ -7,7 +7,7 @@
 class UsersController < ApplicationController
 
   before_filter :disable_action, :only => [ :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters, :filtered_index, :saved_searches ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters, :filtered_index, :saved_searches, :whoami ]
 
   before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, 
                                                        :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, 
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
-
+  
   oauth_authorize :saved_searches
 
   if ENABLE_SSL && Rails.env.production?
@@ -323,6 +323,18 @@ class UsersController < ApplicationController
       format.html { disable_action }
       format.xml # saved_searches.xml.builder
       format.json { render :json => @user.to_custom_json("saved_searches") }
+    end
+  end
+  
+  def whoami
+    if current_user
+      respond_to do |format|
+        format.html { disable_action }
+        format.xml { redirect_to user_url(current_user, :format => :xml) }
+        format.json { redirect_to user_url(current_user, :format => :json) }
+      end
+    else
+      error("Not authorised", :status => :unauthorized)
     end
   end
 
