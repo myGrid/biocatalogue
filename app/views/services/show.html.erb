@@ -299,13 +299,7 @@
 				
 			<%= render :partial => "annotations/tags_box",
 								 :locals => { :annotatable => @service } -%>
-			<!--
-			<div id="ratings">
-				<%= render :partial => "annotations/ratings_box",
-								 	 :locals => { :annotatable => @service,
-																:categories_config => BioCatalogue::Annotations.get_ratings_categories_config_for_model("Service") } -%>
-			</div>
-			-->
+			
 			<%= render :partial => "favourited_box" -%>
 			
 			<%= render :partial => "similar_services_box" -%>
