@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
     else
 			flash[:error] = "Unable to sign you in. The email or password you used may be incorrect, or your account might not be activated yet."
       params[:password] = nil
-      render :action => :new
+      render :action => :new, :status => :unauthorized
     end
   end
 
