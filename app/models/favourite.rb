@@ -25,4 +25,8 @@ class Favourite < ActiveRecord::Base
     acts_as_activity_logged :models => { :culprit => { :model => :user },
                                          :referenced => { :model => :favouritable } }
   end
+  
+  def to_inline_json
+    self.favouritable.to_inline_json
+  end
 end

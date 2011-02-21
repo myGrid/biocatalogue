@@ -157,7 +157,8 @@ ActionController::Routing::Routes.draw do |map|
                              :rpx_update => [ :get, :post ],
                              :annotations_by => :get,
                              :services => :get,
-                             :saved_searches => :get }
+                             :saved_searches => :get,
+                             :favourites => :get }
                 
   map.resource :session
 

@@ -7,11 +7,12 @@
 class UsersController < ApplicationController
 
   before_filter :disable_action, :only => [ :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters, :filtered_index, :saved_searches, :whoami ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters, :filtered_index, 
+                                                      :saved_searches, :whoami, :favourites ]
 
   before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, 
                                                        :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, 
-                                                       :services, :filtered_index, :filters ]
+                                                       :services, :filtered_index, :filters, :favourites ]
 
   before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password, :saved_searches ]
   
@@ -29,7 +30,7 @@ class UsersController < ApplicationController
   
   before_filter :find_users, :only => [ :index, :filtered_index ]
   
-  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by ]
+  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by, :favourites ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
   
@@ -335,6 +336,14 @@ class UsersController < ApplicationController
       end
     else
       error("Not authorised", :status => :unauthorized)
+    end
+  end
+  
+  def favourites
+    respond_to do |format|
+      format.html { redirect_to user_path(@user, :anchor => "favourites") }
+      format.xml  { disable_action }
+      format.json { render :json => BioCatalogue::Api::Json.collection(@user.favourites) }
     end
   end
 
