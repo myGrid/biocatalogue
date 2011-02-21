@@ -207,12 +207,20 @@ class User < ActiveRecord::Base
     service_ids.compact.uniq
   end
   
+  # TODO: fix confusion here; this doesn't just retrieve the "other" services a user is responsible for.
   def other_services_responsible(page=1, per_page=PAGE_ITEMS_SIZE)
     Service.paginate(:page => page,
                      :per_page => per_page,
                      :joins => [ :service_responsibles ],
                      :conditions => [ "service_responsibles.user_id = ? AND service_responsibles.status = 'active'", 
                                      self.id ])
+  end
+  
+  # TODO: see #other_services_responsible; need to clarify how these two methods are related and possibly combine/separate out the logic somewhere else.
+  def active_services_responsible_for
+    Service.find(:all,
+                 :joins => [ :service_responsibles ],
+                 :conditions => [ "service_responsibles.user_id = ? AND service_responsibles.status = 'active'", self.id ])
   end
   
   def is_admin?

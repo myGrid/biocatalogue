@@ -158,7 +158,8 @@ ActionController::Routing::Routes.draw do |map|
                              :annotations_by => :get,
                              :services => :get,
                              :saved_searches => :get,
-                             :favourites => :get }
+                             :favourites => :get,
+                             :services_responsible => :get }
                 
   map.resource :session
 
