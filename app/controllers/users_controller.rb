@@ -79,7 +79,7 @@ class UsersController < ApplicationController
       @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
       
       @service_responsibles = @user.service_responsibles.paginate(:page => @page, 
-                                                                  :order => "status ASC")
+                                                                  :order => "status ASC, updated_at DESC")
                                                                   
     end
 
