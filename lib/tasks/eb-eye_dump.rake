@@ -8,6 +8,7 @@ require 'parsedate'
 require 'libxml'
 require 'fileutils'
 require 'benchmark'
+require 'cgi'
 
 def truncate(text, *args)
   options = args.extract_options!
@@ -60,7 +61,7 @@ namespace :biocatalogue do
   <entries>"
           for sd in service_deployments
             id = "#{sd.service_id}-#{sd.service.unique_code}"
-            name = sd.service.name
+            name = CGI.escape(sd.service.name)
             description = sd.service.description.nil? ? "" : truncate(sd.service.description.gsub(/[\t\n]+/,' ').squeeze(" "), :length => 300)
             description = escape_lt_gt(description)
             #description = truncate(sd.service.description.gsub(/[\t\n]+/,' ').squeeze(" "), :length => 300)
