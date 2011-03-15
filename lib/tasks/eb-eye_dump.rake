@@ -67,7 +67,7 @@ namespace :biocatalogue do
             tags = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(sd.service)
             keywords = Array.new
             tags.each do |tag|
-              tag_value = tag.value.nil? ? "" : tag.value.sub(/<http:\/\/www.mygrid.org.uk\/ontology#(\w+)>/,'\1') #strip off the url part of the mygrid ontology tags
+              tag_value = tag.value.nil? ? "" : tag.value.sub(/<http:\/\/www.mygrid.org.uk\/ontology#(\w+.*)>/,'\1') #strip off the url part of the mygrid ontology tags
               keywords.push(tag_value)
             end
             #location = sd.country
