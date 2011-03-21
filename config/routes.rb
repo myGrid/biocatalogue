@@ -47,12 +47,13 @@ ActionController::Routing::Routes.draw do |map|
     :controller => 'curation', 
     :action => 'copy_annotations_preview', 
     :conditions => { :method => :post }
-    
+       
   map.curation_annotation_level '/curation/reports/annotation_level', 
     :controller => 'curation', 
     :action => 'annotation_level', 
     :conditions => { :method => :get }
   
+     
   # =========================
   
   
@@ -152,14 +153,17 @@ ActionController::Routing::Routes.draw do |map|
                                  :rpx_merge => :post,
                                  :filters => :get,
                                  :filtered_index => :post,
-                                 :whoami => :get }, 
+                                 :whoami => :get,
+                                  }, 
                 :member => { :change_password => [ :get, :post ],
                              :rpx_update => [ :get, :post ],
                              :annotations_by => :get,
                              :services => :get,
                              :saved_searches => :get,
                              :favourites => :get,
-                             :services_responsible => :get }
+                             :services_responsible => :get,
+                             :make_curator => :put,
+                             :remove_curator => :put }
                 
   map.resource :session
 
