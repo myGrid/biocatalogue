@@ -239,6 +239,33 @@ class User < ActiveRecord::Base
     User.find_all_by_role_id(2)
   end
   
+  # make user an admin
+  def make_curator!
+    unless self.is_curator?
+      begin
+        self.role_id = 2
+        self.save!
+        return true
+      rescue Exception => ex
+        logger.error("There was a problem making user a curator");
+        logger.error(ex)
+      end
+    end
+  end    
+  # remove admin privileges
+  def remove_curator!
+    unless !self.is_curator?
+      begin
+        self.role_id = nil
+        self.save!
+        return true
+      rescue Exception => ex
+        logger.error("There was a problem removing user as a curator");
+        logger.error(ex)
+      end
+    end
+  end
+  
 private
 
   # Encrypts password with the salt.

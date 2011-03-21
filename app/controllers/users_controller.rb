@@ -30,9 +30,13 @@ class UsersController < ApplicationController
   
   before_filter :find_users, :only => [ :index, :filtered_index ]
   
-  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, :rpx_update, :annotations_by, :favourites, :services_responsible ]
+  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, 
+                                          :rpx_update, :annotations_by, :favourites, 
+                                          :services_responsible, :make_curator, :remove_curator ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
+  
+  before_filter :authorise, :only => [:make_curator, :remove_curator]
   
   oauth_authorize :saved_searches
 
@@ -354,6 +358,38 @@ class UsersController < ApplicationController
       format.json { render :json => BioCatalogue::Api::Json.collection(@user.active_services_responsible_for) }
     end
   end
+  
+  def make_curator
+    respond_to do |format|
+      if @user
+        if @user.make_curator!
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is now a curator </div><div class=\"flash_body\">.</div>"
+          format.html{ redirect_to(user_url(@user)) }
+          format.xml { disable_action }
+        else
+          flash[:error] = "<div class=\"flash_header\">Could not make user a curator </div><div class=\"flash_body\">.</div>"
+          format.html{ redirect_to(user_url(@user)) }
+          format.xml { disable_action }
+        end
+      end
+    end
+  end
+  
+  def remove_curator
+    respond_to do |format|
+      if @user
+        if @user.remove_curator!
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is no longer a curator </div><div class=\"flash_body\">.</div>"
+          format.html{ redirect_to(user_url(@user)) }
+          format.xml { disable_action }
+        else
+          flash[:error] = "<div class=\"flash_header\">Could not remove user as a curator </div><div class=\"flash_body\">.</div>"
+          format.html{ redirect_to(user_url(@user)) }
+          format.xml { disable_action }
+        end
+      end
+    end
+  end
 
 private
   
@@ -443,6 +479,13 @@ private
     @updated_user = User.new(params[:user])
     @updated_user.password = nil
     @updated_user.password_confirmation = nil
+  end
+  
+  def authorise
+    unless logged_in? && current_user.is_admin?
+      flash[:error] =" You are not authorised to perform this action"
+      redirect to @user
+    end
   end
 
 end

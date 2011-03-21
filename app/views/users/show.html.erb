@@ -9,6 +9,29 @@
 %>
 
 <% t "#{display_name(@user)}" -%>
+<%if logged_in? && current_user.is_admin? %>
+	<span class="header_left_bar">
+		<span class="actions_button">
+			<ul class="p7menubar">
+				<li>
+					<a href="#" class="trigger">
+						<span style="vertical-align: middle;">Actions</span>
+						<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+					</a>
+					<ul>
+						<li>
+							<% if @user.is_curator? -%>
+								<%= link_to("Remove Curator", remove_curator_user_url(@user), :method => :put, :confirm => "Are you sure?", :class => "button_slim") -%>
+							<%else%>
+								<%= link_to("Make Curator", make_curator_user_url(@user), :method => :put, :confirm => "Are you sure?", :class => "button_slim") -%>
+							<%end%>	
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</span>
+	</span>
+<%end%>				
 
 <h1>
 	<% if mine? @user %>
@@ -99,7 +122,6 @@
 		</div>
 		
 		<div style="float: right; width: 38%;">
-			
 			<% if mine? @user %>
 			
 				<div class="box_currentuser_specific" style="margin: 0.5em 0; line-height: 2.0;">
