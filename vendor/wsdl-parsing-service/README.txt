@@ -1,6 +1,6 @@
 # BioCatalogue: vendor/wsdl-parsing-service/README.txt
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -21,14 +21,19 @@ The WDSDLUtils library has two main functions:
  - parse a WDSL file into a format that is consumable by the BioCatalogue registry
  - track changes in a WSDL document
  
- Installation
- ------------
- The utilities in this library are written in PHP and hence would run a web server with PHP enabled.
+Installation
+------------
+The utilities in this library are written in PHP and hence would run a web server with PHP enabled.
+
+The following PHP libraries are required to be installed:
+- php-xml-parser 
+- php-xml-serializer 
+- php-xml-util 
  
- The library is packaged as a tarball (WSDLUtils.tar.gz). To install it, de-compress the archive
- and move it to the document root of the your web server. The library will reside in a folder
- called "WSDLUtil"
- To test your installation, call the wsdl parse utility as follow:
+The library is packaged as a tarball (WSDLUtils.tar.gz). To install it, de-compress the archive
+and move it to the document root of the your web server. The library will reside in a folder
+called "WSDLUtils"
+To test your installation, call the wsdl parse utility as follow:
  
  http://<my server root>/WSDLUtils/WSDLUtils.php?method=parse&wsdl_uri="my test wsdl uri"
  
