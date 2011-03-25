@@ -26,6 +26,7 @@ Installation
 The utilities in this library are written in PHP and hence would run a web server with PHP enabled.
 
 The following PHP libraries are required to be installed:
+- php-xml
 - php-xml-parser 
 - php-xml-serializer 
 - php-xml-util 
