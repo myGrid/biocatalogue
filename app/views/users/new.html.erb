@@ -10,9 +10,11 @@
 
 <h1>Sign up to the BioCatalogue website</h1>
 
-<div style="margin: 1.5em 0; text-align: center;">
-  You can either create a new account (left) or use an existing <%= list_of_rpx_accounts -%> account (right).
-</div>
+<% if ENABLE_RPX %>
+  <div style="margin: 1.5em 0; text-align: center;">
+    You can either create a new account (left) or use an existing <%= list_of_rpx_accounts -%> account (right).
+  </div>
+<% end %>
 
 <div style="float: right; width: 53%; line-height: 1.6;">
 
