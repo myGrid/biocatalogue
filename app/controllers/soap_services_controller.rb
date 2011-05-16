@@ -89,7 +89,7 @@ class SoapServicesController < ApplicationController
         respond_to do |format|
           format.html { render :action => "new" }
           # TODO: implement format.xml  { render :xml => '', :status => :unprocessable_entity }
-          format.json { render :json => @existing_service.to_json }
+          format.json { render :json => @existing_service.to_json, :status => 403, :location => @existing_service }
         end
       else
         respond_to do |format|
@@ -116,7 +116,9 @@ class SoapServicesController < ApplicationController
                     :message => "The SOAP Service '#{@soap_service.name}' has been successfully submitted.", 
                     :resource => service_url(@soap_service.service(true))
                   }
-                }.to_json, :status => 201
+                }.to_json, 
+                :status => :created,
+                :location => service_url(@soap_service.service(true))
               }
             else
               flash.now[:error] = 'An error has occurred with the submission. Please <a href="/contact">contact us</a> to report this. Thank you.'
