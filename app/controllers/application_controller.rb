@@ -109,13 +109,23 @@ class ApplicationController < ActionController::Base
         end
       end
       format.xml do
-        user = authenticate_or_request_with_http_basic do |login, password|
-          @current_user = User.authenticate(login, password)
+        authenticate_or_request_with_http_basic do |login, password|
+          user = User.authenticate(login, password)
+          if user
+            session[:user_id] = user.id
+          else
+            head :forbidden
+          end
         end
       end
       format.json do
-        user = authenticate_or_request_with_http_basic do |login, password|
-          @current_user = User.authenticate(login, password)
+        authenticate_or_request_with_http_basic do |login, password|
+          user = User.authenticate(login, password)
+          if user
+            session[:user_id] = user.id
+          else
+            head :forbidden
+          end
         end
       end
     end
