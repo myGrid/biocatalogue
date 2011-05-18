@@ -108,12 +108,12 @@ class ApplicationController < ActionController::Base
           redirect_to login_url
         end
       end
-      format.xml  do
+      format.xml do
         user = authenticate_or_request_with_http_basic do |login, password|
           @current_user = User.authenticate(login, password)
         end
       end
-      format.json  do
+      format.json do
         user = authenticate_or_request_with_http_basic do |login, password|
           @current_user = User.authenticate(login, password)
         end
