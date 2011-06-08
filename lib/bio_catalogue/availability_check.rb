@@ -70,7 +70,7 @@ module BioCatalogue
       end
     
       def get_response(url = @url)
-        @response = %x[curl --max-time 20 --header "Content-Type: text/xml" --data '<?xml version="1.0"?> ' #{url}]
+        @response = %x[curl --insecure --max-time 20 --header "Content-Type: text/xml" --data '<?xml version="1.0"?> ' #{url}]
         unless @response.length == 0 
           return @response
         end
@@ -113,7 +113,7 @@ module BioCatalogue
     
       def get_response(url = @url)
         begin
-          @response =  %x[curl -I --max-time 20 -X GET #{url}]
+          @response =  %x[curl -I --insecure --max-time 20 -X GET #{url}]
         rescue Exception => ex
           Rails.logger.error("problem occurred while accessing #{url}")
           Rails.logger.error(ex)
@@ -147,7 +147,7 @@ module BioCatalogue
       def redirect_location
         if @response.split.index("Location:")
           uri = URI.parse(@response.split.fetch(@response.split.index("Location:") + 1 ))
-          if uri.scheme == 'http'
+          if uri.scheme == 'http' || uri.scheme == 'https'
             return uri
           end
         end
