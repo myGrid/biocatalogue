@@ -2018,6 +2018,7 @@
 			<xsd:enumeration value="RestResources"></xsd:enumeration>
 			<xsd:enumeration value="RestResource"></xsd:enumeration>
 			<xsd:enumeration value="SavedSearch"></xsd:enumeration>
+			<xsd:enumeration value="WsdlLocations"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 
@@ -3281,4 +3282,18 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+
+	<xsd:element name="wsdlLocations" type="WsdlLocations"></xsd:element>
+
+	<xsd:complexType name="WsdlLocations">
+		<xsd:complexContent>
+			<xsd:extension base="ResourceLink">
+				<xsd:sequence>
+					<xsd:element name="wsdlLocation" type="xsd:anyURI"
+						maxOccurs="unbounded" minOccurs="0">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
 </xsd:schema>

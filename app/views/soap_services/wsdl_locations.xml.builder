@@ -11,7 +11,7 @@ xml.instruct! :xml
 xml.tag! "wsdlLocations",
     xlink_attributes(uri_for_collection("soap_services/wsdl_locations", :params => params)),
     xml_root_attributes,
-    :resourceType => "TestResults" do
+    :resourceType => "WsdlLocations" do
   
   # <wsdlLocation> *
   @wsdl_locations.each do |w|
