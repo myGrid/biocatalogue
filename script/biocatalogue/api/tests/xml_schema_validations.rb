@@ -328,8 +328,9 @@ class XmlSchemaValidations < Test::Unit::TestCase
     end
   end
 
-  # soap_service
+  # soap_services
   def test_soap_services
+    assert validate_endpoint_xml_output(make_url("/soap_services/wsdl_locations"))
     assert validate_endpoint_xml_output(make_url("/soap_services"))
     assert validate_endpoint_xml_output(make_url("/soap_services?page=2"))
   end
