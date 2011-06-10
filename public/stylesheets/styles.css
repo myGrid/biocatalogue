@@ -3503,6 +3503,10 @@ a.globalise_param_link {
 	font-size: 93%;
 }
 
+.grid_archived {
+  background-color: transparent !important;
+}
+
 /* END styles for Archived items */
 
 .archived_status_box {
