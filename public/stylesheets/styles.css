@@ -468,6 +468,11 @@ a:hover.change_pwd {
 	margin-bottom: 10px;
 }
 
+.grayed_text {
+  color: #888;
+}
+
+
 /**
  * Layout
  */
@@ -566,20 +571,27 @@ body.sidebar-right #footer {
   width: 75%;
 }
 
-#footer_links {
+#footer_links, #licensing_info {
   float:left;
   position:relative;
   left:50%;
   text-align:left;
 }
 
-#footer_links ul {
+#licensing_info {
+  left:53%;
+  text-align:center;
+  font-size:85%;
+  margin-bottom:1em;
+}
+
+#footer_links ul, #licensing_info ul {
   list-style:none;
   position:relative;
   left:-50%;
 }
 
-#footer_links ul li {
+#footer_links ul li, #licensing_info ul li {
   list-style-type: none;
   list-style-image: none;
   margin: 0;
@@ -588,17 +600,17 @@ body.sidebar-right #footer {
   position:relative;
 }
 
-#footer_links ul li.separator {
+#footer_links ul li.separator, #licensing_info ul li.separator {
 	border-left: 1px solid #333333;
 }
 
-#footer_links ul li a, #footer_links ul li a:link, #footer_links ul li a:visited {
+#footer_links ul li a, #footer_links ul li a:link, #footer_links ul li a:visited, #licensing_info ul li {
   display: block;
   margin: 0 1em;
   color: #333333;
 }
 
-#footer_links ul li a:hover, #footer_links ul li a.active {
+#footer_links ul li a:hover, #footer_links ul li a.active, #licensing_info ul li a:hover, #licensing_info ul li a.active {
   color: #ff7400;
 }
 
