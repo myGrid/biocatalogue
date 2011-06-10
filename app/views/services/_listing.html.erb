@@ -24,7 +24,7 @@
         <% if service.archived? %>
           
           <div class="listing_item archived">
-            <%= render :partial => "services/listing/name_section", :locals => { :service => service }, :inline => true -%>
+            <%= render :partial => "services/listing/name_section", :locals => { :service => service, :show_stats => false }, :inline => true -%>
             
             <p class="archived_status_text">
               This service has been archived because it may not be active anymore (or is close to being non active).
