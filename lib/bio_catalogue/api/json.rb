@@ -98,11 +98,14 @@ module BioCatalogue
       def self.api_endpoint
         {
           "biocatalogue" => {
+            "title" => "The BioCatalogue",
+            "version" => BioCatalogue::VERSION,
+            "api_version" => BioCatalogue::API_VERSION,
+            "resource_type" => "BioCatalogue",
             "documentation" => {
               "resource" => "http://apidocs.biocatalogue.org",
               "description" => "Documentation for the BioCatalogue APIs"
             },
-
             "collections" => [
               self.api_endpoint_item('agents', 'Agents', 'Agents index'),
               self.api_endpoint_item('annotation_attributes', 'AnnotationAttributes', 'Annotation attributes index'),
@@ -113,8 +116,8 @@ module BioCatalogue
               self.api_endpoint_item('rest_resources', 'RestResources', 'REST Resources index'),
               self.api_endpoint_item('rest_services', 'RestServices', 'REST Services index'),
               self.api_endpoint_item('search', 'Search', 'Search everything in the BioCatalogue'),
-              self.api_endpoint_item('services', 'Services', 'Services index'),
               self.api_endpoint_item('service_providers', 'ServiceProviders', 'Service providers index'),
+              self.api_endpoint_item('services', 'Services', 'Services index'),
               self.api_endpoint_item('soap_operations', 'SoapOperations', 'Soap operations index'),
               self.api_endpoint_item('soap_services', 'SoapServices', 'SOAP Services index'),
               self.api_endpoint_item('tags', 'Tags', 'Tags index'),
@@ -122,10 +125,10 @@ module BioCatalogue
               self.api_endpoint_item('users', 'Users', 'Users index'),
               {
                 "filters" => [
-                  self.api_endpoint_item('services', 'Filters', 'Filters for the services index', "services/filters"),
-                  self.api_endpoint_item('soap_operations', 'Filters', 'Filters for the SOAP operations index', "soap_operations/filters"),
+                  self.api_endpoint_item('annotations', 'Filters', 'Filters for the annotations index', "annotations/filters"),
                   self.api_endpoint_item('rest_methods', 'Filters', 'Filters for the REST methods index', "rest_methods/filters"),
-                  self.api_endpoint_item('annotations', 'Filters', 'Filters for the annotations index', "annotations/filters")
+                  self.api_endpoint_item('services', 'Filters', 'Filters for the services index', "services/filters"),
+                  self.api_endpoint_item('soap_operations', 'Filters', 'Filters for the SOAP operations index', "soap_operations/filters")
                 ]
               }
             ]
