@@ -239,11 +239,12 @@ module BioCatalogue
           rest_method_ids = rest_method_ids.compact.uniq
           
           # Take into account search before adding a filter to the list
-          if search_query.blank? || !((search_rest_method_ids & rest_method_ids).empty?)
+          overlap_rest_method_ids = (search_rest_method_ids & rest_method_ids)
+          if search_query.blank? || !overlap_rest_method_ids.empty?
             filters << { 
               'id' => tag_name, 
               'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
-              'count' => rest_method_ids.length.to_s 
+              'count' => overlap_rest_method_ids.length.to_s 
             }
           end
         end

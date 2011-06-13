@@ -236,11 +236,12 @@ module BioCatalogue
           soap_operation_ids = soap_operation_ids.compact.uniq
           
           # Take into account search before adding a filter to the list
-          if search_query.blank? || !((search_soap_operation_ids & soap_operation_ids).empty?)
+          overlap_soap_operation_ids = (search_soap_operation_ids & soap_operation_ids)
+          if search_query.blank? || !overlap_soap_operation_ids.empty?
             filters << { 
               'id' => tag_name, 
               'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
-              'count' => soap_operation_ids.length.to_s 
+              'count' => overlap_soap_operation_ids.length.to_s 
             }
           end  
         end
