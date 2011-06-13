@@ -14,7 +14,7 @@ module BioCatalogue
       # Filter options finders
       # ----------------------
   
-      def self.get_filters_for_filter_type(filter_type, limit=nil)
+      def self.get_filters_for_filter_type(filter_type, limit=nil, search_query=nil)
         case filter_type
           when :c
             get_filters_for_countries(limit)

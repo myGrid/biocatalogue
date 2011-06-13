@@ -147,7 +147,7 @@ module BioCatalogue
     # 'resource_type' MUST either be:
     # - a string representing the camelized resource type. E.g.: "Services" or "SoapOperations". OR,
     # - a symbol representing the underscored resource type. E.g.: :services or :soap_operations
-    def self.get_all_filter_groups_for(resource_type, limit_for_each_type=nil)
+    def self.get_all_filter_groups_for(resource_type, limit_for_each_type=nil, search_query=nil)
       return [ ] if resource_type.blank? 
       
       results = [ ]
@@ -158,7 +158,7 @@ module BioCatalogue
         group.each do |name, filter_keys|
           new_group = FilterGroup.new(name, [ ])
           filter_keys.each do |k|
-            new_group.filter_types << FilterType.new(k, FILTER_KEY_DISPLAY_NAMES[k], "", eval("Filtering::#{resource_type.to_s.camelize}.get_filters_for_filter_type(k, limit_for_each_type)"))
+            new_group.filter_types << FilterType.new(k, FILTER_KEY_DISPLAY_NAMES[k], "", eval("Filtering::#{resource_type.to_s.camelize}.get_filters_for_filter_type(k, limit_for_each_type, search_query)"))
           end
           results << new_group
         end

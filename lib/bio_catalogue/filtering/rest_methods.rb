@@ -15,16 +15,16 @@ module BioCatalogue
       # Filter options finders
       # ----------------------
   
-      def self.get_filters_for_filter_type(filter_type, limit=nil)
+      def self.get_filters_for_filter_type(filter_type, limit=nil, search_query=nil)
         case filter_type
           when :tag
-            get_filters_for_all_tags(limit)
+            get_filters_for_all_tags(limit, search_query)
           when :tag_rms
-            get_filters_for_rest_method_tags(limit)
+            get_filters_for_rest_method_tags(limit, search_query)
           when :tag_ins
-            get_filters_for_rest_input_tags(limit)
+            get_filters_for_rest_input_tags(limit, search_query)
           when :tag_outs
-            get_filters_for_rest_output_tags(limit)
+            get_filters_for_rest_output_tags(limit, search_query)
           else
             [ ]
         end
@@ -34,39 +34,38 @@ module BioCatalogue
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_all_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "RestMethod", "RestRepresentation", "RestParameter" ], limit, :all)
+      def self.get_filters_for_all_tags(limit=nil, search_query=nil)
+        get_filters_for_tags_by_service_models([ "RestMethod", "RestRepresentation", "RestParameter" ], limit, :all, search_query)
       end
       
       # Gets an ordered list of all the tags on RestMethods.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_rest_method_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "RestMethod" ], limit)
+      def self.get_filters_for_rest_method_tags(limit=nil, search_query=nil)
+        get_filters_for_tags_by_service_models([ "RestMethod" ], limit, nil, search_query)
       end
       
       # Gets an ordered list of all the tags on rest inputs i.e. request_parameters and request_representations.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_rest_input_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "RestRepresentation", "RestParameter" ], limit, :request)
+      def self.get_filters_for_rest_input_tags(limit=nil, search_query=nil)
+        get_filters_for_tags_by_service_models([ "RestRepresentation", "RestParameter" ], limit, :request, search_query)
       end
       
       # Gets an ordered list of all the tags on rest outputs i.e. response_parameters, response_representations
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_rest_output_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "RestRepresentation", "RestParameter" ], limit, :response)
+      def self.get_filters_for_rest_output_tags(limit=nil, search_query=nil)
+        get_filters_for_tags_by_service_models([ "RestRepresentation", "RestParameter" ], limit, :response, search_query)
       end
       
       # ======================
       
       # Returns:
       #   [ conditions, joins ] for use in an ActiveRecord .find method (or .paginate).
-      # TODO: implement use of the search_query, so you can search within RestMethods too!
       def self.generate_conditions_and_joins_from_filters(filters, search_query=nil)
         conditions = { }
         joins = [ ]
@@ -178,7 +177,7 @@ module BioCatalogue
       # 
       # Example return data:
       # [ { "id" => "bio", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_tags_by_service_models(model_names, limit=nil, http_cycle=nil)
+      def self.get_filters_for_tags_by_service_models(model_names, limit=nil, http_cycle=nil, search_query=nil)
         # NOTE: this query has only been tested to work with MySQL 5.0.x
         sql = [ "SELECT annotations.value AS name, annotations.annotatable_id AS id, annotations.annotatable_type AS type
                 FROM annotations 
@@ -222,16 +221,31 @@ module BioCatalogue
             
         end
         
+        search_rest_method_ids = [ ]
+        
+        # Take into account search query if present
+        unless search_query.blank?
+          search_results = Search.search(search_query, "rest_methods")
+          unless search_results.blank?
+            search_rest_method_ids = search_results.item_ids_for("rest_methods")
+          end
+        end
+        
         filters = [ ]
         
         grouped_tags.each do |tag_name, ids|
           rest_method_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(ids, "RestMethod")
+          
           rest_method_ids = rest_method_ids.compact.uniq
-          filters << { 
-            'id' => tag_name, 
-            'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
-            'count' => rest_method_ids.length.to_s 
-          }
+          
+          # Take into account search before adding a filter to the list
+          if search_query.blank? || !((search_rest_method_ids & rest_method_ids).empty?)
+            filters << { 
+              'id' => tag_name, 
+              'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
+              'count' => rest_method_ids.length.to_s 
+            }
+          end
         end
         
         filters.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }

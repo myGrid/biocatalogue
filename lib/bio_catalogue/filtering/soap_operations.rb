@@ -15,16 +15,16 @@ module BioCatalogue
       # Filter options finders
       # ----------------------
   
-      def self.get_filters_for_filter_type(filter_type, limit=nil)
+      def self.get_filters_for_filter_type(filter_type, limit=nil, search_query=nil)
         case filter_type
           when :tag
-            get_filters_for_all_tags(limit)
+            get_filters_for_all_tags(limit, search_query)
           when :tag_ops
-            get_filters_for_soap_operation_tags(limit)
+            get_filters_for_soap_operation_tags(limit, search_query)
           when :tag_ins
-            get_filters_for_soap_input_tags(limit)
+            get_filters_for_soap_input_tags(limit, search_query)
           when :tag_outs
-            get_filters_for_soap_output_tags(limit)
+            get_filters_for_soap_output_tags(limit, search_query)
           else
             [ ]
         end
@@ -34,39 +34,38 @@ module BioCatalogue
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_all_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapOperation", "SoapInput", "SoapOutput" ], limit)
+      def self.get_filters_for_all_tags(limit=nil, search_query=nil)
+        get_filters_for_tags_by_service_models([ "SoapOperation", "SoapInput", "SoapOutput" ], limit, search_query)
       end
       
       # Gets an ordered list of all the tags on SoapOperations.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_soap_operation_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapOperation" ], limit)
+      def self.get_filters_for_soap_operation_tags(limit=nil, search_query=nil)
+        get_filters_for_tags_by_service_models([ "SoapOperation" ], limit, search_query)
       end
       
       # Gets an ordered list of all the tags on SoapInputs.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_soap_input_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapInput" ], limit)
+      def self.get_filters_for_soap_input_tags(limit=nil, search_query=nil)
+        get_filters_for_tags_by_service_models([ "SoapInput" ], limit, search_query)
       end
       
       # Gets an ordered list of all the tags on SoapOutputs.
       #
       # Example return data:
       # [ { "id" => "blast", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_soap_output_tags(limit=nil)
-        get_filters_for_tags_by_service_models([ "SoapOutput" ], limit)
+      def self.get_filters_for_soap_output_tags(limit=nil, search_query=nil)
+        get_filters_for_tags_by_service_models([ "SoapOutput" ], limit, search_query)
       end
       
       # ======================
       
       # Returns:
       #   [ conditions, joins ] for use in an ActiveRecord .find method (or .paginate).
-      # TODO: implement use of the search_query, so you can search within SoapOperations too!
       def self.generate_conditions_and_joins_from_filters(filters, search_query=nil)
         conditions = { }
         joins = [ ]
@@ -178,7 +177,7 @@ module BioCatalogue
       # 
       # Example return data:
       # [ { "id" => "bio", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
-      def self.get_filters_for_tags_by_service_models(model_names, limit=nil)
+      def self.get_filters_for_tags_by_service_models(model_names, limit=nil, search_query=nil)
         # NOTE: this query has only been tested to work with MySQL 5.0.x
         sql = [ "SELECT annotations.value AS name, annotations.annotatable_id AS id, annotations.annotatable_type AS type
                 FROM annotations 
@@ -219,16 +218,31 @@ module BioCatalogue
             
         end
         
+        search_soap_operation_ids = [ ]
+        
+        # Take into account search query if present
+        unless search_query.blank?
+          search_results = Search.search(search_query, "soap_operations")
+          unless search_results.blank?
+            search_soap_operation_ids = search_results.item_ids_for("soap_operations")
+          end
+        end
+        
         filters = [ ]
         
         grouped_tags.each do |tag_name, ids|
           soap_operation_ids = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(ids, "SoapOperation")
+          
           soap_operation_ids = soap_operation_ids.compact.uniq
-          filters << { 
-            'id' => tag_name, 
-            'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
-            'count' => soap_operation_ids.length.to_s 
-          }
+          
+          # Take into account search before adding a filter to the list
+          if search_query.blank? || !((search_soap_operation_ids & soap_operation_ids).empty?)
+            filters << { 
+              'id' => tag_name, 
+              'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
+              'count' => soap_operation_ids.length.to_s 
+            }
+          end  
         end
         
         filters.sort! { |a,b| b['count'].to_i <=> a['count'].to_i }
