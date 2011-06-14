@@ -15,6 +15,7 @@ show_related = false unless local_assigns.has_key?(:show_related)
 # <restMethod>
 parent_xml.tag! "restMethod",
                 xlink_attributes(uri_for_object(rest_method), :title => xlink_title(rest_method)).merge(is_root ? xml_root_attributes : {}),
+                :resourceName => rest_method.endpoint_name,
                 :resourceType => "RestMethod" do
   
   # Core elements

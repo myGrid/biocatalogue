@@ -15,6 +15,7 @@ show_related = false unless local_assigns.has_key?(:show_related)
 # <soapOperation>
 parent_xml.tag! "soapOperation",
                 xlink_attributes(uri_for_object(soap_operation), :title => xlink_title(soap_operation)).merge(is_root ? xml_root_attributes : {}),
+                :resourceName => display_name(soap_operation, false),
                 :resourceType => "SoapOperation" do
   
   # Core elements

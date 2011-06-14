@@ -8,8 +8,6 @@
 parent_xml.ancestors do
   
   # <service>
-  parent_xml.service nil, 
-    { :resourceName => display_name(soap_service.service, false), :resourceType => "Service" },
-    xlink_attributes(uri_for_object(soap_service.service), :title => xlink_title("The parent Service that this SOAP Service - #{display_name(soap_service, false)} - belongs to"))
+  render :partial => "services/api/inline_item", :locals => { :parent_xml => parent_xml, :service => soap_service.service }
   
 end

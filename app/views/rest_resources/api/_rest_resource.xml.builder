@@ -14,6 +14,7 @@ show_related = false unless local_assigns.has_key?(:show_related)
 # <restResource>
 parent_xml.tag! "restResource",
                 xlink_attributes(uri_for_object(rest_resource), :title => xlink_title(rest_resource)).merge(is_root ? xml_root_attributes : {}),
+                :resourceName => display_name(rest_resource, false),
                 :resourceType => "RestResource" do
   
   # Core elements

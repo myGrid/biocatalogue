@@ -8,20 +8,12 @@
 parent_xml.ancestors do
   
   # <service>
-  service = Service.find(soap_output.associated_service_id)
-  parent_xml.service nil, 
-    { :resourceName => display_name(service, false), :resourceType => "Service" },
-    xlink_attributes(uri_for_object(service), :title => xlink_title("The parent Service that this SOAP Output - #{display_name(soap_output, false)} - belongs to"))
+  render :partial => "services/api/inline_item", :locals => { :parent_xml => parent_xml, :service => soap_output.associated_service }
   
   # <soapService>
-  soap_service = soap_output.soap_operation.soap_service
-  parent_xml.soapService nil, 
-    { :resourceName => display_name(soap_service, false), :resourceType => "SoapService" },
-    xlink_attributes(uri_for_object(soap_service), :title => xlink_title("The parent SOAP Service that this SOAP Output - #{display_name(soap_output, false)} - belongs to"))
+  render :partial => "soap_services/api/inline_item", :locals => { :parent_xml => parent_xml, :soap_service => soap_output.soap_operation.soap_service }
   
   # <soapOperation>
-  parent_xml.soapOperation nil, 
-    { :resourceName => display_name(soap_output.soap_operation, false), :resourceType => "SoapOperation" },
-    xlink_attributes(uri_for_object(soap_output.soap_operation), :title => xlink_title("The parent SOAP Service that this SOAP Output - #{display_name(soap_output, false)} - belongs to"))
-    
+  render :partial => "soap_operations/api/inline_item", :locals => { :parent_xml => parent_xml, :soap_operation => soap_output.soap_operation }
+  
 end

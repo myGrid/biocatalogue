@@ -8,23 +8,16 @@
 parent_xml.ancestors do
   
   # <service>
-  service = @rest_methods[0].associated_service
-  parent_xml.service nil, 
-    { :resourceName => display_name(service, false), :resourceType => "Service" },
-    xlink_attributes(uri_for_object(service), :title => xlink_title("The parent Service that this REST Representation - #{display_name(rest_representation, false)} - belongs to"))
-
+  render :partial => "services/api/inline_item", :locals => { :parent_xml => parent_xml, :service => @rest_methods[0].associated_service }
+  
   # <restService>
-  parent_xml.restService nil, 
-    { :resourceName => display_name(@rest_methods[0].rest_service, false), :resourceType => "RestService" },
-    xlink_attributes(uri_for_object(@rest_methods[0].rest_service), :title => xlink_title("The parent REST Service that this REST Representation - #{display_name(rest_representation, false)} - belongs to"))
+  render :partial => "rest_services/api/inline_item", :locals => { :parent_xml => parent_xml, :rest_service => @rest_methods[0].rest_service }
 
   # <restResources>
   parent_xml.restResources do |xml_node|
     @rest_methods.each do |meth|
       # <restResource>
-        xml_node.restResource nil, 
-          { :resourceName => meth.rest_resource.path, :resourceType => "RestResource" },
-          xlink_attributes(uri_for_object(meth.rest_resource), :title => xlink_title("The parent REST Resource that this REST Representation - #{display_name(rest_representation, false)} - belongs to"))
+      render :partial => "rest_resources/api/inline_item", :locals => { :parent_xml => parent_xml, :rest_resource => meth.rest_resource }
     end
   end
 
@@ -32,10 +25,8 @@ parent_xml.ancestors do
   parent_xml.restMethods do |xml_node|
     @rest_methods.each do |meth|
       # <restMethod>
-        xml_node.restMethod nil, 
-          { :resourceName => meth.display_endpoint, :resourceType => "RestMethod" },
-          xlink_attributes(uri_for_object(meth), :title => xlink_title("The parent REST Method that this REST Representation - #{display_name(rest_representation, false)} - belongs to"))
+      render :partial => "rest_methods/api/inline_item", :locals => { :parent_xml => parent_xml, :rest_method => meth }
     end
   end
-    
+  
 end

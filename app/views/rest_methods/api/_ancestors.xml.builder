@@ -8,20 +8,12 @@
 parent_xml.ancestors do
   
   # <service>
-  service = rest_method.associated_service
-  parent_xml.service nil, 
-    { :resourceName => display_name(service, false), :resourceType => "Service" },
-    xlink_attributes(uri_for_object(service), :title => xlink_title("The parent Service that this REST Method - #{display_name(rest_method, false)} - belongs to"))
+  render :partial => "services/api/inline_item", :locals => { :parent_xml => parent_xml, :service => rest_method.associated_service }
   
   # <restService>
-  rest_service = rest_method.rest_resource.rest_service
-  parent_xml.restService nil, 
-    { :resourceName => display_name(rest_service, false), :resourceType => "RestService" },
-    xlink_attributes(uri_for_object(rest_service), :title => xlink_title("The parent REST Service that this REST Method - #{display_name(rest_method, false)} - belongs to"))
+  render :partial => "rest_services/api/inline_item", :locals => { :parent_xml => parent_xml, :rest_service => rest_method.rest_resource.rest_service }
 
   # <restResource>
-  parent_xml.restResource nil, 
-    { :resourceName => display_name(rest_method.rest_resource, false), :resourceType => "RestResource" },
-    xlink_attributes(uri_for_object(rest_method.rest_resource), :title => xlink_title("The parent REST Resource that this REST Method - #{display_name(rest_method, false)} - belongs to"))
+  render :partial => "rest_resources/api/inline_item", :locals => { :parent_xml => parent_xml, :rest_resource => rest_method.rest_resource }
     
 end
