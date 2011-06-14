@@ -174,6 +174,7 @@ class XmlSchemaValidations < Test::Unit::TestCase
   def test_rest_services
     assert validate_endpoint_xml_output(make_url("/rest_services"))
     assert validate_endpoint_xml_output(make_url("/rest_services?page=2"))
+    assert validate_endpoint_xml_output(make_url("/rest_services?include=methods"))
   end
 
   def test_rest_service

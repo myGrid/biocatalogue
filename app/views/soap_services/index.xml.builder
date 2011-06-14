@@ -43,7 +43,7 @@ xml.tag! "soapServices",
     
     # <restMethod> *
     @soap_services.each do |s|
-      render :partial => "soap_services/api/inline_item", :locals => { :parent_xml => xml, :soap_service => s }
+      render :partial => "soap_services/api/result_item", :locals => { :parent_xml => xml, :soap_service => s }
     end
     
   end
