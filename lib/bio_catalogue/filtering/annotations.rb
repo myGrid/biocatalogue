@@ -104,7 +104,7 @@ module BioCatalogue
         end
         
         results.each do |r|
-          r['name'] = BioCatalogue::Util.display_name(objs[r['id']], false)
+          r['name'] = (objs[r['id']].nil? ? "(not available)" : BioCatalogue::Util.display_name(objs[r['id']], false))
         end
         
         return results
