@@ -406,7 +406,7 @@ class RestMethod < ActiveRecord::Base
     
     return "Endpoint paths cannot be empty." if new_resource_path.blank?
     return "The new path is the same as the old one." if self.rest_resource.path==new_resource_path
-    return "The new path contains one or more configurable query parameters." if new_resource_path.match(/\w+\=\{.+\}/)
+    return "The new path contains one or more configurable query parameters (e.g. '...&name={value}')" if new_resource_path.match(/\w+\=\{.+\}/)
     
     # return "The new path contains invalid characters" if condition_here
 
