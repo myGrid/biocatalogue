@@ -60,6 +60,11 @@ module BioCatalogue
           return true if user.id == map.submitter_id && thing.submitter_type == "User"
           
           return true if check_user_is_responsible_for_service_with_thing(user, map)
+        when ServiceProvider
+          thing.services.each { |s|
+            is_submitter = s.submitter.id == user.id
+            return true if is_submitter
+          }
         else
           # Try to see if it belongs to a service and if so check that instead
           if thing.is_a? ActiveRecord::Base
