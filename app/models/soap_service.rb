@@ -316,15 +316,13 @@ class SoapService < ActiveRecord::Base
             else
               ServiceDeployment.create!(:service_id => self.service.id, 
                                         :service_version_id => self.service_version.id, 
-                                        :endpoint => new_endpoint, 
-                                        :city => new_city,
-                                        :country => new_country)
+                                        :endpoint => new_endpoint)
               
               changes.add_entry("The service's endpoint (base URL) has changed (to: '#{new_endpoint}') and a new service deployment has been added to this service.")
             end
           end
 
-          # Update ServiceDeployment locations          
+          # Update ServiceDeployment locations
           self.service_deployments.each { |s|
             wsdl_geoloc = BioCatalogue::Util.url_location_lookup(s.endpoint)
             new_city, new_country = BioCatalogue::Util.city_and_country_from_geoloc(wsdl_geoloc)
