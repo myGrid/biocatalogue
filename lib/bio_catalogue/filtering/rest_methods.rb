@@ -244,7 +244,7 @@ module BioCatalogue
             filters << { 
               'id' => tag_name, 
               'name' => BioCatalogue::Tags.split_ontology_term_uri(tag_name).last,
-              'count' => overlap_rest_method_ids.length.to_s 
+              'count' => search_query.blank? ? rest_method_ids.length.to_s : overlap_rest_method_ids.length.to_s 
             }
           end
         end
