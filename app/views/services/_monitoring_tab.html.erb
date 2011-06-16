@@ -32,9 +32,11 @@
 	<div id="service-test-tabs" class="tabber">
 		
 		<div id="tab-availability-checks" class="tabbertab">
-    	 	<h3><%= "Availability Checks (#{@url_monitor_service_tests.count})" -%></h3> 
-		 
-			<%if service_tests_for_display(@url_monitor_service_tests).empty? -%>
+    	 	<h3><%= "Availability Checks (#{service_tests_for_display(@url_monitor_service_tests).count})" -%></h3> 
+      
+      <% if @service.archived? %>
+        <p class="none_text"> This service is archived.  No monitoring information is available. </p>
+			<% elsif service_tests_for_display(@url_monitor_service_tests).empty? -%>
 				<p class="none_text"> No availability monitoring yet. Please check back later. </p>
 			<%else%>
 				<div class='listing_item'>
@@ -57,7 +59,9 @@
 			</div>
 		</div>
 	
-		<%if service_tests_for_display(@test_script_service_tests).empty? -%>
+    <% if @service.archived? %>
+      <p class="none_text"> This service is archived.  No monitoring information is available. </p>
+		<% elsif service_tests_for_display(@test_script_service_tests).empty? -%>
 			<p class="none_text"> None available yet. Please check back later. </p>
 		<%else%>
 			<div class='listing_item'>
