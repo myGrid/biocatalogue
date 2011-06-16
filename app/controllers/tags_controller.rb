@@ -45,7 +45,6 @@ class TagsController < ApplicationController
     render :inline => "<%= auto_complete_result @tags, 'name' %>", :layout => false
   end
   
-  # DELETE /tags
   def destroy
     unless @tag_name.blank?
       annotatable = Annotation.find_annotatable(params[:annotatable_type], params[:annotatable_id])
