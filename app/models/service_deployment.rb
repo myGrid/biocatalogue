@@ -43,6 +43,8 @@ class ServiceDeployment < ActiveRecord::Base
   
   before_save :check_service_id
   
+  after_save :update_provider_hostnames
+  
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name, :provider_name, :provider_hostnames,
                               { :associated_service_id => :r_id } ])
@@ -128,9 +130,14 @@ class ServiceDeployment < ActiveRecord::Base
   def associated_service
     @associated_service ||= Service.find_by_id(associated_service_id)
   end
+  
 
 private
   
+  def update_provider_hostnames
+    self.provider.update_hostnames!
+  end
+
   def mail_admins_if_required    
     # send emails to biocat admins
     if self.provider.services.empty?

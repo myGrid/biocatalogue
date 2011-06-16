@@ -163,6 +163,37 @@ class ServiceProvider < ActiveRecord::Base
     return success
   end
 
+  def update_hostnames!
+    begin
+      transaction do
+        # get all hostnames as strings
+        existing_hostnames = {} # { "hostname" => boolean } where 'boolean' indicates whether the hostname has >= 1 services associated
+        self.service_provider_hostnames.each { |h| existing_hostnames.merge!( {h.hostname => false} ) }
+        
+        # create new hostnames as appropriate
+        self.service_deployments.each do |sd|
+          hostname = Addressable::URI.parse(sd.endpoint).host
+          
+          if existing_hostnames.has_key?(hostname)
+            existing_hostnames[hostname] = true
+          else
+            new_hostname = ServiceProviderHostname.create(:hostname => hostname, :service_provider_id => self.id)
+            existing_hostnames.merge!( {hostname => true} )
+          end
+        end
+        
+        # cleanup UNUSED hostnames
+        self.service_provider_hostnames.each { |h| 
+          ServiceProviderHostname.delete(h.id) unless existing_hostnames[h.hostname]
+        }
+      end # transaction
+    rescue Exception => ex
+      logger.error("Failed to update hostnames for ServiceProvider with ID: #{self.id}. Exception:")
+      logger.error(ex.message)
+      logger.error(ex.backtrace.join("\n"))
+    end
+  end
+  
 private
   
   def mail_admins_if_required    
