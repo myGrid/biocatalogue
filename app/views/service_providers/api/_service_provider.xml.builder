@@ -13,6 +13,7 @@ show_hostnames = false unless local_assigns.has_key?(:show_hostnames)
 # <serviceProvider>
 parent_xml.tag! "serviceProvider",
                 xlink_attributes(uri_for_object(service_provider), :title => xlink_title(service_provider)).merge(is_root ? xml_root_attributes : {}),
+                :resourceName => display_name(service_provider, false),
                 :resourceType => "ServiceProvider" do
   
   # Core elements

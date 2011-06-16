@@ -15,6 +15,7 @@ if user.activated?
   # <user>
   parent_xml.tag! "user",
                   xlink_attributes(uri_for_object(user), :title => xlink_title(user)).merge(is_root ? xml_root_attributes : {}),
+                  :resourceName => display_name(user, false),
                   :resourceType => "User" do
     
     # Core elements

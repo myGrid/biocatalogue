@@ -14,6 +14,7 @@ show_related = false unless local_assigns.has_key?(:show_related)
 # <category>
 parent_xml.tag! "category", 
                 xlink_attributes(uri_for_object(category), :title => xlink_title(category)).merge(is_root ? xml_root_attributes : {}),
+                :resourceName => display_name(category, false),
                 :resourceType => "Category" do
   
   # Core elements

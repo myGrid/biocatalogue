@@ -8,7 +8,7 @@
 dc_xml_tag parent_xml, :title, xlink_title(soap_input)
 
 # <name>
-parent_xml.name soap_input.name
+parent_xml.name display_name(soap_input, false)
 
 # <description>
 dc_xml_tag parent_xml, :description, soap_input.description

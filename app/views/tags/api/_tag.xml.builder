@@ -12,6 +12,7 @@ show_related = false unless local_assigns.has_key?(:show_related)
 # <tag>
 parent_xml.tag! "tag", 
                 xlink_attributes(uri_for_path(BioCatalogue::Tags.generate_tag_show_uri(tag_name)), :title => xlink_title("Tag - #{tag_name}")).merge(is_root ? xml_root_attributes : {}),
+                :resourceName => tag_name,
                 :resourceType => "Tag" do
   
   # Core elements

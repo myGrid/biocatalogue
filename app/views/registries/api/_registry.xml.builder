@@ -12,6 +12,7 @@ show_related = false unless local_assigns.has_key?(:show_related)
 # <registry>
 parent_xml.tag! "registry",
                 xlink_attributes(uri_for_object(registry), :title => xlink_title(registry)).merge(is_root ? xml_root_attributes : {}),
+                :resourceName => display_name(registry, false),
                 :resourceType => "Registry" do
   
   # Core elements

@@ -12,6 +12,7 @@ show_related = false unless local_assigns.has_key?(:show_related)
 # <annotationAttribute>
 parent_xml.tag! "annotationAttribute", 
                 xlink_attributes(uri_for_object(annotation_attribute)).merge(is_root ? xml_root_attributes : {}), 
+                :resourceName => annotation_attribute.name,
                 :resourceType => "AnnotationAttribute" do 
   
   if show_core

@@ -8,7 +8,7 @@
 dc_xml_tag parent_xml, :title, xlink_title(rest_parameter)
 
 # <name>
-parent_xml.name rest_parameter.name
+parent_xml.name display_name(rest_parameter, false)
 
 # <description>
 dc_xml_tag parent_xml, :description, rest_parameter.description
