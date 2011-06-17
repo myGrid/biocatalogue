@@ -227,7 +227,7 @@ class JsonTests < Test::Unit::TestCase
       validate_service_from_path("/services/#{id}/deployments", :deployments) 
       validate_service_from_path("/services/#{id}/variants", :variants) 
       validate_service_from_path("/services/#{id}/monitoring", :monitoring) 
-      validate_index_from_path("/services/#{id}/annotations")
+      validate_index_from_path("/services/#{id}/annotations", true)
     }
   end
   
@@ -302,7 +302,7 @@ class JsonTests < Test::Unit::TestCase
       validate_soap_operation_from_path("/soap_operations/#{id}") 
       validate_soap_operation_from_path("/soap_operations/#{id}/inputs", :inputs) 
       validate_soap_operation_from_path("/soap_operations/#{id}/outputs", :outputs) 
-      validate_index_from_path("/soap_operations/#{id}/annotations")
+      validate_index_from_path("/soap_operations/#{id}/annotations", true)
     }
   end
   
