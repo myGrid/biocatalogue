@@ -83,8 +83,9 @@ class MonitoringReport
     puts "<hr/>"
     
     puts "<p>"
-    puts " No of failed services      : #{stats[:failed].count } <br/>"
-    puts " No of failed service tests : #{failed_st_stats.count} </br>"
+    puts " Total no of not archived services: #{Service.count(:conditions => { :archived_at => nil })} <br/>"
+    puts " No of failed services: #{stats[:failed].count } <br/>"
+    puts " No of failed service tests: #{failed_st_stats.count} </br>"
     
     puts "<p>"
     failed_st_stats.sort!{|a, b| a[:failing_since] <=> b[:failing_since]} # sort by failing since

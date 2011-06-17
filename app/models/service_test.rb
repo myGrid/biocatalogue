@@ -114,21 +114,38 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def failing_since
-    last_result = self.test_results.last
-    if last_result.result > 0
-      if self.test_results.count == 1
-        return last_result.created_at
+    unless self.test_results.empty?
+      last_result = self.test_results.last
+      
+      if last_result.result > 0
+        return last_result.created_at if self.test_results.count == 1
+        
+        last_success = last_successful_test_result
+        
+        unless last_success.nil?
+          next_failed = TestResult.find(:first,
+                                        :conditions => ["service_test_id=? AND result >= 1 AND created_at > ? ", self.id, last_success.created_at],
+                                        :order => 'created_at ASC')
+        
+          if next_failed.nil?
+            Util.yell "ServiceTest#failing_since (for ServiceTest with ID: #{self.id}) caused an error that SHOULD not have happened!" + 
+                      "Check the integrity of the TestResults collection for this ServiceTest!"
+          else
+            return next_failed.created_at
+          end
+        end
+        
+        return self.test_results.first.created_at
       end
-      last_success = TestResult.find(:first, :conditions => ["service_test_id=? AND result=0 ", self.id], 
-                                              :order => 'created_at DESC')
-      unless last_success.nil?
-        return TestResult.find(:first, :conditions => ["service_test_id=? AND result=1 AND created_at > ? ", 
-                                                                          self.id, last_success.created_at],
-                                                            :order => 'created_at ASC').created_at
-      end
-      return self.test_results.first.created_at
     end
+    
     return nil
+  end
+  
+  def last_successful_test_result
+    TestResult.find(:first, 
+                    :conditions => ["service_test_id=? AND result=0 ", self.id], 
+                    :order => 'created_at DESC')
   end
   
   def to_json
@@ -149,19 +166,19 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def pass_count
-    TestResult.count(:conditions => ["service_test_id=? AND result=?", self.id, 0])
+    TestResult.count(:conditions => ["service_test_id=? AND result = ?", self.id, 0])
   end
   
   def fail_count
-    TestResult.count(:conditions => ["service_test_id=? AND result=?", self.id, 1])
+    TestResult.count(:conditions => ["service_test_id=? AND result >= ?", self.id, 1])
   end
   
   def update_success_rate!
-    count = TestResult.count(:conditions => ["service_test_id=? ", self.id])
+    count = self.test_results.count
     if count == 0
       self.success_rate = 0
     else
-      self.success_rate = (self.pass_count*100)/count
+      self.success_rate = (self.pass_count/count)*100
     end
     self.save
   end
