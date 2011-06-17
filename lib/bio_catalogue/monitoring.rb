@@ -9,6 +9,25 @@ module BioCatalogue
     
     INTERNAL_TEST_TYPES = [ 'TestScript', 'UrlMonitor' ].freeze
     
+    def self.pingable_url(actual_string)
+      actual_string.each_line do |line|
+        line.chomp.split(' ').each do |token|
+          token.strip!
+          
+          next unless token.downcase.starts_with?("http://") || token.downcase.starts_with?("https://")
+          
+          begin
+            uri = URI.parse(token)
+            return uri.to_s
+          rescue
+            # ignoring any errors
+          end
+        end
+      end
+      
+      return nil
+    end
+
     class MonitorUpdate
     
       def self.run
@@ -101,8 +120,12 @@ module BioCatalogue
                         :annotation_attributes => { :name => "example_endpoint" } }).each  do |ann|
           
           if from_trusted_source?(ann)
+            can_be_monitored = !Monitoring.pingable_url(ann.value).nil?
+            
             monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
-            if monitor.nil? 
+            
+            # create new monitor if a pingable URL exists in annotation
+            if monitor.nil? && can_be_monitored
               mon = build_url_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
               if mon
                 begin
@@ -115,9 +138,21 @@ module BioCatalogue
                 end
               end
             end
-          end
+            
+            # delete invalid monitor
+            if monitor && !can_be_monitored
+              begin
+                #UrlMonitor.delete(monitor.id) 
+                # FIXME: uncommenting needed 
+              rescue Exception => ex
+                Rails.logger.warn("Could not delete url monitor with ID: #{monitor.id}")
+                Rails.logger.warn(ex)
+              end
+            end
+            
+          end # from_trusted_source?
         end
-      end
+      end # update_rest_service_monitors
       
       def self.build_url_monitor(parent, property, service, max_monitors_per_service = 2)
         
@@ -249,14 +284,9 @@ module BioCatalogue
         elsif options[:service_ids]
           monitors = []
           services = Service.find(options[:service_ids])
-          services.each{ |s| 
-                          s.service_deployments.each{|dep| monitors.concat(dep.url_monitors)}
-                          s.service_version_instances_by_type('SoapService').each{ |instance|
-                                  monitors.concat(instance.url_monitors)
-                                }
-                                
-                        }
-          
+          services.each { |s| 
+            s.service_tests.each { |st| monitors << st.test if st.test_type == "UrlMonitor" }
+          }
         end
         
         monitors.each do |monitor|
@@ -267,6 +297,8 @@ module BioCatalogue
             result = {}
             pingable = UrlMonitor.find_parent(monitor.parent_type, monitor.parent_id)
             if pingable
+              was_monitored = true
+              
               if monitor.property =="endpoint" and pingable.service_version.service_versionified_type =="SoapService"
                 # eg: check :soap_endpoint => pingable.endpoint
                 result = check :soap_endpoint => pingable.send(monitor.property)
@@ -279,28 +311,45 @@ module BioCatalogue
                 end
               else
                 # eg: check :url => pingable.wsdl_location
-                result = check :url => pingable.send(monitor.property)
-              end
-    
-              # create a test result entry in the db to record
-              # the current check for this URL/endpoint
-              tr = TestResult.new(:result => result[:result],
-                              :action => result[:action],
-                              :message => result[:message],
-                               :service_test_id => monitor.service_test.id)
-              begin
-                if tr.save!
-                  Rails.logger.debug("Result for monitor id:  #{monitor.id} saved!")
+                if pingable.class == Annotation
+                  actual_string = pingable.send(monitor.property) # try and get a pingable value from the annotation
+                  pingable_string = Monitoring.pingable_url(actual_string)
+                  
+                  if pingable_string.nil?
+                    was_monitored = false
+                  else
+                    result = check :url => pingable_string
+                    result[:message] = "Example-Endpoint: #{pingable_string}\n" + result[:message]    
+                  end
+                else
+                  result = check :url => pingable.send(monitor.property)
                 end
-              rescue Exception => ex
-                Rails.logger.warn("Result for monitor id:  #{monitor.id} could not be saved!")
-                Rails.logger.warn(ex)
               end
+              
+              if was_monitored
+                # create a test result entry in the db to record
+                # the current check for this URL/endpoint               
+                tr = TestResult.new(:result => result[:result],
+                                    :action => result[:action],
+                                    :message => result[:message],
+                                    :service_test_id => monitor.service_test.id)
+                                      
+                begin
+                  if tr.save!
+                    Rails.logger.debug("Result for monitor id:  #{monitor.id} saved!")
+                  end
+                rescue Exception => ex
+                  Rails.logger.warn("Result for monitor id:  #{monitor.id} could not be saved!")
+                  Rails.logger.warn(ex)
+                end
+              end # was_monitored
+              
             end
           end
         end
       end
+            
     end #CheckUrlStatus
-    
+         
   end
 end
