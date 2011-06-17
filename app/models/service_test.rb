@@ -128,7 +128,7 @@ class ServiceTest < ActiveRecord::Base
                                         :order => 'created_at ASC')
         
           if next_failed.nil?
-            Util.yell "ServiceTest#failing_since (for ServiceTest with ID: #{self.id}) caused an error that SHOULD not have happened!" + 
+            BioCatalogue::Util.yell "ServiceTest#failing_since (for ServiceTest with ID: #{self.id}) caused an error that SHOULD not have happened!" + 
                       "Check the integrity of the TestResults collection for this ServiceTest!"
           else
             return next_failed.created_at
