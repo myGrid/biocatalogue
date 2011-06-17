@@ -7,14 +7,31 @@
 # See license.txt for details
 
 %>
+Dear BioCatalogue Member,
+<p />
 
-The Service Provider '<%=h @provider.name -%>' no longer has any services and/or hostnames associated with it.
-
-You are receiving this email because you are a BioCatalogue administrator.  You may want to take action.
+We have noticed that the Service Provider '<%=h @provider.name -%>' no longer has any services and/or hostnames associated with it.  
+<br />
 
 <%= link_to "View Service Provider (#{@provider.name}) in the BioCatalogue",
             :only_path => false,
             :host => @base_url,
             :controller => 'service_providers',
             :action => 'show',
-            :id => @provider.id %>
+            :id => @provider.id -%>
+
+<p />
+
+You are receiving this email because you are a BioCatalogue administrator.  It would be appreciated if you took some action concerning this.
+
+<p />
+
+If you have any questions please reply to this mail.
+
+<p />
+
+Regards <br />
+
+The BioCatalogue Team
+<p />
+<%= link_to SITE_BASE_HOST, SITE_BASE_HOST -%>
