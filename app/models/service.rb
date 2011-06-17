@@ -569,7 +569,6 @@ private
   # Rather they now need to activate a subscription
   # through their user profile.
   def responsible_create
-    BioCatalogue::Util.say "Called Service#responsible_create to submit job to tweet"
     begin
       ServiceResponsible.create(:user_id => self.submitter.id, :service_id => self.id, :status =>"inactive")
     rescue Exception => ex
