@@ -11,3 +11,8 @@ end
 
 # <dcterms:created>
 dcterms_xml_tag parent_xml, :created, service_test.created_at
+
+# <dcterms:activated>
+if service_test.activated?
+  parent_xml.activated service_test.activated_at.iso8601
+end 

@@ -41,7 +41,7 @@ class UrlMonitor < ActiveRecord::Base
   def to_json
     {
       "url_monitor" => {
-        "url" => self.url,
+        "url" => BioCatalogue::Monitoring.pingable_url(self.url),
         "resource" => BioCatalogue::Api.uri_for_object(self.parent)
       }
     }.to_json

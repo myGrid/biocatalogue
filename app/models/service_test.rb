@@ -250,20 +250,12 @@ class ServiceTest < ActiveRecord::Base
     data = {
       "service_test" => {
         "created_at" => self.created_at.iso8601,
+        "activated_at" => self.activated? ? self.activated_at.iso8601 : nil,
         "status" => BioCatalogue::Api::Json.monitoring_status(self.latest_status),
         "test_type" => JSON(self.test.to_json)
       }
     }
-        
-    collections.each do |collection|
-#      case collection.downcase
-#        when "inputs"
-#          data["soap_operation"]["inputs"] = BioCatalogue::Api::Json.collection(self.soap_inputs)
-#        when "outputs"
-#          data["soap_operation"]["outputs"] = BioCatalogue::Api::Json.collection(self.soap_outputs)
-#      end
-    end
-
+    
     unless make_inline
       data["service_test"]["self"] = BioCatalogue::Api.uri_for_object(self)
       return data.to_json

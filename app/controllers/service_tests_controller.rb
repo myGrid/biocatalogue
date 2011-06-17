@@ -136,6 +136,8 @@ class ServiceTestsController < ApplicationController
   end
   
   def authorise_for_disabled
+    return if is_api_request?
+    
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_test.service) || @service_test.enabled?
       flash[:error] = "Service test is disabled!"
       redirect_to @service_test.service

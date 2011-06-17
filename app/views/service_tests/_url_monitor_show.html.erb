@@ -34,11 +34,18 @@
 					<div style="text-align: left;"> 
 						<p>
 							<% if service_test.test.parent_type =="Annotation" -%>
-								<%= h(service_test.test.parent.attribute.name.titleize) -%> : 
+								<%= h(service_test.test.parent.attribute.name.titleize) -%> :
+								<% annotation_value = service_test.test.parent.send(service_test.test.property) %>
+								<% pingable_item = BioCatalogue::Monitoring.pingable_url(annotation_value) %>
+								<% if pingable_item.nil? %>
+									<span class="none_text">No valid URL for monitoring could be found</span>
+								<% else %>
+									<%=h pingable_item -%>
+								<% end %> 
 							<%else%>
-								<%= h(service_test.test.property.titleize) -%> : 
+								<%= h(service_test.test.property.titleize) -%> :
+								<%= h(service_test.test.parent.send(service_test.test.property)) -%> 
 							<%end%>
-							<%= h(service_test.test.parent.send(service_test.test.property)) -%>
 						</p>
 					</div>	
 				</h5>

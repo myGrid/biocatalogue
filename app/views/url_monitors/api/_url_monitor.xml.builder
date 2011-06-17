@@ -8,7 +8,7 @@
 parent_xml.tag! "urlMonitor" do
   
   # <url>
-  parent_xml.url url_monitor.url
+  parent_xml.url BioCatalogue::Monitoring.pingable_url(url_monitor.url)
   
   # <resource>
   parent_xml.resource nil, 

@@ -142,8 +142,8 @@ module BioCatalogue
             # delete invalid monitor
             if monitor && !can_be_monitored
               begin
-                #UrlMonitor.delete(monitor.id) 
-                # FIXME: uncommenting needed 
+                Rails.logger.warn("Deleting url monitor with ID: #{monitor.id}")
+                UrlMonitor.delete(monitor.id)
               rescue Exception => ex
                 Rails.logger.warn("Could not delete url monitor with ID: #{monitor.id}")
                 Rails.logger.warn(ex)
