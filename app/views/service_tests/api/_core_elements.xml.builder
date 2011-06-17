@@ -12,7 +12,12 @@ end
 # <dcterms:created>
 dcterms_xml_tag parent_xml, :created, service_test.created_at
 
-# <dcterms:activated>
+# <activated>
+parent_xml.activated service_test.activated?
+
+# <activatedAt>
 if service_test.activated?
-  parent_xml.activated service_test.activated_at.iso8601
-end 
+  parent_xml.activatedAt service_test.activated_at.iso8601
+else 
+  parent_xml.activatedAt nil, "xsi:nil" => "true"
+end

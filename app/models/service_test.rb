@@ -250,6 +250,7 @@ class ServiceTest < ActiveRecord::Base
     data = {
       "service_test" => {
         "created_at" => self.created_at.iso8601,
+        "activated" => self.activated?,
         "activated_at" => self.activated? ? self.activated_at.iso8601 : nil,
         "status" => BioCatalogue::Api::Json.monitoring_status(self.latest_status),
         "test_type" => JSON(self.test.to_json)
