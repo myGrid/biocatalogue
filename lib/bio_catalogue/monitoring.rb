@@ -139,13 +139,13 @@ module BioCatalogue
               end
             end
             
-            # delete invalid monitor
+            # disable test for unpingable monitor
             if monitor && !can_be_monitored
               begin
-                Rails.logger.warn("Deleting url monitor with ID: #{monitor.id}")
-                UrlMonitor.delete(monitor.id)
+                Rails.logger.warn("Disabling service test with ID: #{monitor.service_test.id} because it does not contain a valid pingable URI")
+                monitor.service_test.deactivate!
               rescue Exception => ex
-                Rails.logger.warn("Could not delete url monitor with ID: #{monitor.id}")
+                Rails.logger.warn("Could not disable service test with ID: #{monitor.service_test.id}")
                 Rails.logger.warn(ex)
               end
             end
