@@ -586,7 +586,7 @@ class ApplicationController < ActionController::Base
                                  :data => { :query => params[:q], :filters => @current_filters, :page => @page, :per_page => @per_page }))
             
               # Log a search as well, if a search query was specified. 
-              unless params[:q].blank? and @page == 1
+              if !params[:q].blank? and @page == 1
                 ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => params[:q], :type =>  "services", :per_page => @per_page }))
               end
             else
