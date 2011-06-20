@@ -584,11 +584,6 @@ class ApplicationController < ActionController::Base
               ActivityLog.create(@log_event_core_data.merge(:action => "view_services_index",
                                  :culprit => current_user,
                                  :data => { :query => params[:q], :filters => @current_filters, :page => @page, :per_page => @per_page }))
-            
-              # Log a search as well, if a search query was specified. 
-              if !params[:q].blank? and @page == 1
-                ActivityLog.create(@log_event_core_data.merge(:action => "search", :culprit => current_user, :data => { :query => params[:q], :type =>  "services", :per_page => @per_page }))
-              end
             else
               do_generic_log = true
           end
