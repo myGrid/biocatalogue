@@ -192,7 +192,11 @@ module BioCatalogue
       
       # Maintains a non unique list of all the searches carried out.
       def load_searches_all
-        @searches_all = ActivityLog.find_all_by_action('search').map{|s| s.data[:query]}.reject{|s| s.blank?}
+        searches = BioCatalogue::Search::all_possible_activity_logs_for_search([ "data" ])
+        searches = searches.map{|s| BioCatalogue::Search::search_term_from_hash(s.data) }
+        searches = searches.reject{|s| s.blank? }
+        
+        @searches_all = searches
       end
       
       # Maintains a hash of all the searches carried out and the frequency of each. 
@@ -201,7 +205,12 @@ module BioCatalogue
         @searches_grouped_by_frequency = { }
         
         @searches_all.each do |s|
-          @searches_grouped_by_frequency[s].nil? ? @searches_grouped_by_frequency[s] = 1 : @searches_grouped_by_frequency[s] = @searches_grouped_by_frequency[s] + 1
+          term = s.downcase
+          if @searches_grouped_by_frequency.has_key?(term) 
+            @searches_grouped_by_frequency[term] = @searches_grouped_by_frequency[term] + 1
+          else
+            @searches_grouped_by_frequency[term] = 1            
+          end
         end
         
         @searches_grouped_by_frequency

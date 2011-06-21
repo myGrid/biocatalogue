@@ -180,6 +180,24 @@ module BioCatalogue
       return Results.new(search_result_docs, scopes_for_results)
     end
     
+    # IMPORTANT NOTE: this is a VERY intensive and costly method call,
+    # so don't use this within a web request, only use it in background
+    # processing, scripts and the console.
+    def self.all_possible_activity_logs_for_search(limit_to_fields=[])
+      conditions = "action = 'search' OR action LIKE '%index%'"
+      if limit_to_fields.blank?
+        ActivityLog.find(:all, :conditions => conditions)
+      else
+        ActivityLog.find(:all, 
+                         :select => limit_to_fields.to_sentence(:last_word_connector => ", ", :two_words_connector => ", "), 
+                         :conditions => conditions)        
+      end
+    end
+    
+    def self.search_term_from_hash(h)
+      h[:query] || h[:q] || h['query'] || h['q']
+    end
+    
     protected
     
     # Special rules to preprocess ALL search queries. 

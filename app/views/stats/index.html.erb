@@ -275,6 +275,12 @@
 							
 				<% benchmark "Statistics - Search" do %>
 				
+          <p>
+            Note: this includes searches carried out through the API but doesn't include
+            paging through the same search results (i.e. searching then paging only counts 
+            as one search event.
+          </p>
+        
 					<p>
 						<b>Total searches taken place:</b>
 						<span class="value"><%= number_with_delimiter(@stats.total_searches_non_unique) -%></span>
@@ -305,7 +311,7 @@
 						<% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
 							<% 
 								search_queries_count += 1
-								row_class = (search_queries_count > 10 ? "search_query_hidden" : "")
+								row_class = (search_queries_count > 30 ? "search_query_hidden" : "")
 								show_row = row_class.blank?
 							%>
 							<tr class="<%= row_class -%>" style="<%= show_row ? "" : "display: none;" -%>">

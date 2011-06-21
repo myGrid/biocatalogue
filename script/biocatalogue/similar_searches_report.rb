@@ -36,8 +36,7 @@ class SearchTermsTuple
   end
 end
 
-activity_logs_search = ActivityLog.find_all_by_action("search")
-activity_logs_index = ActivityLog.find_all_by_action("view_services_index")
+activity_logs = BioCatalogue::Search::all_possible_activity_logs_for_search
 
 stats = { 
   :users => { },
@@ -58,16 +57,16 @@ end
 
 def process_activity_logs(logs, stats)
   logs.each do |a|
-    unless a.culprit_id.blank?
+    query = BioCatalogue::Search::search_term_from_hash(a.data)
+    unless a.culprit_id.blank? or query.blank?
       culprit_id = a.culprit_id.to_s
       stats[:users][culprit_id] = [ ] unless stats[:users].has_key?(culprit_id)
-      add_to_list_case_insensitive(stats[:users][culprit_id], (a.data[:query] || a.data["query"]))
+      add_to_list_case_insensitive(stats[:users][culprit_id], query)
     end
   end
 end
 
-process_activity_logs(activity_logs_search, stats)
-process_activity_logs(activity_logs_index, stats)
+process_activity_logs(activity_logs, stats)
 
 stats[:users].each do |k,v|
   left = 0
