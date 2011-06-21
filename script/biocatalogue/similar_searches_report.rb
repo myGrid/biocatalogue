@@ -36,7 +36,7 @@ class SearchTermsTuple
   end
 end
 
-activity_logs = BioCatalogue::Search::all_possible_activity_logs_for_search
+activity_logs = BioCatalogue::Search::all_possible_activity_logs_for_search([ "culprit_id", "culprit_type", "data" ])
 
 stats = { 
   :users => { },
@@ -58,7 +58,7 @@ end
 def process_activity_logs(logs, stats)
   logs.each do |a|
     query = BioCatalogue::Search::search_term_from_hash(a.data)
-    unless a.culprit_id.blank? or query.blank?
+    if a.culprit_type == "User" && !a.culprit_id.blank? && !query.blank?
       culprit_id = a.culprit_id.to_s
       stats[:users][culprit_id] = [ ] unless stats[:users].has_key?(culprit_id)
       add_to_list_case_insensitive(stats[:users][culprit_id], query)
@@ -103,6 +103,11 @@ def report_stats(stats)
   end
 end
 
+puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/similar_searches_report_{current_time}.txt' ..."
+$stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "similar_searches_report_#{Time.now.strftime('%Y%m%d-%H%M')}.txt"), "w")
+$stdout.sync = true
+
 report_stats(stats)
 
-
+# Reset $stdout
+$stdout = STDOUT
