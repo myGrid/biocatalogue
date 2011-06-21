@@ -104,13 +104,26 @@ class RestRepresentation < ActiveRecord::Base
     generate_json_and_make_inline(true)
   end
 
+  def preferred_description
+    # Either the description from the service description doc, 
+    # or the last description annotation.
+    
+    desc = self.description
+    
+    if desc.blank?
+      desc = self.annotations_with_attribute("description").first.try(:value)
+    end
+    
+    return desc
+  end
+  
 private
 
   def generate_json_and_make_inline(make_inline)
     data = {
       "rest_representation" => {
         "content_type" => self.content_type,
-        "description" => self.description,
+        "description" => self.preferred_description,
         "submitter" => BioCatalogue::Api.uri_for_object(self.submitter),
         "created_at" => self.created_at.iso8601,
         "archived_at" => self.archived? ? self.archived_at.iso8601 : nil

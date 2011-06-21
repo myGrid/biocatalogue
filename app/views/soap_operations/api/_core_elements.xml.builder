@@ -11,7 +11,7 @@ dc_xml_tag parent_xml, :title, xlink_title(soap_operation)
 parent_xml.name soap_operation.name
 
 # <description>
-dc_xml_tag parent_xml, :description, soap_operation.description
+dc_xml_tag parent_xml, :description, soap_operation.preferred_description
 
 # <parameterOrder>
 parent_xml.parameterOrder soap_operation.parameter_order

@@ -20,7 +20,7 @@ parent_xml.httpMethodType rest_method.method_type
 parent_xml.urlTemplate BioCatalogue::Util.generate_rest_endpoint_url_template(rest_method) 
 
 # <description>
-dc_xml_tag parent_xml, :description, rest_method.description
+dc_xml_tag parent_xml, :description, rest_method.preferred_description
 
 # <documentationUrl>
 parent_xml.documentationUrl rest_method.documentation_url

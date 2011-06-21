@@ -11,7 +11,7 @@ dc_xml_tag parent_xml, :title, xlink_title(soap_output)
 parent_xml.name display_name(soap_output, false)
 
 # <description>
-dc_xml_tag parent_xml, :description, soap_output.description
+dc_xml_tag parent_xml, :description, soap_output.preferred_description
 
 # <computationalType>
 parent_xml.computationalType soap_output.computational_type

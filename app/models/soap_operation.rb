@@ -140,7 +140,7 @@ private
     data = {
       "soap_operation" => {
         "name" => self.name,
-        "description" => self.description,
+        "description" => self.preferred_description,
         "parameter_order" => self.parameter_order,
         "created_at" => self.created_at.iso8601,
         "archived_at" => self.archived? ? self.archived_at.iso8601 : nil

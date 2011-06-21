@@ -8,7 +8,7 @@
 dc_xml_tag parent_xml, :title, xlink_title(rest_representation)
 
 # <description>
-dc_xml_tag parent_xml, :description, rest_representation.description
+dc_xml_tag parent_xml, :description, rest_representation.preferred_description
 
 # <contentType>
 parent_xml.contentType rest_representation.content_type

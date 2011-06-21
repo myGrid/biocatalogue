@@ -101,13 +101,26 @@ class RestParameter < ActiveRecord::Base
     generate_json_and_make_inline(true)
   end
 
+  def preferred_description
+    # Either the description from the service description doc, 
+    # or the last description annotation.
+    
+    desc = self.description
+    
+    if desc.blank?
+      desc = self.annotations_with_attribute("description").first.try(:value)
+    end
+    
+    return desc
+  end
+
 private
 
   def generate_json_and_make_inline(make_inline)
     data = {
       "rest_parameter" => {
         "name" => self.name,
-        "description" => self.description,
+        "description" => self.preferred_description,
         "param_style" => self.param_style,
         "computational_type" => self.computational_type,        
         "default_value" => self.default_value,

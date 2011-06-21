@@ -424,7 +424,7 @@ private
       "rest_service" => {
         "name" => BioCatalogue::Util.display_name(self),
         "submitter" => BioCatalogue::Api.uri_for_object(self.service_version.submitter),
-        "description" => self.description,
+        "description" => self.preferred_description,
         "documentation_url" => self.preferred_documentation_url,
         "created_at" => self.created_at.iso8601
       }

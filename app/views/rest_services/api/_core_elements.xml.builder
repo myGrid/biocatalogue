@@ -16,7 +16,7 @@ parent_xml.submitter xlink_attributes(uri_for_object(rest_service.service_versio
                      :resourceName => rest_service.service_version.submitter_name
 
 # <description>
-dc_xml_tag parent_xml, :description, rest_service.description
+dc_xml_tag parent_xml, :description, rest_service.preferred_description
 
 # <documentationUrl>
 parent_xml.documentationUrl rest_service.preferred_documentation_url

@@ -11,7 +11,7 @@ dc_xml_tag parent_xml, :title, xlink_title(rest_parameter)
 parent_xml.name display_name(rest_parameter, false)
 
 # <description>
-dc_xml_tag parent_xml, :description, rest_parameter.description
+dc_xml_tag parent_xml, :description, rest_parameter.preferred_description
 
 # <computationalType>
 parent_xml.computationalType rest_parameter.computational_type
