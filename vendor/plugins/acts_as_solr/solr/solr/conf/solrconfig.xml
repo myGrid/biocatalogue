@@ -39,8 +39,8 @@
     <maxBufferedDocs>1000</maxBufferedDocs>
     <maxMergeDocs>2147483647</maxMergeDocs>
     <maxFieldLength>10000</maxFieldLength>
-    <writeLockTimeout>5000</writeLockTimeout>
-    <commitLockTimeout>10000</commitLockTimeout>
+    <writeLockTimeout>10000</writeLockTimeout>
+    <commitLockTimeout>15000</commitLockTimeout>
   </indexDefaults>
 
   <mainIndex>
