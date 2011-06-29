@@ -509,7 +509,7 @@ class ApplicationController < ActionController::Base
   end
   helper_method :is_filter_selected
   
-  def generate_sort_url(sort_by, sort_order)
+  def generate_sort_url(resource, sort_by, sort_order)
     params_dup = BioCatalogue::Util.duplicate_params(params)
     params_dup[:sort_by] = sort_by.downcase
     params_dup[:sort_order] = sort_order.downcase
@@ -517,7 +517,7 @@ class ApplicationController < ActionController::Base
     # Reset page param
     params_dup.delete(:page)
     
-    return services_url(params_dup)
+    return eval("#{resource}_url(params_dup)")
   end
   helper_method :generate_sort_url
   

@@ -1,0 +1,34 @@
+<%
+
+# BioCatalogue: app/views/service_providers/_index_sortby.html.erb
+#
+# Copyright (c) 2011, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% 
+  # TODO: DRY this out (together with the one in services etc) 
+%>
+
+<span style="vertical-align: middle; font-weight: bold;">
+	Sort by: 
+</span>
+
+<span style="vertical-align: middle; margin-left: 0.3em;">
+	<select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
+		<option value="<%= generate_sort_url('service_providers', 'name', 'asc') -%>" <%= "selected" if is_sort_selected('name', 'asc') -%>>
+			Name (A-Z)
+		</option>
+		<option value="<%= generate_sort_url('service_providers', 'name', 'desc') -%>" <%= "selected" if is_sort_selected('name', 'desc') -%>>
+			Name (Z-A)
+		</option>
+		<option value="<%= generate_sort_url('service_providers', 'created', 'desc') -%>" <%= "selected" if is_sort_selected('created', 'desc') -%>>
+      Newest
+    </option>
+    <option value="<%= generate_sort_url('service_providers', 'created', 'asc') -%>" <%= "selected" if is_sort_selected('created', 'asc') -%>>
+      Earliest
+    </option>
+	</select>
+</span>

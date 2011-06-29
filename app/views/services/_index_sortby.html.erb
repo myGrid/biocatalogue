@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/services/_index_sortby.html.erb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -14,14 +14,14 @@
 
 <span style="vertical-align: middle; margin-left: 0.3em;">
 	<select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
-		<option value="<%= generate_sort_url('created', 'desc') -%>" <%= "selected" if is_sort_selected('created', 'desc') -%>>
+		<option value="<%= generate_sort_url('services', 'created', 'desc') -%>" <%= "selected" if is_sort_selected('created', 'desc') -%>>
 			Newest
 		</option>
-		<option value="<%= generate_sort_url('created', 'asc') -%>" <%= "selected" if is_sort_selected('created', 'asc') -%>>
+		<option value="<%= generate_sort_url('services', 'created', 'asc') -%>" <%= "selected" if is_sort_selected('created', 'asc') -%>>
 			Earliest
 		</option>
 		<% if logged_in? && current_user.is_curator? -%>
-			<option value="<%= generate_sort_url('annotated', 'desc') -%>" <%= "selected" if is_sort_selected('annotated', 'desc') -%>>
+			<option value="<%= generate_sort_url('services', 'annotated', 'desc') -%>" <%= "selected" if is_sort_selected('annotated', 'desc') -%>>
 				Annotated(High - Low)
 			</option>
 		<% end -%>

@@ -12,6 +12,10 @@
 
 <h1>Browse Service Providers</h1>
 
+<span class="inline-block" style="float:right; margin-left: 2em; text-align: right;">
+  <%= render :partial => 'index_sortby' %>
+</span>
+
 <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_providers } %>
 
 <div id="latest_providers" style="margin: 1em 0;">

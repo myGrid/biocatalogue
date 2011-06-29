@@ -181,14 +181,14 @@ protected
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase
     else
-      "created"
+      "name"
     end
     
     sort_order_allowed = [ "asc", "desc" ]
     @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
       params[:sort_order].downcase
     else
-      "desc"
+      "asc"
     end
   end
   
