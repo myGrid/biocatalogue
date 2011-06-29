@@ -77,6 +77,17 @@ class ServiceProvider < ActiveRecord::Base
     
     return BioCatalogue::Tags.sort_tags_alphabetically(tags_hash.values)
   end
+  
+  def has_service_submitter?(submitter)
+    return false if submitter.nil?
+    
+    services = Service.count(:conditions => { :service_deployments => { :service_providers => { :id => self.id } },
+                                              :submitter_type => submitter.class.name,
+                                              :submitter_id => submitter.id }, 
+                             :joins => [ { :service_deployments => :provider } ])
+                            
+    return services > 0
+  end
 
   def merge_into(provider, *args)
     success = false

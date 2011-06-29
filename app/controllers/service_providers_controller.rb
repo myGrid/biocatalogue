@@ -6,7 +6,7 @@
 
 class ServiceProvidersController < ApplicationController
   
-  before_filter :disable_action, :only => [ :new, :edit, :create, :destroy ]
+  before_filter :disable_action, :only => [ :new, :edit, :create ]
   before_filter :disable_action_for_api, :except => [ :index, :show, :annotations, :annotations_by, :services, :filters, :filtered_index ]
   
   skip_before_filter :verify_authenticity_token, :only => [ :auto_complete ]
@@ -23,7 +23,7 @@ class ServiceProvidersController < ApplicationController
   
   before_filter :find_service_provider, :only => [ :show, :edit, :update, :destroy, :annotations, :annotations_by, :edit_by_popup ]
   
-  before_filter :authorise, :only => [ :edit_by_popup, :update ]
+  before_filter :authorise, :only => [ :edit_by_popup, :update, :destroy ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
   
@@ -160,6 +160,19 @@ class ServiceProvidersController < ApplicationController
       format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
     end
   end
+  
+  def destroy
+    respond_to do |format|
+      if @service_provider.destroy
+        flash[:notice] = "Service provider '#{@service_provider.name}' has been deleted"
+        format.html { redirect_to root_url }
+        format.xml  { head :ok }
+      else
+        flash[:error] = "Failed to delete service provider '#{@service_provider.name}'"
+        format.html { redirect_to service_provider_url(@service_provider) }
+      end
+    end
+  end
 
 protected
   
@@ -232,6 +245,12 @@ protected
   def authorise
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_provider)
       error_to_back_or_home("You are not allowed to perform this action")
+      return false
+    end
+    
+    # Additionally, for the destroy action check that the service provider has no services
+    if action_name == "destroy" && @service_provider.services.count != 0
+      error_to_back_or_home("Cannot delete a service provider that has some services registered")
       return false
     end
     
