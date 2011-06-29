@@ -58,7 +58,7 @@ module ActivityFeedsHelper
           data = [ entry_text, entry_type, al.created_at ]
           
           if entry_text.blank?
-            BioCatalogue::Util.warn "Activity feed entry was blank for ActivityLog record: \n\t#{al.inspect}.\n It could be that the activity_loggable, culprit or referenced has been deleted."
+            BioCatalogue::Util.say "Activity feed entry was blank for ActivityLog record: \n\t#{al.inspect}.\n It could be that the activity_loggable, culprit or referenced has been deleted or deactivated."
           else
             temp_results[classify_time_span(al.created_at, style)] << data
           end
@@ -89,9 +89,12 @@ module ActivityFeedsHelper
           case action
             
             when 'activate'
-              output << link_to(display_name(item), item)
-              output << content_tag(:span, " joined", :class => "activity_feed_action")
-              output << " the BioCatalogue"
+              # Check if user is still activated
+              if item.activated?
+                output << link_to(display_name(item), item)
+                output << content_tag(:span, " joined", :class => "activity_feed_action")
+                output << " the BioCatalogue"
+              end
               
           end
           
