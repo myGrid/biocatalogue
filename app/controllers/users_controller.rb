@@ -12,9 +12,10 @@ class UsersController < ApplicationController
 
   before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, 
                                                        :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, 
-                                                       :services, :filtered_index, :filters, :favourites, :services_responsible ]
+                                                       :services, :filtered_index, :filters, :favourites, :services_responsible, 
+                                                       :deactivate ]
 
-  before_filter :check_user_rights, :only => [ :edit, :update, :destroy, :change_password, :saved_searches ]
+  before_filter :check_user_rights, :only => [ :edit, :update, :change_password, :saved_searches ]
   
   before_filter :initialise_updated_user, :only => [ :edit, :update ]
   
@@ -31,12 +32,13 @@ class UsersController < ApplicationController
   before_filter :find_users, :only => [ :index, :filtered_index ]
   
   before_filter :find_user, :only => [ :show, :edit, :update, :change_password, 
-                                          :rpx_update, :annotations_by, :favourites, 
-                                          :services_responsible, :make_curator, :remove_curator ]
+                                       :rpx_update, :annotations_by, :favourites, 
+                                       :services_responsible, :make_curator, :remove_curator,
+                                       :deactivate ]
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
   
-  before_filter :authorise, :only => [:make_curator, :remove_curator]
+  before_filter :authorise, :only => [ :make_curator, :remove_curator, :deactivate ]
   
   oauth_authorize :saved_searches
 
@@ -363,13 +365,11 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user
         if @user.make_curator!
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is now a curator </div><div class=\"flash_body\">.</div>"
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is now a curator</div>"
           format.html{ redirect_to(user_url(@user)) }
-          format.xml { disable_action }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not make user a curator </div><div class=\"flash_body\">.</div>"
+          flash[:error] = "<div class=\"flash_header\">Could not make user a curator</div>"
           format.html{ redirect_to(user_url(@user)) }
-          format.xml { disable_action }
         end
       end
     end
@@ -381,11 +381,23 @@ class UsersController < ApplicationController
         if @user.remove_curator!
           flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is no longer a curator </div><div class=\"flash_body\">.</div>"
           format.html{ redirect_to(user_url(@user)) }
-          format.xml { disable_action }
         else
           flash[:error] = "<div class=\"flash_header\">Could not remove user as a curator </div><div class=\"flash_body\">.</div>"
           format.html{ redirect_to(user_url(@user)) }
-          format.xml { disable_action }
+        end
+      end
+    end
+  end
+  
+  def deactivate
+    respond_to do |format|
+      if @user
+        if @user.deactivate!
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been deactivated</div>"
+          format.html{ redirect_to(root_url) }
+        else
+          flash[:error] = "<div class=\"flash_header\">Could not deactivate the user. Please contact a system admin.</div>"
+          format.html{ redirect_to(user_url(@user)) }
         end
       end
     end
@@ -482,9 +494,9 @@ private
   end
   
   def authorise
-    unless logged_in? && current_user.is_admin?
+    unless logged_in? && current_user.is_curator?
       flash[:error] =" You are not authorised to perform this action"
-      redirect to @user
+      redirect_to @user
     end
   end
 

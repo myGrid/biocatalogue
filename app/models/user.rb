@@ -142,6 +142,19 @@ class User < ActiveRecord::Base
       return false
     end
   end
+  
+  def deactivate!
+    begin
+      self.activated_at = nil
+      self.security_token = nil
+      self.save!
+      return true
+    rescue Exception => ex
+      logger.error("Failed to deactivate user #{self.id}. Exception:")
+      logger.error(ex)
+      return false
+    end
+  end
 
   def activated?
     !self.activated_at.blank?

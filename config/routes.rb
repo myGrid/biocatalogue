@@ -162,7 +162,8 @@ ActionController::Routing::Routes.draw do |map|
                              :favourites => :get,
                              :services_responsible => :get,
                              :make_curator => :put,
-                             :remove_curator => :put }
+                             :remove_curator => :put,
+                             :deactivate => :put }
                 
   map.resource :session
 

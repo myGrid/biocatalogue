@@ -31,7 +31,7 @@ module BioCatalogue
         when :announcements
           # Above check for is_curator? is enough
         when :tag
-          return true if options[:tag_submitters].include?("User:#{user.id}") 
+          return true if options[:tag_submitters].include?("User:#{user.id}")
         when Annotation
           return true if thing.source == user
           return true if check_user_is_responsible_for_service_with_thing(user, thing)
