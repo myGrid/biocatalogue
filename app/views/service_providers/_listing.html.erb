@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/service_providers/_listing.html.erb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -11,19 +11,25 @@
 <div class="listings">
 	<% items.each do |provider| %>
 		<div class="listing_item">
+
 			<p class="name">
 				<%= link_to(display_name(provider), service_provider_path(provider)) -%>
 			</p>
-			
-			<div style="margin-top: 0.8em; font-size: 85%;">
-				<%= render :partial => "annotations/descriptions",
-							:locals => { :annotatable => provider,
-								:show_header => false,
-								:truncate_desc => 700,
-								:auto_link_desc => false,
-								:show_modify_options => false,
-								:show_add_box => false } -%>
-			</div>
+      
+      <p class="detail">
+        <%= pluralize(provider.services.count, "service") -%>
+      </p>
+      
+      <div class="box_annotations detail">
+        <% unless (desc = provider.preferred_description).blank? %>
+          <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+            <div class="text">
+              <%= annotation_prepare_description(desc, true, 700, false) -%>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+      
 		</div>
 	<% end %>
 </div>
