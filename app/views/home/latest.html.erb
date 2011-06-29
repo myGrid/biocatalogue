@@ -66,7 +66,10 @@
 								<%= user_services[u['id']] -%>	
 							</td>
 							<td>
-								<%= user_link_with_flag(:id => u['id'], :display_name => u['name'], :country => u['country']) -%>
+                <%= user_link_with_flag(:id => u['id'], 
+                                            :display_name => u['name'], 
+                                            :country => u['country'], 
+                                            :roles => u['roles']) -%>
 							</td>
 						</tr>
 					<% end %>

@@ -94,18 +94,28 @@ class User < ActiveRecord::Base
   
   # Returns an ordered Array of Hashes that provide the top curators info.
   # E.g.:
-  #   [ { 'id' => '5', 'name' => 'John Doe', 'count' => '2445' }, { 'id' => '46', 'name' => 'Jill Doe', 'count' => '345' }, { 'id' => '50', 'name' => 'Jack Doe', 'count' => '210' } ]
+  #   [ { 'id' => '5', 'name' => 'John Doe', 'count' => '2445', 'roles' => [ :curator ] }, 
+  #     { 'id' => '46', 'name' => 'Jill Doe', 'count' => '345', 'roles' => [ ] }, 
+  #     { 'id' => '50', 'name' => 'Jack Doe', 'count' => '210', 'roles' => [ :admin, :curator ] } ]
   # where "count" is the total number of annotations provided by that user.
   def self.top_curators(limit=10)
     # NOTE: this query has only been tested to work with MySQL 5.0.x
-    sql = "SELECT users.id AS id, users.display_name AS name, users.country as country, COUNT(*) AS count 
+    sql = "SELECT users.id AS id, users.display_name AS name, users.country as country, COUNT(*) AS count, users.role_id AS role_id 
             FROM users
             INNER JOIN annotations ON annotations.source_type = 'User' AND annotations.source_id = users.id 
             GROUP BY users.id
             ORDER BY COUNT(*) DESC
             LIMIT #{limit}"
     
-    return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+    output = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+    
+    # Add roles info
+    output.each do |o|
+      o['roles'] = User.roles_from(o['role_id'].to_i)
+      o.delete('role_id')
+    end
+    
+    return output
   end
   
   # Returns a hash where the keys are User IDs (as Strings) and the values are the number of services (Integer) that that user has submitted.
@@ -250,6 +260,19 @@ class User < ActiveRecord::Base
   
   def self.curators
     User.find_all_by_role_id(2)
+  end
+  
+  def roles
+    r = [ ]
+    r << :admin if is_admin?
+    r << :curator if is_curator?
+    return r
+  end
+  
+  def self.roles_from(role_id)
+    r = [ :admin, :curator ] if role_id == 1 
+    r = [ :curator ] if role_id == 2
+    return r
   end
   
   # make user an admin

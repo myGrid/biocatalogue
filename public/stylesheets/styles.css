@@ -299,7 +299,7 @@ img, a img {
 }
 
 .ago {
-	margin-left: 0.2em; 
+	margin-left: 0.4em; 
 	color: #666;
 }
 
@@ -3539,4 +3539,28 @@ a.globalise_param_link {
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
+}
+
+.user_role_badge {
+  font-size: 77%;
+  font-weight: bold;
+  background-color: #FFF;
+  border: 1px solid #CCC;
+  padding: 1px 3px;
+  text-decoration: none;
+  line-height: 1.0;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  vertical-align: middle;
+}
+
+.admin {
+  background-color: #F2D8D3;
+  color: #6B5754;
+}
+
+.curator {
+  background-color: #E1D8FF;
+  color: #635F70;
 }

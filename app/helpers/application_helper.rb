@@ -237,19 +237,54 @@ module ApplicationHelper
     options.reverse_merge!(:user => nil,
                            :id => nil,
                            :display_name => nil,
-                           :country => nil)
+                           :country => nil,
+                           :roles => [ ])
     
     # Check that we have the basic minimum to process...
     if options[:user].blank? and (options[:id].blank? or options[:display_name].blank?)
       logger.error "ApplicationHelper#user_link_with_flag called with invalid options"
       return ""
     else
+      decorations_style = "vertical-align: middle; margin-left: 0.4em;"
+      
       if options[:user]
-        return link_to(display_name(options[:user]), user_path(options[:user]), :style => "vertical-align: baseline") + flag_icon_from_country(options[:user].country, :style => "vertical-align: middle; margin-left: 0.4em;")
+        return link_to(display_name(options[:user]), 
+                       user_path(options[:user]), 
+                       :style => "vertical-align: baseline") + 
+                       flag_icon_from_country(options[:user].country, :style => decorations_style) +
+                       user_role_badge(options[:user].roles, decorations_style)
       else
-        return link_to(options[:display_name], user_path(options[:id]), :style => "vertical-align: baseline") + flag_icon_from_country(options[:country], :style => "vertical-align: middle; margin-left: 0.4em;")
+        return link_to(options[:display_name], 
+                       user_path(options[:id]), 
+                       :style => "vertical-align: baseline") + 
+                       flag_icon_from_country(options[:country], :style => decorations_style) +
+                       user_role_badge(options[:roles], decorations_style)
       end
     end
+  end
+  
+  def user_role_badge(roles, style="vertical-align: middle; margin-left: 0.4em;")
+    html = ''
+    
+    role_name = ''
+    role_class = ''
+
+    unless roles.blank?
+      if roles.include? :admin
+        role_name = "Admin"
+        role_class = 'admin'
+      elsif roles.include? :curator
+        role_name = "Curator"
+        role_class = 'curator'
+      end
+      
+      html << content_tag(:span, 
+                          role_name, 
+                          :class => "user_role_badge #{role_class}", 
+                          :style => style)  
+    end
+
+    return html
   end
   
   def separator_symbol_to_text(symbol, pluralize_text=false, show_symbol_after=true)
