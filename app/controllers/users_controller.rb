@@ -365,6 +365,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user
         if @user.make_curator!
+          ActivityLog.create(@log_event_core_data.merge(:action => "make_curator", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
           flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is now a curator</div>"
           format.html{ redirect_to(user_url(@user)) }
         else
@@ -379,10 +380,11 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user
         if @user.remove_curator!
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is no longer a curator </div><div class=\"flash_body\">.</div>"
+          ActivityLog.create(@log_event_core_data.merge(:action => "remove_curator", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is no longer a curator</div>"
           format.html{ redirect_to(user_url(@user)) }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not remove user as a curator </div><div class=\"flash_body\">.</div>"
+          flash[:error] = "<div class=\"flash_header\">Could not remove curator rights on user</div>"
           format.html{ redirect_to(user_url(@user)) }
         end
       end
@@ -393,6 +395,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user
         if @user.deactivate!
+          ActivityLog.create(@log_event_core_data.merge(:action => "deactivate", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
           flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been deactivated</div>"
           format.html{ redirect_to(root_url) }
         else
