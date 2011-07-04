@@ -99,11 +99,16 @@ class UsersController < ApplicationController
   # GET /users/new
   # GET /users/new.xml
   def new
-    @user = User.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @user }
+    if logged_in? && !is_api_request?
+      flash[:error] = "You cannot sign up for a new account because you are already logged in"
+      redirect_to home_url
+    else
+      @user = User.new
+  
+      respond_to do |format|
+        format.html # new.html.erb
+        format.xml  { render :xml => @user }
+      end    
     end
   end
 
