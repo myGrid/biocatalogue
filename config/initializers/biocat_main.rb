@@ -153,7 +153,7 @@ Annotations::Config.default_attribute_identifier_template = ANNOTATION_ATTRIBUTE
 Annotations::Config.attribute_name_transform_for_identifier = Proc.new { |name|
   regex = /\.|-|:/
   if name.match(regex)
-    name.gsub(regex, ' ').titleize.gsub(' ', '').camelize(:lower)
+    name.gsub(regex, ' ').titleize.gsub(' ', '_').camelize(:lower)
   else
     name.camelize(:lower)
   end
