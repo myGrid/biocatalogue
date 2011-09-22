@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/annotations/_data_schemas.html.erb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -26,14 +26,14 @@
 		</div>
 		
 		<div class="box_annotations">
-			<% schema_annotations = annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.created_at <=> b.created_at} %>
+			<% schema_annotations = annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.created_at <=> b.created_at} %>
 			<% unless  schema_annotations.empty? %>
 				<% schema_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
 							<div style="font-family: monospace; font-size: 100%;">
-								<%= annotation_prepare_description(ann.value) -%>
+								<%= annotation_prepare_description(ann.value_content) -%>
 							</div>
 
 							<% if show_modify_options %>

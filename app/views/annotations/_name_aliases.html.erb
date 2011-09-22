@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/annotations/_name_aliases.html.erb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -10,14 +10,11 @@
 
 <%
 	# Set defaults for optional parameters to this partial...
-	name_to_ignore = (annotatable.try(:name) || "") unless local_assigns.has_key?(:name_to_ignore)
-	name_annotations = annotatable.annotations_with_attribute("alternative_name") unless local_assigns.has_key?(:name_annotations)
+	name_annotations = annotatable.annotations_with_attribute("alternative_name", true) unless local_assigns.has_key?(:name_annotations)
 	show_add_option = true unless local_assigns.has_key?(:show_add_option)
 	show_modify_options = true unless local_assigns.has_key?(:show_modify_options)
-	show_promote_option = show_modify_options unless local_assigns.has_key?(:show_promote_option)
+	show_promote_option = false unless local_assigns.has_key?(:show_promote_option)
 	show_none_text = true unless local_assigns.has_key?(:show_none_text)
-	
-	name_annotations.reject! { |a| a.value.downcase == name_to_ignore.downcase }
 %>
 
 <div class="aliases annotations_container">
@@ -25,16 +22,16 @@
 		<% name_annotations.each do |al| %>
 			<span style="margin-right: 1.5em; vertical-align: middle;">
 				<span class="faded_plus" style="vertical-align: baseline; font-size: 93%;">aka</span>
-				<span style="font-weight: bold; vertical-align: baseline;"><%= h(al.value) -%></span>
+				<span style="font-weight: bold; vertical-align: baseline;"><%= h(al.value_content) -%></span>
 				<% if show_modify_options %>
 					<% if show_promote_option and BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, annotatable) %>
 						<span style="margin-left: 0.3em; vertical-align: baseline;">
 							<%= link_to(icon_faded_with_hover(:promote), 
-													change_attribute_annotation_path(al, :new_attribute => "display_name"), 
+													promote_alternative_name_annotation_path(al), 
 													:method => :post,
-													:confirm => "Are you sure you want to set this alternative name as the main display name for this #{annotatable.class.name.titleize}?", 
+													:confirm => "Are you sure you want to set this alternative name as the display name for this #{annotatable.class.name.humanize}?", 
 													:style => 'vertical-align: baseline; margin-bottom: 4px;',
-													:title => tooltip_title_attrib("Set this alternative name as the main display name for this #{annotatable.class.name.titleize}")) -%>
+													:title => tooltip_title_attrib("Set this alternative name as the display name for this #{annotatable.class.name.humanize}")) -%>
 						</span>
 					<% end %>
 					<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, al) %>

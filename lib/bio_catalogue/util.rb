@@ -209,7 +209,7 @@ module BioCatalogue
     def self.remove_rails_special_params_from(params, additional_to_remove=[])
       return { } if params.blank?
       
-      special_params = %w( id format controller action commit ).concat(additional_to_remove)
+      special_params = %w( id format controller action commit protocol authenticity_token ).concat(additional_to_remove)
       return params.reject { |k,v| special_params.include?(k.to_s.downcase) }
     end
     

@@ -51,17 +51,23 @@ class MonitoringReport
   end  
   
   def run
-    stats = {:passed => [], :failed => [], :unchecked => [] }
+    stats = {
+      :all => { :passed => [], :failed => [], :unchecked => [] },
+      :availability_checks => { :passed => [], :failed => [] },
+      :test_scripts => { :passed => [], :failed => [] } 
+    }
+    
     failed_st_stats = []
+    
     Service.all.each do |service|
       unless service.archived?
         case service.latest_status.label
           when "PASSED"
-            stats[:passed] << service.id
+            stats[:all][:passed] << service.id
           when "UNCHECKED"
-            stats[:unchecked] << service.id
+            stats[:all][:unchecked] << service.id
           else
-            stats[:failed] << service.id
+            stats[:all][:failed] << service.id
             service.service_tests.each do |st|
               if st.latest_status.label =='FAILED' || st.latest_status.label =='WARNING'
                 failed_st_stats << {:service_id => service.id, :test_type => st.test_type, 
@@ -71,7 +77,46 @@ class MonitoringReport
               end
             end
           end
+
+	
+        # FIXME: the logic below is a bit hacky and duplicated. Need to DRY this out!
+      
+        u_status = nil
+        u_tests = service.service_tests_by_type("UrlMonitor")
+        u_tests.each do |t|
+          u_status = 0 if u_status.nil?
+	  x = t.latest_test_result.result
+	  if x >= 0
+            u_status += x
+	  end
+        end
+	unless u_status.nil?
+          if u_status == 0
+            stats[:availability_checks][:passed] << service.id
+          else
+            stats[:availability_checks][:failed] << service.id
+          end
+	end
+        
+        t_status = nil
+        t_tests = service.service_tests_by_type("TestScript")
+        t_tests.each do |t|
+          t_status = 0 if t_status.nil?
+	  x = t.latest_test_result.result
+	  if x >= 0
+            t_status += x
+	  end
+        end
+	unless t_status.nil?
+          if t_status == 0
+            stats[:test_scripts][:passed] << service.id
+          else
+            stats[:test_scripts][:failed] << service.id
+          end
+	end
+
       end
+
     end
     
     puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/monitoring_report_{current_time}.html' ..."
@@ -83,11 +128,33 @@ class MonitoringReport
     puts "<hr/>"
     
     puts "<p>"
-    puts " Total no of not archived services: #{Service.count(:conditions => { :archived_at => nil })} <br/>"
-    puts " No of failed services: #{stats[:failed].count } <br/>"
-    puts " No of failed service tests: #{failed_st_stats.count} </br>"
-    
+    puts " Total number of non archived services: #{Service.count(:conditions => { :archived_at => nil })}"
+    puts "</p>"
+
+    puts "<h4>ALL service tests</h4>"
     puts "<p>"
+    puts "No of passed services: #{stats[:all][:passed].count} <br/>"
+    puts "No of failed services: #{stats[:all][:failed].count} <br/>"
+    puts "No of unchecked services: #{stats[:all][:unchecked].count} <br/>"
+    puts "<br/>"
+    puts "No of failed service tests: #{failed_st_stats.count}"
+    puts "</p>"
+    puts "<br/>"
+    
+    puts "<h4>Availability service tests</h4>"
+    puts "<p>"
+    puts "No of passed services: #{stats[:availability_checks][:passed].count} <br/>"
+    puts "No of failed services: #{stats[:availability_checks][:failed].count} <br/>"
+    puts "</p>"
+    puts "<br/>"
+
+    puts "<h4>Test script service tests</h4>"
+    puts "<p>"
+    puts "No of passed services: #{stats[:test_scripts][:passed].count} <br/>"
+    puts "No of failed services: #{stats[:test_scripts][:failed].count} <br/>"
+    puts "</p>"
+    puts "<br/>"
+
     failed_st_stats.sort!{|a, b| a[:failing_since] <=> b[:failing_since]} # sort by failing since
     service_ids = failed_st_stats.collect{|fts| fts[:service_id]}.compact.uniq
     

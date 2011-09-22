@@ -29,7 +29,7 @@ module BioCatalogue
               if anns.empty?
                 return eval("self.#{fallback_field}")
               else
-                return anns.first.value
+                return anns.first.value_content
               end
             end
               

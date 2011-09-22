@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/annotations/_descriptions.html.erb
 #
-# Copyright (c) 2008-2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -48,14 +48,14 @@
 				<% end %>
 			<% end %>
 			
-			<% descriptions_annotations = annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.updated_at <=> b.updated_at} %>
+			<% descriptions_annotations = annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.updated_at <=> b.updated_at} %>
 			<% unless descriptions_annotations.empty? %>
 				<% descriptions_annotations.each do |ann| %>
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
 							<div>
-								<%= annotation_prepare_description(ann.value, 
+								<%= annotation_prepare_description(ann.value_content, 
 																									 (truncate_desc != false), 
 																									 (truncate_desc ==  false ? nil : truncate_desc), 
 																									 auto_link_desc) -%>

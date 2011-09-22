@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/annotations/_categories.html.erb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -32,7 +32,7 @@
 					<% unless (category_annotations = service.annotations_with_attribute("category")).empty? %>
 						<ul class="categories">
 							<% category_annotations.each do |category_annotation| %>
-								<% category = Category.find_by_id(category_annotation.value) %>
+								<% category = category_annotation.value %>
 								<% unless category.nil? %>
 									<li>
 										<span class="main">

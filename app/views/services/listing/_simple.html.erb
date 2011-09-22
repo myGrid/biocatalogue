@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/services/listing/_simple.html.erb
 #
-# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -11,31 +11,29 @@
 <% service_version_instance = service.latest_version.service_versionified %>
 
 <div class="listing_item">
-  
+
   <table style="width: 100%;">
     <tr>
       <td>
         <%= render :partial => "services/listing/name_section", :locals => { :service => service, :show_stats => false }, :inline => true -%>
-        
+  
         <% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
           <div style="margin-top: 0.8em;">
-            <%= render :partial => "annotations/categories", 
+            <%= render :partial => "annotations/categories",
                        :locals => { :service => service,
                                     :show_add_option => false,
                                     :show_modify_options => false,
                                     :small => true } -%>
           </div>
         <% end %>
-      </td>
-      <%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
-        <td style="width: 60px; text-align: right; vertical-align: top; padding-bottom: 0.5em;">
-          <%= service_latest_status_symbol(service) -%>
-        </td>
-      <% end %>
+      
+        <%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
+          <td style="width: 60px; text-align: right; vertical-align: top; padding-bottom: 0.5em;"> <%= service_latest_status_symbol(service) -%></td>
+        <% end %>
       </td>
     </tr>
   </table>
-  
+
   <div class="box_annotations detail">
     <% unless (desc = service.preferred_description).blank? %>
       <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
@@ -45,12 +43,24 @@
       <% end %>
     <% end %>
   </div>
-  
+
   <p class="detail">
     <b>Provider:</b>
     <% service.providers.each do |provider| %>
       <%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
     <% end %>
-  </p>
     
+    <span class="separator">|</span>
+
+    <% if service_version_instance.class == SoapService %>
+      <b>WSDL Location:</b>
+      <%= link_to(h(service_version_instance.wsdl_location), service_version_instance.wsdl_location, :popup => true) -%>
+    <% elsif service_version_instance.class == RestService %>
+      <% unless (base_endpoint = service_version_instance.service.latest_deployment.endpoint).nil? %>
+        <b>Base URL:</b>
+        <%= link_to(h(base_endpoint), base_endpoint, :popup => true) -%>
+      <% end %>
+    <% end %>
+  </p>
+
 </div>

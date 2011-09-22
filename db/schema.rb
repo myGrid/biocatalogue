@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101116144723) do
+ActiveRecord::Schema.define(:version => 20110728111043) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -71,48 +71,53 @@ ActiveRecord::Schema.define(:version => 20101116144723) do
   add_index "annotation_properties", ["property_type", "property_id"], :name => "annotation_properties_property_index"
 
   create_table "annotation_value_seeds", :force => true do |t|
-    t.integer  "attribute_id", :null => false
-    t.string   "value",        :null => false
+    t.integer  "attribute_id",                                        :null => false
+    t.string   "old_value"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "value_type",   :limit => 50, :default => "TextValue", :null => false
+    t.integer  "value_id",                   :default => 0,           :null => false
   end
 
   add_index "annotation_value_seeds", ["attribute_id"], :name => "index_annotation_value_seeds_on_attribute_id"
 
   create_table "annotation_versions", :force => true do |t|
-    t.integer  "annotation_id",                    :null => false
-    t.integer  "version",                          :null => false
+    t.integer  "annotation_id",                                             :null => false
+    t.integer  "version",                                                   :null => false
     t.integer  "version_creator_id"
-    t.string   "source_type",                      :null => false
-    t.integer  "source_id",                        :null => false
-    t.string   "annotatable_type",   :limit => 50, :null => false
-    t.integer  "annotatable_id",                   :null => false
-    t.integer  "attribute_id",                     :null => false
-    t.text     "value",                            :null => false
-    t.string   "value_type",         :limit => 50, :null => false
+    t.string   "source_type",                                               :null => false
+    t.integer  "source_id",                                                 :null => false
+    t.string   "annotatable_type",   :limit => 50,                          :null => false
+    t.integer  "annotatable_id",                                            :null => false
+    t.integer  "attribute_id",                                              :null => false
+    t.string   "old_value",                        :default => ""
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "value_type",         :limit => 50, :default => "TextValue", :null => false
+    t.integer  "value_id",                         :default => 0,           :null => false
   end
 
   add_index "annotation_versions", ["annotation_id"], :name => "index_annotation_versions_on_annotation_id"
 
   create_table "annotations", :force => true do |t|
-    t.string   "source_type",                                     :null => false
-    t.integer  "source_id",                                       :null => false
-    t.string   "annotatable_type",   :limit => 50,                :null => false
-    t.integer  "annotatable_id",                                  :null => false
-    t.integer  "attribute_id",                                    :null => false
-    t.text     "value",                                           :null => false
-    t.string   "value_type",         :limit => 50,                :null => false
+    t.string   "source_type",                                               :null => false
+    t.integer  "source_id",                                                 :null => false
+    t.string   "annotatable_type",   :limit => 50,                          :null => false
+    t.integer  "annotatable_id",                                            :null => false
+    t.integer  "attribute_id",                                              :null => false
+    t.string   "old_value",                        :default => ""
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "version",                          :default => 1, :null => false
+    t.integer  "version",                          :default => 1,           :null => false
     t.integer  "version_creator_id"
+    t.string   "value_type",         :limit => 50, :default => "TextValue", :null => false
+    t.integer  "value_id",                         :default => 0,           :null => false
   end
 
   add_index "annotations", ["annotatable_type", "annotatable_id"], :name => "index_annotations_on_annotatable_type_and_annotatable_id"
   add_index "annotations", ["attribute_id"], :name => "index_annotations_on_attribute_id"
   add_index "annotations", ["source_type", "source_id"], :name => "index_annotations_on_source_type_and_source_id"
+  add_index "annotations", ["value_type", "value_id"], :name => "index_annotations_on_value_type_and_value_id"
 
   create_table "announcements", :force => true do |t|
     t.string   "item_type"
@@ -197,6 +202,25 @@ ActiveRecord::Schema.define(:version => 20101116144723) do
 
   create_table "innodb_lock_monitor", :id => false, :force => true do |t|
     t.integer "a"
+  end
+
+  create_table "number_value_versions", :force => true do |t|
+    t.integer  "number_value_id",    :null => false
+    t.integer  "version",            :null => false
+    t.integer  "version_creator_id"
+    t.integer  "number",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "number_value_versions", ["number_value_id"], :name => "index_number_value_versions_on_number_value_id"
+
+  create_table "number_values", :force => true do |t|
+    t.integer  "version",            :null => false
+    t.integer  "version_creator_id"
+    t.integer  "number",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "oauth_nonces", :force => true do |t|
@@ -568,6 +592,15 @@ ActiveRecord::Schema.define(:version => 20101116144723) do
 
   add_index "soaplab_servers", ["location"], :name => "soaplab_servers_location_index"
 
+  create_table "tags", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "label",      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tags", ["name"], :name => "index_tags_on_name", :unique => true
+
   create_table "test_results", :force => true do |t|
     t.integer  "result"
     t.string   "action"
@@ -595,6 +628,25 @@ ActiveRecord::Schema.define(:version => 20101116144723) do
 
   add_index "test_scripts", ["prog_language"], :name => "t_scripts_prog_lang_index"
   add_index "test_scripts", ["submitter_id"], :name => "t_scripts_user_id_index"
+
+  create_table "text_value_versions", :force => true do |t|
+    t.integer  "text_value_id",                            :null => false
+    t.integer  "version",                                  :null => false
+    t.integer  "version_creator_id"
+    t.text     "text",               :limit => 2147483647, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "text_value_versions", ["text_value_id"], :name => "index_text_value_versions_on_text_value_id"
+
+  create_table "text_values", :force => true do |t|
+    t.integer  "version",                                  :null => false
+    t.integer  "version_creator_id"
+    t.text     "text",               :limit => 2147483647, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "trash_records", :force => true do |t|
     t.string   "trashable_type"

@@ -19,7 +19,7 @@ class Service < ActiveRecord::Base
     acts_as_trashable
   end
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :name
   
   acts_as_favouritable
   
@@ -48,18 +48,6 @@ class Service < ActiveRecord::Base
   
   has_submitter
   
-  # Custom association for just the 'tag' annotations.
-  # This is so that it can be included in eager loading elsewhere.
-  has_many :tag_annotations,
-           :class_name => "Annotation",
-           :as => :annotatable,
-           :finder_sql => 'SELECT * 
-                          FROM annotations 
-                          INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
-                          WHERE annotation_attributes.name = "tag" AND annotations.annotatable_type = "Service" AND annotations.annotatable_id = #{self.id}'
-  
-  virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
-           
   before_validation_on_create :generate_unique_code
   
   attr_protected :unique_code
@@ -141,7 +129,7 @@ class Service < ActiveRecord::Base
     desc = self.description
     
     if desc.blank?
-      desc = self.latest_version.service_versionified.annotations_with_attribute("description").first.try(:value)
+      desc = self.latest_version.service_versionified.annotations_with_attribute("description", true).first.try(:value_content)
     end
     
     return desc
@@ -165,11 +153,13 @@ class Service < ActiveRecord::Base
   def similar_services(limit=10)
     services = [ ]
     
-    # NOTE: this query has only been tested to work with MySQL 5.0.x
-    sql = "SELECT annotations.value AS category_id
-          FROM annotations 
+    sql = "SELECT categories.id AS category_id
+          FROM annotations
           INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
-          WHERE annotation_attributes.name = 'category' AND annotations.annotatable_type = 'Service' AND annotations.annotatable_id = '#{self.id}'"
+          INNER JOIN categories ON categories.id = annotations.value_id AND annotations.value_type = 'Category'
+          WHERE annotation_attributes.name = 'category' 
+            AND annotations.annotatable_type = 'Service' 
+            AND annotations.annotatable_id = #{self.id}"
     
     results = ActiveRecord::Base.connection.select_all(sql)
     
@@ -399,16 +389,6 @@ class Service < ActiveRecord::Base
     return (successes.sum/self.service_tests.count).to_i
   end
   
-  # Helper method to get the categories for this service
-  # By default, at most 10 categories will be returned
-  def categories(limit=10)
-    category_attribute = AnnotationAttribute.find_by_name("category")
-    cat_ids = Annotation.find(:all, :limit=> limit,
-                      :conditions => ["annotatable_type=? AND annotatable_id=? AND attribute_id=?",
-                                      self.class.name, self.id, category_attribute.id ]).collect{|a| a.value}.compact
-    return Category.find(cat_ids)   
-  end
-  
   # Submit a job to submit this service in the 
   # background.
   def submit_delete_job
@@ -422,6 +402,56 @@ class Service < ActiveRecord::Base
     return false
   end
   
+  def has_capacity_for_new_monitoring_endpoint?
+    anns = self.annotations_with_attribute("monitoring_endpoint", true)
+    return anns.empty? 
+  end
+  
+  def data_example_annotations
+    data = [ ]
+    
+    self.service_versions.each do |sv|
+      case sv.service_versionified_type
+        when "SoapService"
+          sv.service_versionified.soap_operations.each do |so|
+            (so.soap_inputs + so.soap_outputs).each do |p|
+              data << { 
+                :resource => p,
+                :type_of_data => "Example data",
+                :annotations => p.annotations_with_attribute("example_data")
+              }
+            end
+          end
+        when "RestService"
+          sv.service_versionified.rest_methods.each do |rm|
+            data << {
+              :resource => rm,
+              :type_of_data => "Example endpoint",
+              :annotations => rm.annotations_with_attribute("example_endpoint")
+            }
+            
+            rm.rest_method_parameters.each do |rmp|
+              data << {
+                :resource => rmp.rest_parameter,
+                :type_of_data => "Example data",
+                :annotations => rmp.rest_parameter.annotations_with_attribute("example_data"),
+              }
+            end
+            
+            rm.rest_method_representations.each do |rmr|
+              data << {
+                :resource => rmr.rest_representation,
+                :type_of_data => "Example data",
+                :annotations => rmr.rest_representation.annotations_with_attribute("example_data"),
+              }
+            end
+          end
+      end
+    end
+    
+    return data
+  end
+
 protected
   
   def generate_unique_code
@@ -548,15 +578,14 @@ private
       when "locations"
         self.service_deployments.each { |item| list << BioCatalogue::Api::Json.location(item.country, item.city) }
       when "tag"
-        BioCatalogue::Annotations.annotations_for_service_by_attribute(self, attr).each { |ann| list << { "name" => ann.value } }
+        BioCatalogue::Annotations.get_tag_annotations_for_annotatable(service).each { |ann| list << { "name" => ann.value_content } }
         list = BioCatalogue::Api::Json.tags_collection(list)
       when "category"
         self.annotations_with_attribute("category").each do |ann| 
-          cat = Category.find_by_id(ann.value)
-          list << JSON(cat.to_countless_inline_json) if cat
+          list << JSON(ann.value.to_countless_inline_json) if ann.value_type == "Category"
         end
       else
-        BioCatalogue::Annotations.annotations_for_service_by_attribute(self, attr).each { |ann| list << ann.value }
+        BioCatalogue::Annotations.annotations_for_service_by_attribute(self, attr).each { |ann| list << ann.value_content }
     end
     
     return list

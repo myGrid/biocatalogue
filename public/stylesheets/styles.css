@@ -307,6 +307,11 @@ img, a img {
 	vertical-align: middle;
 }
 
+.warning {
+  color: red;
+  font-weight: bold;
+}
+
 a:link.login, a:visited.login {
 	padding-left: 2px;
 	padding-right: 20px;
@@ -1892,6 +1897,13 @@ ul.tabbernav li.tabberactive a:hover
 	font-weight: bold;
 }
 
+.vtabs_container .vtabs_tab_bar ul li a .grayed_name {
+
+	color: #333;
+
+	font-style: italic;
+}
+
 .vtabs_container .vtabs_tab_bar ul li a .detail {
 	font-size: 93%;
 	color: #666;
@@ -2627,64 +2639,6 @@ span.ontology_term,
 
 /* END Section Boxes (usually for inner sidebars) */
 
- 
-/* BEGIN ratings table styles */
-
-.ratings_table {
-	border: 1px solid #cccccc;
-	margin-bottom: 0.5em;
-	background-color: #FFC;
-	border-collapse: collapse;
-	font-size: 93%;
-}
-
-.ratings_table th {
-	font-weight: bold;
-	white-space: nowrap;
-	vertical-align: middle;
-	color: #333333;
-	height: 2em;
-	background: url(../images/box_title_bkgd_green_14.gif) repeat-x;
-	background-position: bottom;
-	padding-left: 6px;
-	padding-right: 6px;
-	border-right: 1px solid #cccccc;
-	text-align: center;
-}
-
-.ratings_table td {
-	white-space: nowrap;
-	padding: 4px 6px 4px 6px;
-	border-left: 1px solid #cccccc;
-	border-right: 1px solid #cccccc;
-	vertical-align: middle;
-	text-align: center;
-}
-
-.ratings_table tr:hover {
-	background-color: #F7F7F7;
-}
-
-.ratings_table .your_rating .delete_rating_faded {
-	width: 10px;
-	height: 10px;
-	margin-left: 0.5em;
-	vertical-align: middle;
-	display:-moz-inline-block;
-	display:-moz-inline-box;
-	display: inline-block;
-	background: url('/images/delete_faded.png') no-repeat center;
-}
-
-.ratings_table .your_rating .delete_rating a {
-	text-decoration: none;	
-}
-
-.ratings_table .your_rating:hover .delete_rating {
-	background: url('/images/delete.png') no-repeat center;
-}
-
-/* END ratings table styles */
 
 /* BEGIN filtering styles */
 
@@ -3465,7 +3419,7 @@ a.globalise_param_link {
   font-weight: bold;
 }
 
-.operations_quick_browse_box .entry a {
+.operations_quick_browse_box .entry a, .grayed_entry a {
 	font-size: 93%;
 	vertical-align: middle;
 	margin: 0 0.4em;
@@ -3476,8 +3430,12 @@ a.globalise_param_link {
 	border: 1px dotted transparent;
 }
 
-.operations_quick_browse_box .entry a.active,
-.operations_quick_browse_box .entry a:hover {
+.grayed_entry a {
+  color: #888;	
+}
+
+.operations_quick_browse_box .entry a.active, .grayed_entry a.active,
+.operations_quick_browse_box .entry a:hover, .grayed_entry a:hover {
 	border: 1px dotted #CCC;
 	background-color: #DDE;
 }
@@ -3508,8 +3466,6 @@ a.globalise_param_link {
   background-color: transparent !important;
 }
 
-/* END styles for Archived items */
-
 .archived_status_box {
 	color: #333333;
   border: 2px solid #CC3333; 
@@ -3530,6 +3486,8 @@ a.globalise_param_link {
 	font-weight: bolder;
 	letter-spacing: 1px;
 }
+
+/* END styles for Archived items */
 
 .p7menubar a {
   text-decoration: none;
@@ -3565,3 +3523,4 @@ a.globalise_param_link {
   background-color: #E1D8FF;
   color: #635F70;
 }
+

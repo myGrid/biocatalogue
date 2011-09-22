@@ -87,16 +87,23 @@ class SoaplabReport
     $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "soaplab_report_#{Time.now.strftime('%Y%m%d-%H%M')}.txt"), "w")
     $stdout.sync = true
     
-    puts ""
     puts "Soaplab Report"
     puts "=============="
     puts ""
     
-    output_format_1 = "%25s\t%9s\n"
+    output_format_1 = "%45s\t%9s\n"
     
-    printf(output_format_1, "Soaplab servers:", number_with_delimiter(stats[:soaplab_servers].length))
-    printf(output_format_1, "Web services that are Soaplab tools:", number_with_delimiter(stats[:services].length))
-    printf(output_format_1, "Total SOAP operations on Soaplab services", number_with_delimiter(stats[:soap_operations].length))
+    printf(output_format_1, "Soaplab servers: ", number_with_delimiter(stats[:soaplab_servers].length))
+    printf(output_format_1, "Web services that are Soaplab tools: ", number_with_delimiter(stats[:services].length))
+    printf(output_format_1, "Total SOAP operations on Soaplab services: ", number_with_delimiter(stats[:soap_operations].length))
+    
+    puts ""
+    puts "---"
+    puts ""
+    
+    puts "SoaplabServer IDs: (#{stats[:soaplab_servers].map{|s| s.id}.to_sentence(:two_words_connector => ', ', :last_word_connector => ', ')})"
+    puts "Service IDs: (#{stats[:services].map{|s| s.id}.to_sentence(:two_words_connector => ', ', :last_word_connector => ', ')})"
+    puts "SoapOperation IDs: (#{stats[:soap_operations].map{|s| s.id}.to_sentence(:two_words_connector => ', ', :last_word_connector => ', ')})"
     
     # Reset $stdout
     $stdout = STDOUT

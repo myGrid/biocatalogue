@@ -61,6 +61,15 @@ module BioCatalogue
         return services
       end
       
+      def self.providers_without_services        
+        sql = "SELECT * FROM service_providers 
+               WHERE id NOT IN (SELECT DISTINCT service_provider_id FROM service_deployments)"
+        
+        providers = ServiceProvider.find_by_sql(sql)
+        
+        return providers
+      end
+      
     end
   end
 end

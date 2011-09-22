@@ -20,8 +20,9 @@ module TagsHelper
     generate_tag_cloud(BioCatalogue::Tags.annotations_to_tags_structure(tag_annotations), cloud_type, *args)
   end
   
-  # This takes in a collection of 'tags' (in the format of the standardised tag data structure described in /lib/tags.rb)
-  # and generates a tag cloud of either one of the following types:
+  # This takes in a collection of 'tags' (in the format of the standardised tag hash data structure 
+  # described in lib/bio_catalogue/tags.rb) and generates a tag cloud of either one of the following 
+  # types of tag clouds:
   # - :weighted
   # - :flat
   #
@@ -32,7 +33,7 @@ module TagsHelper
   # but modified and adapted for BioCatalogue by Jits.
   #
   # Currently takes into account the following 'special' tags:
-  # - Ontological term URIs (see /lib/tags.rb for the rules on these)
+  # - Ontological term URIs (see lib/bio_catalogue/tags.rb for the rules on these)
   #
   # Args options (all optional):
   #   :tag_cloud_style - additional styles to add to the tag_cloud div.
@@ -53,7 +54,7 @@ module TagsHelper
     return "" if tags.blank?
     
     unless [ :weighted, :flat ].include?(cloud_type)
-      logger.error("ERROR: Tried to build a tag cloud with an invalid cloud_type.")
+      BioCatalogue::Util.yell("ERROR: Tried to build a tag cloud with an invalid cloud_type.")
       return ""      
     end
     
@@ -92,7 +93,7 @@ module TagsHelper
           min_font
       end
         
-      cloud << [tag['name'], font_size.to_i, tag['count'], tag['submitters']] 
+      cloud << [tag['name'], tag['label'], font_size.to_i, tag['count'], tag['submitters']] 
     end
     
     output = ""
@@ -107,7 +108,7 @@ module TagsHelper
         tag!(:div, :class => "tag_cloud", :style => options[:tag_cloud_style]) do 
           # <ul>
           ul do
-            cloud.each do |tag_name, font_size, freq, submitters|
+            cloud.each do |tag_name, tag_label, font_size, freq, submitters|
               # <li>
               li do
                 tag!(:span, :style => "font-size:#{font_size}px; #{options[:tag_style]}")  do
@@ -117,12 +118,12 @@ module TagsHelper
                     namespace, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
                     
                     #inner_html = "<span class='namespace'>#{h(namespace)}:</span><span>#{h(keyword)}</span>"
-                    inner_html = h(keyword)
+                    inner_html = h(tag_label)
                     title_text = "Full tag: #{h(tag_name)} <br/> From: #{namespace} <br/> Frequency: #{freq} times"
                     css_class = 'ontology_term'
                   # Otherwise, regular tags...
                   else
-                    inner_html = h(tag_name)
+                    inner_html = h(tag_label)
                     title_text = "Tag: #{h(tag_name)} <br/> Frequency: #{freq} times."
                     css_class = ''
                   end
@@ -147,7 +148,7 @@ module TagsHelper
                      BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :tag, :tag_submitters => submitters) then
                      
                     link_to_remote(icon_faded_with_hover(:delete),
-                                  :url => "#{tag_url(0, :tag_name => tag_name, :annotatable_type => options[:annotatable].class.name, :annotatable_id => options[:annotatable].id)}",
+                                  :url => "#{destroy_taggings_tags_url(:tag_name => tag_name, :annotatable_type => options[:annotatable].class.name, :annotatable_id => options[:annotatable].id)}",
                                   :method => :delete,
                                   :update => { :success => "#{options[:annotatable].class.name}_#{options[:annotatable].id}_tag_cloud", :failure => '' },
                                   :loading => "Element.show('tags_spinner')",

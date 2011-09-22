@@ -23,7 +23,7 @@ xml.tag! "tags",
     render :partial => "api/pagination/parameters", :locals => { :parent_xml => xml, :page => @page, :per_page => @per_page }
     
     # <limit>
-    xml.limit @limit, (@limit.nil? ? { "xsi:nil" => "true" } : { })
+    xml.limit @limit, { "xsi:nil" => "true", "deprecated" => "true" }
     
   end
   
@@ -31,10 +31,12 @@ xml.tag! "tags",
   xml.statistics do
     
     # <pages>
-    xml.pages @tags.total_pages
+    # NOTE: there is an assumption here this index has not been 
+    # filtered/restricted in any way apart from paging. 
+    xml.pages @total_pages
     
     # <results>
-    xml.results @tags.total_entries
+    xml.results @tags.length
     
     # <total>
     xml.total @total_tags_count
@@ -59,7 +61,7 @@ xml.tag! "tags",
            :locals => { :parent_xml => xml,
                         :resource_type => "Tags",
                         :page => @page,
-                        :total_pages => @tags.total_pages,
+                        :total_pages => @total_pages,
                         :resource_url_lambda => lambda { |params| uri_for_collection("tags", :params => params) } }
     
   end

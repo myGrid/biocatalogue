@@ -2,45 +2,47 @@
 
 # BioCatalogue: app/views/curation/show.html.erb
 #
-# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
 %>
 
-<h1>
-	Curation Dashboard
-</h1>
+<h1>	Curation Dashboard</h1>
 
 <div>
 	<div class="center" style="float: left; width: 48%;">
-		<h2 class="center">
-			Reports
-			<%= info_icon_with_tooltip "Please note that some of these reports can take a while to produce and can cause load on the server. Please try to avoid generating these reports during potentially busy hours." -%>
-		</h2>
-		
+		<h2 class="center">	Reports
+		<%= info_icon_with_tooltip "Please note that some of these reports can take a while to produce and can cause load on the server. Please try to avoid generating these reports during potentially busy hours." -%></h2>
+
 		<br/>
-		
+
 		<%= link_to "Potential Duplicate SOAP Operations within a SOAP Service", curation_reports_potential_duplicate_operations_within_service_path, :class => "button_slim" -%>
-    <br/><br/>
-    <%= link_to "Services Missing Annotations", curation_reports_services_missing_annotations_path, :class => "button_slim" -%>
-	<br/><br/>
-    <%= link_to "Links Checker Report", '/links_checker_report.html', :popup => true, :class => "button_slim" -%>
-	<br/><br/>
-    <%= link_to "Service Annotation Levels", curation_annotation_level_path, :popup => true, :class => "button_slim", :title => "Use sparingly! Calculates annotation levels on the fly"-%>
-	<br/><br/>
-    <%= link_to "All Service Tests", service_tests_url, :popup => true, :class => "button_slim", :title => "All service tests. Both URL checks and test scripts"-%>
+		<br/>
+		<br/>
+		<%= link_to "Service Providers Without Services", curation_reports_providers_without_services_path, :popup => true, :class => "button_slim" -%>
+		<br/>
+		<br/>
+		<%= link_to "Services Missing Annotations", curation_reports_services_missing_annotations_path, :class => "button_slim" -%>
+		<br/>
+		<br/>
+		<%= link_to "Links Checker Report", '/links_checker_report.html', :popup => true, :class => "button_slim" -%>
+		<br/>
+		<br/>
+		<%= link_to "Service Annotation Levels", curation_annotation_level_path, :popup => true, :class => "button_slim", :title => "Use sparingly! Calculates annotation levels on the fly"-%>
+		<br/>
+		<br/>
+		<%= link_to "All Service Tests", service_tests_url, :popup => true, :class => "button_slim", :title => "All service tests. Both URL checks and test scripts"-%>
 	</div>
-	
+
 	<div class="center" style="float: left; width: 48%;">
 		<h2 class="center">Tools</h2>
-		
+
 		<br/>
-		
+
 		<%= link_to "Copy Annotations From Item to Item", curation_tools_copy_annotations_path, :class => "button_slim" -%>
 	</div>
-	
+
 	<span class="clear"></span>
 </div>
-
 

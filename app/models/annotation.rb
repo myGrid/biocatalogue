@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/annotation.rb
 #
-# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -18,18 +18,27 @@ class Annotation < ActiveRecord::Base
 #    index [ :annotatable_type, :annotatable_id ], :limit => 5000, :buffer => 100
 #  end
 
+  # [OLD] Always eager load the annotation value object.
+  #
+  # TODO: this may have negative effects on peformance 
+  # and so usage needs to be thoroughly analysed.
+  # This may especially be bad in cases where the value
+  # object contains a lot of data.
+  #
+  # UPDATE 2011-08-18 (Jits): this is causing many queries to fail.
+  # So commented out for now. Wherever possible, try and use:
+  #   :include => [ :value ]
+  # ... in your Annotation finders.
+  # OR use the new named scope "include_values" which has been added 
+  # to the Annotation model in the plugin itself.
+  #default_scope :include => [ :value ]
+
   has_many :annotation_properties, :dependent => :destroy
   has_one :annotation_parsed_type, :dependent => :destroy
 
   if ENABLE_TRASHING
     acts_as_trashable
   end
-  
-  before_save :validate_doc_url
-  
-  validate :check_category_annotation
-
-  after_save :process_post_save_custom_logic
   
   after_destroy :process_post_destroy_custom_logic
   
@@ -57,27 +66,23 @@ class Annotation < ActiveRecord::Base
   end
   
   def value_hash
-    data = case self.attribute_name.downcase
-      when "category"
-        c = Category.find(self.value)
+    data = case self.value_type
+      when 'Category'
         {
-          "resource" => BioCatalogue::Api.uri_for_object(c),
-          "type" => "Category",
-          "content" => BioCatalogue::Util.display_name(c, false)
+          "resource" => BioCatalogue::Api.uri_for_object(self.value),
         }
-      when "tag"
+      when 'Tag'
         {
-          "resource" => BioCatalogue::Api.uri_for_path(BioCatalogue::Tags.generate_tag_show_uri(self.value)),
-          "type" => "Tag",
-          "content" => self.value
+          "resource" => BioCatalogue::Api.uri_for_path(BioCatalogue::Tags.generate_tag_show_uri(self.value.name)),
         }
       else
         {
           "resource" => nil,
-          "type" => self.value_type,
-          "content" => self.value
         }
     end
+    
+    data["type"] = self.value_type
+    data["content"] = self.value_content
     
     return data
   end
@@ -92,8 +97,7 @@ class Annotation < ActiveRecord::Base
                 :attribute => self.attribute,
                 :annotatable => new_annotatable,
                 :source => new_source,
-                :value => self.value,
-                :value_type => self.value_type)
+                :value => self.value)   # TODO: this copies over the *reference* to the actual annotation value object. Is this okay behaviour? 
     
     if !new_ann.nil? and new_ann.valid? 
       Relationship.create(:subject => new_ann, :object => self, :predicate => "BioCatalogue:copiedFrom")
@@ -171,47 +175,7 @@ class Annotation < ActiveRecord::Base
 protected
   
   def value_for_solr
-    val = ''
-    
-    case self.attribute_name.downcase
-      when "category"
-        val = Category.find_by_id(self.value.to_i).try(:name) || ""
-      else
-        val = self.value
-    end
-    
-    return val
-  end
-  
-  def check_category_annotation
-    if self.attribute_name.downcase == "category"
-      if Category.find_by_id(self.value).nil?
-        self.errors.add_to_base("Please select a valid category")
-        return false
-      end
-    end
-    return true
-  end
-    
-  def process_post_save_custom_logic
-    if self.attribute_name.downcase == 'display_name'
-      
-      # TODO: check that you are not trying to add a display_name with a value that already exists in the form of 
-      # an alternative_name annotation.
-      
-      # Find all other similar annotations that have the 'display_name' attribute and "downgrade" them to 'alternative_name'
-      self.annotatable.annotations_with_attribute('display_name').each do |ann|
-        if ann.id != self.id
-          # These annotations are read only so fetch again to modify...
-          ann2 = Annotation.find_by_id(ann.id)
-          if ann2
-            ann2.attribute_name = "alternative_name"
-            ann2.save
-          end
-        end
-      end
-      
-    end
+    return self.value_content
   end
   
   def process_post_destroy_custom_logic
@@ -223,8 +187,6 @@ protected
     end
   end
   
-private
-
   def generate_json_and_make_inline(make_inline)
     data = {
       "annotation" => {
@@ -260,13 +222,4 @@ private
     end
   end # generate_json_and_make_inline
   
-  def validate_doc_url
-    if self.attribute_name.downcase =="documentation_url"
-      return true if self.value.downcase.match(URI::regexp(%w(http https)))
-      self.errors.add_to_base("url is not valid. Should start with http or https ")
-      return false
-    end
-    return true
-  end
-
 end

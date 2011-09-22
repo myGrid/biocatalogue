@@ -154,10 +154,12 @@ module ServicesHelper
   
   def service_tests_for_display(service_tests)
     return service_tests if service_tests.empty?
+    
     if logged_in? 
       return service_tests if (current_user.is_admin? || service_tests.first.service.all_responsibles.include?(current_user))
     end
-    return service_tests.collect{|st| st if st.enabled? }.compact
+    
+    return service_tests.collect{ |st| st if st.enabled? }.compact
   end
   
 end

@@ -29,6 +29,10 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
   ==================================================*/
+ 
+ /* ==========
+  * This code has been substantially modified to cater for various new bits of functionality.
+  * ========== */
 	
 function tabberObj(argsObj)
 {
@@ -453,9 +457,12 @@ function tabberAutomatic(tabberArgs)
     i; /* Loop index */
 
   if (!tabberArgs) { tabberArgs = {}; }
-
+  
+  // EDIT: commented out the code below because it was the tabber init method 
+  // to run more times than necessary! 
   /* Create a tabber object so we can get the value of classMain */
-  tempObj = new tabberObj(tabberArgs);
+  // tempObj = new tabberObj(tabberArgs);
+  tempObj = { REclassMain: new RegExp('\\b' + 'tabber' + '\\b', 'gi') };
 
   /* Find all DIV elements in the document that have class=tabber */
 
@@ -465,17 +472,21 @@ function tabberAutomatic(tabberArgs)
     
     /* Is this DIV the correct class? */
     if (divs[i].className &&
-	divs[i].className.match(tempObj.REclassMain)) {
+	    divs[i].className.match(tempObj.REclassMain)) {
       
       /* Now tabify the DIV */
-      tabberArgs.div = divs[i];
-      divs[i].tabber = new tabberObj(tabberArgs);
+      if (divs[i].tabber) {
+        // Do nothing
+      } else {
+        console.log("tabbifying the element with ID " + divs[i].id);
+        tabberArgs.div = divs[i];
+        divs[i].tabber = new tabberObj(tabberArgs);
+      }
     }
   }
   
   return this;
 }
-
 
 /*==================================================*/
 

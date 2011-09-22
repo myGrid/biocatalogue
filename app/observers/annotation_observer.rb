@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/observers/annotation_observer.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -43,8 +43,8 @@ class AnnotationObserver < ActiveRecord::Observer
     end
     
     # Categories
-    if attrib_name == "category"
-      reload_number_of_services_for_category_and_parents_caches(Category.find_by_id(annotation.value))
+    if attrib_name == "category" && annotation.value_type == "Category"
+      reload_number_of_services_for_category_and_parents_caches(annotation.value)
       
       # ... in service listing
       expire_categories_in_service_listing(annotation.annotatable_id) if annotation.annotatable_type == "Service"

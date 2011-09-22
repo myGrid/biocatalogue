@@ -13,13 +13,18 @@
 	
 %>
 
-<% t "Results for tag '#{@tag_name}'" -%>
+<% t "Results for tag '#{@tag.name}'" -%>
 
 <h1>Tag Results</h1>
 
 <p style="font-size: 123.1%;">
 	Tag
-	"<b><%= h(@tag_name) -%></b>"
+	"<b><%= h(@tag.label) -%></b>"
+  <% unless @tag.name == @tag.label %>
+    (
+    <%= @tag.name -%>
+    )
+  <% end %>
 	returned <%= pluralize(count, "services") -%>
 </p>
 

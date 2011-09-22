@@ -15,4 +15,10 @@ ActiveRecord::Base.send(:include, Annotations::Acts::Annotatable)
 require File.join(File.dirname(__FILE__), "annotations", "acts_as_annotation_source")
 ActiveRecord::Base.send(:include, Annotations::Acts::AnnotationSource)
 
+require File.join(File.dirname(__FILE__), "annotations", "acts_as_annotation_value")
+ActiveRecord::Base.send(:include, Annotations::Acts::AnnotationValue)
+
+
 require File.join(File.dirname(__FILE__), "annotations", "routing")
+
+require File.join(File.dirname(__FILE__), "annotations", "util")

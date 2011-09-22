@@ -14,7 +14,7 @@ class Registry < ActiveRecord::Base
     acts_as_trashable
   end
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :display_name
   acts_as_annotation_source
   
   validates_presence_of :name
@@ -49,7 +49,7 @@ class Registry < ActiveRecord::Base
     desc = self.description
         
     if desc.blank?
-      desc = self.annotations_with_attribute("description").first.try(:value)
+      desc = self.annotations_with_attribute("description", true).first.try(:value_content)
     end
     
     return desc

@@ -14,7 +14,7 @@ class Agent < ActiveRecord::Base
     acts_as_trashable
   end
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :display_name
   acts_as_annotation_source
   
   validates_presence_of :name
@@ -42,7 +42,7 @@ class Agent < ActiveRecord::Base
   end
   
   def preferred_description
-    self.annotations_with_attribute("description").first.try(:value)
+    self.annotations_with_attribute("description", true).first.try(:value_content)
   end
   
   def annotated_service_ids

@@ -102,7 +102,7 @@ soap_service_ids:
 tag_endpoints:
   - "/tags/ebi"
   - "/tags/protein%20sequence"
-  - "/tags/simpleParameter?namespace=mygrid-service-ontology"
+  - "/tags/secondaryParameter?namespace=mygrid-service-ontology"
   - "/tags/DDBJ_record?namespace=mygrid-domain-ontology"
   
 test_result_ids:

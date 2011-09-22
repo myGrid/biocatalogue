@@ -39,7 +39,7 @@ module BioCatalogue
       
       # ========================================
       
-      def self.index(name, params, collection)
+      def self.index(name, params, collection, more={})
         has_filter = BioCatalogue::Filtering::FILTER_GROUPS.include?(name.to_sym)
         
         if name=='search'
@@ -47,6 +47,9 @@ module BioCatalogue
           total_entries = collection.size
           
           has_filter = true
+        elsif name=='tags'
+          total_pages = more[:total_pages]
+          total_entries = more[:total_tags_count]
         else
           total_pages = collection.total_pages
           total_entries = collection.total_entries
@@ -142,16 +145,16 @@ module BioCatalogue
         make_inline = true unless make_inline.class.name =~ /TrueClass|FalseClass/
         
         list = []
-        collection.each { |tag| list << self.tag(tag['name'], tag['count'], make_inline) }
+        collection.each { |tag| list << self.tag(tag['name'], tag['label'], tag['count'], make_inline) }
         
         return list
       end # self.tags_collection
       
-      def self.tag(tag_name, total_items_count, make_inline=false)
+      def self.tag(tag_name, tag_label, total_items_count, make_inline=false)
         data = {
           "tag" => {
             "name" => tag_name,
-            "display_name" => BioCatalogue::Tags.split_ontology_term_uri(tag_name)[1]
+            "display_name" => tag_label
           }
         }
         

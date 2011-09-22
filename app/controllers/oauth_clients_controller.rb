@@ -13,11 +13,7 @@ class OauthClientsController < ApplicationController
   before_filter :get_client_application, :only => [ :show, :edit, :update, :destroy ]
   
   before_filter :authorise, :only => [ :show, :edit, :update, :destroy ]
-  
-  if ENABLE_SSL && Rails.env.production?
-    ssl_required :all
-  end
-
+   
   def index
     @client_applications = current_user.client_applications
     @tokens = current_user.tokens.find :all, :conditions => 'oauth_tokens.invalidated_at is null and oauth_tokens.authorized_at is not null'
@@ -53,8 +49,16 @@ class OauthClientsController < ApplicationController
   end
 
   def destroy
-    @client_application.destroy
-    flash[:notice] = "Destroyed the client application registration"
+    begin
+      ClientApplication.transaction do
+        @client_application.destroy
+      end
+  
+      flash[:notice] = "Destroyed the client application registration"
+    rescue
+      flash[:error] = "Could not delete the application"
+    end
+
     redirect_to :action => "index"
   end
   

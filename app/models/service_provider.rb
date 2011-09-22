@@ -10,13 +10,14 @@ class ServiceProvider < ActiveRecord::Base
     index :name
   end
   
+  before_create :bypass_email_messaging_after_next_save
   after_save :mail_admins_if_required
   
   if ENABLE_TRASHING
     acts_as_trashable
   end
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :name
   acts_as_annotation_source
   
   has_many :service_deployments
@@ -49,33 +50,32 @@ class ServiceProvider < ActiveRecord::Base
   end
 
   def preferred_description
-    self.annotations_with_attribute('description').last.try(:value)
+    self.annotations_with_attribute('description', true).last.try(:value_content)
   end
   
+  # Finds all the tags (and relevant counts) from the services by
+  # a service provider, for use in a tag cloud.
+  #
+  # Returns the tags collection in the tags hash data structure as 
+  # outline in lib/bio_catalogue/tags.rb
+  #
+  # NOTE: this doesn't take into account tags on service deployment, 
+  # and variants, ONLY the tags on the service.
   def tags_from_services
-    services = Service.find(:all, 
-                            :conditions => { :service_deployments => { :service_providers => { :id => self.id } } }, 
-                            :joins => [ { :service_deployments => :provider } ],
-                            :include => [ :tag_annotations ])
+    sql = "SELECT tags.name, tags.label, COUNT(*) AS count
+          FROM annotations
+          INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+          INNER JOIN tags ON tags.id = annotations.value_id AND annotations.value_type = 'Tag'
+          INNER JOIN services ON services.id = annotations.annotatable_id AND annotations.annotatable_type = 'Service'
+          INNER JOIN service_deployments ON service_deployments.service_id = services.id
+          WHERE annotation_attributes.name = 'tag' AND service_deployments.service_provider_id = #{self.id}
+          GROUP BY tags.id"
     
-    # Need to take into account counts, as well as lowercase/uppercase
-    tags_hash = { }
+    results = ActiveRecord::Base.connection.select_all(sql)
+      
+    results.each { |r| r["count"] = r["count"].to_i }
     
-    services.each do |service|
-      # HACK: unfortunately the :finder_sql for the Service :tag_annotations association is not taken into account,
-      # so need to manually weed out non-tag annotations here.
-      service.tag_annotations.each do |ann|
-        if ann.attribute_name.downcase == "tag"
-          if tags_hash.has_key?(ann.value.downcase)
-            tags_hash[ann.value.downcase]['count'] += 1
-          else
-            tags_hash[ann.value.downcase] = { 'name' => ann.value, 'count' => 1 }
-          end
-        end
-      end
-    end
-    
-    return BioCatalogue::Tags.sort_tags_alphabetically(tags_hash.values)
+    return results
   end
   
   def has_service_submitter?(submitter)
@@ -207,7 +207,16 @@ class ServiceProvider < ActiveRecord::Base
   
 private
   
-  def mail_admins_if_required    
+  def bypass_email_messaging_after_next_save
+    @should_bypass_email_messaging = true
+  end
+  
+  def mail_admins_if_required
+    if @should_bypass_email_messaging
+      @should_bypass_email_messaging = false
+      return
+    end
+    
     # send emails to biocat admins
     if self.services.empty?
       recipients = []

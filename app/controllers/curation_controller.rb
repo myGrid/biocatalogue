@@ -90,6 +90,13 @@ class CurationController < ApplicationController
     end
   end
     
+  def providers_without_services
+    @service_providers = BioCatalogue::Curation::Reports.providers_without_services
+
+    respond_to do |format|
+      format.html # providers_without_services.html.erb
+    end
+  end
   
   protected
   

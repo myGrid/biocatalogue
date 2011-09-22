@@ -20,7 +20,7 @@
 	</span>
 	|
 	<% service_tests_for_display(@service_test.service.service_tests).each do |st| %>
-		<span class="entry">
+		<span class= <%= st.enabled? ? "entry" : "grayed_entry" %> >
 			<%= link_to(display_name(st), st) -%>
 		</span>
 		|
@@ -36,7 +36,10 @@
     		<ul>
     			<%unless @service_test && service_tests_for_display([@service_test]).empty? -%>
 					<li class='active' title="<%= tooltip_title_attrib(display_name(@service_test)) -%>">
-						<% st_label = content_tag(:span, service_test_status_symbol(@service_test, true) + truncate(display_name(@service_test), :length => 20), :class => 'name')  -%>
+						<% st_label = content_tag(:span, 
+												  service_test_status_symbol(@service_test, true) + truncate(display_name(@service_test), :length => 20), 
+	  											  :class => @service_test.enabled? ? "name" : "archived name",
+												  :style => "background:transparent !important;")  -%>
 	          			<%= link_to st_label, @service_test -%>
 	        		</li>
     			<%end%>
@@ -44,7 +47,11 @@
       			<% service_tests_for_display(@service_test.service.service_tests).each do |st| %>
 			  		<% unless st == @service_test %>
 	        			<li title="<%= tooltip_title_attrib(display_name(st)) -%>">
-							<% st_label = content_tag(:span, service_test_status_symbol(st, true) + truncate(display_name(st), :length => 20), :class => 'name')  -%>
+							<% st_label = content_tag(:span, 
+													  service_test_status_symbol(st, true) + truncate(display_name(st), :length => 20), 
+		  											  :class => st.enabled? ? "name" : "archived name",
+													  :style => "background:transparent !important;")  -%>
+
 	          				<%= link_to st_label, st -%>
 	        			</li>
 					<% end %>

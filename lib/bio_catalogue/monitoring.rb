@@ -1,6 +1,6 @@
 # BioCatalogue: lib/bio_catalogue/monitoring.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -32,32 +32,43 @@ module BioCatalogue
     
       def self.run
         Service.find(:all).each do |service|
-          
-          # de-activate service tests if archived
-          if service.archived?
-            service.deactivate_service_tests!
-          else
-            #service.activate_service_tests!
-
-            # get all service deployments
-            deployments = service.service_deployments
-    
-            #register the end-points for monitoring
-            update_deployment_monitors(deployments)
-    
-            #get all service instances(soap & rest)
-            instances = service.service_version_instances
-    
-            soap_services = instances.delete_if{ |instance| instance.class.to_s != "SoapService" }
-            update_soap_service_monitors(soap_services)
-            update_rest_service_monitors
-          end
+          update_service_monitors(service)          
         end
       end
   
+      # *** THIS IS FOR DEBUG PURPOSES ONLY ***
+      def self.run_with_service_ids(*s_ids)
+        Service.find(s_ids).each do |service|
+          update_service_monitors(service)          
+        end
+      end
   
-      protected 
+    protected 
+      
+      def self.update_service_monitors(service)
+        # de-activate service tests if archived
+        if service.archived?
+          service.deactivate_service_tests!
+        else
+          #service.activate_service_tests!
 
+          # get all service deployments
+          deployments = service.service_deployments
+  
+          #register the end-points for monitoring
+          update_deployment_monitors(deployments)
+  
+          #get all service instances(soap & rest)
+          instances = service.service_version_instances
+  
+          soap_services = instances.delete_if{ |instance| instance.class.to_s != "SoapService" }
+          update_soap_service_monitors(soap_services)
+          update_rest_service_monitors
+          
+          update_user_created_monitors
+        end
+      end
+      
       # from a list service deployments, check if
       # the endpoints are being monitored already.
       # If not, add the endpoint to the list of endpoints to
@@ -112,47 +123,23 @@ module BioCatalogue
         end
       end
       
-      def self.update_rest_service_monitors(*params)
-        
+      def self.update_rest_service_monitors(*params)  
         Annotation.find(:all, 
                         :joins => :attribute,
                         :conditions => { :annotatable_type => 'RestMethod',
                         :annotation_attributes => { :name => "example_endpoint" } }).each  do |ann|
-          
-          if from_trusted_source?(ann)
-            can_be_monitored = !Monitoring.pingable_url(ann.value).nil?
-            
-            monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
-            
-            # create new monitor if a pingable URL exists in annotation
-            if monitor.nil? && can_be_monitored
-              mon = build_url_monitor(ann, 'value', ann.annotatable.rest_resource.rest_service.service)
-              if mon
-                begin
-                  if mon.save!
-                    Rails.logger.debug("Created a new monitor for #{ann.send('value')}")
-                  end
-                rescue Exception => ex
-                  Rails.logger.warn("Could not create url monitor")
-                  Rails.logger.warn(ex)
-                end
-              end
-            end
-            
-            # disable test for unpingable monitor
-            if monitor && !can_be_monitored
-              begin
-                Rails.logger.warn("Disabling service test with ID: #{monitor.service_test.id} because it does not contain a valid pingable URI")
-                monitor.service_test.deactivate!
-              rescue Exception => ex
-                Rails.logger.warn("Could not disable service test with ID: #{monitor.service_test.id}")
-                Rails.logger.warn(ex)
-              end
-            end
-            
-          end # from_trusted_source?
+          update_monitor_for_annotation_and_service(ann, ann.annotatable.rest_resource.rest_service.service)
         end
       end # update_rest_service_monitors
+      
+      def self.update_user_created_monitors
+        Annotation.find(:all, 
+                        :joins => :attribute,
+                        :conditions => { :annotatable_type => 'Service',
+                        :annotation_attributes => { :name => "monitoring_endpoint" } }).each  do |ann|
+          update_monitor_for_annotation_and_service(ann, ann.annotatable)
+        end
+      end
       
       def self.build_url_monitor(parent, property, service, max_monitors_per_service = 2)
         
@@ -172,7 +159,7 @@ module BioCatalogue
         
       end
       
-      # Is the "example_endpoint" annotation from a trusted source?
+      # Is the "example_endpoint" or "monitoring_endpoint" annotation from a trusted source?
       # Anyone responsible for the service is considered a trusted 
       # source
       def self.from_trusted_source?(ann)
@@ -181,10 +168,53 @@ module BioCatalogue
             return true if ann.annotatable.rest_resource.rest_service.service.all_responsibles.include?(ann.source)
           end
         end
+        
+        if ann.attribute.name.downcase =="monitoring_endpoint" && ann.annotatable.class.name == "Service"
+          if ann.source.class.name == "User" 
+            return true if ann.annotatable.all_responsibles.include?(ann.source)
+          end
+        end
+        
         return false    
       end
-        
+      
+      def self.update_monitor_for_annotation_and_service(ann, service)
+        if from_trusted_source?(ann)
+          can_be_monitored = !Monitoring.pingable_url(ann.value_content).nil?
+          
+          monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
+          
+          # create new monitor if a pingable URL exists in annotation
+          if monitor.nil? && can_be_monitored
+            mon = build_url_monitor(ann, 'value_content', service)
+            if mon
+              begin
+                if mon.save!
+                  Rails.logger.debug("Created a new monitor for #{ann.value_content}")
+                end
+              rescue Exception => ex
+                Rails.logger.warn("Could not create url monitor")
+                Rails.logger.warn(ex)
+              end
+            end
+          end
+          
+          # disable test for unpingable monitor
+          if monitor && !can_be_monitored
+            begin
+              Rails.logger.warn("Disabling service test with ID: #{monitor.service_test.id} because it does not contain a valid pingable URI")
+              monitor.service_test.deactivate!
+            rescue Exception => ex
+              Rails.logger.warn("Could not disable service test with ID: #{monitor.service_test.id}")
+              Rails.logger.warn(ex)
+            end
+          end
+        end # from_trusted_source?
+      end
+      
     end # MonitorUpdate
+    
+  # ==========
     
     class CheckUrlStatus
       
@@ -319,7 +349,8 @@ module BioCatalogue
                     was_monitored = false
                   else
                     result = check :url => pingable_string
-                    result[:message] = "Example-Endpoint: #{pingable_string}\n" + result[:message]    
+                    
+                    result[:message] = "Endpoint: #{pingable_string}\n" + result[:message]
                   end
                 else
                   result = check :url => pingable.send(monitor.property)

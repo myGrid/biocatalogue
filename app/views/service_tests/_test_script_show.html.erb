@@ -40,16 +40,16 @@
 		<% end -%>
 		
 		<ul>
-		<!--<h4>Test Scripts for this Service</h4>-->
-		<div class="monitoring_section">		
-			<h5><%= h service_test.test.name -%> </h5>
-			<% unless service_test.unchecked? -%>
-				<div id="chart_info" style="float:right;" >
-					<span style="font-size: 3em;"><%= service_test.success_rate -%> % </span>
-					<%= info_icon_with_tooltip("Historical success rate for this test since its monitoring started.") -%>
-				</div>
-			<%end%>	
-			
+			<!--<h4>Test Scripts for this Service</h4>-->
+			<div class="monitoring_section">		
+				<h5><%= h service_test.test.name -%> </h5>
+				<% unless service_test.unchecked? -%>
+					<div id="chart_info" style="float:right;" >
+						<span style="font-size: 3em;"><%= service_test.success_rate -%> % </span>
+						<%= info_icon_with_tooltip("Historical success rate for this test since its monitoring started.") -%>
+					</div>
+				<%end%>	
+				
 				<div style="text-align: left;">
 					<p>
 						<% if ms = service_test.monitored_since %> 
@@ -72,45 +72,50 @@
 									
 				<div class="property">
 					<%= render :partial => "annotations/descriptions",
-									 			:locals => { :annotatable => service_test.test } -%>
+    				 		   :locals => { :annotatable => service_test.test } -%>
 				</div>
-									
-					<!--history -->
-				<p>
-					<b>Recent History</b>
-				</p>
-				<div class="box_indented_with_bar">
-					<ul>
-						<% unless (script_hist = service_test.test.recent_test_results).blank? %>
-							<% script_hist.each  do |hist| %>
-								<% unless hist.result == -1  %>
-									<li>
-										<%= test_result_status_symbol(hist)  %> 
-										<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
-									</li>
+										
+				<!--history -->
+				<% if MONITORING_HISTORY_LIMIT > 0 %>
+					<p>
+						<b>Recent History</b>
+					</p>
+					<div class="box_indented_with_bar">
+						<ul>
+							<% unless (script_hist = service_test.test.recent_test_results(MONITORING_HISTORY_LIMIT)).blank? %>
+								<% script_hist.each  do |hist| %>
+									<% unless hist.result == -1  %>
+										<li>
+											<%= test_result_status_symbol(hist)  %> 
+											<%= distance_of_time_in_words_to_now(hist.created_at) -%> ago
+										</li>
+									<% end %>
 								<% end %>
+							<% else %>
+								<li class="none_text">No previous checks</li>
 							<% end %>
-						<% else %>
-							<li class="none_text">No previous checks</li>
-						<% end %>
-					</ul>
-				</div>
+						</ul>
+					</div>
+				<% end %>
+
+				<% if SHOW_MONITORING_GRAPH %>
+					<%unless service_test.latest_status.label.downcase == 'unchecked' %>
+						<div id="line_chart" style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;" ></div>
+					<%end%>
+				<% end %>
+				
 			</div>	
-	</ul>
+		</ul>	
 
-	<%unless service_test.latest_status.label.downcase == 'unchecked' %>
-		<div id="line_chart" style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;" ></div>
-	<%end%>
+	</div>
 </div>
 
-</div>
 <div>
 	<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service) -%>
 		<div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
 			<%= render :partial => 'shared/service_test', :locals => {:service => service_test.service} -%>
 		</div>
 	<% end %>
-</div>
 </div>
 
 <%=render :partial => 'line_chart', :locals => {:service_test => service_test } -%>

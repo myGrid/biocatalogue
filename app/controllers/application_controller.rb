@@ -1,6 +1,6 @@
 # BioCatalogue: app/controllers/application_controller.rb
 #
-# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
+# Copyright (c) 2008-2011, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
@@ -20,16 +20,8 @@ class ApplicationController < ActionController::Base
   # Allow for SSL support
   include SslRequirement
   if ENABLE_SSL && Rails.env.production?
-    ssl_allowed :all
-    DEFAULT_PROTOCOL = 'https'
-  else
-    DEFAULT_PROTOCOL = 'http'
+    ssl_required :all
   end
-  
-  def default_protocol
-    DEFAULT_PROTOCOL
-  end
-  helper_method :default_protocol
   
   # ============================================
 
@@ -182,7 +174,7 @@ class ApplicationController < ActionController::Base
         return thing.source == current_user
       when Service
         return c_id == thing.submitter_id.to_i
-      when Favourite
+      when Favourite, ServiceResponsible
         return c_id == thing.user_id
       else
         return false
@@ -220,7 +212,7 @@ class ApplicationController < ActionController::Base
     request.host_with_port
   end
 
-  protected
+protected
   
   def debug_messages
     BioCatalogue::Util.say ""
@@ -345,13 +337,12 @@ class ApplicationController < ActionController::Base
     end
     
     respond_to do |format|
-      
-      if options[:back_first] && !session[:previous_url].blank?
+      if !options[:back_first].blank? && !session[:previous_url].blank? && session[:previous_url]!=request.env["REQUEST_URI"]
         format.html { redirect_to(session[:previous_url]) }
       else
         format.html { render "home/index", :status => options[:status] }
       end
-      
+
       if options[:forbidden]
         format.xml  { head :forbidden }
         format.json { head :forbidden }
@@ -362,7 +353,7 @@ class ApplicationController < ActionController::Base
         format.xml  { render "api/errors", :status => options[:status] }
         format.json { render :json => { "errors" => messages }.to_json, :status => options[:status] }
         format.atom { render :atom => "", :status => options[:status] }
-      end
+      end      
     end
   end
 
@@ -522,13 +513,41 @@ class ApplicationController < ActionController::Base
   helper_method :generate_sort_url
   
   def is_sort_selected(sort_by, sort_order)
-    return params[:sort_by] == sort_by.downcase && params[:sort_order] == sort_order.downcase
+    return @sort_by == sort_by.downcase && @sort_order == sort_order.downcase
   end
   helper_method :is_sort_selected
   
   def get_filter_groups
     @filter_groups = BioCatalogue::Filtering.get_all_filter_groups_for(self.controller_name.underscore.to_sym, @limit || nil, params[:q])
   end
+  
+  def include_archived?
+    unless defined?(@include_archived)
+      session_key = "#{self.controller_name.downcase}_#{self.action_name.downcase}_include_archived"
+      if !params[:include_archived].blank?
+        @include_archived = !%w(false no 0).include?(params[:include_archived].downcase)
+        session[session_key] = @include_archived.to_s
+      elsif !session[session_key].blank?
+        @include_archived = (session[session_key] == "true")
+      else
+        @include_archived = true
+        session[session_key] = @include_archived.to_s
+      end
+    end
+    return @include_archived
+  end
+  helper_method :include_archived?
+  
+  def generate_include_archived_url(resource, should_include_archived)
+    params_dup = BioCatalogue::Util.duplicate_params(params)
+    params_dup[:include_archived] = should_include_archived.to_s
+      
+    # Reset page param
+    params_dup.delete(:page)
+    
+    return eval("#{resource}_url(params_dup)")
+  end
+  helper_method :generate_include_archived_url
   
   # ===============================
  
@@ -584,6 +603,11 @@ class ApplicationController < ActionController::Base
               ActivityLog.create(@log_event_core_data.merge(:action => "view_services_index",
                                  :culprit => current_user,
                                  :data => { :query => params[:q], :filters => @current_filters, :page => @page, :per_page => @per_page }))
+            # Archive/unarchive services
+            when "archive", "unarchive"
+              ActivityLog.create(@log_event_core_data.merge(:action => a,
+                                 :culprit => current_user,
+                                 :activity_loggable => @service))
             else
               do_generic_log = true
           end

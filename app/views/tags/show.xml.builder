@@ -11,7 +11,7 @@ xml.instruct! :xml
 render :partial => "tags/api/tag", 
              :locals => { :parent_xml => xml,
                           :is_root => true,
-                          :tag_name => @tag_name,
-                          :tag_display_name => @tag_display_name,
+                          :tag_name => @tag.name,
+                          :tag_display_name => @tag.label,
                           :total_items_count => @total_items_count,
                           :show_related => true }

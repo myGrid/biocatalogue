@@ -23,7 +23,7 @@ class TestScript < ActiveRecord::Base
   belongs_to :content_blob, 
              :dependent => :destroy
              
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :name
   
   has_submitter
   

@@ -140,6 +140,12 @@ module BioCatalogue
                 :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND created_at >= ?", options[:since] ],
                 :order => "created_at DESC",
                 :limit => options[:query_limit])
+                
+              # Services archived/unarchived
+              activity_logs.concat ActivityLog.find(:all,
+                :conditions => [ "action IN ('archive','unarchive') AND activity_loggable_type = 'Service' AND created_at >= ?", options[:since] ],
+                :order => "created_at DESC",
+                :limit => options[:query_limit])
               
               # Annotations created
               activity_logs.concat ActivityLog.find(:all,
@@ -176,6 +182,12 @@ module BioCatalogue
                 # Services created
                 activity_logs.concat ActivityLog.find(:all,
                   :conditions => [ "action = 'create' AND activity_loggable_type = 'Service' AND activity_loggable_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
+                  :order => "created_at DESC",
+                  :limit => options[:query_limit])
+                  
+                # Services archived/unarchived
+                activity_logs.concat ActivityLog.find(:all,
+                  :conditions => [ "action IN ('archive','unarchive') AND activity_loggable_type = 'Service' AND activity_loggable_id = ? AND created_at >= ?", options[:scoped_object_id], options[:since] ],
                   :order => "created_at DESC",
                   :limit => options[:query_limit])
                 

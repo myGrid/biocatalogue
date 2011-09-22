@@ -81,8 +81,11 @@ function closeLoginBox(boxID, openLinkID) {
 }
 
 function loadUrlFromSelectInputTag(input_tag) {
-	//location.href = form_element.url_field.value
-	location.href = input_tag.value
+	location.href = input_tag.value;
+}
+
+function loadUrlFromCheckboxInputTag(input_tag) {
+  location.href = input_tag.getAttribute('data-onchange-url');
 }
 
 /**
@@ -269,7 +272,6 @@ document.observe('dom:loaded', function() {
 		  shrinkOnBlur: false,
 			initialHeight: 52,
 		  onExpand: function(event) {
-		    // Some fancy pants javascript
 		  }
 		});
 	});
@@ -311,7 +313,7 @@ document.observe('dom:loaded', function() {
 //   1. either shows the correct tab by matching the anchor to the element with id: "tab-{anchor}", or
 //   2. searches for the element the anchor is referring and tries to figure out what tab it's in and makes that tab active.
 //      Note: the element with the anchor MUST have an ID set to the same value as the anchor hash for this to work.
-document.observe('dom:loaded', function() {
+function tabberLoadHashAware(event) {
   if (window.location.hash && window.location.hash.match( /^#/ )) 
   { 
     var hash_value = window.location.hash.substr(1);
@@ -343,7 +345,10 @@ document.observe('dom:loaded', function() {
       tab_el.className = "tabbertab tabbertabdefault";
     }
   }
+  
+  console.log("running tabberAutomatic...");
+  tabberAutomatic(tabberOptions);    
+}
 
-  tabberAutomatic(tabberOptions);
-});
+document.observe('dom:loaded', tabberLoadHashAware);
 

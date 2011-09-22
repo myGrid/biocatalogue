@@ -1,6 +1,6 @@
 # BioCatalogue: lib/bio_catalogue/stats.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -220,7 +220,7 @@ module BioCatalogue
         @taggings_count = BioCatalogue::Tags.get_total_taggings_count
         
         @tags = { }
-        tags1 = BioCatalogue::Tags.get_all_tags
+        tags1 = BioCatalogue::Tags.get_tags
         tags2 = BioCatalogue::Filtering::Services.get_filters_for_all_tags
         
         tags1.each do |t|

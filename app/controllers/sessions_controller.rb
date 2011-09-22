@@ -9,10 +9,6 @@ class SessionsController < ApplicationController
   before_filter :disable_action_for_api
   
   skip_before_filter :verify_authenticity_token, :only => [ :rpx_token ]
-
-  if ENABLE_SSL && Rails.env.production?
-    ssl_required :all
-  end
   
   def new
   end

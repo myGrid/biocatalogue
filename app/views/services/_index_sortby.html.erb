@@ -8,22 +8,30 @@
 
 %>
 
-<span style="vertical-align: middle; font-weight: bold;">
-	Sort by: 
-</span>
-
-<span style="vertical-align: middle; margin-left: 0.3em;">
-	<select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
-		<option value="<%= generate_sort_url('services', 'created', 'desc') -%>" <%= "selected" if is_sort_selected('created', 'desc') -%>>
-			Newest
-		</option>
-		<option value="<%= generate_sort_url('services', 'created', 'asc') -%>" <%= "selected" if is_sort_selected('created', 'asc') -%>>
-			Earliest
-		</option>
-		<% if logged_in? && current_user.is_curator? -%>
-			<option value="<%= generate_sort_url('services', 'annotated', 'desc') -%>" <%= "selected" if is_sort_selected('annotated', 'desc') -%>>
-				Annotated(High - Low)
-			</option>
-		<% end -%>
-	</select>
+<span class="inline-block">
+  <span style="vertical-align: middle; font-weight: bold;">
+  	Sort by: 
+  </span>
+  
+  <span style="vertical-align: middle; padding: 0; margin-left: 0.3em; width: 100%;">
+  	<select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
+  	  <option value="<%= generate_sort_url('services', 'name', 'asc') -%>" <%= "selected" if is_sort_selected('name', 'asc') -%>>
+        Name (A-Z)
+      </option>
+      <option value="<%= generate_sort_url('services', 'name', 'desc') -%>" <%= "selected" if is_sort_selected('name', 'desc') -%>>
+        Name (Z-A)
+      </option>
+  		<option value="<%= generate_sort_url('services', 'created', 'desc') -%>" <%= "selected" if is_sort_selected('created', 'desc') -%>>
+  			Newest
+  		</option>
+  		<option value="<%= generate_sort_url('services', 'created', 'asc') -%>" <%= "selected" if is_sort_selected('created', 'asc') -%>>
+  			Earliest
+  		</option>
+  		<% if logged_in? && current_user.is_curator? -%>
+  			<option value="<%= generate_sort_url('services', 'annotated', 'desc') -%>" <%= "selected" if is_sort_selected('annotated', 'desc') -%>>
+  				Annotated (High - Low)
+  			</option>
+  		<% end -%>
+  	</select>
+  </span>
 </span>

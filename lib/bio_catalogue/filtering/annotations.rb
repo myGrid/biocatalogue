@@ -1,6 +1,6 @@
 # BioCatalogue: lib/bio_catalogue/filtering/annotations.rb
 #
-# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2010-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -129,7 +129,8 @@ module BioCatalogue
          
         results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, [ sql, source_type ]))
         
-        # Need to now fetch all these object so we can figure out their display names!
+        # Need to now fetch all these objects so we can figure out their display names!
+        # TODO: optimise this!
         
         objs = { }
         item_ids = results.map { |x| x['id'] }
@@ -139,7 +140,7 @@ module BioCatalogue
         end
         
         results.each do |r|
-          r['name'] = BioCatalogue::Util.display_name(objs[r['id']], false)
+          r['name'] = (objs[r['id']].nil? ? "(not available)" : BioCatalogue::Util.display_name(objs[r['id']], false))
         end
         
         return results

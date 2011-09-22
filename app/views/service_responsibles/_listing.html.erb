@@ -15,7 +15,7 @@
 	
 	<div class="listing_item" style="height:20%;width:90%;background-color:<%= bgc %>">
 
-		<b><%= link_to(sr.service.display_name, service_url(sr.service)) -%></b>
+		<b><%= link_to(display_name(sr.service), service_url(sr.service)) -%></b>
 		
 		<div style="float:right;">
 			<% if (logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, sr.service)) -%>

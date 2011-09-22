@@ -2,16 +2,24 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 class ConfigTest < ActiveSupport::TestCase
   def setup
-    Annotations::Config.reset
-    Annotations::Config.attribute_names_for_values_to_be_downcased.concat([ "downcased_thing" ])
-    Annotations::Config.attribute_names_for_values_to_be_upcased.concat([ "upcased_thing" ])
-    Annotations::Config.strip_text_rules.update({ "tag" => [ '"', ',' ], "comma_stripped" => ',', "regex_strip" => /\d/ })
-    Annotations::Config.limits_per_source.update({ "rating" => 1 })
-    Annotations::Config.attribute_names_to_allow_duplicates.concat([ "allow_duplicates_for_this" ])
-    Annotations::Config.value_restrictions.update({ "rating" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
-                                                    "category" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid category" } })
-    Annotations::Config.default_attribute_identifier_template = "http://x.com/attribute#%s"
-    Annotations::Config.attribute_name_transform_for_identifier = Proc.new { |name|
+    Annotations::Config::reset
+    
+    Annotations::Config::attribute_names_for_values_to_be_downcased.concat([ "downcased_thing" ])
+    
+    Annotations::Config::attribute_names_for_values_to_be_upcased.concat([ "upcased_thing" ])
+    
+    Annotations::Config::strip_text_rules.update({ "tag" => [ '"', ',' ], "comma_stripped" => ',', "regex_strip" => /\d/ })
+    
+    Annotations::Config::limits_per_source.update({ "rating" => 1 })
+    
+    Annotations::Config::attribute_names_to_allow_duplicates.concat([ "allow_duplicates_for_this" ])
+    
+    Annotations::Config::content_restrictions.update({ "rating" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
+                                                       "category" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid category" } })
+    
+    Annotations::Config::default_attribute_identifier_template = "http://x.com/attribute#%s"
+    
+    Annotations::Config::attribute_name_transform_for_identifier = Proc.new { |name|
       regex = /\.|-|:/
       if name.match(regex)
         name.gsub(regex, ' ').titleize.gsub(' ', '').camelize(:lower)
@@ -19,6 +27,18 @@ class ConfigTest < ActiveSupport::TestCase
         name.camelize(:lower)
       end
     }
+    
+    Annotations::Config::value_factories["tag"] = Proc.new { |v|
+      case v
+        when String, Symbol
+          Tag.find_or_create_by_name(v.to_s)
+        else
+          v
+      end
+    }
+    
+    Annotations::Config::valid_value_types["tag"] = "Tag"
+    
   end
   
   def teardown
@@ -38,7 +58,7 @@ class ConfigTest < ActiveSupport::TestCase
                             :annotatable_id => 1)
     
     assert ann1.valid?
-    assert_equal "unique", ann1.value
+    assert_equal "unique", ann1.value_content
     
     # Should upcase
     
@@ -50,7 +70,7 @@ class ConfigTest < ActiveSupport::TestCase
                             :annotatable_id => 1)
     
     assert ann2.valid?
-    assert_equal "UNIQUE", ann2.value
+    assert_equal "UNIQUE", ann2.value_content
     
     # Should not do anything
     
@@ -62,7 +82,7 @@ class ConfigTest < ActiveSupport::TestCase
                             :annotatable_id => 1)
     
     assert ann3.valid?
-    assert_equal "UNIque", ann3.value
+    assert_equal "UNIque", ann3.value_content
   end
   
   def test_strip_text_rules
@@ -78,7 +98,7 @@ class ConfigTest < ActiveSupport::TestCase
                              :annotatable_id => 1)
     
     assert ann1.valid?
-    assert_equal "value", ann1.value
+    assert_equal "value", ann1.value_content
     
     # Strip 'comma_stripped'
     
@@ -90,7 +110,7 @@ class ConfigTest < ActiveSupport::TestCase
                             :annotatable_id => 1)
     
     assert ann2.valid?
-    assert_equal 'val"ue', ann2.value
+    assert_equal 'val"ue', ann2.value_content
     
     # Regexp strip
 
@@ -102,7 +122,7 @@ class ConfigTest < ActiveSupport::TestCase
                             :annotatable_id => 1)
     
     assert ann3.valid?
-    assert_equal 'v,al"uex', ann3.value
+    assert_equal 'v,al"uex', ann3.value_content
 
     # Don't strip!
     
@@ -114,7 +134,7 @@ class ConfigTest < ActiveSupport::TestCase
                             :annotatable_id => 1)
     
     assert ann4.valid?
-    assert_equal 'v,al"ue', ann4.value
+    assert_equal 'v,al"ue', ann4.value_content
   end
   
   def test_limits_per_source
@@ -122,13 +142,13 @@ class ConfigTest < ActiveSupport::TestCase
     
     bk1 = Book.create
     
-    ann1 = bk1.annotations << Annotation.new(:attribute_name => "rating", 
-                                    :value => 4, 
+    anns = bk1.annotations << Annotation.new(:attribute_name => "rating", 
+                                    :value => NumberValue.new(:number => 4), 
                                     :source_type => source.class.name, 
                                     :source_id => source.id)
     
-    assert_not_nil ann1
-    assert_equal "4", bk1.annotations(true)[0].value
+    assert anns.length > 0
+    assert_equal 4, bk1.annotations(true)[0].value_content
     assert_equal 1, bk1.annotations(true).length
     
     ann2 = Annotation.new(:attribute_name => "rating", 
@@ -213,7 +233,7 @@ class ConfigTest < ActiveSupport::TestCase
     assert_equal 3, bk2.annotations(true).length
   end
   
-  def test_value_restrictions
+  def test_content_restrictions
     source1 = users(:john)
     source2 = users(:jane)
     
@@ -302,5 +322,62 @@ class ConfigTest < ActiveSupport::TestCase
     attrib4 = AnnotationAttribute.create(:name => "hello_world-attribute:zero")
     assert attrib4.valid?
     assert_equal "http://x.com/attribute#helloWorldAttributeZero", attrib4.identifier
+  end
+  
+  def test_value_factories
+    source = users(:john)
+        
+    ann1 = Annotation.create(:attribute_name => "Tag", 
+                             :value => 'alignment', 
+                             :source_type => source.class.name, 
+                             :source_id => source.id,
+                             :annotatable_type => "Book",
+                             :annotatable_id => 1)
+    
+    assert ann1.valid?
+    assert_kind_of Tag, ann1.value
+    assert_equal "alignment", ann1.value_content
+    
+    ann2 = Annotation.new(:attribute_name => "tag", 
+                          :source_type => source.class.name, 
+                          :source_id => source.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => 1)
+    
+    ann2.value = Tag.find_or_create_by_name("hello")
+    
+    assert ann2.save
+    assert_equal 'hello', ann2.value_content
+  end
+  
+  def test_valid_value_types
+    source = users(:john)
+    
+    # Test valid one
+    
+    ann1 = Annotation.new(:attribute_name => "Tag", 
+                          :value => 'smashing', 
+                          :source_type => source.class.name, 
+                          :source_id => source.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => 1)
+    
+    assert ann1.valid?
+    assert ann1.save
+    assert_kind_of Tag, ann1.value
+    
+    # Test invalid one
+    
+    ann2 = Annotation.new(:attribute_name => "Tag", 
+                          :value => TextValue.new(:text => 'smashing'), 
+                          :source_type => source.class.name, 
+                          :source_id => source.id,
+                          :annotatable_type => "Book",
+                          :annotatable_id => 1)
+    
+    
+    assert ann2.invalid?
+    assert !ann2.save
+    assert ann2.errors.full_messages.include?("Annotation value is of an invalid type for attribute name: 'tag'. Provided value is a TextValue.")
   end
 end

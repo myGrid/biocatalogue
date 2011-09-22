@@ -13,7 +13,7 @@
 	style = "" unless local_assigns.has_key?(:style)
 %>
 
-<% content_tag(:div, :style => style) do %>
+<span class="inline-block" style="<%= style %>">
   <span style="vertical-align: middle; font-weight: bold;">
     View: 
   </span>
@@ -27,5 +27,5 @@
       <% end %>
     </select>
   </span>
-<% end %>
+</span>
 

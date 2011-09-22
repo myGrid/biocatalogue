@@ -37,7 +37,7 @@ stats["soap_services_E_service_ids"] = [ ]
 
 
 def field_or_annotation_has_value?(obj, field, annotation_attribute=field.to_s)
-  return (!obj.send(field).blank? || !obj.annotations_with_attribute(annotation_attribute).blank?)
+  return (!obj.send(field).blank? || !obj.annotations_with_attribute(annotation_attribute, true).blank?)
 end
 
 

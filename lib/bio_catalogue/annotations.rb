@@ -10,8 +10,8 @@ module BioCatalogue
   module Annotations
     
     # List of annotation attributes that are considered "known" or important in the system
-    KNOWN_ANNOTATION_ATTRIBUTES = { :services => [ "category", "tag", "description", "display_name", "alternative_name", 
-                                                   "example_data", "documentation_url", "rating.documentation", "cost", "license",
+    KNOWN_ANNOTATION_ATTRIBUTES = { :services => [ "category", "tag", "description", "alternative_name", 
+                                                   "example_data", "documentation_url", "cost", "license",
                                                    "contact", "format", "example_endpoint", "data_schema" ].freeze,
                                     :providers => [ "display_name", "alternative_name", "website" ].freeze }.freeze
     
@@ -19,7 +19,7 @@ module BioCatalogue
     # (returned as symbols).
     # 
     # This should be in sync with the groups of metadata returned by the metadata_counts_for_service
-    # below (excluding :all, ofcourse).
+    # below (excluding :all).
     def self.metadata_sources
       [ :users, :registries, :providers ]
     end
@@ -147,15 +147,15 @@ module BioCatalogue
     def self.annotations_for_service_by_attribute(service, attribute)
       annotations = [ ]
       
-      annotations.concat(service.annotations_with_attribute(attribute))
+      annotations.concat(service.annotations_with_attribute(attribute, true))
       
       service.service_deployments.each do |s_d|
-        annotations.concat(s_d.annotations_with_attribute(attribute))
+        annotations.concat(s_d.annotations_with_attribute(attribute, true))
       end
       
       service.service_versions.each do |s_v|
-        annotations.concat(s_v.annotations_with_attribute(attribute))
-        annotations.concat(s_v.service_versionified.annotations_with_attribute(attribute))
+        annotations.concat(s_v.annotations_with_attribute(attribute, true))
+        annotations.concat(s_v.service_versionified.annotations_with_attribute(attribute, true))
       end
       
       return annotations
@@ -170,7 +170,7 @@ module BioCatalogue
       if annotatable.is_a? Service
         tag_annotations = annotations_for_service_by_attribute(annotatable, "tag")
       else
-        tag_annotations = annotatable.annotations_with_attribute("tag")
+        tag_annotations = annotatable.annotations_with_attribute("tag", true)
       end
     
       return tag_annotations
@@ -205,6 +205,7 @@ module BioCatalogue
       return annotations_data
     end
     
+    # LEGACY!!!
     # Helper method to get the ratings categories configuration hash for a specific model type.
     # This acts as a lookup table for ratings configuration to models and allows us to maintain different
     # ratings configurations for different models.

@@ -10,40 +10,55 @@
 
 <div class="listings">
 	<% items.each do |st| %>
-	
-	<div class="listing_item">
-		
-		<div class=name>
-			<%= link_to(display_name(st), service_test_path(st)) -%> 
-		</div>
-		<div>
-			<%= service_test_status_symbol(st)%>
 			
-			<% unless st.unchecked? || !st.success_rate-%>
-				<div id="chart_info" style="float:right;" >
-					<span style="font-size: 3em;"><%= st.success_rate -%>%</span>
-					<%= info_icon_with_tooltip("Historical success rate for this test since its monitoring started.") -%>
-				</div>
-			<%end%>
-		</div>
+		<% if st.enabled? %>
 		
-
-		<div class="detail" style="text-align: left;">
-		   <table width="50%">
-		   	  <tr>
-		   	  	<td width="25%">
-		   	  	<b>Monitored Since :</b>
-				<% if ms = st.monitored_since %> 
-					  <%=h ms -%>
-				<%else%>
-					<b>Not yet!<b/>
-				<%end%>
-				</td>
-				<td width="25%"><%= info_icon_with_tooltip("parent service for this test") -%><%= link_to(display_name(st.service), service_path(st.service)) -%></td>
-			  </tr>
-		  </table>
-		</div>
-	</div>
+			<div class="listing_item" >
+				<div class="name">
+					<%= link_to(display_name(st), service_test_path(st)) -%> 
+				</div>
+				<div>
+					<%= service_test_status_symbol(st)%>
+					
+					<% unless st.unchecked? || !st.success_rate-%>
+						<div id="chart_info" style="float:right;" >
+							<span style="font-size: 3em;"><%= st.success_rate -%>%</span>
+							<%= info_icon_with_tooltip("Historical success rate for this test since its monitoring started.") -%>
+						</div>
+					<%end%>
+				</div>
+				
+			
+				<div class="detail" style="text-align: left;">
+				   <table width="50%">
+				   	  <tr>
+				   	  	<td width="25%">
+				   	  	<b>Monitored Since :</b>
+						<% if ms = st.monitored_since %> 
+							  <%=h ms -%>
+						<%else%>
+							<b>Not yet!<b/>
+						<%end%>
+						</td>
+						<td width="25%"><%= info_icon_with_tooltip("parent service for this test") -%><%= link_to(display_name(st.service), service_path(st.service)) -%></td>
+					  </tr>
+				  </table>
+				</div>
+			</div>
+			
+		<% else %>
+		
+			<div class="listing_item archived" >
+				<div class="name">
+					<%= link_to(display_name(st), service_test_path(st)) -%> 
+				</div>
+				
+				<p class="archived_status_text">
+					This service test has been disabled.
+	            </p>	
+			</div>
+			
+		<% end %>
 	<%end%>	
 	
 </div>

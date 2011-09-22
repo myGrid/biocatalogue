@@ -51,7 +51,7 @@ in order (from src dir):
 	====
 	This is created from the BioCatalogue instance database so will contain all
 	the tests available in the db. It is advisable to configure only a small number
-	of test while setting up initially. This can be achieve by commenting out some 
+	of test while setting up initially. This can be achieved by commenting out some 
 	tests in the "script_listing.xml" xml file
 	
 3) Now run the harness script. This should be run with the option to get the tests to run from the 

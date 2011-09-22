@@ -270,7 +270,6 @@ module AnnotationsHelper
       shrinkOnBlur: false,
       initialHeight: #{text_area_initial_height},
       onExpand: function(event) {
-        // Some fancy pants javascript
       }
     });
     new DefaultTextInput($('#{text_area_id}'));"

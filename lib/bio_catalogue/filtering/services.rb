@@ -1,6 +1,6 @@
 # BioCatalogue: lib/bio_catalogue/filtering/services.rb
 #
-# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2010-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -437,15 +437,20 @@ module BioCatalogue
       # Example return data:
       # [ { "id" => "bio", "name" => "blast", "count" => "500" }, { "id" => "bio", "name" => "bio", "count" => "110" }  ... ]
       def self.get_filters_for_tags_by_service_models(model_names, limit=nil, http_cycle=nil)
-        # NOTE: this query has only been tested to work with MySQL 5.0.x
-        sql = [ "SELECT annotations.value AS name, annotations.annotatable_id AS id, annotations.annotatable_type AS type
-                FROM annotations 
-                INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
-                WHERE annotation_attributes.name = 'tag' AND annotations.annotatable_type IN (?)",
-                model_names ]
+        sql = [
+          "SELECT tags.name AS name, annotations.annotatable_id AS id, annotations.annotatable_type AS type
+          FROM annotations 
+          INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+          INNER JOIN tags ON tags.id = annotations.value_id AND annotations.value_type = 'Tag'
+          WHERE annotation_attributes.name = 'tag' AND annotations.annotatable_type IN (?)",
+          model_names 
+        ]
         
         # If limit has been provided in the URL then add that to query.
-        # TODO: this is buggy!
+        #
+        # FIXME: limit specified here isn't actually the limit on how many
+        # filters are returned. Rather, the amount of data fetched from the 
+        # db to process. 
         if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
           sql[0] = sql[0] + " LIMIT #{limit}"
         end
@@ -533,13 +538,15 @@ module BioCatalogue
       end
       
       def self.get_service_ids_with_tag_on_service_models(model_names, tag_values, http_cycle=nil)
-        # NOTE: this query has only been tested to work with MySQL 5.0.x
-        sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
-                FROM annotations 
-                INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
-                WHERE annotation_attributes.name = 'tag' AND annotations.annotatable_type IN (?) AND annotations.value IN (?)",
-                model_names,
-                tag_values ]
+        sql = [ 
+          "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
+          FROM annotations 
+          INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+          INNER JOIN tags ON tags.id = annotations.value_id AND annotations.value_type = 'Tag'
+          WHERE annotation_attributes.name = 'tag' AND annotations.annotatable_type IN (?) AND tags.name IN (?)",
+          model_names,
+          tag_values 
+        ]
         
         results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
         results.reject! { |item| !BioCatalogue::Util.validate_as_rest_input_output_else_true(item, http_cycle) }        

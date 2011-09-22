@@ -34,7 +34,6 @@ require 'string'
 require 'hash'
 require 'numeric'
 require 'mime_type'
-require 'auto_link_override'
 require 'addressable/uri'
 require 'system_timer'
 require 'libxml'
@@ -44,6 +43,8 @@ require 'system_timer'
 require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'
+
+require 'bio_catalogue/annotations/custom_migration_to_v3'
 
 # NOTE: 
 # all libraries within /lib/bio_catalogue will be loaded automatically by Rails (when accessed),
@@ -106,8 +107,6 @@ METADATA_COUNTS_DATA_CACHE_TIME = 60*60  # 60 minutes, in seconds.
 
 HOMEPAGE_ACTIVITY_FEED_ENTRIES_CACHE_TIME = 5*60  # 5 minutes, in seconds.
 
-TAGS_INDEX_CACHE_TIME = 5*60  # 5 minutes, in seconds.
-
 SEARCH_ITEMS_FROM_SOLR_CACHE_TIME = 30  # 30 seconds
 
 BOT_IGNORE_LIST = "Googlebot",
@@ -146,8 +145,8 @@ Annotations::Config.attribute_names_to_allow_duplicates.concat([ "tag",
                                                                  "rating.ease-of-use",
                                                                  "rating.documentation" ])
 
-Annotations::Config.value_restrictions.update({ "rating.documentation" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
-                                                "test_xyz" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid test_xyz" } })
+Annotations::Config.content_restrictions.update({ "rating.documentation" => { :in => 1..5, :error_message => "Please provide a rating between 1 and 5" },
+                                                  "test_xyz" => { :in => [ "fruit", "nut", "fibre" ], :error_message => "Please select a valid test_xyz" } })
 
 Annotations::Config.default_attribute_identifier_template = ANNOTATION_ATTRIBUTE_DEFAULT_IDENTIFIER_TEMPLATE
 Annotations::Config.attribute_name_transform_for_identifier = Proc.new { |name|
@@ -158,11 +157,51 @@ Annotations::Config.attribute_name_transform_for_identifier = Proc.new { |name|
     name.camelize(:lower)
   end
 }
+
+# Value factories...
+
+tag_annotation_value_factory = Proc.new { |v|
+  case v
+    when String, Symbol
+      namespace, term_keyword = BioCatalogue::Tags::split_ontology_term_uri(v.to_s)
+      Tag.find_or_create_by_label_and_name(term_keyword, v.to_s)
+    else
+      v
+  end
+}
+
+# "tag" annotations
+Annotations::Config.value_factories["tag"] = tag_annotation_value_factory
+
+# Legacy FETA annotations:
+Annotations::Config.value_factories["<http://www.mygrid.org.uk/mygrid-moby-service#hasParameterType>".downcase] = tag_annotation_value_factory
+Annotations::Config.value_factories["<http://www.mygrid.org.uk/mygrid-moby-service#inNamespaces>".downcase] = tag_annotation_value_factory
+Annotations::Config.value_factories["<http://www.mygrid.org.uk/mygrid-moby-service#objectType>".downcase] = tag_annotation_value_factory
+Annotations::Config.value_factories["<http://www.mygrid.org.uk/mygrid-moby-service#performsTask>".downcase] = tag_annotation_value_factory
+Annotations::Config.value_factories["<http://www.mygrid.org.uk/mygrid-moby-service#usesMethod>".downcase] = tag_annotation_value_factory
+Annotations::Config.value_factories["<http://www.mygrid.org.uk/mygrid-moby-service#usesResource>".downcase] = tag_annotation_value_factory
+
+# "category" annotations
+Annotations::Config.value_factories["category"] = Proc.new { |v|
+  case v
+    when String, Symbol, Numeric
+      Category.find_by_id(v)
+    else
+      v
+  end
+}
+
+# Value type validations...
+
+Annotations::Config::valid_value_types["tag"] = "Tag"
+
+Annotations::Config::valid_value_types["category"] = "Category"
     
 # ================================
 
 
 # ================================
+# LEGACY!!!
 # Ratings categories configuration
 # --------------------------------
 
@@ -198,5 +237,14 @@ ExceptionNotifier.view_path = 'app/views/error'
 
 # ===============================================================
 
-
 WhiteListHelper.tags = %w(strong em b i p code pre tt output samp kbd var sub sup dfn cite big small address hr br div span h1 h2 h3 h4 h5 h6 ul ol li dt dd abbr acronym a img blockquote del ins fieldset legend table th td tr tbody)
+
+# ===============================================================
+# Configure global settings for the monitoring history
+# ---------------------------------------------------------------
+
+MONITORING_HISTORY_LIMIT = 5 unless defined?(MONITORING_HISTORY_LIMIT) 
+
+SHOW_MONITORING_GRAPH = true unless defined?(SHOW_MONITORING_GRAPH)
+
+

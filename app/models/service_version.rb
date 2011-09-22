@@ -13,7 +13,7 @@ class ServiceVersion < ActiveRecord::Base
     index [ :submitter_type, :submitter_id ]
   end
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :version
   
   belongs_to :service
   

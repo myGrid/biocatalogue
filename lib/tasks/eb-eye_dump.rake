@@ -51,7 +51,7 @@ namespace :biocatalogue do
           month = Time.now.strftime("%b").upcase
           date = Time.now.strftime("%d-#{month}-%Y")
           service_deployments = ServiceDeployment.find(:all)
-          xml="<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>
+          xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <database>
   <name>biocatalogue</name>
   <description>The BioCatalogue is a registry of Life Science Web Services</description>

@@ -6,15 +6,26 @@
 
 class ServiceResponsiblesController < ApplicationController
   
-  before_filter :find_service_responsible, :only => [:activate, :deactivate]
+  before_filter :find_service_responsible, :only => [:activate, :deactivate, :destroy]
   
-  before_filter :login_required, :only =>[:activate, :deactivate]
+  before_filter :login_required, :only =>[:activate, :deactivate, :destroy]
   
-  before_filter :authorise, :only => [:activate, :deactivate]
+  before_filter :authorise, :only => [:activate, :deactivate, :destroy]
   
+  def destroy
+    respond_to do |format|
+      if @service_responsible.destroy
+        flash[:notice] = "Removed from the responsbility list for the service: '#{@service_responsible.service.name}'"
+        format.html { redirect_to_back_or_home }
+        format.xml  { head :ok }
+      else
+        flash[:error] = "Failed to remove you from the responsbility list. Please contact us for more assistance."
+        format.html { redirect_to service_url(@service) }
+      end
+    end
+  end
   
   def deactivate
-
     respond_to do |format|
       if @service_responsible.deactivate!
         flash[:notice] = "<div class=\"flash_header\">You have been removed from the status notification list for #{@service_responsible.service.display_name}</div><div class=\"flash_body\">.</div>"
@@ -29,7 +40,6 @@ class ServiceResponsiblesController < ApplicationController
   end
   
   def activate
-
     respond_to do |format|
       if @service_responsible
         if @service_responsible.activate!

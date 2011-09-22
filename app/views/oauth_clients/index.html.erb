@@ -24,6 +24,8 @@
   <div class="listings">
     
     <% @tokens.each do |token|%>
+      <% next if token.client_application.nil? %>
+      
       <div class="listing_item" style="height:25px;">
         <%= link_to image_tag("delete_faded_darker.png", :mouseover => "delete.png") + content_tag(:span, " Revoke Access"), 
                     { :controller => :oauth, :action => :revoke, :token => token.token },

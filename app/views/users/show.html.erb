@@ -205,7 +205,7 @@
   </div>
 	
 	<div id="tab-favourites" class="tabbertab">
-		<% favourites = @user.favourites %>
+		<% favourites = @user.favourites.reject { |f| f.favouritable_type != "Service" } %>
 		
 		<h3><%= "Favourites (#{favourites.length})" -%></h3>
 		

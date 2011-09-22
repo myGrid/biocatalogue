@@ -112,21 +112,22 @@
 	<tr>
 		<td style="vertical-align: top;">
 			<div>
-				<% unless @service.display_name == @service.name -%>
+				<% unless @latest_version_instance.name == @service.name -%>
 					<span style="vertical-align: middle;">
-						<% if @latest_version_instance.class == SoapService %>
+						<% if @latest_version_instance.is_a? SoapService %>
 							<b>Specified Name (from WSDL): </b>
-						<% elsif @latest_version_instance.class == RestService %>
+						<% elsif @latest_version_instance.is_a? RestService %>
 							<b>Specified Name (by submitter): </b>
 						<% end %>
-						<%= h(@service.name) -%>
+						<%= h(@latest_version_instance.name) -%>
 					</span>
 					<span class="faded" style="vertical-align: middle; margin-left: 1em;"> | </span>
 				<% end %>
 				<span class="inline-block">
 					<%= render :partial => "annotations/name_aliases",
 										 :locals => { :annotatable => @service,
-																	:name_annotations => all_alternative_name_annotations_for_service(@service) } -%>
+																	:name_annotations => all_alternative_name_annotations_for_service(@service),
+                                  :show_promote_option => true } -%>
 				</span>
 			</div>
 				
@@ -296,7 +297,9 @@
 		<div style="float: right; width: 30%;">
 		
 			<%= render :partial => "soaplab_servers/soaplab_server_box" -%>
-				
+		  
+      <%= render :partial => "service_responsibles_box" -%>
+      
 			<%= render :partial => "annotations/tags_box",
 								 :locals => { :annotatable => @service } -%>
 			
@@ -312,22 +315,11 @@
 	<%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_tabs", 
 					 	 :locals => { :service_version_instance =>  @latest_version_instance } %>
 
-	
+  <%= render :partial => "services/examples_tab" -%>
+  
   <%= render :partial => "services/monitoring_tab" -%>
 	
 	<%= render :partial => "services/news_tab" -%>
  
 </div>
 
-<% 
-
-# Load activity feed content 
-
-%>
-
-<script type="text/javascript">
-  <%= remote_function({ :url => activity_service_url(@service),
-                        :update => { :success => 'activity_list' },
-                        :loading => "Element.show('activity_list_spinner')",
-                        :complete => "Element.hide('activity_list_spinner')" }) -%>
-</script>

@@ -24,7 +24,13 @@ DefaultTextInput.prototype = {
       this._isFocussing = true;
       this._inputElt.removeClassName(this._defaultClass);
       this._inputElt.select();
-      this._inputElt.value = '';
+      //this._inputElt.value = '';
+      // Hack to allow actual default value content in the field...
+      if (this._inputElt.readAttribute("data-pre-content")) {
+        this._inputElt.setValue(unescape(this._inputElt.readAttribute("data-pre-content")));
+      } else {
+        this._inputElt.value = '';
+      }
       this._isFocussing = false;
     }
   },

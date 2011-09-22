@@ -18,7 +18,7 @@ class AnnotationsController < ApplicationController
   
   before_filter :add_use_tab_cookie_to_session, :only => [ :create, :create_multiple, :update, :destroy, :set_as_field ]
   
-  before_filter :login_or_oauth_required, :only => [ :new, :create, :edit, :update, :destroy, :edit_popup, :create_inline, :change_attribute, :bulk_create ]
+  before_filter :login_or_oauth_required, :only => [ :new, :create, :edit, :update, :destroy, :edit_popup, :create_inline, :promote_alternative_name, :bulk_create ]
 
   before_filter :parse_filtered_index_params, :only => :filtered_index
   
@@ -30,12 +30,12 @@ class AnnotationsController < ApplicationController
   
   before_filter :find_annotations, :only => [ :index, :filtered_index ]
   
-  before_filter :find_annotation, :only => [ :show, :edit, :update, :destroy, :edit_popup, :download, :change_attribute ]
+  before_filter :find_annotation, :only => [ :show, :edit, :update, :destroy, :edit_popup, :download, :promote_alternative_name ]
   
   before_filter :find_annotatable, :only => [ :new, :create, :new_popup, :create_inline ]
   
   skip_before_filter :authorise_action
-  before_filter :authorise, :only =>  [ :edit, :edit_popup, :update, :destroy, :change_attribute, :bulk_create ]
+  before_filter :authorise, :only =>  [ :edit, :edit_popup, :update, :destroy, :promote_alternative_name, :bulk_create ]
   
   def index
     respond_to do |format|
@@ -103,24 +103,29 @@ class AnnotationsController < ApplicationController
   # PUT /annotations/1
   # PUT /annotations/1.xml
   def update
-    @annotation.value = params[:annotation][:value]
-    @annotation.version_creator_id = current_user.id
-    respond_to do |format|
-      if @annotation.save
-        flash[:notice] = 'Annotation was successfully updated.'
-
-        url_to_redirect_to = if @annotation.annotatable_type =~ /RestParameter|RestRepresentation/
-                               request.env["HTTP_REFERER"]
-                             else  
-                               url_for_web_interface(@annotation.annotatable) || home_url
-                             end
-
-        format.html { redirect_to url_to_redirect_to }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @annotation.errors, :status => :unprocessable_entity }
+    # Only allow update for certain kind of annotation values
+    if [ 'TextValue', 'NumberValue' ].include?(@annotation.value_type)
+      @annotation.value.ann_content = params[:annotation][:value]
+      @annotation.version_creator_id = current_user.id
+      respond_to do |format|
+        if @annotation.save
+          flash[:notice] = 'Annotation was successfully updated.'
+  
+          url_to_redirect_to = if @annotation.annotatable_type =~ /RestParameter|RestRepresentation/
+                                 request.env["HTTP_REFERER"]
+                               else  
+                                 url_for_web_interface(@annotation.annotatable) || home_url
+                               end
+  
+          format.html { redirect_to url_to_redirect_to }
+          format.xml  { head :ok }
+        else
+          format.html { render :action => "edit" }
+          format.xml  { render :xml => @annotation.errors, :status => :unprocessable_entity }
+        end
       end
+    else
+      error_to_back_or_home "Cannot perform this action!"
     end
   end
   
@@ -145,35 +150,26 @@ class AnnotationsController < ApplicationController
   end
   
   def download
-    send_data(@annotation.value, :type => "text/plain", :disposition => 'inline')
+    send_data(@annotation.value_content, :type => "text/plain", :disposition => 'inline')
   end
   
-  def change_attribute
-    attribs_allowed_to_be_changed = %w( alternative_name )
-    attribs_allowed_to_be_changed_to = %w( display_name )
-    
-    new_attrib = params[:new_attribute]
-    
-    # Check that the attributes are allowed...
-    if attribs_allowed_to_be_changed.include?(@annotation.attribute_name.downcase) and
-       attribs_allowed_to_be_changed_to.include?(new_attrib.try(:downcase))
-    
-      # Authorise and carry on... 
-      if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @annotation.annotatable)
-        @annotation.attribute_name = new_attrib
-        
-        if @annotation.save
-          respond_to do |format|
-            flash[:notice] = "#{new_attrib.humanize} successfully updated"
-            format.html { redirect_to :back }
-          end
-        else
-          error_to_back_or_home "Sorry, something went wrong. Please try again. If this problem persists we would appreciate it if you contacted us."
+  def promote_alternative_name
+    if @annotation.attribute_name.downcase == "alternative_name" &&
+      BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @annotation.annotatable)
+      
+      annotatable = @annotation.annotatable
+      annotatable.name = @annotation.val_content
+      
+      if annotatable.save && @annotation.destroy
+        respond_to do |format|
+          flash[:notice] = "Display name successfully updated"
+          format.html { redirect_to :back }
         end
       else
-        error_to_back_or_home "You are not allowed to do that!"
+        error_to_back_or_home "Sorry, something went wrong. Please try again. If this problem persists we would appreciate it if you contacted us."
       end
-      
+    else
+      error_to_back_or_home "You are not allowed to do that!"
     end
   end
   

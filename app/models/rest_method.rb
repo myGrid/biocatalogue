@@ -27,7 +27,7 @@ class RestMethod < ActiveRecord::Base
   
   acts_as_archived
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :endpoint_name
   
   validates_presence_of :rest_resource_id, 
                         :method_type
@@ -207,6 +207,7 @@ class RestMethod < ActiveRecord::Base
     return unless [true, false].include?(options[:make_local])
     
     return unless %w{ template query matrix header }.include?(options[:param_style])
+    
     # sanitize user input
     chomp_strip_squeeze(capture_string)
     
@@ -284,8 +285,13 @@ class RestMethod < ActiveRecord::Base
           end
         end # transaction
       rescue Exception => ex
-        @method_param_map.destroy if @method_param_map
+        @method_param_map.destroy if @method_param_map # TODO is this really necessary? is deletion not implicit on rollback?
         error_params << param_name
+        
+        logger.error("Failed to extract REST Parameters for RestMethod with ID #{self.id}. Exception:")
+        logger.error(ex.message)
+        logger.error(ex.backtrace.join("\n"))
+      
         next
       end # begin_rescue
     end # params_list.each
@@ -389,7 +395,7 @@ class RestMethod < ActiveRecord::Base
     desc = self.description
     
     if desc.blank?
-      desc = self.annotations_with_attribute("description").first.try(:value)
+      desc = self.annotations_with_attribute("description", true).first.try(:value_content)
     end
     
     return desc

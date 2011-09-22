@@ -1,6 +1,6 @@
 # BioCatalogue: lib/bio_catalogue/tags.rb
 #
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -10,39 +10,41 @@ module BioCatalogue
     TAG_NAMESPACES = { "http://www.mygrid.org.uk/ontology" => "mygrid-domain-ontology", 
                        "http://www.mygrid.org.uk/mygrid-moby-service" => "mygrid-service-ontology" }.freeze
     
-    # ==============================
-    # IMPORTANT - Tags data structure
-    # ------------------------------
+    # ====================================
+    # IMPORTANT - Tags hash data structure
+    # ------------------------------------
     # A simple (but extensible) data structure will be used to represent tags in the system.
-    # This is essentially a view over the annotations in the database.
+    # This is essentially a view over the entities in the 'annotations' and 'tags' tables in the database.
     #
     # This data structure takes the form of an array of hashes where each hash contains data for a single tag. 
     # Each hash contains:
-    # - "name" - the tag name.
-    # - "count" - specifies the popularity of that tag (ie: how many items are tagged with that value).
+    # - "name" - the tag's full name.
+    # - "label" - the tag's label.
+    # - "count" - specifies the popularity of that tag within a particular context (i.e.: how many items are tagged with that value).
     # - "submitters" (optional) - an array of unique compound IDs (eg: "User:10") that identify the submitters of this particular tag. 
     #     NOTE: This may not necessarily be ALL the submitters of that specific tag in the system since sometimes a 
     #     set of tags will be scoped to something specific (eg: a particular Service).
     #
     # E.g.: 
-    #   [ { "name" => "blast", 
+    #   [ { "name" => "blast",
+    #       "label" => "blast",
     #       "count" => 34, 
     #       "submitters" => [ "User:15", "Registry:11", "User:45" ] },
-    #     { "name" => "fasta", 
+    #     { "name" => "http://myontology.org/fasta",
+    #       "label" => "fasta",
     #       "count" => 54, 
     #       "submitters" => [ "Registry:11", "User:1" ] }, 
     #   ... ]
-    # ==============================
+    # ====================================
     
 
-
-    # Retrieves the IDs of all the services that have the specified tag (on any part of the substructure).
+    # Retrieves the IDs of all the services that have the specified tag, on any part of the substructure.
     def self.get_service_ids_for_tag(tag_name)
-      # NOTE: this query has only been tested to work with MySQL 5.0.x
       sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
               FROM annotations 
               INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
-              WHERE annotation_attributes.name = 'tag' AND annotations.value = ?",
+              INNER JOIN tags ON tags.id = annotations.value_id AND annotations.value_type = 'Tag'
+              WHERE annotation_attributes.name = 'tag' AND tags.name = ?",
               tag_name ]
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
@@ -50,61 +52,54 @@ module BioCatalogue
       return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "Service").uniq 
     end
 
-    # Takes in a set of annotations and returns a collection of tags
-    # The return format is the general tag data structure described above, INCLUDING the "submitters".
-    # NOTE (1): these are sorted by tag name.
+    # Takes in a set of annotations and returns a collection of tags in the tags hash data structure 
+    # described above, INCLUDING the "submitters".
+    #
+    # NOTE (1): these are sorted by tag label.
     def self.annotations_to_tags_structure(annotations)
       return [ ] if annotations.blank?
       
       tags = [ ]
       
       annotations.each do |ann|
-        if ann.attribute_name.downcase == "tag"
+        if ann.attribute_name.downcase == "tag" && ann.value_type == "Tag"
           found = false
           
-          # Try and find it in the tags collection (if it was added previously).
+          submitter_compound_id = BioCatalogue::Mapper.compound_id_for(ann.source_type, ann.source_id)
+          
           # MUST take into account tags with different case (must treat them in a case-insensitive way).
           tags.each do |t|
-            if t["name"].downcase == ann.value.downcase
+            if t["name"].downcase == ann.value.name.downcase
               found = true
               t["count"] = t["count"] + 1
-              t["submitters"] << BioCatalogue::Mapper.compound_id_for(ann.source_type, ann.source_id)
+              t["submitters"] << submitter_compound_id unless t["submitters"].include?(submitter_compound_id) 
             end
           end
           
-          # If it wasn't found, add it in the tags collection.
           unless found
-            tags << { "name" => ann.value, "count" => 1, "submitters" => [ BioCatalogue::Mapper.compound_id_for(ann.source_type, ann.source_id) ] }
+            tags << { 
+              "name" => ann.value.name,
+              "label" => ann.value.label,
+              "count" => 1,
+              "submitters" => [ submitter_compound_id ] 
+            }
           end
         end
       end
       
-      return self.sort_tags_alphabetically(tags)
-    end
-    
-    def self.get_total_tags_count
-      # NOTE: this query has only been tested to work with MySQL 5.0.x and 5.1.x
-#      sql = "SELECT COUNT(DISTINCT annotations.value) AS count 
-#            FROM annotations 
-#            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
-#            WHERE annotation_attributes.name = 'tag'"
-      
-      sql = "SELECT COUNT(*) AS count 
-            FROM (SELECT DISTINCT annotations.value FROM annotations 
-            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
-            WHERE annotation_attributes.name = 'tag') x"
-            
-      ActiveRecord::Base.connection.select_one(sql)['count'].to_i
+      return tags.sort { |x,y| x['label'] <=> y['label'] }
     end
     
     def self.get_total_items_count_for_tag_name(tag_name)
-      # NOTE: this query has only been tested to work with MySQL 5.0.x
-      sql = [ "SELECT COUNT(*) as count 
-              FROM (SELECT annotations.id FROM annotations 
-              INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
-              WHERE annotation_attributes.name = 'tag' AND annotations.value = ?) x",
-              "#{tag_name}" ]
-      
+      sql = [ "SELECT COUNT(*) as count
+              FROM (SELECT annotations.id
+              FROM annotations
+              INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+              INNER JOIN tags ON tags.id = annotations.value_id AND annotations.value_type = 'Tag'
+              WHERE annotation_attributes.name = 'tag' AND tags.name = ?
+              GROUP BY annotations.annotatable_type, annotations.annotatable_id) x",
+              tag_name ]
+              
       return ActiveRecord::Base.connection.select_one(ActiveRecord::Base.send(:sanitize_sql, sql))['count'].to_i
     end
     
@@ -112,20 +107,40 @@ module BioCatalogue
       Annotation.count(:conditions => { :annotation_attributes => { :name => "tag" } }, :joins => :attribute)
     end
     
-    # This will return a set of tags found from the annotations in the database.
-    # The return format is the general tag data structure described above, EXCLUDING the "submitters".
+    def self.get_total_tags_count
+      sql = "SELECT COUNT(*) AS count
+            FROM (
+            SELECT DISTINCT tags.id, annotations.annotatable_type, annotations.annotatable_id
+            FROM annotations
+            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+            INNER JOIN tags ON tags.id = annotations.value_id AND annotations.value_type = 'Tag'
+            WHERE annotation_attributes.name = 'tag'
+            GROUP BY tags.id) AS x"
+              
+      return ActiveRecord::Base.connection.select_one(ActiveRecord::Base.send(:sanitize_sql, sql))['count'].to_i
+    end
+    
+    # This is a wrapper method around the Tag model to:
+    # a) Only return Tags that have been used in the system. (So ignores empty tags).
+    # b) Convert the data into the common tags hash data structure used throughout.
     #
-    # Default sort order is by counts of things.
+    # Returns a collection of tags in the tags hash data structure described above, 
+    # EXCLUDING the "submitters".
     #
-    # Supports limiting the results set AND pagination.
-    # For performance reasons it is advised to use both in conjunction 
-    # (so for example: "I just need the top 100 tags, paged")
+    # NOTE: this method comes from a legacy from back in the era when Annotation objects 
+    # had simple string values instead of polymorphic object-based values.
+    #
+    # Default sort order is by unique counts of things.
+    #
+    # Supports limiting the results set OR pagination.
     #
     # Options:
-    # - :limit (optional) - default: nil - sets the max number of tags to return (taking into account the sort criteria and any paging options specified).
-    # - :sort (optional) - default: :counts - specifies how to sort the results. Options are :name, :counts.
-    # - :page (optional) - default: nil - specified which page of results to get back.
-    # - :per_page (optional) - default: 10 - specifies the number of results to include per page of results.
+    # - :limit (optional) - default: nil - sets the max number of tags to return. Cannot be used with the paging options (:page takes priority).
+    # - :sort (optional) - default: :counts - specifies how to sort the results. Options are:
+    #     - :name (which actually sorts by the label of the Tag) 
+    #     - :counts
+    # - :page (optional) - default: nil - specified which page of results to get back. Cannot be used with the :limit option (:page takes priority).
+    # - :per_page (optional) - default: 10 - specifies the number of results to include per page of results. Cannot be used with the :limit option (:page takes priority).
     def self.get_tags(*args)
       options = args.extract_options!
       # defaults:
@@ -133,73 +148,60 @@ module BioCatalogue
                              :per_page => 10,
                              :sort => :counts,
                              :limit => nil)
-                           
-      # NOTE: this query has only been tested to work with MySQL 5.0.x and MySQL 5.1.x
-      sql = "SELECT annotations.value AS name, COUNT(*) AS count 
-            FROM annotations 
-            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
-            WHERE annotation_attributes.name = 'tag' 
-            GROUP BY annotations.value"
+      
+      unless [ :counts, :name ].include?(options[:sort])
+        raise ArgumentError, 'Invalid :sort option provided'
+      end
+      
+      unless options[:limit].nil? || (options[:limit].is_a?(Fixnum) && options[:limit] > 0)
+        raise ArgumentError, 'Invalid :limit option provided'
+      end
+      
+      sql = "SELECT tags.name, tags.label, COUNT(DISTINCT annotations.annotatable_type, annotations.annotatable_id) AS count
+            FROM annotations
+            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+            INNER JOIN tags ON tags.id = annotations.value_id AND annotations.value_type = 'Tag'
+            WHERE annotation_attributes.name = 'tag'
+            GROUP BY tags.id"
             
-      # Does it need to be ordered?
-      # Currently only the :counts sorting option will use SQL based ordering (since :name needs to do some special stuff).
-      if options[:sort] == :counts 
-        sql += " ORDER BY COUNT(*) DESC"
+      # Sorting
+      sql += case options[:sort]
+        when :name
+          " ORDER BY label ASC"
+        when :counts
+          " ORDER BY count DESC, label ASC"
       end
       
-      # If limit has been provided then add that to query BUT only if sort is :counts (:name needs some special processing)
-      # This allows customisation of the size of the tag cloud, whilst keeping into account sorting of tags.
-      if options[:sort] == :counts && options[:limit] && options[:limit].is_a?(Fixnum) && options[:limit] > 0
-        sql += " LIMIT #{options[:limit]}"
+      # Paging OR limit
+      if options[:page]
+        start = (options[:page]-1)*options[:per_page]
+        sql += " LIMIT #{start},#{options[:per_page]}"
+      else
+        if options[:limit]
+          sql += " LIMIT #{options[:limit]}"
+        end
       end
-      
+
       results = ActiveRecord::Base.connection.select_all(sql)
       
       results.each { |r| r["count"] = r["count"].to_i }
       
-      if options[:sort] == :name
-        results = self.sort_tags_alphabetically(results)
-        
-        # If a limit is specified then return accordingly
-        if options[:limit] && options[:limit].is_a?(Fixnum) && options[:limit] > 0
-          results = results[0...options[:limit]]
-        end
-      end
-      
-      # Now consider pagination, if required...
-      # NOTE: to improve performance here: ensure that a :limit => x is set (though for :name sort that won't help much)
-      if options[:page]
-        results = results.paginate(:page => options[:page], :per_page => options[:per_page])
-      end
-      
       return results
     end
     
-    # This gets ALL the tags in the system is performance intensive 
-    # so not recommended for regular Web UI use.
-    #
-    # NOTE: no sorting etc. is applied to the results.
-    def self.get_all_tags
-      # NOTE: this query has only been tested to work with MySQL 5.0.x and MySQL 5.1.x
-      sql = "SELECT annotations.value AS name, COUNT(*) AS count 
-            FROM annotations 
-            INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
-            WHERE annotation_attributes.name = 'tag' 
-            GROUP BY annotations.value"
-            
-      return ActiveRecord::Base.connection.select_all(sql)
-    end
-    
     # Returns an array of suggested tag names given the tag fragment.
+    # NOTE: only takes into account tags that are actually being used in the system.
     def self.get_tag_suggestions(tag_fragment, limit=nil)
-      # NOTE: this query has only been tested to work with MySQL 5.0.x and 5.1.x
-      sql = [ "SELECT annotations.value AS name
-             FROM annotations 
-             INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id 
-             WHERE annotation_attributes.name = 'tag' AND annotations.value LIKE ?
-             GROUP BY annotations.value 
-             ORDER BY annotations.value ASC",
-             "%#{tag_fragment}%" ]
+      sql = [
+        "SELECT tags.name
+        FROM annotations
+        INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+        INNER JOIN tags ON tags.id = annotations.value_id AND annotations.value_type = 'Tag'
+        WHERE annotation_attributes.name = 'tag' AND tags.name LIKE ?
+        GROUP BY tags.id
+        ORDER BY tags.label ASC",
+        "%#{tag_fragment}%"
+      ]
       
       # If limit has been provided then add that to query
       if !limit.nil? && limit.is_a?(Fixnum) && limit > 0
@@ -209,56 +211,27 @@ module BioCatalogue
       return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
     end
     
-    # A special sort method that takes into account special cases like ontological term URIs etc.
-    def self.sort_tags_alphabetically(tags)
-      return nil if tags.nil?
-      
-      tags.sort do |a,b|
-        a_name = a["name"]
-        a_name = self.split_ontology_term_uri(a_name)[1] if self.is_ontology_term_uri?(a_name)
-        
-        b_name = b["name"]
-        b_name = self.split_ontology_term_uri(b_name)[1] if self.is_ontology_term_uri?(b_name)
-        
-        a_name.downcase <=> b_name.downcase 
-      end
-    end
-    
-    def self.sort_tags_by_counts(tags)
-      return nil if tags.nil?
-      
-      tags.sort do |a,b|
-        b["count"] <=> a["count"]
-      end
-    end
-    
-    # Determines whether a given tag name is an ontology term URI or not.  
+    # Determines whether a given term URI is an ontology term URI or not,
+    # based on some rudimentary rules.  
     #
     # NOTE (1): the tag name must be enclosed in chevrons (< >) to indicate it is a URI.
     # NOTE (2): the tag name must contain a hash (#) to indicate it is an ontology term URI.
-    def self.is_ontology_term_uri?(tag_name)
-      return tag_name.starts_with?("<") && tag_name.ends_with?(">") && tag_name.include?("#") 
+    def self.is_ontology_term_uri?(term_uri)
+      return term_uri.starts_with?("<") && term_uri.ends_with?(">") && term_uri.include?("#") 
     end
     
-    # Splits a tag name into 2 parts (namespace [based on the base identifier URI]
-    # and term keyword) IF it is an ontology term URI.
-    #
-    # Returns an Array where the first item is the namespace and the second is the term keyword.
-    # 
-    # NOTE (1): the chevrons (< >) will be removed from the resulting split.
-    # NOTE (2): it is assumed that the term keyword is the word(s) after a hash ('#')
-    def self.split_ontology_term_uri(tag_name)
+    def self.split_ontology_term_uri(term_uri)
       namespace = ""
       term_keyword = ""
-      if self.is_ontology_term_uri?(tag_name)
-        base_uri, term_keyword = tag_name.gsub(/[<>]/, "").split("#")
+      if self.is_ontology_term_uri?(term_uri)
+        base_uri, term_keyword = term_uri.gsub(/[<>]/, "").split("#")
         if TAG_NAMESPACES.has_key?(base_uri.downcase)
           namespace = TAG_NAMESPACES[base_uri]
         else
-          term_keyword = tag_name
+          term_keyword = term_uri
         end
       else
-        term_keyword = tag_name
+        term_keyword = term_uri
       end
       return [ namespace, term_keyword ]
     end

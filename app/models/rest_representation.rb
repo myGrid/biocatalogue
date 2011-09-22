@@ -14,7 +14,7 @@ class RestRepresentation < ActiveRecord::Base
     acts_as_trashable
   end
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :content_type
 
   acts_as_archived
 
@@ -111,7 +111,7 @@ class RestRepresentation < ActiveRecord::Base
     desc = self.description
     
     if desc.blank?
-      desc = self.annotations_with_attribute("description").first.try(:value)
+      desc = self.annotations_with_attribute("description", true).first.try(:value_content)
     end
     
     return desc

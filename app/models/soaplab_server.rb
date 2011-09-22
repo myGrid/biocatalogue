@@ -27,7 +27,7 @@ class SoaplabServer < ActiveRecord::Base
     acts_as_trashable
   end
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :name
   
   has_submitter
   
@@ -39,8 +39,6 @@ class SoaplabServer < ActiveRecord::Base
                           :allow_nil => false
                   
   
-  
-  virtual_field_from_annotation_with_fallback :display_name, :name, "display_name"
   
   # save the soap services from this server in
   # the database

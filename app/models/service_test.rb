@@ -245,7 +245,16 @@ class ServiceTest < ActiveRecord::Base
     testable_str.constantize.find(testable_id)
   end 
   
-  protected
+  # Helper instance method to check whether this test is linked to a monitoring_endpoint annotation
+  def is_custom_endpoint_monitor?
+    parent = self.test.parent
+    
+    return false unless parent.class == Annotation
+    
+    return parent.attribute_name == "monitoring_endpoint"
+  end 
+  
+protected
   
   
   def generate_json_with_collections(collections, make_inline=false)

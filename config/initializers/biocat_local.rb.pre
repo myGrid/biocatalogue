@@ -141,3 +141,14 @@ ENABLE_SSL = true
 # this config setting is be used as the default "catch all" template for generating 
 # an identifier.
 ANNOTATION_ATTRIBUTE_DEFAULT_IDENTIFIER_TEMPLATE = "http://biocatalogue.org/attribute/%s"
+
+# ====================================================
+
+# This specifies the number of monitoring history items to show for service tests.
+#MONITORING_HISTORY_LIMIT = 5
+
+# This specifies whether to show the monitoring history graph or not
+#SHOW_MONITORING_GRAPH = true
+
+# ====================================================
+

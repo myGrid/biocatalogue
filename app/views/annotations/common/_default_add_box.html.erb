@@ -14,6 +14,8 @@
 	spinner_id = "spinner_#{rand(10000000)}"
 
 	text_area_initial_height = 100 unless local_assigns.has_key?(:text_area_initial_height)
+
+  text_area_default_value = "" unless local_assigns.has_key?(:text_area_default_value)
 %>
 
 <div class="add_box">
@@ -30,11 +32,12 @@
 	    <%= hidden_field_tag "annotation[attribute_name]", attribute_name -%>
 			
 			<div>
-	    	<%= text_area_tag "annotation[value]", 
-													text_area_default_text,
-													:id => text_area_id,
-													:rows => 1,
-													:onfocus => "$('#{submit_button_div_id}').show();" -%>
+  	    	<%= text_area_tag "annotation[value]", 
+  												text_area_default_text,
+  												:id => text_area_id,
+  												:rows => 1,
+  												:onfocus => "$('#{submit_button_div_id}').show();",
+                         "data-pre-content" => CGI.escapeHTML(text_area_default_value) -%>
 			</div>
 			
 			<div class="submit_button_div" id="<%= submit_button_div_id -%>" style="display: none;">

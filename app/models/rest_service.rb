@@ -174,31 +174,29 @@ class RestService < ActiveRecord::Base
       annotation_value = ""
       
       if process_user_endpoint(user_endpoint, base_url, annotation_value)
-        transaction do
-          if create_endpoint(user_endpoint, user_submitting)
-            begin # add example endpoint annotation
-              annotation_value.gsub!('{', '')
-              annotation_value.gsub!('}', '')
-              
-              @extracted_method.create_annotations({"example_endpoint" => "#{endpoint}#{annotation_value}"}, user_submitting) if @template_params.blank?
-            rescue Exception => ex
-              logger.error("Failed to create annotations for RestMethod with ID: #{@extracted_method.id}. Exception:")
-              logger.error(ex.message)
-              logger.error(ex.backtrace.join("\n"))
-            end
+        if create_endpoint(user_endpoint, user_submitting)
+          begin # add example endpoint annotation
+            annotation_value.gsub!('{', '')
+            annotation_value.gsub!('}', '')
             
-            # add parameters
-            @extracted_method.add_parameters(@template_params.join("\n"), user_submitting, 
-                                                                         :mandatory => true, 
-                                                                         :param_style => "template",
-                                                                         :make_local => true)
-        
-            @extracted_method.add_parameters(@query_params.join("\n"), user_submitting,
-                                                                      :mandatory => true, 
-                                                                      :param_style => "query",
-                                                                      :make_local => true)
-          end # inner if (endpoint objects successfully created)
-        end # transaction
+            @extracted_method.create_annotations({"example_endpoint" => "#{endpoint}#{annotation_value}"}, user_submitting) if @template_params.blank?
+          rescue Exception => ex
+            logger.error("Failed to create annotations for RestMethod with ID: #{@extracted_method.id}. Exception:")
+            logger.error(ex.message)
+            logger.error(ex.backtrace.join("\n"))
+          end
+          
+          # add parameters
+          @extracted_method.add_parameters(@template_params.join("\n"), user_submitting, 
+                                                                       :mandatory => true, 
+                                                                       :param_style => "template",
+                                                                       :make_local => true)
+      
+          @extracted_method.add_parameters(@query_params.join("\n"), user_submitting,
+                                                                    :mandatory => true, 
+                                                                    :param_style => "query",
+                                                                    :make_local => true)
+        end # inner if (endpoint objects successfully created)
       end # outer if (endpoint was successfully processed)
       
     end # resource_list.each
@@ -277,7 +275,6 @@ class RestService < ActiveRecord::Base
     @associated_service ||= Service.find_by_id(associated_service_id)
   end    
   
-
   # =========================================
   
   
@@ -368,36 +365,43 @@ private
 
   def create_endpoint(user_endpoint, user_submitting)
     begin # create endpoint
-      @extracted_resource = RestResource.check_duplicate(self, @resource_path)
-      
-      if @extracted_resource.nil?
-        @extracted_resource = RestResource.new(:rest_service_id => self.id, 
-                                               :path => @resource_path)
-        @extracted_resource.submitter = user_submitting
-        @extracted_resource.save!
-      end
-      
-      @extracted_method = RestMethod.check_duplicate(@extracted_resource, @http_method)
-      
-      if @extracted_method.nil? # create ENDPOINT
-        @extracted_method = RestMethod.new(:rest_resource_id => @extracted_resource.id, 
-                                           :method_type => @http_method)
-        @extracted_method.submitter = user_submitting
-        @extracted_method.save!
+      transaction do
+        @extracted_resource = RestResource.check_duplicate(self, @resource_path)
         
-        @redirect_endpoint = @extracted_method
-        @created_endpoints << @extracted_method.display_endpoint
-      else # update existing
-        @updated_endpoints << @extracted_method.display_endpoint
-      end
+        if @extracted_resource.nil?
+          @extracted_resource = RestResource.new(:rest_service_id => self.id, 
+                                                 :path => @resource_path)
+          @extracted_resource.submitter = user_submitting
+          @extracted_resource.save!
+        end
+        
+        @extracted_method = RestMethod.check_duplicate(@extracted_resource, @http_method)
+        
+        if @extracted_method.nil? # create ENDPOINT
+          @extracted_method = RestMethod.new(:rest_resource_id => @extracted_resource.id, 
+                                             :method_type => @http_method)
+          @extracted_method.submitter = user_submitting
+          @extracted_method.save!
+          
+          @redirect_endpoint = @extracted_method
+          @created_endpoints << @extracted_method.display_endpoint
+        else # update existing
+          @updated_endpoints << @extracted_method.display_endpoint
+        end
+      end # transaction
     rescue Exception => ex
       # no need to proceed with iteration since params will not have a resource object to attach to
       @error_endpoints << user_endpoint
+      
+      logger.error("Failed to create REST Endpoint. Exception:")
+      logger.error(ex.message)
+      logger.error(ex.backtrace.join("\n"))
+        
       return false
     end # begin_rescue
     
     return true
-  end # create_endpoint_objects
+  end # create_endpoint
   
   # =========================================
 

@@ -13,7 +13,7 @@ module BioCatalogue
     module ClassMethods
       def acts_as_service_versionified
         
-        acts_as_annotatable
+        acts_as_annotatable :name_field => :name
         
         has_one :service_version, 
                 :as => :service_versionified
@@ -87,7 +87,7 @@ module BioCatalogue
       # Given a hash of annotation data, this method will process them 
       # and allocate the appropriate Annotation objects to the appropriate objects of this service.
       #
-      # For example, tags go on the parent Service object, but things like descriptions, ratings 
+      # For example, tags go on the parent Service object, but things like descriptions, 
       # and so on go on the service version instance object (eg: SoapService).
       #
       # This should be used instead of object.create_annotations when preprocessing is required and 
@@ -131,7 +131,7 @@ module BioCatalogue
         desc = self.description
         
         if desc.blank?
-          desc = self.annotations_with_attribute("description").first.try(:value)
+          desc = self.annotations_with_attribute("description", true).first.try(:value_content)
         end
         
         return desc
@@ -146,7 +146,7 @@ module BioCatalogue
         doc_url = self.documentation_url
         
         if doc_url.blank?
-          doc_url = self.annotations_with_attribute("documentation_url").first.try(:value)
+          doc_url = self.annotations_with_attribute("documentation_url", true).first.try(:value_content)
         end
         
         return doc_url

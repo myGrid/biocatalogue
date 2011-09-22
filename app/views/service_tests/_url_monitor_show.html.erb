@@ -14,12 +14,14 @@
 			<div class="monitoring_section">
 				
 				<div style="text-align: right;">
-					<%if logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service) %>
+					<%if logged_in? && BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service) %>						
 						<% if ( service_test.activated? ) %>
-							<%= link_to("Disable", disable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim") -%>
+							<%= link_to("Disable", disable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to disable this test?", :class => "button_slim", :style => "float:right;") -%>
 						<% else %>
-							<%= link_to("Enable", enable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim") -%>
+							<%= link_to("Enable", enable_service_test_url(service_test), :method => :put, :confirm => "Are you sure you want to enable this test?", :class => "button_slim", :style => "float:right;") -%>
 						<% end %>
+
+						<%= monitoring_endpoint_edit_by_popup_link(service_test, :link_text => "Update", :class => "button_slim", :style => "margin-right:1em;") -%>
 					<% end -%>
 				</div>	
 				
@@ -40,7 +42,15 @@
 								<% if pingable_item.nil? %>
 									<span class="none_text">No valid URL for monitoring could be found</span>
 								<% else %>
-									<%=h pingable_item -%>
+									<% if service_test.is_custom_endpoint_monitor? %>
+										<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, service_test.service) %>
+											<%=h pingable_item -%>
+										<% else %>
+											<span class="none_text">Not available for public viewing</span>
+										<% end %>
+									<% else %>
+										<%=h pingable_item -%>
+									<% end %>
 								<% end %> 
 							<%else%>
 								<%= h(service_test.test.property.titleize) -%> :
@@ -68,28 +78,31 @@
 					<%= service_test_status_symbol(service_test) -%>
 				</div>
 	
-				<p>
-					<b>Recent History</b>
-				</p>
+				<% if MONITORING_HISTORY_LIMIT > 0 %>
+					<p>
+						<b>Recent History</b>
+					</p>
+					<div class="box_indented_with_bar">
+						<ul>
+							<% unless (test_hist = service_test.recent_test_results(MONITORING_HISTORY_LIMIT)).blank? -%>
+								<% test_hist.each do |hist| %>
+								<li class="container_middled">
+									<%= test_result_status_symbol(hist) %> 
+									<span><%= distance_of_time_in_words_to_now(hist.created_at) -%> ago</span>
+								</li>
+							<% end %>
+							<% else %>
+								<li class="none_text">No previous checks</li>
+							<% end %>
+						</ul>
+					</div>
+				<% end %>
 						
-				<div class="box_indented_with_bar">
-					<ul>
-						<% unless (test_hist = service_test.recent_test_results).blank? -%>
-							<% test_hist.each do |hist| %>
-							<li class="container_middled">
-								<%= test_result_status_symbol(hist) %> 
-								<span><%= distance_of_time_in_words_to_now(hist.created_at) -%> ago</span>
-							</li>
-						<% end %>
-						<% else %>
-							<li class="none_text">No previous checks</li>
-						<% end %>
-					</ul>
-				</div>
-				
-				<%unless service_test.latest_status.label.downcase == 'unchecked' %>
-					<div id="line_chart" style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;" ></div>
-				<%end%>
+				<% if SHOW_MONITORING_GRAPH %>			
+					<%unless service_test.latest_status.label.downcase == 'unchecked' %>
+						<div id="line_chart" style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;" ></div>
+					<%end%>
+				<% end %>
 				
 			</div>
 		<%end%>

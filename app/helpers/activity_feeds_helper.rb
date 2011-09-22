@@ -52,7 +52,7 @@ module ActivityFeedsHelper
             entry_text = ''
             entry_type = ''
           else
-            entry_text, entry_type = activity_feed_entry_for(entry_obj, al.action, al.data, style, object_cache)
+            entry_text, entry_type = activity_feed_entry_for(entry_obj, al, style, object_cache)
           end
           
           data = [ entry_text, entry_type, al.created_at ]
@@ -76,8 +76,11 @@ module ActivityFeedsHelper
   
   protected
   
-  def activity_feed_entry_for(item, action, extra_data, style, object_cache={})
+  def activity_feed_entry_for(item, activity_log, style, object_cache={})
     return "" if item.nil?
+    
+    action = activity_log.action
+    extra_data = activity_log.data
       
     output = ""
     entry_type = item.class.name.underscore.to_sym
@@ -111,6 +114,17 @@ module ActivityFeedsHelper
                 output << " a new Service: "
                 output << link_to(display_name(item), item)
               end
+            
+            when 'archive', 'unarchive'
+              culprit = get_object_via_cache(activity_log.culprit_type, activity_log.culprit_id, object_cache)
+              
+              unless culprit.nil?
+                output << link_to(display_name(culprit), culprit)
+                output << content_tag(:span, " #{action}d", :class => "activity_feed_action")
+                output << " the Service: "
+                output << link_to(display_name(item), item)
+              end
+            
               
           end
           
@@ -121,15 +135,12 @@ module ActivityFeedsHelper
             when 'create'
               annotatable = get_object_via_cache(item.annotatable_type, item.annotatable_id, object_cache)
               source = get_object_via_cache(item.source_type, item.source_id, object_cache)
-              value_to_display = item.value
+              value_to_display = item.value_content
               
               # Special case for annotation values for certain kinds of attributes
-              if item.attribute_name.downcase == "category"
-                value_to_display = Category.find(item.value).try(:name)
-              end
-              
               if item.attribute_name.downcase == "tag"
-                namespace, value_to_display = BioCatalogue::Tags.split_ontology_term_uri(item.value) 
+                namespace, fragment = BioCatalogue::Tags.split_ontology_term_uri(item.value.name)
+                value_to_display = item.value.label
               end
               
               unless value_to_display.blank? or item.attribute.nil? or annotatable.nil? or source.nil?

@@ -1,6 +1,6 @@
 # BioCatalogue: app/models/category.rb
 #
-# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
+# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -11,6 +11,8 @@ class Category < ActiveRecord::Base
   end
 
   validates_presence_of :name
+  
+  acts_as_annotation_value :content_field => :name
   
   belongs_to :parent,
              :class_name => "Category",

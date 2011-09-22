@@ -16,7 +16,7 @@ class ScriptListingWriter:
         self.logger  = SetupLogger().logger("ScriptListingWriter:")
     
     def get_script_references(self, db):
-        self.logger.info("getting script references from db : %s" %s)
+        self.logger.info("getting script references from db : %s" %db)
         stmt  = "SELECT service_tests.service_id, service_tests.id, test_scripts.exec_name "
         stmt += "FROM service_tests,test_scripts "
         stmt += "WHERE service_tests.test_id =test_scripts.id "

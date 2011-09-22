@@ -2,7 +2,7 @@
 
 # BioCatalogue: app/views/annotations/_examples.html.erb
 #
-# Copyright (c) 2008-2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2008-2011, University of Manchester, The European Bioinformatics 
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -10,7 +10,7 @@
 
 <%
 	attribute_name = "example_data"
-	examples_annotations = (local_assigns.has_key?(:annotations) ? annotations : annotatable.annotations_with_attribute(attribute_name).sort {|a,b| a.updated_at <=> b.updated_at})
+	examples_annotations = (local_assigns.has_key?(:annotations) ? annotations : annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.updated_at <=> b.updated_at})
 	main_div_id = "examples_#{rand(10000000)}"
 
 	show_header = true unless local_assigns.has_key?(:show_header)
@@ -36,7 +36,7 @@
 							</span>
 						</div>
 						<div style="margin-top: 0.7em;">
-							<pre><%= annotation_prepare_description(ann.value, false, nil, false, false, false) -%></pre>
+							<pre><%= annotation_prepare_description(ann.value_content, false, nil, false, false, false) -%></pre>
 						</div>
 						<%= render :partial => "annotations/common/default_modify_options",
 											 :locals => { :annotation => ann, :ann_type => "example data" } -%>

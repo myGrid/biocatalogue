@@ -9,20 +9,25 @@ class ServiceTestsController < ApplicationController
   before_filter :disable_action, :only => [ :new, :edit, :update ]
   before_filter :disable_action_for_api, :except => [ :show, :create, :results, :index ]
   
-  before_filter :find_service_test, :only => [ :show, :results, :enable, :disable, :destroy]
+  before_filter :find_service_test, :only => [ :show, :results, :enable, :disable, :destroy, :edit_monitoring_endpoint_by_popup, :update_monitoring_endpoint ]
   
-  # Only logged in users can add tests
-  before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable, :destroy, :index ]
+  before_filter :find_service, :only => [ :new_url_monitor_popup, :create_monitoring_endpoint ]
 
-  before_filter :authorise, :only => [ :enable, :disable, :destroy ]
+  # Only logged in users can add tests
+  before_filter :login_or_oauth_required, :only => [ :create, :enable, :disable, :destroy, :index, :new_popup, :create_monitoring_endpoint, :edit_monitoring_endpoint_by_popup, :update_monitoring_endpoint ]
+
+  before_filter :authorise, :only => [ :enable, :disable, :destroy, :edit_monitoring_endpoint_by_popup, :update_monitoring_endpoint ]
   
   before_filter :authorise_for_disabled, :only => [ :show ]
   
   before_filter :authorise_for_destroy, :only => [ :destroy ]
+
+  before_filter :authorise_for_create, :only => [ :new_url_monitor_popup, :create_monitoring_endpoint ]
   
   before_filter :parse_sort_params, :only => [ :index ]
   
   before_filter :find_service_tests, :only => [ :index ]
+  
   
   def index
     respond_to do |format|
@@ -38,6 +43,123 @@ class ServiceTestsController < ApplicationController
       format.xml  # show.xml.builder
       format.json { render :json => @service_test.to_json }
     end
+  end
+
+  def new_url_monitor_popup    
+    respond_to do |format|
+      format.js { render :layout => false }
+    end
+  end
+  
+  def edit_monitoring_endpoint_by_popup
+    respond_to do |format|
+      format.js { render :layout => false }
+    end
+  end
+  
+  def update_monitoring_endpoint
+    error = nil
+    
+    error = "This service test cannot be updated because it is not a custom endpoint monitor." unless @service_test.is_custom_endpoint_monitor? 
+    monitoring_endpoint_annotation = @service_test.test.parent
+    
+    # sanitize user input
+    if error.nil?
+      # sanitize the user provided endpoint
+      new_endpoint = params[:new_monitoring_endpoint] || ""
+      new_endpoint.strip!
+      
+      error = validate_endpoint_returning_error(@service, new_endpoint)
+      
+      if error.nil?
+        existing_endpoint = monitoring_endpoint_annotation.value_content
+        error = "The service test could not be updated as the new endpoint was the same as the existing one." if existing_endpoint.downcase == new_endpoint.downcase
+      end 
+    end
+    
+    # update url monitor and cleanup
+    if error.nil?
+      begin
+        ServiceTest.transaction do          
+          # update url monitor
+          monitoring_endpoint_annotation.value.ann_content = new_endpoint
+          monitoring_endpoint_annotation.save!
+          
+          @service_test.updated_at = Time.now
+          @service_test.save!
+        end
+      rescue Exception => ex
+        error = "Failed to update monitoring endpoint."
+        
+        logger.error("Failed to update monitoring endpoint. Exception:")
+        logger.error(ex.message)
+        logger.error(ex.backtrace.join("\n"))
+      end
+    end
+    
+    respond_to do |format|      
+      if error.nil?
+        flash[:notice] = "The monitoring endpoint for service '#{@service.display_name}' has been updated"
+      else
+        flash[:error] = error
+      end
+      
+      redirect_url = service_test_url(@service_test)
+      format.html { redirect_to redirect_url }
+    end
+  end
+  
+  def create_monitoring_endpoint
+    error = nil
+    
+    error = "The service already contains a custom endpoint to monitor." unless @service.has_capacity_for_new_monitoring_endpoint?
+    
+    # sanitize user input
+    if error.nil?
+      # sanitize the user provided endpoint
+      monitoring_endpoint = params[:monitoring_endpoint] || ""
+      monitoring_endpoint.strip!
+      
+      error = validate_endpoint_returning_error(@service, monitoring_endpoint) 
+    end
+    
+    # create url monitor and service test    
+    if error.nil?
+      begin
+        ServiceTest.transaction do
+          # create monitoring_endpoint annotations
+          anns = @service.create_annotations({"monitoring_endpoint" => monitoring_endpoint}, current_user)
+          
+          # use annotation to create url_monitor
+          ann = anns.first
+          
+          mon = UrlMonitor.new(:parent_id => ann.id, :parent_type => ann.class.name, :property => "value")
+          @service_test = ServiceTest.new(:service_id => @service.id, :test_type => mon.class.name, :activated_at => Time.now )
+          mon.service_test = @service_test
+
+          mon.save!
+          @service_test.save!
+        end
+      rescue Exception => ex
+        error = "Failed to create monitoring endpoint"
+        
+        logger.error("Failed to create monitoring endpoint: #{monitoring_endpoint}. Exception:")
+        logger.error(ex.message)
+        logger.error(ex.backtrace.join("\n"))
+      end
+    end
+
+    respond_to do |format|      
+      if error.nil?
+        redirect_url = service_test_url(@service_test)
+        flash[:notice] = "A new monitoring endpoint has been created for service '#{@service.display_name}'"
+      else
+        redirect_url = service_url(@service, :anchor => "monitoring")
+        flash[:error] = error
+      end
+      
+      format.html { redirect_to redirect_url }
+    end  
   end
   
   # POST /service_tests
@@ -144,6 +266,13 @@ class ServiceTestsController < ApplicationController
     end
   end
   
+  def authorise_for_create
+    unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)
+      flash[:error] = "You are not allowed to perform this action!"
+      redirect_to @service
+    end
+  end
+
   def authorise_for_destroy
     if @service_test.test.is_a?(UrlMonitor)
       flash[:error] = "You are not allowed to perform this action!"
@@ -207,4 +336,37 @@ class ServiceTestsController < ApplicationController
     
   end
 
+  
+  def find_service
+    @service = Service.find(params[:service_id])
+  end
+  
+  def validate_endpoint_returning_error(service, monitoring_endpoint)
+    error = nil
+    
+    begin
+      # validate the provided endpoint
+      URI.parse(monitoring_endpoint)
+    rescue Exception => ex
+      error = "The URL provided was invalid and could not be used"
+      
+      logger.error("Failed to validate monitoring endpoint: #{monitoring_endpoint}. Exception:")
+      logger.error(ex.message)
+      logger.error(ex.backtrace.join("\n"))
+    end
+
+    # check that user provided monitoring_endpoint contains base endpoint
+    if error.nil?
+      base_url = service.service_deployments.first.endpoint
+      
+      if base_url.downcase == monitoring_endpoint.downcase
+        error = "The endpoint to monitor cannot be the same as the base URL."
+      elsif !monitoring_endpoint.downcase.starts_with?(base_url.downcase)
+        error = "The endpoint to monitor should start with the base URL of the service."
+      end
+    end
+    
+    return error
+  end
+  
 end

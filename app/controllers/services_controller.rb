@@ -7,19 +7,23 @@
 class ServicesController < ApplicationController
   
   before_filter :disable_action, :only => [ :edit, :update ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity, :filtered_index ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity, :filtered_index, :favourite, :unfavourite ]
 
+  before_filter :login_or_oauth_required, :only => [ :destroy, :check_updates, :archive, :unarchive, :favourite, :unfavourite ]
+  
   before_filter :parse_filtered_index_params, :only => :filtered_index
   
-  before_filter :parse_current_filters, :only => [ :index, :filtered_index ]
-  
-  before_filter :get_filter_groups, :only => [ :filters ]
+  before_filter :parse_current_filters, :only => [ :index, :filtered_index, :filters ]
   
   before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
   
   before_filter :find_services, :only => [ :index, :filtered_index ]
   
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples ]
+
+  before_filter :find_favourite, :only => [ :favourite, :unfavourite ]
+
+  before_filter :authorise, :only => [ :destroy, :check_updates, :archive, :unarchive, :favourite, :unfavourite ]
   
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
   
@@ -31,8 +35,6 @@ class ServicesController < ApplicationController
   
   before_filter :set_listing_type_local, :only => [ :index ]
   
-  before_filter :login_or_oauth_required, :only => [ :destroy, :check_updates, :archive, :unarchive ]
-  before_filter :authorise, :only => [ :destroy, :check_updates, :archive, :unarchive ]
   
   # GET /services
   # GET /services.xml
@@ -77,11 +79,6 @@ class ServicesController < ApplicationController
     if @latest_version_instance.is_a?(RestService)
       @grouped_rest_methods = @latest_version_instance.group_all_rest_methods_from_rest_resources
     end
-    
-    @service_tests = @service.service_tests
-    
-    @test_script_service_tests  = @service.service_tests_by_type("TestScript")
-    @url_monitor_service_tests  = @service.service_tests_by_type("UrlMonitor")
     
     respond_to do |format|
       format.html # show.html.erb
@@ -167,10 +164,15 @@ class ServicesController < ApplicationController
   end
   
   def filters
+    if is_api_request?
+      get_filter_groups
+    end
+    
     respond_to do |format|
-      format.html { disable_action }
+      format.html # filters.html.erb
       format.xml # filters.xml.builder
       format.json { render :json => BioCatalogue::Api::Json.filter_groups(@filter_groups).to_json }
+      format.js { render :layout => false }
     end
   end
   
@@ -207,10 +209,17 @@ class ServicesController < ApplicationController
   end
   
   def monitoring
+    if self.request.format.to_sym == :js
+      @service_tests = @service.service_tests
+      @test_script_service_tests  = @service.service_tests_by_type("TestScript")
+      @url_monitor_service_tests  = @service.service_tests_by_type("UrlMonitor")
+    end
+    
     respond_to do |format|
-      format.html { disable_action }
-      format.xml # monitoring.xml.builder
+      format.html # monitoring.html.erb
+      format.xml  # monitoring.xml.builder
       format.json { render :json => @service.to_custom_json("monitoring") }
+      format.js { render :layout => false }
     end
   end
   
@@ -251,10 +260,86 @@ class ServicesController < ApplicationController
     end
   end
  
+  def favourite
+    if @favourite
+      respond_to do |format|
+        format.html { disable_action }
+        format.json { error_to_back_or_home("Could not favourite service with ID #{params[:id]} since it is already favorited.", false, 407) }
+      end
+    else
+      new_favourite = Favourite.create(:favouritable_type => "Service", :favouritable_id => @service.id, :user_id => current_user.id)
+    
+      respond_to do |format|
+        format.html { disable_action }
+        format.json {
+          if new_favourite
+            render :json => {
+                      :success => {
+                        :message => "The service '#{@service.display_name}' has been successfully favourited.",
+                        :resource => service_url(@service)
+                      }
+                    }.to_json, :status => 201
+          else 
+            error_to_back_or_home("Could not favourite service with ID #{params[:id]}.", false, 408)
+          end
+        }
+      end
+    end  
+  end
+ 
+  def unfavourite
+    if @favourite
+      deleted_favourite = Favourite.destroy(@favourite.id)
+    
+      respond_to do |format|
+        format.html { disable_action }
+        format.json {
+          if deleted_favourite
+            render :json => {
+                      :success => {
+                        :message => "The service '#{@service.display_name}' has been successfully unfavourited.",
+                        :resource => service_url(@service)
+                      }
+                    }.to_json, :status => 205
+          else
+            error_to_back_or_home("Could not unfavourite service with ID #{params[:id]}.", false, 408)            
+          end
+        }
+      end
+    else
+      respond_to do |format|
+        format.html { disable_action }
+        format.json { error_to_back_or_home("Could not unfavourite service with ID #{params[:id]}.", false, 407) }
+      end
+    end
+  end
+  
+  def examples
+    @latest_version = @service.latest_version
+    @latest_version_instance = @latest_version.service_versionified
+    
+    @data_annotations = @service.data_example_annotations
+    
+    @has_data_examples = false
+    @data_annotations.each do |d|
+      unless d[:annotations].blank?
+        @has_data_examples = true
+        break
+      end
+    end
+    
+    @test_script_service_tests = @service.service_tests_by_type("TestScript")
+    
+    respond_to do |format|
+      format.html  # examples.html.erb
+      format.js { render :layout => false }
+    end
+  end
+
   protected
   
   def parse_sort_params
-    sort_by_allowed = [ "created", "annotated" ]
+    sort_by_allowed = [ "created", "name", "annotated" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
       params[:sort_by].downcase
     else
@@ -280,7 +365,9 @@ class ServicesController < ApplicationController
     case @sort_by
       when 'created'
         order_field = "created_at"
-      when 'annotated' # only  curators can sort by annotation level
+      when 'name'
+        order_field = "name"
+      when 'annotated' # only curators can sort by annotation level
         if logged_in? && current_user.is_curator?
           order_field = "annotation_level"
         else
@@ -305,6 +392,7 @@ class ServicesController < ApplicationController
     
     @filter_message = "The services index has been filtered" unless @current_filters.blank?
     
+    
     if self.request.format == :bljson
       finder_options = {
         :select => "services.id, services.name, services.archived_at",
@@ -315,17 +403,39 @@ class ServicesController < ApplicationController
       
       @services = ActiveRecord::Base.connection.select_all(Service.send(:construct_finder_sql, finder_options))
     else
-      @services = Service.paginate(:page => @page,
-                                   :per_page => @per_page,
-                                   :order => order,
-                                   :conditions => conditions,
-                                   :joins => joins)
+      # Must check if we need to include archived services or not
+      if include_archived?
+        @services = Service.paginate(:page => @page,
+                                     :per_page => @per_page,
+                                     :order => order,
+                                     :conditions => conditions,
+                                     :joins => joins)
+      else
+        @services = Service.not_archived.paginate(:page => @page,
+                                                  :per_page => @per_page,
+                                                  :order => order,
+                                                  :conditions => conditions,
+                                                  :joins => joins)
+      end
+      
     end
     
   end
   
   def find_service
-    @service = Service.find(params[:id])
+    begin
+      @service = Service.find(params[:id])
+    rescue
+      if is_api_request?
+        respond_to do |format|
+          format.json { error_to_back_or_home("Service with ID #{params[:id]} not found.", false, 404) }
+        end
+      end
+    end
+  end
+  
+  def find_favourite
+    @favourite = Favourite.find(:first, :conditions => { :favouritable_type => "Service", :favouritable_id => params[:id], :user_id => current_user.id })
   end
   
   def check_if_user_wants_to_categorise

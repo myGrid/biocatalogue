@@ -12,6 +12,7 @@
 	<div class="inner">
 		<% if logged_in? -%>
 			Welcome <b><%= display_name(current_user) -%></b>
+      <span><%= user_role_badge(current_user.roles, "margin-left: 0.3em; vertical-align: baseline;") %></span>
 			
 			<span class="sep">|</span>
 			<%= link_to "My Profile", current_user, :id => "user_profile_link", :class => "" -%>
@@ -31,7 +32,7 @@
 			<% end %>
 			
       <span class="sep">|</span>
-			<%= link_to 'Sign out', logout_url(:protocol => default_protocol), :id => "logout_link", :class => "red_arrow", :method => :delete -%>
+			<%= link_to 'Sign out', logout_path, :id => "logout_link", :class => "red_arrow", :method => :delete -%>
 		<% else -%>
 			<%= link_to 'Sign up', signup_path, :id => "signup_link", :class => "signup" -%>
 			

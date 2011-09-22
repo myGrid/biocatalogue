@@ -57,27 +57,26 @@ module BioCatalogue
     end
     
     def self.get_categories_for_service(service)
-      categories = [ ]
-      
       anns = service.annotations_with_attribute("category")
-      
-      category_ids = anns.map{|a| a.value.to_i}
-      
-      category_ids.each do |category_id|
-        c = Category.find(:first, :conditions => { :id => category_id })
-        categories << c unless c.nil?
-      end
-      
-      return categories
+      return anns.reject{|a| a.value_type != "Category"}.map{|a| a.value}
     end
     
+    # NOTE: this assumes that only Service objects can be annotated with a "category" annotation,
+    # and so wouldn't take into account category annotations on sub structure objects.
     def self.user_created_category?(service, category_id, user)
-      anns = service.annotations_with_attribute_and_by_source("category", user)
-      if anns.blank?
-        return false
-      else
-        return anns.map{|a| a.value}.include?(category_id.to_s)
-      end
+      return false if (user.nil? || !user.is_a?(User))      
+      
+      cats = Annotation.count(:all,
+                              :joins => :attribute,
+                              :conditions => { :annotatable_type => "Service",
+                                               :annotatable_id => service.id,
+                                               :source_type => user.class.name,
+                                               :source_id => user.id,
+                                               :annotation_attributes =>  { :name => "category" },
+                                               :value_type => "Category",
+                                               :value_id => category_id })
+    
+      return cats > 0
     end
     
     def self.number_of_services_for_category(category, recalculate=false)
@@ -119,7 +118,10 @@ module BioCatalogue
       sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
               FROM annotations 
               INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
-              WHERE annotation_attributes.name = 'category' AND annotations.annotatable_type = 'Service' AND annotations.value IN (?)",
+              WHERE annotation_attributes.name = 'category' 
+                AND annotations.annotatable_type = 'Service' 
+                AND annotations.value_type = 'Category'
+                AND annotations.value_id IN (?)",
               category_ids ]
       
       results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))

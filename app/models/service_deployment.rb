@@ -21,7 +21,7 @@ class ServiceDeployment < ActiveRecord::Base
     acts_as_trashable
   end
   
-  acts_as_annotatable
+  acts_as_annotatable :name_field => :endpoint
   
   belongs_to :service
   

@@ -29,7 +29,11 @@ Dir.chdir(File.join(File.dirname(__FILE__), "..")) do
                       :annotations => Annotation,
                       :annotation_versions => Annotation::Version,
                       :annotation_attributes => AnnotationAttribute,
-                      :annotation_value_seeds => AnnotationValueSeed
+                      :annotation_value_seeds => AnnotationValueSeed,
+                      :text_values => TextValue,
+                      :text_value_versions => TextValue::Version,
+                      :number_values => NumberValue,
+                      :number_value_versions => NumberValue::Version
   
     fixtures :all
   end
