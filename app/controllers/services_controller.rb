@@ -1,41 +1,41 @@
 # BioCatalogue: app/controllers/services_controller.rb
 #
-# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009-2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
 class ServicesController < ApplicationController
-  
+
   before_filter :disable_action, :only => [ :edit, :update ]
   before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity, :filtered_index, :favourite, :unfavourite ]
 
   before_filter :login_or_oauth_required, :only => [ :destroy, :check_updates, :archive, :unarchive, :favourite, :unfavourite ]
-  
+
   before_filter :parse_filtered_index_params, :only => :filtered_index
-  
+
   before_filter :parse_current_filters, :only => [ :index, :filtered_index, :filters ]
-  
+
   before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
-  
+
   before_filter :find_services, :only => [ :index, :filtered_index ]
-  
+
   before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples ]
 
   before_filter :find_favourite, :only => [ :favourite, :unfavourite ]
 
   before_filter :authorise, :only => [ :destroy, :check_updates, :archive, :unarchive, :favourite, :unfavourite ]
-  
+
   before_filter :check_if_user_wants_to_categorise, :only => [ :show ]
-  
+
   before_filter :setup_for_index_feed, :only => [ :index ]
-  
+
   before_filter :setup_for_activity_feed, :only => [ :activity ]
-  
+
   before_filter :set_page_title_suffix, :only => [ :index ]
-  
+
   before_filter :set_listing_type_local, :only => [ :index ]
-  
-  
+
+
   # GET /services
   # GET /services.xml
   def index
@@ -47,15 +47,15 @@ class ServicesController < ApplicationController
       format.bljson { render :json => BioCatalogue::Api::Bljson.index("services", @services).to_json }
     end
   end
-  
+
   # POST /filtered_index
   # Example Input (differs based on available filters):
   #
-  # { 
-  #   :filters => { 
-  #     :p => [ 67, 23 ], 
-  #     :tag => [ "database" ], 
-  #     :c => ["Austria", "south Africa"] 
+  # {
+  #   :filters => {
+  #     :p => [ 67, 23 ],
+  #     :tag => [ "database" ],
+  #     :c => ["Austria", "south Africa"]
   #   }
   # }
   def filtered_index
@@ -68,18 +68,18 @@ class ServicesController < ApplicationController
     @latest_version = @service.latest_version
     @latest_version_instance = @latest_version.service_versionified
     @latest_deployment = @service.latest_deployment
-    
+
     @all_service_version_instances = @service.service_version_instances
     @all_service_types = @service.service_types
-    
+
     @soaplab_server = @service.soaplab_server
-    
+
     @pending_responsibility_requests = @service.pending_responsibility_requests
-    
+
     if @latest_version_instance.is_a?(RestService)
       @grouped_rest_methods = @latest_version_instance.group_all_rest_methods_from_rest_resources
     end
-    
+
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder
@@ -91,7 +91,7 @@ class ServicesController < ApplicationController
   # GET /services/new.xml
   def new
     @service = Service.new
-    
+
     respond_to do |format|
       format.html # new.html.erb
       format.xml
@@ -142,17 +142,17 @@ class ServicesController < ApplicationController
       end
     end
   end
-  
+
   def categorise
     categories = [ ]
     anns = [ ]
-    
+
     categories = params[:categories] if params.has_key?(:categories)
-    
+
     unless categories.empty?
       anns = @service.create_annotations({ "category" => categories.split(',').compact.map{|x| x.strip}.reject{|x| x == ""} }, current_user)
     end
-    
+
     respond_to do |format|
       flash[:notice] = if anns.empty?
         "No new categories specified"
@@ -162,12 +162,12 @@ class ServicesController < ApplicationController
       format.html { redirect_to(service_url(@service)) }
     end
   end
-  
+
   def filters
     if is_api_request?
       get_filter_groups
     end
-    
+
     respond_to do |format|
       format.html # filters.html.erb
       format.xml # filters.xml.builder
@@ -175,7 +175,7 @@ class ServicesController < ApplicationController
       format.js { render :layout => false }
     end
   end
-  
+
   def summary
     respond_to do |format|
       format.html { disable_action }
@@ -183,7 +183,7 @@ class ServicesController < ApplicationController
       format.json { render :json => @service.to_custom_json("summary") }
     end
   end
-  
+
   def annotations
     respond_to do |format|
       format.html { disable_action }
@@ -191,7 +191,7 @@ class ServicesController < ApplicationController
       format.json { redirect_to(generate_include_filter_url(:as, @service.id, "annotations", :json)) }
     end
   end
-  
+
   def deployments
     respond_to do |format|
       format.html { disable_action }
@@ -199,7 +199,7 @@ class ServicesController < ApplicationController
       format.json { render :json => @service.to_custom_json("deployments") }
     end
   end
-  
+
   def variants
     respond_to do |format|
       format.html { disable_action }
@@ -207,14 +207,15 @@ class ServicesController < ApplicationController
       format.json { render :json => @service.to_custom_json("variants") }
     end
   end
-  
+
   def monitoring
-    if self.request.format.to_sym == :js
+    format = self.request.format.to_sym
+    if format == :js || format == :html
       @service_tests = @service.service_tests
       @test_script_service_tests  = @service.service_tests_by_type("TestScript")
       @url_monitor_service_tests  = @service.service_tests_by_type("UrlMonitor")
     end
-    
+
     respond_to do |format|
       format.html # monitoring.html.erb
       format.xml  # monitoring.xml.builder
@@ -222,18 +223,18 @@ class ServicesController < ApplicationController
       format.js { render :layout => false }
     end
   end
-  
+
   def check_updates
     # Submit a job to run the service updater
     BioCatalogue::ServiceUpdater.submit_job_to_run_service_updater(@service.id)
-    
+
     flash[:notice] = "The service updater has been scheduled to run. Any new updates found will be shown in the 'News' tab."
-    
+
     respond_to do |format|
       format.html { redirect_to @service }
     end
   end
-  
+
   def archive
     @service.archive!
     respond_to do |format|
@@ -242,7 +243,7 @@ class ServicesController < ApplicationController
       format.xml  { head :ok }
     end
   end
-  
+
   def unarchive
     @service.unarchive!
     respond_to do |format|
@@ -251,7 +252,7 @@ class ServicesController < ApplicationController
       format.xml  { head :ok }
     end
   end
-  
+
   def activity
     respond_to do |format|
       format.html  # activity.html.erb
@@ -259,7 +260,7 @@ class ServicesController < ApplicationController
       format.js { render :layout => false }
     end
   end
- 
+
   def favourite
     if @favourite
       respond_to do |format|
@@ -268,7 +269,7 @@ class ServicesController < ApplicationController
       end
     else
       new_favourite = Favourite.create(:favouritable_type => "Service", :favouritable_id => @service.id, :user_id => current_user.id)
-    
+
       respond_to do |format|
         format.html { disable_action }
         format.json {
@@ -279,18 +280,18 @@ class ServicesController < ApplicationController
                         :resource => service_url(@service)
                       }
                     }.to_json, :status => 201
-          else 
+          else
             error_to_back_or_home("Could not favourite service with ID #{params[:id]}.", false, 408)
           end
         }
       end
-    end  
+    end
   end
- 
+
   def unfavourite
     if @favourite
       deleted_favourite = Favourite.destroy(@favourite.id)
-    
+
       respond_to do |format|
         format.html { disable_action }
         format.json {
@@ -302,7 +303,7 @@ class ServicesController < ApplicationController
                       }
                     }.to_json, :status => 205
           else
-            error_to_back_or_home("Could not unfavourite service with ID #{params[:id]}.", false, 408)            
+            error_to_back_or_home("Could not unfavourite service with ID #{params[:id]}.", false, 408)
           end
         }
       end
@@ -313,13 +314,13 @@ class ServicesController < ApplicationController
       end
     end
   end
-  
+
   def examples
     @latest_version = @service.latest_version
     @latest_version_instance = @latest_version.service_versionified
-    
+
     @data_annotations = @service.data_example_annotations
-    
+
     @has_data_examples = false
     @data_annotations.each do |d|
       unless d[:annotations].blank?
@@ -327,9 +328,9 @@ class ServicesController < ApplicationController
         break
       end
     end
-    
+
     @test_script_service_tests = @service.service_tests_by_type("TestScript")
-    
+
     respond_to do |format|
       format.html  # examples.html.erb
       format.js { render :layout => false }
@@ -337,7 +338,7 @@ class ServicesController < ApplicationController
   end
 
   protected
-  
+
   def parse_sort_params
     sort_by_allowed = [ "created", "name", "annotated" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
@@ -345,7 +346,7 @@ class ServicesController < ApplicationController
     else
       "created"
     end
-    
+
     sort_order_allowed = [ "asc", "desc" ]
     @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
       params[:sort_order].downcase
@@ -353,15 +354,15 @@ class ServicesController < ApplicationController
       "desc"
     end
   end
-  
+
   def find_services
-    
+
     # Sorting
-    
+
     order = 'services.created_at DESC'
     order_field = nil
     order_direction = nil
-    
+
     case @sort_by
       when 'created'
         order_field = "created_at"
@@ -374,25 +375,25 @@ class ServicesController < ApplicationController
           order_field = "created_at"
         end
     end
-    
+
     case @sort_order
       when 'asc'
         order_direction = 'ASC'
       when 'desc'
         order_direction = "DESC"
     end
-    
+
     unless order_field.blank? or order_direction.nil?
       order = "services.#{order_field} #{order_direction}"
     end
-    
+
     # Filtering
-    
+
     conditions, joins = BioCatalogue::Filtering::Services.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-    
+
     @filter_message = "The services index has been filtered" unless @current_filters.blank?
-    
-    
+
+
     if self.request.format == :bljson
       finder_options = {
         :select => "services.id, services.name, services.archived_at",
@@ -400,7 +401,7 @@ class ServicesController < ApplicationController
         :conditions => conditions,
         :joins => joins
       }
-      
+
       @services = ActiveRecord::Base.connection.select_all(Service.send(:construct_finder_sql, finder_options))
     else
       # Must check if we need to include archived services or not
@@ -417,11 +418,11 @@ class ServicesController < ApplicationController
                                                   :conditions => conditions,
                                                   :joins => joins)
       end
-      
+
     end
-    
+
   end
-  
+
   def find_service
     begin
       @service = Service.find(params[:id])
@@ -433,22 +434,22 @@ class ServicesController < ApplicationController
       end
     end
   end
-  
+
   def find_favourite
     @favourite = Favourite.find(:first, :conditions => { :favouritable_type => "Service", :favouritable_id => params[:id], :user_id => current_user.id })
   end
-  
+
   def check_if_user_wants_to_categorise
     if !logged_in? and params.has_key?(:categorise)
       flash.now[:notice] = "Please login or register to categorise this service"
     end
   end
-  
+
   def setup_for_index_feed
     if self.request.format == :atom
       # Remove page param
       params.delete(:page)
-      
+
       # Set feed title
       @feed_title = "BioCatalogue.org - "
       @feed_title << if (text = BioCatalogue::Filtering.filters_text_if_filters_present(@current_filters)).blank?
@@ -458,31 +459,31 @@ class ServicesController < ApplicationController
       end
     end
   end
-  
+
   def setup_for_activity_feed
     if !is_api_request? or self.request.format == :atom
       @feed_title = "BioCatalogue.org - Service '#{BioCatalogue::Util.display_name(@service, false)}' - Latest Activity"
       @activity_logs = BioCatalogue::ActivityFeeds.activity_logs_for(:service, :style => :detailed, :scoped_object => @service, :since => Time.now.ago(120.days))
     end
   end
-  
+
   def set_page_title_suffix
     @page_title_suffix = (BioCatalogue::Filtering.filters_text_if_filters_present(@current_filters) || "Browse All Services")
   end
-  
+
   def set_listing_type_local
     default_type = :grid
     session_key = "services_#{action_name}_listing_type"
     set_listing_type(default_type, session_key)
   end
-  
+
   def authorise
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)
       error_to_back_or_home("You are not allowed to perform this action")
       return false
     end
-    
+
     return true
   end
-  
+
 end
