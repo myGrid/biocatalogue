@@ -209,8 +209,7 @@ class ServicesController < ApplicationController
   end
 
   def monitoring
-    format = self.request.format.to_sym
-    if format == :js || format == :html
+    unless is_api_request?
       @service_tests = @service.service_tests
       @test_script_service_tests  = @service.service_tests_by_type("TestScript")
       @url_monitor_service_tests  = @service.service_tests_by_type("UrlMonitor")
