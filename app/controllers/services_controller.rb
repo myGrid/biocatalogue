@@ -428,9 +428,9 @@ class ServicesController < ApplicationController
       @service = Service.find(params[:id])
     rescue
       if is_api_request?
-        respond_to do |format|
-          format.json { error_to_back_or_home("Service with ID #{params[:id]} not found.", false, 404) }
-        end
+        error_to_back_or_home("Service with ID #{params[:id]} not found.", false, 404)
+      else
+        raise
       end
     end
   end
