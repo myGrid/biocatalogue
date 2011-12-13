@@ -373,10 +373,13 @@ module BioCatalogue
       
       # Now the first item will have a '[' at the beginning, and the last item will have a ']'...
       # NOTE: array[-1] refers to the last item in the Array.
-      
-      filter_options_splitted[0] = filter_options_splitted[0][1..-1]
-      filter_options_splitted[-1] = filter_options_splitted[-1][0...-1] 
-      
+
+      # The value list can be empty so we should be careful here
+      unless filter_options_splitted.empty?
+        filter_options_splitted[0] = filter_options_splitted[0][1..-1]
+        filter_options_splitted[-1] = filter_options_splitted[-1][0...-1]
+      end
+
       return filter_options_splitted
     end
     
