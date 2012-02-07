@@ -352,7 +352,7 @@ protected
         
         format.xml  { render "api/errors", :status => options[:status] }
         format.json { render :json => { "errors" => messages }.to_json, :status => options[:status] }
-        format.atom { render :atom => "", :status => options[:status] }
+        format.atom { render :nothing => true, :status => options[:status] }
       end      
     end
   end
