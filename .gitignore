@@ -1,0 +1,15 @@
+.idea
+.rvmrc
+log/
+tmp/
+var/
+config/database.yml
+config/initializers/biocat_local.rb
+config/initializers/geokit_local.rb
+config/initializers/mail.rb
+config/memcache.yml
+config/preinitializer.rb
+config/solr.yml
+/db/schema.db
+/vendor/plugins/acts_as_solr/solr/solr/data/
+/vendor/plugins/acts_as_solr/solr/temp/
