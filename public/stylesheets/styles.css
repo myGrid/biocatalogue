@@ -577,14 +577,10 @@ body.sidebar-right #footer {
 }
 
 #footer_links, #licensing_info {
-  float:left;
-  position:relative;
-  left:50%;
-  text-align:left;
+  text-align: center;
 }
 
 #licensing_info {
-  left:53%;
   text-align:center;
   font-size:85%;
   margin-bottom:1em;
@@ -593,7 +589,6 @@ body.sidebar-right #footer {
 #footer_links ul, #licensing_info ul {
   list-style:none;
   position:relative;
-  left:-50%;
 }
 
 #footer_links ul li, #licensing_info ul li {
@@ -601,8 +596,7 @@ body.sidebar-right #footer {
   list-style-image: none;
   margin: 0;
   padding: 0;
-  float: left;
-  position:relative;
+  display: inline;
 }
 
 #footer_links ul li.separator, #licensing_info ul li.separator {
@@ -610,7 +604,7 @@ body.sidebar-right #footer {
 }
 
 #footer_links ul li a, #footer_links ul li a:link, #footer_links ul li a:visited, #licensing_info ul li {
-  display: block;
+  display: inline;
   margin: 0 1em;
   color: #333333;
 }
