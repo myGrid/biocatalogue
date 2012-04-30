@@ -68,6 +68,13 @@ class SoapServicesController < ApplicationController
   #  }
   def create
     params[:soap_service] ||= {} if is_api_request? # Sanitize for API Request
+
+    # Rails' XML parser only allows for one root node, so annotations are stored in the soap_service node.
+    # Extract them here.
+    if params[:soap_service][:annotations] && params[:annotations].nil?
+      params[:annotations] = params[:soap_service].delete(:annotations)
+    end
+
     wsdl_location = params[:soap_service][:wsdl_location] || ""
     wsdl_location = Addressable::URI.parse(wsdl_location).normalize.to_s unless wsdl_location.blank?
     
@@ -75,8 +82,8 @@ class SoapServicesController < ApplicationController
       @error_message = "Please provide a valid WSDL URL"
       respond_to do |format|
         format.html { render :action => "new" }
-        # TODO: implement format.xml  { render :xml => '', :status => 406 }
-        format.json { error_to_back_or_home("Please provide a valid WSDL URL", false, 406) }
+        format.xml  { error_to_back_or_home("Please provide a valid WSDL URL", false, 422) }
+        format.json { error_to_back_or_home("Please provide a valid WSDL URL", false, 422) }
       end
     else
       @soap_service = SoapService.new(:wsdl_location => wsdl_location)
@@ -88,7 +95,7 @@ class SoapServicesController < ApplicationController
       if !@existing_service.nil?
         respond_to do |format|
           format.html { render :action => "new" }
-          # TODO: implement format.xml  { render :xml => '', :status => :unprocessable_entity }
+          format.xml  { render :json => @existing_service.to_json, :status => 403, :location => @existing_service }
           format.json { render :json => @existing_service.to_json, :status => 403, :location => @existing_service }
         end
       else
@@ -109,7 +116,7 @@ class SoapServicesController < ApplicationController
             if success
               flash[:notice] = 'Service was successfully submitted.'
               format.html { redirect_to(@soap_service.service(true)) }
-              # TODO: implement format.xml  { render :xml => @soap_service, :status => :created, :location => @soap_service }
+              format.xml  { head :created, :location => service_url(@soap_service.service(true)) }
               format.json { 
                 render :json => { 
                   :success => { 
@@ -123,7 +130,7 @@ class SoapServicesController < ApplicationController
             else
               flash.now[:error] = 'An error has occurred with the submission. Please <a href="/contact">contact us</a> to report this. Thank you.'
               format.html { render :action => "new" }
-              # TODO: implement format.xml  { render :xml => '', :status => 500 }
+              format.xml  { error_to_back_or_home("An error has occurred with the submission.", false, 500) }
               format.json { error_to_back_or_home("An error has occurred with the submission.", false, 500) }
             end
           else
