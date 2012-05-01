@@ -29,6 +29,10 @@ USE_EVENT_LOG = true
 #are ignored and connection will be made to a server directly. 
 HTTP_PROXY = true
 
+# Set the user agent for any URI open calls. Set this to something that
+# will identify your installation should errors occur.
+HTTP_USER_AGENT = "BioCatalogue (Ruby/#{RUBY_VERSION})"
+
 # ====================================================
 
 

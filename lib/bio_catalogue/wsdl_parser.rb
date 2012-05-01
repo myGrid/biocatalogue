@@ -185,7 +185,7 @@ module BioCatalogue
       # }
       #
       def self.get_wsdl_hash_and_file_contents(wsdl_url)
-        wsdl_file_contents  = open(wsdl_url.strip(), :proxy => HTTP_PROXY).read
+        wsdl_file_contents  = open(wsdl_url.strip(), :proxy => HTTP_PROXY, "User-Agent" => HTTP_USER_AGENT).read
         wsdl_hash = Hash.better_from_xml(wsdl_file_contents, :preserve_attributes => true)
         if wsdl_hash['definitions'].keys == MOBY_STYLE_WSDL_KEYS
           wsdl_hash = moby_wsdl_adapter(wsdl_hash)

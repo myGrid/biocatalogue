@@ -121,7 +121,7 @@ module BioCatalogue
         wsdl_file_contents = nil
         begin
           SystemTimer.timeout(20.seconds) do
-            wsdl_file_contents  = open(wsdl.strip(), :proxy => HTTP_PROXY).read
+            wsdl_file_contents  = open(wsdl.strip(), :proxy => HTTP_PROXY, "User-Agent" => HTTP_USER_AGENT).read
           end
         
           wsdl_doc = get_wsdl_doc(get_parsed_wsdl(wsdl))
