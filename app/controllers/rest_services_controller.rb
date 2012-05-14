@@ -57,22 +57,31 @@ class RestServicesController < ApplicationController
   end
 
   # POST /rest_services
-  # Example Input:
+  # Example API Input:
   #
   #  {
   #   "rest_service" => {
-  #      "name" => "official name"
-  #    },
-  #    "endpoint" => "http://www.example.com",
-  #    "annotations" => {
-  #      "documentation_url" => "doc",
-  #      "alternative_names" => ["alt1", "alt2", "alt3"],
-  #      "tags" => ["t1", "t3", "t2"],
-  #      "description" => "desc",
-  #      "categories" => [ <list of category URIs> ]
+  #      "name" => "official name",
+  #      "endpoint" => "http://www.example.com",
+  #      "annotations" => {
+  #        "documentation_url" => "doc",
+  #        "alternative_names" => ["alt1", "alt2", "alt3"],
+  #        "tags" => ["t1", "t3", "t2"],
+  #        "description" => "desc",
+  #        "categories" => [ <list of category URIs> ]
+  #      }
   #    }
   #  }
   def create
+    # Rails' XML parser only allows for one root node, so everything is stored in the rest_service node.
+    # Extract the various parts here.
+    if params[:rest_service][:endpoint] && params[:endpoint].nil?
+      params[:endpoint] = params[:rest_service].delete(:endpoint)
+    end
+    if params[:rest_service][:annotations] && params[:annotations].nil?
+      params[:annotations] = params[:rest_service].delete(:annotations)
+    end
+
     endpoint = params[:endpoint] || ""
     endpoint.chomp!
     endpoint.strip!
@@ -83,8 +92,8 @@ class RestServicesController < ApplicationController
       flash.now[:error] = "Please provide a valid endpoint URL"
       respond_to do |format|
         format.html { render :action => "new" }
-        # TODO: implement format.xml  { render :xml => '', :status => 406 }
-        format.json { error_to_back_or_home("Please provide a valid endpoint URL", false, 406) } 
+        format.xml  { error_to_back_or_home("Please provide a valid endpoint URL", false, 422) }
+        format.json { error_to_back_or_home("Please provide a valid endpoint URL", false, 422) }
       end
     else
       if is_api_request? # Sanitize for API Request
@@ -113,13 +122,20 @@ class RestServicesController < ApplicationController
         existing_service.latest_version.service_versionified.process_annotations_data(annotations_data, current_user)
         
         respond_to do |format|
-          flash[:notice] = "The service you specified already exists in the BioCatalogue. See below. Any information you provided has been added to this service."
+          flash[:notice] = "The service you specified already exists in #{SITE_NAME}. See below. Any information you provided has been added to this service."
           format.html { redirect_to existing_service }
-          # TODO: implement format.xml  { render :xml => '', :status => :unprocessable_entity }
+          format.xml {
+            render :xml => {
+              :success => {
+                :message => "The REST service you specified already exists in #{SITE_NAME}. Any information you provided has been added to this service.",
+                :resource => service_url(existing_service)
+              }
+            }.to_xml, :status => 202
+          }
           format.json { 
             render :json => { 
               :success => { 
-                :message => "The REST service you specified already exists in the BioCatalogue. Any information you provided has been added to this service.", 
+                :message => "The REST service you specified already exists in #{SITE_NAME}. Any information you provided has been added to this service.",
                 :resource => service_url(existing_service)
               }
             }.to_json, :status => 202
@@ -130,7 +146,8 @@ class RestServicesController < ApplicationController
         if is_api_request? && has_missing_elements
           respond_to do |format|
             format.html { disable_action }
-            format.json { error_to_back_or_home("Please provide a valid name for the REST Service you wish to create.", false, 406) } 
+            format.xml  { error_to_back_or_home("Please provide a valid name for the REST Service you wish to create.", false, 422) }
+            format.json { error_to_back_or_home("Please provide a valid name for the REST Service you wish to create.", false, 422) }
           end
         else
           # Now you can submit the service...
@@ -141,12 +158,17 @@ class RestServicesController < ApplicationController
             if @rest_service.submit_service(endpoint, current_user, params[:annotations].clone)
               success_msg = 'Service was successfully submitted.'
               success_msg += "<br/>You may now add endpoints via the Endpoints tab."
+
+              # API requests can create rest_resources along wth the service, to save having to make multiple requests
+              if is_api_request? && params[:rest_service][:rest_resources]
+                res = @rest_service.mine_for_resources(params[:rest_service][:rest_resources].join("\n"),
+                                                 @rest_service.service_deployments[0].endpoint, current_user)
+              end
               
               flash[:notice] = success_msg
               format.html { redirect_to(@rest_service.service(true)) }
-              # TODO: implement format.xml  { render :xml => @rest_service, :status => :created, :location => @rest_service }
-              # format.json { render :json => @rest_service.service(true).to_json }
-              format.json { 
+              format.xml  { head :created, :location => service_url(@rest_service.service(true)) }
+              format.json {
                 render :json => { 
                   :success => { 
                     :message => "The REST Service '#{@rest_service.name}' has been successfully submitted.", 
@@ -159,7 +181,7 @@ class RestServicesController < ApplicationController
                 "Please <a href='/contact'>contact us</a> if you need assistance with this."
               flash.now[:error] = err_text
               format.html { render :action => "new" }
-              # TODO: implement format.xml  { render :xml => '', :status => 500 }
+              format.xml  { error_to_back_or_home("An error has occurred with the submission.", false, 500) }
               format.json { error_to_back_or_home("An error has occurred with the submission.", false, 500) } 
             end
           end

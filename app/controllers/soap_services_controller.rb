@@ -52,25 +52,25 @@ class SoapServicesController < ApplicationController
   end
 
   # POST /soap_services
-  # Example Input
+  # Example API Input
   #
   #  {
   #    "soap_service" => {
-  #      "wsdl_location" => "http://webservices.genouest.org/typedservices/InterProScan.wsdl" 
-  #    },
-  #    "annotations" => {
-  #      "documentation_url" => "doc",
-  #      "alternative_names" => ["alt1", "alt2", "alt3"],
-  #      "tags" => ["t1", "t3", "t2"],
-  #      "description" => "desc",
-  #      "categories" => [ <list of category URIs> ]
+  #      "wsdl_location" => "http://webservices.genouest.org/typedservices/InterProScan.wsdl",
+  #      "annotations" => {
+  #        "documentation_url" => "doc",
+  #        "alternative_names" => ["alt1", "alt2", "alt3"],
+  #        "tags" => ["t1", "t3", "t2"],
+  #        "description" => "desc",
+  #        "categories" => [ <list of category URIs> ]
+  #      }
   #    }
   #  }
   def create
     params[:soap_service] ||= {} if is_api_request? # Sanitize for API Request
 
-    # Rails' XML parser only allows for one root node, so annotations are stored in the soap_service node.
-    # Extract them here.
+    # Rails' XML parser only allows for one root node, so annotations are stored in the soap_service node in API reqs.
+    # Retrieve them here.
     if params[:soap_service][:annotations] && params[:annotations].nil?
       params[:annotations] = params[:soap_service].delete(:annotations)
     end
