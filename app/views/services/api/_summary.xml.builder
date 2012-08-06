@@ -33,7 +33,7 @@ parent_xml.tag! "summary",
   
   # <alternativeName> *
   all_alternative_name_annotations_for_service(service).each do |ann|
-    parent_xml.alternativeName ann.value
+    parent_xml.alternativeName ann.value_content
   end
   
   # <category> *
@@ -70,7 +70,7 @@ parent_xml.tag! "summary",
   # <documentationUrl> *
   service.service_version_instances.each do |service_instance|
     service_instance.annotations_with_attribute("documentation_url", true).each do |ann|
-      parent_xml.documentationUrl ann.value 
+      parent_xml.documentationUrl ann.value_content
     end
   end
   
@@ -82,55 +82,55 @@ parent_xml.tag! "summary",
     end
     
     service_instance.annotations_with_attribute("description", true).each do |ann|
-      dc_xml_tag parent_xml, :description, ann.value
+      dc_xml_tag parent_xml, :description, ann.value_content
     end
       
   end
   
   # <tag> *
   BioCatalogue::Annotations.get_tag_annotations_for_annotatable(service).each do |ann|
-    parent_xml.tag ann.value, xlink_attributes(uri_for_path(BioCatalogue::Tags.generate_tag_show_uri(ann.value.name)), :title => xlink_title("Tag - #{ann.value}")), :resourceType => "Tag"
+    parent_xml.tag ann.value_content, xlink_attributes(uri_for_path(BioCatalogue::Tags.generate_tag_show_uri(ann.value.name)), :title => xlink_title("Tag - #{ann.value_content}")), :resourceType => "Tag"
   end
   
   # <cost> *
   service.service_deployments.each do |service_deployment|
     service_deployment.annotations_with_attribute("cost", true).each do |ann|
-      parent_xml.cost ann.value 
+      parent_xml.cost ann.value_content
     end
   end
   
   # <license> *
   service.service_version_instances.each do |service_instance|
     service_instance.annotations_with_attribute("license", true).each do |ann|
-      parent_xml.license ann.value
+      parent_xml.license ann.value_content
     end
   end
 
   # <usageCondition> *
   service.service_deployments.each do |service_deployment|
     service_deployment.annotations_with_attribute("usage_condition", true).each do |ann|
-      parent_xml.usageCondition ann.value 
+      parent_xml.usageCondition ann.value_content
     end
   end
 
   # <contact> *
   service.service_deployments.each do |service_deployment|
     service_deployment.annotations_with_attribute("contact", true).each do |ann|
-      parent_xml.contact ann.value 
+      parent_xml.contact ann.value_content
     end
   end
   
   # <publication> *
   service.service_version_instances.each do |service_instance|
     service_instance.annotations_with_attribute("publication", true).each do |ann|
-      parent_xml.publication ann.value 
+      parent_xml.publication ann.value_content
     end
   end
 
   # <citation> *
   service.service_version_instances.each do |service_instance|
     service_instance.annotations_with_attribute("citation", true).each do |ann|
-      parent_xml.citation ann.value 
+      parent_xml.citation ann.value_content
     end
   end
   
