@@ -578,7 +578,7 @@ private
       when "locations"
         self.service_deployments.each { |item| list << BioCatalogue::Api::Json.location(item.country, item.city) }
       when "tag"
-        BioCatalogue::Annotations.get_tag_annotations_for_annotatable(service).each { |ann| list << { "name" => ann.value_content } }
+        BioCatalogue::Annotations.get_tag_annotations_for_annotatable(self).each { |ann| list << { "name" => ann.value_content } }
         list = BioCatalogue::Api::Json.tags_collection(list)
       when "category"
         self.annotations_with_attribute("category").each do |ann| 
