@@ -32,23 +32,28 @@
 			
     	<div id="wrapper">
 
+        <div id="header_container" style="background-image: url(../images/transparency/central_part_small.png);     max-height: 109px; padding-top: 8px ">
+          <div id="header">
+            <div id="logo-floater">
+                <%= link_to image_tag(SITE_LOGO, :alt => SITE_BASE_HOST), "/" %>
+            </div>
+
+            <%= render :partial => "widgets/primary_links" -%>
+            <%= render :partial => "widgets/login_links" -%>
+            <br style="clear:both"/>
+
+            <div id="bar" style="height: 44px; background: url(../images/transparency/central_bar_big.png) repeat-x 50% 0; margin-top: 2px">
+              <div class="right-corner"><div class="left-corner">
+                <%= render :partial => "widgets/login_box" -%>
+                <%= render :partial => "widgets/action_bar" -%>
+              </div></div>
+            </div>
+          </div> <!-- /header -->
+        </div>
+
     		<div id="container" class="clear-block">
-					
-      		<div id="header">
-						<div id="logo-floater">
-		            <%= link_to image_tag("logo_small.png", :alt => "www.biocatalogue.org"), "/" %>
-		        </div>
-						
-						<%= render :partial => "widgets/primary_links" -%>
-									
-						<%= render :partial => "widgets/login_links" -%>
-					</div> <!-- /header -->
-			
-			      
+
 			    <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-			    	<%= render :partial => "widgets/login_box" -%>
-						<%= render :partial => "widgets/action_bar" -%>
-						
 						<%= render :partial => "widgets/breadcrumbs_bar" -%>
           
 						<div id="content">

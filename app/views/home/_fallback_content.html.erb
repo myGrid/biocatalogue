@@ -15,7 +15,7 @@
     <div style="width: 550px; margin: auto; margin-top: 0.5em;">
 			<p class="home_heading">BioCatalogue: providing a curated catalogue<br />of Life Science Web Services.</p>
       <center>
-      	<% rounded "#E9F7CC", "#333", "auto" do %>
+      	<% rounded nil, "#333", "auto" do %>
 				  BioCatalogue currently has
 				  <strong><%= link_to pluralize(Service.count, "service"), services_path -%></strong> and
 				  <strong><%= link_to pluralize(User.count_activated, "member"), users_url -%></strong>
@@ -30,7 +30,7 @@
 				<!-- CONTENT BEGIN -->
 				<img class="round_box_title" src="/images/search_title.gif" alt="Search for Web Services" />
 				<p>
-				  The easiest way to <em>find the Web Service</em> you are looking for is to use the BioCatalogue 
+				  The easiest way to <em>find the Web Service</em> you are looking for is to use the BioCatalogue
 				  search functionality below (also available in the action bar at the top of every page).
 				</p>
 				<p>
@@ -77,7 +77,7 @@
 				<!-- CONTENT BEGIN -->
 				<img class="round_box_title" src="/images/browse_title.gif" alt="Browse all Web Services" />
 				<p>
-				  You can have an overview of the content of the BioCatalogue by <em>browsing our registry</em> and 
+				  You can have an overview of the content of the BioCatalogue by <em>browsing our registry</em> and
 				  sorting or filtering down the list of Web Services registered.
 				</p>
 				<div class="center" style="height: 70px;">

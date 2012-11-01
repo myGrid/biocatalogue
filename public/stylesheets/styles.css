@@ -486,10 +486,10 @@ a:hover.change_pwd {
 }
 
 #wrapper {
-  background: #e9f7cc url(../images/central_part_small.gif) repeat-x top center;
+  background: #e9f7cc repeat-x top center;
 }
 
-#wrapper #container {
+#wrapper #container, #header {
   margin: 0 auto;
   padding: 0 20px;
   max-width: 1270px;
@@ -497,10 +497,9 @@ a:hover.change_pwd {
 
 #wrapper #container #header {
     padding-top: 8px;
-    height: 56px;
 }
 
-#wrapper #container #header #logo-floater {
+#logo-floater {
   position: absolute;
   /*padding-top: 8px;*/
 }
@@ -512,7 +511,6 @@ body.sidebar-right {
 
 /* We must define 100% width to avoid the body being too narrow for near-empty pages */
 #wrapper #container #center {
-  float: left;
   width: 100%;
 }
 
@@ -537,27 +535,26 @@ body.sidebar-right #squeeze {
 
 /* Now we add the backgrounds for the main content shading */
 #wrapper #container #center #squeeze {
-  background: #fff url(../images/central_bar_big.png) repeat-x 50% 0;
-  position: relative;
+  background: #fff;
   /*min-width: 600px;*/
   min-width: 980px;
+  zindex: -1;
 }
 
 #wrapper #container #center .right-corner {
-  background: transparent url(../images/right_corner.gif) no-repeat 100% 0;
-  position: relative;
+  background: transparent url(../images/transparency/right_corner_bottom.png) no-repeat 100% 0;
   /*left: 10px;*/
-  left: 5px;
+  margin-left: 5px;
+  margin-right: -5px;
   /*border: 1px #ff0000 solid;*/
   /*min-width: 600px;*/
   min-width: 980px;
 }
 
 #wrapper #container #center .right-corner .left-corner {
-  padding: 50px 25px 3em 25px;
-  background: transparent url(../images/left_corner.gif) no-repeat 0 0;
+  padding: 6px 25px 3em 25px;
+  background: transparent url(../images/transparency/left_corner_bottom.png) no-repeat 0 0;
   margin-left: -10px;
-  position: relative;
   /*left: 1px;*/
   min-height: 400px;
 }
@@ -646,59 +643,70 @@ body.sidebar-right #footer {
 	margin-top: 1em;
 }
 
-#wrapper #container #action_bar {
-  position: absolute;
-  top: 10px;
-  left: 30px;
+#action_bar {
   z-index: 3;
   font-size: 108%;
 	font-weight: bolder;
 	vertical-align: middle;
 	color: #333;
+  position: absolute;
+  top: 10px;
+  left: 30px;
 }
 
-#wrapper #container #action_bar .search_form {
+#action_bar .search_form {
+  /*
 	vertical-align: middle;
+	*/
 }
 
-#wrapper #container #action_bar #search_dropdown_button {
+#action_bar #search_dropdown_button {
+	/*
 	display:-moz-inline-block;
 	display:-moz-inline-box;
 	display: inline-block;
-	vertical-align: baseline;
+	vertical-align: baseline; */
+  display: inline-block;
+  overflow: auto;
+  vertical-align: middle;
 }
 
-#wrapper #container #action_bar #search_dropdown_button * {
-	vertical-align: middle;
+#action_bar #search_dropdown_button * {
+	/*vertical-align: middle;*/
 }
 
-#wrapper #container #action_bar #search_dropdown_button ul li li {
+#action_bar #search_dropdown_button ul li li {
 	width: 9em;
 }
 
-#wrapper #container #action_bar #action_links {
+#action_bar #action_links {
+	/*
 	padding-left: 5px;
 	vertical-align: middle;
+	*/
 }
 
-#wrapper #container #action_bar #action_links  * {
+#action_bar #action_links  * {
+	/*
 	vertical-align: middle;
+	*/
 }
 
-#wrapper #container #action_bar #action_links a {
+#action_bar #action_links a {
 	padding: 0 12px;
-	background: transparent url(../images/green_separator.gif) no-repeat left;
+	background: transparent url(../images/transparency/separator.png) no-repeat left;
 	vertical-align: baseline;
 	text-align: center;
 	text-decoration: none;
+  display: inline-block;
 }
 
-#wrapper #container #action_bar #action_links a .label {
+#action_bar #action_links a .label {
 	text-decoration: underline;
 	vertical-align: baseline;
 }
 
-#wrapper #container #action_icons {
+#action_icons {
 	position: absolute;
 	top: 14px;
 	right: 10px;
@@ -706,17 +714,17 @@ body.sidebar-right #footer {
 	vertical-align: middle;
 }
 
-#wrapper #container #action_icons * {
+#action_icons * {
 	vertical-align: middle;
 }
 
-#wrapper #container #action_icons a {
+#action_icons a {
 	padding: 0 5px 0 10px;
-	background: transparent url(../images/green_separator.gif) no-repeat left;
+	background: transparent url(../images/transparency/separator.png) no-repeat left;
 	vertical-align: middle;
 }
 
-#wrapper #container #action_bar img {
+#action_bar img {
 	vertical-align: middle;
 }
 
@@ -907,7 +915,7 @@ span.clear {
 }
 
 /* BEGIN Login box styles */
-#wrapper #container #header #login_links {
+#login_links {
 	clear: both;
 	float: right;
 	padding: 15px 0 0 0;
@@ -918,7 +926,7 @@ span.clear {
 	font-size: 85%;
 }
 
-#wrapper #container #header #login_links .inner {
+#login_links .inner {
 	background-color: #E9F7CC;
 	border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -926,7 +934,7 @@ span.clear {
 	padding: 5px 6px;
 }
 
-#wrapper #container #header #login_links .sep {
+#login_links .sep {
 	color: #999;
 	margin: 0 0.4em;
 }
@@ -944,7 +952,7 @@ body.sidebar-right #wrapper #container #header #login_links {
 	width: 320px;
 	height: auto;
 	margin: 0 0 auto auto;
-	z-index: 4;
+	z-index: 100;
 	padding: 7px;
 }
 
@@ -1107,13 +1115,11 @@ body.sidebar-right #login_box {
 
 .liquid-round .top span {
 	display: block;
-	position: relative;
 	height: 12px;
 	background: url(../images/round_box_2_top_right.gif) no-repeat right top;
 }
 
 .liquid-round .center-content {
-	position: relative;
 	background: #f8f8f8 url(../images/round_box_2_right.gif) repeat-y right top;
 	padding: 1px 0.8em;
 	margin-left: 3px;
@@ -1137,7 +1143,6 @@ body.sidebar-right #login_box {
 
 .liquid-round .bottom span {
 	display: block;
-	position: relative;
 	height: 13px;
 	background: url(../images/round_box_2_bottom_right.gif) no-repeat right bottom;
 }
@@ -1559,8 +1564,9 @@ ul.simple_list li {
 	line-height: 1.7;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
-	background-color: #f8fbed;
+	-webkit-border-radi us: 6px;
+  background-image: url("../images/transparency/lighten_bg.png");
+  background-size: 100% 100%;
 	border: 1px solid #CCC;
 	padding: 0.8em 1em;
 }
@@ -1752,8 +1758,8 @@ ul.tabbernav li a
 	margin-right: 4px;
 	border: 1px solid #DDD;
 	border-bottom: none;
-	background-image: url('/images/tab-bg.png');
-	background-position: top;
+	background-image: url('/images/transparency/tab-bg.png');
+	background-position: bottom;
 	background-repeat: repeat-x;
 	background-color: #E9F7CC;
 	text-decoration: none;
@@ -1871,8 +1877,8 @@ ul.tabbernav li.tabberactive a:hover
 	margin-bottom: 5px;
 	border: 1px solid #DDD;
 	border-right: none;
-	background-image: url('/images/tab-bg.png');
-	background-position: top;
+	background-image: url('/images/transparency/tab-bg.png');
+	background-position: bottom;
 	background-repeat: repeat-x;
 	background-color: #E9F7CC;
 	text-decoration: none;
@@ -3518,3 +3524,28 @@ a.globalise_param_link {
   color: #635F70;
 }
 
+#header #bar .right-corner {
+  background: transparent url(../images/transparency/right_corner_top.png) no-repeat 100% 0;
+  position: relative;
+  /*left: 10px;*/
+  left: 5px;
+  /*border: 1px #ff0000 solid;*/
+  /*min-width: 600px;*/
+  min-width: 980px;
+}
+
+#header #bar .right-corner .left-corner {
+  background: transparent url(../images/transparency/left_corner_top.png) no-repeat 0 0;
+  margin-left: -10px;
+  position: relative;
+  /*left: 1px;*/
+  height: 44px;
+}
+
+.rcontainer > .rtop > div,
+.rcontainer > .rbottom > div,
+.rcontainer > .rcontain,
+.biocat_green
+{
+  background-color: #e9f7cc;
+}

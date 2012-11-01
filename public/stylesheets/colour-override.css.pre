@@ -1,0 +1,24 @@
+/* This file is intended to be used as a convenient way of replacing BioCatalogues main (green) colour scheme */
+
+html, body, .green_box, .green_highlight, #wrapper, #login_links .inner, #login_boxm, .pagination span.current,
+.pagination a:hover, .pagination a:focus, .pagination .page_info, ul.tabbernav li a, .vtabs_container .vtabs_tab_bar ul li a,
+.box_info, .biocat_green, .redbox_contents .head, .rcontainer > .rtop > div, .rcontainer > .rbottom > div, .rcontainer > .rcontain,
+.vtabs_container .vtabs_tab_bar ul li a:hover, ul.tabbernav li a:hover, #home_content .section_box, #login_box {
+  background-color: #E9F7CC; /* Main colour - Light */
+}
+
+#header_container {
+  background-color: #D3F78A; /* Header colour - Slightly Darker */
+}
+
+.vtabs_container .vtabs_tab_bar ul li a:hover,
+ul.tabbernav li a:hover {
+  background-color: #BFE76F; /* Secondary colour - used on tabs - Slightly Darker still */
+}
+
+/*
+BioCatalogue defaults:
+  Original main light green:  #E9F7CC
+  Original header green:      #D3F78A
+  Original secondary green:   #BFE76F
+*/

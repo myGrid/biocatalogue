@@ -9,7 +9,7 @@
 %>
 
 <div class="search_box" style="float:right; margin-left: 2em;">
-	<% rounded "#e9f7cc", "#333", "auto" do %>
+	<% rounded nil, "#333", "auto" do %>
 		<% form_tag(search_url, :method => :get) do %>
 		  <b>Search:</b>
 			<%= text_field_tag :q, @query || params[:q], :id => "search_show_page_search_field", :size => 30, :autocomplete => "off" -%>

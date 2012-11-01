@@ -17,7 +17,7 @@
 			
 			<div id="home_stats_bar">
 		    <center>
-		    	<% rounded "#E9F7CC", "#333", "100%" do %>
+		    	<% rounded nil, "#333", "100%" do %>
 					  The BioCatalogue currently has
 					  <strong><%= link_to pluralize(Service.count, "service"), services_path -%></strong>,
 						<strong><%= link_to pluralize(ServiceProvider.count, "service provider"), service_providers_path -%></strong> and
