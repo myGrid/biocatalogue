@@ -8,7 +8,7 @@ class ContactMailer < ApplicationMailer
   def feedback(name, msg_subject, content)
     recipients FEEDBACK_EMAIL_ADDRESS
     from SENDER_EMAIL_ADDRESS
-    subject "BioCatalogue feedback from #{name}"
+    subject "#{SITE_NAME} feedback from #{name}"
     
     body :name => name,
          :msg_subject => msg_subject, 

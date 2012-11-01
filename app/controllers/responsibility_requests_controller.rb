@@ -196,10 +196,10 @@ class ResponsibilityRequestsController < ApplicationController
     pending = ResponsibilityRequest.find(:all, :conditions => ["user_id=? AND status = ? ", current_user.id, 'pending']).first(limit)
     if req || pending.count == limit
       msg = "<p> You are not allowed to perform this action. You have reached your limit of #{limit} pending requests. </p>"
-      msg = msg + "Please <a href='#{SITE_BASE_HOST}/contact'> contact</a> BioCatalogue for further assistance. "
+      msg = msg + "Please <a href='#{SITE_BASE_HOST}/contact'> contact</a> #{SITE_NAME} for further assistance. "
       flash[:error] = msg
       redirect_to service_url(service)
     end
   end
-  
+
 end

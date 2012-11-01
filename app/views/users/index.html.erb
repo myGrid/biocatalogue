@@ -11,8 +11,8 @@
 <% t "Index" -%>
 
 <h1>
-	Members of the BioCatalogue
-	<%= help_icon_with_tooltip("<b>Members</b> are registered users of the BioCatalogue.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' below.<br/><br/>#{sign_up_benefits_text}") -%>
+	Members of <%= SITE_NAME -%>
+	<%= help_icon_with_tooltip("<b>Members</b> are registered users of #{SITE_NAME}.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' below.<br/><br/>#{sign_up_benefits_text}") -%>
 </h1>
 
 <% unless logged_in? %>

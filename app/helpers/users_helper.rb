@@ -31,17 +31,17 @@ module UsersHelper
   
   def external_account_field_help_icon
     help_icon_with_tooltip(content_tag(:p, rpx_accounts_provider_logos, :class => "center") + 
-      content_tag(:p, "You can link one external account to your BioCatalogue account to make it 
+      content_tag(:p, "You can link one external account to your #{SITE_NAME} account to make it
         easier to sign in. We currently support the following providers: " +
         list_of_rpx_accounts))
   end
   
   def account_sign_in_options_info
     if ENABLE_RPX
-      "To sign in to the BioCatalogue you can use either a <strong>BioCatalogue specific account</strong> (i.e.: an email address and password registered here) 
+      "To sign in to #{SITE_NAME} you can use either a <strong>#{SITE_NAME} specific account</strong> (i.e.: an email address and password registered here)
       or an external account (i.e.: an existing #{list_of_rpx_accounts} account that you link to here)."
     else
-      "To sign in to the BioCatalogue use the email address and password you registered with"
+      "To sign in to #{SITE_NAME} use the email address and password you registered with"
     end
   end
    

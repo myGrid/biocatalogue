@@ -401,7 +401,7 @@ class SoapService < ActiveRecord::Base
               unless found_or_created_port_ids.include?(port.id)
                 update_found = true
                 port.archive!
-                changes.add_entry("The port '#{port.name}' has been removed from the WSDL (and thus archived in the BioCatalogue).")
+                changes.add_entry("The port '#{port.name}' has been removed from the WSDL (and thus archived in #{SITE_NAME}).")
               end
             end
           
@@ -599,7 +599,7 @@ class SoapService < ActiveRecord::Base
                       unless found_or_created_node_ids[node_type].include?(node.id)
                         update_found = true
                         node.archive!
-                        changes.add_entry("The #{node_type} '#{node.name}' for the operation '#{existing_op.name}' has been removed from the WSDL (and thus archived in the BioCatalogue).")
+                        changes.add_entry("The #{node_type} '#{node.name}' for the operation '#{existing_op.name}' has been removed from the WSDL (and thus archived in #{SITE_NAME}).")
                       end
                     end
                   end
@@ -614,7 +614,7 @@ class SoapService < ActiveRecord::Base
               unless found_or_created_operation_ids.include?(operation.id)
                 update_found = true
                 operation.archive!
-                changes.add_entry("The operation '#{operation.name}' (on port '#{operation.parent_port_type}') has been removed from the WSDL (and thus archived in the BioCatalogue).")
+                changes.add_entry("The operation '#{operation.name}' (on port '#{operation.parent_port_type}') has been removed from the WSDL (and thus archived in #{SITE_NAME}).")
               end
             end
           end

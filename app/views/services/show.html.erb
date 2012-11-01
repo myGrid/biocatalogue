@@ -86,7 +86,7 @@
 	                  <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'), 
 	                              service_path(@service),
 	                              :method => :delete, 
-	                              :confirm => "Are you sure you want to remove this service from the BioCatalogue? This will delete everything to do with this service, including all metadata provided by the community.") -%>
+	                              :confirm => "Are you sure you want to remove this service from #{SITE_NAME}? This will delete everything to do with this service, including all metadata provided by the community.") -%>
 	                </li>
                 <% end %>
               </ul>

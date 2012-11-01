@@ -15,9 +15,9 @@
 <div style="width: 100%;">
 
   <!--BASE_URL HELP BOX-->
-  <div class="box_info_standout" style="position:absolute; font-size:90%; margin-right:25px; padding:7px 10px; left:550px; min-width:300px;">
+  <div class="box_info_standout" style="width: 45%; float: right; margin-right: 2em;">
     <b>Note:</b> please do not specify parameterised URLs or URLs to specific
-    functionality. Only provide the base URL to the REST service. 
+    functionality. Only provide the base URL to the REST service.
     <br/><br/>
     Example:
     <br/>
@@ -25,46 +25,46 @@
       <li>Bad URL: http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/{db}/{id}</li>
       <li>Good URL: http://www.ebi.ac.uk/Tools/webservices/rest/dbfetch/</li>
     </ul><br/>
-    
+
     You will be able to specify parameterised endpoints after registration.
   </div>
-  
+
   <!--FORM-->
   <% form_for :rest_service, :url => { :action => :create } do |f| %>
     <%= f.error_messages %>
-    
-    <div style="width: 500px;">
+
+    <div style="width: 45%; float: left">
       <!--STEP 1-->
       <p class="step_text">
         1. Specify the base URL of the REST service:
         <span class="required">*</span>
       </p>
-      
+
       <p>
-        <%= text_field_tag "endpoint", params[:endpoint] || "http://", 
+        <%= text_field_tag "endpoint", params[:endpoint] || "http://",
              :style => "width: 99%" -%>
-      </p>  
-      
+      </p>
+
       <!--STEP 2-->
       <p class="step_text">2. Provide more information on the REST Service:</p>
-                       
+
       <p class="high_linespaced">
         What is the <b>official</b> or <b>common name</b> of this REST service?
         <span class="required">*</span>
         <br/>
-        <%= text_field_tag "rest_service[name]", params[:rest_service] ? 
+        <%= text_field_tag "rest_service[name]", params[:rest_service] ?
             h(params[:rest_service][:name]) : "", :style => "width: 99%;" %>
-      
+
         <%= render :partial => 'annotations/service_submission_fields' -%>
       </p>
-      
+
       <!--SUBMIT-->
       <p style="margin-top: 1.5em; text-align: center;">
         <%= f.submit "Submit", :disable_with => "Submitting..." -%>
       </p>
 
     </div>
-  
+
   <% end %>
   
 </div>

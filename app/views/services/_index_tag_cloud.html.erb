@@ -28,11 +28,11 @@
 				<h3 style="font-size: 116%;">
 					<span style="vertical-align:middle;">
 						<span id="tag_cloud_title_normal">
-							<b>Top <%= pluralize(@tags[0...initial_number_of_tags].length, "tag") -%> on BioCatalogue</b>
+							<b>Top <%= pluralize(@tags[0...initial_number_of_tags].length, "tag") -%> on <%= SITE_NAME -%></b>
 						</span>
 						<% if @tags.length > initial_number_of_tags %>
 							<span id="tag_cloud_title_bigger" style="display:none;">
-								<b>Top <%= pluralize(@tags.length, "tag") -%> on BioCatalogue</b>
+								<b>Top <%= pluralize(@tags.length, "tag") -%> on <%= SITE_NAME -%></b>
 							</span>
 						<% end %>
 					</span>

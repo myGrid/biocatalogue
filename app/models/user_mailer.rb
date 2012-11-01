@@ -9,7 +9,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/plain"
     recipients  user.email
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] Please activate your new account"
+    subject     "[#{SITE_NAME}] Please activate your new account"
     body        :user => user,
                 :base_url => base_url
   end
@@ -18,7 +18,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/plain"
     recipients  user.email
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] Resetting your password - Step 2"
+    subject     "[#{SITE_NAME}] Resetting your password - Step 2"
     body        :user => user,
                 :base_url => base_url
   end
@@ -27,7 +27,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  user.email
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] Your test script status changed "
+    subject     "[#{SITE_NAME}] Your test script status changed "
     body        :user => user,
                 :base_url => base_url,
                 :test_script => testscript
@@ -38,7 +38,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  owner.email
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] Service Reponsibility Request"
+    subject     "[#{SITE_NAME}] Service Reponsibility Request"
     body        :owner => owner,
                 :base_url => base_url,
                 :service => service,
@@ -50,7 +50,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  owner.email
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] Service Reponsibility Request Cancellation"
+    subject     "[#{SITE_NAME}] Service Reponsibility Request Cancellation"
     body        :owner => owner,
                 :base_url => base_url,
                 :service => service,
@@ -63,7 +63,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  owner.email
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] Service Reponsibility Approved"
+    subject     "[#{SITE_NAME}] Service Reponsibility Approved"
     body        :owner => owner,
                 :base_url => base_url,
                 :service => service,
@@ -76,7 +76,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  owner.email
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] Service Reponsibility Request Turned Down"
+    subject     "[#{SITE_NAME}] Service Reponsibility Request Turned Down"
     body        :owner => owner,
                 :base_url => base_url,
                 :service => req.subject,
@@ -89,7 +89,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  user.email
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] Your request to take responsibility for a Service"
+    subject     "[#{SITE_NAME}] Your request to take responsibility for a Service"
     body        :user => user,
                 :base_url => base_url,
                 :service => service
@@ -99,7 +99,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  user_emails
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] The system has a Service Provider with no services"
+    subject     "[#{SITE_NAME}] The system has a Service Provider with no services"
     body        :base_url => base_url,
                 :provider => provider
   end
@@ -108,7 +108,7 @@ class UserMailer < ActionMailer::Base
     content_type "text/html"
     recipients  to_emails
     from        SENDER_EMAIL_ADDRESS
-    subject     "[BioCatalogue] A service test has been disabled! "
+    subject     "[#{SITE_NAME}] A service test has been disabled! "
     body        :user => user,
                 :service_test => service_test,
                 :base_url => base_url

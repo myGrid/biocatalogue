@@ -23,7 +23,7 @@
 				<%= RPXNow.popup_code('click here to sign in', RPX_REALM, rpx_token_sessions_url) -%> OR
 			</li>
 			<li>
-				you can add it to your existing BioCatalogue account
+				you can add it to your existing <%= SITE_NAME -%> account
 				<% if logged_in? %>
 					<%= link_to("here", edit_user_path(current_user, :anchor => "external_account")) -%>
 				<% else %>
@@ -44,11 +44,11 @@
 		<h4>General</h4>
 		
 		<p>
-			Instead of signing up for (or signing in with) a BioCatalogue specific account,
+			Instead of signing up for (or signing in with) a <%= SITE_NAME -%> specific account,
 			you can use an existing "single sign-on" account that you may have from
 			a number of popular providers. You will be redirected to an external service (RPX)
 			which will handle the login to your external account. After that a new account on 
-			the BioCatalogue will automatically be created (if required) and you will be signed in. 
+			<%= SITE_NAME -%> will automatically be created (if required) and you will be signed in.
 			Note that we DO NOT store any password information from your external accounts.
 		</p>
 		
@@ -57,7 +57,7 @@
 		<p>
 			OpenID is a distributed identity system which gives you single sign-on 
 			anywhere that OpenID is supported. If you already have an OpenID account
-			you can sign in using the link above and your BioCatalogue account will automatically be created 
+			you can sign in using the link above and your <%= SITE_NAME -%> account will automatically be created
 			(note that many other accounts, like AOL, AIM, LiveJournal, Wordpress, may already be OpenID enabled so you can use that too).
 		</p>
 		

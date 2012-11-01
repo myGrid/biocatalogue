@@ -12,13 +12,13 @@
 
 <center>
 	
-	<h1>Contact the BioCatalogue Team</h1>
+	<h1>Contact the <%= SITE_NAME -%> Team</h1>
 
 	<% rounded nil, "#333", "630px" do %>
 	
 		<p style="text-align: center; margin: 0.5em 0;">
 			Fill in the form below and submit, or alternatively you can email:
-			<b><%= mail_to "#{FEEDBACK_EMAIL_ADDRESS}", nil, { :subject => "BioCatalogue", :encode => "hex" } %></b>
+			<b><%= mail_to "#{FEEDBACK_EMAIL_ADDRESS}", nil, { :subject => SITE_NAME, :encode => "hex" } %></b>
 		</p>
 	
 		<p style="text-align: center; margin: 0.5em 0;">
@@ -28,7 +28,7 @@
 		</p>
 		
 		<div id="feedback_help" style="display: none;">
-			<p>We would really appreciate feedback on your experiences with the BioCatalogue, especially in the following areas:</p>
+			<p>We would really appreciate feedback on your experiences with #{SITE_NAME}, especially in the following areas:</p>
 			<ul>
 			  <li><b>User Interface:</b>  
 			    <ul>
@@ -44,7 +44,7 @@
 			  </li>
 			  <li><b>Feature Requests:</b>
 			    <ul>
-			      <li>Are there any new features that you would like to see on the BioCatalogue? Tell us about them and we will see if we can implement them for you.</li>
+			      <li>Are there any new features that you would like to see on the <%= SITE_NAME -%>? Tell us about them and we will see if we can implement them for you.</li>
 			    </ul>
 			  </li>
 			</ul>
@@ -52,7 +52,7 @@
 			
 			<p>
 				Thanks!<br/>
-				<b>The BioCatalogue Team</b>
+				<b>The #{SITE_NAME} Team</b>
 			</p>
 		</div>
 	

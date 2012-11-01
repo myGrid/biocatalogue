@@ -120,7 +120,7 @@ class UsersController < ApplicationController
       if @user.save
         UserMailer.deliver_registration_notification(@user, base_host)
         #flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
-        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you don't receive this email in the next few minutes, please contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
+        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you don't receive this email in the next few minutes, please contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>"
         format.html { redirect_to home_url }
         #format.xml  { render :xml => @user, :status => :created, :location => @user }
         format.xml { disable_action }
@@ -160,7 +160,7 @@ class UsersController < ApplicationController
         end
       end
     end
-    flash[:error] = "<div class=\"flash_header\">Wrong activation code</div><div class=\"flash_body\">Please check the activation link or contact the <a href=\"/contact\">BioCatalogue Support</a>.</div>"
+    flash[:error] = "<div class=\"flash_header\">Wrong activation code</div><div class=\"flash_body\">Please check the activation link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>"
   end
 
   def forgot_password
@@ -174,7 +174,7 @@ class UsersController < ApplicationController
         UserMailer.deliver_reset_password(@user, base_host)
         format.html # request_reset_password.html.erb
       else
-        flash[:error] = "No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact the <a href=\"/contact\">BioCatalogue Support</a>"
+        flash[:error] = "No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact <a href=\"/contact\">#{SITE_NAME} Support</a>"
         format.html { redirect_to forgot_password_url }
       end
     end
@@ -193,7 +193,7 @@ class UsersController < ApplicationController
         end
       end
     else
-      flash[:error] = "No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact the <a href=\"/contact\">BioCatalogue Support</a>"
+      flash[:error] = "No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>"
       flash[:notice] = nil
     end
   end
@@ -255,7 +255,7 @@ class UsersController < ApplicationController
           flash[:notice] = "Accounts successfully merged!"
           redirect_to(current_user)
         rescue Exception => ex
-          logger.error "Failed to merge new RPX based account with an existing BioCatalogue account. Exception: #{ex.class.name} - #{ex.message}"
+          logger.error "Failed to merge new RPX based account with an existing #{SITE_NAME} account. Exception: #{ex.class.name} - #{ex.message}"
           logger.error ex.backtrace.join("\n")
           error("Sorry, something went wrong. Please contact us for further assistance.", :status => 500)
           return

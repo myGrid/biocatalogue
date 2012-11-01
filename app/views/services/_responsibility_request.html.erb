@@ -15,7 +15,7 @@
 					</td>
 					<td style="text-align: right;">
 						<%= link_to("Approve", approve_responsibility_request_service_url(req.subject)+"?user=#{req.user.id}", 
-																:confirm =>"Note: This will give the user full rights on the service, including permissions to remove it from BioCatalogue.",
+																:confirm =>"Note: This will give the user full rights on the service, including permissions to remove it from #{SITE_NAME}.",
 																:class => "button_slim") -%>
 						<%= link_to("Turn Down", deny_responsibility_service_url(req.subject)+"?resp_req=#{req.id}", 
 																:confirm => "You really do not want to give this user permissions on this service?", 

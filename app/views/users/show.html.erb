@@ -46,7 +46,7 @@
 			</span>
 		</span>
 	<% end %>
-	<%= generic_icon_for(:member, 'margin-right: 0.3em;', "Member of the BioCatalogue") -%>
+	<%= generic_icon_for(:member, 'margin-right: 0.3em;', "Member of #{SITE_NAME}") -%>
 	<span><%= display_name(@user) %></span>
   <span><%= user_role_badge(@user.roles, "margin-left: 1.5em;") %></span>
 </h1>

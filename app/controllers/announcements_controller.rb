@@ -102,7 +102,7 @@ class AnnouncementsController < ApplicationController
       params.delete(:page)
       
       # Set page title
-      @feed_title = "BioCatalogue.org - Site Announcements"
+      @feed_title = "#{SITE_NAME} - Site Announcements"
     end
   end
   

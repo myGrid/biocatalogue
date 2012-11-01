@@ -10,7 +10,7 @@
 
 Hi <%=h @user.display_name -%>,
 
-Thank you for registering for an account on the BioCatalogue.
+Thank you for registering for an account on the <%= SITE_NAME -%>.
 
 Please click on the following link to activate your account (you might need to copy/paste it into your browser):
 
@@ -20,5 +20,5 @@ Please click on the following link to activate your account (you might need to c
             :action => 'activate_account',
             :security_token => @user.security_token %>
 
-- The BioCatalogue Team
+- The <%= SITE_NAME -%> Team
 <%= SITE_BASE_HOST -%>

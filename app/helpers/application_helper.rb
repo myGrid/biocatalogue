@@ -144,7 +144,7 @@ module ApplicationHelper
     output = ""
     
     output << content_tag(:p, :style => "font-weight: bold;") do
-      "You get the following benefits by signing up for an account on the BioCatalogue:"
+      "You get the following benefits by signing up for an account on the #{SITE_NAME}:"
     end
     
     output << content_tag(:ul, :class => "simple_list") do

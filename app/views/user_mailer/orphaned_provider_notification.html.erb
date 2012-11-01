@@ -7,13 +7,13 @@
 # See license.txt for details
 
 %>
-Dear BioCatalogue Member,
+Dear <%= SITE_NAME -%> Member,
 <p />
 
 We have noticed that the Service Provider '<%=h @provider.name -%>' no longer has any services and/or hostnames associated with it.  
 <br />
 
-<%= link_to "View Service Provider (#{@provider.name}) in the BioCatalogue",
+<%= link_to "View Service Provider (#{@provider.name}) in #{SITE_NAME}",
             :only_path => false,
             :host => @base_url,
             :controller => 'service_providers',
@@ -22,7 +22,7 @@ We have noticed that the Service Provider '<%=h @provider.name -%>' no longer ha
 
 <p />
 
-You are receiving this email because you are a BioCatalogue administrator.  It would be appreciated if you took some action concerning this.
+You are receiving this email because you are a <%= SITE_NAME -%> administrator.  It would be appreciated if you took some action concerning this.
 
 <p />
 
@@ -32,6 +32,6 @@ If you have any questions please reply to this mail.
 
 Regards <br />
 
-The BioCatalogue Team
+The <%= SITE_NAME -%> Team
 <p />
 <%= link_to SITE_BASE_HOST, SITE_BASE_HOST -%>

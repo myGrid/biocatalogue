@@ -50,7 +50,7 @@ class SessionsController < ApplicationController
             u.receive_notifications = true
             if u.save
               u.activate!
-              finish_login(u, "<br/><br/><b>We have created a new account for you in the BioCatalogue. If you already had an account and would like to merge this new one with the existing one then <a href='#{rpx_merge_setup_users_url(:token => params[:token])}'>click here</a></b>")
+              finish_login(u, "<br/><br/><b>We have created a new account for you in #{SITE_NAME}. If you already had an account and would like to merge this new one with the existing one then <a href='#{rpx_merge_setup_users_url(:token => params[:token])}'>click here</a></b>")
             else
               error_to_back_or_home("Sorry, we were unable to sign you in using your external account. This could be because we needed some information from you which was not supplied by your external account provider. Please try again. If this problem persists we would appreciate it if you contacted us.")
             end

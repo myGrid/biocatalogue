@@ -78,8 +78,13 @@ ENV["RECAPTCHA_PRIVATE_KEY"] = "xyz456"
 
 
 # The site's base host URL (for times when the base host cannot be obtained from controllers):
-SITE_BASE_HOST = "http://www.example.com"
+SITE_BASE_HOST = "http://www.biocatalogue.org"
 
+# The name of this BioCatalogue instance, displayed across the site
+SITE_NAME = "BioCatalogue"
+
+# an URL to the logo, displayed in the top left
+SITE_LOGO = "logo_small.png"
 
 # Twitter integration:
 ENABLE_TWITTER = false

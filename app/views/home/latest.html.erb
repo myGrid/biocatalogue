@@ -8,7 +8,7 @@
 
 %>
 
-<h1>Latest in the BioCatalogue</h1>
+<h1>Latest in <%= SITE_NAME -%></h1>
 
 <div id="home-tabs" class="tabber">
 	
@@ -35,7 +35,7 @@
     <h3>Services</h3>
 		<p style="text-align: right; margin: 0 0 1em 0;">
       <%= feed_icon_tag "Latest Services", services_path(:format => :atom) -%>
-    </span>
+    </p>
 		
 		<%= render :partial => "services/listing", :locals => { :items => Service.latest(10), :listing_type => :simple } -%>
 		
@@ -58,7 +58,7 @@
 				</thead>
 				<tbody>
 					<% top_curators.each do |u| %>
-						<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations and #{user_services[u['id']]} services to the BioCatalogue") -%>">
+						<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations and #{user_services[u['id']]} services to #{SITE_NAME}") -%>">
 							<td class="value count">
 								<%= u['count'] -%>
 							</td>

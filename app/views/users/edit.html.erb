@@ -23,7 +23,7 @@
 	</h2>
 	
 	<fieldset>
-	  <legend>BioCatalogue Account</legend>
+	  <legend><%= SITE_NAME -%> Account</legend>
 		
 		<% form_for(:user, @updated_user, :url => { :action => "update" }, :html => { :method => :put }) do |f| %>
 			<h4>Email address</h4>

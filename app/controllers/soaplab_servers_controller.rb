@@ -73,7 +73,7 @@ class SoaplabServersController < ApplicationController
       if @soaplab_server.save
         Delayed::Job.enqueue BioCatalogue::Jobs::SubmitSoaplabServices.new(@soaplab_server, current_user)
         if existing_server
-          flash[:notice] = 'This Soaplab server is known to BioCatalogue. Any additional services will be registered.'
+          flash[:notice] = "This Soaplab server is known to #{SITE_NAME}. Any additional services will be registered."
         else
           flash[:notice] = 'Your Soaplab server submission was successfully received. Services are being submitted in the background. Please check in short while to view the services'
         end

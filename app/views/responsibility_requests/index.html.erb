@@ -17,7 +17,7 @@
 					<td style="text-align: right;">
 					    <% unless req.user == current_user %>
 							<%= link_to("Approve", approve_responsibility_request_url(req), :method => :put, 
-																:confirm =>"Note: This will give the user full rights on the service, including permissions to remove it from BioCatalogue.",
+																:confirm =>"Note: This will give the user full rights on the service, including permissions to remove it from #{SITE_NAME}.",
 																:class => "button_slim") -%>
 							<%= link_to("Turn Down", turn_down_responsibility_request_url(req), :class => "button_slim")  -%>
 						<% end %>

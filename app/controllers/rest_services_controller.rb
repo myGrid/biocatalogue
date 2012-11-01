@@ -113,13 +113,13 @@ class RestServicesController < ApplicationController
         existing_service.latest_version.service_versionified.process_annotations_data(annotations_data, current_user)
         
         respond_to do |format|
-          flash[:notice] = "The service you specified already exists in the BioCatalogue. See below. Any information you provided has been added to this service."
+          flash[:notice] = "The service you specified already exists in #{SITE_NAME}. See below. Any information you provided has been added to this service."
           format.html { redirect_to existing_service }
           # TODO: implement format.xml  { render :xml => '', :status => :unprocessable_entity }
           format.json { 
             render :json => { 
               :success => { 
-                :message => "The REST service you specified already exists in the BioCatalogue. Any information you provided has been added to this service.", 
+                :message => "The REST service you specified already exists in #{SITE_NAME}. Any information you provided has been added to this service.",
                 :resource => service_url(existing_service)
               }
             }.to_json, :status => 202

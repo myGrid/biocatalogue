@@ -96,7 +96,7 @@ module ActivityFeedsHelper
               if item.activated?
                 output << link_to(display_name(item), item)
                 output << content_tag(:span, " joined", :class => "activity_feed_action")
-                output << " the BioCatalogue"
+                output << " #{SITE_NAME}"
               end
               
           end

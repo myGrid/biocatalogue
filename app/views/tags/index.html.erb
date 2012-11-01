@@ -12,7 +12,7 @@
 
 <h1 style="text-align: center; margin-bottom: 1em;">
 	<span style="vertical-align:middle;">
-		Tags Used on BioCatalogue (<%= pluralize(@tags.length, "tag") -%>)
+		Tags Used on <%= SITE_NAME -%> (<%= pluralize(@tags.length, "tag") -%>)
 	</span>
 	<span style="vertical-align:middle; margin-left:0.5em;">
 		<%= help_icon_with_tooltip(help_text_for_tag_clouds) -%>

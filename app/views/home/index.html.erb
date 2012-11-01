@@ -18,11 +18,11 @@
 			<div id="home_stats_bar">
 		    <center>
 		    	<% rounded nil, "#333", "100%" do %>
-					  The BioCatalogue currently has
+            <%= SITE_NAME -%> currently has
 					  <strong><%= link_to pluralize(Service.count, "service"), services_path -%></strong>,
 						<strong><%= link_to pluralize(ServiceProvider.count, "service provider"), service_providers_path -%></strong> and
 					  <strong><%= link_to pluralize(User.count_activated, "member"), users_url -%></strong>
-						<%= info_icon_with_tooltip("<b>Members</b> are registered users of the BioCatalogue.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' towards the top right. <br/><br/>#{sign_up_benefits_text}") -%>
+						<%= info_icon_with_tooltip("<b>Members</b> are registered users of #{SITE_NAME}.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' towards the top right. <br/><br/>#{sign_up_benefits_text}") -%>
 					<% end %>
 		    </center>
 		  </div>
@@ -217,7 +217,7 @@
         
         <div class="section_content" style="font-size: 85%;">
           <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting started with the BioCatalogue</a>
+            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting started with the Catalogue</a>
           </p>
           <p>
             <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:general_info_on_web_services" target="_blank">General Info on Web Services</a>

@@ -20,8 +20,8 @@
 			<%= counts[:providers] -%>
 		<% end %>
 		
-		<% content_tag(:span, :class => "annotation_source_member", :title => tooltip_title_attrib("Total number of annotations submitted by members of the BioCatalogue."))  do %>
-      <%= image_tag(icon_filename_for(:annotation_source_member), :alt => "Total number of annotations submitted by members of the BioCatalogue.") -%>
+		<% content_tag(:span, :class => "annotation_source_member", :title => tooltip_title_attrib("Total number of annotations submitted by members of #{SITE_NAME}."))  do %>
+      <%= image_tag(icon_filename_for(:annotation_source_member), :alt => "Total number of annotations submitted by members of #{SITE_NAME}.") -%>
 			<%= counts[:users] -%>
 		<% end %>
 		

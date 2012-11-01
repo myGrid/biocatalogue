@@ -38,14 +38,14 @@
 					<br/><br/>
 					into
 					<br/><br/>
-					<b>Existing BioCatalogue account</b> that has the email address: <br/><%= h current_user.email -%>
+					<b>Existing <%= SITE_NAME -%> account</b> that has the email address: <br/><%= h current_user.email -%>
 				</p>
 				
 				<p class="box_info_standout" style="font-size: 93%;">
 					Note: only the info about the external account identifier will be merged into the existing account. 
 					After merging you will have one single account and member profile, but you'll be able to sign in 
 					using either the external account (<%= list_of_rpx_accounts -%>) or the <b>original email address and password</b> you signed up with.
-					If you don't merge then you will have two accounts and member profiles in the BioCatalogue.
+					If you don't merge then you will have two accounts and member profiles in <%= SITE_NAME -%>.
 				</p>
 				
 				<p class="center">

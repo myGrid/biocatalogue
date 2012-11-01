@@ -12,7 +12,7 @@
 <%= render :partial => 'header', :locals => { :sub => "- Reports - Services Annotation Levels" } %>
 
 <div class="box_info_standout center" style="margin: 1.5em auto; width: 680px;">
-  Provides a graphical view of the annotation level for services in BioCatalogue.
+  Provides a graphical view of the annotation level for services in <%= SITE_NAME -%>.
   <%= link_to_function "...more" + expand_image, visual_effect(:toggle_blind, "about_ann_level", :duration => 0.3), :style => "text-decoration:none;" %>
 	<div id="about_ann_level" style="display:none;text-align:left;">
 		<h4>Annotation Level</h4>
