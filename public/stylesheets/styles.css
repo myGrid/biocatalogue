@@ -3528,6 +3528,7 @@ a.globalise_param_link {
   height: 44px;
   background: url(../images/transparency/central_bar_big.png) repeat-x 50% 0;
   margin-top: 2px;
+  min-width: 980px;
 }
 
 #header #bar .right-corner {
