@@ -3524,6 +3524,12 @@ a.globalise_param_link {
   color: #635F70;
 }
 
+#header #bar {
+  height: 44px;
+  background: url(../images/transparency/central_bar_big.png) repeat-x 50% 0;
+  margin-top: 2px;
+}
+
 #header #bar .right-corner {
   background: transparent url(../images/transparency/right_corner_top.png) no-repeat 100% 0;
   position: relative;
@@ -3548,4 +3554,11 @@ a.globalise_param_link {
 .biocat_green
 {
   background-color: #e9f7cc;
+}
+
+#header_container {
+  background-image: url(../images/transparency/central_part_small.png);
+  max-height: 109px;
+  padding-top: 8px;
+  background-color: #D3F78A;
 }
