@@ -28,36 +28,43 @@
 				</script>
 			<% end %>
 			
-			<%= render :partial => "widgets/last_search_notice" -%>
-			
-    	<div id="wrapper">
+      <%= render :partial => "widgets/last_search_notice" -%>
 
-    		<div id="container" class="clear-block">
-					
-      		<div id="header">
-						<div id="logo-floater">
-		            <%= link_to image_tag("logo_small.png", :alt => SITE_BASE_HOST), "/" %>
-		        </div>
-						
-						<%= render :partial => "widgets/primary_links" -%>
-									
-						<%= render :partial => "widgets/login_links" -%>
-					</div> <!-- /header -->
-			
-			      
-			    <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-			    	<%= render :partial => "widgets/login_box" -%>
-						<%= render :partial => "widgets/action_bar" -%>
-						
-						<div id="content">
-							<%= render :partial => 'layouts/flashes' %>
-								
-							<%= yield -%>
-						</div>        
-          
-          			<span class="clear"></span>
-					
-					<%= render :partial => "layouts/debug" if SHOW_DEBUG %>
+       	<div id="wrapper">
+
+           <div id="header_container">
+             <div id="header">
+               <div id="logo-floater">
+                   <%= link_to image_tag(SITE_LOGO, :alt => SITE_BASE_HOST), "/" %>
+               </div>
+
+               <%= render :partial => "widgets/primary_links" -%>
+               <%= render :partial => "widgets/login_links" -%>
+               <br style="clear:both"/>
+
+               <div id="bar">
+                 <div class="right-corner"><div class="left-corner">
+                   <%= render :partial => "widgets/login_box" -%>
+                   <%= render :partial => "widgets/action_bar" -%>
+                 </div></div>
+               </div>
+             </div> <!-- /header -->
+           </div>
+
+       		<div id="container" class="clear-block">
+
+   			    <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
+   						<%= render :partial => "widgets/breadcrumbs_bar" -%>
+
+   						<div id="content">
+   							<%= render :partial => 'layouts/flashes' %>
+
+   							<%= yield -%>
+   						</div>
+
+             			<span class="clear"></span>
+
+   					<%= render :partial => "layouts/debug" if SHOW_DEBUG %>
 					
 				</div></div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->      
 			</div> <!-- /container -->
