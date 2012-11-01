@@ -69,7 +69,7 @@ class AnnotationsController < ApplicationController
   
   def new_popup
     if @annotatable.nil?
-      flash[:error] = "Could not begin annotation (the thing you want to annotate is not specified or is invalid). Please contact the BioCatalogue folks."
+      flash[:error] = "Could not begin annotation (the thing you want to annotate is not specified or is invalid). Please contact the #{SITE_NAME} folks."
       respond_to do |format|
         format.js {
           render :update do |page|

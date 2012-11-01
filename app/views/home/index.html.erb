@@ -10,7 +10,7 @@
 
 <div id="home_content">
 	
-	<p id="home_heading">The BioCatalogue: providing a curated catalogue of Life Science Web Services</p>
+	<p id="home_heading">The <%= SITE_NAME -%>: providing a curated catalogue of Life Science Web Services</p>
 	
 	<div id="middle_column_wrapper">
 		<div id="middle_column">
@@ -37,7 +37,7 @@
 					  and a <em>single search site</em> for scientists and developers.</li>
 					<li>Providers, Expert curators and Users will provide oversight, monitor the catalogue 
 					  and provide <em>high quality annotations</em> for services.</li>
-					<li>BioCatalogue is a place where the <em>community</em> can find contacts and meet
+					<li><%= SITE_NAME -%> is a place where the <em>community</em> can find contacts and meet
 					  the experts and maintainers of these services.</li>
 		    </ul>
 			</div>
@@ -185,7 +185,7 @@
 					<% unless (top_curators = User.top_curators).empty? %>
 						<table id="top_curators">
 							<% top_curators.each do |u| %>
-								<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations to the BioCatalogue") -%>">
+								<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations to the #{SITE_NAME}") -%>">
 									<td class="count">
 										<%= number_with_delimiter(u['count']) -%>
 									</td>
