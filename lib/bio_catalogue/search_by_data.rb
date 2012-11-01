@@ -15,7 +15,6 @@ module BioCatalogue
     require 'cgi'
     
     @@REGEX_FILE_PATH=File.join(RAILS_ROOT,'data','regex.txt')
-    @@EXAMPLE_MIN_LENGTH=0
     
     #function for updating the annotation_properties and other tables
     # needed for system to work
@@ -76,7 +75,7 @@ module BioCatalogue
     def self.calculate_annotation_properties_regex(force=false)
       annotations = Annotation.find(:all,
         :joins => [ :annotation_parsed_type, :attribute ],
-        :conditions => [ "annotation_attributes.name = ? AND annotation_parsed_types.parsed_type= ? AND CHAR_LENGTH(annotations.value)>=?","Example","text",@@EXAMPLE_MIN_LENGTH ])
+        :conditions => [ "annotation_attributes.name = ? AND annotation_parsed_types.parsed_type= ?","Example","text"])
       regexes=DataSearchRegex.find(:all)
       regexes2=[]
       #precompile all the regular expressions so as not to do it in a loop
@@ -87,7 +86,7 @@ module BioCatalogue
       #store only positive values
       annotations.each do |annotation|
         regexes2.each do |regex2|
-          regex_result=regex2[1].match(annotation.value)        
+          regex_result=regex2[1].match(annotation.value_content)
           property = AnnotationProperty.find(:first,
             :conditions => [ "annotation_id = ? AND property_type=? AND property_id=?",annotation.id,"DataSearchRegex",regex2[0].id ])
           if property==nil
@@ -176,7 +175,7 @@ module BioCatalogue
     def self.get_database_positive_properties_input()
       database_positive_properties=AnnotationProperty.find(:all,
         :joins => [ :annotation],
-        :conditions => [ "annotations.annotatable_type = ? AND annotation_properties.property_type= ? AND annotation_properties.value=? AND CHAR_LENGTH(annotations.value)>=?","SoapInput","DataSearchRegex","1",@@EXAMPLE_MIN_LENGTH ])
+        :conditions => [ "annotations.annotatable_type = ? AND annotation_properties.property_type= ? AND annotation_properties.value=?","SoapInput","DataSearchRegex","1"])
       return  database_positive_properties
     end
 
@@ -185,7 +184,7 @@ module BioCatalogue
     def self.get_database_positive_properties_output()
       database_positive_properties=AnnotationProperty.find(:all,
         :joins => [ :annotation],
-        :conditions => [ "annotations.annotatable_type = ? AND annotation_properties.property_type= ? AND annotation_properties.value=? AND CHAR_LENGTH(annotations.value)>=?","SoapOutput","DataSearchRegex","1",@@EXAMPLE_MIN_LENGTH ])
+        :conditions => [ "annotations.annotatable_type = ? AND annotation_properties.property_type= ? AND annotation_properties.value=?","SoapOutput","DataSearchRegex","1"])
       return  database_positive_properties
     end
 
