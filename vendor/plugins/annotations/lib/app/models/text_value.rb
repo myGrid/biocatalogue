@@ -7,7 +7,11 @@ class TextValue < ActiveRecord::Base
   
   belongs_to :version_creator, 
              :class_name => "::#{Annotations::Config.user_model_name}"
-  
+
+  def to_s
+    self.ann_content
+  end
+
   # ========================
   # Versioning configuration
   # ------------------------
