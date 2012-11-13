@@ -105,7 +105,7 @@ module BioCatalogue
       def initialize(url)
         @url        = url
         @response   = nil
-        @success    = ['200']
+        @success    = ['200', '202', '204']
         @redirects  = ['300', '301', '302', '303', '307']
         @failure    = ['400', '500']
         get_response
