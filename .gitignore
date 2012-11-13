@@ -14,3 +14,4 @@ config/solr.yml
 /vendor/plugins/acts_as_solr/solr/solr/data/
 /vendor/plugins/acts_as_solr/solr/temp/
 public/stylesheets/colour-override.css
+data/service_categories.yml
