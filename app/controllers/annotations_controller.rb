@@ -158,7 +158,7 @@ class AnnotationsController < ApplicationController
       BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @annotation.annotatable)
       
       annotatable = @annotation.annotatable
-      annotatable.name = @annotation.val_content
+      annotatable.name = @annotation.value_content
       
       if annotatable.save && @annotation.destroy
         respond_to do |format|
