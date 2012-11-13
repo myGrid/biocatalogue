@@ -107,13 +107,18 @@ module BioCatalogue
         @response   = nil
         @success    = ['200', '202', '204']
         @redirects  = ['300', '301', '302', '303', '307']
-        @failure    = ['400', '500']
+        @not_allwd  = ['405']
+        @failure    = ['400', '404']
+        @try_again  = ['500']
+        @method     = 'HEAD'
+        @try_others = ['OPTIONS', 'GET']
         get_response
       end
     
-      def get_response(url = @url)
+      def get_response(url = @url, method = @method)
+        puts "Trying #{url} with #{method}."
         begin
-          @response =  %x[curl -I --insecure --max-time 20 -X GET #{url}]
+          @response =  %x[curl -I --insecure --max-time 20 -X #{method} #{url}]
         rescue Exception => ex
           Rails.logger.error("problem occurred while accessing #{url}")
           Rails.logger.error(ex)
@@ -135,7 +140,15 @@ module BioCatalogue
       def failure?
         return @failure.include?(response_code)
       end
-    
+
+      def method_not_allowed?
+        return @not_allwd.include? response_code
+      end
+
+      def try_again?
+        return @try_again.include? response_code
+      end
+
       def follow_redirect(level=3)
         Rails.logger.info("Now following redirect. Max of #{level} redirects will be followed ")
         while level > 0 && redirect?
@@ -143,7 +156,17 @@ module BioCatalogue
           level = level - 1 
         end
       end
-    
+
+      def try_again(methods = @try_others)
+        return if methods.nil?
+
+        puts "Trying methods other than #{@method} for #{@url}."
+        methods.each do |method|
+          @response = get_response(@url, method)
+          return if success?
+        end
+      end
+
       def redirect_location
         if @response.split.index("Location:")
           uri = URI.parse(@response.split.fetch(@response.split.index("Location:") + 1 ))
@@ -153,12 +176,29 @@ module BioCatalogue
         end
         return nil
       end
-    
+
+      def allowed_methods
+        if @response.split.index("Allow:")
+          methods = @response.split.fetch(@response.split.index("Allow:") + 1).split(',')
+
+          result = []
+          methods.each do |method|
+            method.strip!
+            result << method if @try_others.include? method
+          end
+
+          return result
+        end
+        return nil
+      end
+
       def available?
         begin
           return true if success?
           return false if failure?
           follow_redirect if redirect?
+          try_again(allowed_methods) if method_not_allowed?
+          try_again if try_again?
           return success?
         rescue Exception => ex
           Rails.logger.error("problem occured while checking availability of a url")
