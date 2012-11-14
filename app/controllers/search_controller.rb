@@ -172,13 +172,13 @@ class SearchController < ApplicationController
           
           # Check that a valid scope has been provided
           unless BioCatalogue::Search::VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
-            error("'#{scope}' is an invalid search scope")
-            return false
+            flash[:error] = "'#{scope}' is an invalid search scope; it has been ignored."
+            scope = BioCatalogue::Search::ALL_SCOPE_SYNONYMS[0]
           end
         end
         
       end
-      
+
       # Scope(s) is fine
       @scope = scope
       
