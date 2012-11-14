@@ -9,17 +9,21 @@ atom_feed(:url => announcements_url(:format => :atom),
           :schema_date => "2009") do |feed|
   
   feed.title(@feed_title)
-  feed.updated @announcements.first.updated_at
-  
+  if @announcements.empty?
+    feed.updated Time.now
+  else
+    feed.updated @announcements.first.updated_at
+  end
+
   @announcements.each do |announcement|
     feed.entry(announcement) do |entry|
       entry.title(display_name(announcement))
       entry.content(white_list(simple_format(auto_link(announcement.body, :link => :all, :href_options => { :target => '_blank' }))), :type => 'html')
-      
+
       entry.author do |author|
         author.name(display_name(announcement.user))
       end
     end
   end
-  
+
 end
