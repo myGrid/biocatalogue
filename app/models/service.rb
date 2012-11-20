@@ -177,9 +177,7 @@ class Service < ActiveRecord::Base
           end
         end
       end
-      
-      final_category_ids
-      
+
       service_ids = [ ]
       
       final_category_ids.each do |c_id|

@@ -18,8 +18,8 @@ class Relationship < ActiveRecord::Base
   end
   
   validates_presence_of :subject_type,
-                        :subject_id, 
-                        :object_type
+                        :subject_id,
+                        :object_type,
                         :object_id
   
   validate :check_duplicate

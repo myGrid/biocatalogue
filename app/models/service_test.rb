@@ -24,7 +24,7 @@ class ServiceTest < ActiveRecord::Base
   has_many :relationships, :as => :subject, :dependent => :destroy
   
   validates_presence_of :service_id,
-                        :test_type
+                        :test_type,
                         :test_id
                         
   validates_associated :test
@@ -264,7 +264,8 @@ protected
     
     if collections.class==String
       collections = case collections.strip.downcase
-                      when "default" : %w{ }
+                      when "default"
+                        %w{ }
                       else []
                     end
     else
