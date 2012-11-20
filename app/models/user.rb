@@ -351,8 +351,10 @@ private
     
     if collections.class==String
       collections = case collections.strip.downcase
-                      when "saved_searches" : %w{ saved_searches }
-                      when "default" : %w{ }
+                      when "saved_searches"
+                        %w{ saved_searches }
+                      when "default"
+                        %w{ }
                       else []
                     end
     else

@@ -488,11 +488,16 @@ private
     
     if collections.class==String
       collections = case collections.strip.downcase
-                      when "deployments" : %w{ deployments }
-                      when "variants" : %w{ variants }
-                      when "monitoring" : %w{ monitoring }
-                      when "summary" : %w{ summary }
-                      when "default" : %w{ deployments variants }
+                      when "deployments"
+                        %w{ deployments }
+                      when "variants"
+                        %w{ variants }
+                      when "monitoring"
+                        %w{ monitoring }
+                      when "summary"
+                        %w{ summary }
+                      when "default"
+                        %w{ deployments variants }
                       else []
                     end
     else

@@ -500,9 +500,12 @@ private
     
     if collections.class==String
       collections = case collections.strip.downcase
-                      when "inputs" : %w{ inputs }
-                      when "outputs" : %w{ outputs }
-                      when "default" : %w{ inputs outputs }
+                      when "inputs"
+                        %w{ inputs }
+                      when "outputs"
+                        %w{ outputs }
+                      when "default"
+                        %w{ inputs outputs }
                       else []
                     end
     else

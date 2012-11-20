@@ -780,9 +780,12 @@ private
     
     if collections.class==String
       collections = case collections.strip.downcase
-                      when "deployments" : %w{ deployments }
-                      when "operations" : %w{ operations }
-                      when "default" : %w{ deployments operations }
+                      when "deployments"
+                        %w{ deployments }
+                      when "operations"
+                        %w{ operations }
+                      when "default"
+                        %w{ deployments operations }
                       else []
                     end
     else

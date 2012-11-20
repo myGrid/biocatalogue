@@ -412,10 +412,14 @@ private
     
     if collections.class==String
       collections = case collections.strip.downcase
-                      when "deployments" : %w{ deployments }
-                      when "rest_methods" : %w{ rest_methods }
-                      when "rest_resources" : %w{ rest_resources }
-                      when "default" : %w{ deployments rest_resources }
+                      when "deployments"
+                        %w{ deployments }
+                      when "rest_methods"
+                        %w{ rest_methods }
+                      when "rest_resources"
+                        %w{ rest_resources }
+                      when "default"
+                        %w{ deployments rest_resources }
                       else []
                     end
     else
