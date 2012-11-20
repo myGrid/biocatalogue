@@ -17,12 +17,6 @@ require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/
 
 class ApplicationController < ActionController::Base
   
-  # Allow for SSL support
-  include SslRequirement
-  if ENABLE_SSL && Rails.env.production?
-    ssl_required :all
-  end
-  
   # ============================================
 
   # OAuth support

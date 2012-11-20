@@ -6,17 +6,13 @@
 
 ActionController::Routing::Routes.draw do |map|
 
-  ROUTES_PROTOCOL = (ENABLE_SSL && Rails.env.production? ? 'https' : 'http')
-  
-  #
+  map.resources :oauth_clients
 
-  map.resources :oauth_clients, :requirements => { :protocol => ROUTES_PROTOCOL }
-
-  map.test_request '/oauth/test_request', :controller => 'oauth', :action => 'test_request', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.access_token '/oauth/access_token', :controller => 'oauth', :action => 'access_token', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.request_token '/oauth/request_token', :controller => 'oauth', :action => 'request_token', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.authorize '/oauth/authorize', :controller => 'oauth', :action => 'authorize', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.oauth '/oauth', :controller => 'oauth', :action => 'index', :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.test_request '/oauth/test_request', :controller => 'oauth', :action => 'test_request'
+  map.access_token '/oauth/access_token', :controller => 'oauth', :action => 'access_token'
+  map.request_token '/oauth/request_token', :controller => 'oauth', :action => 'request_token'
+  map.authorize '/oauth/authorize', :controller => 'oauth', :action => 'authorize'
+  map.oauth '/oauth', :controller => 'oauth', :action => 'index'
   
   # =========================
   # Curation Dashboard routes
@@ -27,94 +23,82 @@ ActionController::Routing::Routes.draw do |map|
    map.curation '/curation',
     :controller => 'curation',
     :action => 'show',
-    :conditions => { :method => :get },
-    :requirements => { :protocol => ROUTES_PROTOCOL }
+    :conditions => { :method => :get }
 
   # Reports
   
   map.curation_reports_potential_duplicate_operations_within_service '/curation/reports/potential_duplicate_operations_within_service', 
     :controller => 'curation', 
     :action => 'potential_duplicate_operations_within_service', 
-    :conditions => { :method => :get },
-    :requirements => { :protocol => ROUTES_PROTOCOL }
+    :conditions => { :method => :get }
     
   map.curation_reports_providers_without_services '/curation/reports/providers_without_services', 
     :controller => 'curation', 
     :action => 'providers_without_services', 
-    :conditions => { :method => :get },
-    :requirements => { :protocol => ROUTES_PROTOCOL }
+    :conditions => { :method => :get }
 
   map.curation_reports_services_missing_annotations '/curation/reports/services_missing_annotations',
     :controller => 'curation',
     :action => 'services_missing_annotations',
-    :conditions => { :method => [ :get, :post ] },
-    :requirements => { :protocol => ROUTES_PROTOCOL }
+    :conditions => { :method => [ :get, :post ] }
   
   # Tools
   
   map.curation_tools_copy_annotations '/curation/tools/copy_annotations',
     :controller => 'curation', 
     :action => 'copy_annotations', 
-    :conditions => { :method => [ :get, :post ] },
-    :requirements => { :protocol => ROUTES_PROTOCOL }
+    :conditions => { :method => [ :get, :post ] }
   
   map.curation_tools_copy_annotations_preview '/curation/tools/copy_annotations_preview',
     :controller => 'curation', 
     :action => 'copy_annotations_preview', 
-    :conditions => { :method => :post },
-    :requirements => { :protocol => ROUTES_PROTOCOL }
+    :conditions => { :method => :post }
        
   map.curation_annotation_level '/curation/reports/annotation_level', 
     :controller => 'curation', 
     :action => 'annotation_level', 
-    :conditions => { :method => :get },
-    :requirements => { :protocol => ROUTES_PROTOCOL }
+    :conditions => { :method => :get }
      
   # =========================
   
   
-  map.api '/api.:format', :controller => 'api', :action => 'show', :requirements => { :protocol => ROUTES_PROTOCOL } 
+  map.api '/api.:format', :controller => 'api', :action => 'show'
   
-  map.lookup '/lookup.:format', :controller => 'lookup', :action => 'show', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.lookup '/lookup', :controller => 'lookup', :action => 'show', :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.lookup '/lookup.:format', :controller => 'lookup', :action => 'show'
+  map.lookup '/lookup', :controller => 'lookup', :action => 'show'
   
-  map.resources :announcements, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.resources :announcements
 
   map.resources :service_tests,
                 :member => { :results => :get,
                              :enable => :put,
-                             :disable => :put },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :disable => :put }
   
-  map.resources :test_results, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.resources :test_results
   
   map.resources :test_scripts, 
-                :member => { :download => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                :member => { :download => :get }
   
   # To test error messages
-  map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index', :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index'
   
   # Stats
-  map.stats_index '/stats', :controller => 'stats', :action => 'index', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh', :conditions => { :method => :post }, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.resources :stats, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.stats_index '/stats', :controller => 'stats', :action => 'index'
+  map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh', :conditions => { :method => :post }
+  map.resources :stats
   
   map.resources :categories,
-                :member => { :services => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                :member => { :services => :get }
   
   map.resources :registries,
                 :member => { :annotations_by => :get,
-                             :services => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :services => :get }
   
   map.resources :agents,
-                :member => { :annotations_by => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                :member => { :annotations_by => :get }
   
   # Routes from the favourites plugin + extensions
-  Favourites.map_routes(map, {}, {}, { :protocol => ROUTES_PROTOCOL })
+  Favourites.map_routes(map)
 
   # Routes from the annotations plugin + extensions
   Annotations.map_routes(map,
@@ -125,12 +109,10 @@ ActionController::Routing::Routes.draw do |map|
                            :bulk_create => :post },
                          { :edit_popup => :post,
                            :download => :get,
-                           :promote_alternative_name => :post },
-                         { :protocol => ROUTES_PROTOCOL })
+                           :promote_alternative_name => :post })
   
   map.resources :annotation_attributes,
-                :member => { :annotations => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                :member => { :annotations => :get }
   
   # Tags (ordering is important!)
 #  map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
@@ -141,31 +123,28 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :tags,
                 :only => [ :index, :show, :destroy ],
                 :collection => { :auto_complete => :get,
-                                 :destroy_taggings => :delete },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                                 :destroy_taggings => :delete }
 
   # Search (ordering is important!)
-  map.search_auto_complete '/search/auto_complete', :controller => 'search', :action => 'auto_complete', :conditions => { :method => :get }, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.ignore_last_search '/search/ignore_last', :controller => 'search', :action => 'ignore_last', :conditions => { :method => :post }, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.search_auto_complete '/search/auto_complete', :controller => 'search', :action => 'auto_complete', :conditions => { :method => :get }
+  map.ignore_last_search '/search/ignore_last', :controller => 'search', :action => 'ignore_last', :conditions => { :method => :post }
   #map.connect '/search/:q', :controller => 'search', :action => 'show', :conditions => { :method => :get }
-  map.search '/search.:format', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.search '/search', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.search_by_data '/search/by_data.:format', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :get, :post ] }, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.search_by_data '/search/by_data', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :post, :get ] }, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.search '/search.:format', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }
+  map.search '/search', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }
+  map.search_by_data '/search/by_data.:format', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :get, :post ] }
+  map.search_by_data '/search/by_data', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :post, :get ] }
 
   map.resources :service_providers,
                 :collection => { :filters => :get,
                                  :filtered_index => :post },
                 :member => { :annotations => :get,
                              :annotations_by => :get,
-                             :services => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :services => :get }
   
-  map.resources :service_provider_hostnames, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.resources :service_provider_hostnames
   
   map.resources :service_deployments,
-                :member => { :annotations => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                :member => { :annotations => :get }
 
   #map.resources :service_versions
 
@@ -185,46 +164,43 @@ ActionController::Routing::Routes.draw do |map|
                              :services_responsible => :get,
                              :make_curator => :put,
                              :remove_curator => :put,
-                             :deactivate => :put },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :deactivate => :put }
                 
-  map.resource :session, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.resource :session
 
   if ENABLE_RPX
-    map.rpx_token_sessions '/sessions/rpx_token', :controller => 'sessions', :action => 'rpx_token', :requirements => { :protocol => ROUTES_PROTOCOL }
+    map.rpx_token_sessions '/sessions/rpx_token', :controller => 'sessions', :action => 'rpx_token'
   end
   
-  map.register '/register', :controller => 'users', :action => 'new', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.signup '/signup', :controller => 'users', :action => 'new', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.login '/login', :controller => 'sessions', :action => 'new', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.signin '/signin', :controller => 'sessions', :action => 'new', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.forgot_password '/forgot_password', :controller => 'users', :action => 'forgot_password', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.request_reset_password '/request_reset_password', :controller => 'users', :action => 'request_reset_password', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.reset_password '/reset_password/:security_token', :controller => 'users', :action => 'reset_password', :security_token => nil, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.submit_feedback '/contact', :controller => 'contact', :action => 'create', :conditions => { :method => :post }, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.contact '/contact', :controller => 'contact', :action => 'index', :conditions => { :method => :get }, :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.home '/', :controller => 'home', :action => 'index', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.activity_feed '/index.:format', :controller => 'home', :action => 'index', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.status_changes_feed '/status_changes.:format', :controller => 'home', :action => 'status_changes', :requirements => { :protocol => ROUTES_PROTOCOL }
-  map.latest '/latest', :controller => 'home', :action => 'latest', :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.register '/register', :controller => 'users', :action => 'new'
+  map.signup '/signup', :controller => 'users', :action => 'new'
+  map.login '/login', :controller => 'sessions', :action => 'new'
+  map.signin '/signin', :controller => 'sessions', :action => 'new'
+  map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
+  map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil
+  map.forgot_password '/forgot_password', :controller => 'users', :action => 'forgot_password'
+  map.request_reset_password '/request_reset_password', :controller => 'users', :action => 'request_reset_password'
+  map.reset_password '/reset_password/:security_token', :controller => 'users', :action => 'reset_password', :security_token => nil
+  map.submit_feedback '/contact', :controller => 'contact', :action => 'create', :conditions => { :method => :post }
+  map.contact '/contact', :controller => 'contact', :action => 'index', :conditions => { :method => :get }
+  map.home '/', :controller => 'home', :action => 'index'
+  map.activity_feed '/index.:format', :controller => 'home', :action => 'index'
+  map.status_changes_feed '/status_changes.:format', :controller => 'home', :action => 'status_changes'
+  map.latest '/latest', :controller => 'home', :action => 'latest'
 
-  map.service_provider_auto_complete 'service_providers/auto_complete', :controller => 'service_providers', :action => 'auto_complete', :conditions => { :method => :get }, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.service_provider_auto_complete 'service_providers/auto_complete', :controller => 'service_providers', :action => 'auto_complete', :conditions => { :method => :get }
 
   map.resources :rest_services,
                 :member => { :annotations => :get,
                              :deployments => :get,
                              :update_base_endpoint => :post,
                              :resources => :get,
-                             :methods => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :methods => :get }
                 
   map.resources :rest_resources, 
                 :member => { :add_new_resources => :post,
                              :annotations => :get,
-                             :methods => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :methods => :get }
 
   map.resources :rest_methods,
                 :collection => { :filters => :get,
@@ -235,22 +211,19 @@ ActionController::Routing::Routes.draw do |map|
                              :group_name_auto_complete => :post,
                              :inputs => :get,
                              :outputs => :get,
-                             :annotations => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :annotations => :get }
                 
   map.resources :rest_parameters,
                 :member => { :add_new_parameters => :post,
-                             :annotations => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :annotations => :get }
                 
-  map.resources :rest_method_parameters, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.resources :rest_method_parameters
 
   map.resources :rest_representations,
                 :member => { :add_new_representations => :post,
-                             :annotations => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :annotations => :get }
 
-  map.resources :rest_method_representations, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.resources :rest_method_representations
 
   map.resources :soap_services,
                 :collection => { :load_wsdl => :post,
@@ -259,28 +232,23 @@ ActionController::Routing::Routes.draw do |map|
                 :member => { :annotations => :get,
                              :operations => :get,
                              :deployments => :get,
-                             :latest_wsdl => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :latest_wsdl => :get }
 
   map.resources :soap_operations,
                 :collection => { :filters => :get,
                                  :filtered_index => :post },
                 :member => { :annotations => :get,
                              :inputs => :get,
-                             :outputs => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :outputs => :get }
                 
   map.resources :soap_inputs,
-                :member => { :annotations => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                :member => { :annotations => :get }
                 
   map.resources :soap_outputs,
-                :member => { :annotations => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                :member => { :annotations => :get }
 
   map.resources :soaplab_servers,
-                :collection => { :load_wsdl => :post},
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                :collection => { :load_wsdl => :post}
 
   map.resources :services,
                 :collection => { :filters => :get,
@@ -297,25 +265,22 @@ ActionController::Routing::Routes.draw do |map|
                              :favourite => :post,
                              :unfavourite => :post,
                              :activity => :get,
-                             :examples => :get },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :examples => :get }
                              
   map.resources :responsibility_requests,
                 :member => { :approve => :put,
                              :deny    => :put,
                              :turn_down => :get,
-                             :cancel => :put},
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                             :cancel => :put}
   
   map.resources :service_responsibles,
                 :member => {:activate => :put,
-                            :deactivate => :put },
-                :requirements => { :protocol => ROUTES_PROTOCOL }
+                            :deactivate => :put }
   
-  map.resources :saved_searches, :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.resources :saved_searches
 
   # Root of website
-  map.root :controller => 'home', :action => 'index', :requirements => { :protocol => ROUTES_PROTOCOL }
+  map.root :controller => 'home', :action => 'index'
 
   # The priority is based upon order of creation: first created -> highest priority.
 
