@@ -28,11 +28,11 @@ class ServiceResponsiblesController < ApplicationController
   def deactivate
     respond_to do |format|
       if @service_responsible.deactivate!
-        flash[:notice] = "<div class=\"flash_header\">You have been removed from the status notification list for #{@service_responsible.service.display_name}</div><div class=\"flash_body\">.</div>"
+        flash[:notice] = "You have been removed from the status notification list for #{@service_responsible.service.name}"
         format.html{redirect_to(user_url(@service_responsible.user, :id => @service_responsible.user.id, :anchor =>'status-notifications')) }
         format.xml { disable_action }
       else
-        flash[:notice] = "<div class=\"flash_header\">Could not remove you from status notification list for #{@service_responsible.service.display_name}</div><div class=\"flash_body\">.</div>"
+        flash[:notice] = "Could not remove you from status notification list for #{@service_responsible.service.name}"
         format.html{redirect_to(user_url(@service_responsible.user, :id => @service_responsible.user.id, :anchor =>'status-notifications')) }
         format.xml { disable_action }
       end
@@ -43,11 +43,11 @@ class ServiceResponsiblesController < ApplicationController
     respond_to do |format|
       if @service_responsible
         if @service_responsible.activate!
-          flash[:notice] = "<div class=\"flash_header\">You have been added to status notification list for #{@service_responsible.service.display_name}</div><div class=\"flash_body\">.</div>"
+          flash[:notice] = "You have been added to status notification list for #{@service_responsible.service.name}"
           format.html{ redirect_to(user_url(@service_responsible.user, :id => @service_responsible.user.id, :anchor =>'status-notifications')) }
           format.xml { disable_action }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not add you to the status notification list for #{@service_responsible.service.display_name}</div><div class=\"flash_body\">.</div>"
+          flash[:error] = "Could not add you to the status notification list for #{@service_responsible.service.name}"
           format.html{ redirect_to(user_url(@service_responsible.user, :id => @service_responsible.user.id, :anchor =>'status-notifications')) }
           format.xml { disable_action }
         end
