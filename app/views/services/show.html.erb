@@ -207,6 +207,7 @@
 				<b>Location:</b>
 				<br/>
 				<% @service.service_deployments.each do |s_d| %>
+				  <%= edit_location_by_popup(s_d, :class => "button_slim") -%>
 					<% unless (loc = s_d.location).blank? -%>
 						<%= h s_d.location -%>
 						<%= flag_icon_from_country(s_d.country, :text => loc) -%>
