@@ -48,7 +48,40 @@ class RestMethodsController < ApplicationController
       format.js { render :layout => false }
     end
   end
-  
+
+  def update_endpoint_name
+    error_msg = ""
+    new_name = params[:new_name]
+    new_name.chomp!
+    new_name.strip!
+
+    if @rest_method.check_endpoint_name_exists(new_name)
+      error_msg = "That endpoint name is already taken for this REST service."
+    else
+      unless new_name.blank?
+        @rest_method.endpoint_name = new_name
+        error_msg = @rest_method.save! ? "" : "Could not update the endpoint name, sorry. If this happens again, please let us know."
+      end
+    end
+
+    respond_to do |format|
+      if error_msg.blank?
+        flash[:notice] = "The endpoint name was successfully updated."
+      else
+        flash[:error] = error_msg
+      end
+
+      format.html { redirect_to @rest_method }
+      format.xml  { head :ok }
+    end
+  end
+
+  def edit_endpoint_name_popup
+    respond_to do |format|
+      format.js { render :layout => false }
+    end
+  end
+
   def update
     # sanitize user input
     params[:new_name].chomp!
