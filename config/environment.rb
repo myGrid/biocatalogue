@@ -104,7 +104,8 @@ Rails::Initializer.run do |config|
   
 end
 
-
+# Workaround critical XML parsing bug.
+ActionController::Base.param_parsers.delete(Mime::XML)
 
 # Code to handle the issue of unintential file descriptor sharing in Phusion Passenger.
 # Ref: http://www.modrails.com/documentation/Users%20guide.html#_example_1_memcached_connection_sharing_harmful
