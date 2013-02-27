@@ -406,6 +406,25 @@ class UsersController < ApplicationController
     end
   end
 
+protected
+
+  def include_deactivated?
+    unless defined?(@include_deactivated)
+      session_key = "#{self.controller_name.downcase}_#{self.action_name.downcase}_include_deactivated"
+      if !params[:include_deactivated].blank?
+        @include_deactivated = !%w(false no 0).include?(params[:include_deactivated].downcase)
+        session[session_key] = @include_deactivated.to_s
+      elsif !session[session_key].blank?
+        @include_deactivated = (session[session_key] == "false")
+      else
+        @include_deactivated = false
+        session[session_key] = @include_deactivated.to_s
+      end
+    end
+    return @include_deactivated
+  end
+  helper_method :include_deactivated?
+
 private
   
   def parse_sort_params
@@ -451,7 +470,7 @@ private
     end
     
     conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-    conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL")
+    conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL") unless include_deactivated?
 
     if self.request.format == :bljson
       finder_options = {

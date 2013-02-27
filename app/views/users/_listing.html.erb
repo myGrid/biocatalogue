@@ -9,30 +9,29 @@
 %>
 
 <div class="listings">
-	<% items.each do |user| %>
-    <% if user.activated? -%>
-			<div class="listing_item">
-				<p class="name">
-					<%= link_to(display_name(user), user_path(user)) -%>
-          <span><%= user_role_badge(user.roles, "margin-left: 1em; vertical-align: baseline;") %></span
-	
-					<%= flag_icon_from_country(user.country, :class => "framed") -%>
-				</p>
-	      <% unless user.last_active.nil? %>
-	        <span class="ago">
-	          last active 
-	          <%= distance_of_time_in_words_to_now(user.last_active) -%> ago 
-	        </span>
-	      <% end %>
-				<p class="detail_simple">
-					<b>Affiliation:</b>
-					<% unless user.affiliation.blank? %>
-						<%= h(user.affiliation) -%>
-					<% else %>
-						<span class="none_text">none</span>
-					<% end %>
-				</p>
-			</div>
-		<% end %>
-	<% end %>
+  <% items.each do |user| %>
+    <div class="listing_item<%= " archived" unless user.activated? -%>">
+      <p class="name">
+        <% if user.activated? %>
+          <%= link_to(display_name(user), user_path(user)) -%>
+          <span><%= user_role_badge(user.roles, "margin-left: 1em; vertical-align: baseline;") %></span>
+          <%= flag_icon_from_country(user.country, :class => "framed") -%>
+        <% else %>
+          <%= display_name(user) -%>
+        <% end %>
+      </p>
+      <% unless user.last_active.nil? %>
+        <span class="ago"> last active
+        <%= distance_of_time_in_words_to_now(user.last_active) -%> ago </span>
+      <% end %>
+      <p class="detail_simple">
+        <b>Affiliation:</b>
+        <% unless user.affiliation.blank? %>
+          <%= h(user.affiliation) -%>
+        <% else %>
+          <span class="none_text">none</span>
+        <% end %>
+      </p>
+    </div>
+  <% end %>
 </div>

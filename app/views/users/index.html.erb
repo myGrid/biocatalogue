@@ -22,6 +22,10 @@
 <% end %>
 
 <span class="inline-block" style="line-height: 1.0; float: right; margin-left: 2em; text-align: right;">
+  <% if logged_in? && current_user.is_curator? %>
+    <%= render :partial => 'index_include_deactivated_option' %>
+    <span class="separator">|</span>
+  <% end%>
   <%= render :partial => 'index_sortby' %>
 </span>
 
