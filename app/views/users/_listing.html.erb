@@ -12,14 +12,13 @@
   <% items.each do |user| %>
     <div class="listing_item<%= " archived" unless user.activated? -%>">
       <p class="name">
-        <% if user.activated? %>
-          <%= link_to(display_name(user), user_path(user)) -%>
-          <span><%= user_role_badge(user.roles, "margin-left: 1em; vertical-align: baseline;") %></span>
-          <%= flag_icon_from_country(user.country, :class => "framed") -%>
-        <% else %>
-          <%= display_name(user) -%>
-        <% end %>
+        <%= link_to(display_name(user), user_path(user)) -%>
+        <span><%= user_role_badge(user.roles, "margin-left: 1em; vertical-align: baseline;") %></span>
+        <%= flag_icon_from_country(user.country, :class => "framed") -%>
       </p>
+      <% unless user.activated? %>
+        <%= link_to("Activate", activate_user_url(user), :method => :put, :confirm => "Are you sure you want to activate this user? They would usually activate themselves via email.", :class => "button_slim") -%>
+      <% end %>
       <% unless user.last_active.nil? %>
         <span class="ago"> last active
         <%= distance_of_time_in_words_to_now(user.last_active) -%> ago </span>

@@ -31,11 +31,13 @@ class UsersController < ApplicationController
   
   before_filter :find_users, :only => [ :index, :filtered_index ]
   
-  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, 
+  before_filter :find_user, :only => [ :edit, :update, :change_password,
                                        :rpx_update, :annotations_by, :favourites, 
                                        :services_responsible, :make_curator, :remove_curator,
                                        :deactivate ]
-  
+
+  before_filter :find_user_inclusive, :only => [ :show, :activate ]
+
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
   
   before_filter :authorise, :only => [ :make_curator, :remove_curator, :deactivate ]
@@ -390,7 +392,21 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
+  def activate
+    respond_to do |format|
+      if @user
+        if @user.activate!
+          ActivityLog.create(@log_event_core_data.merge(:action => "activate", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been activated</div>"
+        else
+          flash[:error] = "<div class=\"flash_header\">Could not activate the user. Please contact a system admin.</div>"
+        end
+        format.html{ redirect_to :back }
+      end
+    end
+  end
+
   def deactivate
     respond_to do |format|
       if @user
@@ -493,6 +509,10 @@ private
   
   def find_user
     @user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")
+  end
+
+  def find_user_inclusive
+    @user = User.find(params[:id])
   end
 
   def check_user_rights
