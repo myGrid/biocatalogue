@@ -7,14 +7,14 @@
 # Needs to take into account the fact that we are using a country select that has been modified.
 # (ie: we are using: http://github.com/ihower/country_and_region_select)
 module CountryCodes
-  
+
   @@codes = Hash.new
 
   # Uses the official ISO 3166 country codes XML file, edited in accordance
   # with the note above.
   raw = Hash.from_xml(IO.read(File.join(Rails.root, 'data', 'iso_3166-1_list_en.xml')))
-  raw['iso_3166_1_list_en']['iso_3166_1_entry'].each do |e|
-    code = e['iso_3166_1_alpha_2_code_element']
+  raw['ISO_3166_1_List_en']['ISO_3166_1_Entry'].each do |e|
+    code = e['ISO_3166_1_Alpha_2_Code_element']
 
     # Adjust some names (also titlecase breaks hyphenated and non-ascii names)
     entry = case code
@@ -39,7 +39,7 @@ module CountryCodes
     when "BL"
       "Saint Barthélemy"
     else
-      e['iso_3166_1_country_name'].titlecase
+      e['ISO_3166_1_Country_name'].titlecase
     end
 
     ["And", "The", "Of"].each do |w|
@@ -69,16 +69,16 @@ module CountryCodes
         break
       end
     end
-    
+
     return c
   end
-  
+
   def self.valid_code?(code)
     @@codes.key?(code)
   end
-  
+
   def self.codes
     @@codes
   end
-  
+
 end

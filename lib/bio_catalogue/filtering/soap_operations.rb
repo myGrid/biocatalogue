@@ -194,7 +194,7 @@ module BioCatalogue
           sql[0] = sql[0] + " LIMIT #{limit}"
         end
         
-        items = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        items = Annotation.connection.select_all(Annotation.send(:sanitize_sql, sql))
         
         # Group these tags and find out how many services match.
         # NOTE: MUST take into account that multiple service substructure objects could belong to the same Service, AND
@@ -266,7 +266,7 @@ module BioCatalogue
           tag_values 
         ]
         
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results = Annotation.connection.select_all(Annotation.send(:sanitize_sql, sql))
         
         return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "SoapOperation").uniq     
       end

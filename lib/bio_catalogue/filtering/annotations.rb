@@ -92,7 +92,7 @@ module BioCatalogue
           sql += " LIMIT #{limit}"
         end
          
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, [ sql, annotatable_type ]))
+        results = Annotation.connection.select_all(Annotation.send(:sanitize_sql, [ sql, annotatable_type ]))
         
         # Need to now fetch all these object so we can figure out their display names!
         # TODO: optimize the retrieval of display names
@@ -127,7 +127,7 @@ module BioCatalogue
           sql += " LIMIT #{limit}"
         end
          
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, [ sql, source_type ]))
+        results = Annotation.connection.select_all(Annotation.send(:sanitize_sql, [ sql, source_type ]))
         
         # Need to now fetch all these objects so we can figure out their display names!
         # TODO: optimise this!
@@ -281,7 +281,7 @@ module BioCatalogue
                 WHERE annotations.annotatable_type = ?  AND annotations.annotatable_id IN (?)",
                 annotatable_type, annotatable_ids ]
         
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results = Annotation.connection.select_all(Annotation.send(:sanitize_sql, sql))
         
         return results.map{|r| r['id'].to_i}.uniq
       end
@@ -293,7 +293,7 @@ module BioCatalogue
                 WHERE annotations.source_type = ?  AND annotations.source_id IN (?)",
                 source_type, source_ids ]
         
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results = Annotation.connection.select_all(Annotation.send(:sanitize_sql, sql))
         
         return results.map{|r| r['id'].to_i}.uniq
       end

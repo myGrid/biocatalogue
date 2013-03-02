@@ -47,7 +47,7 @@ module BioCatalogue
               WHERE annotation_attributes.name = 'tag' AND tags.name = ?",
               tag_name ]
       
-      results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+      results = Tag.connection.select_all(Tag.send(:sanitize_sql, sql))
       
       return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "Service").uniq 
     end
@@ -100,7 +100,7 @@ module BioCatalogue
               GROUP BY annotations.annotatable_type, annotations.annotatable_id) x",
               tag_name ]
               
-      return ActiveRecord::Base.connection.select_one(ActiveRecord::Base.send(:sanitize_sql, sql))['count'].to_i
+      return Tag.connection.select_one(Tag.send(:sanitize_sql, sql))['count'].to_i
     end
     
     def self.get_total_taggings_count
@@ -117,7 +117,7 @@ module BioCatalogue
             WHERE annotation_attributes.name = 'tag'
             GROUP BY tags.id) AS x"
               
-      return ActiveRecord::Base.connection.select_one(ActiveRecord::Base.send(:sanitize_sql, sql))['count'].to_i
+      return Tag.connection.select_one(Tag.send(:sanitize_sql, sql))['count'].to_i
     end
     
     # This is a wrapper method around the Tag model to:
@@ -182,7 +182,7 @@ module BioCatalogue
         end
       end
 
-      results = ActiveRecord::Base.connection.select_all(sql)
+      results = Tag.connection.select_all(sql)
       
       results.each { |r| r["count"] = r["count"].to_i }
       
@@ -208,7 +208,7 @@ module BioCatalogue
         sql[0] = sql[0] + " LIMIT #{limit}"
       end
       
-      return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+      return Tag.connection.select_all(Tag.send(:sanitize_sql, sql))
     end
     
     # Determines whether a given term URI is an ontology term URI or not,

@@ -234,7 +234,7 @@ module BioCatalogue
       id_value = nil
       
       unless sql.blank?
-        id_value = ActiveRecord::Base.connection.select_value(ActiveRecord::Base.send(:sanitize_sql, sql)).try(:to_i)
+        id_value = Service.connection.select_value(Service.send(:sanitize_sql, sql)).try(:to_i)
         id_value = nil if id_value == 0
       end
       

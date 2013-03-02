@@ -230,7 +230,7 @@ class RestService < ActiveRecord::Base
       sql[0] = sql[0] + " LIMIT #{limit}"
     end
     
-    return ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+    return RestMethod.connection.select_all(RestMethod.send(:sanitize_sql, sql))
   end
 
   def rest_methods
