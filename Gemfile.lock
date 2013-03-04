@@ -1,0 +1,155 @@
+PATH
+  remote: vendor/gems/crack-0.1.2
+  specs:
+    crack (0.1.2)
+
+PATH
+  remote: vendor/gems/factory_girl-1.2.3
+  specs:
+    factory_girl (1.2.3)
+
+PATH
+  remote: vendor/gems/geokit-1.3.2
+  specs:
+    geokit (1.3.2)
+
+PATH
+  remote: vendor/gems/grosser-rpx_now-0.5.10
+  specs:
+    rpx_now (0.5.10)
+      activesupport
+
+PATH
+  remote: vendor/gems/httparty-0.4.3
+  specs:
+    httparty (0.4.3)
+      crack (>= 0.1.1)
+
+PATH
+  remote: vendor/gems/jnunemaker-twitter-0.6.11
+  specs:
+    jnunemaker-twitter (0.6.11)
+
+PATH
+  remote: vendor/gems/mash-0.0.3
+  specs:
+    mash (0.0.3)
+
+PATH
+  remote: vendor/gems/mocha-0.9.8
+  specs:
+    mocha (0.9.8)
+
+PATH
+  remote: vendor/gems/mperham-memcache-client-1.7.4
+  specs:
+    memcache-client (1.7.4)
+
+PATH
+  remote: vendor/gems/oauth-0.3.6
+  specs:
+    oauth (0.3.6)
+      ruby-hmac (>= 0.3.1)
+
+PATH
+  remote: vendor/gems/onyx-cache-money-0.2.6.1
+  specs:
+    onyx-cache-money (0.2.6.1)
+
+PATH
+  remote: vendor/gems/rubaidh-google_analytics-1.1.4
+  specs:
+    rubaidh-google_analytics (1.1.4)
+
+PATH
+  remote: vendor/gems/ruby-hmac-0.3.2
+  specs:
+    ruby-hmac (0.3.2)
+
+PATH
+  remote: vendor/gems/seer-0.6.1
+  specs:
+    seer (0.6.1)
+
+PATH
+  remote: vendor/gems/soap4r-1.5.8
+  specs:
+    soap4r (1.5.8)
+
+PATH
+  remote: vendor/gems/version_info-0.7.1
+  specs:
+    version_info (0.7.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    SystemTimer (1.2.3)
+    actionmailer (2.3.8)
+      actionpack (= 2.3.8)
+    actionpack (2.3.8)
+      activesupport (= 2.3.8)
+      rack (~> 1.1.0)
+    activerecord (2.3.8)
+      activesupport (= 2.3.8)
+    activeresource (2.3.8)
+      activesupport (= 2.3.8)
+    activesupport (2.3.8)
+    addressable (2.2.2)
+    cgi_multipart_eof_fix (2.5.0)
+    daemons (1.1.3)
+    dnsruby (1.53)
+    fastthread (1.0.7)
+    gem_plugin (0.2.3)
+    json (1.4.6)
+    libxml-ruby (1.1.4)
+    mongrel (1.1.5)
+      cgi_multipart_eof_fix (>= 2.4)
+      daemons (>= 1.0.3)
+      fastthread (>= 1.0.1)
+      gem_plugin (>= 0.2.3)
+    mysql (2.8.1)
+    rack (1.1.6)
+    rails (2.3.8)
+      actionmailer (= 2.3.8)
+      actionpack (= 2.3.8)
+      activerecord (= 2.3.8)
+      activeresource (= 2.3.8)
+      activesupport (= 2.3.8)
+      rake (>= 0.8.3)
+    rake (0.8.7)
+    solr-ruby (0.0.8)
+    tzinfo (0.3.31)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  SystemTimer (= 1.2.3)
+  addressable (= 2.2.2)
+  crack (= 0.1.2)!
+  daemons (= 1.1.3)
+  dnsruby (= 1.53)
+  factory_girl (= 1.2.3)!
+  geokit (= 1.3.2)!
+  httparty (= 0.4.3)!
+  jnunemaker-twitter (= 0.6.11)!
+  json (= 1.4.6)
+  libxml-ruby (= 1.1.4)
+  mash (= 0.0.3)!
+  memcache-client (= 1.7.4)!
+  mocha (= 0.9.8)!
+  mongrel (= 1.1.5)
+  mysql (= 2.8.1)
+  oauth (= 0.3.6)!
+  onyx-cache-money (= 0.2.6.1)!
+  rails (= 2.3.8)
+  rake (= 0.8.7)
+  rpx_now (= 0.5.10)!
+  rubaidh-google_analytics (= 1.1.4)!
+  ruby-hmac (= 0.3.2)!
+  seer (= 0.6.1)!
+  soap4r (= 1.5.8)!
+  solr-ruby (= 0.0.8)
+  tzinfo (= 0.3.31)
+  version_info (= 0.7.1)!
