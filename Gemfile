@@ -29,9 +29,10 @@ gem "memcache-client", "1.7.4", :require => "memcache", :path => "vendor/gems/mp
 gem "oauth", "0.3.6", :path => "vendor/gems/oauth-0.3.6"
 gem "onyx-cache-money", "0.2.6.1", :require => "cache_money", :path => "vendor/gems/onyx-cache-money-0.2.6.1"
 gem "rubaidh-google_analytics", "1.1.4", :require => "rubaidh/google_analytics", :path => "vendor/gems/rubaidh-google_analytics-1.1.4"
-gem "ruby-hmac", "0.3.2", :require => "hmac", :path => "vendor/gems/ruby-hmac-0.3.2"
-gem "seer", "0.6.1", :path => "vendor/gems/seer-0.6.1"
 
+gem "ruby-hmac"#, "0.3.2", :require => "hmac", :path => "vendor/gems/ruby-hmac-0.3.2"
+
+gem "seer"#, "0.6.1", :path => "vendor/gems/seer-0.6.1"
 gem "soap4r"#, "1.5.8", :path => "vendor/gems/soap4r-1.5.8"
 
 #New version_info requires ruby >1.9.*  -- Leave frozen til rails 3 upgrade
