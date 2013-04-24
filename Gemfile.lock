@@ -5,17 +5,6 @@ PATH
       activesupport
 
 PATH
-  remote: vendor/gems/httparty-0.4.3
-  specs:
-    httparty (0.4.3)
-      crack (>= 0.1.1)
-
-PATH
-  remote: vendor/gems/jnunemaker-twitter-0.6.11
-  specs:
-    jnunemaker-twitter (0.6.11)
-
-PATH
   remote: vendor/gems/mash-0.0.3
   specs:
     mash (0.0.3)
@@ -87,10 +76,15 @@ GEM
     dnsruby (1.53)
     factory_girl (2.6.4)
       activesupport (>= 2.3.9)
+    faraday (0.8.7)
+      multipart-post (~> 1.1)
     fastthread (1.0.7)
     gem_plugin (0.2.3)
     geokit (1.6.5)
       multi_json
+    httparty (0.11.0)
+      multi_json (~> 1.0)
+      multi_xml (>= 0.5.2)
     json (1.7.7)
     libxml-ruby (2.6.0)
     mongrel (1.1.5)
@@ -99,6 +93,8 @@ GEM
       fastthread (>= 1.0.1)
       gem_plugin (>= 0.2.3)
     multi_json (1.7.2)
+    multi_xml (0.5.3)
+    multipart-post (1.2.0)
     mysql (2.9.1)
     rack (1.1.6)
     rails (2.3.18)
@@ -111,7 +107,12 @@ GEM
     rake (10.0.4)
     rdoc (4.0.1)
       json (~> 1.4)
+    simple_oauth (0.2.0)
     solr-ruby (0.0.8)
+    twitter (4.6.2)
+      faraday (~> 0.8, < 0.10)
+      multi_json (~> 1.0)
+      simple_oauth (~> 0.2)
     tzinfo (0.3.37)
 
 PLATFORMS
@@ -125,8 +126,7 @@ DEPENDENCIES
   dnsruby
   factory_girl
   geokit
-  httparty (= 0.4.3)!
-  jnunemaker-twitter (= 0.6.11)!
+  httparty
   json
   libxml-ruby
   mash (= 0.0.3)!
@@ -145,5 +145,6 @@ DEPENDENCIES
   seer (= 0.6.1)!
   soap4r (= 1.5.8)!
   solr-ruby
+  twitter
   tzinfo
   version_info (= 0.7.1)!
