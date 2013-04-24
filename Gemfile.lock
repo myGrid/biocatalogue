@@ -72,11 +72,6 @@ PATH
     seer (0.6.1)
 
 PATH
-  remote: vendor/gems/soap4r-1.5.8
-  specs:
-    soap4r (1.5.8)
-
-PATH
   remote: vendor/gems/version_info-0.7.1
   specs:
     version_info (0.7.1)
@@ -101,6 +96,7 @@ GEM
     dnsruby (1.53)
     fastthread (1.0.7)
     gem_plugin (0.2.3)
+    httpclient (2.3.3)
     json (1.7.7)
     libxml-ruby (2.6.0)
     mongrel (1.1.5)
@@ -118,6 +114,8 @@ GEM
       activesupport (= 2.3.18)
       rake (>= 0.8.3)
     rake (0.8.7)
+    soap4r (1.5.8)
+      httpclient (>= 2.1.1)
     solr-ruby (0.0.8)
     tzinfo (0.3.37)
 
@@ -149,7 +147,7 @@ DEPENDENCIES
   rubaidh-google_analytics (= 1.1.4)!
   ruby-hmac (= 0.3.2)!
   seer (= 0.6.1)!
-  soap4r (= 1.5.8)!
+  soap4r
   solr-ruby
   tzinfo
   version_info (= 0.7.1)!
