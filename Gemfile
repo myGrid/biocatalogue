@@ -2,19 +2,21 @@ source "https://rubygems.org"
 
 ruby "1.8.7"
 
-gem "rails", "2.3.8"
-gem "mysql", "2.8.1"
+gem "rails", "2.3.18"
+gem "mysql"#, "2.8.1"
 
-gem "rake", "0.8.7"
-gem "solr-ruby", "0.0.8"
-gem "json", "1.4.6"
-gem "addressable", "2.2.2"
-gem "daemons", "1.1.3"
-gem "dnsruby", "1.53"
-gem "SystemTimer", "1.2.3"
-gem "libxml-ruby", "1.1.4"
-gem "mongrel", "1.1.5"
-gem "tzinfo", "0.3.31"
+gem "rake"#, "0.8.7"
+gem "solr-ruby"#, "0.0.8"
+gem "json"#, "1.4.6"
+gem "addressable"#, "2.2.2"
+gem "daemons"#, "1.1.3"
+gem "dnsruby"#, "1.53"
+gem "SystemTimer"#, "1.2.3"
+gem "libxml-ruby"#, "1.1.4"
+gem "mongrel"#, "1.1.5"
+gem "tzinfo"#, "0.3.31"
+
+gem "rdoc"
 
 # Frozen gems
 gem "crack", "0.1.2", :path => "vendor/gems/crack-0.1.2"

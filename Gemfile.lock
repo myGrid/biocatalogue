@@ -85,71 +85,74 @@ GEM
   remote: https://rubygems.org/
   specs:
     SystemTimer (1.2.3)
-    actionmailer (2.3.8)
-      actionpack (= 2.3.8)
-    actionpack (2.3.8)
-      activesupport (= 2.3.8)
+    actionmailer (2.3.18)
+      actionpack (= 2.3.18)
+    actionpack (2.3.18)
+      activesupport (= 2.3.18)
       rack (~> 1.1.0)
-    activerecord (2.3.8)
-      activesupport (= 2.3.8)
-    activeresource (2.3.8)
-      activesupport (= 2.3.8)
-    activesupport (2.3.8)
-    addressable (2.2.2)
+    activerecord (2.3.18)
+      activesupport (= 2.3.18)
+    activeresource (2.3.18)
+      activesupport (= 2.3.18)
+    activesupport (2.3.18)
+    addressable (2.3.4)
     cgi_multipart_eof_fix (2.5.0)
-    daemons (1.1.3)
+    daemons (1.1.9)
     dnsruby (1.53)
     fastthread (1.0.7)
     gem_plugin (0.2.3)
-    json (1.4.6)
-    libxml-ruby (1.1.4)
+    json (1.7.7)
+    libxml-ruby (2.6.0)
     mongrel (1.1.5)
       cgi_multipart_eof_fix (>= 2.4)
       daemons (>= 1.0.3)
       fastthread (>= 1.0.1)
       gem_plugin (>= 0.2.3)
-    mysql (2.8.1)
+    mysql (2.9.1)
     rack (1.1.6)
-    rails (2.3.8)
-      actionmailer (= 2.3.8)
-      actionpack (= 2.3.8)
-      activerecord (= 2.3.8)
-      activeresource (= 2.3.8)
-      activesupport (= 2.3.8)
+    rails (2.3.18)
+      actionmailer (= 2.3.18)
+      actionpack (= 2.3.18)
+      activerecord (= 2.3.18)
+      activeresource (= 2.3.18)
+      activesupport (= 2.3.18)
       rake (>= 0.8.3)
-    rake (0.8.7)
+    rake (10.0.4)
+    rdoc (4.0.1)
+      json (~> 1.4)
     solr-ruby (0.0.8)
-    tzinfo (0.3.31)
+    tzinfo (0.3.37)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  SystemTimer (= 1.2.3)
-  addressable (= 2.2.2)
+  SystemTimer
+  addressable
   crack (= 0.1.2)!
-  daemons (= 1.1.3)
-  dnsruby (= 1.53)
+  daemons
+  dnsruby
   factory_girl (= 1.2.3)!
   geokit (= 1.3.2)!
   httparty (= 0.4.3)!
   jnunemaker-twitter (= 0.6.11)!
-  json (= 1.4.6)
-  libxml-ruby (= 1.1.4)
+  json
+  libxml-ruby
   mash (= 0.0.3)!
   memcache-client (= 1.7.4)!
   mocha (= 0.9.8)!
-  mongrel (= 1.1.5)
-  mysql (= 2.8.1)
+  mongrel
+  mysql
   oauth (= 0.3.6)!
   onyx-cache-money (= 0.2.6.1)!
-  rails (= 2.3.8)
-  rake (= 0.8.7)
+  rails (= 2.3.18)
+  rake
+  rdoc
   rpx_now (= 0.5.10)!
   rubaidh-google_analytics (= 1.1.4)!
   ruby-hmac (= 0.3.2)!
   seer (= 0.6.1)!
   soap4r (= 1.5.8)!
-  solr-ruby (= 0.0.8)
-  tzinfo (= 0.3.31)
+  solr-ruby
+  tzinfo
   version_info (= 0.7.1)!
