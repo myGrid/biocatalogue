@@ -28,7 +28,9 @@ gem "mocha", "0.9.8", :path => "vendor/gems/mocha-0.9.8"
 gem "memcache-client", "1.7.4", :require => "memcache", :path => "vendor/gems/mperham-memcache-client-1.7.4"
 gem "oauth", "0.3.6", :path => "vendor/gems/oauth-0.3.6"
 gem "onyx-cache-money", "0.2.6.1", :require => "cache_money", :path => "vendor/gems/onyx-cache-money-0.2.6.1"
-gem "rubaidh-google_analytics", "1.1.4", :require => "rubaidh/google_analytics", :path => "vendor/gems/rubaidh-google_analytics-1.1.4"
+
+#gem "rubaidh-google_analytics"#, "1.1.4", :require => "rubaidh/google_analytics", :path => "vendor/gems/rubaidh-google_analytics-1.1.4"
+gem "google_analytics"
 
 gem "ruby-hmac"#, "0.3.2", :require => "hmac", :path => "vendor/gems/ruby-hmac-0.3.2"
 
