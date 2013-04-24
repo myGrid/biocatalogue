@@ -27,7 +27,8 @@ gem "mash", "0.0.3", :path => "vendor/gems/mash-0.0.3"
 gem "mocha", "0.9.8", :path => "vendor/gems/mocha-0.9.8"
 gem "memcache-client", "1.7.4", :require => "memcache", :path => "vendor/gems/mperham-memcache-client-1.7.4"
 gem "oauth", "0.3.6", :path => "vendor/gems/oauth-0.3.6"
-gem "onyx-cache-money", "0.2.6.1", :require => "cache_money", :path => "vendor/gems/onyx-cache-money-0.2.6.1"
+#gem "onyx-cache-money", "0.2.6.1", :require => "cache_money", :path => "vendor/gems/onyx-cache-money-0.2.6.1"
+#gem "cache-money" #not sure how to test 
 
 #gem "rubaidh-google_analytics"#, "1.1.4", :require => "rubaidh/google_analytics", :path => "vendor/gems/rubaidh-google_analytics-1.1.4"
 gem "google_analytics"
