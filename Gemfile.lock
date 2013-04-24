@@ -1,9 +1,4 @@
 PATH
-  remote: vendor/gems/crack-0.1.2
-  specs:
-    crack (0.1.2)
-
-PATH
   remote: vendor/gems/factory_girl-1.2.3
   specs:
     factory_girl (1.2.3)
@@ -97,6 +92,7 @@ GEM
     activesupport (2.3.18)
     addressable (2.3.4)
     cgi_multipart_eof_fix (2.5.0)
+    crack (0.3.2)
     daemons (1.1.9)
     dnsruby (1.53)
     fastthread (1.0.7)
@@ -129,7 +125,7 @@ PLATFORMS
 DEPENDENCIES
   SystemTimer
   addressable
-  crack (= 0.1.2)!
+  crack
   daemons
   dnsruby
   factory_girl (= 1.2.3)!

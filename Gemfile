@@ -19,7 +19,7 @@ gem "tzinfo"#, "0.3.31"
 gem "rdoc"
 
 # Frozen gems
-gem "crack", "0.1.2", :path => "vendor/gems/crack-0.1.2"
+gem "crack"#, "0.1.2", :path => "vendor/gems/crack-0.1.2"
 gem "factory_girl", "1.2.3", :path => "vendor/gems/factory_girl-1.2.3"
 gem "geokit", "1.3.2", :path => "vendor/gems/geokit-1.3.2"
 gem "rpx_now", "0.5.10", :require => "rpx_now", :path => "vendor/gems/grosser-rpx_now-0.5.10"
