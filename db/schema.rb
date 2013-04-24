@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
     t.integer  "referenced_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "data",                   :limit => 16777215
+    t.text     "data",                   :limit => 2147483647
     t.string   "format"
     t.string   "http_referer"
     t.string   "user_agent"
@@ -60,10 +60,10 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
   end
 
   create_table "annotation_properties", :force => true do |t|
-    t.integer  "annotation_id",                                              :null => false
-    t.string   "property_type",                                              :null => false
-    t.integer  "property_id",                                                :null => false
-    t.integer  "value",         :limit => 10, :precision => 10, :scale => 0
+    t.integer  "annotation_id", :null => false
+    t.string   "property_type", :null => false
+    t.integer  "property_id",   :null => false
+    t.integer  "value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -513,7 +513,7 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
-    t.text     "computational_type_details", :limit => 16777215
+    t.text     "computational_type_details", :limit => 2147483647
     t.datetime "archived_at"
   end
 
@@ -542,7 +542,7 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
-    t.text     "computational_type_details", :limit => 16777215
+    t.text     "computational_type_details", :limit => 2147483647
     t.datetime "archived_at"
   end
 
@@ -550,7 +550,7 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
 
   create_table "soap_service_changes", :force => true do |t|
     t.integer  "soap_service_id"
-    t.text     "changelog",       :limit => 16777215
+    t.text     "changelog",       :limit => 2147483647
     t.datetime "created_at"
     t.datetime "updated_at"
   end
