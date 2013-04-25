@@ -56,7 +56,7 @@ Rails::Initializer.run do |config|
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
   %w( mailers observers sweepers ).each do |s|
-    config.load_paths += [ File.join(Rails.root, 'app', s) ]
+    config.autoload_paths += [ File.join(Rails.root, 'app', s) ]
   end
 
 	# Rotate logs when they reach a size of 10M and keep no more than 10 of these
