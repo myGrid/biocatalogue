@@ -5,11 +5,6 @@ PATH
       activesupport
 
 PATH
-  remote: vendor/gems/mash-0.0.3
-  specs:
-    mash (0.0.3)
-
-PATH
   remote: vendor/gems/mocha-0.9.8
   specs:
     mocha (0.9.8)
@@ -87,6 +82,7 @@ GEM
       multi_xml (>= 0.5.2)
     json (1.7.7)
     libxml-ruby (2.6.0)
+    mash (0.1.1)
     mongrel (1.1.5)
       cgi_multipart_eof_fix (>= 2.4)
       daemons (>= 1.0.3)
@@ -129,7 +125,7 @@ DEPENDENCIES
   httparty
   json
   libxml-ruby
-  mash (= 0.0.3)!
+  mash
   memcache-client (= 1.7.4)!
   mocha (= 0.9.8)!
   mongrel
