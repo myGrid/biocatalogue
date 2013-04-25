@@ -28,6 +28,11 @@ require 'net/smtp'
 Mime::Type.register 'application/biocat-lite+json', :bljson
 
 # Require additional libraries
+
+require 'rpx_now/user_integration'
+
+
+
 require 'array'
 require 'object'
 require 'string'
@@ -43,6 +48,7 @@ require 'system_timer'
 require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'
+
 
 require 'bio_catalogue/annotations/custom_migration_to_v3'
 
