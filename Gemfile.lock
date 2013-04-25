@@ -5,11 +5,6 @@ PATH
       activesupport
 
 PATH
-  remote: vendor/gems/mocha-0.9.8
-  specs:
-    mocha (0.9.8)
-
-PATH
   remote: vendor/gems/mperham-memcache-client-1.7.4
   specs:
     memcache-client (1.7.4)
@@ -83,6 +78,9 @@ GEM
     json (1.7.7)
     libxml-ruby (2.6.0)
     mash (0.1.1)
+    metaclass (0.0.1)
+    mocha (0.13.3)
+      metaclass (~> 0.0.1)
     mongrel (1.1.5)
       cgi_multipart_eof_fix (>= 2.4)
       daemons (>= 1.0.3)
@@ -127,7 +125,7 @@ DEPENDENCIES
   libxml-ruby
   mash
   memcache-client (= 1.7.4)!
-  mocha (= 0.9.8)!
+  mocha
   mongrel
   mysql
   oauth (= 0.3.6)!
