@@ -31,8 +31,6 @@ Mime::Type.register 'application/biocat-lite+json', :bljson
 
 require 'rpx_now/user_integration'
 
-
-
 require 'array'
 require 'object'
 require 'string'
@@ -48,7 +46,6 @@ require 'system_timer'
 require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'
-
 
 require 'bio_catalogue/annotations/custom_migration_to_v3'
 
@@ -88,11 +85,7 @@ if ENABLE_BOOKMARKING_WIDGET
 end
 
 # Set Google Analytics code
-if ENABLE_GOOGLE_ANALYTICS
-  Rubaidh::GoogleAnalytics.tracker_id = GOOGLE_ANALYTICS_TRACKER_ID
-else
-  Rubaidh::GoogleAnalytics.tracker_id = nil
-end
+Rubaidh::GoogleAnalytics.tracker_id = GOOGLE_ANALYTICS_TRACKER_ID if ENABLE_GOOGLE_ANALYTICS
 
 # Set RPX API key (for OpenID, Twitter, Facebook, etc logins - see https://rpxnow.com/)
 if ENABLE_RPX

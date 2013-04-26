@@ -16,7 +16,7 @@ require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/
 #---
 
 class ApplicationController < ActionController::Base
-  
+
   # ============================================
 
   # OAuth support
@@ -28,11 +28,11 @@ class ApplicationController < ActionController::Base
     BioCatalogue::CacheHelper.set_base_host(controller.base_host)
   }
 
-  
+
   # ============================================
   # Configure the Exception Notification plugin:
   # --------------------------------------------
-  
+
   include ExceptionNotifiable
 
   # This line ensures that templates and mailing is enabled for the Exception Notification plugin
@@ -40,11 +40,11 @@ class ApplicationController < ActionController::Base
   # Note: error templates will only show in production mode.
   #
   # Be aware of this when configuring the email settings in biocat_local.rb -
-  # in most cases you should disable email sending in your development setup 
+  # in most cases you should disable email sending in your development setup
   # (see config/initializers/mail.rb.pre for more info).
   local_addresses.clear
-  
-  self.rails_error_classes = { 
+
+  self.rails_error_classes = {
     ActiveRecord::RecordNotFound => "404",
     ::ActionController::UnknownController => "406",
     ::ActionController::UnknownAction => "406",
@@ -52,14 +52,14 @@ class ApplicationController < ActionController::Base
     ::ActionView::MissingTemplate => "406",
     ::ActionView::TemplateError => "500"
   }
-  
+
   self.error_layout = "application_error"
-  
+
   # ============================================
-  
-  
+
+
   helper :all # include all helpers, all the time
-  
+
   helper_method :render_to_string
 
   # See ActionController::Base for details
@@ -70,9 +70,9 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   layout "application_wide"
-  
+
   before_filter :debug_messages
-  
+
   before_filter :set_previous_url
   before_filter :set_page
   before_filter :set_per_page
@@ -80,10 +80,13 @@ class ApplicationController < ActionController::Base
   before_filter :set_api_params
   before_filter :update_last_active
   prepend_before_filter :initialise_use_tab_cookie_in_session
-  
+
   before_filter :set_up_log_event_core_data
   after_filter :log_event
-  
+
+  # Do not add Google analytics unless specifically configured in config/initializers/biocat_local.rb
+  skip_after_filter :add_google_analytics_code unless ENABLE_GOOGLE_ANALYTICS
+
   def login_required
     respond_to do |format|
       format.html do
@@ -175,14 +178,14 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :mine?
-  
+
   def display_name(item, escape_html=true)
     BioCatalogue::Util.display_name(item, escape_html)
   end
   helper_method :display_name
-  
-  # This takes into account the various idosyncracies and the data model 
-  # to give you the best URL to something. 
+
+  # This takes into account the various idosyncracies and the data model
+  # to give you the best URL to something.
   def url_for_web_interface(item)
     case item
       when Annotation, ServiceDeployment, ServiceVersion, SoapService, RestService
@@ -196,18 +199,18 @@ class ApplicationController < ActionController::Base
       when SoapService
         return service_url(item.service)
       else
-        return url_for(item)  
+        return url_for(item)
     end
   end
   helper_method :url_for_web_interface
-  
+
   # Returns the host url and its port
   def base_host
     request.host_with_port
   end
 
 protected
-  
+
   def debug_messages
     BioCatalogue::Util.say ""
     BioCatalogue::Util.say "*** DEBUG MESSAGES ***"
@@ -215,11 +218,11 @@ protected
     BioCatalogue::Util.say "ActionController#request.format.html? = #{self.request.format.html?}"
     BioCatalogue::Util.say ""
   end
-  
+
   def disable_action
     raise ActionController::UnknownAction.new
   end
-  
+
   def disable_action_for_api
     if is_api_request?
       raise ActionController::UnknownAction.new
@@ -227,9 +230,9 @@ protected
       return
     end
   end
-  
+
   def set_previous_url
-    unless controller_name.downcase == 'sessions' or 
+    unless controller_name.downcase == 'sessions' or
            [ 'activate_account', 'rpx_merge', 'ignore_last' ].include?(action_name.downcase) or
            is_non_html_request?
       session[:previous_url] = request.request_uri
@@ -248,9 +251,9 @@ protected
         @page = page
       end
     end
-    
+
   end
-  
+
   def set_per_page
     if self.request.format == :atom
       @per_page = 20
@@ -265,9 +268,9 @@ protected
         @per_page = per_page
       end
     end
-    
+
   end
-  
+
   def set_limit
     limit = params[:limit].try(:to_i)
     if limit and limit < 1
@@ -277,23 +280,23 @@ protected
       @limit = limit
     end
   end
-  
+
   def set_api_params
     @api_params = { }
-    
+
     # 'include'
     @api_params[:include] = [ ]
     unless params[:include].blank?
        @api_params[:include] = params[:include].split(',').map{|s| s.strip.downcase}.compact
     end
-   
+
     # 'also'
     @api_params[:also] = [ ]
     unless params[:also].blank?
        @api_params[:also] = params[:also].split(',').map{|s| s.strip.downcase}.compact
     end
   end
-  
+
   def json_api_params
     {
       :query => params[:q],
@@ -302,9 +305,9 @@ protected
       :page => @page,
       :per_page => @per_page
     }
-  end  
-  
-  # Generic method to raise / proceed from errors. 
+  end
+
+  # Generic method to raise / proceed from errors.
   #
   # For HTML format: renders homepage (or redirects to previous URL), with an error message and appropriate HTTP status code.
   # For API formats: renders an error collection and appropriate HTTP status code.
@@ -321,15 +324,15 @@ protected
     options.reverse_merge!(:back_first => false,
                            :forbidden => false,
                            :status => (options[:forbidden] ? 403 : 400))
-    
+
     messages = [ messages ].flatten
-    
+
     flash[:error] = messages.to_sentence
-    
+
     if is_api_request?
       messages << "See http://apidocs.biocatalogue.org/ for information about the BioCatalogue REST API"
     end
-    
+
     respond_to do |format|
       if !options[:back_first].blank? && !session[:previous_url].blank? && session[:previous_url]!=request.env["REQUEST_URI"]
         format.html { redirect_to(session[:previous_url]) }
@@ -343,11 +346,11 @@ protected
         format.atom { head :forbidden }
       else
         @errors = messages
-        
+
         format.xml  { render "api/errors", :status => options[:status] }
         format.json { render :json => { "errors" => messages }.to_json, :status => options[:status] }
         format.atom { render :nothing => true, :status => options[:status] }
-      end      
+      end
     end
   end
 
@@ -372,20 +375,20 @@ protected
 
     return false
   end
-  
+
   def is_api_request?
 #    OLD: return is_non_html_request? && !self.request.format.browser_generated? && !([ :all, :js ].include?(self.request.format.to_sym))
 
     return [ :xml, :atom, :json ].include?(self.request.format.to_sym)
   end
-  
+
   def is_non_html_request?
 #    mime_type_priority_x = if ActionController::Base.use_accept_header
 #      Array(Mime::Type.lookup_by_extension(self.request.parameters[:format]) || self.request.accepts)
 #    else
 #      [self.request.format]
 #    end
-#    
+#
 #    puts ""
 #    puts "*****"
 #    puts ""
@@ -396,10 +399,10 @@ protected
 #    puts ""
 #    puts "*****"
 #    puts ""
-    
+
     return !self.request.format.html?
   end
-  
+
   # ========================================
   # Code to help with remembering which tab
   # the user was in after redirects etc.
@@ -430,17 +433,17 @@ protected
   end
 
   # ========================================
-  
-  
+
+
   # ===============================
   # Helpers for Filtering / Sorting
   # -------------------------------
-  
+
   def parse_current_filters
     @current_filters = BioCatalogue::Filtering.convert_params_to_filters(params, controller_name.downcase.to_sym)
     puts "*** @current_filters = #{@current_filters.inspect}"
   end
-  
+
   def parse_filtered_index_params
     params["filters"] ||= {}
     params["filters"].each { |key, value|
@@ -452,10 +455,10 @@ protected
         params[key] = value.to_s
       end
     }
-    
+
     params.reject! { |k,v| k=="filters" }
   end
-  
+
   def generate_include_filter_url(filter_type, filter_value, resource, format=nil)
     new_params = BioCatalogue::Filtering.add_filter_to_params(params, filter_type, filter_value)
     return generate_filter_url(new_params, resource, format)
@@ -467,14 +470,14 @@ protected
     return generate_filter_url(new_params, resource, format)
   end
   helper_method :generate_exclude_filter_url
-  
+
   # Note: the 'new_params' here MUST
   # - be a mutable params hash (so don't use the global 'params', duplicate it first using BioCatalogue::Util.duplicate_params(..)).
   # - contain filter params in the required Filter params spec. See: generate_include_filter_url above for ref.
   def generate_filter_url(new_params, resource, format=nil)
     # Remove special params
     new_params_cleaned = BioCatalogue::Util.remove_rails_special_params_from(new_params).reject{|k,v| [ "limit", "page", "namespace", "include", "also" ].include?(k.to_s.downcase) }
-    
+
     unless format.nil?
       if format == :html
         new_params_cleaned.delete(:format)
@@ -482,39 +485,39 @@ protected
         new_params_cleaned[:format] = format unless format.nil?
       end
     end
-    
+
     url = eval("#{resource}_url(new_params_cleaned)")
-    
+
     return url
   end
   helper_method :generate_filter_url
-  
+
   def is_filter_selected(filter_type, filter_value)
     return BioCatalogue::Filtering.is_filter_selected(@current_filters, filter_type, filter_value)
   end
   helper_method :is_filter_selected
-  
+
   def generate_sort_url(resource, sort_by, sort_order)
     params_dup = BioCatalogue::Util.duplicate_params(params)
     params_dup[:sort_by] = sort_by.downcase
     params_dup[:sort_order] = sort_order.downcase
-      
+
     # Reset page param
     params_dup.delete(:page)
-    
+
     return eval("#{resource}_url(params_dup)")
   end
   helper_method :generate_sort_url
-  
+
   def is_sort_selected(sort_by, sort_order)
     return @sort_by == sort_by.downcase && @sort_order == sort_order.downcase
   end
   helper_method :is_sort_selected
-  
+
   def get_filter_groups
     @filter_groups = BioCatalogue::Filtering.get_all_filter_groups_for(self.controller_name.underscore.to_sym, @limit || nil, params[:q])
   end
-  
+
   def include_archived?
     unless defined?(@include_archived)
       session_key = "#{self.controller_name.downcase}_#{self.action_name.downcase}_include_archived"
@@ -531,21 +534,21 @@ protected
     return @include_archived
   end
   helper_method :include_archived?
-  
+
   def generate_include_archived_url(resource, should_include_archived)
     params_dup = BioCatalogue::Util.duplicate_params(params)
     params_dup[:include_archived] = should_include_archived.to_s
-      
+
     # Reset page param
     params_dup.delete(:page)
-    
+
     return eval("#{resource}_url(params_dup)")
   end
   helper_method :generate_include_archived_url
-  
+
   # ===============================
- 
-  
+
+
   def set_up_log_event_core_data
     if USE_EVENT_LOG and !is_request_from_bot?
       format = self.request.format.to_sym.to_s
@@ -557,17 +560,17 @@ protected
   def log_event
 
     if USE_EVENT_LOG and !is_request_from_bot?
-      
+
       c = self.controller_name.downcase
       a = self.action_name.downcase
-      
+
       do_generic_log = false
-      
+
       case c
-        
+
         # Search
         when "search"
-          
+
           case a
             # Standard keyword based search
             when "show"
@@ -582,10 +585,10 @@ protected
             else
               do_generic_log = true
           end
-      
-        # Services    
+
+        # Services
         when "services"
-        
+
           case a
             # View service
             when "show"
@@ -605,11 +608,11 @@ protected
             else
               do_generic_log = true
           end
-        
+
         # Users
         when "users"
-        
-          case a 
+
+          case a
             # View user profile
             when "show"
               if current_user.try(:id) != @user.id
@@ -620,10 +623,10 @@ protected
             else
               do_generic_log = true
           end
-      
+
         # Registries
         when "registries"
-          
+
           case a
             # View registry profile
             when "show"
@@ -634,9 +637,9 @@ protected
               do_generic_log = true
           end
 
-        # Service Providers  
+        # Service Providers
         when "service_providers"
-          
+
           case a
             # View service provider profile
             when "show"
@@ -646,10 +649,10 @@ protected
             else
               do_generic_log = true
           end
-      
+
         # Annotations
         when "annotations"
-        
+
           case a
             # Download annotation
             when "download"
@@ -659,12 +662,12 @@ protected
             else
               do_generic_log = true
           end
-        
+
         else
           do_generic_log = true
-      
+
       end
-    
+
       if do_generic_log
         # Only log generically if it is an API request...
         if is_api_request?
@@ -673,7 +676,7 @@ protected
                              :data => { :params => params }))
         end
       end
-      
+
     end
 
   end
@@ -683,7 +686,7 @@ protected
       current_user.update_last_active(Time.now())
     end
   end
-  
+
   # redirect to the last page user
   # was on or to home page
   def redirect_to_back_or_home
@@ -697,10 +700,10 @@ protected
       logger.warn(ex.to_s)
     end
   end
-  
+
   def set_listing_type(default_type, session_key)
     @allowed_listing_types ||= %w{ grid simple detailed }
-    
+
     if !params[:listing].blank? and @allowed_listing_types.include?(params[:listing].downcase)
       @listing_type = params[:listing].downcase.to_sym
       session[session_key] = params[:listing].downcase
@@ -708,8 +711,8 @@ protected
       @listing_type = session[session_key].to_sym
     else
       @listing_type = default_type
-      session[session_key] = default_type.to_s 
+      session[session_key] = default_type.to_s
     end
   end
-  
+
 end
