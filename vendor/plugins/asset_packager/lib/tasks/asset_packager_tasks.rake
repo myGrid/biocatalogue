@@ -1,5 +1,5 @@
 require 'yaml'
-require File.dirname(__FILE__) + '/../lib/synthesis/asset_package'
+require File.dirname(__FILE__) + '/../synthesis/asset_package'
 
 namespace :asset do
   namespace :packager do
