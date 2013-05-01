@@ -6,7 +6,7 @@ gem "rails", "2.3.18"
 gem "rdoc"
 gem "rake"#, "0.8.7"
 
-gem "mysql"#, "2.8.1"
+gem "mysql2", "<0.3" #, "2.8.1"
 
 # Former baked-in gems
 gem "solr-ruby"#, "0.0.8"
@@ -40,9 +40,12 @@ gem "soap4r"#, "1.5.8"
 #gem "cache-money" #not sure how to test 
 
 #gem "rubaidh-google_analytics"#, "1.1.4"
-# Enable in config/initializers/biocat_local.rb to pass rake test:functionals
 gem "google_analytics"
 
 # Frozen gems
 #New version_info requires ruby > 1.9.*  - leave frozen till Rails 3 upgrade
 gem "version_info", "0.7.1", :path => "vendor/gems/version_info-0.7.1"
+
+# Former plugins that now have equivalent gems
+#gem "headliner"
+gem "redbox"
