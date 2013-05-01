@@ -49,3 +49,4 @@ gem "version_info", "0.7.1", :path => "vendor/gems/version_info-0.7.1"
 # Former plugins that now have equivalent gems
 gem "redbox"
 gem "validates_url_format_of"
+gem "acts_as_trashable"
