@@ -30,7 +30,7 @@ Mime::Type.register 'application/biocat-lite+json', :bljson
 # Require additional libraries
 
 require 'rpx_now/user_integration'
-
+require 'delayed_job'
 require 'array'
 require 'object'
 require 'string'
@@ -61,6 +61,9 @@ require 'bio_catalogue/annotations'
 require 'bio_catalogue/annotations/extensions'
 require 'bio_catalogue/monitoring'
 require 'bio_catalogue/monitoring/status'
+
+
+
 
 # Never explicitly load the memcache-client library as we need to use 
 # the specific one vendored in our codebase.
@@ -220,8 +223,9 @@ SERVICE_RATINGS_CATEGORIES = { "rating.documentation" => [ "Documentation",  "Ra
 # ==============================================================
 # Configure the Delayed::Jobs plugin (for background processing)
 # --------------------------------------------------------------
+Delayed::Worker.backend = :active_record
 
-Delayed::Job.destroy_failed_jobs = false
+#Delayed::Job.destroy_failed_jobs = false
 
 # ==============================================================
 

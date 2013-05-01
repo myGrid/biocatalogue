@@ -46,3 +46,12 @@ gem "google_analytics"
 # Frozen gems
 #New version_info requires ruby > 1.9.*  - leave frozen till Rails 3 upgrade
 gem "version_info", "0.7.1", :path => "vendor/gems/version_info-0.7.1"
+
+#gem "better_logging" - Uninitialized Constant Rails::Railties 
+#gem "exception_notification" - No such file to load require action_dispatch
+gem "oauth-plugin"
+#gem "will_paginate"
+gem "validates_existence"
+gem 'delayed_job'
+gem 'markaby'
+#gem 'acts_as_solr'
