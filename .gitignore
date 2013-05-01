@@ -21,3 +21,5 @@ data/search_query_suggestions.txt
 data/eb-eye/eb-eye_dump_*
 solr/
 Gemfile.lock
+*.rails2
+.gitkeep
