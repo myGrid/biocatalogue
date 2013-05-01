@@ -47,5 +47,5 @@ gem "google_analytics"
 gem "version_info", "0.7.1", :path => "vendor/gems/version_info-0.7.1"
 
 # Former plugins that now have equivalent gems
-#gem "headliner"
 gem "redbox"
+gem "validates_url_format_of"
