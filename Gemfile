@@ -46,10 +46,11 @@ gem "google_analytics"
 #New version_info requires ruby > 1.9.*  - leave frozen till Rails 3 upgrade
 gem "version_info", "0.7.1", :path => "vendor/gems/version_info-0.7.1"
 
+
+# Former plugins that now use equivalent gems
 gem "validates_existence"
 gem 'delayed_job'
 gem 'markaby'
-# Former plugins that now have equivalent gems
 gem "redbox"
 gem "validates_url_format_of"
 gem "acts_as_trashable"
