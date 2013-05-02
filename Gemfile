@@ -53,3 +53,4 @@ gem 'markaby'
 gem "redbox"
 gem "validates_url_format_of"
 gem "acts_as_trashable"
+gem "my_annotations"

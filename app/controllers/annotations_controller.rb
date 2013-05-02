@@ -8,7 +8,7 @@
 # This extends the Annotations controller defined in the Annotations plugin.
 #=====
 
-require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers/annotations_controller'
+#require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers/annotations_controller'
 
 class AnnotationsController < ApplicationController
   

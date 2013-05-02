@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110728111043) do
+ActiveRecord::Schema.define(:version => 20130501123708) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
     t.integer  "referenced_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "data",                   :limit => 2147483647
+    t.text     "data",                   :limit => 16777215
     t.string   "format"
     t.string   "http_referer"
     t.string   "user_agent"
@@ -60,10 +60,10 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
   end
 
   create_table "annotation_properties", :force => true do |t|
-    t.integer  "annotation_id", :null => false
-    t.string   "property_type", :null => false
-    t.integer  "property_id",   :null => false
-    t.integer  "value"
+    t.integer  "annotation_id",                                              :null => false
+    t.string   "property_type",                                              :null => false
+    t.integer  "property_id",                                                :null => false
+    t.integer  "value",         :limit => 10, :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -177,6 +177,8 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
     t.datetime "updated_at"
   end
 
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
   create_table "external_tests", :force => true do |t|
     t.string   "name"
     t.text     "description"
@@ -199,10 +201,6 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
 
   add_index "favourites", ["favouritable_type", "favouritable_id"], :name => "favourites_favouritable_index"
   add_index "favourites", ["user_id"], :name => "favourites_user_id_index"
-
-  create_table "innodb_lock_monitor", :id => false, :force => true do |t|
-    t.integer "a"
-  end
 
   create_table "number_value_versions", :force => true do |t|
     t.integer  "number_value_id",    :null => false
@@ -513,7 +511,7 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
-    t.text     "computational_type_details", :limit => 2147483647
+    t.text     "computational_type_details", :limit => 16777215
     t.datetime "archived_at"
   end
 
@@ -542,7 +540,7 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
     t.string   "computational_type"
     t.integer  "min_occurs"
     t.integer  "max_occurs"
-    t.text     "computational_type_details", :limit => 2147483647
+    t.text     "computational_type_details", :limit => 16777215
     t.datetime "archived_at"
   end
 
@@ -550,7 +548,7 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
 
   create_table "soap_service_changes", :force => true do |t|
     t.integer  "soap_service_id"
-    t.text     "changelog",       :limit => 2147483647
+    t.text     "changelog",       :limit => 16777215
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -630,10 +628,10 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
   add_index "test_scripts", ["submitter_id"], :name => "t_scripts_user_id_index"
 
   create_table "text_value_versions", :force => true do |t|
-    t.integer  "text_value_id",                            :null => false
-    t.integer  "version",                                  :null => false
+    t.integer  "text_value_id",                          :null => false
+    t.integer  "version",                                :null => false
     t.integer  "version_creator_id"
-    t.text     "text",               :limit => 2147483647, :null => false
+    t.text     "text",               :limit => 16777215, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -641,9 +639,9 @@ ActiveRecord::Schema.define(:version => 20110728111043) do
   add_index "text_value_versions", ["text_value_id"], :name => "index_text_value_versions_on_text_value_id"
 
   create_table "text_values", :force => true do |t|
-    t.integer  "version",                                  :null => false
+    t.integer  "version",                                :null => false
     t.integer  "version_creator_id"
-    t.text     "text",               :limit => 2147483647, :null => false
+    t.text     "text",               :limit => 16777215, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

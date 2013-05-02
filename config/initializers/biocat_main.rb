@@ -225,7 +225,7 @@ SERVICE_RATINGS_CATEGORIES = { "rating.documentation" => [ "Documentation",  "Ra
 # --------------------------------------------------------------
 Delayed::Worker.backend = :active_record
 
-#Delayed::Job.destroy_failed_jobs = false
+Delayed::Worker.destroy_failed_jobs = false
 
 # ==============================================================
 
