@@ -619,16 +619,13 @@ body.sidebar-right #footer {
 	background-color: #FFF;
 }
 
-#footer .logos * {
+#footer .logos img {
 	vertical-align: middle;
+	margin: 0 0.8em;
 }
 
 #footer .logos p {
 	text-align: center;
-}
-
-#footer .logos a {
-	margin: 0 0.8em;
 }
 
 #footer .copyright {

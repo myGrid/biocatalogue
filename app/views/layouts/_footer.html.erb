@@ -12,13 +12,14 @@
 	<div id="footer_links">
 		<ul>
 			<li><a href="/termsofuse">Terms of Use</a></li>
-			<li class="separator"><a href="http://wiki.biocatalogue.org">About Us</a></li>
+			<li class="separator"><a href="http://www.biovel.eu">About BioVeL</a></li>
 			<li class="separator"><a href="/contact">Contact Us</a></li>
-			<li class="separator"><a href="http://listserv.manchester.ac.uk/cgi-bin/wa?SUBED1=biocatalogue-friends&A=1" target="_blank">Join the friends list</a></li>
+			<% if false %>
 			<li class="separator"><a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting Started</a></li>
 			<li class="separator"><a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help" target="_blank">Further Help</a></li>
+      <% end %>
 			<li class="separator"><a href="/stats" target="_blank">Registry Stats</a></li>
-			<li class="separator"><a href="http://apidocs.biocatalogue.org" target="_blank">API Docs</a></li>
+			<li class="separator"><a href="http://apidocs.biocatalogue.org" target="_blank">API Documentation</a></li>
 			<li class="separator"><a href="http://www.biocatalogue.org/wiki/doku.php?id=public:for_developers" target="_blank">For Developers</a></li>
 		</ul>
 	</div>
@@ -26,25 +27,30 @@
 	
 	<center>
 		<div class="logos">
-			<p style="font-size: 108%;"><b>The BioCatalogue is brought to you by:</b></p>
-			<p>
-				<%= link_to(image_tag('manchester_logo.png', :alt => "University of Manchester"), "http://www.manchester.ac.uk/", :target => "_blank") -%>
-				<%= link_to(image_tag('ebi_logo.png', :alt => "EMBL-EBI"), "http://www.ebi.ac.uk/", :target => "_blank") -%>
-				<span>and the same people who brought you</span>
-				<%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>
-				<%= link_to(image_tag('taverna_logo.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>
-			</p>
-		</div>
-	</center>
-	
-	<p>
-		The BioCatalogue project is funded by the <a target="_blank" href="http://www.bbsrc.ac.uk/">BBSRC</a> (BB/F01046X/1, BB/F010540/1)
-	</p>
-	
-	<p style="margin-top: 1em;">
-		<%= link_to(image_tag('bbsrc_logo.png', :alt => "BBSRC"), "http://www.bbsrc.ac.uk/", :target => "_blank") -%>
-	</p>
-	
+      <p>
+		  The <a target="_blank" href="https://github.com/myGrid/biocatalogue">BioCatalogue software</a>
+		  is a joint development by
+		  <a target="_blank" href="http://www.manchester.ac.uk/">The University of Manchester</a>
+		  and <a target="_blank" href="http://www.ebi.ac.uk/">The European Bioinformatics Institute</a>.
+		  <br />It was initially funded by the
+		  <a target="_blank" href="http://www.bbsrc.ac.uk/">BBSRC</a>.
+      Further enhancements are currently being developed by the
+      <a target="_blank" href="http://www.biovel.eu">BioVeL Project</a>
+      <br />which is funded by the
+		  <a target="_blank" href="http://ec.europa.eu/research/fp7/index_en.cfm">
+		  European Commission 7th Framework Programme (FP7)</a>.
+      </p>
+      <p style="margin-top: 1em;">
+        <%= link_to(image_tag('manchester_logo.png', :alt => "University of Manchester"), "http://www.manchester.ac.uk/", :target => "_blank") -%>
+        <%= link_to(image_tag('biovel_logo_sm.png', :alt => "BioVeL"), "http://www.biovel.eu/", :target => "_blank") -%>
+        <%= link_to(image_tag('fp7_cap_logo.png', :alt => "FP7 Capabilities"), "http://ec.europa.eu/research/fp7/index_en.cfm", :target => "_blank") -%>
+        <%= link_to(image_tag('e_infrastructure_logo.png', :alt => "FP7 e-infrastructure"), "http://cordis.europa.eu/fp7/ict/e-infrastructure/", :target => "_blank") -%>
+		    <%= link_to(image_tag('bbsrc_logo.png', :alt => "BBSRC"), "http://www.bbsrc.ac.uk/", :target => "_blank") -%>
+		    <%= link_to(image_tag('ebi_logo.png', :alt => "EMBL-EBI"), "http://www.ebi.ac.uk/", :target => "_blank") -%>
+      </p>
+    </div>
+  </center>
+
 	<p style="margin-top: 2em;">
 		<%= render :partial => "widgets/twitter", :locals => { :link_type => :big } -%>
 	</p>
@@ -58,9 +64,9 @@
 
   <div id="licensing_info">
 		<ul>
-      <li><span class="grayed_text">Codebase license:</span> <a href="http://biocatalogue.rubyforge.org/svn/trunk/license.txt">BSD License</a></li>
+      <li><span class="grayed_text">Codebase license:</span> <a href="https://github.com/myGrid/biocatalogue/blob/master/license.txt">BSD License</a></li>
 			<li class="separator"/>
-      <li><span class="grayed_text">Content license:</span> <a href="http://creativecommons.org/licenses/publicdomain">Creative Commons Public Domain License</a></li>
+      <li><span class="grayed_text">Content license:</span> <a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution ShareAlike</a></li>
 			<li class="separator"/>
       <li><span class="grayed_text">System version:</span> <%=h BioCatalogue::VERSION -%></li>
 			<li class="separator"/>
@@ -68,6 +74,4 @@
     </ul>
   </div>
   <span class="clear">&nbsp;</span>
-
-  
 </div>
