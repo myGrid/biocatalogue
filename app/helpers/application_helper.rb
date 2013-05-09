@@ -10,7 +10,7 @@
 # Need to do this so that we play nice with the annotations and favourites plugin.
 # THIS DOES UNFORTUNATELY MEAN THAT A SERVER RESTART IS REQUIRED WHENEVER CHANGES ARE MADE
 # TO THIS FILE, EVEN IN DEVELOPMENT MODE.
-require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
+#require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
 require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/helpers/application_helper'
 # ---
 
@@ -262,31 +262,25 @@ module ApplicationHelper
       end
     end
   end
-  
+
   def user_role_badge(roles, style="vertical-align: middle; margin-left: 0.4em;")
-    html = ''
-    
+    return "" if roles.blank?
+
     role_name = ''
     role_class = ''
 
-    unless roles.blank?
-      if roles.include? :admin
-        role_name = "Admin"
-        role_class = 'admin'
-      elsif roles.include? :curator
-        role_name = "Curator"
-        role_class = 'curator'
-      end
-      
-      html << content_tag(:span, 
-                          role_name, 
-                          :class => "user_role_badge #{role_class}", 
-                          :style => style)  
+    if roles.include? :admin
+      role_name = "Admin"
+      role_class = 'admin'
+    elsif roles.include? :curator
+      role_name = "Curator"
+      role_class = 'curator'
     end
 
-    return html
+    return content_tag(:span, role_name, :style => style,
+                        :class => "user_role_badge #{role_class}")
   end
-  
+
   def separator_symbol_to_text(symbol, pluralize_text=false, show_symbol_after=true)
     text = case symbol.to_s
       when ' ' then "space"

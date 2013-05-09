@@ -438,7 +438,7 @@ module BioCatalogue
               end
         sql[0] = sql[0] + " AND http_cycle = '#{http_cycle.to_s}' LIMIT 1"
         
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results = RestMethod.connection.select_all(RestMethod.send(:sanitize_sql, sql))
         return false if results.empty?
       end
       

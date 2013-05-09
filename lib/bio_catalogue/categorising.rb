@@ -124,7 +124,7 @@ module BioCatalogue
                 AND annotations.value_id IN (?)",
               category_ids ]
       
-      results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+      results = Annotation.connection.select_all(Annotation.send(:sanitize_sql, sql))
       
       return results.map{|r| r['id'].to_i}.uniq
     end

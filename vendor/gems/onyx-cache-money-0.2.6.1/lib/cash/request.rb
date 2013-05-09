@@ -1,3 +1,0 @@
-module Cash
-  Request = {}
-end

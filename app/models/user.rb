@@ -107,7 +107,7 @@ class User < ActiveRecord::Base
             ORDER BY COUNT(*) DESC
             LIMIT #{limit}"
     
-    output = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+    output = User.connection.select_all(User.send(:sanitize_sql, sql))
     
     # Add roles info
     output.each do |o|
@@ -129,7 +129,7 @@ class User < ActiveRecord::Base
     
     results = Hash.new 0
     
-    ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql)).each do |x|
+    Service.connection.select_all(Service.send(:sanitize_sql, sql)).each do |x|
       results[x['user_id']] = x['count'].to_i
     end
     

@@ -1,6 +1,0 @@
-test:
-  ttl: 604800
-  namespace: cache
-  sessions: false
-  debug: false
-  servers: localhost:11211
