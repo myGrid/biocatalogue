@@ -34,7 +34,7 @@
 				<b><%=  h(@annotation.attribute_name) -%></b>
 			</p>
 			<p style="margin-top: 0.3em;">
-				<%= f.text_area :value, :size => "50x10", :style => "width: 98%;" -%>
+				<%= f.text_area :value, :value=> "#{@annotation.value.ann_content}", :size => "50x10", :style => "width: 98%;" -%>
 			</p>
 			
 		  <p style="text-align: center;">
