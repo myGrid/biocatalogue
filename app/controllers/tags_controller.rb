@@ -99,16 +99,16 @@ protected
   end
   
   def find_tag
-    if action_name == 'destroy'
+    if action_name == 'destroy_taggings'
       tag_name = params[:tag_name]
     else
       dup_params = BioCatalogue::Util.duplicate_params(params)
       dup_params[:tag_keyword] = dup_params[:id]
       tag_name = BioCatalogue::Tags.get_tag_name_from_params(dup_params)
     end
-    
+
     @tag = Tag.find_by_name(tag_name)
-    
+
     raise ActiveRecord::RecordNotFound.new if @tag.nil?
   end
   
