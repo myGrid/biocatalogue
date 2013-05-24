@@ -35,7 +35,7 @@ var tabberOptions = {
 		// AND the use_tabs_cookie variable is set to true.
 		
 		var useCookie = <%= get_and_reset_use_tab_cookie_param_value -%>;
-		
+
 		var t = argsObj.tabber;
 		
 		/* Optional: Add the id of the tabber to the cookie name to allow
@@ -47,11 +47,11 @@ var tabberOptions = {
 			t.cookie = t.id + "_" + "tabber";
 		}
 		
-		if ((window.location.hash == null || window.location.hash == "") && useCookie == true) {
+		/*if ((window.location.hash == null || window.location.hash == "") && useCookie == true) {
 			
 	    var i;
 			
-			/* If a cookie was previously set, restore the active tab */
+			// If a cookie was previously set, restore the active tab
 			i = parseInt(getCookie(t.cookie));
 			if (isNaN(i)) {
 				return;
@@ -61,7 +61,7 @@ var tabberOptions = {
 			// Set anchor
 			var tabDomId = t.tabs[i].div.id;
 			setTabAnchor(tabDomId);
-		}
+		}      */
   },
 
   'onClick':function(argsObj)
