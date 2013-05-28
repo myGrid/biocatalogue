@@ -432,7 +432,7 @@ class Service < ActiveRecord::Base
               data << {
                 :resource => rmp.rest_parameter,
                 :type_of_data => "Example data",
-                :annotations => rmp.rest_parameter.annotations_with_attribute("example_data"),
+                :annotations => rmp.rest_parameter.annotations_with_attribute("example_data")
               }
             end
             

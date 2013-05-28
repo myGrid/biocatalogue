@@ -314,8 +314,8 @@ document.observe('dom:loaded', function() {
 //   2. searches for the element the anchor is referring and tries to figure out what tab it's in and makes that tab active.
 //      Note: the element with the anchor MUST have an ID set to the same value as the anchor hash for this to work.
 function tabberLoadHashAware(event) {
-  if (window.location.hash && window.location.hash.match( /^#/ )) 
-  { 
+  if (window.location.hash && window.location.hash.match( /^#/ ))
+  {
     var hash_value = window.location.hash.substr(1);
     var tab_el = document.getElementById("tab-" + hash_value);
     var anchor_el = null;
