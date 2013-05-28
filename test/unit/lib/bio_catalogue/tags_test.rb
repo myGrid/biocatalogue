@@ -23,7 +23,7 @@ class TagsTest < ActionView::TestCase
     # Add another annotation thats the same tag on an annotatable as an existing one, 
     # but by a different person, so that we can ensure it doesn't get counted.
     c_tag = Tag.find_or_create_simple_tag("c")
-    c_tag_ann = Annotation.with_attribute_name("tag").find(:first, :conditions => { :value_type => "Tag", :value_id => c_tag.id })
+    c_tag_ann = Annotation.find(:first, :conditions => { :value_type => "Tag", :value_id => c_tag.id })
     tag_ann_entries << Factory(:annotation, :attribute_name => "tag", :value => c_tag, :annotatable => c_tag_ann.annotatable)
     
     unless tag_ann_entries.compact.length == 9
