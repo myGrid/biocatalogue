@@ -675,12 +675,8 @@ module ApplicationHelper
     span_content = expand_link_content + collapse_link_content
     
     content = content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline; #{options[:style]}")
-    
-    if block_given?
-      return concat(content, block.binding)
-    else
-      return content
-    end
+
+    return content
   end
   
   def display_text_for_sort_by(sort_by)
