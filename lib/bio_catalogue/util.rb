@@ -295,7 +295,7 @@ module BioCatalogue
           return item[w] if item.is_a?(Hash) && item.has_key?(w)
         end
       end
-      return "#{item.class.name}_#{item.id}"  
+      return "#{item.class.name}_#{item.id}" unless item.nil?
     end
     
     # Given a set of params, this attempts to find the *single* object referred to.
