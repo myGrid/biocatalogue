@@ -8,7 +8,7 @@ sqlite2:
   adapter: sqlite2
 
 mysql:
-  adapter: mysql
+  adapter: mysql2
   username: root
   password: 
   encoding: utf8
