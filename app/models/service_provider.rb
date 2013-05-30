@@ -79,14 +79,10 @@ class ServiceProvider < ActiveRecord::Base
   end
   
   def has_service_submitter?(submitter)
-    return false if submitter.nil?
-    
-    services = Service.count(:conditions => { :service_deployments => { :service_providers => { :id => self.id } },
-                                              :submitter_type => submitter.class.name,
-                                              :submitter_id => submitter.id }, 
-                             :joins => [ { :service_deployments => :provider } ])
-                            
-    return services > 0
+     return false if submitter.nil?
+     deployment_ids = ServiceProvider.find(self.id).service_deployments.map {|service| service.id}
+     services = Service.count( :all, :conditions => {:id => deployment_ids, :submitter_type => submitter.class.name, :submitter_id => submitter.id } )
+     return services > 0
   end
 
   def merge_into(provider, *args)
