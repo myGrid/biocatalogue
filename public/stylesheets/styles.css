@@ -3562,3 +3562,13 @@ a.globalise_param_link {
   padding-top: 8px;
   background-color: #D3F78A;
 }
+
+.service_title {
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background-color: #F5F5F5;
+    border: 1px solid #CCCCCC;
+    text-align: center;
+}

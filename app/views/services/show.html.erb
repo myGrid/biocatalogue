@@ -12,94 +12,95 @@
 
 <h1>
   <span class="header_right_bar">
-		<span style="vertical-align: middle;">
-			<%= render :partial => 'services/stats_bar', :locals => { :service => @service } -%>
+		<span style="vertical-align: middle; margin-right: 0.5em;">
+			<%= render :partial => 'services/stats_bar', :locals => {:service => @service} -%>
 		</span>
 	</span>
-	
-	<% if logged_in? %>
+
+  <div class="service_title">
+    <%= generic_icon_for(:service, 'margin-right: 0.3em;', "Web Service") -%>
+    <span style="vertical-align: middle;"><%= display_name(@service) -%></span>
+    <%= service_type_badges(@service.service_types) -%>
+    <%= service_location_flags(@service) -%>
+  </div>
+  <% if logged_in? %>
 	  <span class="header_left_bar">
 	      <span class="actions_button">
 	        <ul class="p7menubar">
-            <li>
-              <a href="#" class="trigger">
-                <span style="vertical-align: middle;">Actions</span>
-                <%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
-              </a>
-              <ul>
-              	<% if @service.favourited_by_user?(current_user.id) -%>
-								  <% unless (f = @service.favourite_by_user(current_user)).nil? %>
-									  <li>
-									  	<%= link_to image_tag(icon_filename_for(:favourite)) + content_tag(:span, " Unfavourite"),
-	                          favourite_path(f),
-	                          :method => :delete -%>
-										</li>
-									<% end %>
-								<% else %>
-								  <li>
-                    <%= link_to image_tag(icon_filename_for(:favourite)) + content_tag(:span, " Favourite"),
-			                    favourites_url(:favouritable_type => "Service", :favouritable_id => @service.id), 
-			                    :method => :post -%>
-                  </li>
-								<% end %>
-								
-			          <% if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, @service) %>
-		              <li>
-		                <%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'), 
-		                        new_responsibility_request_url(:service_id => @service.id)) -%>                     
-		              </li>
-		            <% end %>
-								
-								<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
-								
-									<% unless @pending_responsibility_requests.empty? %>
-		                <li>
-		                  <%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' View Pending Responsibility Requests'), 
-		                          :controller => 'responsibility_requests', 
-		                          :action => 'index') -%>
-		                </li>
-		              <% end %>
-									
-	              	<li>
-	                  <%= link_to(image_tag(icon_filename_for(:check_updates)) + content_tag(:span, ' Check for Updates'), 
-	                              check_updates_service_path(@service),
-	                              :method => :post) -%>
-	                </li>
-								
-								  <% if @service.archived? %>
-								    <li>
-		                  <%= link_to(image_tag(icon_filename_for(:unarchive)) + content_tag(:span, ' Unarchive'), 
-		                              unarchive_service_path(@service),
-		                              :method => :post, 
-		                              :confirm => "This will remove the service's archived status and make it seem like an active service again. Are you sure you would like to do this? (You can still archive it later)") -%>
-		                </li>
-								  <% else %>
-								    <li>
-	                    <%= link_to(image_tag(icon_filename_for(:archive)) + content_tag(:span, ' Archive'), 
-	                                archive_service_path(@service),
-	                                :method => :post, 
-	                                :confirm => "This will mark the service as being archived/inactive. Are you sure you would like to do this? (You can unarchive it later if required)") -%>
-	                  </li>
-								  <% end %>
-	                
-								  <li>
-	                  <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'), 
-	                              service_path(@service),
-	                              :method => :delete, 
-	                              :confirm => "Are you sure you want to remove this service from #{SITE_NAME}? This will delete everything to do with this service, including all metadata provided by the community.") -%>
-	                </li>
-                <% end %>
-              </ul>
-            </li>
-	        </ul>
+              <li>
+                <a href="#" class="trigger">
+                  <span style="vertical-align: middle;">Actions</span>
+                  <%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
+                </a>
+                <ul>
+                  <% if @service.favourited_by_user?(current_user.id) -%>
+                      <% unless (f = @service.favourite_by_user(current_user)).nil? %>
+                          <li>
+                            <%= link_to image_tag(icon_filename_for(:favourite)) + content_tag(:span, " Unfavourite"),
+                                        favourite_path(f),
+                                        :method => :delete -%>
+                          </li>
+                      <% end %>
+                  <% else %>
+                      <li>
+                        <%= link_to image_tag(icon_filename_for(:favourite)) + content_tag(:span, " Favourite"),
+                                    favourites_url(:favouritable_type => "Service", :favouritable_id => @service.id),
+                                    :method => :post -%>
+                      </li>
+                  <% end %>
+
+                  <% if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, @service) %>
+                      <li>
+                        <%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'),
+                                    new_responsibility_request_url(:service_id => @service.id)) -%>
+                      </li>
+                  <% end %>
+
+                  <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
+
+                      <% unless @pending_responsibility_requests.empty? %>
+                          <li>
+                            <%= link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' View Pending Responsibility Requests'),
+                                        :controller => 'responsibility_requests',
+                                        :action => 'index') -%>
+                          </li>
+                      <% end %>
+
+                      <li>
+                        <%= link_to(image_tag(icon_filename_for(:check_updates)) + content_tag(:span, ' Check for Updates'),
+                                    check_updates_service_path(@service),
+                                    :method => :post) -%>
+                      </li>
+
+                      <% if @service.archived? %>
+                          <li>
+                            <%= link_to(image_tag(icon_filename_for(:unarchive)) + content_tag(:span, ' Unarchive'),
+                                        unarchive_service_path(@service),
+                                        :method => :post,
+                                        :confirm => "This will remove the service's archived status and make it seem like an active service again. Are you sure you would like to do this? (You can still archive it later)") -%>
+                          </li>
+                      <% else %>
+                          <li>
+                            <%= link_to(image_tag(icon_filename_for(:archive)) + content_tag(:span, ' Archive'),
+                                        archive_service_path(@service),
+                                        :method => :post,
+                                        :confirm => "This will mark the service as being archived/inactive. Are you sure you would like to do this? (You can unarchive it later if required)") -%>
+                          </li>
+                      <% end %>
+
+                      <li>
+                        <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'),
+                                    service_path(@service),
+                                    :method => :delete,
+                                    :confirm => "Are you sure you want to remove this service from #{SITE_NAME}? This will delete everything to do with this service, including all metadata provided by the community.") -%>
+                      </li>
+                  <% end %>
+                </ul>
+              </li>
+            </ul>
 	      </span>
 	  </span>
-	<% end %>
-	
-  <%= generic_icon_for(:service, 'margin-right: 0.3em;', "Web Service") -%>
-	<span style="vertical-align: middle;"><%= display_name(@service) -%></span>
-	<%= service_type_badges(@service.service_types) -%>
-	<%= service_location_flags(@service) -%>
+  <% end %>
 </h1>
 
 <% if @service.archived? %>
