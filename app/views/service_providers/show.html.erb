@@ -27,7 +27,6 @@
                                               :link_text => "Edit Name or Merge",
                                               :tooltip_text => "Give this Service Provider a new name, OR merge it into an existing one") %>
                  </span>
-            <%= @service_provider.services.count %>
                 <% if @service_provider.services.count == 0 %>
                	<span class="actions_button">
                     <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'),
