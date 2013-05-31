@@ -24,7 +24,7 @@ module ServiceProvidersHelper
     return '' unless provider.class.name == "ServiceProvider"
 
     options = args.extract_options!
-    
+
     # default config options
     options.reverse_merge!(:style => "",
                            :class => nil,
@@ -32,7 +32,7 @@ module ServiceProvidersHelper
                            :tooltip_text => "Give this service provider a new name")
 
     options[:style] += "float: right; " unless options[:style].include?('float')
-    options[:style] += "font-weight: bold; " unless options[:style].include?('font-weight')
+    #options[:style] += "font-weight: bold; " unless options[:style].include?('font-weight')
 
     link_content = ''
     
