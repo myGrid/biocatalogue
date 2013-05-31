@@ -774,8 +774,7 @@ module ApplicationHelper
   def check_updates_action(thing)
     link_to(image_tag(icon_filename_for(:check_updates)) + content_tag(:span, ' Check for Updates'),
                           check_updates_service_path(thing),
-                          :method => :post,
-                          :style => "text-decoration:none")
+                          :method => :post)
   end
 
   def archive_action(thing)
@@ -783,15 +782,13 @@ module ApplicationHelper
         link_to(image_tag(icon_filename_for(:unarchive)) + content_tag(:span, ' Unarchive'),
                                       unarchive_service_path(thing),
                                       :method => :post,
-                                      :confirm => "This will remove the service's archived status and make it seem like an active service again. Are you sure you would like to do this? (You can still archive it later)",
-                                      :style => "text-decoration:none")
+                                      :confirm => "This will remove the service's archived status and make it seem like an active service again. Are you sure you would like to do this? (You can still archive it later)")
 
     else
         link_to(image_tag(icon_filename_for(:archive)) + content_tag(:span, ' Archive'),
                                     archive_service_path(thing),
                                     :method => :post,
-                                    :confirm => "This will mark the service as being archived/inactive. Are you sure you would like to do this? (You can unarchive it later if required)",
-                                    :style => "text-decoration:none")
+                                    :confirm => "This will mark the service as being archived/inactive. Are you sure you would like to do this? (You can unarchive it later if required)")
 		 end
   end
 
@@ -799,8 +796,7 @@ module ApplicationHelper
     link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'),
                             service_path(thing),
                             :method => :delete,
-                            :confirm => "Are you sure you want to remove this service from #{SITE_NAME}? This will delete everything to do with this service, including all metadata provided by the community.",
-                            :style => "text-decoration:none")
+                            :confirm => "Are you sure you want to remove this service from #{SITE_NAME}? This will delete everything to do with this service, including all metadata provided by the community.")
   end
 end
 
