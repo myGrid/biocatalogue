@@ -11,8 +11,14 @@
 <% t "#{display_name(@service)} (#{@service.service_types.to_sentence}) [Provided by: #{h(@service.providers.map{|p| display_name(p)}.to_sentence)}]" -%>
 
 <h1>
-  <span class="header_right_bar">
-		<span style="vertical-align: middle; margin-right: 0.5em;">
+  <div class="service_title">
+    <%= generic_icon_for(:service, 'margin-right: 0.3em;', "Web Service") -%>
+    <span style="vertical-align: middle;"><%= display_name(@service) -%></span>
+    <%= service_type_badges(@service.service_types) -%>
+    <%= service_location_flags(@service) -%>
+  </div>
+    <div class="header_right_bar" style="margin-top: -50px;">
+		<span style="vertical-align: middle; margin-right: 0.5em">
 			<%= render :partial => 'services/stats_bar', :locals => {:service => @service} -%>
 		</span>
 	</span>
