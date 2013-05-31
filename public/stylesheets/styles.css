@@ -3227,13 +3227,30 @@ div.resize-handle {
   font-size: 77%;
   vertical-align: middle;
   position: relative;
-	text-align: left;
+	text-align: center;
 }
 
 .header_right_bar *,
 .header_left_bar * {
 	vertical-align: middle;
+    font-size: 100%;
+    border-bottom: 30px;
 }
+
+.actions_button_row  {
+    margin-bottom:20px;
+}
+
+.actions_button_row .actions_button {
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:3px;
+    padding-bottom:3px;
+    margin-bottom: 20px;
+    font-size: 110%;
+
+}
+
 
 .header_right_bar .actions_button,
 .header_left_bar .actions_button {
@@ -3245,6 +3262,7 @@ div.resize-handle {
   background-position: top;
   background-repeat: repeat-x;
   background-color: #EEF6FF;
+
 }
 
 .header_right_bar .actions_button {
@@ -3258,6 +3276,7 @@ div.resize-handle {
 .header_right_bar .actions_button *,
 .header_left_bar .actions_button * {
 	vertical-align: middle;
+    text-decoration: none;
 }
 
 .header_right_bar .actions_button ul.p7menubar li a,
