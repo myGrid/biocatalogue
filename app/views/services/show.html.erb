@@ -26,6 +26,23 @@
         </div>
 </h1>
 
+
+<% if logged_in? %>
+    <span class="header_left_bar" id="center" >
+       <span class="actions_button_row" >
+          <%= if (fav = favourite_action(@service, current_user )) then '<span class="actions_button"> ' + fav + '</span>' end%>
+          <%= if (resp = take_responsibility_action(@service, current_user)) then '<span class="actions_button">' + resp + '</span>' end %>
+          <%  if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) then %>
+              <%= if (pend = pending_responsibility_action(@pending_responsibility_requests)) then '<span class="actions_button">' +  pend +'</span>' end %>
+              <%= if (update = check_updates_action(@service)) then '<span class="actions_button">' + update + '</span>' end %>
+              <%= if (archive = archive_action(@service) )then '<span class="actions_button">' + archive+'</span>' end %>
+              <%= if (remove = remove_action(@service)) then '<span class="actions_button">' + remove +'</span>' end %>
+           <% end %>
+       </span>
+    </span>
+<% end %>
+
+
 <% if @service.archived? %>
   <%= render :partial => 'shared/archived_status_banner', 
              :locals => { :status_text => "This service has been archived because it may not be active anymore (or is close to being non active). Please do not use it as it may not be accessible.",
@@ -74,23 +91,6 @@
 	</tr>
 </table>
 
-<% if logged_in? %>
-    <div class="actions_bar" font-family="arial" text-decoration="none" color="#333333"  >
-        <span class="header_left_bar" text-decoration="none" style="padding-top: 10px; padding-right: 0px; padding-bottom: 10px;" font-size="120%">
-
-          <%= favourite_action(@service, current_user ) -%>
-          <%= take_responsibility_action(@service, current_user) %>
-
-          <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) %>
-              <%= pending_responsibility_action(@pending_responsibility_requests)-%>
-              <%= check_updates_action(@service) -%>
-              <%= archive_action(@service) -%>
-              <%= remove_action(@service) -%>
-           <% end %>
-        </span>
-    </div>
-
-<% end %>
 
 <div class="toolbar">
 	<span class="inline-block" style="vertical-align: middle; margin-left: 2em; margin-bottom: 0.3em;">

@@ -738,11 +738,12 @@ module ApplicationHelper
   def favourite_action (thing, current_user)
    if thing.favourited_by_user?(current_user.id)
       unless (f = thing.favourite_by_user(current_user)).nil?
-         link_to image_tag(icon_filename_for(:favourite)) + content_tag(
+            (link_to image_tag(icon_filename_for(:favourite)) + content_tag(
                                   :span, " Unfavourite"),
                                   favourite_path(f),
                                   :method => :delete,
-                                  :style => "text-decoration:none"
+                                  :style => "text-decoration:none")
+
         end
    else
        link_to image_tag(icon_filename_for(:favourite)) + content_tag(
@@ -766,8 +767,7 @@ module ApplicationHelper
             link_to(image_tag(icon_filename_for(:curator)) + content_tag(
                                       :span, ' View Pending Responsibility Requests'),
                                       :controller => 'responsibility_requests',
-                                      :action => 'index',
-                                      :style => "text-decoration:none")
+                                      :action => 'index')
        end
   end
 
