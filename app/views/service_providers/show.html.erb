@@ -11,29 +11,34 @@
 <% t "#{display_name(@service_provider)}" -%>
 
 <h1>
-  <%= generic_icon_for(:provider, 'margin-right: 0.3em;', "Service Provider") -%>
-  <%= display_name(@service_provider) -%>
-  
-  <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_provider) %>
-	
-    <%= edit_provider_by_popup(@service_provider,
-                               :link_text => "Edit Name or Merge",
-                               :tooltip_text => "Give this Service Provider a new name, OR merge it into an existing one",
-                               :style => "font-size:75%; font-weight:bold; float: none; margin-left: 3em;", 
-                               :class => "button_slim" ) %>
-    
-    <% if @service_provider.services.count == 0 %>
-      <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'), 
-                            service_provider_path(@service_provider),
-                            :method => :delete, 
-                            :confirm => "Are you sure you want to remove this service provider from #{SITE_NAME}? This will delete everything to do with this service provider, including all metadata provided by the community.",
-                            :style => "font-size:75%; font-weight:bold; float: none; margin-left: 1em;", 
-                            :class => "button_slim") -%>
-    <% end %>
-    
-  <% end %>
 
+  <div class="resource_title">
+    <%= generic_icon_for(:provider, 'margin-right: 0.3em;', "Service Provider") -%>
+    <%= display_name(@service_provider) -%>
+  </div>
 </h1>
+      <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_provider) %>
+
+
+    <span class="header_left_bar" id="center">
+          <span class="actions_button_row">
+		         <span class="actions_button">
+                   <%= edit_provider_by_popup(@service_provider,
+                                              :link_text => "Edit Name or Merge",
+                                              :tooltip_text => "Give this Service Provider a new name, OR merge it into an existing one") %>
+                 </span>
+            <%= @service_provider.services.count %>
+                <% if @service_provider.services.count == 0 %>
+               	<span class="actions_button">
+                    <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'),
+                                service_provider_path(@service_provider),
+                                :method => :delete,
+                                :confirm => "Are you sure you want to remove this service provider from #{SITE_NAME}? This will delete everything to do with this service provider, including all metadata provided by the community.") -%>
+                </span>
+            <% end %>
+          </span>
+    </span>
+      <% end %>
 
 <div id="provider-tabs" class="tabber" style="margin-top: 1.5em;">
 	
