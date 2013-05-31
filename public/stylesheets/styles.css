@@ -3269,11 +3269,13 @@ div.resize-handle {
 }
 
 .header_right_bar .actions_button {
-    margin-left: 1.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 .header_left_bar .actions_button {
-    margin-right: 1.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 .header_right_bar .actions_button *,
