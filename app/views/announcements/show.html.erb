@@ -11,32 +11,28 @@
 <% t "#{display_name(@announcement)}" -%>
 
 <h1>
-	<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :announcements) %>
-		<span class="header_left_bar">
-			<span class="actions_button">
-				<ul class="p7menubar">
-					<li>
-						<a href="#" class="trigger">
-							<span style="vertical-align: middle;">Actions</span>
-							<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
-						</a>
-						<ul>
-							<li>
-								<%= link_to(image_tag(icon_filename_for(:edit)) + content_tag(:span, ' Edit'), edit_announcement_path(@announcement)) -%>
-								<%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Delete'), 
-														announcement_path(@announcement), 
-														:method => :delete, 
-														:confirm => "Are you sure you want to delete this announcement?") -%>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</span>
-		</span>
-	<% end %>
-	<%= generic_icon_for(:announcements, 'margin-right: 0.3em;') -%>
-	<span>Announcement</span>
+  <div class="resource_title">
+    <%= generic_icon_for(:announcements, 'margin-right: 0.4em;') -%>
+    Announcement
+  </div>
 </h1>
+
+<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :announcements) %>
+    <div class="header_left_bar" style="float: none; position: static;" id="center">
+        <span class="actions_button_row">
+          <span class="actions_button">
+                <%= link_to(image_tag(icon_filename_for(:edit)) + content_tag(:span, ' Edit'),
+                            edit_announcement_path(@announcement)) -%>
+          </span>
+          <span class="actions_button">
+            <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Delete'),
+                    announcement_path(@announcement),
+                    :method => :delete,
+                    :confirm => "Are you sure you want to delete this announcement?") -%>
+            </span>
+	    </span>
+    </div>
+<% end %>
 
 <div class="message_box">
 	<div>
