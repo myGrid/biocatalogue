@@ -26,7 +26,7 @@
 
 
 <% if logged_in? %>
-    <span class="header_left_bar" id="center" >
+    <div class="header_left_bar" style="float: none; position: static;" id="center" >
        <span class="actions_button_row" >
           <%= if (fav = favourite_action(@service, current_user )) then '<span class="actions_button"> ' + fav + '</span>' end%>
           <%= if (resp = take_responsibility_action(@service, current_user)) then '<span class="actions_button">' + resp + '</span>' end %>
@@ -37,7 +37,7 @@
               <%= if (remove = remove_action(@service)) then '<span class="actions_button">' + remove +'</span>' end %>
            <% end %>
        </span>
-    </span>
+    </div>
 <% end %>
 
 
