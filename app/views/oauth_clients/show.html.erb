@@ -2,22 +2,30 @@
 
 # BioCatalogue: app/views/oauth_clients/show.html.erb
 #
-# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
 %>
 
-<div style="margin-bottom: 1.5em;">
-  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Client List"),
-              oauth_clients_path, :class => "button_slim" -%>
-
-  <%= link_to image_tag('pencil.gif') + content_tag(:span, " Edit Application Details"),
-              edit_oauth_client_path(@client_application), 
-              :class => "button_slim", 
-              :style => "margin-left:1.5em;" -%>
+<div class="resource_title">
+    <h1>OAuth Details: <%=h @client_application.name %></h1>
 </div>
 
-<h1>OAuth Details: <%=h @client_application.name %></h1>
+<div class="header_left_bar" style="float: none; position: static;" id="center" >
+       <span class="actions_button_row" >
+
+         <span class="actions_button">
+            <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Client List"),
+              oauth_clients_path -%>
+         </span>
+
+         <span class="actions_button">
+            <%= link_to image_tag('pencil.gif') + content_tag(:span, " Edit Application Details"),
+              edit_oauth_client_path(@client_application)-%>
+         </span>
+      </span>
+</div>
+
 
 <%= render :partial => "client_application_detail", :locals => { :client_application => @client_application } %>

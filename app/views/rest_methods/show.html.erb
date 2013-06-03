@@ -15,19 +15,24 @@
 %>
 
 
-<h1>
-	REST Endpoints on Service:
-	<%= link_to h(display_name(@rest_service.service)), service_url(@rest_service.service, :anchor => "endpoints") -%>
-</h1>
 
-<div style="margin-bottom: 1.5em;">
-  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{h(display_name(@rest_service.service))}\""),
-						  service_url(@rest_service.service, :anchor => "endpoints"), :class => "button_slim", :style => "margin-right:1.5em;" -%>
+    <h1>
+      <div class="resource_title">
+	    REST Endpoints on Service:
+<%= link_to h(display_name(@rest_service.service)), service_url(@rest_service.service, :anchor => "endpoints") -%>
+        </div>
+    </h1>
 
-	<%= add_endpoints_by_popup(@rest_service, 
-                             :style => "float:none;", 
-                             :class => "button_slim") if show_button %>
 
+<div class="header_left_bar" style="float: none; position: static;" id="center" >
+     <span class="actions_button_row" >
+         <span class="actions_button">
+                <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{h(display_name(@rest_service.service))}\""),
+						  service_url(@rest_service.service, :anchor => "endpoints") -%>
+        </span>
+         <%= if show_button then '<span class="actions_button">' + add_endpoints_by_popup(@rest_service, :style => "float:none; font-weight:normal") + '</span>' end %>
+
+     </span>
 </div>
 
 <a name='endpoints_top'></a>

@@ -24,7 +24,8 @@
 		         <span class="actions_button">
                    <%= edit_provider_by_popup(@service_provider,
                                               :link_text => "Edit Name or Merge",
-                                              :tooltip_text => "Give this Service Provider a new name, OR merge it into an existing one") %>
+                                              :tooltip_text => "Give this Service Provider a new name, OR merge it into an existing one",
+                       :style => "float:none; font-weight:normal") %>
                  </span>
                 <% if @service_provider.services.count == 0 %>
                	<span class="actions_button">
