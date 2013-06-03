@@ -11,49 +11,48 @@
 <% t "#{display_name(@user)}" -%>
 
 <h1>
-	<% if logged_in? and (mine? @user or current_user.is_curator?) %>
-		<span class="header_left_bar">
-			<span class="actions_button">
-				<ul class="p7menubar">
-					<li>
-						<a href="#" class="trigger">
-							<span style="vertical-align: middle;">Actions</span>
-							<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
-						</a>
-						<ul>
-						  <% if mine? @user %>
-  							<li>
-  								<%= link_to(image_tag(icon_filename_for(:user_edit)) + content_tag(:span, ' Edit Account or Profile'), edit_user_path(@user)) -%>
-  							</li>
-              <% end %>
-              
-              <% if current_user.is_curator? %>
-                <li>
-                  <% if @user.is_curator? %>
-                    <%= link_to("Remove Curator Rights", remove_curator_user_url(@user), :method => :put, :confirm => "Are you sure?", :class => "button_slim") -%>
-                  <% elsif @user.activated? %>
-                    <%= link_to("Make Curator", make_curator_user_url(@user), :method => :put, :confirm => "Are you sure?", :class => "button_slim") -%>
-                  <% end %>
-                </li>
-                
-                <li>
-                  <% if @user.activated? %>
-                    <%= link_to("Deactivate", deactivate_user_url(@user), :method => :put, :confirm => "Are you sure you want to deactivate this user? This action can only be undone by a sys admin.", :class => "button_slim") -%>
-                  <% else %>
-                    <%= link_to("Activate", activate_user_url(@user), :method => :put, :confirm => "Are you sure you want to activate this user? They would usually activate themselves via email.", :class => "button_slim") -%>
-                  <% end %>
-                </li>
-              <% end %>
-						</ul>
-					</li>
-				</ul>
-			</span>
-		</span>
-	<% end %>
+  <div class="resource_title">
 	<%= generic_icon_for(:member, 'margin-right: 0.3em;', "Member of #{SITE_NAME}") -%>
 	<span><%= display_name(@user) %></span>
-  <span><%= user_role_badge(@user.roles, "margin-left: 1.5em;") %></span>
+    <span><%= user_role_badge(@user.roles, "margin-left: 1.5em;") %></span>
+  </div>
 </h1>
+
+<% if logged_in? and (mine? @user or current_user.is_curator?) %>
+    <div class="header_left_bar" style="float: none; position: static;" id="center" >
+          <span class="actions_button_row">
+				  <% if mine? @user %>
+		            	<span class="actions_button">
+                        <%= link_to(image_tag(icon_filename_for(:user_edit)) + content_tag(:span, ' Edit Account or Profile'), edit_user_path(@user)) -%>
+
+                        </span>
+                  <% end %>
+
+            <% if current_user.is_curator? %>
+                  <% if @user.is_curator? %>
+                        <span class="actions_button">
+                        <%= link_to(image_tag(icon_filename_for(:minus))  + " Remove Curator Rights", remove_curator_user_url(@user), :method => :put, :confirm => "Are you sure?") -%>
+                        </span>
+                  <% elsif @user.activated? %>
+                        <span class="actions_button">
+                        <%= link_to(image_tag(icon_filename_for(:plus)) + " Make Curator", make_curator_user_url(@user), :method => :put, :confirm => "Are you sure?") -%>
+                        </span>
+                  <% end %>
+
+
+                <% if @user.activated? %>
+                        <span class="actions_button">
+                        <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Deactivate'), deactivate_user_url(@user), :method => :put, :confirm => "Are you sure you want to deactivate this user? This action can only be undone by a sys admin.") -%>
+                        </span>
+                  <% else %>
+                         <span class="actions_button">
+                          <%= link_to(image_tag(icon_filename_for(:monitoring_status_change_passed)) + " Activate", activate_user_url(@user), :method => :put, :confirm => "Are you sure you want to activate this user? They would usually activate themselves via email.") -%>
+                         </span>
+                  <% end %>
+              <%end %>
+			</span>
+		</div>
+<% end %>
 
 <br/>
 

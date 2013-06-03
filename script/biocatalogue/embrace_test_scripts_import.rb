@@ -70,7 +70,7 @@
 
 
 require 'rubygems'
-require "mysql"
+require "mysql2"
 require "pp"
 #require 'yaml'
 require 'optparse'

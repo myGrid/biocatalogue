@@ -10,7 +10,7 @@
 
 <div id="home_content">
 	
-	<p id="home_heading">The <%= SITE_NAME -%>: providing a curated catalogue of Biodiversity Web Services</p>
+	<p id="home_heading">The <%= SITE_NAME -%>: providing a curated catalogue of Life Science Web Services</p>
 	
 	<div id="middle_column_wrapper">
 		<div id="middle_column">
@@ -28,18 +28,41 @@
 		  </div>
 			
 			<%= render :partial => "home/info_boxes" -%>
-
+			
+			<% if false %>
+			<div style="width: 470px; margin: 0 auto; margin-top: 1em;">
+				<h3>Our Goals</h3>
+		    <ul id="key_points">
+					<li>Providing a <em>single registration point</em> for Web Service providers
+					  and a <em>single search site</em> for scientists and developers.</li>
+					<li>Providers, Expert curators and Users will provide oversight, monitor the catalogue 
+					  and provide <em>high quality annotations</em> for services.</li>
+					<li><%= SITE_NAME -%> is a place where the <em>community</em> can find contacts and meet
+					  the experts and maintainers of these services.</li>
+		    </ul>
+			</div>
+			<% end %>
+			
 			<div style="width: 470px; margin: 0 auto; margin-top: 1.5em;">
-				<h3>BiodiversityCatalogue is brought to you by</h3>
+				<h3>Our Partners</h3>
 		    <p style="text-align: center;">
-					<%= link_to(image_tag('biovel_logo.png', :alt => "BioVeL logo"), "http://www.biovel.eu/", :target => "_blank") -%>
+					<%= link_to(image_tag("embrace_logo.png", :alt => "EMBRACE Grid logo", :class => "logo"), "http://www.embracegrid.info/", :target => "_blank") -%>
+					<%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment logo", :class => "logo"), "http://www.myexperiment.org/", :target => "_blank") -%>
+					<%= link_to(image_tag('mygrid_logo.png', :alt => "myGrid logo", :class => "logo"), "http://www.mygrid.org.uk/", :target => "_blank") -%>
+					<%= link_to(image_tag('seekda_logo.png', :alt => "SeekDa logo", :class => "logo"), "http://seekda.com/", :target => "_blank") -%>
+					<%= link_to(image_tag('biomoby_logo.gif', :alt => "BioMoby logo", :class => "logo"), "http://www.biomoby.org/", :target => "_blank") -%>
 				</p>
-				<p>&nbsp;</p>
-				<h3>and powered by</h3>
-				<p style="text-align: center;">
-				  <%= link_to(image_tag('logo_small.png', :alt => "BioCatalogue logo"), "http://www.biocatalogue.org/", :target => "_blank") -%>
+				<p class="box_info_standout" style="margin-top: 1em; font-weight: bold; text-align: center; padding: 0.2em 0.3em;">
+					The <a href="http://www.embraceregistry.net/" target="_blank">EMBRACE Registry</a> and the BioCatalogue have now been merged
 				</p>
 			</div>
+			
+			<div style="width: 470px; margin: 0 auto; margin-top: 3em;">
+				<h3>
+					Click <a href="http://www.biocatalogue.org/wiki" target="_blank">here</a> for more information about the BioCatalogue project
+				</h3>
+			</div>
+			
 		</div>
 	</div>
 	
@@ -189,7 +212,7 @@
       <div class="section_box">
         <h4>
           <%= generic_icon_for(:info, 'margin-right: 0.4em;') -%>
-          <span>Helpful Links from BioCatalogue</span>
+          <span>Helpful Links</span>
         </h4>
         
         <div class="section_content" style="font-size: 85%;">
@@ -204,6 +227,9 @@
           </p>
           <p>
             <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:executing_web_services" target="_blank">Executing Web Services</a>
+          </p>
+          <p>
+            <a href="http://soaplab.sourceforge.net/soaplab2/StepByStep.html" target="_blank">Turn your command line application(s) into Web Services</a>
           </p>
         </div>
       </div>

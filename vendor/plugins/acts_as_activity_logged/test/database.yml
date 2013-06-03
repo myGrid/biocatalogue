@@ -11,7 +11,7 @@ postgresql:
   :database: acts_as_activity_logged_plugin_test
   :min_messages: ERROR
 mysql:
-  :adapter: mysql
+  :adapter: mysql2
   :host: localhost
   :username: rails
   :password:

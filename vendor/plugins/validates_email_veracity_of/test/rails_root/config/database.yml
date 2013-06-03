@@ -11,7 +11,7 @@ postgresql:
   :database: validates_email_veracity_of_test
   :min_messages: ERROR
 mysql:
-  :adapter: mysql
+  :adapter: mysql2
   :host: localhost
   :username: root
   :password:

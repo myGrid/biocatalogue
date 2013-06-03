@@ -675,12 +675,8 @@ module ApplicationHelper
     span_content = expand_link_content + collapse_link_content
     
     content = content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline; #{options[:style]}")
-    
-    if block_given?
-      return concat(content, block.binding)
-    else
-      return content
-    end
+
+    return content
   end
   
   def display_text_for_sort_by(sort_by)
@@ -737,5 +733,71 @@ module ApplicationHelper
         return resource_type.humanize
     end
   end
-  
+
+  # Methods for producing Action Bar icons
+  def favourite_action (thing, current_user)
+   if thing.favourited_by_user?(current_user.id)
+      unless (f = thing.favourite_by_user(current_user)).nil?
+            (link_to image_tag(icon_filename_for(:favourite)) + content_tag(
+                                  :span, " Unfavourite"),
+                                  favourite_path(f),
+                                  :method => :delete,
+                                  :style => "text-decoration:none")
+
+        end
+   else
+       link_to image_tag(icon_filename_for(:favourite)) + content_tag(
+                                  :span, " Favourite"),
+                                  favourites_url(:favouritable_type => thing.class.name, :favouritable_id => thing.id),
+                                  :method => :post,
+                                  :style => "text-decoration:none"
+    end
+  end
+
+  def take_responsibility_action (service, current_user)
+    if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, service)
+       link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'),
+		                        new_responsibility_request_url(:service_id => @service.id),
+                            :style => "text-decoration:none" )
+    end
+  end
+
+  def pending_responsibility_action(pending_requests)
+       unless pending_requests.empty?
+            link_to(image_tag(icon_filename_for(:curator)) + content_tag(
+                                      :span, ' View Pending Responsibility Requests'),
+                                      :controller => 'responsibility_requests',
+                                      :action => 'index')
+       end
+  end
+
+  def check_updates_action(thing)
+    link_to(image_tag(icon_filename_for(:check_updates)) + content_tag(:span, ' Check for Updates'),
+                          check_updates_service_path(thing),
+                          :method => :post)
+  end
+
+  def archive_action(thing)
+    if thing.archived?
+        link_to(image_tag(icon_filename_for(:unarchive)) + content_tag(:span, ' Unarchive'),
+                                      unarchive_service_path(thing),
+                                      :method => :post,
+                                      :confirm => "This will remove the service's archived status and make it seem like an active service again. Are you sure you would like to do this? (You can still archive it later)")
+
+    else
+        link_to(image_tag(icon_filename_for(:archive)) + content_tag(:span, ' Archive'),
+                                    archive_service_path(thing),
+                                    :method => :post,
+                                    :confirm => "This will mark the service as being archived/inactive. Are you sure you would like to do this? (You can unarchive it later if required)")
+		 end
+  end
+
+  def remove_action(thing)
+    link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Remove Permanently'),
+                            service_path(thing),
+                            :method => :delete,
+                            :confirm => "Are you sure you want to remove this service from #{SITE_NAME}? This will delete everything to do with this service, including all metadata provided by the community.")
+  end
 end
+
+

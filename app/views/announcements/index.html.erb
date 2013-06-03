@@ -9,31 +9,20 @@
 %>
 
 <h1>
-	<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :announcements) %>
-		<span class="header_left_bar">
-			<span class="actions_button">
-				<ul class="p7menubar">
-					<li>
-						<a href="#" class="trigger">
-							<span style="vertical-align: middle;">Actions</span>
-							<%= image_tag icon_filename_for(:dropdown), :alt=> "dropdown menu" -%>
-						</a>
-						<ul>
-							<li>
-								<%= link_to(image_tag(icon_filename_for(:add)) + content_tag(:span, ' Make an announcement'), new_announcement_path) -%>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</span>
-		</span>
-	<% end %>
-	<%= generic_icon_for(:announcements, 'margin-right: 0.4em;') -%>
-	<span>
-		Announcements 
+    <%= generic_icon_for(:announcements, 'margin-right: 0.4em;') -%>
+		Announcements
 		<span class="count_text">(<%= Announcement.count %>)</span>
-	</span>
 </h1>
+
+<% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :announcements) %>
+    <div class="header_left_bar" style="float: none; position: static;" id="center">
+			<span class="actions_button_row">
+		         <span class="actions_button">
+					<%= link_to(image_tag(icon_filename_for(:add)) + content_tag(:span, ' Make an announcement'), new_announcement_path) -%>
+				</span>
+			</span>
+    </div>
+<% end %>
 
 <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @announcements } %>
 

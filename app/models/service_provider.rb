@@ -79,14 +79,21 @@ class ServiceProvider < ActiveRecord::Base
   end
   
   def has_service_submitter?(submitter)
-    return false if submitter.nil?
-    
-    services = Service.count(:conditions => { :service_deployments => { :service_providers => { :id => self.id } },
-                                              :submitter_type => submitter.class.name,
-                                              :submitter_id => submitter.id }, 
-                             :joins => [ { :service_deployments => :provider } ])
-                            
-    return services > 0
+     return false if submitter.nil?
+
+     # This bit of code has stopped working at some point (mysql adapter problem?) because of the nested
+     # :service_deployments => { :service_providers => { :id => self.id } bit. It has been broken down into
+     # the two separate calls.)
+     #services = Service.count(:conditions => { :service_deployments => { :service_providers => { :id => self.id } },
+     #                                          :submitter_type => submitter.class.name,
+     #                                          :submitter_id => submitter.id },
+     #                         :joins => [ { :service_deployments => :provider } ])
+
+     # Find all service ids for service deployments that belong to this service provider.
+     service_ids_for_deployments = ServiceProvider.find(self.id).service_deployments.map {|service| service.id}
+     # Now find all the services with the id in the above array that belong to the current user.
+     services = Service.count( :all, :conditions => {:id => service_ids_for_deployments, :submitter_type => submitter.class.name, :submitter_id => submitter.id } )
+     return services > 0
   end
 
   def merge_into(provider, *args)
