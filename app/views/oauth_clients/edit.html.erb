@@ -8,12 +8,18 @@
 
 %>
 
-<div style="margin-bottom: 1.5em;">
-  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Client List"),
-              oauth_clients_path, :class => "button_slim", :style => "margin-right:1.5em;" -%>
+<div class="resource_title">
+    <h1>Editing OAuth Details: <%=h @client_application.name %></h1>
 </div>
 
-<h1>Editing OAuth Details: <%=h @client_application.name %></h1>
+<div class="header_left_bar" style="float: none; position: static;" id="center" >
+       <span class="actions_button_row" >
+         <span class="actions_button">
+  <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Client List"),
+              oauth_clients_path  -%> </span>
+       </span>
+</div>
+
 
 <% form_for :client_application, @client_application, :url => oauth_client_path(@client_application), :html => {:method => :put}  do |f| %>
 
