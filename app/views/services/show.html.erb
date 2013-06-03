@@ -17,13 +17,12 @@
     <%= service_type_badges(@service.service_types) -%>
     <%= service_location_flags(@service) -%>
   </div>
-    <div class="header_right_bar" style="margin-top: -50px;">
+  <div class="header_right_bar" style="margin-top: -50px;">
 		<span style="vertical-align: middle; margin-right: 0.5em">
 			<%= render :partial => 'services/stats_bar', :locals => {:service => @service} -%>
 		</span>
-	</div>
+  </div>
 </h1>
-
 
 <% if logged_in? %>
     <div class="header_left_bar" style="float: none; position: static;" id="center" >

@@ -19,7 +19,7 @@
 </h1>
 
 <% if logged_in? and (mine? @user or current_user.is_curator?) %>
-    <span class="header_left_bar" id="center">
+    <span class="header_left_bar" style="float: none; position: static;" id="center">
           <span class="actions_button_row">
 				  <% if mine? @user %>
 		            	<span class="actions_button">

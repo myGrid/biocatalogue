@@ -11,7 +11,6 @@
 <% t "#{display_name(@service_provider)}" -%>
 
 <h1>
-
   <div class="resource_title">
     <%= generic_icon_for(:provider, 'margin-right: 0.3em;', "Service Provider") -%>
     <%= display_name(@service_provider) -%>
@@ -20,8 +19,8 @@
       <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_provider) %>
 
 
-    <span class="header_left_bar" id="center">
-          <span class="actions_button_row">
+    <span class="header_left_bar" style="float: none; position: static;" id="center">
+          <div class="actions_button_row">
 		         <span class="actions_button">
                    <%= edit_provider_by_popup(@service_provider,
                                               :link_text => "Edit Name or Merge",
@@ -35,7 +34,7 @@
                                 :confirm => "Are you sure you want to remove this service provider from #{SITE_NAME}? This will delete everything to do with this service provider, including all metadata provided by the community.") -%>
                 </span>
             <% end %>
-          </span>
+          </div>
     </span>
       <% end %>
 
