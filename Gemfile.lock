@@ -48,6 +48,8 @@ GEM
     dnsruby (1.53)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    exception_notification (3.0.1)
+      actionmailer (>= 3.0.4)
     factory_girl (2.6.4)
       activesupport (>= 2.3.9)
     faraday (0.8.7)
@@ -86,7 +88,7 @@ GEM
       fastthread (>= 1.0.1)
       gem_plugin (>= 0.2.3)
     multi_json (1.7.6)
-    multi_xml (0.5.3)
+    multi_xml (0.5.4)
     multipart-post (1.2.0)
     my_annotations (0.6.0)
     mysql2 (0.2.18)
@@ -146,6 +148,7 @@ DEPENDENCIES
   daemons
   delayed_job
   dnsruby
+  exception_notification
   factory_girl (<= 2.6.5)
   geokit
   google_analytics
