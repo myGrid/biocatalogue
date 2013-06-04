@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby "1.8.7"
 
-gem "rails", "2.3.18"
+gem "rails", "=3.0.6"
 gem "rdoc"
 gem "rake"
 
@@ -21,7 +21,7 @@ gem "tzinfo"
 
 # Former frozen gems from vendor/gems
 gem "crack"
-gem "factory_girl"
+gem "factory_girl", "<=2.6.5"
 gem "geokit"
 gem "rpx_now"
 gem "httparty"
@@ -48,6 +48,6 @@ gem "validates_existence"
 gem 'delayed_job'
 gem 'markaby'
 gem "redbox"
-gem "validates_url_format_of"
+#gem "validates_url_format_of"
 gem "acts_as_trashable"
 gem "my_annotations"
