@@ -4,8 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-BioCatalogue::Util.say("Running in #{RAILS_ENV} mode...")
-BioCatalogue::Util.say("Configuring the BioCatalogue application...")
+
 
 # Set up loggers to STDOUT if in script/console 
 # (so now things like SQL queries etc are shown in the console instead of the development/production/etc logs).
@@ -62,8 +61,17 @@ require 'bio_catalogue/annotations/extensions'
 require 'bio_catalogue/monitoring'
 require 'bio_catalogue/monitoring/status'
 
+require 'bio_catalogue/util'
+require 'bio_catalogue/categorising'
 
+require 'bio_catalogue/cache_helper'
 
+require 'country_codes'
+# Require all .rb files from lib/ directory
+#Dir[File.join(File.dirname(__FILE__), '../../lib/**/*.rb')].each {|file| require file}
+
+BioCatalogue::Util.say("Running in #{Rails.env} mode...")
+BioCatalogue::Util.say("Configuring the BioCatalogue application...")
 
 # Never explicitly load the memcache-client library as we need to use 
 # the specific one vendored in our codebase.
