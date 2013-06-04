@@ -160,7 +160,7 @@ module BioCatalogue
     end
     
     module Expires
-      require 'action_controller/test_process'
+      #require 'action_controller/test_process'
       
       def expire_fragment(key, options=nil)
         if defined?(BASE_HOST) or defined?(SITE_BASE_HOST)
