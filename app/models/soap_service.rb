@@ -63,9 +63,9 @@ class SoapService < ActiveRecord::Base
                        :soap_service_ports,
                        :wsdl_files
   
-  validates_url_format_of :wsdl_location,
-                          :allow_nil => false,
-                          :message => 'is not valid'
+  #validates_url_format_of :wsdl_location,
+  #                        :allow_nil => false,
+  #                        :message => 'is not valid'
  
   if ENABLE_SEARCH
     acts_as_solr(:fields => [ :name, :namespace, :description, :documentation_url, :wsdl_location, :service_type_name, :description_from_soaplab,

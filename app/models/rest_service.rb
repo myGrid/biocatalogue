@@ -23,13 +23,13 @@ class RestService < ActiveRecord::Base
   
   validates_associated :rest_resources
   
-  validates_url_format_of :interface_doc_url,
-                          :allow_nil => true,
-                          :message => 'is not valid'
+  #validates_url_format_of :interface_doc_url,
+   #                       :allow_nil => true,
+   #                       :message => 'is not valid'
                           
-  validates_url_format_of :documentation_url,
-                          :allow_nil => true,
-                          :message => 'is not valid'
+  #validates_url_format_of :documentation_url,
+  #                        :allow_nil => true,
+  #                        :message => 'is not valid'
 
   has_many :url_monitors, 
            :as => :parent,
