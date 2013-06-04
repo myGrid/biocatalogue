@@ -2,11 +2,12 @@ source "https://rubygems.org"
 
 ruby "1.8.7"
 
-gem "rails", "=3.0.6"
-gem "rdoc"
+gem "rails", "~>3.2.13"
+gem "rdoc", "~>3.4"
 gem "rake"
 
 gem "mysql2", "<0.3"
+
 
 # Former baked-in gems
 gem "solr-ruby"
@@ -53,4 +54,7 @@ gem "acts_as_trashable"
 gem "my_annotations"
 gem "will_paginate"#, "~>3.0.4"
 gem "better_logging"
-gem "exception_notification"
+gem "exception_notification", :require => 'exception_notifier'
+gem "oauth-plugin"
+
+gem 'prototype-rails', :git => 'git://github.com/rails/prototype-rails.git'
