@@ -85,7 +85,7 @@ module PaulDowman
       end
       
       # set some default values:
-      @@verbose = RAILS_ENV != "development"
+      @@verbose = ::Rails.env != "development"
       @@full_hostname = get_hostname
       @@hostname_maxlen = 10
       @@custom = nil
