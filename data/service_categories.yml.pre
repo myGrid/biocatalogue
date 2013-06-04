@@ -10,73 +10,64 @@
 #
 # These IDs will never be shown to the end user.
 
-Sequence Analysis [1]:
-  Protein Sequence Analysis [2]:
-    Protein Sequence Alignment [3]:
-      - Protein Multiple Alignment [4]
-      - Protein Pairwise Alignment [5]
-    Protein Sequence Similarity [6]:
-    Protein Structure Prediction [7]:
-      - Protein Secondary Structure [8]
-      - Protein Tertiary Structure [9]
-    Function Prediction [10]:
-      - Domains [11]
-      - Motifs [12]
-      - Repeats [13]
-  Nucleotide Sequence Analysis [14]:
-    Nucleotide Sequence Alignment [15]:
-      - Nucleotide Multiple Alignment [16]
-      - Nucleotide Pairwise Alignment [17]
-    Nucleotide Sequence Similarity [18]:
-    Nucleotide Structure Prediction [58]:
-      - Nucleotide Secondary Structure [59]
-      - Nucleotide Tertiary Structure [60]
-    Gene Prediction [19]:
-    Promoter Prediction [20]:
-    Transcription Factors [21]:
+Taxonomy [1]:
+  Taxonomic Name Resolution [2]:
+  Taxonomic Synonym Resolution [3]:
+  Taxonomic Diversity [4]:
+    - Occurence [5]
+  Checklist and Classification [6]:
+  Identification [7]:
 
-Text Mining [22]:
-  - Document Discovery [23]
-  - Document Similarity [24]
-  - Document Clustering [25]
-  - Named Entity Recognition [26]
+Analysis [8]:
+  Text Analysis [9]:
+  Molecular Sequence Analysis [10]:
+    - Sequence Distribution Analysis [11]
+    - Gene Distribution Analysis [12]
+    - Sequence Alignment [13]
+    - Sequence Similarity [14]
+    - Sequence Composition [15]
+  Phylogenetic Analysis [16]:
+    - Tree Inference [17]
+    - Tree Diversity [18]
+    - Tree Manipulation [19]
+    - Tree Trait Mapping [20]
+    - Character Property Correlation [21]
+    - Geographic Correlation [22]
+  Metagenomic Analysis [23]:
+    - Metagenomic Taxonomic Profiling [24]
+  Biogeographic Analysis [25]:
+  Geographic Analysis [26]:
 
-Ontology [27]:
-  - Ontology Lookup [28]
-  - Ontology Annotation [29]
+Modelling [27]:
+  Niche Modelling (Species Distribution) [28]:
+  Population Modelling [29]:
+    - Matrix Population Modelling [30]
+    - Integral Projection Modelling [31]
+  Geospatial Modelling [32]:
+  Biogeochemical Modelling [33]:
+  Terrestrial Carbon Sequestration [34]:
+  Biomass Productivity [35]:
+  Ecosystem Service Indicators [36]:
 
-Phylogeny [30]:
-  - Evolutionary Distance Measurements [31]
-  - Tree Inference [32]
-  - Tree Display [33]
-  - Statistical Robustness [34]
+Geospatial [37]:
 
-Microarrays [35]:
+Data [38]:
+  Data Retrieval [39]:
+  Data Refinement [40]:
+    - De-Duplication [41]
+  Data Validation [42]:
+  Data Standardization [43]:
+  Knowledge Organisation [44]:
 
-Data Retrieval [36]:
-  - Sequence Retrieval [37]
-  - Identifier Retrieval [38]
-  - Pathway Retrieval [39]
-  - Structure Retrieval [40]
-  - Literature retrieval [41]
-  - Image Retrieval [42]
+Visualization [45]:
+  Geospatial Visualization [46]:
+    - Geographic Visualization [47]
+    - Map Visualization [48]
+  Phylogenetic Tree Visualization [49]:
+  Network Visualization [50]:
 
-Genomics [43]:
-  - Genome Annotation [44]
-  - Comparative Genomics [45]
-  - Functional Genomics [46]
-  - Structural Genomics [47]
+Publishing [51]:
 
-Proteomics [48]:
-  - Protein Interaction [49]
-  - Ligand Interaction [50]
-  - Pathways [51]
+Shim [52]:
 
-Systems Biology [52]:
-  - Model Creation [53]
-  - Model Execution [54]
-  - Model Analysis [55]
-
-Biostatistics [56]:
-
-Chemoinformatics [57]:
+Infrastructure [53]:
