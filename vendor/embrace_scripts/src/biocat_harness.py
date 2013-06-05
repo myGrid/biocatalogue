@@ -150,7 +150,7 @@ if options.db:
 
 if (len(queue) + len(soapui_jobs)) == 0:
     print "No test were configured. Either run against a BioCatalogue database with tests or provide a configuration file. "
-    print "Sample configuration file is found in <RAILS_ROOT/vendor/embrace_script/config/script_listing.xml> \n"
+    print "Sample configuration file is found in <Rails.root/vendor/embrace_script/config/script_listing.xml> \n"
     os.system('python '+ sys.argv[0] + "  --help")
     sys.exit(0)
 
