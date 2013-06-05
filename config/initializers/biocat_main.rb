@@ -66,6 +66,7 @@ require 'bio_catalogue/util'
 require 'bio_catalogue/categorising'
 
 require 'bio_catalogue/cache_helper'
+require 'oauth_authorize'
 
 require 'bio_catalogue/resource'
 require 'country_codes'
