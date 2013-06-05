@@ -30,11 +30,13 @@ gem "mash"
 gem "twitter"
 gem "mocha"
 gem "memcache-client", :require => "memcache"
-gem "oauth"
 gem "ruby-hmac"
 gem "seer"
 gem "soap4r"
 gem "google_analytics"
+gem "oauth"
+gem "oauth-plugin"
+
 
 # Not used - disabled in config/initializers/biocat_local.rb
 #gem "onyx-cache-money", "0.2.6.1", :require => "cache_money", :path => "vendor/gems/onyx-cache-money-0.2.6.1"
@@ -56,6 +58,4 @@ gem "my_annotations"
 gem "will_paginate"#, "~>3.0.4"
 gem "better_logging"
 gem "exception_notification", :require => 'exception_notifier'
-gem "oauth-plugin"
-
 gem 'prototype-rails', :git => 'git://github.com/rails/prototype-rails.git'
