@@ -44,8 +44,19 @@ ENABLE_STATUS_DISPLAY = true
 # Configure local settings for the SuperExceptionNotifier plugin
 # --------------------------------------------------------------
 
+#New format for Rails 3. The independently assigned values below are commented out. They are the old rails 2 versions.
+BioCatalogue::Application.config.middleware.use ExceptionNotifier,
+
+                                                :email => {
+                                                    :email_prefix => "[APP-#{Rails.env.capitalize} ERROR]",
+                                                    :sender_address => %{"BioCatalogue Error" <biocatalogue-errors@company.com>},
+                                                    :exception_recipients => %w{exceptions@example.com}
+                                                }
+
+
+
 # defaults to exception.notifier@default.com
-ExceptionNotifier.sender_address = %("BioCatalogue Errors" <biocatalogue-errors@company.com>)
+#ExceptionNotifier.sender_address = %("BioCatalogue Errors" <biocatalogue-errors@company.com>)
 
 # defaults to "[ERROR] "
 #ExceptionNotifier.email_prefix = "[APP-#{RAILS_ENV.capitalize} ERROR] "
@@ -54,7 +65,7 @@ ExceptionNotifier.sender_address = %("BioCatalogue Errors" <biocatalogue-errors@
 # For local development purposes this SHOULD be set to true.
 #ExceptionNotifier.render_only = true
 
-ExceptionNotifier.exception_recipients = %w(joe@example.com bill@example.com)
+#ExceptionNotifier.exception_recipients = %w(joe@example.com bill@example.com)
 
 # ==============================================================
 
