@@ -45,7 +45,6 @@ class Category < ActiveRecord::Base
   end
   
   def self.find_by_id(id_to_find)
-    puts "\n\n\n ALL OKAY HERE \n\n\n"
     load_categories if not defined?(@@list) or @@list.nil?
     return @@list[id_to_find.to_i]
   end
