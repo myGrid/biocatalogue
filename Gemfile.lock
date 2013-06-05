@@ -52,6 +52,9 @@ GEM
     daemons (1.1.9)
     delayed_job (3.0.5)
       activesupport (~> 3.0)
+    delayed_job_active_record (0.4.4)
+      activerecord (>= 2.1.0, < 4)
+      delayed_job (~> 3.0)
     dnsruby (1.53)
     erubis (2.7.0)
     exception_notification (3.0.1)
@@ -178,6 +181,7 @@ DEPENDENCIES
   crack
   daemons
   delayed_job
+  delayed_job_active_record
   dnsruby
   exception_notification
   factory_girl (<= 2.6.5)
