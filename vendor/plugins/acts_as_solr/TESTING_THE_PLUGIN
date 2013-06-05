@@ -16,7 +16,7 @@ To run the acts_as_solr's plugin tests run the following steps:
 
 - copy vendor/plugins/acts_as_solr/config/solr.yml to config/ (the Rails config folder)
 
-- rake solr:start RAILS_ENV=test
+- rake solr:start Rails.env=test
 
 - rake test:functional (Accepts the following arguments: DB=sqlite|mysql and MYSQL_USER=user)
 

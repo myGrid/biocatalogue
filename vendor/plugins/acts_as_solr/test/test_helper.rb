@@ -8,8 +8,8 @@ begin
 rescue
 end
 
-RAILS_ROOT = File.dirname(__FILE__) unless defined? RAILS_ROOT
-RAILS_ENV  = 'test' unless defined? RAILS_ENV
+Rails.root = File.dirname(__FILE__) unless defined? Rails.root
+Rails.env  = 'test' unless defined? Rails.env
 
 require File.dirname(__FILE__) + '/../lib/acts_as_solr'
 require File.dirname(__FILE__) + '/../config/solr_environment.rb'

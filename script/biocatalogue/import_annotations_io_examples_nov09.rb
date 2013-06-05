@@ -21,7 +21,7 @@ RAILS_ENV = env
 
 # Load up the Rails app
 require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
-IMPORT_ANNOTATION_FILE_PATH=File.join(RAILS_ROOT,'data','annotations_io_examples_nov09.xml')
+IMPORT_ANNOTATION_FILE_PATH=File.join(Rails.root,'data','annotations_io_examples_nov09.xml')
 DEFAULT_LOGIN="jerzyo"
 
 #imports annotatation from XML file

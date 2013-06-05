@@ -83,7 +83,7 @@ class SoaplabReport
   end
   
   def write_report
-    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/soaplab_report_{current_time}.html' ..."
+    puts "Redirecting output of $stdout to log file: '{Rails.root}/log/soaplab_report_{current_time}.html' ..."
     $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "soaplab_report_#{Time.now.strftime('%Y%m%d-%H%M')}.txt"), "w")
     $stdout.sync = true
     

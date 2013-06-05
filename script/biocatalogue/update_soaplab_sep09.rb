@@ -51,7 +51,7 @@ attr_accessor :options
     # the soapr4 gem which is required for this script to work
     # will be found. Other wise the script will throw some SOAP exception due
     # to use of the soap4r library packaged with ruby
-    Gem.path << "#{RAILS_ROOT}/vendor/gems" if defined?(RAILS_ROOT)
+    Gem.path << "#{Rails.root}/vendor/gems" if defined?(Rails.root)
     Gem.source_index.refresh!
     
     # load up soap4r gem and the wsdl driver
@@ -157,7 +157,7 @@ end
 
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/update_soaplab_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/update_soaplab_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "update_soaplab_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

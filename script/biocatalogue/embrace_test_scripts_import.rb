@@ -399,7 +399,7 @@ end
 require File.join(File.dirname(__FILE__),'..','..', 'config', 'environment')
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/embrace_test_scripts_import_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/embrace_test_scripts_import_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "embrace_test_scripts_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

@@ -59,7 +59,7 @@ Basic Usage
 
 `acts_as_solr` in your tests
 ======
-To test code that uses `acts_as_solr` you must start a Solr server for the test environment. You can do that with `rake solr:start RAILS_ENV=test`
+To test code that uses `acts_as_solr` you must start a Solr server for the test environment. You can do that with `rake solr:start Rails.env=test`
 
 However, if you would like to mock out Solr calls so that a Solr server is not needed (and your tests will run much faster), just add this to your `test_helper.rb` or similar:
 

@@ -119,7 +119,7 @@ class MonitoringReport
 
     end
     
-    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/monitoring_report_{current_time}.html' ..."
+    puts "Redirecting output of $stdout to log file: '{Rails.root}/log/monitoring_report_{current_time}.html' ..."
     $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "monitoring_report_#{Time.now.strftime('%Y%m%d-%H%M')}.html"), "w")
     $stdout.sync = true
     

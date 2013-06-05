@@ -1,12 +1,12 @@
 Dir.chdir(File.join(File.dirname(__FILE__), "..")) do
 
-  ENV['RAILS_ENV'] = 'mysql'
-  RAILS_ENV = 'mysql'
+  ENV['Rails.env'] = 'mysql'
+  Rails.env = 'mysql'
   
   RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
   
-  HELPER_RAILS_ROOT = File.join(Dir.pwd, "test", "app_root")
-  RAILS_ROOT = File.join(Dir.pwd, "test", "app_root")
+  HELPER_Rails.root = File.join(Dir.pwd, "test", "app_root")
+  Rails.root = File.join(Dir.pwd, "test", "app_root")
   
   # Load the plugin testing framework
   require 'rubygems'

@@ -103,7 +103,7 @@ def report_stats(stats)
   end
 end
 
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/similar_searches_report_{current_time}.txt' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/similar_searches_report_{current_time}.txt' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "similar_searches_report_#{Time.now.strftime('%Y%m%d-%H%M')}.txt"), "w")
 $stdout.sync = true
 

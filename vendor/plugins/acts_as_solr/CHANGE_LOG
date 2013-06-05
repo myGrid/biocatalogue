@@ -46,7 +46,7 @@
 <b>NEW</b>:: Integrating acts_as_solr to use solr-ruby as the 'backend'. Integration based on the patch submitted by Erik Hatcher
 <b>NEW</b>:: Re-factoring rebuild_solr_index to allow adds to be done in batch; and if a finder block is given, it will be called to retrieve the items to index. (thanks Daniel E.)
 <b>NEW</b>:: Adding the option to specify the port Solr should start when using rake solr:start 
-  rake solr:start RAILS_ENV=your_env PORT=XX
+  rake solr:start Rails.env=your_env PORT=XX
 
 <b>NEW</b>:: Adding deprecation warning for the :background configuration option. It will no longer be updated.
 <b>NEW</b>:: Adding support for models that use a primary key other than integer
@@ -101,7 +101,7 @@
 <b>NEW</b>: New video tutorial
 <b>NEW</b>: Faceted search has been implemented and its possible to 'drill-down' on the facets
 <b>NEW</b>: New rake tasks you can use to start/stop the solr server in test, development and production environments: (thanks Matt Clark)
-  rake solr:start|stop RAILS_ENV=test|development|production (defaults to development if none given)
+  rake solr:start|stop Rails.env=test|development|production (defaults to development if none given)
 
 <b>NEW</b>: Changes to the plugin's test framework and it now supports Sqlite as well (thanks Matt Clark)
 <b>FIX</b>: Patch applied (thanks Micah) that allows one to have multiple solr instances in the same servlet

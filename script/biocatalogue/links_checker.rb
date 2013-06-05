@@ -73,7 +73,7 @@ class LinksChecker
   protected
   
   def report(all_data_with_links, all_links_with_status)
-    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/public/link_checker_report.html' ..."
+    puts "Redirecting output of $stdout to log file: '{Rails.root}/public/link_checker_report.html' ..."
     $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'public', "links_checker_report.html"), "w")
     $stdout.sync = true
     puts '<html >'
