@@ -14,7 +14,7 @@ module BioCatalogue
     require 'libxml'
     require 'cgi'
 
-    @@REGEX_FILE_PATH=File.join(Rails.root),'data','regex.txt')
+    @@REGEX_FILE_PATH=File.join(Rails.root,'data','regex.txt')
 
     #function for updating the annotation_properties and other tables
     # needed for system to work
