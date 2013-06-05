@@ -15,7 +15,7 @@ ActionMailer::Base.raise_delivery_errors = false
 ActionMailer::Base.perform_deliveries = false
 
 # Character set for email
-ActionMailer::Base.default_charset = 'utf-8'
+#ActionMailer::Base.default_charset = 'utf-8'
 
 # Use smtp for mail delivery
 # Possible values  :smtp |:sendmail |:test
