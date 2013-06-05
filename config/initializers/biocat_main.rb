@@ -46,6 +46,7 @@ require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'
 
+require 'exception_notifier'
 require 'bio_catalogue/annotations/custom_migration_to_v3'
 
 # NOTE: 
@@ -66,6 +67,7 @@ require 'bio_catalogue/categorising'
 
 require 'bio_catalogue/cache_helper'
 
+require 'bio_catalogue/resource'
 require 'country_codes'
 # Require all .rb files from lib/ directory
 #Dir[File.join(File.dirname(__FILE__), '../../lib/**/*.rb')].each {|file| require file}
@@ -231,6 +233,7 @@ SERVICE_RATINGS_CATEGORIES = { "rating.documentation" => [ "Documentation",  "Ra
 # ==============================================================
 # Configure the Delayed::Jobs plugin (for background processing)
 # --------------------------------------------------------------
+#Delayed::Job.destroy_failed_jobs = false
 Delayed::Worker.backend = :active_record
 
 Delayed::Worker.destroy_failed_jobs = false
@@ -242,9 +245,16 @@ Delayed::Worker.destroy_failed_jobs = false
 # Configure global settings for the SuperExceptionNotifier plugin
 # ---------------------------------------------------------------
 
-ExceptionNotifier.send_email_error_codes = %W( 400 405 500 501 503 )
+#ExceptionNotifier::Notifier.send_email_error_codes = %W( 400 405 500 501 503 )
 
-ExceptionNotifier.view_path = 'app/views/error'
+#ExceptionNotifier.view_path = 'app/views/error'
+
+BioCatalogue::Application.config.middleware.use ExceptionNotifier,
+                                                :email => {
+                                                    :send_email_error_codes => %W( 400 405 500 501 503 ),
+                                                    :view_path => 'app/views/error'
+                                                }
+
 
 # ===============================================================
 
