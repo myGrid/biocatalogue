@@ -11,8 +11,8 @@
 # Need to do this so that we play nice with the annotations and favourites plugin.
 # THIS DOES UNFORTUNATELY MEAN THAT A SERVER RESTART IS REQUIRED WHENEVER CHANGES ARE MADE
 # TO THIS FILE, EVEN IN DEVELOPMENT MODE.
-#require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers/application_controller'
-require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/application_controller'
+#require_dependency Rails.root + '/vendor/plugins/annotations/lib/app/controllers/application_controller'
+require_dependency Rails.root.to_s + '/vendor/plugins/favourites/lib/app/controllers/application_controller'
 #---
 
 class ApplicationController < ActionController::Base

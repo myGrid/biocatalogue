@@ -1,4 +1,4 @@
-ENV["RAILS_ENV"] = "test"
+ENV["Rails.env"] = "test"
 require "test/unit"
 require "rubygems"
 #require File.dirname(__FILE__) + '/../init'

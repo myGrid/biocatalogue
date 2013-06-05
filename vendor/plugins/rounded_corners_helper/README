@@ -9,8 +9,8 @@ Rounded Corners Helper has no dependancy
 
 Directions to get the helper up and running for your install:
 
-	1. run rake rounded_corners_helper:install. This will copy the required CSS file in #{RAILS_ROOT}/public/stylesheets/rounded-corners.css
-	2. Include the #{RAILS_ROOT}/public/stylesheets/rounded-corners.css file in your layout with:
+	1. run rake rounded_corners_helper:install. This will copy the required CSS file in #{Rails.root}/public/stylesheets/rounded-corners.css
+	2. Include the #{Rails.root}/public/stylesheets/rounded-corners.css file in your layout with:
 	  <%= stylesheet_link_tag 'rounded-corners' %>
 
 	3. The following is the helper method, the parameters are:

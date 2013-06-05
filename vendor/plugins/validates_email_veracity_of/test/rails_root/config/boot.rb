@@ -1,10 +1,10 @@
 # Don't change this file. Configuration is done in config/environment.rb and config/environments/*.rb
 
-RAILS_ROOT = "#{File.dirname(__FILE__)}/.." unless defined?(RAILS_ROOT)
+Rails.root = "#{File.dirname(__FILE__)}/.." unless defined?(Rails.root)
 
 unless defined?(Rails::Initializer)
-  if File.directory?("#{RAILS_ROOT}/vendor/rails")
-    require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
+  if File.directory?("#{Rails.root}/vendor/rails")
+    require "#{Rails.root}/vendor/rails/railties/lib/initializer"
   else
     require 'rubygems'
 

@@ -7,13 +7,13 @@ end
 
 def copy_image(file_name)
   plugin_images = File.join(File.dirname(__FILE__), 'images')
-  app_images = File.join(RAILS_ROOT, 'public/images/widgets')
+  app_images = File.join(Rails.root, 'public/images/widgets')
   copy file_name, plugin_images, app_images 
 end
 
 def copy_javascript(file_name)
   plugin_javascripts = File.join(File.dirname(__FILE__), 'javascripts')
-  app_javascripts = File.join(RAILS_ROOT, 'public/javascripts/widgets')
+  app_javascripts = File.join(Rails.root, 'public/javascripts/widgets')
   copy file_name, plugin_javascripts, app_javascripts 
 end
 

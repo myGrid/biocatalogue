@@ -8,7 +8,7 @@
 # This extends the AnnotationAttribute model defined in the Annotations plugin.
 #=====
 
-#require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/models/annotation_attribute'
+#require_dependency Rails.root + '/vendor/plugins/annotations/lib/app/models/annotation_attribute'
 require_dependency File.join(Gem.loaded_specs['my_annotations'].full_gem_path,'lib','app','models','annotation_attribute')
 class AnnotationAttribute < ActiveRecord::Base
 #  if ENABLE_CACHE_MONEY

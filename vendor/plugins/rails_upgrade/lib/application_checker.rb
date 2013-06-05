@@ -152,7 +152,7 @@ module Rails
       # Check for deprecated constants
       def check_deprecated_constants
         files = []
-        ["RAILS_ENV", "RAILS_ROOT", "RAILS_DEFAULT_LOGGER"].each do |v|
+        ["Rails.env", "Rails.root", "RAILS_DEFAULT_LOGGER"].each do |v|
           lines = grep_for(v, "app/")
           files += extract_filenames(lines) || []
 
@@ -163,7 +163,7 @@ module Rails
         unless files.empty?
           alert(
             "Deprecated constant(s)",
-            "Constants like RAILS_ENV, RAILS_ROOT, and RAILS_DEFAULT_LOGGER are now deprecated.",
+            "Constants like Rails.env, Rails.root, and RAILS_DEFAULT_LOGGER are now deprecated.",
             "http://litanyagainstfear.com/blog/2010/02/03/the-rails-module/",
             files.uniq
           )

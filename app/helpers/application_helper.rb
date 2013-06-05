@@ -10,8 +10,8 @@
 # Need to do this so that we play nice with the annotations and favourites plugin.
 # THIS DOES UNFORTUNATELY MEAN THAT A SERVER RESTART IS REQUIRED WHENEVER CHANGES ARE MADE
 # TO THIS FILE, EVEN IN DEVELOPMENT MODE.
-#require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
-require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/helpers/application_helper'
+#require_dependency Rails.root + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
+require_dependency Rails.root.to_s + '/vendor/plugins/favourites/lib/app/helpers/application_helper'
 # ---
 
 module ApplicationHelper
@@ -425,7 +425,7 @@ module ApplicationHelper
   end
   
   def render_breadcrumbs_after_home
-    if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb')) 
+    if FileTest.exist?(File.join(Rails.root, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb'))
       render :partial => "#{controller.controller_name.downcase}/breadcrumbs"
     end
   end

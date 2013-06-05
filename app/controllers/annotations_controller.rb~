@@ -8,8 +8,8 @@
 # This extends the Annotations controller defined in the Annotations plugin.
 #=====
 
-#require_dependency Rails.root + '/vendor/plugins/annotations/lib/app/controllers/annotations_controller'
-require_dependency File.join(Gem.loaded_specs['my_annotations'].full_gem_path,'lib','app','controllers','annotations_controller')
+#require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/controllers/annotations_controller'
+require 'my_annotations'
 
 class AnnotationsController < ApplicationController
   
@@ -111,13 +111,13 @@ class AnnotationsController < ApplicationController
       respond_to do |format|
         if @annotation.save
           flash[:notice] = 'Annotation was successfully updated.'
-
+  
           url_to_redirect_to = if @annotation.annotatable_type =~ /RestParameter|RestRepresentation/
                                  request.env["HTTP_REFERER"]
-                               else
+                               else  
                                  url_for_web_interface(@annotation.annotatable) || home_url
                                end
-
+  
           format.html { redirect_to url_to_redirect_to }
           format.xml  { head :ok }
         else
