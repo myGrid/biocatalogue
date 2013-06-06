@@ -6,7 +6,7 @@ gem "rails", "~>3.2.13"
 gem "rdoc", "~>3.4"
 gem "rake"
 
-gem "mysql2", "<0.3"
+gem "mysql2"
 
 
 # Former baked-in gems
