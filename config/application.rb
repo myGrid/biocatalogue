@@ -145,7 +145,7 @@ module BioCatalogue
                           :rails_error_classes => {
                               ActiveRecord::RecordNotFound => "404",
                               ::ActionController::UnknownController => "406",
-                              ::ActionController::UnknownAction => "406",
+                              ::AbstractController::ActionNotFound => "406",
                               ::ActionController::RoutingError => "406",
                               ::ActionView::MissingTemplate => "406",
                               ::ActionView::TemplateError => "500"
