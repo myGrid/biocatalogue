@@ -2,7 +2,7 @@
 r52 | sbecker | 2007-11-04 01:38:21 -0400 (Sun, 04 Nov 2007) | 3 lines
 
 * Allow configuration of which environments the helpers should merge scripts with the Synthesis::AssetPackage.merge_environments variable.
-* Refactored tests so they can all run together, and not depend on what the Rails.env constant is.
+* Refactored tests so they can all run together, and not depend on what the RAILS_ENV constant is.
 * Only add file extension if it was explicitly passed in, fixes other helpers in rails.
 ------------------------------------------------------------------------
 r51 | sbecker | 2007-10-26 16:24:48 -0400 (Fri, 26 Oct 2007) | 1 line
