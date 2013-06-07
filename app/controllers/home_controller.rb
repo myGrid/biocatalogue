@@ -7,10 +7,10 @@
 class HomeController < ApplicationController
   
   before_filter :disable_action_for_api, :except => [ :index, :status_changes ]
-  
+
   def index
     unless is_api_request?
-      ActivityLog.benchmark "ActivityLog entries for /home", Logger::INFO, false do
+      ActivityLog.benchmark "ActivityLog entries for /home", :level => :info, :silence => false do
         @activity_logs_main = BioCatalogue::ActivityFeeds.activity_logs_for(:home, :style => :simple)
         @activity_logs_monitoring = BioCatalogue::ActivityFeeds.activity_logs_for(:monitoring, :style => :simple, :items_limit => 5)
       end
