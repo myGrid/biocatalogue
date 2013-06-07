@@ -25,7 +25,7 @@ module ActivityFeedsHelper
     
     # Get object cache for these activity_logs
     object_cache = BioCatalogue::ActivityFeeds.build_object_cache_for(activity_logs)
-    
+
     # We need to consider ordering of the grouped events!
     
     days_order = [ ]
