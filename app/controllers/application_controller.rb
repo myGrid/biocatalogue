@@ -13,7 +13,6 @@
 # TO THIS FILE, EVEN IN DEVELOPMENT MODE.
 #require_dependency Rails.root + '/vendor/plugins/annotations/lib/app/controllers/application_controller'
 require_dependency Rails.root.to_s + '/vendor/plugins/favourites/lib/app/controllers/application_controller'
-#---
 
 class ApplicationController < ActionController::Base
 
@@ -29,43 +28,9 @@ class ApplicationController < ActionController::Base
   }
 
 
-  # ============================================
-  # Configure the Exception Notification plugin:
-  # --------------------------------------------
-
-  include ExceptionNotifiable
-
-  # This line ensures that templates and mailing is enabled for the Exception Notification plugin
-  # on your local development set up (so as to test the templates etc).
-  # Note: error templates will only show in production mode.
-  #
-  # Be aware of this when configuring the email settings in biocat_local.rb -
-  # in most cases you should disable email sending in your development setup
-  # (see config/initializers/mail.rb.pre for more info).
-  local_addresses.clear
-
-  self.rails_error_classes = {
-    ActiveRecord::RecordNotFound => "404",
-    ::ActionController::UnknownController => "406",
-    ::ActionController::UnknownAction => "406",
-    ::ActionController::RoutingError => "406",
-    ::ActionView::MissingTemplate => "406",
-    ::ActionView::TemplateError => "500"
-  }
-
-  self.error_layout = "application_error"
-
-  # ============================================
-
-
   helper :all # include all helpers, all the time
 
   helper_method :render_to_string
-
-  # See ActionController::Base for details
-  # Uncomment this to filter the contents of submitted sensitive data parameters
-  # from your application log (in this case, all fields with names like "password").
-  filter_parameter_logging :password
 
   protect_from_forgery
 
@@ -235,7 +200,7 @@ protected
     unless controller_name.downcase == 'sessions' or
            [ 'activate_account', 'rpx_merge', 'ignore_last' ].include?(action_name.downcase) or
            is_non_html_request?
-      session[:previous_url] = request.request_uri
+      session[:previous_url] = request.url
     end
   end
 

@@ -112,6 +112,48 @@ module BioCatalogue
 
     # Activate observers that should always be running
     config.active_record.observers = :annotation_observer
+
+
+    # ============================================
+    # Configure the Exception Notification plugin:
+    # --------------------------------------------
+
+    # include ExceptionNotifiable
+
+    # This line ensures that templates and mailing is enabled for the Exception Notification plugin
+    # on your local development set up (so as to test the templates etc).
+    # Note: error templates will only show in production mode.
+    #
+    # Be aware of this when configuring the email settings in biocat_local.rb -
+    # in most cases you should disable email sending in your development setup
+    # (see config/initializers/mail.rb.pre for more info).
+    #local_addresses.clear # always send email notifications instead of displaying the error
+    #
+    #self.rails_error_classes = {
+    #  ActiveRecord::RecordNotFound => "404",
+    #  ::ActionController::UnknownController => "406",
+    #  ::ActionController::UnknownAction => "406",
+    #  ::ActionController::RoutingError => "406",
+    #  ::ActionView::MissingTemplate => "406",
+    #  ::ActionView::TemplateError => "500"
+    #}
+    #
+    #self.error_layout = "application_error"
+
+    config.middleware.use ExceptionNotifier,
+                          :local_addresses => :clear,
+                          :rails_error_classes => {
+                              ActiveRecord::RecordNotFound => "404",
+                              ::ActionController::UnknownController => "406",
+                              ::ActionController::UnknownAction => "406",
+                              ::ActionController::RoutingError => "406",
+                              ::ActionView::MissingTemplate => "406",
+                              ::ActionView::TemplateError => "500"
+                          },
+                          :error_layout  => "application_error"
+
+    # ============================================
+
   end
 end
 
