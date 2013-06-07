@@ -288,7 +288,7 @@ module BioCatalogue
           end
         end
       end
-        
+
       return object_cache
     end
     
