@@ -82,11 +82,11 @@ class ApplicationCheckerTest < ActiveSupport::TestCase
     assert @checker.alerts.has_key?("Updated syntax for before_validation_on_* methods")
   end
 
-  def test_named_scope_left_over
-    make_file("app/models", "post.rb", "named_scope :failure")
+  def test_scope_left_over
+    make_file("app/models", "post.rb", "scope :failure")
     @checker.check_ar_methods
 
-    assert @checker.alerts.has_key?("named_scope is now just scope")
+    assert @checker.alerts.has_key?("scope is now just scope")
   end
 
   def test_check_routes

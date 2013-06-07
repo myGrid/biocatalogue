@@ -27,13 +27,13 @@ class FavouriteTest < ActiveSupport::TestCase
     assert_equal users(:jane), Favourite.find(9).user
   end
   
-  def test_for_favouritable_named_scope_finder
+  def test_for_favouritable_scope_finder
     assert_equal 2, Favourite.for_favouritable('Book', books(:h).id).length
     assert_equal 1, Favourite.for_favouritable('Chapter', chapters(:bh_c10).id).length
     assert_equal 0, Favourite.for_favouritable('Chapter', chapters(:br_c202).id).length
   end
   
-  def test_by_user_named_scope_finder
+  def test_by_user_scope_finder
     assert_equal 6, Favourite.by_user(users(:jane).id).length
     assert_equal 4, Favourite.by_user(users(:john).id).length
   end

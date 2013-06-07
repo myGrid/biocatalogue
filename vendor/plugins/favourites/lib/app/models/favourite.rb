@@ -14,14 +14,14 @@ class Favourite < ActiveRecord::Base
                         :user_id
   
   # Finder to get all favourites for a given favouritable.
-  named_scope :for_favouritable, lambda { |favouritable_type, favouritable_id| 
+  scope :for_favouritable, lambda { |favouritable_type, favouritable_id|
     { :conditions => { :favouritable_type =>  favouritable_type, 
                        :favouritable_id => favouritable_id },
       :order => "created_at DESC" }
   }
   
   # Finder to get all favourites by a given user.
-  named_scope :by_user, lambda { |user_id| 
+  scope :by_user, lambda { |user_id|
     { :conditions => { :user_id => user_id },
       :order => "created_at DESC" }
   }
