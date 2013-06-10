@@ -15,15 +15,17 @@
 # oauth_authorize :all
 
 module OauthAuthorize
+  extend ActiveSupport::Concern
 
-  def self.included(controller)
-    controller.extend(ClassMethods)
+   included do
+      class_attribute :oauth_authorized_actions
   end
 
+
   module ClassMethods
-    
     def oauth_authorize(*actions)
-      write_inheritable_array(:oauth_authorized_actions, actions)
+      self.oauth_authorized_actions ||= []
+      self.oauth_authorized_actions += actions
     end
     
   end
@@ -31,7 +33,7 @@ module OauthAuthorize
 protected
 
   def authorized?
-    actions = self.class.read_inheritable_attribute(:oauth_authorized_actions)
+    actions = self.class.oauth_authorized_actions
     actions ||= []
     return actions.include?(:all) || actions.include?(action_name.to_sym)
   end
