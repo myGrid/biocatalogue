@@ -51,11 +51,11 @@ module TagsHelper
   # IMPORTANT NOTE: The delete AJAX functionality depends on the parent container for the tag cloud having
   # an ID of "#{annotatable.class.name}_#{annotatable.id}_tag_cloud"
   def generate_tag_cloud(tags, cloud_type, *args)
-    return "" if tags.blank?
+    return "".html_safe if tags.blank?
     
     unless [ :weighted, :flat ].include?(cloud_type)
       BioCatalogue::Util.yell("ERROR: Tried to build a tag cloud with an invalid cloud_type.")
-      return ""      
+      return "".html_safe
     end
     
     # Do options the Rails Way ;-)
@@ -174,6 +174,6 @@ module TagsHelper
       
     end
     
-    return output.to_s
+    return output.to_s.html_safe
   end
 end
