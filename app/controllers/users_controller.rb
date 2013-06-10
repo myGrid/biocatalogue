@@ -484,9 +484,10 @@ private
     unless order_field.blank? or order_direction.nil?
       order = "users.#{order_field} #{order_direction}"
     end
-    
+
     conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-    conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL") unless include_deactivated?
+    #TODO merge conditions using 'where' rather than deprecated 'merge_conditions' method
+    #conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL") unless include_deactivated?
 
     if self.request.format == :bljson
       finder_options = {
