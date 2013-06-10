@@ -35,7 +35,7 @@
 				</p>
 				<p>
 				  <div class="search_widget">
-				    <% form_tag search_url, :method => :get do %>
+				    <%= form_tag search_url, :method => :get do %>
 					    <b>Search:</b>
 							<%= text_field_tag :q, params[:q], :id => "home_search_field", :size => 40, :autocomplete => "off" -%>
 							
