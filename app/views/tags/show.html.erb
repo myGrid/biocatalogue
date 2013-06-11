@@ -34,9 +34,14 @@
   
 <% else %>
 
-	<% 
-		 current_page_ids = @service_ids.paginate(:page => params[:page], :per_page => @per_page)
-		 services = search_item_ids_to_objects(current_page_ids, "service")
+    <%
+         services = Service.where(:id => @service_ids).paginate(:page => params[:page], :per_page => @per_page)
+         #TODO figure out why current_page_ids only works as an array of Services rather than an array of ids
+         current_page_ids = services
+
+       #ORIGINAL
+		 #current_page_ids = @service_ids.paginate(:page => params[:page], :per_page => @per_page)
+         #services = search_item_ids_to_objects(current_page_ids, "service")
 	 %>
 	
 	<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => current_page_ids, :entry_name => 'service' } %>
