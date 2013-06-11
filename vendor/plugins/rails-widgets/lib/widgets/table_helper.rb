@@ -40,7 +40,7 @@ module Widgets
       
       def render
         generate_css
-        generate_html
+        #generate_html
         flush_to_template
         return nil # avoid duplication if called with <%= %>
       end
