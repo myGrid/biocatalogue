@@ -29,7 +29,7 @@
         <% end %>
 				<td style="vertical-align: top;">
 					
-					<% unless (category_annotations = service.annotations_with_attribute("category")).empty? %>
+					<% if !((category_annotations = service.annotations_with_attribute("category")).empty?) then %>
 						<ul class="categories">
 							<% category_annotations.each do |category_annotation| %>
 								<% category = category_annotation.value %>

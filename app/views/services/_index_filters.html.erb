@@ -26,7 +26,7 @@
 		</p>
 		
 		<p class="center" style="margin: 0; margin-bottom: 0.7em;">
-			<%= service_index_tag_filters_on_off_link -%>
+			<%= service_index_tag_filters_on_off_link.html_safe -%>
 		</p>
     
     <div id="filters_inner">
@@ -41,7 +41,7 @@
 
 <script type="text/javascript">
   document.observe('dom:loaded', function(){
-    <%= remote_function({ :url => filters_services_path(BioCatalogue::Util::remove_rails_special_params_from(params.dup)),
+    <%= remote_function({ :url => filters_services_path(BioCatalogue::Util::remove_rails_special_params_from(params.dup)).html_safe,
                           :update => { :success => 'filters_inner' },
                           :loading => "Element.show('filters_inner_spinner')",
                           :complete => "Element.hide('filters_inner_spinner')",
