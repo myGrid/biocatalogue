@@ -54,7 +54,7 @@ gem 'markaby'
 gem "redbox"
 #gem "validates_url_format_of"
 gem "acts_as_trashable"
-gem "my_annotations"
+gem "my_annotations", :git => 'git://github.com/myGrid/annotations.git'
 gem "will_paginate"#, "~>3.0.4"
 gem "better_logging"
 gem "exception_notification", :require => 'exception_notifier'
