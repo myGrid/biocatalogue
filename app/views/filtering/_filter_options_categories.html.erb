@@ -7,7 +7,6 @@
 # See license.txt for details
 
 %>
-
 <%# This partial MUST be used within a <div> element with class="filters" %>
 
 <div class="filter_type_box">
@@ -36,12 +35,12 @@
 		</ul>
 		
 		<p class="more_less_links" style="margin-top: 1.2em; overflow: hidden;">
-      <%= link_to_function 'Expand all' + expand_image("0.5em"), {:id => "expand_all_link", :style => "float:left;"} do |page|
+          <%= link_to_function ("Expand all"+ expand_image("0.5em")).html_safe, {:id => "expand_all_link", :style => "float:left;"} do |page|
             page << "categoryToggleAll(#{@cat_array.inspect}, true);"
             page << "$(\"expand_all_link\").ancestors()[0].ancestors()[0].scrollTo();"
           end %>
 
-      <%= link_to_function 'Collapse all' + collapse_image("0.5em"), {:id => "collapse_all_link", :style => "float:right;"} do |page|
+          <%= link_to_function ("Collapse all" + collapse_image("0.5em")).html_safe, {:id => "collapse_all_link", :style => "float:right;"} do |page|
             page << "categoryToggleAll(#{@cat_array.inspect}, false);"
             page << "$(\"collapse_all_link\").ancestors()[0].ancestors()[0].scrollTo();"
           end %>
