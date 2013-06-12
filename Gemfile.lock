@@ -211,7 +211,7 @@ DEPENDENCIES
   oauth-plugin
   prototype-rails!
   rails (~> 3.2.13)
-  rails_autolink (~> 1.1.0)
+  rails_autolink
   rake
   rdoc (~> 3.4)
   redbox
