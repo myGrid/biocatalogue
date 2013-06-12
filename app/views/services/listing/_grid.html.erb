@@ -17,7 +17,7 @@
   
     <div class="archived grid_archived">
       <span style="float: right; text-align: right; margin-top: 0.5em; margin-right: 0.5em; background: transparent;">
-        <%= service_type_badges(service.service_types) -%>
+        <%= service_type_badges(service.service_types).html_safe -%>
       </span>
       
       <p class="name">
@@ -39,7 +39,7 @@
     <% end %>
     
     <span style="float: right; text-align: right; margin-top: 0.5em; margin-right: 0.5em; background: transparent;">
-      <%= service_type_badges(service.service_types) -%>
+      <%= service_type_badges(service.service_types).html_safe -%>
     </span>
     
     <p class="name">

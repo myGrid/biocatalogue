@@ -18,13 +18,13 @@
 			<table class="name_section">
 			  <tr>
 			    <td class="name" title="<%= tooltip_title_attrib(display_name(service), 500) -%>">
-			      <%= link_to(display_name(service), service_path(service)) -%>
+			      <%= link_to(display_name(service), service_path(service)).html_safe -%>
 			    </td>
 			    <td>
-			      <%= service_type_badges(service.service_types) -%>
+			      <%= service_type_badges(service.service_types).html_safe -%>
 			    </td>
 			    <td>
-			      <%= service_location_flags(service) -%>
+			      <%= service_location_flags(service).html_safe -%>
 			    </td>
 			  </tr>
 			</table>
