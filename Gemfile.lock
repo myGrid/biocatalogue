@@ -139,6 +139,8 @@ GEM
       activesupport (= 3.2.13)
       bundler (~> 1.0)
       railties (= 3.2.13)
+    rails_autolink (1.1.0)
+      rails (> 3.1)
     railties (3.2.13)
       actionpack (= 3.2.13)
       activesupport (= 3.2.13)
@@ -150,6 +152,7 @@ GEM
     rdoc (3.12.2)
       json (~> 1.4)
     redbox (1.0.4)
+    rinku (1.2.2)
     rpx_now (0.6.24)
       json_pure
     ruby-hmac (0.4.0)
@@ -208,9 +211,11 @@ DEPENDENCIES
   oauth-plugin
   prototype-rails!
   rails (~> 3.2.13)
+  rails_autolink (~> 1.1.0)
   rake
   rdoc (~> 3.4)
   redbox
+  rinku (~> 1.2.2)
   rpx_now
   ruby-hmac
   seer
