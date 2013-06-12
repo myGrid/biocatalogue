@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/myGrid/annotations.git
+  revision: d33e78993ee957fa12d71cbe9f03100dd9b0ad15
+  specs:
+    my_annotations (0.6.0)
+
+GIT
   remote: git://github.com/rails/prototype-rails.git
   revision: 967bc9b5cafe5a1e92d646b7d7b2d900a596147b
   specs:
@@ -103,7 +109,6 @@ GEM
     multi_json (1.7.6)
     multi_xml (0.5.4)
     multipart-post (1.2.0)
-    my_annotations (0.6.0)
     mysql2 (0.3.11)
     oauth (0.4.7)
     oauth-plugin (0.4.1)
@@ -197,7 +202,7 @@ DEPENDENCIES
   memcache-client
   mocha
   mongrel
-  my_annotations
+  my_annotations!
   mysql2
   oauth
   oauth-plugin
