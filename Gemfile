@@ -8,6 +8,7 @@ gem "rake"
 
 gem "mysql2"
 
+gem "rails_autolink"
 
 # Former baked-in gems
 gem "solr-ruby"
