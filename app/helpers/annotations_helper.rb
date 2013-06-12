@@ -241,11 +241,12 @@ module AnnotationsHelper
     return '' if annotation.nil?
 
     return content_tag(:span, :class => "annotation_source_text #{annotation_source_cssclass(annotation)}", :style => style) do
-      o = "<span>by </span>"
-      o << annotation_source_icon(annotation.source_type)
-      o << "#{link_to(h(annotation.source.annotation_source_name), annotation.source)} "
-      o << user_role_badge(annotation.source.roles) if annotation.source_type == "User"
-      o << "<span class='ago'>(#{distance_of_time_in_words_to_now(annotation.updated_at)} ago)</span>"
+      o = "".html_safe
+      o.safe_concat("<span>by </span>")
+      o.safe_concat(annotation_source_icon(annotation.source_type))
+      o.safe_concat("#{link_to(h(annotation.source.annotation_source_name), annotation.source)} ")
+      o.safe_concat(user_role_badge(annotation.source.roles)) if annotation.source_type == "User"
+      o.safe_concat("<span class='ago'>(#{distance_of_time_in_words_to_now(annotation.updated_at)} ago)</span>")
     end
   end
 

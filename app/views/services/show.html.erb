@@ -158,9 +158,9 @@
 			</p>
 			
 			<p>
-				<b>Submitter / Source:</b>
+				<b>Submitter/Source:</b>
 				<br/>
-				<%= submitter_link(@service.submitter, "margin-right: 0.5em; vertical-align: middle;") %>
+				<%= submitter_link(@service.submitter, "margin-right: 0.5em; vertical-align: middle;").html_safe %>
 				<span class="ago" style="vertical-align: baseline;">
 					(<%= distance_of_time_in_words_to_now(@service.created_at) -%> ago)
 				</span>
