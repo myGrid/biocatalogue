@@ -152,6 +152,7 @@ GEM
     rdoc (3.12.2)
       json (~> 1.4)
     redbox (1.0.4)
+    rinku (1.2.2)
     rpx_now (0.6.24)
       json_pure
     ruby-hmac (0.4.0)
@@ -214,6 +215,7 @@ DEPENDENCIES
   rake
   rdoc (~> 3.4)
   redbox
+  rinku (~> 1.2.2)
   rpx_now
   ruby-hmac
   seer

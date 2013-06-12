@@ -1,0 +1,35 @@
+# BioCatalogue: app/config/initializers/mail.rb.pre
+#
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+# If true, errors that occur during mail delivery will raise 
+# an exception. Note that these exception can occur some considerable
+# time later
+# If false, mail delivery errors will be ignored
+ActionMailer::Base.raise_delivery_errors = false
+
+# If true, mail will be delivered normally
+# If false, requests to deliver mail will be ignored
+ActionMailer::Base.perform_deliveries = false
+
+# Character set for email
+<<<<<<< HEAD
+#ActionMailer::Base.default_charset = 'utf-8'
+=======
+# ActionMailer::Base.default_charset = 'utf-8'
+>>>>>>> ed378d65defd01593186be6331050fb6c4ac5010
+
+# Use smtp for mail delivery
+# Possible values  :smtp |:sendmail |:test
+# It is recommended to set this to test during
+# development, so that mail is not sent by accident
+ActionMailer::Base.delivery_method = :smtp
+
+#Mailer Settings
+ActionMailer::Base.smtp_settings = {
+  :address          => 'smtp.example.com', 
+  :port             => 25,
+  :domain           => 'example.com'
+}
