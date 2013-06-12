@@ -217,7 +217,14 @@ class User < ActiveRecord::Base
       def record_timestamps; false; end
     end
     self.last_active = time
-    self.send(:update_without_callbacks)
+
+    # self.send(:update_without_callbacks) # Old Rails 2 style
+
+    # Rails 3 way to update a single attribute, without calling save.
+    # Validation and callbacks is skipped.
+    # updated_at/updated_on column is not updated if that column is available.
+    self.update_column(:last_active, time)
+
     class << self
       remove_method :record_timestamps
     end
