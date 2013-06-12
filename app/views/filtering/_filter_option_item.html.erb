@@ -22,7 +22,7 @@
 %>
 
 <span class="container">
-	
+
 	<% if filter["name"] == BioCatalogue::Filtering::UNKNOWN_TEXT %>
 	
 		<span class="text" title="<%= tooltip_title_attrib(text_tooltip) -%>" style="<%= text_style -%>">
@@ -35,13 +35,13 @@
 		
 	<% else %>
 		
-		<% link_to(url, :class => (selected ? "selected" : nil), :title => tooltip_title_attrib(text_tooltip).html_safe) do -%>
-			
+		<%= link_to(url, :class => (selected ? "selected" : nil), :title => tooltip_title_attrib(text_tooltip)) do -%>
+
 			<% if selected %>
 				<span class="deselect">&nbsp</span>
 			<% end %>
 			
-			<span class="text" style="<%= text_style -%>"><%= text_to_display.html_safe -%></span>
+			<span class="text" style="<%= text_style -%>"><%= text_to_display -%></span>
 			
 			<% unless count.blank? %>
 				<span class="faded count">(<%= count -%>)</span>
