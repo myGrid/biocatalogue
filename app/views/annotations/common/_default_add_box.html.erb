@@ -20,12 +20,12 @@
 
 <div class="add_box">
 	<% rounded(annotation_add_box_background_color, "#333", "100%") do %>
-		<% form_remote_tag(:url => create_inline_annotations_url(:partial => partial_from), 
+		<% form_tag(:url => create_inline_annotations_url(:partial => partial_from),
 										   :update => { :success => main_div_id }, 
 									 		 :success => "new Effect.Highlight('#{main_div_id}', { duration: 1.0 });",
 											 :failure => "alert('Sorry, an error has occurred whilst submitting. This could be because you are trying to add an annotation that already exists. If this error persists we would be very grateful if you notified us.');", 
 											 :loading => "Element.show('#{spinner_id}')",
-           						 :complete => "Element.hide('#{spinner_id}')") do %>
+           						 :complete => "Element.hide('#{spinner_id}')", :remote => true ) do %>
 		
 	    <%= hidden_field_tag "annotation[annotatable_type]", annotatable.class.name -%>
 	    <%= hidden_field_tag "annotation[annotatable_id]", annotatable.id -%>
