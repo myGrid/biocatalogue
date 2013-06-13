@@ -83,7 +83,7 @@ module AnnotationsHelper
       
       link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
 
-      link_content =  link_to("redbox", link_inner_html,
+      link_content =  link_to(link_inner_html,
                                    { :url => new_popup_annotations_url(url_options),
                                      :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
                                      :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
@@ -170,7 +170,7 @@ module AnnotationsHelper
       link_html += options[:link_text]
     end
 
-    return link_to("redbox", link_html,
+    return link_to(link_html,
                                  { :url => edit_popup_annotation_url(annotation),
                                    :id => "edit_ann_#{annotation.id}_redbox",
                                    :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" ,
