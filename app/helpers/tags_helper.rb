@@ -147,7 +147,7 @@ module TagsHelper
                      !submitters.nil? and 
                      BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :tag, :tag_submitters => submitters) then
                      
-                    link_to_remote(icon_faded_with_hover(:delete),
+                    link_to(icon_faded_with_hover(:delete),
                                   :url => "#{destroy_taggings_tags_url(:tag_name => tag_name, :annotatable_type => options[:annotatable].class.name, :annotatable_id => options[:annotatable].id)}",
                                   :method => :delete,
                                   :update => { :success => "#{options[:annotatable].class.name}_#{options[:annotatable].id}_tag_cloud", :failure => '' },
@@ -156,7 +156,7 @@ module TagsHelper
                                   :success => "new Effect.Highlight('#{options[:annotatable].class.name}_#{options[:annotatable].id}_tags', { duration: 0.5 });",
                                   :failure => "Element.hide('tags_spinner'); alert('Sorry, an error has occurred.');",
                                   :html => { :title => tooltip_title_attrib("Delete this tag"), :style => "margin-left:0.4em;" },
-                                  :confirm => "Are you sure you want to delete this tag?")
+                                  :confirm => "Are you sure you want to delete this tag?", :remote => true)
                   end
                   
                 end

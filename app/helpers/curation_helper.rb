@@ -27,7 +27,7 @@ module CurationHelper
       :title => "Sort by this field",
       :href => url_for(:action => 'annotation_level', :params => params.merge({:sort_by => key, :sort_order => order })) #:page => params[:page]
       }
-    link_to_remote(text, options, html_options)
+    link_to(text, options, html_options, :remote => true)
   end
   
   def reverse_order(order)

@@ -49,7 +49,7 @@ module RestMethodsHelper
       redbox_hash = {:url => url_hash, 
                      :id => id_value, 
                      :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+      link_content = link_to("redbox", inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
     end
     
     return link_content
@@ -100,7 +100,7 @@ module RestMethodsHelper
       redbox_hash = {:url => url_hash,
                      :id => id_value, 
                      :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+      link_content = link_to("redbox", inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
     else # NOT LOGGED IN
       inner_html = image_tag("add_inactive.png")
       inner_html += content_tag(:span, options[:link_text])
@@ -151,7 +151,7 @@ module RestMethodsHelper
                     :id => id_value, 
                     :failure => fail_value }
                    
-    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+    link_content = link_to("redbox", inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
     
     return link_content
   end

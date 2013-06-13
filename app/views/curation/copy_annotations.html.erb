@@ -18,12 +18,12 @@
 	  (e.g.: annotations on inputs and outputs of a SOAP operation).
 	</div>
 	
-	<% form_remote_tag(:url => curation_tools_copy_annotations_preview_path, 
+	<% form_tag(:url => curation_tools_copy_annotations_preview_path,
                    :update => { :success => 'copy_annotations_preview' }, 
                    :success => "new Effect.Highlight('copy_annotations_preview', { duration: 1.0 });",
                    :failure => "alert('Sorry, an error has occurred.');",
                    :loading => "Element.show('spinner')",
-                   :complete => "Element.hide('spinner')") do %>
+                   :complete => "Element.hide('spinner')", :remote => true) do %>
     
 		<p class="step_text" style="margin-top: 0;">1. Specify the item type that want to work with:</p>
    
