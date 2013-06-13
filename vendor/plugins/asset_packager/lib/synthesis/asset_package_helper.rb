@@ -10,7 +10,7 @@ module Synthesis
 
       if sources.include?(:defaults) 
         sources = sources[0..(sources.index(:defaults))] + 
-          ['prototype', 'effects', 'dragdrop', 'controls'] + 
+          ['prototype', 'prototype_ujs', 'effects', 'dragdrop', 'controls'] +
           (File.exists?("#{Rails.root}/public/javascripts/application.js") ? ['application'] : []) + 
           sources[(sources.index(:defaults) + 1)..sources.length]
         sources.delete(:defaults)

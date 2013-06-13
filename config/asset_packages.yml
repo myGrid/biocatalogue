@@ -2,6 +2,7 @@
 javascripts: 
 - base: 
   - prototype
+  - prototype_ujs
   - effects
   - dragdrop
   - controls

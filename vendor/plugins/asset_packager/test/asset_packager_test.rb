@@ -21,19 +21,19 @@ class AssetPackagerTest < Test::Unit::TestCase
     js_asset_packages = Synthesis::AssetPackage.find_by_type("javascripts")
     assert_equal 2, js_asset_packages.length
     assert_equal "base", js_asset_packages[0].target
-    assert_equal ["prototype", "effects", "controls", "dragdrop"], js_asset_packages[0].sources
+    assert_equal ["prototype", "prototype_ujs", "effects", "controls", "dragdrop"], js_asset_packages[0].sources
   end
   
   def test_find_by_target
     package = Synthesis::AssetPackage.find_by_target("javascripts", "base")
     assert_equal "base", package.target
-    assert_equal ["prototype", "effects", "controls", "dragdrop"], package.sources
+    assert_equal ["prototype", "prototype_ujs", "effects", "controls", "dragdrop"], package.sources
   end
   
   def test_find_by_source
     package = Synthesis::AssetPackage.find_by_source("javascripts", "controls")
     assert_equal "base", package.target
-    assert_equal ["prototype", "effects", "controls", "dragdrop"], package.sources
+    assert_equal ["prototype", "prototype_ujs", "effects", "controls", "dragdrop"], package.sources
   end
   
   def test_delete_and_build
