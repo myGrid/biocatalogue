@@ -325,6 +325,34 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :saved_searches
+
+  # Routes for the favourites plugin
+  resources :favourites
+  # Old Rails 2 route for favourites:
+  # Favourites.map_routes(map)
+
+  # Routes for the annotations plugin
+  resources :annotations do
+    collection do
+      get :filters
+      post :new_popup, :create_inline, :filtered_index, :bulk_create
+    end
+    member do
+      get :download
+      post :edit_popup, :promote_alternative_name
+    end
+  end
+  # Old Rails 2 route for annotations:
+  # Annotations.map_routes(map,
+  #                       { :new_popup => :post,
+  #                         :create_inline => :post,
+  #                         :filters => :get,
+  #                         :filtered_index => :post,
+  #                         :bulk_create => :post },
+  #                       { :edit_popup => :post,
+  #                         :download => :get,
+  #                         :promote_alternative_name => :post })
+
   match '/' => 'home#index'
   match '/:controller(/:action(/:id))'
 end
