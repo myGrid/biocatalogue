@@ -83,14 +83,15 @@ module AnnotationsHelper
       
       link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
 
-      link_content =  link_to_remote_redbox(link_inner_html,
+      link_content =  link_to("redbox", link_inner_html,
                                    { :url => new_popup_annotations_url(url_options),
                                      :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
                                      :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
                                    { :style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
                                      :class => link_class,
                                      :alt => options[:tooltip_text],
-                                     :title => tooltip_title_attrib(options[:tooltip_text]) })
+                                     :title => tooltip_title_attrib(options[:tooltip_text]) },
+                                   :remote => true)
     
       # Add the greyed out inactive bit if required
       if options[:only_show_on_hover] == true
@@ -169,16 +170,18 @@ module AnnotationsHelper
       link_html += options[:link_text]
     end
 
-    return link_to_remote_redbox(link_html,
+    return link_to("redbox", link_html,
                                  { :url => edit_popup_annotation_url(annotation),
                                    :id => "edit_ann_#{annotation.id}_redbox",
-                                   :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
+                                   :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" ,
+                                 },
                                  { :style => (options[:show_icon] ? 
                                               "text-decoration: none; vertical-align: baseline; #{options[:style]}" : 
                                               options[:style]),
                                    :alt => options[:tooltip_text],
                                    :title => tooltip_title_attrib(options[:tooltip_text]),
-                                   :class => options[:class] })
+                                   :class => options[:class] },
+                                   :remote => true)
   end
 
   def annotation_add_info_text(attribute_name, annotatable)

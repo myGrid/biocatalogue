@@ -47,7 +47,7 @@ module RestParametersHelper
       redbox_hash = {:url => create_url_hash(parent_object, options, "constrained_options"), 
                      :id => id_value, 
                      :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+      link_content = link_to("redbox", inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
     else
       link_content = content_tag(:span, 
                                  "You are not allowed to edit the constrained value of this parameter.", 
@@ -98,7 +98,7 @@ module RestParametersHelper
       redbox_hash = {:url => create_url_hash(parent_object, options, "default_value"), 
                      :id => id_value, 
                      :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+      link_content = link_to("redbox", inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
     end
     
     return link_content
