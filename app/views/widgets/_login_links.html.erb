@@ -32,7 +32,7 @@
 			<% end %>
 			
       <span class="sep">|</span>
-			<%= link_to 'Sign out', logout_path, :id => "logout_link", :class => "red_arrow", :method => :delete -%>
+			<%= link_to 'Sign out', logout_path, :id => "logout_link", :class => "red_arrow", :method => :delete, :confirm => 'Are you sure you want to sign out?' -%>
 		<% else -%>
 			<%= link_to 'Sign up', signup_path, :id => "signup_link", :class => "signup" -%>
 			
