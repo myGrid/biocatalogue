@@ -26,7 +26,7 @@ module Favourites
         def find_favourites_for(id)
 
           #obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
-          obj_type = self.base_class.name
+          obj_type = self.class.base_class.name
           Favourite.find(:all,
                           :conditions => { :favouritable_type =>  obj_type, 
                                            :favouritable_id => id },
@@ -37,7 +37,7 @@ module Favourites
         # E.g: Book.find_favourites_by(10) will give all favourites that are for Books, by User with ID 10.
         def find_favourites_by(user_id)
           #obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
-          obj_type = self.base_class.name
+          obj_type = self.class.base_class.name
           Favourite.find(:all,
                          :conditions => { :favouritable_type =>  obj_type, 
                                           :user_id => user_id },
@@ -60,7 +60,7 @@ module Favourites
         # Helper method to get latest favourites
         def latest_favourites(limit=nil)
           #obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self.class).to_s
-          obj_type = self.base_class.name
+          obj_type = self.class.base_class.name
           Favourite.find(:all,
                          :conditions => { :favouritable_type =>  obj_type, 
                                           :favouritable_id => self.id },
@@ -73,7 +73,7 @@ module Favourites
           favourited = false
           
           #obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self.class).to_s
-          obj_type = self.base_class.name
+          obj_type = self.class.base_class.name
           favs = Favourite.find(:all,
                                 :conditions => { :favouritable_type =>  obj_type, 
                                                  :favouritable_id => self.id,
@@ -86,7 +86,7 @@ module Favourites
         
         def favourite_by_user(user_id)
           #obj_type = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self.class).to_s
-          obj_type = self.base_class.name
+          obj_type = self.class.base_class.name
           favs = Favourite.find(:all,
                                 :conditions => { :favouritable_type =>  obj_type, 
                                                  :favouritable_id => self.id,
