@@ -27,13 +27,13 @@
 <% if logged_in? %>
     <div class="header_left_bar" style="float: none; position: static;" id="center" >
        <span class="actions_button_row" >
-          <%= if (fav = favourite_action(@service, current_user )) then '<span class="actions_button"> ' + fav + '</span>' end%>
-          <%= if (resp = take_responsibility_action(@service, current_user)) then '<span class="actions_button">' + resp + '</span>' end %>
+          <%= if (fav = favourite_action(@service, current_user )) then ('<span class="actions_button"> ' + fav + '</span>').html_safe end%>
+          <%= if (resp = take_responsibility_action(@service, current_user)) then ('<span class="actions_button">' + resp + '</span>').html_safe end %>
           <%  if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) then %>
-              <%= if (pend = pending_responsibility_action(@pending_responsibility_requests)) then '<span class="actions_button">' +  pend +'</span>' end %>
-              <%= if (update = check_updates_action(@service)) then '<span class="actions_button">' + update + '</span>' end %>
-              <%= if (archive = archive_action(@service) )then '<span class="actions_button">' + archive+'</span>' end %>
-              <%= if (remove = remove_action(@service)) then '<span class="actions_button">' + remove +'</span>' end %>
+              <%= if (pend = pending_responsibility_action(@pending_responsibility_requests)) then ('<span class="actions_button">' +  pend + '</span>').html_safe end %>
+              <%= if (update = check_updates_action(@service)) then ('<span class="actions_button">' + update + '</span>').html_safe end %>
+              <%= if (archive = archive_action(@service) )then ('<span class="actions_button">' + archive+'</span>').html_safe end %>
+              <%= if (remove = remove_action(@service)) then ('<span class="actions_button">' + remove +'</span>').html_safe end %>
            <% end %>
        </span>
     </div>
