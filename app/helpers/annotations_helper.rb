@@ -92,7 +92,7 @@ module AnnotationsHelper
                                              :alt => options[:tooltip_text],
                                              :title => tooltip_title_attrib(options[:tooltip_text]),
                                              :remote => true})
-    
+
       # Add the greyed out inactive bit if required
       if options[:only_show_on_hover] == true
         inactive_span = content_tag(:span, 
@@ -170,7 +170,7 @@ module AnnotationsHelper
       link_html += options[:link_text]
     end
 
-    return link_to("redbox", link_html,
+    return link_to(link_html,
                                  { :url => edit_popup_annotation_url(annotation),
                                    :id => "edit_ann_#{annotation.id}_redbox",
                                    :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" ,
