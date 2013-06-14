@@ -276,7 +276,7 @@ module AnnotationsHelper
       onExpand: function(event) {
       }
     });
-    new DefaultTextInput($('#{text_area_id}'));"
+    new DefaultTextInput($('#{text_area_id}'));".html_safe
   end
   
 end
