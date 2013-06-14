@@ -39,7 +39,7 @@ module ApplicationHelper
   end
   
   def icon_faded_with_hover(type)
-    image_tag(icon_filename_for("#{type.to_s}_faded".to_sym), :mouseover => icon_filename_for(type), :style => "vertical-align:middle;")
+    image_tag(icon_filename_for("#{type.to_s}_faded".to_sym), :mouseover => icon_filename_for(type), :style => "vertical-align:middle;").html_safe
   end
   
   def refresh_image
