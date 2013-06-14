@@ -12,7 +12,9 @@
 
 <h1>New Soaplab Server</h1>
 
-<%= error_messages_for :soaplab_server %>
+<% @soaplab_server.errors.full_messages.each do |err|  %>
+    <%= err %>
+<% end %>
 
 <p class="step_text">1. Specify the URL to the WSDL that lists all the tools in the soaplab server, then preview...</p>
 <i>e.g <br/>

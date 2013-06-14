@@ -15,8 +15,10 @@
 	</div>
 	
 	<div class="body">
-    <% form_for @rest_method do |f| %>
-      <%= f.error_messages %>
+    <%= form_for @rest_method do |f| %>
+          <% @rest_method.errors.full_messages.each do |err|  %>
+              <%= err %>
+          <% end %>
   
       <div>
         <div class="box_info_standout" style="font-size:100%" >

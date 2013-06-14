@@ -32,9 +32,11 @@
 
 <div class="box_form" style="width: 40%;">
 
-	<% form_for(@user) do |f| %>
-	
-	  <%= f.error_messages %>
+	<%= form_for(@user) do |f| %>
+
+      <% @user.errors.full_messages.each do |err|  %>
+          <%= err %>
+      <% end %>
 		<fieldset>
 		  <legend>Email Address</legend>
 		  <p>

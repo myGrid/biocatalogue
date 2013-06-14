@@ -1,7 +1,9 @@
 <h1>New favourite</h1>
 
-<% form_for(@favourite) do |f| %>
-  <%= f.error_messages %>
+<%= form_for(@favourite) do |f| %>
+    <% @favourite.errors.full_messages.each do |err|  %>
+        <%= err %>
+    <% end %>
 
   <p>
     <%= f.submit "Create" %>

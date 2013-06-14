@@ -15,10 +15,12 @@
 	</div>
 	
 	<div class="body">
-    <% form_for :rest_method, :url => {:controller => "rest_parameters", 
+    <%= form_for :rest_method, :url => {:controller => "rest_parameters",
                                        :action => "add_new_parameters", 
                                        :rest_method_id => @rest_method.id } do |f| %>
-    <%= f.error_messages %>
+          <% @rest_method.errors.full_messages.each do |err|  %>
+              <%= err %>
+          <% end %>
 
     <div>
 			<div class="box_info_standout">

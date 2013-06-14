@@ -11,7 +11,9 @@
 <h1>Editing service_provider</h1>
 
 <% form_for(@service_provider) do |f| %>
-  <%= f.error_messages %>
+    <% @service_provider.errors.full_messages.each do |err|  %>
+        <%= err %>
+    <% end %>
 
   <p>
     <%= f.submit "Update" %>

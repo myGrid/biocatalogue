@@ -11,10 +11,14 @@
 
 <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, testable_item) %>
 
-	<% form_tag (test_scripts_path, :method => :post, :multipart => true )  do -%>
-    	<%= error_messages_for 'service', :object => testable_item %>
+	<%= form_tag (test_scripts_path, :method => :post, :multipart => true )  do -%>
+          <% @service.errors.full_messages.each do |err|  %>
+              <%= err %>
+          <% end %>
 		<%if script%>
-			<%= error_messages_for 'script', :object => script %>
+              <% @script.errors.full_messages.each do |err|  %>
+                  <%= err %>
+              <% end %>
 		<%end%>
 		<%= hidden_field_tag 'testable_id', testable_item.id -%>
 		<%= hidden_field_tag 'testable_type', testable_item.class -%> 

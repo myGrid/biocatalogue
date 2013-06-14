@@ -8,8 +8,9 @@
 
 %>
 
-<%= error_messages_for :client_application %>
-
+<% @client_application.errors.full_messages.each do |err|  %>
+    <%= err %>
+<% end %>
 <% field_styles = "float:right; width:70%;" %>
 
 <div>

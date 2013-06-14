@@ -10,8 +10,10 @@
 
 <h1>Submit services</h1>
 
-<% form_for @soap_service, :url =>{:controller => 'soap_services',:action => "bulk_create"}  do |f| %>
-  <%= f.error_messages -%>
+<%= form_for @soap_service, :url =>{:controller => 'soap_services',:action => "bulk_create"}  do |f| %>
+    <% @soap_service.errors.full_messages.each do |err|  %>
+        <%= err %>
+    <% end %>
   <p> List the wsdl URLs for the services you want to submit in the box below. <br />
       Each wsdl URL should on a separate line
 	 

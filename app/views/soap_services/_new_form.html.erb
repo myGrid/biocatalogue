@@ -8,8 +8,10 @@
 
 %>
 
-<% form_for(@soap_service) do |f| %>
-	<%= f.error_messages %>
+<%= form_for(@soap_service) do |f| %>
+    <% @soap_service.errors.full_messages.each do |err|  %>
+        <%= err %>
+    <% end %>
 	
 	<table style="width: 100%; line-height: 1.5;">
 		<tr>

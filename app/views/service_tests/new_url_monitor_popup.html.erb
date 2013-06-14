@@ -15,8 +15,10 @@
 	</div>
 
 	<div class="body">
-		<% form_for :service_test, :url => {:controller => "service_tests", :action => "create_monitoring_endpoint", :service_id => @service.id } do |f| %>
-			<%= f.error_messages %>
+		<%= form_for :service_test, :url => {:controller => "service_tests", :action => "create_monitoring_endpoint", :service_id => @service.id } do |f| %>
+          <% @service_test.errors.full_messages.each do |err|  %>
+              <%= err %>
+          <% end %>
 	
 			<div>
 				<div class="box_info_standout">

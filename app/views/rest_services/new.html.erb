@@ -30,8 +30,11 @@
   </div>
 
   <!--FORM-->
-  <% form_for :rest_service, :url => { :action => :create } do |f| %>
-    <%= f.error_messages %>
+  <%= form_for :rest_service, :url => { :action => :create } do |f| %>
+
+      <% @rest_service.errors.full_messages.each do |err|  %>
+          <%= err %>
+      <% end %>
 
     <div style="width: 45%; float: left">
       <!--STEP 1-->

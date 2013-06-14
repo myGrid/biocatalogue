@@ -15,11 +15,13 @@
 	</div>
 	
 	<div class="body">
-    <% form_for :rest_parameter, :url => {:controller => "rest_parameters", 
+    <%= form_for :rest_parameter, :url => {:controller => "rest_parameters",
                                           :action => "update_default_value", 
                                           :id => @rest_parameter.id, 
                                           :rest_method_id => params[:rest_method_id] } do |f| %>
-    <%= f.error_messages %>
+          <% @rest_parameter.errors.full_messages.each do |err|  %>
+              <%= err %>
+          <% end %>
 
     <div>
       <div class="box_info_standout" style="font-size:100%" >

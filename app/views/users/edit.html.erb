@@ -14,7 +14,9 @@
 
 <br/>
 
-<%= error_messages_for :user %>
+<% @user.errors.full_messages.each do |err|  %>
+    <%= err %>
+<% end %>
 
 <div class="box_form" style="width: 46%; float: left;">
 	<h2 class="center">

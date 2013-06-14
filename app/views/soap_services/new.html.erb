@@ -12,7 +12,10 @@
 
 <h1>New SOAP Service</h1>
 
-<%= error_messages_for :soap_service %>
+
+<% @soap_service.errors.full_messages.each do |err|  %>
+    <%= err %>
+<% end %>
 
 <p class="step_text">1. Specify the URL to the WSDL of the service, then click preview:</p>
 

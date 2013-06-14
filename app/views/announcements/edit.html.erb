@@ -10,7 +10,9 @@
 
 <h1>Editing Announcement</h1>
 
-<%= error_messages_for :announcement %>
+<% @announcement.errors.full_messages.each do |err|  %>
+    <%= err %>
+<% end %>
 
 <%  form_for(:announcement, :url => announcement_path(@announcement), :html => { :method => :put }) do |form| %>
   <%= render :partial => 'form', :object => form %>

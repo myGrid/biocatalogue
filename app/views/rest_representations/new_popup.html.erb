@@ -15,8 +15,10 @@
 	</div>
 	
 	<div class="body">
-    <% form_for :rest_method, :url => {:controller => "rest_representations", :action => "add_new_representations", :rest_method_id => @rest_method.id } do |f| %>
-    <%= f.error_messages %>
+    <%= form_for :rest_method, :url => {:controller => "rest_representations", :action => "add_new_representations", :rest_method_id => @rest_method.id } do |f| %>
+          <% @rest_method.errors.full_messages.each do |err|  %>
+              <%= err %>
+          <% end %>
 
     <div>
 			<div class="box_info_standout">

@@ -10,8 +10,10 @@
 
 <h1>Editing soaplab_server</h1>
 
-<% form_for(@soaplab_server) do |f| %>
-  <%= f.error_messages %>
+<%= form_for(@soaplab_server) do |f| %>
+    <% @soaplab_server.errors.full_messages.each do |err|  %>
+        <%= err %>
+    <% end %>
 
   <p>
     <%= f.submit "Update" %>
