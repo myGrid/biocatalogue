@@ -27,7 +27,7 @@ module ApplicationHelper
   # -----------------
   
   def icon_filename_for(thing)
-    BioCatalogue::Resource.icon_filename_for(thing)
+    BioCatalogue::Resource.icon_filename_for(thing).html_safe
   end
   
   def generic_icon_for(thing, style='', tooltip_text=thing.to_s.titleize)
