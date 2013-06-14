@@ -1,3 +1,4 @@
+
 module AjaxHelper
 
   def link_to_with_callbacks name, options={}, html_options={}
@@ -45,15 +46,20 @@ module AjaxHelper
     success_update_element = options[:update][:success] if options[:update]
     failure_update_element = options[:update][:failure] if options[:update]
 
-    render(:template => "general/form_tag_callbacks", :locals => {:id => id,
-                                                                  :before => before,
-                                                                  :loading => loading,
-                                                                  :complete => complete,
-                                                                  :after => after,
-                                                                  :success => success,
-                                                                  :failure => failure,
-                                                                  :success_update_element => success_update_element,
-                                                                  :failure_update_element => failure_update_element
+    render(:template=>"general/form_tag_callbacks",:locals=>{:id=>id,
+                                                          :before=>before,
+                                                          :loading=>loading,
+                                                          :complete=>complete,
+                                                          :after=>after,
+                                                          :success=>success,
+                                                          :failure=>failure,
+                                                          :success_update_element=>success_update_element,
+                                                          :failure_update_element=>failure_update_element
+
     })
   end
+
+
+
+
 end
