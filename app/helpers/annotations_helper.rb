@@ -83,15 +83,15 @@ module AnnotationsHelper
       
       link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
 
-      link_content =  link_to("redbox", link_inner_html,
-                                   { :url => new_popup_annotations_url(url_options),
-                                     :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
-                                     :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
-                                   { :style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
-                                     :class => link_class,
-                                     :alt => options[:tooltip_text],
-                                     :title => tooltip_title_attrib(options[:tooltip_text]) },
-                                   :remote => true)
+      link_content = link_to_with_callbacks(link_inner_html.html_safe,
+                                            {:url => new_popup_annotations_url(url_options),
+                                             :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
+                                             :failure => "alert('Sorry, an error has occurred.'); RedBox.close();"},
+                                            {:style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
+                                             :class => link_class,
+                                             :alt => options[:tooltip_text],
+                                             :title => tooltip_title_attrib(options[:tooltip_text]),
+                                             :remote => true})
     
       # Add the greyed out inactive bit if required
       if options[:only_show_on_hover] == true
