@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/SysMO-DB/redbox
+  revision: e642058d9bac916d54d72ed7bd63558cb2a134c9
+  specs:
+    redbox (1.0.4)
+
+GIT
   remote: git://github.com/myGrid/annotations.git
   revision: d33e78993ee957fa12d71cbe9f03100dd9b0ad15
   specs:
@@ -151,7 +157,6 @@ GEM
     rake (10.0.4)
     rdoc (3.12.2)
       json (~> 1.4)
-    redbox (1.0.4)
     rpx_now (0.6.24)
       json_pure
     ruby-hmac (0.4.0)
@@ -213,7 +218,7 @@ DEPENDENCIES
   rails_autolink
   rake
   rdoc (~> 3.4)
-  redbox
+  redbox!
   rpx_now
   ruby-hmac
   seer

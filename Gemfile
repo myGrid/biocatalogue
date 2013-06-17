@@ -52,7 +52,7 @@ gem "validates_existence"
 gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'markaby'
-gem "redbox"
+#gem "redbox"
 #gem "validates_url_format_of"
 gem "acts_as_trashable"
 gem "my_annotations", :git => 'git://github.com/myGrid/annotations.git'
@@ -60,3 +60,6 @@ gem "will_paginate"#, "~>3.0.4"
 gem "better_logging"
 gem "exception_notification", :require => 'exception_notifier'
 gem 'prototype-rails', :git => 'git://github.com/rails/prototype-rails.git'
+
+#Linked to SysMO Git repositories
+gem 'redbox', :git=>"git://github.com/SysMO-DB/redbox"
