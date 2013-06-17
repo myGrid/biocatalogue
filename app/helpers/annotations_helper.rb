@@ -83,11 +83,11 @@ module AnnotationsHelper
       
       link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
 
-      link_content = link_to_with_callbacks(link_inner_html.html_safe,
-                                            {:url => new_popup_annotations_url(url_options),
-                                             :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
-                                             :failure => "alert('Sorry, an error has occurred.'); RedBox.close();"},
-                                            {:style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
+      link_content = link_to_remote_redbox(link_inner_html.html_safe,
+                                             {:url => new_popup_annotations_url(url_options),
+                                              :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
+                                              :failure => "alert('Sorry, an error has occurred.'); RedBox.close();"},
+                                             {:style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
                                              :class => link_class,
                                              :alt => options[:tooltip_text],
                                              :title => tooltip_title_attrib(options[:tooltip_text]),
@@ -188,11 +188,11 @@ module AnnotationsHelper
     return '' if annotatable.nil?
 
     if attribute_name.blank?
-      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
+      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>".html_safe
     elsif annotatable.class.name == "RestMethod"
-      return "For Endpoint: <b/>#{h(annotatable.display_endpoint)}</b>"
+      return "For Endpoint: <b/>#{h(annotatable.display_endpoint)}</b>".html_safe
     else
-      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
+      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>".html_safe
     end
 
   end
