@@ -18,11 +18,13 @@
     <%= form_for :rest_service, :url => {:controller => "rest_services",
                                         :action => "update_base_endpoint", 
                                         :service_deployment_id => @service_deployment.id } do |f| %>
-          <% @rest_service.errors.full_messages.each do |err|  %>
-              <%= err %>
+          <% unless @rest_service.nil?  %>
+              <%@rest_service.errors.full_messages.each do |err|  %>
+                  <%= err %>
+              <% end %>
           <% end %>
 
-    <div>
+          <div>
 			<div class="box_info_standout">
 				<%= annotation_add_info_text("ignore this text", @service_deployment.service_version.service_versionified) -%>				
 			</div>

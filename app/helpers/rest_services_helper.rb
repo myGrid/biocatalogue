@@ -140,8 +140,6 @@ module RestServicesHelper
     options[:style] += "float: right; " unless options[:style].include?('float')
     options[:style] += "font-weight: bold; " unless options[:style].include?('font-weight')
 
-    link_content = ''
-    
     inner_html = image_tag("pencil.gif") + content_tag(:span, " " + options[:link_text])
     
     url_hash = {:controller => "rest_services", 
@@ -152,7 +150,7 @@ module RestServicesHelper
     id_value = "edit_base_endpoint_for_#{service_deployment.class.name}_#{service_deployment.id}_redbox"
     
     redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-    link_content = link_to(inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
+    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options).merge(:remote => true))
     
     return link_content
   end

@@ -60,6 +60,7 @@ gem "will_paginate"#, "~>3.0.4"
 gem "better_logging"
 gem "exception_notification", :require => 'exception_notifier'
 gem 'prototype-rails', :git => 'git://github.com/rails/prototype-rails.git'
+gem 'country-select'
 
 #Linked to SysMO Git repositories
 gem 'redbox', :git=>"git://github.com/SysMO-DB/redbox"
