@@ -36,7 +36,7 @@
 								<% unless category.nil? %>
 									<li>
 										<span class="main">
-											<%#= link_to(h(category.name),
+											<%= link_to(h(category.name),
 																	services_path(:cat => "[#{category.id}]"),
 																	:class => "category",
                                   :style => (small ? 'font-size: 85%;' : ''),
@@ -95,7 +95,7 @@
 				                        :class => "inactive", 
 				                        :style => "vertical-align: middle;") -%>
 																
-								<% link_to(login_path, :class => "active", :style => "text-decoration: none; vertical-align: middle;", :title => tooltip_title_attrib("Log in to categorise")) do -%>
+								<%= link_to(login_path, :class => "active", :style => "text-decoration: none; vertical-align: middle;", :title => tooltip_title_attrib("Log in to categorise")) do -%>
 									<%= image_tag('add_annotation_inactive.png', :style => 'vertical-align:middle;margin-right:0.2em;') %>
 									<%= content_tag(:span, "Log in to categorise", :style => "vertical-align: middle; text-decoration: underline;") -%>
 								<% end %>
@@ -113,7 +113,7 @@
 	
 	<% if show_add_option and logged_in? %>
 		<div id="add_service_category_box" class="box_form" style="width: 550px; margin: 1em 0; display: <%= params.has_key?(:categorise) ? 'block' : 'none' -%>;">
-			<% form_for :annotation, :url => categorise_service_url(service) do |f| %>
+			<%= form_for :annotation, :url => categorise_service_url(service) do |f| %>
 				<input id="selected_categories_input" type="hidden" name="categories"/>
 				<p style="margin-bottom: 0.5em;">
 					<b>New categories to add:</b>
