@@ -21,7 +21,7 @@
 	</div>
 	
 	<div class="body">
-		<% form_for :annotation, @annotation, :url => (@multiple ? create_multiple_annotations_url : annotations_url) do |f| %>
+		<%= form_for @annotation, :as => :annotation, :url => (@multiple ? create_multiple_annotations_url : annotations_url) do |f| %>
 		
 			<%= f.hidden_field :annotatable_type -%>
 			<%= f.hidden_field :annotatable_id -%>
