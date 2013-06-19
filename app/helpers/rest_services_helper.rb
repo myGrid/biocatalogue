@@ -58,7 +58,7 @@ module RestServicesHelper
       end
 
       redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-      link_content = link_to(inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
     else # NOT LOGGED IN
       inner_html = image_tag("add_inactive.png")
       inner_html += content_tag(:span, options[:link_text], :style => options[:style])
