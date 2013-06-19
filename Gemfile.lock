@@ -196,7 +196,6 @@ DEPENDENCIES
   country-select
   crack
   daemons
-  delayed_job
   delayed_job_active_record
   dnsruby
   exception_notification

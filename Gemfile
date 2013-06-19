@@ -49,7 +49,7 @@ gem "version_info", "0.7.1", :path => "vendor/gems/version_info-0.7.1"
 
 # Former plugins from vendor/plugins that now use equivalent gems
 gem "validates_existence"
-gem 'delayed_job'
+#gem 'delayed_job'
 gem 'delayed_job_active_record'
 gem 'markaby'
 #gem "redbox"
