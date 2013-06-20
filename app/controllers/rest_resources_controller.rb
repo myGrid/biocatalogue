@@ -32,19 +32,19 @@ class RestResourcesController < ApplicationController
     respond_to do |format|
       unless results[:created].blank?
         flash[:notice] ||= ""
-        flash[:notice] += "The following endpoints were successfully created:<br/>"
+        flash[:notice] += "The following endpoints were successfully created:<br/>".html_safe
         flash[:notice] += results[:created].to_sentence
-        flash[:notice] += "<br/><br/>"
+        flash[:notice] += "<br/><br/>".html_safe
       end
       
       unless results[:updated].blank?
         flash[:notice] ||= ""
-        flash[:notice] += "The following endpoints already exist and have been updated where possible:<br/>" 
+        flash[:notice] += "The following endpoints already exist and have been updated where possible:<br/>".html_safe
         flash[:notice] += results[:updated].to_sentence
       end
       
       unless results[:error].blank?
-        flash[:error] = "The following endpoints could not be added:<br/>"
+        flash[:error] = "The following endpoints could not be added:<br/>".html_safe
         flash[:error] += results[:error].to_sentence
       end
       
@@ -111,7 +111,7 @@ protected # ========================================
 
   def authorise    
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @rest_service.service)
-      error_to_back_or_home("You are not allowed to perform this action")
+      error_to_back_or_home("You are not allowed to perform this action.")
       return false
     end
 

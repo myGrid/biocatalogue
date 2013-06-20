@@ -14,7 +14,7 @@
 		<% rounded "#FFDFDF", "#333", "auto" do %>
 			<%= link_to_function image_tag("close.gif", :style => "float: right; margin-left: 1em;"), 
 																		 visual_effect(:toggle_slide, "error_flash", :duration => 0.3) %>
-			<span style="vertical-align: middle;"><%= white_list flash[:error] %></span>
+			<span style="vertical-align: middle;"><%= flash[:error] %></span>
 		<% end %>
 	</div>
 	
@@ -26,7 +26,7 @@
 		<% rounded "#FFF6AF", "#333", "auto" do %>
 				<%= link_to_function image_tag("close.gif", :style => "float: right; margin-left: 1em;"), 
 																			 visual_effect(:toggle_slide, "notice_flash", :duration => 0.3) %>
-				<span style="vertical-align: middle;"><%= white_list flash[:notice] %></span>
+				<span style="vertical-align: middle;"><%= flash[:notice] %></span>
 		<% end %>
 	</div>
 	
