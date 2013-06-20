@@ -34,4 +34,8 @@
 	
 	<!-- Google Visualisation API -->
 	<%= Seer::init_visualization.html_safe -%>
+
+    <!-- Include meta tags “csrf-param” and “csrf-token” for cross-site request forgery protection -->
+    <%= csrf_meta_tag %>
+
 </head>	

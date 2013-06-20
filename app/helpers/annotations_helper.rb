@@ -90,8 +90,8 @@ module AnnotationsHelper
                                              {:style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
                                              :class => link_class,
                                              :alt => options[:tooltip_text],
-                                             :title => tooltip_title_attrib(options[:tooltip_text]),
-                                             :remote => true})
+                                             :title => tooltip_title_attrib(options[:tooltip_text])
+                                            })
 
       # Add the greyed out inactive bit if required
       if options[:only_show_on_hover] == true
