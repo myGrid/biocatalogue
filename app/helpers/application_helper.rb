@@ -52,7 +52,9 @@ module ApplicationHelper
     style = (float.empty? ? "margin-left: #{margin_left}; vertical-align: middle;" :
                             "float: #{float}; margin-right: 5px; vertical-align: middle;")
     
-    image_tag icon_filename_for(:expand), :style => style, :alt => 'Expand'
+    image = image_tag icon_filename_for(:expand), :style => style, :alt => 'Expand'
+    image.html_safe
+
   end
   
   def collapse_image(margin_left="0.3em", float="")
@@ -676,7 +678,8 @@ module ApplicationHelper
     
     content = content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline; #{options[:style]}")
 
-    return content
+    return content.html_safe
+
   end
   
   def display_text_for_sort_by(sort_by)

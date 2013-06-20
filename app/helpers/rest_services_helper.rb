@@ -63,10 +63,11 @@ module RestServicesHelper
       inner_html = image_tag("add_inactive.png")
       inner_html += content_tag(:span, options[:link_text], :style => options[:style])
       
-      link_content = link_to(inner_html, login_path, 
-                             :class => options[:class], 
+      link_content = link_to_remote_redbox(inner_html, login_path,
+                             { :class => options[:class],
                              :style => options[:style], 
-                             :title => tooltip_title_attrib("Login to #{options[:tooltip_text].downcase}"))
+                             :title => tooltip_title_attrib("Login to #{options[:tooltip_text].downcase}") }.merge(:remote => true) )
+
     end
     
     return link_content
