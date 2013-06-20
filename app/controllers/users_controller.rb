@@ -368,10 +368,10 @@ class UsersController < ApplicationController
       if @user
         if @user.make_curator!
           ActivityLog.create(@log_event_core_data.merge(:action => "make_curator", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is now a curator</div>"
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is now a curator</div>".html_safe
           format.html{ redirect_to(user_url(@user)) }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not make user a curator</div>"
+          flash[:error] = "<div class=\"flash_header\">Could not make user a curator</div>".html_safe
           format.html{ redirect_to(user_url(@user)) }
         end
       end
