@@ -20,7 +20,7 @@
 
 <div id="<%= main_div_id -%>" class="annotations_container">
 	<p class="heading">
-		<%= header_title -%>
+		<%= header_title.html_safe -%>
 		<span class="faded">(<%= tags.length -%>)</span>
 	</p>
 	
