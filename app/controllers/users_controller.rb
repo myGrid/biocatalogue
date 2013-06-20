@@ -97,7 +97,7 @@ class UsersController < ApplicationController
   # GET /users/new.xml
   def new
     if logged_in? && !is_api_request?
-      flash[:error] = "You cannot sign up for a new account because you are already logged in"
+      flash[:error] = "You cannot sign up for a new account because you are already logged in.".html_safe
       redirect_to home_url
     else
       @user = User.new
@@ -122,12 +122,12 @@ class UsersController < ApplicationController
       if @user.save
         UserMailer.deliver_registration_notification(@user, base_host)
         #flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
-        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you don't receive this email in the next few minutes, please contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>"
+        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you don't receive this email in the next few minutes, please contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>".html_safe
         format.html { redirect_to home_url }
         #format.xml  { render :xml => @user, :status => :created, :location => @user }
         format.xml { disable_action }
       else
-        flash.now[:error] = 'Could not create new account.'
+        flash.now[:error] = 'Could not create new account.'.html_safe
         format.html { render :action => "new" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
@@ -139,11 +139,11 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        flash.now[:notice] = 'Successfully updated'
+        flash.now[:notice] = 'Successfully updated.'.html_safe
         format.html { render :action => "edit" }
         format.xml  { head :ok }
       else
-        flash.now[:error] = 'Could not update. Please see errors below...'
+        flash.now[:error] = 'Could not update. Please see errors below...'.html_safe
         format.html { render :action => "edit" }
         format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
@@ -156,13 +156,13 @@ class UsersController < ApplicationController
       if user
         if user.activate!
           session[:previous_url] = "/users/#{user.id}"
-          flash[:notice] = "<div class=\"flash_header\">Account activated</div><div class=\"flash_body\">You can log into your account now.</div>"
+          flash[:notice] = "<div class=\"flash_header\">Account activated</div><div class=\"flash_body\">You can log into your account now.</div>".html_safe
           ActivityLog.create(@log_event_core_data.merge(:action => "activate", :activity_loggable => user)) if USE_EVENT_LOG
           return
         end
       end
     end
-    flash[:error] = "<div class=\"flash_header\">Wrong activation code</div><div class=\"flash_body\">Please check the activation link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>"
+    flash[:error] = "<div class=\"flash_header\">Wrong activation code</div><div class=\"flash_body\">Please check the activation link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>".html_safe
   end
 
   def forgot_password
@@ -176,7 +176,7 @@ class UsersController < ApplicationController
         UserMailer.deliver_reset_password(@user, base_host)
         format.html # request_reset_password.html.erb
       else
-        flash[:error] = "No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact <a href=\"/contact\">#{SITE_NAME} Support</a>"
+        flash[:error] = "No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.".html_safe
         format.html { redirect_to forgot_password_url }
       end
     end
@@ -186,7 +186,7 @@ class UsersController < ApplicationController
     if params[:security_token] != nil && @user = User.find_by_security_token(params[:security_token], :conditions => "activated_at IS NOT NULL")
       if request.post?
         if @user.reset_password!(params[:user][:password], params[:user][:password_confirmation])
-          flash[:notice] = "<div class=\"flash_header\">New password accepted.</div><div class=\"flash_body\">Please log in with your new password.</div>"
+          flash[:notice] = "<div class=\"flash_header\">New password accepted.</div><div class=\"flash_body\">Please log in with your new password.</div>".html_safe
           session[:previous_url] = "/users/#{@user.id}"
           flash[:error] = nil
           ActivityLog.create(@log_event_core_data.merge(:action => "reset_password", :activity_loggable => @user)) if USE_EVENT_LOG
@@ -195,7 +195,7 @@ class UsersController < ApplicationController
         end
       end
     else
-      flash[:error] = "No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>"
+      flash[:error] = "No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.".html_safe
       flash[:notice] = nil
     end
   end
@@ -203,7 +203,7 @@ class UsersController < ApplicationController
   def change_password
     if request.post?
       if @user.reset_password!(params[:user][:password], params[:user][:password_confirmation])
-        flash[:notice] = "<div class=\"flash_header\">New password accepted.</div>"
+        flash[:notice] = "<div class=\"flash_header\">New password accepted.</div>".html_safe
         session[:previous_url] = "/users/#{@user.id}"
         flash[:error] = nil
         ActivityLog.create(@log_event_core_data.merge(:action => "change_password", :activity_loggable => @user)) if USE_EVENT_LOG
@@ -216,7 +216,7 @@ class UsersController < ApplicationController
   def rpx_merge_setup
     if ENABLE_RPX
       if params[:token].blank? || (data = RPXNow.user_data(params[:token])).blank? || (rpx_user = User.find_by_identifier(data[:identifier])).nil?
-        error("Unable to complete the merging of accounts", :status => 500)
+        error("Unable to complete the merging of accounts.", :status => 500)
         return
       else
         # This action is used for 2 different parts of the workflow:
@@ -224,7 +224,7 @@ class UsersController < ApplicationController
         # 2) final stage, filling in any required fields/options and submitting the merge.
         
         if rpx_user.id == current_user.id
-          flash[:notice] = "<b>Please sign in to the existing member account that you want to merge your new account into</b>"
+          flash[:notice] = "<b>Please sign in to the existing member account that you want to merge your new account into.</b>".html_safe
           @rpx_login_required = true
         else
           @rpx_login_required = false
@@ -244,7 +244,7 @@ class UsersController < ApplicationController
   def rpx_merge
     if ENABLE_RPX
       if params[:token].blank? || (data = RPXNow.user_data(params[:token])).blank? || (rpx_user = User.find_by_identifier(data[:identifier])).nil? || !rpx_user.allow_merge?
-        error("Unable to complete the merging of accounts", :status => 500)
+        error("Unable to complete the merging of accounts.", :status => 500)
         return
       else
         begin
@@ -383,10 +383,10 @@ class UsersController < ApplicationController
       if @user
         if @user.remove_curator!
           ActivityLog.create(@log_event_core_data.merge(:action => "remove_curator", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is no longer a curator</div>"
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is no longer a curator</div>".html_safe
           format.html{ redirect_to(user_url(@user)) }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not remove curator rights on user</div>"
+          flash[:error] = "<div class=\"flash_header\">Could not remove curator rights on user</div>".html_safe
           format.html{ redirect_to(user_url(@user)) }
         end
       end
@@ -398,9 +398,9 @@ class UsersController < ApplicationController
       if @user
         if @user.activate!
           ActivityLog.create(@log_event_core_data.merge(:action => "activate", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been activated</div>"
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been activated</div>".html_safe
         else
-          flash[:error] = "<div class=\"flash_header\">Could not activate the user. Please contact a system admin.</div>"
+          flash[:error] = "<div class=\"flash_header\">Could not activate the user. Please contact a system admin.</div>".html_safe
         end
         format.html{ redirect_to :back }
       end
@@ -412,10 +412,10 @@ class UsersController < ApplicationController
       if @user
         if @user.deactivate!
           ActivityLog.create(@log_event_core_data.merge(:action => "deactivate", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been deactivated</div>"
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been deactivated</div>".html_safe
           format.html{ redirect_to(root_url) }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not deactivate the user. Please contact a system admin.</div>"
+          flash[:error] = "<div class=\"flash_header\">Could not deactivate the user. Please contact a system admin.</div>".html_safe
           format.html{ redirect_to(user_url(@user)) }
         end
       end
