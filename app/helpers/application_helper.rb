@@ -654,11 +654,11 @@ module ApplicationHelper
     end
 
     unless options[:icon_float].blank?
-      expand_link = expand_image(options[:icon_left_margin], options[:icon_float]) + link_text
-      collapse_link = collapse_image(options[:icon_left_margin], options[:icon_float]) + link_text
+      expand_link = (expand_image(options[:icon_left_margin], options[:icon_float]) + link_text).html_safe
+      collapse_link = (collapse_image(options[:icon_left_margin], options[:icon_float]) + link_text).html_safe
     else
-      expand_link = link_text + expand_image(options[:icon_left_margin])
-      collapse_link = link_text + collapse_image(options[:icon_left_margin])
+      expand_link = (link_text + expand_image(options[:icon_left_margin])).html_safe
+      collapse_link = (link_text + collapse_image(options[:icon_left_margin])).html_safe
     end
 
     expand_link_id = update_element_id + '_name_more_link'
@@ -667,18 +667,18 @@ module ApplicationHelper
     expand_link_content = link_to_function(expand_link, :id => expand_link_id, :style => "vertical-align: baseline;  #{options[:link_style]}") do |page| 
                             page.toggle expand_link_id, collapse_link_id
                             page.visual_effect :toggle_blind, update_element_id, :duration => '0.2'
-                          end
+                          end.html_safe
 
     collapse_link_content = link_to_function(collapse_link, :id => collapse_link_id, :style => "display:none; vertical-align: baseline;  #{options[:link_style]}") do |page| 
                               page.toggle expand_link_id, collapse_link_id
                               page.visual_effect :toggle_blind, update_element_id, :duration => '0.2'
-                            end 
+                            end.html_safe
                             
     span_content = expand_link_content + collapse_link_content
     
     content = content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline; #{options[:style]}")
 
-    return content.html_safe
+    return content
 
   end
   
