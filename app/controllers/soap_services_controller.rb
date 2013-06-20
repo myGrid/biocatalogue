@@ -190,7 +190,7 @@ class SoapServicesController < ApplicationController
       end
     end
     respond_to do |format|
-      format.html { render :partial => "after_wsdl_load" }
+      format.html { render :action => "new" }
       format.js { render :partial => "after_wsdl_load" }
       format.xml  { render :xml => '', :status => 406 }
     end
