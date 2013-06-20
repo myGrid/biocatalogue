@@ -353,7 +353,9 @@ BioCatalogue::Application.routes.draw do
   #                         :download => :get,
   #                         :promote_alternative_name => :post })
 
-  match '/' => 'home#index'
+  # Replaced with root :to => 'home#index' as we use root_url and root_path in the code
+  #match '/' => 'home#index'
+  root :to => 'home#index'
   match '/:controller(/:action(/:id))'
 end
 
