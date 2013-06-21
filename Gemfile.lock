@@ -212,7 +212,6 @@ DEPENDENCIES
   mongrel
   my_annotations!
   mysql2
-  oauth
   oauth-plugin
   prototype-rails!
   rails (~> 3.2.13)

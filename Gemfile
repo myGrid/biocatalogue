@@ -35,9 +35,7 @@ gem "ruby-hmac"
 gem "seer"
 gem "soap4r"
 gem "google_analytics"
-gem "oauth"
 gem "oauth-plugin"
-
 
 # Not used - disabled in config/initializers/biocat_local.rb
 #gem "onyx-cache-money", "0.2.6.1", :require => "cache_money", :path => "vendor/gems/onyx-cache-money-0.2.6.1"
