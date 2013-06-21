@@ -174,6 +174,12 @@ class ApplicationController < ActionController::Base
     request.host_with_port
   end
 
+  # Overrides the access_denied from oauth-plugin to redirect to login page
+  def access_denied
+    flash[:notice] = "Please sign in to continue"
+    redirect_to login_url
+  end
+
 protected
 
   def debug_messages
@@ -185,12 +191,12 @@ protected
   end
 
   def disable_action
-    raise ActionController::UnknownAction.new
+    raise ::AbstractController::ActionNotFound.new
   end
 
   def disable_action_for_api
     if is_api_request?
-      raise ActionController::UnknownAction.new
+      raise ::AbstractController::ActionNotFound.new
     else
       return
     end
@@ -679,5 +685,4 @@ protected
       session[session_key] = default_type.to_s
     end
   end
-
 end
