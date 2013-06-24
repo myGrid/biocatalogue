@@ -35,7 +35,10 @@
 				<%= rpx_accounts_provider_logos_with_link -%>
 			</span>
 			<br/>
-			<%= RPXNow.popup_code('Sign in using <b>OpenID, Facebook, Twitter, etc</b>', RPX_REALM, rpx_token_sessions_url) -%>
+
+			<%= RPXNow.popup_code('Sign in using <b>OpenID, Facebook, Twitter, etc</b>', RPX_REALM,  url_for(:controller => :sessions, :action => :rpx_token, :only_path => false)).html_safe -%>
+
+
 			<br/>
 			<span class="faded" style="font-size: 93%;">Even if you don't yet have an account here</span>
 		</p>

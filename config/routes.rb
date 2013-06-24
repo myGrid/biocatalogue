@@ -153,6 +153,11 @@ BioCatalogue::Application.routes.draw do
 
   end
 
+  if ENABLE_RPX
+    match '/session/rpx_token' => 'sessions#rpx_token'
+  end
+
+
   resource :session
   match '/register' => 'users#new', :as => :register
   match '/signup' => 'users#new', :as => :signup

@@ -7,17 +7,18 @@
 module UsersHelper
   
   def rpx_accounts_provider_logos
-    image_tag("openidW.png", :alt => "OpenID", :class => "account_provider_logo") +
+    a = image_tag("openidW.png", :alt => "OpenID", :class => "account_provider_logo") +
     image_tag("myopenidW.png", :alt => "myOpenID", :class => "account_provider_logo") +
     image_tag("googleW.png", :alt => "Google", :class => "account_provider_logo") +
     image_tag("yahooW.png", :alt => "Yahoo!", :class => "account_provider_logo") +
     image_tag("facebookW.png", :alt => "Facebook", :class => "account_provider_logo")
+    return a.html_safe
   end
   
   def rpx_accounts_provider_logos_with_link
-    RPXNow.popup_code(rpx_accounts_provider_logos, 
-                      RPX_REALM, 
-                      rpx_token_sessions_url)
+        RPXNow.popup_code(rpx_accounts_provider_logos,
+                      RPX_REALM,
+                      url_for(:controller => :session, :action => :rpx_token, :only_path => false)).html_safe
   end
   
   def list_of_rpx_accounts
