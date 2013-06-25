@@ -182,6 +182,7 @@ GEM
       multi_json (~> 1.0)
       simple_oauth (~> 0.2)
     tzinfo (0.3.37)
+    validates_email_format_of (1.5.3)
     validates_existence (0.8.0)
     will_paginate (3.0.4)
 
@@ -226,6 +227,7 @@ DEPENDENCIES
   solr-ruby
   twitter
   tzinfo
+  validates_email_format_of
   validates_existence
   version_info (= 0.7.1)!
   will_paginate

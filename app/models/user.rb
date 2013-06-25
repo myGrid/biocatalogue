@@ -54,7 +54,8 @@ class User < ActiveRecord::Base
   validates_presence_of       :email, :if => :email_required?
   validates_confirmation_of   :email, :if => :email_required?
   validates_uniqueness_of     :email, :case_sensitive => false, :if => :email_required?
-  validates_email_veracity_of :email, :public_email
+  validates_email_format_of   :email
+  validates_email_format_of   :public_email, { :allow_blank => true, :allow_nil => true }
   
   # TODO: this, with allow/ignore nil - validates_uniqueness_of :identifier, :case_sensitive => false
 

@@ -62,3 +62,6 @@ gem 'country-select'
 
 #Linked to SysMO Git repositories
 gem 'redbox', :git=>"git://github.com/SysMO-DB/redbox"
+
+# Replaces validates_email_veracity_of
+gem 'validates_email_format_of'
