@@ -155,7 +155,7 @@ class SoapServicesController < ApplicationController
       
       err_text = "Failed to load the WSDL URL provided.<br/>" +
         "Please check that it points to a valid WSDL file.<br/>" +
-        "If this problem persists, please <a href='/contact'>contact us</a>"
+        "If this problem persists, please <a href='/contact'>contact us</a>".html_safe
       
       begin
         @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
@@ -173,7 +173,7 @@ class SoapServicesController < ApplicationController
               @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@wsdl_info["endpoint"])
             else
               @error_message = err_text
-              @error_message_details = err_msgs.to_sentence
+              @error_message_details = err_msgs.to_sentence.html_safe
             end
           else
             # Submit a job to run the service updater
@@ -181,12 +181,12 @@ class SoapServicesController < ApplicationController
           end
         else
           @error_message = err_text
-          @error_message_details = err_msgs.to_sentence
+          @error_message_details = err_msgs.to_sentence.html_safe
         end
       rescue Exception => ex
         @error_message = err_text
         @error_message_details = ex.message
-        BioCatalogue::Util.yell("Failed to load WSDL from URL - #{wsdl_location}.\nException: #{ex.message}.\nStack trace: #{ex.backtrace.join('\n')}")
+        BioCatalogue::Util.yell("Failed to load WSDL from URL - #{wsdl_location}.\nException: #{ex.message}.\nStack trace: #{ex.backtrace.join('\n')}".html_safe)
       end
     end
     respond_to do |format|
