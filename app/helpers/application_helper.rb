@@ -43,7 +43,7 @@ module ApplicationHelper
   end
   
   def refresh_image
-    image_tag icon_filename_for(:refresh), :style => "vertical-align: middle;", :alt => "Refresh"
+    image_tag(icon_filename_for(:refresh), :style => "vertical-align: middle;", :alt => "Refresh").html_safe
   end
   
   def expand_image(margin_left="0.3em", float="")
@@ -52,9 +52,7 @@ module ApplicationHelper
     style = (float.empty? ? "margin-left: #{margin_left}; vertical-align: middle;" :
                             "float: #{float}; margin-right: 5px; vertical-align: middle;")
     
-    image = image_tag icon_filename_for(:expand), :style => style, :alt => 'Expand'
-    image.html_safe
-
+    image_tag(icon_filename_for(:expand), :style => style, :alt => 'Expand').html_safe
   end
   
   def collapse_image(margin_left="0.3em", float="")
@@ -63,19 +61,19 @@ module ApplicationHelper
     style = (float.empty? ? "margin-left: #{margin_left}; vertical-align: middle;" :
                             "float: #{float}; margin-right: 5px; vertical-align: middle;")
 
-    image_tag icon_filename_for(:collapse), :style => style, :alt => 'Collapse'
+    image_tag(icon_filename_for(:collapse), :style => style, :alt => 'Collapse').html_safe
   end
   
   def help_icon_with_tooltip(help_text, delay=200)
     return image_tag(icon_filename_for(:help),
                      :title => tooltip_title_attrib(help_text, delay),
-                     :style => "vertical-align:middle;")
+                     :style => "vertical-align:middle;").html_safe
   end
 
   def info_icon_with_tooltip(info_text, delay=200)
     return image_tag(icon_filename_for(:info),
                      :title => tooltip_title_attrib(info_text, delay),
-                     :style => "vertical-align:middle;")
+                     :style => "vertical-align:middle;").html_safe
   end
   
   def feed_icon_tag(title, url, style='')
