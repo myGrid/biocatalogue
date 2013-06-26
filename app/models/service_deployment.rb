@@ -144,7 +144,7 @@ private
       recipients = []
       User.admins.each { |user| recipients << user.email }
 
-      UserMailer.deliver_orphaned_provider_notification(recipients.join(", "), SITE_BASE_HOST.gsub("http://", '').gsub("https://", ''), provider)
+      UserMailer.orphaned_provider_notification(recipients.join(", "), SITE_BASE_HOST.gsub("http://", '').gsub("https://", ''), provider).deliver
     end
   end
   

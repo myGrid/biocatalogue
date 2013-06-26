@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 ruby "1.8.7"
 
+gem "mail", "2.5.3" # latest version won't send emails
 gem "rails", "~>3.2.13"
 gem "rdoc", "~>3.4"
 gem "rake"

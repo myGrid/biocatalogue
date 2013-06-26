@@ -8,7 +8,7 @@ module BioCatalogue
   module Jobs
     class ServiceResponsibilityRequestRefusal < Struct.new(:owners, :base_host, :current_user, :req )
       def perform
-        owners.each{ |owner| UserMailer.deliver_responsibility_request_refusal(owner, base_host, current_user, req) }
+        owners.each{ |owner| UserMailer.responsibility_request_refusal(owner, base_host, current_user, req).deliver }
       end    
     end
   end
