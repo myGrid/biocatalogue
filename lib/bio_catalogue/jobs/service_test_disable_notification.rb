@@ -8,7 +8,7 @@ module BioCatalogue
   module Jobs
     class ServiceTestDisableNotification < Struct.new(:user,  :service_test, :to_emails, :base_host)
       def perform
-        UserMailer.deliver_service_test_disable_notification(user, service_test, to_emails, base_host)
+        UserMailer.service_test_disable_notification(user, service_test, to_emails, base_host).deliver
       end    
     end
   end

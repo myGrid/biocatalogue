@@ -20,7 +20,7 @@ class ContactController < ApplicationController
     from_user += ' (' + (params[:email] || current_user.try(:email) || 'no email specified') + ')'
 
     if !params[:content].blank? and (params[:content].split(/[biocat]/, -1).length == params[:length_check].to_i)
-      ContactMailer.deliver_feedback(from_user, params[:subject], params[:content])
+      ContactMailer.feedback(from_user, params[:subject], params[:content]).deliver
 
       respond_to do |format|
         flash[:notice] = 'Your message has been submitted. Thank you very much.'

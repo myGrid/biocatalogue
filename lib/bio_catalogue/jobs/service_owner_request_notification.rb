@@ -10,7 +10,7 @@ module BioCatalogue
       def perform
         owners.each  do |owner|
           begin
-            UserMailer.deliver_responsibility_request_notification(owner, base_host, service, current_user)
+            UserMailer.responsibility_request_notification(owner, base_host, service, current_user).deliver
           rescue Exception => ex
             Rails.logger.error("Failed to deliver mail")
             Rails.logger.error(ex.to_s)

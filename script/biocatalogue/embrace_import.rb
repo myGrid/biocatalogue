@@ -343,7 +343,7 @@ class EmbraceImporter
               u.activate!
               
               unless @options[:test]
-                UserMailer.deliver_reset_password(u, "www.biocatalogue.org")
+                UserMailer.reset_password(u, "www.biocatalogue.org").deliver
               end
               
               puts "INFO: new user added to DB and a reset password email has been sent"

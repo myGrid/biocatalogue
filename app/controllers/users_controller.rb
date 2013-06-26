@@ -120,7 +120,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        UserMailer.deliver_registration_notification(@user, base_host)
+        UserMailer.registration_notification(@user, base_host).deliver
         #flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
         flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you do not receive this email in the next few minutes, please contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>".html_safe
         format.html { redirect_to home_url }
@@ -173,7 +173,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user = User.find_by_email(params[:user][:email], :conditions => "activated_at IS NOT NULL")
         @user.generate_security_token!
-        UserMailer.deliver_reset_password(@user, base_host)
+        UserMailer.reset_password(@user, base_host).deliver
         format.html # request_reset_password.html.erb
       else
         flash[:error] = "No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.".html_safe

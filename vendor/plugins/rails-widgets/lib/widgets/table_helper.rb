@@ -129,7 +129,7 @@ module Widgets
       end
       
       def generate_cell(item)
-        #@buffer << content_tag('td', capture(item, &@block))
+        @buffer << content_tag('td', capture(item, &@block))
       end
       
       def wrap_to_new_row_if_required

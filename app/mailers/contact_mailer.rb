@@ -5,13 +5,13 @@
 # See license.txt for details
 
 class ContactMailer < ApplicationMailer
+  default :from => SENDER_EMAIL_ADDRESS
+
   def feedback(name, msg_subject, content)
-    recipients FEEDBACK_EMAIL_ADDRESS
-    from SENDER_EMAIL_ADDRESS
-    subject "#{SITE_NAME} feedback from #{name}"
-    
-    body :name => name,
-         :msg_subject => msg_subject, 
-         :content => content
+    @name = name
+    @msg_subject = msg_subject
+    @content = content
+
+    mail(:to => FEEDBACK_EMAIL_ADDRESS, :subject => "#{SITE_NAME} feedback from #{name}")
   end
 end

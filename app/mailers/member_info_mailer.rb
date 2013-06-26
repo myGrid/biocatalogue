@@ -5,11 +5,11 @@
 # See license.txt for details
 
 class MemberInfoMailer < ApplicationMailer
+  default :from => SENDER_EMAIL_ADDRESS
+
   def text_to_email(email_subject, content, recipient)
-    recipients recipient
-    from FEEDBACK_EMAIL_ADDRESS
-    subject email_subject
-    
-    body :content => content
+    @content = content
+
+    mail(:to => recipient, :subject => email_subject)
   end
 end
