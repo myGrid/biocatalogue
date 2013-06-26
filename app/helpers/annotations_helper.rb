@@ -170,18 +170,17 @@ module AnnotationsHelper
       link_html += options[:link_text]
     end
 
-    return link_to(link_html,
+    return link_to_remote_redbox(link_html,
                                  { :url => edit_popup_annotation_url(annotation),
-                                   :id => "edit_ann_#{annotation.id}_redbox",
-                                   :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" ,
+                                                                      :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" ,
                                  },
-                                 { :style => (options[:show_icon] ? 
+                                 {   :id => "edit_ann_#{annotation.id}_redbox",
+                                     :style => (options[:show_icon] ?
                                               "text-decoration: none; vertical-align: baseline; #{options[:style]}" : 
                                               options[:style]),
                                    :alt => options[:tooltip_text],
                                    :title => tooltip_title_attrib(options[:tooltip_text]),
-                                   :class => options[:class] },
-                                   :remote => true)
+                                   :class => options[:class] })
   end
 
   def annotation_add_info_text(attribute_name, annotatable)
