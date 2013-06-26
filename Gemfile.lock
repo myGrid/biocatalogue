@@ -17,6 +17,12 @@ GIT
     prototype-rails (3.2.1)
       rails (~> 3.2)
 
+GIT
+  remote: https://github.com/neubloc/white_list.git
+  revision: fef96494da6259763ddafd7edbec7e7afe3c2fcd
+  specs:
+    white_list (0.0.1)
+
 PATH
   remote: vendor/gems/version_info-0.7.1
   specs:
@@ -230,4 +236,5 @@ DEPENDENCIES
   validates_email_format_of
   validates_existence
   version_info (= 0.7.1)!
+  white_list!
   will_paginate
