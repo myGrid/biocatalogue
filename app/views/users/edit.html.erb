@@ -27,7 +27,7 @@
 	<fieldset>
 	  <legend><%= SITE_NAME -%> Account</legend>
 		
-		<% form_for(:user, @updated_user, :url => { :action => "update" }, :html => { :method => :put }) do |f| %>
+		<%= form_for( @updated_user, :url => { :action => "update" }, :html => { :method => :put }) do |f| %>
 			<h4>Email address</h4>
 			
 			<p class="field">
@@ -57,7 +57,7 @@
 		
 		<hr/>
 		
-		<% form_for(:user, @updated_user, :url => { :action => "update" }, :html => { :method => :put }) do |f| %>
+		<%= form_for(@updated_user, :url => { :action => "update" }, :html => { :method => :put }) do |f| %>
 			<h4>Password</h4>
 			
 			<% if @user.crypted_password.blank? %>
@@ -102,7 +102,7 @@
 			</p>
 			
 			<p>
-				<%= RPXNow.popup_code("Click here to set an external account (OpenID, Facebook, etc.)", RPX_REALM, rpx_update_user_url(@user)) -%>
+				<%= RPXNow.popup_code("Click here to set an external account (OpenID, Facebook, etc.)", RPX_REALM, rpx_update_user_url(@user)).html_safe -%>
 			</p>
 		</fieldset>
 	<% end %>
@@ -123,7 +123,7 @@
 <div class="box_form" style="width: 46%; float: right;">
 	<h2 class="center">Profile</h2>
 	
-	<% form_for(@user) do |f| %>
+	<%= form_for(@user) do |f| %>
 		<fieldset>
 		  <legend>General</legend>
 			
@@ -133,7 +133,7 @@
 		    <%= f.text_field :display_name %>
 		  </p>
 		  <p>
-		    <%= f.label :public_email, "Your public email address <span class='faded'>(so people can contact you)</span>" %><br />
+		    <%= f.label :public_email, "Your public email address <span class='faded'>(so people can contact you)</span>".html_safe %><br />
 		    <%= f.text_field :public_email, :size => 45 %>
 		  </p>
 		  <p>
@@ -151,7 +151,7 @@
 		</fieldset>
 	<% end %>
 		
-	<% form_for(@user) do |f| %>
+	<%= form_for(@user) do |f| %>
 		<fieldset>
 		  <legend>Link to myExperiment Profile</legend>
 			
