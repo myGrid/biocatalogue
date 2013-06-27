@@ -8,11 +8,9 @@
 
 %>
 
-<% tableize services, 
-  :header => nil,
-  :name => "listings",
-  :generate_css => 'false' do |service| %>
-  
+<% services.each do |service| %>
+
+  <div class="listings_table">
   <% if service.archived? %>
   
     <div class="archived grid_archived">
@@ -80,5 +78,8 @@
     </p>
 
   <% end %>
+  </div>
     
 <% end %>
+
+<div style="clear: both"></div>

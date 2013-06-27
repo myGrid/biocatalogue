@@ -3591,3 +3591,17 @@ a.globalise_param_link {
     border: 1px solid #CCCCCC;
     text-align: center;
 }
+
+.listings_table {
+  float: left;
+  width: 28%;
+  margin: 0.5em;
+  background-color: #F5F5F5;
+  border: 1px solid #CCCCCC;
+  box-shadow: 1px 1px 1px #CCCCCC;
+  padding: 0.5em 0.7em;
+  text-align: left;
+  vertical-align: top;
+  min-width: 200px;
+  height: 150px;
+}
