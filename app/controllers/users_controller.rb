@@ -425,6 +425,9 @@ class UsersController < ApplicationController
 protected
 
   def include_deactivated?
+    #if user is not logged in or is not a curator then do not let them
+    # see deactivated users whatever is in the query parameters
+    return false if !logged_in? || !current_user.is_curator?
     unless defined?(@include_deactivated)
       session_key = "#{self.controller_name.downcase}_#{self.action_name.downcase}_include_deactivated"
       if !params[:include_deactivated].blank?
@@ -485,15 +488,16 @@ private
       order = "users.#{order_field} #{order_direction}"
     end
 
-    conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
+     conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
     #TODO merge conditions using 'where' rather than deprecated 'merge_conditions' method
     #conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL") unless include_deactivated?
-
+    conditions_string = User.send(:sanitize_sql, conditions)  # naughty was of doing things but things only works if we pass the conditions as a string
+    conditions_string = "#{conditions_string} #{conditions_string.blank? ? '' : 'AND'} activated_at IS NOT NULL" unless include_deactivated?
     if self.request.format == :bljson
       finder_options = {
         :select => "users.id, users.display_name",
         :order => order,
-        :conditions => conditions,
+        :conditions => conditions_string,
         :joins => joins
       }
       
@@ -502,9 +506,9 @@ private
       @users = User.paginate(:page => @page,
                              :per_page => @per_page,
                              :order => order,
-                             :conditions => conditions,
+                             :conditions => conditions_string,
                              :joins => joins)
-  
+
     end
   end
   

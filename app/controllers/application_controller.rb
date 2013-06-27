@@ -663,7 +663,14 @@ protected
   def redirect_to_back_or_home
     begin
       if request.env["HTTP_REFERER"]
-        redirect_to :back
+        if request.referer.include?('include_deactivated')
+          parsed_url = URI.parse(request.referer) # parse the referer url
+          query_params = Rack::Utils.parse_nested_query(parsed_url.query) # get the query string
+          parsed_url.query = query_params.except('include_deactivated').to_param # remove the :include_deactivated parameter
+          redirect_to parsed_url.to_s # redirect to the referer url but without the :include_deactivated parameter in query string
+        else
+          redirect_to :back
+        end
       else
         redirect_to home_url
       end
