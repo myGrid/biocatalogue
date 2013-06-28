@@ -76,9 +76,12 @@ class RestServicesController < ApplicationController
     endpoint = params[:endpoint] || ""
     endpoint.chomp!
     endpoint.strip!
-    endpoint = "http://" + endpoint unless endpoint.blank? or endpoint.starts_with?("http://") or endpoint.starts_with?("https://")
-    endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
-    
+    if !endpoint.blank? && endpoint =~ /^http[s]?:\/\/\S+/
+      endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
+    else
+      endpoint = ''
+    end
+
     if endpoint.blank?
       flash.now[:error] = "Please provide a valid endpoint URL"
       respond_to do |format|
@@ -179,10 +182,12 @@ class RestServicesController < ApplicationController
     endpoint = params[:new_endpoint] || ""
     endpoint.chomp!
     endpoint.strip!
-    endpoint = "http://" + endpoint unless endpoint.blank? or endpoint.starts_with?("http://") or endpoint.starts_with?("https://")
-    
-    endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
-    
+    if !endpoint.blank? && endpoint =~ /^http[s]?:\/\/\S+/
+      endpoint = Addressable::URI.parse(endpoint).normalize.to_s
+    else
+      endpoint = ''
+    end
+
     not_changed = params[:new_endpoint] == @service_deployment.endpoint
     exists = !RestService.check_duplicate(endpoint).nil?
     
