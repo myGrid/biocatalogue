@@ -139,8 +139,9 @@ class RestServicesController < ApplicationController
           
           respond_to do |format|
             if @rest_service.submit_service(endpoint, current_user, params[:annotations].clone)
-              success_msg = 'Service was successfully submitted.'
-              success_msg += "<br/>You may now add endpoints via the Endpoints tab."
+              success_msg = 'Service was successfully submitted.'.html_safe
+              success_msg += "<br/>You may now add endpoints via the Endpoints tab.".html_safe
+
               
               flash[:notice] = success_msg
               format.html { redirect_to(@rest_service.service(true)) }
@@ -155,8 +156,8 @@ class RestServicesController < ApplicationController
                 }.to_json, :status => 201
               }
             else
-              err_text = "An error has occurred with the submission.<br/>" +
-                "Please <a href='/contact'>contact us</a> if you need assistance with this."
+              err_text = "An error has occurred with the submission.<br/>".html_safe +
+                "Please <a href='/contact'>contact us</a> if you need assistance with this.".html_safe
               flash.now[:error] = err_text
               format.html { render :action => "new" }
               # TODO: implement format.xml  { render :xml => '', :status => 500 }

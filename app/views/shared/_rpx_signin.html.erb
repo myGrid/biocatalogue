@@ -37,7 +37,7 @@
 	<p style="font-size: 85%; margin-bottom: 0;">
 		Note that this might take you to another website called '<%= (link_to "RPXNow", "https://rpxnow.com/", :popup => true).html_safe -%>'.
 		This is the service we use to enable logging in via external accounts. 
-		<%= (link_to_function "More info" + expand_image.html_safe, visual_effect(:toggle_blind, "rpx_more_info_box", :duration => 0.3), :style => "text-decoration:none;").html_safe %>
+		<%= (link_to_function "More info".html_safe + expand_image.html_safe, visual_effect(:toggle_blind, "rpx_more_info_box", :duration => 0.3), :style => "text-decoration:none;").html_safe %>
 	</p>
 	
 	<div id="rpx_more_info_box" style="margin-top: 1em; display: none;">
