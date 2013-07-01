@@ -4,7 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-class ContactMailer < ApplicationMailer
+class ContactMailer < UserMailer
   default :from => SENDER_EMAIL_ADDRESS
 
   def feedback(name, msg_subject, content)
