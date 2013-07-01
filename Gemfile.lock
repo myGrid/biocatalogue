@@ -61,7 +61,7 @@ GEM
       multi_json (~> 1.0)
     acts_as_trashable (1.0.6)
       activerecord (>= 2.2)
-    addressable (2.3.4)
+    addressable (2.3.5)
     arel (3.0.2)
     better_logging (1.0.3)
     builder (3.0.4)
@@ -81,6 +81,9 @@ GEM
       actionmailer (>= 3.0.4)
     factory_girl (2.6.4)
       activesupport (>= 2.3.9)
+    factory_girl_rails (1.7.0)
+      factory_girl (~> 2.6.0)
+      railties (>= 3.0.0)
     faraday (0.8.7)
       multipart-post (~> 1.1)
     fastthread (1.0.7)
@@ -130,9 +133,9 @@ GEM
       oauth (~> 0.4.4)
       oauth2 (>= 0.5.0)
       rack
-    oauth2 (0.9.1)
+    oauth2 (0.9.2)
       faraday (~> 0.8)
-      httpauth (~> 0.1)
+      httpauth (~> 0.2)
       jwt (~> 0.1.4)
       multi_json (~> 1.0)
       multi_xml (~> 0.5)
@@ -208,6 +211,7 @@ DEPENDENCIES
   dnsruby
   exception_notification
   factory_girl (<= 2.6.5)
+  factory_girl_rails (< 4.0)
   geokit
   google_analytics
   httparty

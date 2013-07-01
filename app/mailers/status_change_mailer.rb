@@ -4,7 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-class StatusChangeMailer < ApplicationMailer
+class StatusChangeMailer < UserMailer
   default :from => SENDER_EMAIL_ADDRESS
 
   def text_to_email(email_subject, content, recipient)

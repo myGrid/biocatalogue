@@ -4,7 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-class MemberInfoMailer < ApplicationMailer
+class MemberInfoMailer < UserMailer
   default :from => SENDER_EMAIL_ADDRESS
 
   def text_to_email(email_subject, content, recipient)
