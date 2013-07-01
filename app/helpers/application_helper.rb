@@ -219,12 +219,12 @@ module ApplicationHelper
       when "Member"
         user_link_with_flag(:user => submitter)
       else
-        link_to(display_name(submitter), submitter) 
+        link_to(display_name(submitter), submitter)
     end
-    
+
     output << '</span>'
     
-    return output
+    return output.html_safe
   end
   
   # Generate a link to a user's profile

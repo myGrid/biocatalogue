@@ -90,7 +90,7 @@
         Find
         <%= link_to "all workflows on myExperiment that use this service",
                     "http://www.myexperiment.org/workflows?filter=WSDL_ENDPOINT%28%22#{CGI.escape(@latest_version_instance.wsdl_location)}%22%29",
-                    :popup => true -%> 
+                    :popup => true, :target => '_blank' -%>
       </p>
     </div>
   <% end %>
