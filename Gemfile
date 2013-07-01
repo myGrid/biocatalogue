@@ -25,6 +25,7 @@ gem "tzinfo"
 # Former frozen gems from vendor/gems
 gem "crack"
 gem "factory_girl", "<=2.6.5"
+gem "factory_girl_rails", "<4.0"
 gem "geokit"
 gem "rpx_now"
 gem "httparty"
