@@ -81,6 +81,9 @@ GEM
       actionmailer (>= 3.0.4)
     factory_girl (2.6.4)
       activesupport (>= 2.3.9)
+    factory_girl_rails (1.7.0)
+      factory_girl (~> 2.6.0)
+      railties (>= 3.0.0)
     faraday (0.8.7)
       multipart-post (~> 1.1)
     fastthread (1.0.7)
@@ -208,6 +211,7 @@ DEPENDENCIES
   dnsruby
   exception_notification
   factory_girl (<= 2.6.5)
+  factory_girl_rails (< 4.0)
   geokit
   google_analytics
   httparty
