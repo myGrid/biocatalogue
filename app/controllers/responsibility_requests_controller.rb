@@ -122,7 +122,7 @@ class ResponsibilityRequestsController < ApplicationController
   def turn_down
     respond_to do |format|
       format.html{ render :partial => 'deny_responsibility', 
-                                :layout =>'application_wide', :locals => {:resp_request => @req}}
+                                :layout =>'application', :locals => {:resp_request => @req}}
       format.xml {disable_action}
     end
   end
