@@ -11,7 +11,7 @@
 # THIS DOES UNFORTUNATELY MEAN THAT A SERVER RESTART IS REQUIRED WHENEVER CHANGES ARE MADE
 # TO THIS FILE, EVEN IN DEVELOPMENT MODE.
 #require_dependency Rails.root.to_s + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
-require_dependency Rails.root.to_s + '/vendor/plugins/favourites/lib/app/helpers/application_helper'
+require_dependency Rails.root.to_s + '/lib/favourites/lib/app/helpers/application_helper'
 # ---
 
 module ApplicationHelper
