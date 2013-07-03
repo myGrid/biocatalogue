@@ -1,0 +1,1 @@
+require "favourites/lib/favourites"#lib", "favourites", "lib", "favourites")
