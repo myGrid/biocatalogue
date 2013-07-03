@@ -8,7 +8,7 @@
 # This extends the Favourite model defined in the Favourites plugin.
 #=====
 
-require_dependency Rails.root.to_s + '/vendor/plugins/favourites/lib/app/models/favourite'
+require_dependency Rails.root.to_s + '/lib/favourites/lib/app/models/favourite'
 
 class Favourite < ActiveRecord::Base
   if ENABLE_CACHE_MONEY
