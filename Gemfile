@@ -30,8 +30,12 @@ gem "geokit"
 gem "rpx_now"
 gem "httparty"
 gem "mash"
-gem "twitter"
-gem "mocha"
+  gem "twitter"
+group :test do
+# gem "webmock"
+  gem 'shoulda', '<3.2.0'
+end
+
 gem "memcache-client", :require => "memcache"
 gem "ruby-hmac"
 gem "seer"

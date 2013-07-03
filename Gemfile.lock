@@ -114,10 +114,7 @@ GEM
       builder (>= 2.0.0)
     mash (0.1.1)
     memcache-client (1.8.5)
-    metaclass (0.0.1)
     mime-types (1.23)
-    mocha (0.14.0)
-      metaclass (~> 0.0.1)
     mongrel (1.1.5)
       cgi_multipart_eof_fix (>= 2.4)
       daemons (>= 1.0.3)
@@ -173,6 +170,11 @@ GEM
     ruby-hmac (0.4.0)
     safe_yaml (0.9.3)
     seer (0.10.0)
+    shoulda (3.0.1)
+      shoulda-context (~> 1.0.0)
+      shoulda-matchers (~> 1.0.0)
+    shoulda-context (1.0.2)
+    shoulda-matchers (1.0.0)
     simple_oauth (0.2.0)
     soap4r (1.5.8)
       httpclient (>= 2.1.1)
@@ -221,7 +223,6 @@ DEPENDENCIES
   markaby
   mash
   memcache-client
-  mocha
   mongrel
   my_annotations!
   mysql2
@@ -235,6 +236,7 @@ DEPENDENCIES
   rpx_now
   ruby-hmac
   seer
+  shoulda (< 3.2.0)
   soap4r
   solr-ruby
   twitter
