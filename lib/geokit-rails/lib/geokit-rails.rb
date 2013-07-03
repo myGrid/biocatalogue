@@ -6,9 +6,9 @@
 # You should specify gem dependencies in your config/environment.rb: config.gem "geokit"
 #
 if defined? Geokit
-  require 'geokit-rails/defaults'
-  require 'geokit-rails/acts_as_mappable'
-  require 'geokit-rails/ip_geocode_lookup'
+  require 'geokit-rails/lib/geokit-rails/defaults'
+  require 'geokit-rails/lib/geokit-rails/acts_as_mappable'
+  require 'geokit-rails/lib/geokit-rails/ip_geocode_lookup'
   
   # Automatically mix in distance finder support into ActiveRecord classes.
   ActiveRecord::Base.send :include, GeoKit::ActsAsMappable
