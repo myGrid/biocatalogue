@@ -35,7 +35,7 @@ class TestScriptsController < ApplicationController
       else
         flash[:error] = 'There were problems submitting this test script! '
         format.html { render :partial => "shared/service_test",
-                                        :layout =>'application_wide',  :locals => {:service => @service, 
+                                        :layout =>'application',  :locals => {:service => @service,
                                                                                     :test_script => @test_script } }
         format.xml  { render :xml => @test_script.errors, :status => :unprocessable_entity }
       end

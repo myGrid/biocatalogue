@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
-  layout "application_wide"
+  #layout "application"   # this one is used by default anyway
 
   before_filter :debug_messages
 

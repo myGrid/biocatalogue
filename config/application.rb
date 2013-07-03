@@ -1,43 +1,23 @@
 require File.expand_path('../boot', __FILE__)
 
-#begin
-#  require "rubygems"
-#  require "bundler"
-#rescue LoadError
-#  raise "Could not load the bundler gem. Install it with `gem install bundler`."
-#end
-#
-#if Gem::Version.new(Bundler::VERSION) <= Gem::Version.new("0.9.24")
-#  raise RuntimeError, "Your bundler version is too old for Rails 2.3." +
-#      "Run `gem install bundler` to upgrade."
-#end
-#
-#begin
-#  # Set up load paths for all bundled gems
-#  ENV["BUNDLE_GEMFILE"] = File.expand_path("../../Gemfile", __FILE__)
-#  Bundler.setup
-#rescue Bundler::GemNotFound
-#  raise RuntimeError, "Bundler couldn't find some gems." +
-#      "Did you run `bundle install`?"
-#end
-
 #Configurations needed before the app init
 
 # Logs rotation
-#
 # Set this to true to rotate the logs
 ROTATE_LOGS = false
 
-#
 # Set the rotation parameters
 # Example CRONOLOG_PARAMS = "/my/server/cronolog /my/application/file/log/production.log.%Y%m%d"
 CRONOLOG_PARAMS = nil
 
 require 'rails/all'
 
-# If you have a Gemfile, require the gems listed there, including any gems
-# you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env) if defined?(Bundler)
+if defined?(Bundler)
+  # If you precompile assets before deploying to production, use this line
+  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  # If you want your assets lazily compiled in production, use this line
+  # Bundler.require(:default, :assets, Rails.env)
+end
 
 module BioCatalogue
   class Application < Rails::Application
