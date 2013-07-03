@@ -1,47 +1,49 @@
 # Widgets
-require 'widgets/core'
-require 'widgets/css_template'
-require 'widgets/highlightable'
-require 'widgets/disableable'
+widgets_path = 'lib/rails-widgets/lib/widgets/'
+
+require widgets_path + 'core'
+require widgets_path + 'css_template'
+require widgets_path + 'highlightable'
+require widgets_path + 'disableable'
 
 ##### Navigation #####
-require 'widgets/navigation_item'
-require 'widgets/navigation'
-require 'widgets/navigation_helper'
+require widgets_path + 'navigation_item'
+require widgets_path + 'navigation'
+require widgets_path + 'navigation_helper'
 ActionController::Base.helper Widgets::NavigationHelper
 
 ##### Tabnav #####
-require 'widgets/tab'
-require 'widgets/tabnav'
-require 'widgets/tabnav_helper'
+require widgets_path + 'tab'
+require widgets_path + 'tabnav'
+require widgets_path + 'tabnav_helper'
 ActionController::Base.helper Widgets::TabnavHelper
 
 ##### Table #####
-require 'widgets/table_helper'
+require widgets_path + 'table_helper'
 ActionController::Base.helper Widgets::TableHelper
 
 ##### Code #####
 # not enabled by default because it depends on the Syntax gem
-# require 'widgets/code_helper'
+# require widgets_path + 'code_helper'
 # ActionController::Base.helper Widgets::CodeHelper
 
 ##### ShowHide #####
-require 'widgets/showhide_helper'
+require widgets_path + 'showhide_helper'
 ActionController::Base.helper Widgets::ShowhideHelper
 
 ##### Tooltip #####
-require 'widgets/tooltip_helper'
+require widgets_path + 'tooltip_helper'
 ActionController::Base.helper Widgets::TooltipHelper
 
 ##### Progressbar #####
-require 'widgets/progressbar_helper'
+require widgets_path + 'progressbar_helper'
 ActionController::Base.helper Widgets::ProgressbarHelper
 
 ##### Spiffy Corners #####
-require 'widgets/spiffy_corners/spiffy_corners_helper'
+require widgets_path + 'spiffy_corners/spiffy_corners_helper'
 ActionController::Base.helper Widgets::SpiffyCorners::SpiffyCornersHelper
 
 ##### UtilsHelper #####
-require 'widgets/utils_helper'
+require widgets_path + 'utils_helper'
 ActionController::Base.helper Widgets::UtilsHelper
 
