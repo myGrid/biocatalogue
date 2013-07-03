@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'test/unit'
-require File.dirname(__FILE__) + '/../lib/headliner'
+require Rails.root.join('lib', 'headliner')
 require 'action_view/helpers/tag_helper'
 
 class HeadlinerTest < Test::Unit::TestCase
