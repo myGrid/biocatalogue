@@ -1,0 +1,267 @@
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#-----------------------------------------------------------------------
+#some test synonym mappings unlikely to appear in real input text
+aaa => aaaa
+bbb => bbbb1 bbbb2
+ccc => cccc1,cccc2
+a\=>a => b\=>b
+a\,a => b\,b
+fooaaa,baraaa,bazaaa
+
+# Some synonym groups specific to this example
+GB,gib,gigabyte,gigabytes
+MB,mib,megabyte,megabytes
+Television, Televisions, TV, TVs
+#notice we use "gib" instead of "GiB" so any WordDelimiterFilter coming
+#after us won't split it into two words.
+
+# Synonym mappings can be used for spelling correction too
+pixima => pixma
+
+# BEGIN BioCatalogue Pseudo Synonyms
+
+# Synonymns from service categories:
+
+Comparative Genomics,Comparative_Genomics => Comparative Genomics,Comparative_Genomics,Genomics
+Document Clustering,Document_Clustering => Document Clustering,Document_Clustering,Text Mining,Text_Mining
+Document Discovery,Document_Discovery => Document Discovery,Document_Discovery,Text Mining,Text_Mining
+Document Similarity,Document_Similarity => Document Similarity,Document_Similarity,Text Mining,Text_Mining
+Evolutionary Distance Measurements,Evolutionary_Distance_Measurements => Evolutionary Distance Measurements,Evolutionary_Distance_Measurements,Phylogeny, Phylogenetics
+Functional Genomics,Functional_Genomics => Functional Genomics,Functional_Genomics,Genomics
+Genome Annotation,Genome_Annotation => Genome Annotation,Genome_Annotation,Genomics
+Identifier Retrieval,Identifier_Retrieval => Identifier Retrieval,Identifier_Retrieval,Data Retrieval,Data_Retrieval
+Image Retrieval,Image_Retrieval => Image Retrieval,Image_Retrieval,Data Retrieval,Data_Retrieval
+Literature retrieval,Literature_retrieval => Literature retrieval,Literature_retrieval,Data Retrieval,Data_Retrieval
+Ligand Interaction,Ligand_Interaction => Ligand Interaction,Ligand_Interaction,Proteomics
+Model Analysis,Model_Analysis => Model Analysis,Model_Analysis,Systems Biology,Systems_Biology
+Model Creation,Model_Creation => Model Creation,Model_Creation,Systems Biology,Systems_Biology
+Model Execution,Model_Execution => Model Execution,Model_Execution,Systems Biology,Systems_Biology
+Named Entity Recognition,Named_Entity_Recognition => Named Entity Recognition,Named_Entity_Recognition,Text Mining,Text_Mining
+Ontology Annotation,Ontology_Annotation => Ontology Annotation,Ontology_Annotation,Ontology
+Ontology Lookup,Ontology_Lookup => Ontology Lookup,Ontology_Lookup,Ontology
+Pathway Retrieval,Pathway_Retrieval => Pathway Retrieval,Pathway_Retrieval,Data Retrieval,Data_Retrieval
+Pathways => Pathways,Proteomics
+Protein Interaction,Protein_Interaction => Protein Interaction,Protein_Interaction,Proteomics
+Sequence Retrieval,Sequence_Retrieval => Sequence Retrieval,Sequence_Retrieval,Data Retrieval,Data_Retrieval
+Statistical Robustness,Statistical_Robustness => Statistical Robustness,Statistical_Robustness,Phylogeny, Phylogenetics
+Structural Genomics,Structural_Genomics => Structural Genomics,Structural_Genomics,Genomics
+Structure Retrieval,Structure_Retrieval => Structure Retrieval,Structure_Retrieval,Data Retrieval,Data_Retrieval
+Tree Display,Tree_Display => Tree Display,Tree_Display,Phylogeny
+Tree Inference,Tree_Inference => Tree Inference,Tree_Inference,Phylogeny
+
+# And specifically for the "Sequence Analysis" category:
+# SOME OF THESE HAVE A DISAMBIGUATION PROBLEM CURRENTLY AND SO ARE COMMENTED OUT!
+	
+Protein Domains, Protein_Domains => Protein Domains, Protein_Domains,Sequence Analysis,Sequence_Analysis,Protein_Sequence_Analysis,Protein Sequence Analysis,protein_analysis,protein analysis,Function_Prediction,Function Prediction,Protein Function, Protein_Function, Motifs 
+Motifs => Motifs,Protein_Sequence_Analysis,Protein Sequence Analysis,protein_analysis,protein analysis,Function_Prediction,Function Prediction,proteinFunction, Protein Domains, Protein_Domains
+Function Prediction,Function_Prediction => Function Prediction,Function_Prediction,Protein_Sequence_Analysis,Protein Sequence Analysis,protein_analysis,protein analysis, Protein Function, Protein_Function, Motifs, Protein Domains, Protein_Domains
+Gene Prediction,Gene_Prediction => Gene Prediction,Gene_Prediction,Nucleotide_Sequence_Analysis,Nucleotide Sequence Analysis,Nucleotide_Analysis,Nucleotide Analysis
+#Protein_Alignment, Protein Alignment => Protein_Alignment, Protein Alignment, Multiple Sequence Alignment , Multiple_Sequence_Alignment, Pairwise_Alignment, Pairwise Alignment 
+Nucleotide Alignment, Nucleotide_Alignment => Nucleotide Alignment, Nucleotide_Alignment, Multiple Sequence Alignment , Multiple_Sequence_Alignment, Pairwise_Alignment, Pairwise Alignment 
+Nucleotide sequence Analysis,Nucleotide_sequence_Analysis => Nucleotide sequence Analysis,Nucleotide_sequence_Analysis,Sequence Analysis,Sequence_Analysis
+Promoter Prediction,Promoter_Prediction => Promoter Prediction,Promoter_Prediction,Nucleotide_Sequence_Analysis,Nucleotide Sequence Analysis,Nucleotide_Analysis,Nucleotide Analysis
+Protein Sequence Analysis,Protein_Sequence_Analysis => Protein Sequence Analysis,Protein_Sequence_Analysis,Sequence Analysis,Sequence_Analysis
+Repeats => Repeats,Sequence Analysis,Sequence_Analysis,Protein_Sequence_Analysis,Protein Sequence Analysis,protein_analysis,protein analysis,Function_Prediction,Function Prediction,Protein Function, Protein_Function
+Secondary Structure,Secondary_Structure => Secondary Structure,Secondary_Structure,Sequence Analysis,Sequence_Analysis,Protein_Sequence_Analysis,Protein Sequence Analysis,protein_analysis,protein analysis,Structure_Prediction,Structure Prediction,Structure
+#Sequence Alignment,Sequence_Alignment => Sequence Alignment, Sequence_Alignment, Multiple Sequence Alignment , Multiple_Sequence_Alignment, Pairwise_Alignment, Pairwise Alignment, Protein_Alignment, Protein Alignment,  Nucleotide Alignment, Nucleotide_Alignment 
+Sequence Similarity,Sequence_Similarity => Sequence Similarity,Sequence_Similarity,Sequence Analysis,Sequence_Analysis,Protein_Sequence_Analysis,Protein Sequence Analysis,protein_analysis,protein analysis,Nucleotide_Sequence_Analysis,Nucleotide Sequence Analysis,Nucleotide_Analysis,Nucleotide Analysis
+Structure Prediction,Structure_Prediction => Structure Prediction,Structure_Prediction,Sequence Analysis,Sequence_Analysis,Protein_Sequence_Analysis,Protein Sequence Analysis,protein_analysis,protein analysis, 
+Tertiary Structure,Tertiary_Structure => Tertiary Structure,Tertiary_Structure,Sequence Analysis,Sequence_Analysis,Protein_Sequence_Analysis,Protein Sequence Analysis,protein_analysis,protein analysis,Structure_Prediction,Structure Prediction,Structure
+Transcription Factors,Transcription_Factors => Transcription Factors,Transcription_Factors,Sequence Analysis,Sequence_Analysis,Nucleotide_Sequence_Analysis,Nucleotide Sequence Analysis,Nucleotide_Analysis,Nucleotide Analysis
+
+
+# BioCatalogue specific pseudo-synonyms:
+
+ABI_graph_plot,ABI graph plot => ABI_graph_plot,ABI graph plot,nucleotide_sequence_feature,nucleotide sequence feature,nucleotide,sequence
+ABI_sequence_trace,ABI sequence trace => ABI_sequence_trace,ABI sequence trace,nucleotide_sequence_feature,nucleotide sequence feature
+acedb => acedb,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats, format
+affymetrix => affymetrix,Microarray
+Affymetrix_probe_set_id,Affymetrix probe set id => Affymetrix_probe_set_id,Affymetrix probe set id,nucleotide_sequence_id,nucleotide sequence id,nucleotide,sequence,id, Microarray
+aMAZE => aMAZE,pathway,pathway_resource,pathway resource,gene_analysis,gene analysis,gene
+AMPS_block,AMPS block => AMPS_block,AMPS block,sequence_file_formats,sequence file formats,format
+anatomical_structure,anatomical structure => anatomical_structure,anatomical structure,structure,biological_structure,biological structure,structure_prediction,structure prediction
+anatomy_ontology,anatomy ontology => anatomy_ontology,anatomy ontology,ontology
+ArrayExpress => ArrayExpress,Microarray
+arrayExpress => arrayExpress,Microarray
+asn1 => asn1,sequence_file_formats,sequence file formats,format
+BIND => BIND,protein_interaction,protein interaction,protein,interaction,proteomics
+bio-ontology_resource,bio-ontology resource => bio-ontology_resource,bio-ontology resource,ontology
+bioconductor => bioconductor,Microarray,biostatistic
+BioCyc => BioCyc,pathway,pathway_resource,pathway resource,gene_analysis,gene analysis,gene
+BioPax => BioPax,ontology
+biostatistical_analysis,biostatistical analysis => biostatistical_analysis,biostatistical analysis,biostatistic
+BRENDA => BRENDA,enzyme
+Candida_Genome_Database_CGD,Candida Genome Database CGD => Candida_Genome_Database_CGD,Candida Genome Database CGD,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+CATH => CATH,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction,proteomics
+chEBI_ontology,chEBI ontology => chEBI_ontology,chEBI ontology,ontology
+clustalw => clustalw,sequence_file_formats,sequence file formats,format
+codata => codata,sequence_file_formats,sequence file formats,format
+COG => COG,phylogenetic_analysis,phylogenetic analysis,phylogeny,phylogenetic,proteomics
+dbEST => dbEST,sequence,sequence_database,sequence database,database,nucleotide_sequence_database,nucleotide sequence database,nucleotide_sequence,nucleotide sequence,nucleotide,gene_analysis,gene analysis,gene
+dbEST_accession,dbEST accession => dbEST_accession,dbEST accession,nucleotide_sequence_id,nucleotide sequence id,nucleotide,sequence,id
+dbSNP => dbSNP,sequence,sequence_database,sequence database,database,nucleotide_sequence_database,nucleotide sequence database,nucleotide_sequence,nucleotide sequence,nucleotide,gene_analysis,gene analysis,gene
+dbSNP_id,dbSNP id => dbSNP_id,dbSNP id,nucleotide_sequence_id,nucleotide sequence id,nucleotide,sequence,id
+DDBJ => DDBJ,sequence,sequence_database,sequence database,database,nucleotide_sequence_database,nucleotide sequence database,nucleotide_sequence,nucleotide sequence,nucleotide,gene_analysis,gene analysis,gene
+DDBJ_accession,DDBJ accession => DDBJ_accession,DDBJ accession,nucleotide_sequence_id,nucleotide sequence id,nucleotide,sequence,id
+DDBJ_Amino_Acid_Database_DAD,DDBJ Amino Acid Database DAD => DDBJ_Amino_Acid_Database_DAD,DDBJ Amino Acid Database DAD,protein,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence,sequence_database,sequence database,database,proteomics,protein_analysis,protein analysis
+DictyBase => DictyBase,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+DNA_sequence,DNA sequence => DNA_sequence,DNA sequence,sequence
+DNA_strider,DNA strider => DNA_strider,DNA strider,sequence_file_formats,sequence file formats,format
+DragonDB => DragonDB,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+DSSP => DSSP,biological_structure,biological structure,structure_prediction,structure prediction,prediction,proteomics
+EcoCyc => EcoCyc,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+EDHA => EDHA,ontology
+EDHAA => EDHAA,ontology
+EMAP => EMAP,ontology
+EMAPA => EMAPA,ontology
+embl => embl,sequence_file_formats,sequence file formats,format
+EMBL_accession,EMBL accession => EMBL_accession,EMBL accession,nucleotide_sequence_id,nucleotide sequence id,nucleotide,sequence,id
+EMBL_nucleotide_sequence_database,EMBL nucleotide sequence database => EMBL_nucleotide_sequence_database,EMBL nucleotide sequence database,sequence,sequence_database,sequence database,database,nucleotide_sequence_database,nucleotide sequence database,nucleotide_sequence,nucleotide sequence,nucleotide,gene_analysis,gene analysis,gene
+eMIM => eMIM,pathway,pathway_resource,pathway resource,gene_analysis,gene analysis,gene
+Ensembl => Ensembl,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+Entrez_GenBank_protein,Entrez GenBank protein => Entrez_GenBank_protein,Entrez GenBank protein,protein,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence,sequence_database,sequence database,database,proteomics,protein_analysis,protein analysis
+est_human,est human => est_human,est human,sequence,sequence_database,sequence database,database,nucleotide_sequence_database,nucleotide sequence database,nucleotide_sequence,nucleotide sequence,nucleotide,gene_analysis,gene analysis,gene
+expressed_sequence_tag,expressed sequence tag => expressed_sequence_tag,expressed sequence tag,sequence
+family => family,protein_family,protein family,protein,familly, PFAM 
+fasta => fasta,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats
+fitch => fitch,sequence_file_formats,sequence file formats,format
+FlyBase => FlyBase,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome, genomics 
+FSSP => FSSP,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction,proteomics
+functional_motif_searching,functional motif searching => functional_motif_searching,functional motif searching, protein domain, protein_domain, proteomics
+GCG_MSF,GCG MSF => GCG_MSF,GCG MSF,sequence_file_formats,sequence file formats,format
+GDE => GDE,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats
+genbank => genbank,sequence_file_formats,sequence file formats,format
+genbank_GI,genbank GI => genbank_GI,genbank GI,nucleotide_sequence_id,nucleotide sequence id,nucleotide,sequence,id
+Genbank_nucleotide_sequence_database,Genbank nucleotide sequence database => Genbank_nucleotide_sequence_database,Genbank nucleotide sequence database,sequence,sequence_database,sequence database,database,nucleotide_sequence_database,nucleotide sequence database,nucleotide_sequence,nucleotide sequence,nucleotide,gene_analysis,gene analysis,gene
+gene expression,gene_expression => gene expression,gene_expression,Microarray
+Gene3D => Gene3D,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+gene_expression_omnibus_GEO,gene expression omnibus GEO => gene_expression_omnibus_GEO,gene expression omnibus GEO,gene_expression_database,gene expression database,gene_expression,gene expression,expression
+Gene_ontology_GO,Gene ontology GO => Gene_ontology_GO,Gene ontology GO,ontology
+GeneDB => GeneDB,genome_analysis,genome analysis,genome
+GeneDB_protozoa,GeneDB protozoa => GeneDB_protozoa,GeneDB protozoa,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+GeneDB_S._pombe,GeneDB S. pombe => GeneDB_S._pombe,GeneDB S. pombe,gene_analysis,gene analysis,gene
+genome_nucleotide_sequence,genome nucleotide sequence => genome_nucleotide_sequence,genome nucleotide sequence,sequence
+genomic_structure,genomic structure => genomic_structure,genomic structure,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction
+GermOnline => GermOnline,gene_expression_database,gene expression database,gene_expression,gene expression,expression
+gff => gff,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats
+Gramene => Gramene,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+HGNC => HGNC,ontology
+human_anatomy_ontology,human anatomy ontology => human_anatomy_ontology,human anatomy ontology,ontology
+IG => IG,sequence_file_formats,sequence file formats,format
+InAct => InAct,protein_interaction,protein interaction,protein,interaction, proteomics 
+InAct_database,InAct database => InAct_database,InAct database,proteomics
+INOH => INOH,pathway,pathway_resource,pathway resource,gene_analysis,gene analysis,gene
+InterPro => InterPro,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+Jackknifer => Jackknifer,sequence_file_formats,sequence file formats,format
+KEGG => KEGG,pathway,pathway_resource,pathway resource,gene_analysis,gene analysis, gene
+kegg_compound_database,kegg compound database => kegg_compound_database,kegg compound database,interacting_molecule_resource,interacting molecule resource,interacting_molecule,interacting molecule,interaction,molecule
+kegg_drug_database,kegg drug database => kegg_drug_database,kegg drug database,interacting_molecule_resource,interacting molecule resource,interacting_molecule,interacting molecule,interaction,molecule
+KEGG_genes,KEGG genes => KEGG_genes,KEGG genes,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome, genomics
+kegg_glycan_database,kegg glycan database => kegg_glycan_database,kegg glycan database,interacting_molecule_resource,interacting molecule resource,interacting_molecule,interacting molecule,interaction,molecule
+kegg_ligand_database,kegg ligand database => kegg_ligand_database,kegg ligand database,interacting_molecule_resource,interacting molecule resource,interacting_molecule,interacting molecule,interaction,molecule
+KEGG_ligand_database,KEGG ligand database => KEGG_ligand_database,KEGG ligand database,proteomics
+KEGG_ligand,KEGG ligand => KEGG_ligand,KEGG ligand,protein_interaction,protein interaction,protein,interaction
+KEGG_pathway,KEGG pathway => KEGG_pathway,KEGG pathway,protein_interaction,protein interaction,protein,interaction
+Maize_genetics_and_genomics_database_MaizeGDB,Maize genetics and genomics database MaizeGDB => Maize_genetics_and_genomics_database_MaizeGDB,Maize genetics and genomics database MaizeGDB,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+MAML => MAML,Microarray
+MEDLINE => MEDLINE,Literature
+#mega => mega,sequence_file_formats,sequence file formats,format
+#MeSH => MeSH,ontology
+mged_ontology,mged ontology => mged_ontology,mged ontology,ontology
+MIAME => MIAME,Microarray
+microarray_analysis,microarray analysis => microarray_analysis,microarray analysis,biostatistic
+model_organism_genome_database,model organism genome database => model_organism_genome_database,model organism genome database,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome, genomics
+molecular_structure,molecular structure => molecular_structure,molecular structure,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction
+mouse_anatomy_ontology,mouse anatomy ontology => mouse_anatomy_ontology,mouse anatomy ontology,ontology
+Mouse_Genome_Database_MGD,Mouse Genome Database MGD => Mouse_Genome_Database_MGD,Mouse Genome Database MGD,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+MSD => MSD,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction,proteomics
+multiple_sequence,multiple sequence => multiple_sequence,multiple sequence,sequence_file_formats,sequence file formats,format
+NBRF_PIR,NBRF PIR => NBRF_PIR,NBRF PIR,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats
+NCBI_Taxonomy,NCBI Taxonomy => NCBI_Taxonomy,NCBI Taxonomy,ontology
+Needleman_and_Wunsch_algorithm,Needleman and Wunsch algorithm => Needleman_and_Wunsch_algorithm,Needleman and Wunsch algorithm,sequence_alignment_algorithm,sequence alignment algorithm,sequence_alignment,sequence alignment,algorithm,sequence,alignment
+nexus_paup,nexus paup => nexus_paup,nexus paup,sequence_file_formats,sequence file formats,format
+nucleotide_sequence_database,nucleotide sequence database => nucleotide_sequence_database,nucleotide sequence database,sequence,sequence_database,sequence database,database,gene_analysis,gene analysis,gene
+nucleotide_sequence_feature_diagram,nucleotide sequence feature diagram => nucleotide_sequence_feature_diagram,nucleotide sequence feature diagram,nucleotide_sequence_feature,nucleotide sequence feature,nucleotide,sequence
+nucleotide_sequence,nucleotide sequence => nucleotide_sequence,nucleotide sequence,sequence
+Panther => Panther,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+pathway_resource,pathway resource => pathway_resource,pathway resource,gene_analysis,gene analysis,gene
+PATIKA => PATIKA,pathway,pathway_resource,pathway resource,gene_analysis,gene analysis,gene
+PDB => PDB,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction,proteomics, protein structure database, protein_structure_database
+Pfam => Pfam,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+Pfam_Stockholm,Pfam Stockholm => Pfam_Stockholm,Pfam Stockholm,sequence_file_formats,sequence file formats,format
+phylip => phylip,sequence_file_formats,sequence file formats,format
+phylogenetic_analysis,phylogenetic analysis => phylogenetic_analysis,phylogenetic analysis,phylogeny, phylogenetics, proteomics
+phylogenetic_database,phylogenetic database => phylogenetic_database,phylogenetic database,phylogenetic_analysis,phylogenetic analysis,phylogeny,phylogenetic,proteomics
+#PIR => PIR,protein,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence,sequence_database,sequence database,database,proteomics,protein_analysis,protein analysis
+PIRSF => PIRSF,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+Plant_ontology_PO,Plant ontology PO => Plant_ontology_PO,Plant ontology PO,ontology
+primer_report,primer report => primer_report,primer report,nucleotide_sequence_feature,nucleotide sequence feature,nucleotide
+PRINTS => PRINTS,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+probe => probe,Microarray
+ProDom => ProDom,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+Prosite => Prosite,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+protein_analysis,protein analysis => protein_analysis,protein analysis,proteomics
+protein_family_database,protein family database => protein_family_database,protein family database,functional_motif,functional motif,motif,proteomics
+protein_function_prediction,protein function prediction => protein_function_prediction,protein function prediction,proteomics
+protein_interaction,protein interaction => protein_interaction,protein interaction,proteomics
+protein_sequence_database,protein sequence database => protein_sequence_database,protein sequence database,sequence,sequence_database,sequence database,database,proteomics,protein_analysis,protein analysis,protein
+protein_sequence,protein sequence => protein_sequence,protein sequence,sequence
+protein_structure_database,protein structure database => protein_structure_database,protein structure database,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction,proteomics
+protein_structure,protein structure => protein_structure,protein structure,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction
+pubmed => pubmed,Literature
+Rat_Genome_Database_RGD,Rat Genome Database RGD => Rat_Genome_Database_RGD,Rat Genome Database RGD,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+raw_sequence,raw sequence => raw_sequence,raw sequence,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats
+reactome => reactome,pathway,pathway_resource,pathway resource
+Reactome => Reactome,gene_analysis,gene analysis,gene
+REBASE => REBASE,enzyme
+RefSeq => RefSeq,sequence,sequence_database,sequence database,database,gene_analysis,gene analysis,gene,proteomics,protein_analysis,protein analysis,protein
+restriction_enzyme_report,restriction enzyme report => restriction_enzyme_report,restriction enzyme report,nucleotide_sequence_feature,nucleotide sequence feature,nucleotide,sequence
+RNA_sequence,RNA sequence => RNA_sequence,RNA sequence,sequence
+RNA_structure,RNA structure => RNA_structure,RNA structure,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction
+RSF => RSF,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats
+Saccharomyces_Genome_Database_SGD,Saccharomyces Genome Database SGD => Saccharomyces_Genome_Database_SGD,Saccharomyces Genome Database SGD,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+Sanger_GeneDB,Sanger GeneDB => Sanger_GeneDB,Sanger GeneDB,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome, genomics 
+#SCOP => SCOP,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction,proteomics
+secondary_structure_prediction,secondary structure prediction => secondary_structure_prediction,secondary structure prediction,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction,proteomics
+selex => selex,sequence_file_formats,sequence file formats,format
+single_nucleotide_polymorphism,single nucleotide polymorphism => single_nucleotide_polymorphism,single nucleotide polymorphism, nucleotide_sequence, nucleotide sequence
+single_sequence,single sequence => single_sequence,single sequence,sequence_file_formats,sequence file formats,format
+#SMART => SMART,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+Smith-Waterman_algorithm,Smith-Waterman algorithm => Smith-Waterman_algorithm,Smith-Waterman algorithm,sequence_alignment_algorithm,sequence alignment algorithm,sequence_alignment,sequence alignment,algorithm,sequence,alignment
+staden_experiment,staden experiment => staden_experiment,staden experiment,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats
+structure_analysis,structure analysis => structure_analysis,structure analysis,proteomics
+structure_prediction,structure prediction => structure_prediction,structure prediction,proteomics
+superfamily => superfamily,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+SWISS-PROT => SWISS-PROT,protein,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence,sequence_database,sequence database,database,proteomics,protein_analysis,protein analysis
+tertiary_structure__prediction_,tertiary structure  prediction  => tertiary_structure__prediction_,tertiary structure  prediction ,proteomics
+tertiary_structure_prediction,tertiary structure prediction => tertiary_structure_prediction,tertiary structure prediction,structure,biological_structure,biological structure,structure_prediction,structure prediction,prediction
+text_mining,text mining => text_mining,text mining,Literature
+text_plain,text plain => text_plain,text plain,single_sequence_format,single sequence format,sequence_format,sequence format,format,sequence_file_formats,sequence file formats
+The_Arabidopsis_Information_Resource_TAIR,The Arabidopsis Information Resource TAIR => The_Arabidopsis_Information_Resource_TAIR,The Arabidopsis Information Resource TAIR,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+TIGR => TIGR,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome
+tigrfam => tigrfam,functional_motif,functional motif,motif,protein_family,protein family,protein,familly,proteomics
+tree_fam,tree fam => tree_fam,tree fam,phylogenetic_analysis,phylogenetic analysis,phylogeny,phylogenetic,proteomics
+Tree_of_Life,Tree of Life => Tree_of_Life,Tree of Life,phylogenetic_analysis,phylogenetic analysis,phylogeny,phylogenetic,proteomics
+TreeBASE => TreeBASE,phylogenetic_analysis,phylogenetic analysis,phylogeny,phylogenetic,proteomics
+treecon => treecon,sequence_file_formats,sequence file formats,format
+TREMBL => TREMBL,protein,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence_database,sequence database,database,proteomics,protein_analysis
+UMLS => UMLS,ontology
+Unigene => Unigene,sequence_database,sequence database,database,nucleotide_sequence_database,nucleotide sequence database,gene_analysis,gene analysis,gene
+UniGene_id,UniGene id => UniGene_id,UniGene id,nucleotide_sequence_id,nucleotide sequence id,nucleotide,sequence,id
+UniProt => UniProt,protein_sequence_database,protein sequence database,protein_sequence,protein sequence,sequence,sequence_database,sequence database,database,proteomics,protein_analysis,protein analysis
+word_match_sequence_algorithm,word match sequence algorithm => word_match_sequence_algorithm,word match sequence algorithm,sequence_alignment_algorithm,sequence alignment algorithm,sequence_alignment,sequence alignment,algorithm,alignment
+WormBase => WormBase,gene_analysis,gene,genome_analysis,genome analysis,genome, genomics
+Zebrafish_Information_Network_ZFIN,Zebrafish Information Network ZFIN => Zebrafish_Information_Network_ZFIN,Zebrafish Information Network ZFIN,gene_analysis,gene analysis,gene,genome_analysis,genome analysis,genome, genomics
+
+# END BioCatalogue Pseudo Synonyms
