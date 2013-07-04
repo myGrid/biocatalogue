@@ -55,7 +55,7 @@ class RestParameter < ActiveRecord::Base
   
   # For the given rest_method object, find duplicate entry based on 'param_name'
   def self.check_duplicate(rest_method, param_name, search_local_context=false)
-    p = rest_method.request_parameters.find(:first, 
+    p = rest_method.request_parameters.first(
                                             :conditions => {:name => param_name, 
                                                             :is_global => !search_local_context})
 

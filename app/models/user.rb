@@ -249,8 +249,7 @@ class User < ActiveRecord::Base
   
   # TODO: see #other_services_responsible; need to clarify how these two methods are related and possibly combine/separate out the logic somewhere else.
   def active_services_responsible_for
-    Service.find(:all,
-                 :joins => [ :service_responsibles ],
+    Service.all(                 :joins => [ :service_responsibles ],
                  :conditions => [ "service_responsibles.user_id = ? AND service_responsibles.status = 'active'", self.id ])
   end
   

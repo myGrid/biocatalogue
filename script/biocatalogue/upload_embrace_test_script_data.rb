@@ -106,7 +106,7 @@ class UploadTestScript
         upload_tests(test_scripts)
       elsif options[:all]
         puts "uploading all tests scripts to test server..."
-        Service.find(:all).each do |service|
+        Service.all.each do |service|
           upload_tests(service.test_scripts)
         end
       end

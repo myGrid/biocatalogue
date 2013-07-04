@@ -381,7 +381,7 @@ class FetaImporter
                   end
                   
                   # Find the operation in the service
-                  operation = soap_service.soap_operations.find(:first, :conditions => { :name => op_name })
+                  operation = soap_service.soap_operations.first(:conditions => { :name => op_name })
                   
                   if operation.nil?
                     stats["total_xml_service_operations_that_do_not_exist_in_service_now"].increment
@@ -470,7 +470,7 @@ class FetaImporter
     param_name_split = param_name.split(':')
     
     # Find the object that needs to be annotated
-    parameter = collection_to_find_annotatable.find(:first, :conditions => { :name => param_name_split[0] })
+    parameter = collection_to_find_annotatable.first(:conditions => { :name => param_name_split[0] })
     
     if parameter.nil?
       stats["total_xml_service_parameters_that_do_not_exist_in_service_now"].increment

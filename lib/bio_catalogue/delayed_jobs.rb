@@ -17,7 +17,7 @@ module BioCatalogue
         conditions << "%#{s}%"
       end
       
-      Delayed::Job.find(:all, :conditions => conditions).length > 0
+      Delayed::Job.all(:conditions => conditions).length > 0
     end
     
   end

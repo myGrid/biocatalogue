@@ -616,7 +616,7 @@ class EmbraceImporter
     annotation = nil
     
     # Check for an existing annotation made previously with the source being the EMBRACE Registry object
-    existing = annotatable.annotations.find(:first, 
+    existing = annotatable.annotations.first(
                                             :conditions => { :annotation_attributes => { :name => attribute.to_s }, 
                                                              :value => value,
                                                              :source_type => @registry_source.class.name,
@@ -632,7 +632,7 @@ class EmbraceImporter
           
           # Check for an alternative name with that value
           
-          existing = annotatable.annotations.find(:first, 
+          existing = annotatable.annotations.first(
                                                   :conditions => { :annotation_attributes => { :name => "alternative_name" }, 
                                                                    :value => value,
                                                                    :source_type => @registry_source.class.name,

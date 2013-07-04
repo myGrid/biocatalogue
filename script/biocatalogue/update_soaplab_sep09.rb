@@ -135,7 +135,7 @@ attr_accessor :options
       if options[:server]
         update_soaplab_server options[:server] 
       elsif options[:all]
-        SoaplabServer.find(:all).each do |sls|
+        SoaplabServer.all.each do |sls|
           update_soaplab_server sls.location
         end
       else

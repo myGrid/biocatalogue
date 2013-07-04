@@ -8,7 +8,7 @@ module BioCatalogue
   module Jobs
     class CalculateAnnotationCountsJob
       def perform
-        Service.find(:all).each do |service|
+        Service.all.each do |service|
           # Call the method that calculates and returns the metadata counts, making sure that we set reload to true,
           # as that method currently takes care of caching that data, as we require...
           BioCatalogue::Annotations.metadata_counts_for_service(service, true)

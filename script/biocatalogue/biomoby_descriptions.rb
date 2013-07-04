@@ -146,7 +146,7 @@ class BioMobyDescriptions
                 puts ""
                 puts "> Processing services that have a WSDL location of '#{text}'"
               
-                soap_services = SoapService.find(:all, :conditions => [ "wsdl_location LIKE ?", text ])
+                soap_services = SoapService.all(:conditions => [ "wsdl_location LIKE ?", text ])
                 
                 soap_services.each do |ss|
                   service = ss.service

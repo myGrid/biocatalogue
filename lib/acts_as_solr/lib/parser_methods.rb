@@ -138,7 +138,7 @@ module ActsAsSolr #:nodoc:
         conditions = [ "#{self.table_name}.#{primary_key} in (?)", ids ]
         find_options = {:conditions => conditions}
         find_options[:include] = options[:include] if options[:include]
-        result = reorder(self.find(:all, find_options), ids)
+        result = reorder(self.all(find_options), ids)
       else
         ids
       end

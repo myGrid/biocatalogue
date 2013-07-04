@@ -4,7 +4,7 @@ class RefactorTestResults < ActiveRecord::Migration
     # map the test results to the correct service_test
     # and remove the direct line to the test instance
     UrlMonitor.transaction do
-      monitors = UrlMonitor.find(:all)
+      monitors = UrlMonitor.all
       monitors.each do |mon|
         service = UrlMonitor.find_parent(mon.parent_type, mon.parent_id).service
         puts service.name
@@ -15,7 +15,7 @@ class RefactorTestResults < ActiveRecord::Migration
         if st.save!
           puts "Created service test #{st.id}"
         end
-        ids  = TestResult.find(:all, :conditions => {:test_id => mon.id, 
+        ids  = TestResult.all(:conditions => {:test_id => mon.id,
                                                         :test_type => mon.class.name,
                                                         :service_test_id => nil } ).collect!{|r| r.id }
         ids.each do |id|
@@ -37,7 +37,7 @@ class RefactorTestResults < ActiveRecord::Migration
     add_column :test_results, :test_id,   :integer
     
     UrlMonitor.transaction do     
-      monitors = UrlMonitors.find(:all)
+      monitors = UrlMonitors.all
       monitors.each do |mon|
         st = mon.service_test
         results = st.test_results

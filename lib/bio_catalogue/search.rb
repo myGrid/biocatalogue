@@ -186,9 +186,9 @@ module BioCatalogue
     def self.all_possible_activity_logs_for_search(limit_to_fields=[])
       conditions = "action = 'search' OR action LIKE '%index%'"
       if limit_to_fields.blank?
-        ActivityLog.find(:all, :conditions => conditions)
+        ActivityLog.all(:conditions => conditions)
       else
-        ActivityLog.find(:all, 
+        ActivityLog.all(
                          :select => limit_to_fields.to_sentence(:last_word_connector => ", ", :two_words_connector => ", "), 
                          :conditions => conditions)        
       end

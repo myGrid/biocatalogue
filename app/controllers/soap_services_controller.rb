@@ -221,8 +221,8 @@ class SoapServicesController < ApplicationController
       
         urls.each do |url|
           begin
-            if SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
-              @soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
+            if SoapService.first(:conditions => ["wsdl_location = ?", url])
+              @soap_service = SoapService.first(:conditions => ["wsdl_location = ?", url])
               @existing_services << @soap_service.service(true) if @soap_service != nil
             else
               @soap_service = SoapService.new({:wsdl_location => url})        
@@ -278,7 +278,7 @@ class SoapServicesController < ApplicationController
   end
   
   def wsdl_locations
-    @wsdl_locations = SoapService.find(:all, :select => "wsdl_location").map { |s| s.wsdl_location }.uniq.compact
+    @wsdl_locations = SoapService.all(:select => "wsdl_location").map { |s| s.wsdl_location }.uniq.compact
     respond_to do |format|
       format.html { disable_action }
       format.xml  # wsdl_locations.xml.builder

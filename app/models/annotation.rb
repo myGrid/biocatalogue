@@ -181,7 +181,7 @@ protected
   
   def process_post_destroy_custom_logic
     if self.attribute_name.downcase == 'example_endpoint'
-      url_monitors = UrlMonitor.find(:all, :conditions => [ "parent_id = ? AND parent_type = ?", self.id, "Annotation" ])
+      url_monitors = UrlMonitor.all(:conditions => [ "parent_id = ? AND parent_type = ?", self.id, "Annotation" ])
       url_monitors.each do |u|
         u.destroy
       end

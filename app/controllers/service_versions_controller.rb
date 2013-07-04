@@ -11,7 +11,7 @@ class ServiceVersionsController < ApplicationController
   # GET /service_versions
   # GET /service_versions.xml
   def index
-    @service_versions = ServiceVersion.find(:all)
+    @service_versions = ServiceVersion.all
 
     respond_to do |format|
       format.html # index.html.erb

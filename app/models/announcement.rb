@@ -18,8 +18,7 @@ class Announcement < ActiveRecord::Base
   before_save :check_authorisation
   
   def self.latest(limit=5)
-    self.find(:all,
-              :order => "created_at DESC",
+    self.all(              :order => "created_at DESC",
               :limit => limit)
   end
   

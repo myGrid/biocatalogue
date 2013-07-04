@@ -33,8 +33,7 @@ class TestResult < ActiveRecord::Base
   
   # Results for a given service test
   def self.results_for(service_test, limit=5)
-    TestResult.find(:all,
-                    :conditions =>  { :service_test_id => service_test.id },
+    TestResult.all(                    :conditions =>  { :service_test_id => service_test.id },
                     :order => "created_at DESC",
                     :limit => limit)
   end

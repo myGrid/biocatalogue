@@ -94,14 +94,14 @@ class SoapService < ActiveRecord::Base
   # --------------------------------------
   
   def self.check_duplicate(wsdl_location, endpoint)
-    obj = SoapService.find(:first, :conditions => { :wsdl_location => wsdl_location }) #||
+    obj = SoapService.first(:conditions => { :wsdl_location => wsdl_location }) #||
           # commenting the ||  on 10-03-2009
           # ================================
           #  Some wsdls share endpoints though not exposing the same interface.
           #  which makes them appear as duplicates of each other
           # e.g       http://www.cbs.dtu.dk/ws/MaxAlign/MaxAlign_1_1_ws0.wsdl
           #     and   http://www.cbs.dtu.dk/ws/SignalP/SignalP_3_1_ws0.wsdl 
-          #ServiceDeployment.find(:first, :conditions => { :endpoint => endpoint })
+          #ServiceDeployment.first(:conditions => { :endpoint => endpoint })
           
     return (obj.nil? ? nil : obj.service)
   end
@@ -413,16 +413,16 @@ class SoapService < ActiveRecord::Base
             found_or_created_operation_ids = [ ]
             
             new_info['operations'].each do |operation|
-              existing_ops = self.soap_operations.find(:all, :conditions => { :name => operation['name'], :parent_port_type => operation['parent_port_type'] })
+              existing_ops = self.soap_operations.all(:conditions => { :name => operation['name'], :parent_port_type => operation['parent_port_type'] })
               
               # If empty, try again but this time with no port information
               if existing_ops.empty?
-                existing_ops = self.soap_operations.find(:all, :conditions => { :name => operation['name'], :parent_port_type => nil })
+                existing_ops = self.soap_operations.all(:conditions => { :name => operation['name'], :parent_port_type => nil })
               end
               
               # If empty still, then ignore any port info, BUT only if service has no port info or only one port
               if existing_ops.empty? and (new_info['ports'].blank? or new_info['ports'].length == 1)
-                existing_ops = self.soap_operations.find(:all, :conditions => { :name => operation['name'] })
+                existing_ops = self.soap_operations.all(:conditions => { :name => operation['name'] })
               end
               
               existing_op = if existing_ops.empty?

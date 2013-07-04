@@ -190,10 +190,10 @@ class ResponsibilityRequestsController < ApplicationController
   
   def authorise_create(limit=5)
     service = Service.find(params[:responsibility_request][:subject_id])
-    req = ResponsibilityRequest.find(:first, :conditions => {:user_id => current_user.id,
+    req = ResponsibilityRequest.first(:conditions => {:user_id => current_user.id,
                                                           :subject_id => service.id,
                                                           :subject_type => service.class.name })
-    pending = ResponsibilityRequest.find(:all, :conditions => ["user_id=? AND status = ? ", current_user.id, 'pending']).first(limit)
+    pending = ResponsibilityRequest.all(:conditions => ["user_id=? AND status = ? ", current_user.id, 'pending']).first(limit)
     if req || pending.count == limit
       msg = "<p> You are not allowed to perform this action. You have reached your limit of #{limit} pending requests. </p>"
       msg = msg + "Please <a href='#{SITE_BASE_HOST}/contact'> contact</a> #{SITE_NAME} for further assistance. "

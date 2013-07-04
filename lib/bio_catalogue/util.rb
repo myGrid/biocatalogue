@@ -316,14 +316,14 @@ module BioCatalogue
           if soap_service 
             
             if params[:operation_name]
-              soap_operation = SoapOperation.find(:first, :conditions => { :soap_service_id => soap_service.id, :name => params[:operation_name] })
+              soap_operation = SoapOperation.first(:conditions => { :soap_service_id => soap_service.id, :name => params[:operation_name] })
               
               if soap_operation
                 
                 if params[:input_name]
-                  obj_to_redirect_to = SoapInput.find(:first, :conditions => { :soap_operation_id => soap_operation.id, :name => params[:input_name] })
+                  obj_to_redirect_to = SoapInput.first(:conditions => { :soap_operation_id => soap_operation.id, :name => params[:input_name] })
                 elsif params[:output_name]
-                  obj_to_redirect_to = SoapOutput.find(:first, :conditions => { :soap_operation_id => soap_operation.id, :name => params[:output_name] })
+                  obj_to_redirect_to = SoapOutput.first(:conditions => { :soap_operation_id => soap_operation.id, :name => params[:output_name] })
                 else
                   obj_to_redirect_to = soap_operation
                 end

@@ -388,10 +388,10 @@ private # ========================================
   def destroy_unused_objects(id_list, is_parameter=true)
     id_list.sort.each do |obj_id|
       if is_parameter
-        not_used = RestMethodParameter.find(:all, :conditions => {:rest_parameter_id => obj_id}).empty?
+        not_used = RestMethodParameter.all(:conditions => {:rest_parameter_id => obj_id}).empty?
         RestParameter.destroy(obj_id) if not_used
       else
-        not_used = RestMethodRepresentation.find(:all, :conditions => {:rest_representation_id => obj_id}).empty?
+        not_used = RestMethodRepresentation.all(:conditions => {:rest_representation_id => obj_id}).empty?
         RestRepresentation.destroy(obj_id) if not_used      
       end
     end # id_list.each

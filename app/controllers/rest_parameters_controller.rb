@@ -184,7 +184,7 @@ class RestParametersController < ApplicationController
     # destroy map
     destroy_method_param_map() # this is the map for the parameter being linked/unlinked
 
-    is_not_used = RestMethodParameter.find(:all, :conditions => {:rest_parameter_id => @rest_parameter.id}).empty?
+    is_not_used = RestMethodParameter.all(:conditions => {:rest_parameter_id => @rest_parameter.id}).empty?
     @rest_parameter.destroy if is_not_used
     
     # make unique or generic
@@ -225,7 +225,7 @@ class RestParametersController < ApplicationController
     
     destroy_method_param_map()
     
-    is_not_used = RestMethodParameter.find(:all, :conditions => {:rest_parameter_id => @rest_parameter.id}).empty?
+    is_not_used = RestMethodParameter.all(:conditions => {:rest_parameter_id => @rest_parameter.id}).empty?
     @rest_parameter.destroy if is_not_used
         
     respond_to do |format|
@@ -260,7 +260,7 @@ class RestParametersController < ApplicationController
   private
   
   def get_redirect_url()
-    method_param_map = RestMethodParameter.find(:first, 
+    method_param_map = RestMethodParameter.first(
                                                 :conditions => {:rest_parameter_id => @rest_parameter.id, 
                                                                 :rest_method_id => params[:rest_method_id]})
 
@@ -270,7 +270,7 @@ class RestParametersController < ApplicationController
   end
   
   def destroy_method_param_map() # USES params[:rest_method_id] and @rest_parameter.id
-    method_param_map = RestMethodParameter.find(:first, 
+    method_param_map = RestMethodParameter.first(
                                                 :conditions => {:rest_parameter_id => @rest_parameter.id, 
                                                                 :rest_method_id => params[:rest_method_id]})
     method_param_map.destroy

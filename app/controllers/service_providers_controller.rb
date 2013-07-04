@@ -147,7 +147,7 @@ class ServiceProvidersController < ApplicationController
   def auto_complete
     @name_fragment = params[:name] || ''
     
-    @results = ServiceProvider.find(:all , 
+    @results = ServiceProvider.all(
                                     :conditions => "name like '%" + @name_fragment.downcase + "%'")
                                     
     render :inline => "<%= auto_complete_result @results, 'name', @name_fragment %>", :layout => false

@@ -151,7 +151,7 @@ Example:
 
   class WeblogController < ActionController::Base
     def index
-      @posts = Post.find(:all)
+      @posts = Post.all
       debugger
     end
   end

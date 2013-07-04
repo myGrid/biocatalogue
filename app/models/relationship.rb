@@ -30,7 +30,7 @@ class Relationship < ActiveRecord::Base
   protected
   
   def check_duplicate
-    existing = Relationship.find(:all, 
+    existing = Relationship.all(
                                  :conditions => { :subject_type => self.subject_type, 
                                                   :subject_id => self.subject.id,
                                                   :subject_field_name => self.subject_field_name,
