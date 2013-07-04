@@ -1,5 +1,4 @@
-require 'rubygems'
-require 'test/unit'
+require 'test/test_helper'
 require Rails.root.join('lib', 'headliner')
 require 'action_view/helpers/tag_helper'
 
@@ -62,7 +61,7 @@ class HeadlinerTest < Test::Unit::TestCase
   
   def test_title_has_custom_separator
     @title = "Headliner"
-    full_title = display_title :site => "the.railsi.st", :separator => "&mdash;"
+    full_title = display_title(:site => "the.railsi.st", :separator => "&mdash;")
     assert_equal "<title>the.railsi.st &mdash; Headliner</title>", full_title
   end
 
@@ -86,10 +85,10 @@ class HeadlinerTest < Test::Unit::TestCase
 
   def test_title_has_no_prefix_and_suffix_and_has_custom_separator
     @title = "Headliner"
-    full_title = display_title :site => "the.railsi.st", 
+    full_title = display_title(:site => "the.railsi.st",
                                :prefix => false, 
                                :suffix => false, 
-                               :separator => "&mdash;"
+                               :separator => "&mdash;")
     assert_equal "<title>the.railsi.st&mdash;Headliner</title>", full_title
   end
 

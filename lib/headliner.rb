@@ -48,15 +48,15 @@ module Headliner
     unless @title.blank?
       if options[:reverse] == true
         # Reverse order => "Page : Website"
-        return content_tag(:title, @title + prefix + separator + suffix + options[:site])
+        return content_tag(:title, (@title + prefix + separator + suffix + options[:site]).html_safe)
       else
         # Standard order => "Website : Page"
-        return content_tag(:title, options[:site] + prefix + separator + suffix + @title)
+        return content_tag(:title, (options[:site] + prefix + separator + suffix + @title).html_safe)
       end
     end
     
     # If title is blank, return only website name
-    content_tag :title, options[:site]
+    content_tag(:title, options[:site].html_safe)
   end
 
   # Mr. T says, "Use my method, fool!"
