@@ -37,7 +37,7 @@ module AutoComplete
           :order => "#{method} ASC",
           :limit => 10 }.merge!(options)
         
-        @items = object.to_s.camelize.constantize.find(:all, find_options)
+        @items = object.to_s.camelize.constantize.all(find_options)
 
         render :inline => "<%= auto_complete_result @items, '#{method}' %>"
       end

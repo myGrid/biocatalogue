@@ -24,7 +24,7 @@ class ServiceResponsible < ActiveRecord::Base
   end
   
   def self.add(user_id, service_id)
-    unless ServiceResponsible.find(:first, :conditions => ["user_id=? AND service_id=?", user_id, service_id])
+    unless ServiceResponsible.first(:conditions => ["user_id=? AND service_id=?", user_id, service_id])
       resp = ServiceResponsible.create(:user_id =>user_id, :service_id => service_id, :status => 'active')
       return ServiceResponsible.exists?(resp.id)
     end

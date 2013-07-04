@@ -45,7 +45,7 @@ module BioCatalogue
         end
       end
       #delete from database regular expressions that were deleted from regex file
-      database_regexes=DataSearchRegex.find(:all)
+      database_regexes=DataSearchRegex.all
       database_regexes.each do |database_regex|
         if file_regexes[database_regex.regex_value]==nil
           database_regex.delete()
@@ -56,7 +56,7 @@ module BioCatalogue
 
     #calculates / updates annotation parsed types
     def self.calculate_annotation_parsed_types()
-      examples_annotations=Annotation.find(:all, :conditions=>["attribute_id=?",5])
+      examples_annotations=Annotation.all(:conditions=>["attribute_id=?",5])
       examples_annotations.each do |annotation|
         type=self.calculate_annotation_parsed_type(annotation)
         annotation.create_annotation_parsed_type(attributes={:parsed_type=>type})
@@ -76,7 +76,7 @@ module BioCatalogue
       annotations = Annotation.find(:all,
                                     :joins => [ :annotation_parsed_type, :attribute ],
                                     :conditions => [ "annotation_attributes.name = ? AND annotation_parsed_types.parsed_type= ?","Example","text"])
-      regexes=DataSearchRegex.find(:all)
+      regexes=DataSearchRegex.all
       regexes2=[]
       #precompile all the regular expressions so as not to do it in a loop
       regexes.each do |regex|
@@ -87,8 +87,7 @@ module BioCatalogue
       annotations.each do |annotation|
         regexes2.each do |regex2|
           regex_result=regex2[1].match(annotation.value_content)
-          property = AnnotationProperty.find(:first,
-                                             :conditions => [ "annotation_id = ? AND property_type=? AND property_id=?",annotation.id,"DataSearchRegex",regex2[0].id ])
+          property = AnnotationProperty.first(                                             :conditions => [ "annotation_id = ? AND property_type=? AND property_id=?",annotation.id,"DataSearchRegex",regex2[0].id ])
           if property==nil
             if regex_result
               property=AnnotationProperty.new(:annotation=>annotation,:property=>regex2[0],:value=>0)
@@ -114,7 +113,7 @@ module BioCatalogue
     # method uses precalculated (or cached) state of the database
     def self.get_matching_ports_for_data_properties(data,database_positive_properties,limit=50)
       data=data.to_s()
-      regexes=DataSearchRegex.find(:all)
+      regexes=DataSearchRegex.all
       regex_number=regexes.length
 
       #hash that stores annotations matching each regex
@@ -203,7 +202,7 @@ module BioCatalogue
     end
 
     # calculate regexes that give positive result on user data
-    def self.calculate_positive_regex_result(data,regexes=DataSearchRegex.find(:all))
+    def self.calculate_positive_regex_result(data,regexes=DataSearchRegex.all)
       data_positive_regex_result={}
       regexes.each do |regex|
         result=Regexp.new(regex.regex_value).match(data)?1:0

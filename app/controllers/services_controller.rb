@@ -435,7 +435,7 @@ class ServicesController < ApplicationController
   end
 
   def find_favourite
-    @favourite = Favourite.find(:first, :conditions => { :favouritable_type => "Service", :favouritable_id => params[:id], :user_id => current_user.id })
+    @favourite = Favourite.first(:conditions => { :favouritable_type => "Service", :favouritable_id => params[:id], :user_id => current_user.id })
   end
 
   def check_if_user_wants_to_categorise

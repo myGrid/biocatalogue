@@ -222,7 +222,7 @@ class SoaplabServer < ActiveRecord::Base
   # find a class of objects that are related to the soaplab server
   # e.g. to get all services we would do :  related_services = related_objects_by_type("Service")
   def related_objects_by_type(related_str)
-    rels = Relationship.find(:all, :conditions => ["subject_type = ? and object_type = ? and object_id =? ", 
+    rels = Relationship.all(:conditions => ["subject_type = ? and object_type = ? and object_id =? ",
                                                     related_str, self.class.name, self.id] )
     
     related_str.constantize.find(rels.collect{ |r| r.subject_id})

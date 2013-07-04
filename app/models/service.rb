@@ -72,8 +72,7 @@ class Service < ActiveRecord::Base
   end
   
   def self.latest(limit=10)
-    self.find(:all,
-              :order => "created_at DESC",
+    self.all(              :order => "created_at DESC",
               :limit => limit)
   end
   
@@ -106,8 +105,7 @@ class Service < ActiveRecord::Base
   end
   
   def service_version_instances_by_type(type_model_name)
-    type_model_name.constantize.find(:all,
-                                     :conditions => { :service_versions => { :service_id => self.id } },
+    type_model_name.constantize.all(                                     :conditions => { :service_versions => { :service_id => self.id } },
                                      :joins => [ :service_version ])
   end 
   
@@ -186,7 +184,7 @@ class Service < ActiveRecord::Base
       
       service_ids = service_ids.uniq.reject{|i| i == self.id}
       
-      services = Service.find(:all, :conditions => { :id => service_ids[0...limit] })
+      services = Service.all(:conditions => { :id => service_ids[0...limit] })
     end
     
     return services
@@ -195,7 +193,7 @@ class Service < ActiveRecord::Base
   # IF this is Service is part of a Soaplab Server then this method returns that SoaplabServer entry.
   # Otherwise it returns nil, which indicates that this Service is not part of a Soaplab Server.
   def soaplab_server
-    rel = Relationship.find(:first, 
+    rel = Relationship.first(
                             :conditions => { :subject_type => "Service", 
                                              :subject_id => self.id, 
                                              :predicate => "BioCatalogue:memberOf", 
@@ -212,7 +210,7 @@ class Service < ActiveRecord::Base
   end
   
   def service_tests_by_type(type)
-    ServiceTest.find(:all, :conditions => {:test_type => type, :service_id => self.id})
+    ServiceTest.all(:conditions => {:test_type => type, :service_id => self.id})
   end
   
   # e.g. To find all test scripts:  service_test_instances_by_type('TestScript')
@@ -276,7 +274,7 @@ class Service < ActiveRecord::Base
   # service by adding them to the set of those responsible to
   # manage the service the service by default.  
   def all_responsibles
-    curators = User.find(:all, :conditions => {:role_id => [ 1, 2 ]})
+    curators = User.all(:conditions => {:role_id => [ 1, 2 ]})
     responsibles = self.service_responsibles.collect{|r| r.user if r.status='active'}.compact
     responsibles << self.submitter if self.submitter_type == "User"
     responsibles.concat(curators)
@@ -284,7 +282,7 @@ class Service < ActiveRecord::Base
   end
   
   def pending_responsibility_requests(limit=5)
-    reqs = ResponsibilityRequest.find(:all, :conditions => {:subject_type => self.class.name,
+    reqs = ResponsibilityRequest.all(:conditions => {:subject_type => self.class.name,
                                                             :subject_id => self.id,
                                                             :status => 'pending'}, :limit => limit)
     return reqs
@@ -342,8 +340,7 @@ class Service < ActiveRecord::Base
   def annotations_activity_logs(since, limit=100)
     obj_ids = self.associated_object_ids
     
-    ActivityLog.find(:all,
-      :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND (
+    ActivityLog.all(      :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND (
                        (activity_loggable_type = 'Service' AND activity_loggable_id = ?) OR (referenced_type = 'Service' AND referenced_id = ?) OR
                        (activity_loggable_type = 'ServiceDeployment' AND activity_loggable_id IN (?)) OR (referenced_type = 'ServiceDeployment' AND referenced_id IN (?)) OR
                        (activity_loggable_type = 'ServiceVersion' AND activity_loggable_id IN (?)) OR (referenced_type = 'ServiceVersion' AND referenced_id IN (?)) OR

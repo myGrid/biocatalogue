@@ -9,7 +9,7 @@ class FavouritesController < ApplicationController
   # GET /favourites
   # GET /favourites.xml
   def index
-    @favourites = Favourite.find(:all)
+    @favourites = Favourite.all
 
     respond_to do |format|
       format.html # index.html.erb

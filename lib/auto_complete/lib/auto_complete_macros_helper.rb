@@ -85,7 +85,7 @@ module AutoCompleteMacrosHelper
   # Example action:
   #
   #   def auto_complete_for_item_title
-  #     @items = Item.find(:all, 
+  #     @items = Item.all(
   #       :conditions => [ 'LOWER(description) LIKE ?', 
   #       '%' + request.raw_post.downcase + '%' ])
   #     render :inline => "<%= auto_complete_result(@items, 'description') %>"

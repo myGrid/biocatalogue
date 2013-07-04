@@ -42,7 +42,7 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def recent_test_results(limit=5)
-    TestResult.find(:all, :conditions => ["service_test_id=?", self.id], 
+    TestResult.all(:conditions => ["service_test_id=?", self.id],
                           :limit => limit, :order => 'created_at DESC') || [ TestResult.new(:result => -1, :created_at => Time.now) ]
   end
   
@@ -123,8 +123,7 @@ class ServiceTest < ActiveRecord::Base
         last_success = last_successful_test_result
         
         unless last_success.nil?
-          next_failed = TestResult.find(:first,
-                                        :conditions => ["service_test_id=? AND result >= 1 AND created_at > ? ", self.id, last_success.created_at],
+          next_failed = TestResult.first(                                        :conditions => ["service_test_id=? AND result >= 1 AND created_at > ? ", self.id, last_success.created_at],
                                         :order => 'created_at ASC')
         
           if next_failed.nil?
@@ -143,7 +142,7 @@ class ServiceTest < ActiveRecord::Base
   end
   
   def last_successful_test_result
-    TestResult.find(:first, 
+    TestResult.first(
                     :conditions => ["service_test_id=? AND result=0 ", self.id], 
                     :order => 'created_at DESC')
   end

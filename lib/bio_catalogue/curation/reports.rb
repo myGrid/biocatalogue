@@ -25,7 +25,7 @@ module BioCatalogue
         duplicates = ActiveRecord::Base.connection.select_all(sql)
         
         duplicates.each do |d|
-          r = SoapOperation.find(:all, :conditions => { :soap_service_id => d['soap_service_id'], :name => d['name'] }, :include => :soap_service)
+          r = SoapOperation.all(:conditions => { :soap_service_id => d['soap_service_id'], :name => d['name'] }, :include => :soap_service)
           
           results << r unless r.empty?
         end
@@ -48,8 +48,8 @@ module BioCatalogue
         
         case attribute_name.downcase
           when "description", "documentation_url"
-            s = SoapService.find(:all, :conditions => "#{attribute_name} IS NULL OR #{attribute_name} = ''")
-            s.concat(RestService.find(:all, :conditions => "#{attribute_name} IS NULL OR #{attribute_name} = ''"))
+            s = SoapService.all(:conditions => "#{attribute_name} IS NULL OR #{attribute_name} = ''")
+            s.concat(RestService.all(:conditions => "#{attribute_name} IS NULL OR #{attribute_name} = ''"))
             
             s.each do |i|
               unless eval("i.has_#{attribute_name.downcase}?")

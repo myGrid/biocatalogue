@@ -197,7 +197,7 @@ class SeekDaCleaner
           puts ""
           puts ">> Searching for service with WSDL: '#{unwanted_wsdl}'"
           
-          existing = SoapService.find(:all, :conditions => { :wsdl_location => unwanted_wsdl })
+          existing = SoapService.all(:conditions => { :wsdl_location => unwanted_wsdl })
           
           puts "> Found #{existing.length}. Deleting the ones from SeekDa..."
           
@@ -221,7 +221,7 @@ class SeekDaCleaner
           puts ""
           puts ">> Searching for services with provider '#{unwanted_provider}'"
           
-          existing = Service.find(:all, 
+          existing = Service.all(
                                   :conditions => { :service_deployments => { :service_providers => { :name => unwanted_provider } } }, 
                                   :joins => [ { :service_deployments => :provider } ])   
           

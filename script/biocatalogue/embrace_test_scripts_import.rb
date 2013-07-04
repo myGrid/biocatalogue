@@ -327,7 +327,7 @@ module Embrace
         end
         
         def self.already_imported?(test_id)
-         hist = Relationship.find(:first, :conditions => {:object_id => test_id, :object_type => 'EmbraceTest'} )
+         hist = Relationship.first(:conditions => {:object_id => test_id, :object_type => 'EmbraceTest'} )
          unless hist.nil?
            return true
          end

@@ -25,7 +25,7 @@ class UrlMonitor < ActiveRecord::Base
   
   # Finder to get the entry for the parent specified
   def self.entry_for(parent_type, parent_id, property)
-    UrlMonitor.find(:first, 
+    UrlMonitor.first(
                     :conditions => { :parent_id => parent_id, :parent_type => parent_type, :property => property.to_s },
                     :order => "created_at DESC")
   end

@@ -169,13 +169,13 @@ private
     # Now add any other filters, if specified by "also=..."
     
     if @api_params[:also].include?('inputs')
-      @soap_operation.soap_inputs.find(:all, :select => "id").each do |input|
+      @soap_operation.soap_inputs.all(:select => "id").each do |input|
         new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asin, input.id)
       end
     end
     
     if @api_params[:also].include?('outputs')
-      @soap_operation.soap_outputs.find(:all, :select => "id").each do |output|
+      @soap_operation.soap_outputs.all(:select => "id").each do |output|
         new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asout, output.id)
       end
     end

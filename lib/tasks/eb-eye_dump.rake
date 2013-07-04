@@ -49,7 +49,7 @@ namespace :biocatalogue do
           datestamp = Time.now.strftime("%Y-%m-%d_%H-%M-%S")
           month = Time.now.strftime("%b").upcase
           date = Time.now.strftime("%d-#{month}-%Y")
-          service_deployments = ServiceDeployment.find(:all)
+          service_deployments = ServiceDeployment.all
           xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <database>
   <name>biocatalogue</name>

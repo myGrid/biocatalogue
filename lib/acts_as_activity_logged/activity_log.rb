@@ -39,7 +39,7 @@ class ActivityLog < ActiveRecord::Base
   end
   
   def self.latest(limit=5)
-    self.find(:all, :limit => limit)
+    self.all(:limit => limit)
   end
   
   # options are :culprit, :referenced, :activity_loggable, :limit
@@ -52,7 +52,7 @@ class ActivityLog < ActiveRecord::Base
     options.delete(:additional)
     conditions = self.build_sql_conditional_for(options)
     conditions << (conditions ? " AND " : "") << additionals.join(" #{@operator || "AND"} ") if additionals
-    self.find(:all, :conditions => conditions, :limit => limit, :order => order)
+    self.all(:conditions => conditions, :limit => limit, :order => order)
   end
 
 private

@@ -71,7 +71,7 @@ class RestRepresentationsController < ApplicationController
     
     destroy_method_rep_map()
     
-    is_not_used = RestMethodRepresentation.find(:all, :conditions => {:rest_representation_id => @rest_representation.id}).empty?
+    is_not_used = RestMethodRepresentation.all(:conditions => {:rest_representation_id => @rest_representation.id}).empty?
     @rest_representation.destroy if is_not_used
     
     respond_to do |format|
@@ -125,7 +125,7 @@ class RestRepresentationsController < ApplicationController
   end
     
   def get_redirect_url()
-    method_rep_map = RestMethodRepresentation.find(:first, 
+    method_rep_map = RestMethodRepresentation.first(
                          :conditions => {:rest_representation_id => @rest_representation.id, 
                          :rest_method_id => params[:rest_method_id]})
 
@@ -135,7 +135,7 @@ class RestRepresentationsController < ApplicationController
   end
   
   def destroy_method_rep_map() # USES params[:rest_method_id], params[:http_cycle], and @rest_representation.id
-    method_rep_map = RestMethodRepresentation.find(:first, 
+    method_rep_map = RestMethodRepresentation.first(
                          :conditions => {:rest_representation_id => @rest_representation.id, 
                          :rest_method_id => params[:rest_method_id],
                          :http_cycle => params[:http_cycle]})

@@ -69,7 +69,7 @@ attr_accessor :options
       if options[:server]
         update_submitter_for_server options[:server] 
       elsif options[:all]
-        SoaplabServer.find(:all).each do |sls|
+        SoaplabServer.all.each do |sls|
           update_submitter_for_server sls.location
         end
       else

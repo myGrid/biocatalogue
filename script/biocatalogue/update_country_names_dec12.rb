@@ -26,7 +26,7 @@ begin
   ServiceDeployment.record_timestamps = false
 
   ServiceDeployment.transaction do 
-    ServiceDeployment.find(:all, :conditions =>["country IS NOT ?", nil]).each do |sd|
+    ServiceDeployment.all(:conditions =>["country IS NOT ?", nil]).each do |sd|
       new_country = case sd.country
       when "CÔTE D'IVOIRE"
         "Côte d'Ivoire"

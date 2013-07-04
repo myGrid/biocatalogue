@@ -8,7 +8,7 @@ namespace :biocatalogue do
   namespace :monitoring do
     desc "Seed service responsibles with submiters"
     task :seed_service_responsibles => :environment do
-      Service.find(:all).each  do |service|
+      Service.all.each  do |service|
         puts "Seeding responsible for service : #{service.id}"
         ServiceResponsible.add(service.submitter.id, service.id) if service.submitter.class.name == "User"
       end

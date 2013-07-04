@@ -236,7 +236,7 @@ module ActsAsSolr #:nodoc:
     # This can be very useful for things such as updating based on conditions or
     # using eager loading for indexed associations.
     def rebuild_solr_index(batch_size=0, &finder)
-      finder ||= lambda { |ar, options| ar.find(:all, options.merge({:order => self.primary_key})) }
+      finder ||= lambda { |ar, options| ar.all(options.merge({:order => self.primary_key})) }
       start_time = Time.now
 
       if batch_size > 0

@@ -61,7 +61,7 @@ class LinksChecker
     @all_links           = []
     @all_data_with_links = []
     conditions           = 'archived_at IS NULL'
-    Service.find(:all, :conditions => conditions ).each do |service|
+    Service.all(:conditions => conditions ).each do |service|
       puts "Searching links for service : #{service.name}"
       @all_links.concat(links_for_service(service))
       @all_data_with_links << links_for_service_h(service) unless links_for_service_h(service).empty?

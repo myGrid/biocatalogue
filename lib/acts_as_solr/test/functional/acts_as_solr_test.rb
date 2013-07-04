@@ -181,7 +181,7 @@ class ActsAsSolrTest < Test::Unit::TestCase
   def test_rebuild_solr_index
     assert_equal 1, Book.count_by_solr('splinter')
     
-    Book.find(:first).solr_destroy
+    Book.first.solr_destroy
     assert_equal 0, Book.count_by_solr('splinter')
     
     Book.rebuild_solr_index
@@ -194,10 +194,10 @@ class ActsAsSolrTest < Test::Unit::TestCase
   def test_solr_save_and_solr_destroy
     assert_equal 1, Book.count_by_solr('splinter')
   
-    Book.find(:first).solr_destroy
+    Book.first.solr_destroy
     assert_equal 0, Book.count_by_solr('splinter')
     
-    Book.find(:first).solr_save
+    Book.first.solr_save
     assert_equal 1, Book.count_by_solr('splinter')
   end
   
@@ -300,7 +300,7 @@ class ActsAsSolrTest < Test::Unit::TestCase
   # to rebuild_solr_index
   def test_using_rebuild_solr_index_with_batch
     assert_equal 2, Movie.count_by_solr('office OR napoleon')
-    Movie.find(:all).each(&:solr_destroy)
+    Movie.all.each(&:solr_destroy)
     assert_equal 0, Movie.count_by_solr('office OR napoleon')
     
     Movie.rebuild_solr_index 100

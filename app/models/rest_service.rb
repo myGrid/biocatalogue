@@ -65,8 +65,8 @@ class RestService < ActiveRecord::Base
   def self.check_duplicate(endpoint)
     endpoint.sub!(/\/$/, '') # remove trailing '/' from endpoint
     
-    obj = ServiceDeployment.find(:first, :conditions => { :endpoint => endpoint })
-    obj = ServiceDeployment.find(:first, :conditions => { :endpoint => endpoint + '/' }) unless obj
+    obj = ServiceDeployment.first(:conditions => { :endpoint => endpoint })
+    obj = ServiceDeployment.first(:conditions => { :endpoint => endpoint + '/' }) unless obj
           
     return (obj.nil? ? nil : obj.service)
   end
