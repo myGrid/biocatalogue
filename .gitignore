@@ -19,7 +19,7 @@ public/javascripts/base_packaged.js
 public/stylesheets/base_packaged.css
 data/search_query_suggestions.txt
 data/eb-eye/eb-eye_dump_*
-solr/
+/solr/
 *.rails2
 .gitkeep
 config/initializers/secret_token.rb
