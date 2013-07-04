@@ -1,9 +1,6 @@
 require 'test_helper'
 require 'shoulda'
-#require File.join('../', 'lib','addthis')
-
-require 'addthis'
-require '../unit/helpers/addthis_test_helper'
+$LOAD_PATH.unshift(File.join('helpers', 'addthis_test_helper'))
 
 class AddthisTest < Test::Unit::TestCase
 
