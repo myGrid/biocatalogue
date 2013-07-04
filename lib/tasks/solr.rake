@@ -25,7 +25,7 @@ namespace :solr do
         end
         sleep(5)
         File.open("#{SOLR_PIDS_PATH}/#{Rails.env}_pid", "w"){ |f| f << pid}
-        puts "#{Rails.env} Solr started successfully on #{SOLR_PORT}, pid: #{pid}."
+        puts "#{Rails.env.capitalize} Solr started successfully on #{SOLR_PORT}, pid: #{pid}."
       end
     end
   end
@@ -43,7 +43,7 @@ namespace :solr do
           Process.kill('TERM', pid.to_i)
         end
         File.unlink(file_path)
-        Rake::Task["solr:destroy_index"].invoke if Rails.env == 'test'
+        Rake::Task["solr:destroy_index"].invoke if Rails.env.test?
         puts "Solr shutdown successfully."
       else
         puts "PID file not found at #{file_path}. Either Solr is not running or no PID file was written."
@@ -54,7 +54,7 @@ namespace :solr do
   desc 'Remove Solr index'
   task :destroy_index do
     require Rails.root.join("lib", "acts_as_solr", "config", "solr_environment" )
-    raise "In production mode.  I'm not going to delete the index, sorry." if Rails.env == "production"
+    raise "In production mode.  I'm not going to delete the index, sorry." if Rails.env.production?
     if File.exists?("#{SOLR_DATA_PATH}")
       Dir["#{SOLR_DATA_PATH}/index/*"].each{|f| File.unlink(f)}
       Dir.rmdir("#{SOLR_DATA_PATH}/index")
