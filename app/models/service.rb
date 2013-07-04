@@ -391,7 +391,7 @@ class Service < ActiveRecord::Base
   # background.
   def submit_delete_job
     begin
-      Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceDelete.new(self), 0, 5.seconds.from_now)
+      Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceDelete.new(self), :priority => 0, :run_at => 5.seconds.from_now)
       return true
     rescue Exception => ex
       logger.error(ex.to_s)
@@ -473,7 +473,7 @@ protected
     if ENABLE_TWITTER
       BioCatalogue::Util.say "Called Service#tweet_create to submit job to tweet"
       msg = "New #{self.service_types[0]} service: #{BioCatalogue::Util.display_name(self)} - #{BioCatalogue::Api.uri_for_object(self)}"
-      Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), 0, 5.seconds.from_now)
+      Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), :priority => 0, :run_at => 5.seconds.from_now)
     end
   end
   
