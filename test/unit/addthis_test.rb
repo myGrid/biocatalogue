@@ -1,6 +1,6 @@
 require 'test_helper'
-require 'shoulda'
-$LOAD_PATH.unshift(File.join('helpers', 'addthis_test_helper'))
+include Jaap3::Addthis::Helper
+
 
 class AddthisTest < Test::Unit::TestCase
 
