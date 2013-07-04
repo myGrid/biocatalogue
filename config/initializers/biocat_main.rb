@@ -70,6 +70,9 @@ require 'oauth_authorize'
 
 require 'bio_catalogue/resource'
 require 'country_codes'
+
+require 'will_paginate/array'
+
 # Require all .rb files from lib/ directory
 #Dir[File.join(File.dirname(__FILE__), '../../lib/**/*.rb')].each {|file| require file}
 
