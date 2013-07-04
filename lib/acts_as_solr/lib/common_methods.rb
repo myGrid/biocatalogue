@@ -60,7 +60,7 @@ module ActsAsSolr #:nodoc:
     # Sends the delete command to Solr
     def solr_delete(solr_ids)
       #ActsAsSolr::Post.execute(Solr::Request::Delete.new(:id => solr_ids))
-      Delayed::Job.enqueue(BioCatalogue::Jobs::SolrDelete.new(solr_ids), 0, 5.seconds.from_now)
+      Delayed::Job.enqueue(BioCatalogue::Jobs::SolrDelete.new(solr_ids), :priority => 0, :run_at => 5.seconds.from_now)
     end
     
     # Sends the commit command to Solr
