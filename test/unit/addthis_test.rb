@@ -1,9 +1,6 @@
 require 'test_helper'
-require 'shoulda'
-#require File.join('../', 'lib','addthis')
+include Jaap3::Addthis::Helper
 
-require 'addthis'
-require '../unit/helpers/addthis_test_helper'
 
 class AddthisTest < Test::Unit::TestCase
 

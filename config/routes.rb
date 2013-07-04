@@ -362,9 +362,6 @@ BioCatalogue::Application.routes.draw do
   # Route to old metal "alive" now in app/controllers/alive_controller.rb
   match '/alive' => 'alive#index'
 
-  # Route to old metal "linked_data_handler" now in app/controllers/linked_data_handler_controller.rb
-  match '/linked_data_handler' => 'linked_data_handler#index'
-
   # Replaced with root :to => 'home#index' as we use root_url and root_path in the code
   #match '/' => 'home#index'
   root :to => 'home#index'
