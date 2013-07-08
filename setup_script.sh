@@ -16,7 +16,7 @@ then
     git branch --track $LOCAL_BRANCH $REMOTE_BRANCH
 fi
 
-echo "Switching to branch $LOCAL_BRANCHÉ"
+echo "Switching to branch $LOCAL_BRANCH"
 git checkout $LOCAL_BRANCH
 
 echo "Running bundle install..."
