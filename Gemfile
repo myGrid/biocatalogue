@@ -60,9 +60,9 @@ gem 'markaby'
 #gem "validates_url_format_of"
 gem "acts_as_trashable"
 gem "my_annotations", :git => 'git://github.com/myGrid/annotations.git'
-gem "will_paginate"#, "~>3.0.4"
+gem "will_paginate"
 gem "better_logging"
-gem "exception_notification", :require => 'exception_notifier'
+gem "exception_notification", "<4.0.0", :require => 'exception_notifier'
 gem 'prototype-rails', :git => 'git://github.com/rails/prototype-rails.git'
 gem 'country-select'
 
