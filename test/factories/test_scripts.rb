@@ -10,6 +10,7 @@ Factory.define :test_script do |ts|
   ts.prog_language "soapui"
   ts.submitter {|a| a.association(:user)}
   ts.content_blob {|a| a.association(:content_blob)}
+  ts.service_test {|a| a.association(:service_test)}
   
 end
 

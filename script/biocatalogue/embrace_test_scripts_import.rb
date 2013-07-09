@@ -305,8 +305,11 @@ module Embrace
            a_test.content_type = 'application/zip'
            a_test.description  = description 
            a_test.service_id   = existing_service.id
+           service_test = ServiceTest.new(:service_id => existing_service.id,
+                          :test => a_test,
+                          :activated_at => Time.now)
            begin
-              if a_test.save!
+              if service_test.save!
                 @stats.counts[:success_script_imports] +=1                                                 
                 relationship = Relationship.new(:subject_type => a_test.service_test.class.name,
                                                     :subject_id   => a_test.service_test.id,
