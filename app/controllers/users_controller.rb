@@ -515,7 +515,7 @@ private
   def find_user
     # Old Rails 2 style
     #@user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")
-    @user = User.find(params[:id]).where("activated_at IS NOT NULL")
+    @user = User.where("activated_at IS NOT NULL").find(params[:id])
   end
 
   def find_user_inclusive
@@ -526,7 +526,7 @@ private
     find_user if !defined?(@user) or @user.nil?
     unless mine?(@user)     
       respond_to do |format|
-        flash[:error] = "You don't have the rights to perform this action."
+        flash[:error] = "You do not have the rights to perform this action."
         format.html { redirect_to :users }
         format.xml  { redirect_to :users => @user.errors, :status => :unprocessable_entity }
         format.json  { error_to_back_or_home("You are not allowed to perform this action") }
