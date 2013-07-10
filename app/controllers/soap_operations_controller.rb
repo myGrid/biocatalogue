@@ -157,7 +157,7 @@ protected
   def find_soap_operation
     # Old Rails 2 style
     #@soap_operation = SoapOperation.find(params[:id], :include => [ :soap_inputs, :soap_outputs ])
-    @soap_operation = SoapOperation.find(params[:id]).includes(:soap_inputs, :soap_outputs)
+    @soap_operation = SoapOperation.includes(:soap_inputs, :soap_outputs).find(params[:id])
   end
   
 private
