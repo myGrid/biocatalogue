@@ -84,7 +84,9 @@ class User < ActiveRecord::Base
     return nil if login.blank? or password.blank?
 
     # Check for a User with email matching 'login'
-    u = find(:first, :conditions => ["email = ?", login])
+    # Old Rails 2 style
+    #u = find(:first, :conditions => ["email = ?", login])
+    u = where("email = ?", login).first
 
     u && u.activated? && u.authenticated?(password) ? u : nil
   end
@@ -249,8 +251,10 @@ class User < ActiveRecord::Base
   
   # TODO: see #other_services_responsible; need to clarify how these two methods are related and possibly combine/separate out the logic somewhere else.
   def active_services_responsible_for
-    Service.all(                 :joins => [ :service_responsibles ],
-                 :conditions => [ "service_responsibles.user_id = ? AND service_responsibles.status = 'active'", self.id ])
+    # Old Rails 2 style
+    #Service.all(                 :joins => [ :service_responsibles ],
+    #                             :conditions => [ "service_responsibles.user_id = ? AND service_responsibles.status = 'active'", self.id ])
+    Service.joins(:service_responsibles).where(["service_responsibles.user_id = ? AND service_responsibles.status = 'active'", self.id ])
   end
   
   def is_admin?

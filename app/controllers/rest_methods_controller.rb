@@ -327,7 +327,9 @@ private # ========================================
   end
 
   def find_rest_method
-    @rest_method = RestMethod.find(params[:id], :include => :rest_resource)
+    #Old Rails 2 style
+    #@rest_method = RestMethod.find(params[:id], :include => :rest_resource)
+    @rest_method = RestMethod.find(params[:id]).includes(:rest_resource)
   end
   
   def find_rest_methods
@@ -388,10 +390,14 @@ private # ========================================
   def destroy_unused_objects(id_list, is_parameter=true)
     id_list.sort.each do |obj_id|
       if is_parameter
-        not_used = RestMethodParameter.all(:conditions => {:rest_parameter_id => obj_id}).empty?
+        # Old Rails 2 style
+        #not_used = RestMethodParameter.all(:conditions => {:rest_parameter_id => obj_id}).empty?
+        not_used = RestMethodParameter.where(:rest_parameter_id => obj_id).empty?
         RestParameter.destroy(obj_id) if not_used
       else
-        not_used = RestMethodRepresentation.all(:conditions => {:rest_representation_id => obj_id}).empty?
+        # Old Rails 2 style
+        #not_used = RestMethodRepresentation.all(:conditions => {:rest_representation_id => obj_id}).empty?
+        not_used = RestMethodRepresentation.where(:rest_representation_id => obj_id).empty?
         RestRepresentation.destroy(obj_id) if not_used      
       end
     end # id_list.each

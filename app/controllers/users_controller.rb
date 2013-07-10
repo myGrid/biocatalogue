@@ -513,7 +513,9 @@ private
   end
   
   def find_user
-    @user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")
+    # Old Rails 2 style
+    #@user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")
+    @user = User.find(params[:id]).where("activated_at IS NOT NULL")
   end
 
   def find_user_inclusive
