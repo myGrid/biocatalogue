@@ -225,7 +225,7 @@ DEPENDENCIES
   google_analytics
   httparty
   json
-  libxml-ruby
+  libxml-ruby (= 2.6.0)
   mail (= 2.5.3)
   markaby
   mash

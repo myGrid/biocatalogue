@@ -18,7 +18,7 @@ gem "addressable"
 gem "daemons"
 gem "dnsruby"
 gem "SystemTimer"
-gem "libxml-ruby"
+gem 'libxml-ruby',"2.6.0",:require => "libxml"
 gem "mongrel"
 gem "tzinfo"
 
