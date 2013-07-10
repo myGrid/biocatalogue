@@ -54,7 +54,7 @@ module ActsAsSolr #:nodoc:
     # if rails logger is available
     def self.plog text
       puts text
-      RAILS_DEFAULT_LOGGER.warn text if defined? RAILS_DEFAULT_LOGGER
+      Rails.logger.warn text if defined? Rails.logger
     end
   end
   

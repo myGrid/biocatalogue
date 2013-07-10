@@ -8,7 +8,7 @@
 
 module BioCatalogue
   module CacheHelper
-    
+
     NONE_VALUE = "<none>".freeze
     
     def self.set_base_host(base_host)
@@ -139,7 +139,7 @@ module BioCatalogue
           end
           
         else
-          Util.say("No cache defined for #{RAILS_ENV} environment. That's okay, an in memory store will be used instead for caching...")
+          Util.say("No cache defined for #{Rails.env} environment. That's okay, an in memory store will be used instead for caching...")
         end
         
       else
@@ -152,8 +152,8 @@ module BioCatalogue
       
       CACHE.reset if defined?(CACHE) and !CACHE.nil?
       
-      if defined?(RAILS_CACHE) and !RAILS_CACHE.nil?
-        RAILS_CACHE.instance_eval do 
+      if defined?(Rails.cache) and !Rails.cache.nil?
+        Rails.cache.instance_eval do
           @data.reset
         end
       end
