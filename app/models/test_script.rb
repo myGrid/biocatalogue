@@ -71,10 +71,12 @@ class TestScript < ActiveRecord::Base
   # Helper class method to lookup all tests assigned
   # to all testable types for a given user.
   def self.find_tests_by_user(user)
-    find(:all,
-      :conditions => ["submitter_id = ?", user.id],
-      :order => "created_at DESC"
-    )
+    # Old Rails 2 style
+    #find(:all,
+    #  :conditions => ["submitter_id = ?", user.id],
+    #  :order => "created_at DESC"
+    #)
+    find.where(":submitter_id = ?", user.id).order("created_at DESC")
   end
   
   # Create an entry into the content_blobs table

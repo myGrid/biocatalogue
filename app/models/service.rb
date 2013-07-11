@@ -72,8 +72,10 @@ class Service < ActiveRecord::Base
   end
   
   def self.latest(limit=10)
-    self.all(              :order => "created_at DESC",
-              :limit => limit)
+    # Old Rails 2 style
+    #self.all(              :order => "created_at DESC",
+    #                       :limit => limit)
+    self.order("created_at DESC").limit(limit)
   end
   
   def to_json
@@ -105,9 +107,11 @@ class Service < ActiveRecord::Base
   end
   
   def service_version_instances_by_type(type_model_name)
-    type_model_name.constantize.all(                                     :conditions => { :service_versions => { :service_id => self.id } },
-                                     :joins => [ :service_version ])
-  end 
+    # Old Rails 2
+    #type_model_name.constantize.all(                                     :conditions => { :service_versions => { :service_id => self.id } },
+    #                                 :joins => [ :service_version ])
+    type_model_name.constantize.joins(:service_version).where(:service_versions => {:service_id => self.id})
+  end
   
   # Gets an array of all the service types that this service has (as part of it's versions).
   def service_types
@@ -183,8 +187,10 @@ class Service < ActiveRecord::Base
       end
       
       service_ids = service_ids.uniq.reject{|i| i == self.id}
-      
-      services = Service.all(:conditions => { :id => service_ids[0...limit] })
+
+      # Old Rails 2 style
+      #services = Service.all(:conditions => { :id => service_ids[0...limit] })
+      services = Service.where(:id => service_ids[0...limit])
     end
     
     return services
@@ -193,11 +199,16 @@ class Service < ActiveRecord::Base
   # IF this is Service is part of a Soaplab Server then this method returns that SoaplabServer entry.
   # Otherwise it returns nil, which indicates that this Service is not part of a Soaplab Server.
   def soaplab_server
-    rel = Relationship.first(
-                            :conditions => { :subject_type => "Service", 
+    # Old Rails 2 style
+    #rel = Relationship.first(
+    #    :conditions => { :subject_type => "Service",
+    #                     :subject_id => self.id,
+    #                     :predicate => "BioCatalogue:memberOf",
+    #                     :object_type => "SoaplabServer" })
+    rel = Relationship.where(:subject_type => "Service",
                                              :subject_id => self.id, 
                                              :predicate => "BioCatalogue:memberOf", 
-                                             :object_type => "SoaplabServer" })
+                                             :object_type => "SoaplabServer").first
     rel.nil? ? rel : rel.object
   end
   
@@ -210,7 +221,9 @@ class Service < ActiveRecord::Base
   end
   
   def service_tests_by_type(type)
-    ServiceTest.all(:conditions => {:test_type => type, :service_id => self.id})
+    # Old Rails 2 style
+    #ServiceTest.all(:conditions => {:test_type => type, :service_id => self.id})
+    ServiceTest.where(:test_type => type, :service_id => self.id)
   end
   
   # e.g. To find all test scripts:  service_test_instances_by_type('TestScript')
@@ -274,7 +287,9 @@ class Service < ActiveRecord::Base
   # service by adding them to the set of those responsible to
   # manage the service the service by default.  
   def all_responsibles
-    curators = User.all(:conditions => {:role_id => [ 1, 2 ]})
+    # Old Rails 2 style
+    #curators = User.all(:conditions => {:role_id => [ 1, 2 ]})
+    curators = User.where(:role_id => [ 1, 2 ])
     responsibles = self.service_responsibles.collect{|r| r.user if r.status='active'}.compact
     responsibles << self.submitter if self.submitter_type == "User"
     responsibles.concat(curators)
@@ -282,9 +297,13 @@ class Service < ActiveRecord::Base
   end
   
   def pending_responsibility_requests(limit=5)
-    reqs = ResponsibilityRequest.all(:conditions => {:subject_type => self.class.name,
-                                                            :subject_id => self.id,
-                                                            :status => 'pending'}, :limit => limit)
+    # Old Rails 2 style
+    #reqs = ResponsibilityRequest.all(:conditions => {:subject_type => self.class.name,
+    #                                                        :subject_id => self.id,
+    #                                                        :status => 'pending'}, :limit => limit)
+    reqs = ResponsibilityRequest.where(:subject_type => self.class.name,
+                                           :subject_id => self.id,
+                                           :status => 'pending').limit(limit)
     return reqs
   end
   
@@ -339,27 +358,45 @@ class Service < ActiveRecord::Base
   
   def annotations_activity_logs(since, limit=100)
     obj_ids = self.associated_object_ids
-    
-    ActivityLog.all(      :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND (
+    # Old Rails 2 style
+    #ActivityLog.all(      :conditions => [ "action = 'create' AND activity_loggable_type = 'Annotation' AND (
+    #                   (activity_loggable_type = 'Service' AND activity_loggable_id = ?) OR (referenced_type = 'Service' AND referenced_id = ?) OR
+    #                   (activity_loggable_type = 'ServiceDeployment' AND activity_loggable_id IN (?)) OR (referenced_type = 'ServiceDeployment' AND referenced_id IN (?)) OR
+    #                   (activity_loggable_type = 'ServiceVersion' AND activity_loggable_id IN (?)) OR (referenced_type = 'ServiceVersion' AND referenced_id IN (?)) OR
+    #                   (activity_loggable_type = 'SoapService' AND activity_loggable_id IN (?)) OR (referenced_type = 'SoapService' AND referenced_id IN (?)) OR
+    #                   (activity_loggable_type = 'RestService' AND activity_loggable_id IN (?)) OR (referenced_type = 'RestService' AND referenced_id IN (?))
+    #                   ) AND created_at >= ?",
+    #                   "Service",
+    #                   self.id,
+    #                   (obj_ids["ServiceDeployments"] || []),
+    #                   (obj_ids["ServiceDeployments"] || []),
+    #                   (obj_ids["ServiceVersions"] || []),
+    #                   (obj_ids["ServiceVersions"] || []),
+    #                   (obj_ids["SoapServices"] || []),
+    #                   (obj_ids["SoapServices"] || []),
+    #                   (obj_ids["RestServices"] || []),
+    #                   (obj_ids["RestServices"] || []),
+    #                   since ],
+    #  :order => "created_at DESC",
+    #  :limit => limit)
+    ActivityLog.where("action = 'create' AND activity_loggable_type = 'Annotation' AND (
                        (activity_loggable_type = 'Service' AND activity_loggable_id = ?) OR (referenced_type = 'Service' AND referenced_id = ?) OR
                        (activity_loggable_type = 'ServiceDeployment' AND activity_loggable_id IN (?)) OR (referenced_type = 'ServiceDeployment' AND referenced_id IN (?)) OR
                        (activity_loggable_type = 'ServiceVersion' AND activity_loggable_id IN (?)) OR (referenced_type = 'ServiceVersion' AND referenced_id IN (?)) OR
                        (activity_loggable_type = 'SoapService' AND activity_loggable_id IN (?)) OR (referenced_type = 'SoapService' AND referenced_id IN (?)) OR
                        (activity_loggable_type = 'RestService' AND activity_loggable_id IN (?)) OR (referenced_type = 'RestService' AND referenced_id IN (?))
-                       ) AND created_at >= ?", 
-                       "Service", 
-                       self.id,
-                       (obj_ids["ServiceDeployments"] || []),
-                       (obj_ids["ServiceDeployments"] || []),
-                       (obj_ids["ServiceVersions"] || []),
-                       (obj_ids["ServiceVersions"] || []),
-                       (obj_ids["SoapServices"] || []),
-                       (obj_ids["SoapServices"] || []),
-                       (obj_ids["RestServices"] || []),
-                       (obj_ids["RestServices"] || []),
-                       since ],
-      :order => "created_at DESC",
-      :limit => limit)
+                       ) AND created_at >= ?",
+                                           "Service",
+                                           self.id,
+                                           (obj_ids["ServiceDeployments"] || []),
+                                           (obj_ids["ServiceDeployments"] || []),
+                                           (obj_ids["ServiceVersions"] || []),
+                                           (obj_ids["ServiceVersions"] || []),
+                                           (obj_ids["SoapServices"] || []),
+                                           (obj_ids["SoapServices"] || []),
+                                           (obj_ids["RestServices"] || []),
+                                           (obj_ids["RestServices"] || []),
+                                           since).order("created_at DESC").limit(limit)
   end
   
   def activate_service_tests!
