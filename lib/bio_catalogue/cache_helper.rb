@@ -161,7 +161,7 @@ module BioCatalogue
     
     module Expires
       #require 'action_controller/test_process'
-      
+
       def expire_fragment(key, options=nil)
         if defined?(BASE_HOST) or defined?(SITE_BASE_HOST)
           if @controller.nil?
@@ -172,8 +172,8 @@ module BioCatalogue
             #  @url = ActionController::UrlRewriter.new(request, {})
             #end
           end
-  
-          @controller.expire_fragment(key, options)
+
+          @controller.expire_fragment(Rails.application.routes.url_helpers.url_for(key.merge({:only_path => true})), options)
         end
       end
       
