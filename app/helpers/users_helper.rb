@@ -18,7 +18,7 @@ module UsersHelper
   def rpx_accounts_provider_logos_with_link
         RPXNow.popup_code(rpx_accounts_provider_logos,
                       RPX_REALM,
-                      url_for(:controller => :session, :action => :rpx_token, :only_path => false)).html_safe
+                      session_rpx_token_url).html_safe
   end
   
   def list_of_rpx_accounts
