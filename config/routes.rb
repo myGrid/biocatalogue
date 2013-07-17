@@ -136,7 +136,8 @@ BioCatalogue::Application.routes.draw do
 
     member do
       get :annotations
-      get :edit_location_by_popup
+      post :edit_location_by_popup
+      post :update_location
     end
 
   end
@@ -200,7 +201,7 @@ BioCatalogue::Application.routes.draw do
       get :annotations
       get :deployments
       get :resources
-      get :edit_base_endpoint_by_popup
+      post :edit_base_endpoint_by_popup
       post :update_base_endpoint
     end
 
