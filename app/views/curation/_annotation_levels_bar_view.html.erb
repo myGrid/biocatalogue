@@ -15,7 +15,7 @@
         :series => {:series_label => 'id', :data_method => 'annotation_level'},
         :chart_options => {
           :height => 600,
-          :width => 10 * services.size ,
+          :width => 1000 ,
           :is_3_d => false,
           :legend => 'none',
           :colors => ["#35586C"],
@@ -23,6 +23,6 @@
           :title_x => 'Service ID',
           :title_y => 'Annotations Levels'
         }
-      )
+      ).html_safe
    -%>
    

@@ -51,7 +51,7 @@ module CurationHelper
         end
       end
       str << '</ul> '
-      return str
+      return str.html_safe
     end
     return ''
   end
