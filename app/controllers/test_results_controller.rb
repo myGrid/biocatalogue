@@ -41,7 +41,7 @@ class TestResultsController < ApplicationController
     # FIXME: implement this following the API pattern
     respond_to do |format|
       if @test_result.save
-        flash[:notice] = 'TestResult was successfully created.'
+        flash[:notice] = 'Test result was successfully created.'
         #format.html { redirect_to(@test_result.service_test.service) }
         format.xml  { render :xml => @test_result.service_test.service, :status => :created, :location => @test_result.service_test.service }
       else

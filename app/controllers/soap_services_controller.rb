@@ -231,7 +231,7 @@ class SoapServicesController < ApplicationController
                 pc_success = @soap_service.post_create(data['endpoint'], current_user)
                 if pc_success 
                   @new_services << @soap_service.service(true)
-                  flash[:notice] = 'SoapService was successfully created.'
+                  flash[:notice] = 'Soap service was successfully created.'
                 else
                   @soap_service.errors.add_to_base("Service with url, #{url}, was not saved. post_create failed!")
                   @error_urls << url
