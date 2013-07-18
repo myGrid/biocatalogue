@@ -9,7 +9,7 @@
 %>
 
 <div class="box_info_standout" style="text-align:center;">
-	About <b>TestScripts</b> 
+	<!--About <b>Test scripts:</b>-->
 	<%= link_to_function(("Click here for more info on test scripts" + expand_image).html_safe, visual_effect(:toggle_blind, "about_testscripts", :duration => 0.3), :style => "text-decoration:none;").html_safe %>
 	<div id="about_testscripts" style="display:none;">
 		<%= render :partial => "test_scripts/about_testscripts" -%>
