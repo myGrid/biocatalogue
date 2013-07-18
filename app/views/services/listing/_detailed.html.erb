@@ -17,7 +17,8 @@
   <table style="width: 100%; table-layout: fixed;">
     <tr>
       <td>
-        <% cache(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service.id) do -%>
+        <% #cache(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service.id) do
+           cache(['services', 'listing', "name_aliases", service.id.to_s].join('/')) do-%>
           <div style="margin-top: 0.3em;">
             <%= render :partial => "annotations/name_aliases",
                        :locals => { :annotatable => service,
@@ -28,7 +29,8 @@
           </div>
         <% end %>
         
-        <% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
+        <% #cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do
+           cache(['services', 'listing', "categories", service.id.to_s].join('/')) do -%>
           <div style="margin-top: 1em;">
             <%= render :partial => "annotations/categories", 
                        :locals => { :service => service,
@@ -45,7 +47,8 @@
     </tr>
   </table>
   
-  <% cache(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service.id) do -%>
+  <% #cache(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service.id) do
+     cache(['services', 'listing', "descriptions", service.id.to_s].join('/')) do -%>
     <div style="margin-top: 1em; font-size: 85%;">
       <%= render :partial => "annotations/descriptions",
             :locals => { :annotatable => service_version_instance,

@@ -48,7 +48,8 @@
               :title => tooltip_title_attrib(display_name(service), 200)) -%>
       </p>
 
-      <% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
+      <% #cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do
+         cache(['services', 'listing', "categories", service.id.to_s].join('/')) do -%>
         <div style="margin-top: 0.8em;">
           <%= render :partial => "annotations/categories",
                      :locals => { :service => service,
