@@ -11,6 +11,5 @@ Factory.define :script_service_test, :parent => :service_test do |service_test|
 end
 
 Factory.define :script_service_test_with_result, :parent => :script_service_test do |service_test|
- service_test.test_results {|t| t.association(:test_result)}
+ service_test.after_create {|st| Factory(:test_result, :service_test => st) }
 end
-
