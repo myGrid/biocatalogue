@@ -73,3 +73,10 @@ gem 'redbox', :git=>"git://github.com/SysMO-DB/redbox"
 gem 'validates_email_format_of'
 
 gem "white_list", :git=>"https://github.com/neubloc/white_list.git"
+
+# sunspot_rails has nokogiri as a dependancy and Nokogiri 1.6.0 uses r1.9
+# so we need to install this specific version here
+gem 'nokogiri', '~>1.5.10'
+gem 'sunspot_rails'
+gem 'sunspot_solr'
+gem 'progress_bar'
