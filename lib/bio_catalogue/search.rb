@@ -16,7 +16,7 @@ module BioCatalogue
     
     # As new models are indexed (and therefore need to be searched on) add them here.
     @@models_for_search = (Mapper::SERVICE_STRUCTURE_MODELS + [ ServiceProvider, User, Registry, Annotation ]).freeze
-    
+
     @@search_query_suggestions_file_path = File.join(Rails.root, 'data', 'search_query_suggestions.txt')
     
     @@limit = 10000
@@ -24,7 +24,7 @@ module BioCatalogue
     def self.on?
       return ENABLE_SEARCH
     end
-    
+
     def self.scope_to_visible_search_type(scope)
       return "" if scope.blank?
       case scope  
@@ -157,10 +157,8 @@ module BioCatalogue
         # Finally write it to the cache...
         Rails.cache.write(cache_key, search_result_docs, :expires_in => SEARCH_ITEMS_FROM_SOLR_CACHE_TIME)
       end
-      
       scopes_for_results = nil
-      
-      if scope.is_a? Array 
+      if scope.is_a? Array
         scope.each do |s|
           scopes_for_results = VALID_SEARCH_SCOPES if ALL_SCOPE_SYNONYMS.include?(s)
         end
@@ -179,7 +177,84 @@ module BioCatalogue
       
       return Results.new(search_result_docs, scopes_for_results)
     end
-    
+
+
+    #sunspot_search replaces the original search (above) which uses the acts_as_solr plugin.
+    # The results format originally returned by calling the multi_solr_search method (as above)
+    # is reconstructed below to allow minimal modification of later results processing.
+    # This is inefficient as each model is pulled from the database, their compound ID is found
+    # and passed to lib/biocatologue/results.rb where it is used as an identifier to load from
+    # the database again.
+    # TODO: change search_controller, this method, and results.rb to use the returned models rather than loading twice.
+    def self.sunspot_search(query, scope=ALL_SCOPE_SYNONYMS[0], ignore_scope=nil)
+
+      return nil unless Search.on?
+
+      return nil if query.blank? or scope.blank?
+
+      return nil if scope == ignore_scope
+
+      if scope.is_a? Array
+        scope.map! { |s| s.downcase }
+        scope.each do |s|
+          return nil unless VALID_SEARCH_SCOPES_INCL_ALL.include?(s)
+        end
+      else
+        scope = scope.downcase
+        return nil unless VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
+      end
+
+      query = self.preprocess_query(query)
+
+      search_result_docs = nil
+
+      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, query)
+
+      # Try and get it from the cache...
+      search_result_docs = Rails.cache.read(cache_key)
+
+
+      if search_result_docs.nil?
+        search_result_docs = []
+        search = Sunspot.search(@@models_for_search) { fulltext query }
+        search.each_hit_with_result do |hit, result|
+          search_struct = {}
+          search_struct = search_struct.merge('score' => hit.score)
+          search_struct = search_struct.merge('id' => BioCatalogue::Mapper.compound_id_for_model_object(result))
+          search_struct = search_struct.merge('pk_i' => result.id)
+          search_result_docs << search_struct if !search_struct.blank?
+        end
+        # Finally write it to the cache...
+        Rails.cache.write(cache_key, search_result_docs, :expires_in => SEARCH_ITEMS_FROM_SOLR_CACHE_TIME)
+      end
+
+
+      scopes_for_results = nil
+
+      if scope.is_a? Array
+        scope.each do |s|
+          scopes_for_results = VALID_SEARCH_SCOPES if ALL_SCOPE_SYNONYMS.include?(s)
+        end
+        scopes_for_results = scope if scopes_for_results.nil?
+      else
+        scopes_for_results = if ALL_SCOPE_SYNONYMS.include?(scope)
+                               VALID_SEARCH_SCOPES
+                             else
+                               [ scope ]
+                             end
+      end
+
+      unless ignore_scope.blank?
+        scopes_for_results = scopes_for_results - [ ignore_scope ].flatten
+      end
+
+      return Results.new(search_result_docs, scopes_for_results)
+    end
+
+
+
+
+
     # IMPORTANT NOTE: this is a VERY intensive and costly method call,
     # so don't use this within a web request, only use it in background
     # processing, scripts and the console.
