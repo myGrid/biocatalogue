@@ -30,12 +30,14 @@ class SearchController < ApplicationController
       end
       
     else
+
       begin
-        @results = BioCatalogue::Search.search(@query, @scope)
-        
+        #@results = BioCatalogue::Search.search(@query, @scope)
+        @results = BioCatalogue::Search.sunspot_search(@query, @scope)
         raise "nil @results object returned" if @results.nil?
+
       rescue Exception => ex
-        error("Sorry, search didn't work this time. Try with different keyword(s). Please <a href='#{contact_url}'>report this</a> if it fails for other searches too.").html_safe
+        error("Sorry, search didn't work this time. Try with different keyword(s). Please ".html_safe + "<a href='#{contact_url}'>report this</a> ".html_safe + "if it fails for other searches too.".html_safe)
         logger.error("Search failed for query: '#{@query}'.\nException: #{ex.message}")
         logger.error(ex.backtrace.join("\n"))
         return false
@@ -47,16 +49,16 @@ class SearchController < ApplicationController
         format.json { 
           paged_item_compound_ids = @results.paged_all_item_ids(@page, @per_page)
           items = BioCatalogue::Mapper.compound_ids_to_model_objects(paged_item_compound_ids)
-          
           local_json_api_params = json_api_params
           local_json_api_params[:query] = @query
           render :json => BioCatalogue::Api::Json.index("search", local_json_api_params, items).to_json 
         }
       end
     end
-  
+
   end
-  
+
+
   def ignore_last
     session[:last_search] = ""
     
@@ -191,7 +193,7 @@ class SearchController < ApplicationController
 
   def remember_search
     unless is_non_html_request?
-      session[:last_search] = request.url if defined?(@results) and !@results.nil? and @results.total > 0
+      session[:last_search] = request.url if defined?(@results) && !@results.nil? && @results.total > 0
     end
   end
   
