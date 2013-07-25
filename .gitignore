@@ -3,6 +3,7 @@
 log/
 tmp/
 var/
+
 config/database.yml
 config/initializers/biocat_local.rb
 config/initializers/geokit_local.rb
@@ -10,6 +11,7 @@ config/initializers/mail.rb
 config/memcache.yml
 config/preinitializer.rb
 config/solr.yml
+
 /db/schema.db
 /vendor/plugins/acts_as_solr/solr/solr/data/
 /vendor/plugins/acts_as_solr/solr/temp/
@@ -19,7 +21,13 @@ public/javascripts/base_packaged.js
 public/stylesheets/base_packaged.css
 data/search_query_suggestions.txt
 data/eb-eye/eb-eye_dump_*
-/solr/
+
+/solr/production
+/solr/development
+/solr/test
+/solr/data
+/solr/pids
+
 *.rails2
 .gitkeep
 config/initializers/secret_token.rb
