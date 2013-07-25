@@ -48,8 +48,9 @@ class RestService < ActiveRecord::Base
            :order => "rest_resources.path ASC"
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :interface_doc_url, :documentation_url, :service_type_name,
-                              { :associated_service_id => :r_id } ])
+    searchable do
+      text :name, :description, :interface_doc_url, :documentation_url, :service_type_name
+    end
   end
   
   if USE_EVENT_LOG

@@ -43,8 +43,9 @@ class SoapOperation < ActiveRecord::Base
            :order => "soap_outputs.name ASC"
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :parent_port_type,
-                              { :associated_service_id => :r_id } ] )
+    searchable do
+      text :name, :parent_port_type, :description
+    end
   end
   
   if USE_EVENT_LOG

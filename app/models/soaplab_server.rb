@@ -20,7 +20,9 @@ class SoaplabServer < ActiveRecord::Base
   end
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :location ])
+    searchable do
+      text :location
+    end
   end
   
   if ENABLE_TRASHING

@@ -22,7 +22,9 @@ class RestMethodParameter < ActiveRecord::Base
   end
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :submitter_name, { :associated_service_id => :r_id } ] )
+    searchable do
+      text :submitter_name
+    end
   end
 
   if USE_EVENT_LOG

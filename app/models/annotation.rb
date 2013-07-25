@@ -49,15 +49,15 @@ class Annotation < ActiveRecord::Base
   end
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :value_for_solr, 
-                              { :associated_service_id => :r_id },
-                              { :associated_soap_operation_id => :r_id },
-                              { :associated_rest_method_id => :r_id },
-                              { :associated_service_provider_id => :r_id },
-                              { :associated_user_id => :r_id }, 
-                              { :associated_registry_id => :r_id } ])
+    searchable do
+      text :value_for_solr
+    end
   end
-  
+
+  def get_associated_ids
+    associated_service_id
+end
+
   def to_json
     generate_json_and_make_inline(false)
   end 
@@ -87,7 +87,7 @@ class Annotation < ActiveRecord::Base
     
     return data
   end
-  
+
   # Copies this annotation to a new annotatable and gives it a new source as specified.
   #
   # Also creates an appropriate Relationship object to keep a provenance of the copy.

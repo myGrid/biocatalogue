@@ -26,7 +26,9 @@ class RestMethodRepresentation < ActiveRecord::Base
   validates_existence_of :submitter # User must exist in the db beforehand.
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :submitter_name ] )
+    searchable do
+      text :submitter_name
+    end
   end
 
   if USE_EVENT_LOG

@@ -46,8 +46,9 @@ class ServiceDeployment < ActiveRecord::Base
   after_save :update_provider_hostnames
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :endpoint, :city, :country, :submitter_name, :provider_name, :provider_hostnames,
-                              { :associated_service_id => :r_id } ])
+    searchable do
+      text :endpoint, :city, :country, :submitter_name, :provider_name, :provider_hostnames
+    end
   end
   
   if USE_EVENT_LOG

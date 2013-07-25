@@ -22,7 +22,9 @@ class ServiceProviderHostname < ActiveRecord::Base
   validates_uniqueness_of :hostname
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :hostname, { :associated_service_provider_id => :r_id } ] )
+    searchable do
+      text :hostname
+    end
   end
   
   if USE_EVENT_LOG
