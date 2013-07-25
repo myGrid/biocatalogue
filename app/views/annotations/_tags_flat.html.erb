@@ -9,7 +9,8 @@
 %>
 
 <% unless annotatable.nil? %>
-	<% cache(:controller => 'annotations', :action => 'tags_flat', :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id) do -%>
+	<% # cache(:controller => 'annotations', :action => 'tags_flat', :annotatable_type => annotatable.class.name, :annotatable_id => annotatable.id) do
+       cache(['annotations', 'tags_flat', annotatable.class.name, annotatable.id.to_s].join('/'))do -%>
 		<% tag_annotations = BioCatalogue::Annotations.get_tag_annotations_for_annotatable(annotatable) %>
 		<% unless tag_annotations.empty? %>
 			<%= generate_tag_cloud_from_annotations(tag_annotations, :flat, :tag_cloud_style => "text-align: left;") -%>

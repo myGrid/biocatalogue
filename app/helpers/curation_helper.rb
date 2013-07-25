@@ -12,7 +12,7 @@ module CurationHelper
     return result
   end
   
-  def sort_link_helper(text, param, order)
+  def curation_sort_link_helper(text, param, order)
     key   = param
     order = order
     order = reverse_order(params[:sort_order]) if params[:sort_by] == param
@@ -27,7 +27,7 @@ module CurationHelper
       :title => "Sort by this field",
       :href => url_for(:action => 'annotation_level', :params => params.merge({:sort_by => key, :sort_order => order })) #:page => params[:page]
       }
-    link_to(text, options, html_options, :remote => true)
+    link_to_with_callbacks(text, options, html_options.merge(:remote => true))
   end
   
   def reverse_order(order)
@@ -51,7 +51,7 @@ module CurationHelper
         end
       end
       str << '</ul> '
-      return str
+      return str.html_safe
     end
     return ''
   end

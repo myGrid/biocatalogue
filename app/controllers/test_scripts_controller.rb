@@ -29,15 +29,16 @@ class TestScriptsController < ApplicationController
 
     respond_to do |format|
       if @service_test.save
-        flash[:notice] = 'Test Script was successfully created. '
+        flash[:notice] = 'Test script was successfully created. '
         format.html { redirect_to(service_url(@service, :id => @service.id, :anchor => "monitoring"))}
         format.xml  { render :xml => @test_script, :status => :created, :location => @test_script }
       else
         flash[:error] = 'There were problems submitting this test script! '
         format.html { render :partial => "shared/service_test",
                                         :layout =>'application',  :locals => {:service => @service,
-                                                                              :test_script => @test_script } }
-        format.xml  { render :xml => @test_script.errors, :status => :unprocessable_entity }
+                                                                              :test_script => @test_script,
+                                                                              :service_test => @service_test} }
+        format.xml  { render :xml => @service_test.errors, :status => :unprocessable_entity }
       end
     end
     #redirect_to testable

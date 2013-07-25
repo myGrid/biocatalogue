@@ -24,8 +24,7 @@ class ServiceTest < ActiveRecord::Base
   has_many :relationships, :as => :subject, :dependent => :destroy
   
   validates_presence_of :service_id,
-                        :test_type,
-                        :test_id
+                        :test_type
                         
   validates_associated :test
   

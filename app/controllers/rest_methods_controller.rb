@@ -329,7 +329,7 @@ private # ========================================
   def find_rest_method
     #Old Rails 2 style
     #@rest_method = RestMethod.find(params[:id], :include => :rest_resource)
-    @rest_method = RestMethod.find(params[:id]).includes(:rest_resource)
+    @rest_method = RestMethod.includes(:rest_resource).find(params[:id])
   end
   
   def find_rest_methods

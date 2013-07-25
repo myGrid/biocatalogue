@@ -1,5 +1,7 @@
 BioCatalogue::Application.routes.draw do
+
   resources :oauth_clients
+
   match '/oauth/test_request' => 'oauth#test_request', :as => :test_request
   match '/oauth/access_token' => 'oauth#access_token', :as => :access_token
   match '/oauth/request_token' => 'oauth#request_token', :as => :request_token
@@ -15,7 +17,9 @@ BioCatalogue::Application.routes.draw do
   match '/api.:format' => 'api#show', :as => :api
   match '/lookup.:format' => 'lookup#show', :as => :lookup
   match '/lookup' => 'lookup#show', :as => :lookup
+
   resources :announcements
+
   resources :service_tests do
 
     member do
@@ -27,6 +31,7 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :test_results
+
   resources :test_scripts do
 
     member do
@@ -38,7 +43,9 @@ BioCatalogue::Application.routes.draw do
   match '/fail/:http_code' => 'fail#index', :as => :fail_page
   match '/stats' => 'stats#index', :as => :stats_index
   match '/stats/refresh' => 'stats#refresh', :as => :refresh_stats, :via => :post
+
   resources :stats
+
   resources :categories do
 
     member do
@@ -65,6 +72,7 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :annotations do
+
     collection do
       post :create_multiple
       post :new_popup
@@ -73,6 +81,7 @@ BioCatalogue::Application.routes.draw do
       get :filters
       post :bulk_create
     end
+
     member do
       post :edit_popup
       post :promote_alternative_name
@@ -90,6 +99,7 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :tags, :only => [:index, :show, :destroy] do
+
     collection do
       delete :destroy_taggings
       get :auto_complete
@@ -104,11 +114,14 @@ BioCatalogue::Application.routes.draw do
   match '/search' => 'search#show', :as => :search, :via => [:get, :post]
   match '/search/by_data.:format' => 'search#by_data', :as => :search_by_data, :via => [:get, :post]
   match '/search/by_data' => 'search#by_data', :as => :search_by_data, :via => [:post, :get]
+
   resources :service_providers do
+
     collection do
       post :filtered_index
       get :filters
     end
+
     member do
       get :annotations_by
       get :annotations
@@ -118,15 +131,19 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :service_provider_hostnames
+
   resources :service_deployments do
 
     member do
       get :annotations
+      post :edit_location_by_popup
+      post :update_location
     end
 
   end
 
   resources :users do
+
     collection do
       get :whoami
       get :activate_account
@@ -135,6 +152,7 @@ BioCatalogue::Application.routes.draw do
       get :filters
       post :rpx_merge
     end
+
     member do
       put :remove_curator
       get :annotations_by
@@ -153,12 +171,12 @@ BioCatalogue::Application.routes.draw do
 
   end
 
+  match '/session' => 'sessions#create', :as => :session, :via => :post
+
   if ENABLE_RPX
-    match '/session/rpx_token' => 'sessions#rpx_token'
+    match '/session/rpx_token' => 'sessions#rpx_token', :as => :session_rpx_token
   end
 
-
-  resource :session
   match '/register' => 'users#new', :as => :register
   match '/signup' => 'users#new', :as => :signup
   match '/login' => 'sessions#new', :as => :login
@@ -175,6 +193,7 @@ BioCatalogue::Application.routes.draw do
   match '/status_changes.:format' => 'home#status_changes', :as => :status_changes_feed
   match '/latest' => 'home#latest', :as => :latest
   match 'service_providers/auto_complete' => 'service_providers#auto_complete', :as => :service_provider_auto_complete, :via => :get
+
   resources :rest_services do
 
     member do
@@ -182,6 +201,7 @@ BioCatalogue::Application.routes.draw do
       get :annotations
       get :deployments
       get :resources
+      post :edit_base_endpoint_by_popup
       post :update_base_endpoint
     end
 
@@ -193,15 +213,18 @@ BioCatalogue::Application.routes.draw do
       get :methods
       post :add_new_resources
       get :annotations
+      get :new_popup
     end
 
   end
 
   resources :rest_methods do
+
     collection do
       post :filtered_index
       get :filters
     end
+
     member do
       post :update_group_name
       post :group_name_auto_complete
@@ -224,6 +247,7 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :rest_method_parameters
+
   resources :rest_representations do
 
     member do
@@ -234,12 +258,15 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :rest_method_representations
+
   resources :soap_services do
+
     collection do
       post :load_wsdl
       get :bulk_new
       get :wsdl_locations
     end
+
     member do
       get :operations
       get :annotations
@@ -250,10 +277,12 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :soap_operations do
+
     collection do
       post :filtered_index
       get :filters
     end
+
     member do
       get :inputs
       get :outputs
@@ -287,10 +316,12 @@ BioCatalogue::Application.routes.draw do
   end
 
   resources :services do
+
     collection do
       post :filtered_index
       get :filters
     end
+
     member do
       post :unarchive
       post :unfavourite
@@ -338,10 +369,12 @@ BioCatalogue::Application.routes.draw do
 
   # Routes for the annotations plugin
   resources :annotations do
+
     collection do
       get :filters
       post :new_popup, :create_inline, :filtered_index, :bulk_create
     end
+
     member do
       get :download
       post :edit_popup, :promote_alternative_name
@@ -365,6 +398,7 @@ BioCatalogue::Application.routes.draw do
   # Replaced with root :to => 'home#index' as we use root_url and root_path in the code
   #match '/' => 'home#index'
   root :to => 'home#index'
-  match '/:controller(/:action(/:id))'
+
+  #match '/:controller(/:action(/:id))'
 end
 

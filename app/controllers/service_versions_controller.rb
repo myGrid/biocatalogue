@@ -53,7 +53,7 @@ class ServiceVersionsController < ApplicationController
 
     respond_to do |format|
       if @service_version.save
-        flash[:notice] = 'ServiceVersion was successfully created.'
+        flash[:notice] = 'Service version was successfully created.'
         format.html { redirect_to(@service_version) }
         format.xml  { render :xml => @service_version, :status => :created, :location => @service_version }
       else

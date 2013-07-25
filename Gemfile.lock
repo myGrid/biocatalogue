@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/SysMO-DB/redbox
-  revision: e642058d9bac916d54d72ed7bd63558cb2a134c9
+  revision: 494451d01aeeb70b186783d08b6b9aefcb537e98
   specs:
     redbox (1.0.4)
 
@@ -72,6 +72,7 @@ GEM
     crack (0.4.0)
       safe_yaml (~> 0.9.0)
     daemons (1.1.9)
+    dalli (2.6.4)
     delayed_job (3.0.5)
       activesupport (~> 3.0)
     delayed_job_active_record (0.4.4)
@@ -234,6 +235,7 @@ DEPENDENCIES
   country-select
   crack
   daemons
+  dalli
   delayed_job_active_record
   dnsruby
   exception_notification (< 4.0.0)

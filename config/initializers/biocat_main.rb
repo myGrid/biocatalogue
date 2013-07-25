@@ -90,7 +90,7 @@ ActiveSupport::XmlMini.backend = 'LibXML'
 CountryCodes
 
 # Set up caches
-BioCatalogue::CacheHelper.setup_caches
+#BioCatalogue::CacheHelper.setup_caches
 
 # Load the up categories data into the DB if required
 BioCatalogue::Categorising.load_data

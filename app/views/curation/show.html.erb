@@ -8,7 +8,7 @@
 
 %>
 
-<h1>	Curation Dashboard</h1>
+<h1>Curation Dashboard</h1>
 
 <div>
 	<div class="center" style="float: left; width: 48%;">
@@ -20,19 +20,19 @@
 		<%= link_to "Potential Duplicate SOAP Operations within a SOAP Service", curation_reports_potential_duplicate_operations_within_service_path, :class => "button_slim" -%>
 		<br/>
 		<br/>
-		<%= link_to "Service Providers Without Services", curation_reports_providers_without_services_path, :popup => true, :class => "button_slim" -%>
+		<%= link_to "Service Providers Without Services", curation_reports_providers_without_services_path, :class => "button_slim" -%>
 		<br/>
 		<br/>
 		<%= link_to "Services Missing Annotations", curation_reports_services_missing_annotations_path, :class => "button_slim" -%>
 		<br/>
 		<br/>
-		<%= link_to "Links Checker Report", '/links_checker_report.html', :popup => true, :class => "button_slim" -%>
+		<%= link_to "Links Checker Report", '/links_checker_report.html', :class => "button_slim" -%>
 		<br/>
 		<br/>
-		<%= link_to "Service Annotation Levels", curation_annotation_level_path, :popup => true, :class => "button_slim", :title => "Use sparingly! Calculates annotation levels on the fly"-%>
+		<%= link_to "Service Annotation Levels", curation_annotation_level_path, :class => "button_slim", :title => "Use sparingly! Calculates annotation levels on the fly"-%>
 		<br/>
 		<br/>
-		<%= link_to "All Service Tests", service_tests_url, :popup => true, :class => "button_slim", :title => "All service tests. Both URL checks and test scripts"-%>
+		<%= link_to "All Service Tests", service_tests_url, :class => "button_slim", :title => "All service tests. Both URL checks and test scripts"-%>
 	</div>
 
 	<div class="center" style="float: left; width: 48%;">

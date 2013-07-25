@@ -46,8 +46,9 @@ class LinksChecker
     # Start the Rails app
     
     ENV["RAILS_ENV"] = @options[:environment]
-    RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
-    
+    #RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)  # RAILS_ENV is deprecated
+    Rails.env = ActiveSupport::StringInquirer.new(@options[:environment])
+
     require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
   end  
   
@@ -61,7 +62,7 @@ class LinksChecker
     @all_links           = []
     @all_data_with_links = []
     conditions           = 'archived_at IS NULL'
-    Service.all(:conditions => conditions ).each do |service|
+    Service.where(conditions).each do |service|
       puts "Searching links for service : #{service.name}"
       @all_links.concat(links_for_service(service))
       @all_data_with_links << links_for_service_h(service) unless links_for_service_h(service).empty?
@@ -194,11 +195,11 @@ class LinksChecker
         links.concat(self.get_links_from_text(annotatable.description))
       end
       self.non_provider_annotations(annotatable).each do |ann|
-        links.concat(self.get_links_from_text(ann))  
+        links.concat(self.get_links_from_text(ann.ann_content))
       end
       if annotatable.is_a?(SoapService) || annotatable.is_a?(RestService)
         self.non_provider_annotations(annotatable, 'documentation_url').each do |ann|
-          links.concat(self.get_links_from_text(ann))  
+          links.concat(self.get_links_from_text(ann.ann_content))
         end
       end
     end
