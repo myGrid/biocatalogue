@@ -215,15 +215,8 @@ module BioCatalogue
 
 
       if search_result_docs.nil?
-        search_result_docs = []
         search = Sunspot.search(@@models_for_search) { fulltext query }
-        search.each_hit_with_result do |hit, result|
-          search_struct = {}
-          search_struct = search_struct.merge('score' => hit.score)
-          search_struct = search_struct.merge('id' => BioCatalogue::Mapper.compound_id_for_model_object(result))
-          search_struct = search_struct.merge('pk_i' => result.id)
-          search_result_docs << search_struct if !search_struct.blank?
-        end
+        search_result_docs = search.results
         # Finally write it to the cache...
         Rails.cache.write(cache_key, search_result_docs, :expires_in => SEARCH_ITEMS_FROM_SOLR_CACHE_TIME)
       end
@@ -248,7 +241,7 @@ module BioCatalogue
         scopes_for_results = scopes_for_results - [ ignore_scope ].flatten
       end
 
-      return Results.new(search_result_docs, scopes_for_results)
+      return search_result_docs, scopes_for_results
     end
 
 

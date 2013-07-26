@@ -7,9 +7,7 @@
 # See license.txt for details
 
 %>
-
 <% all_search = BioCatalogue::Search::ALL_SCOPE_SYNONYMS.include?(@scope) %>
-
 <% if @query.blank? %>
 	<h1>Search</h1>
 <% else %>
@@ -20,13 +18,11 @@
 		<h1>Search Results <span class="faded">(<%= @visible_search_type -%> only)</span></h1>
 	<% end%>
 <% end %>
-
 <div class="box_info_standout" style="float: right;">
 	Try our new 
 	<b><%= link_to "Search by Data", search_by_data_url -%></b>
 	feature - to search using your input/output data
 </div>
-
 <div class="search_query_info_box">
 	<% if @query.blank? %>
 		<p>
@@ -39,39 +35,29 @@
 				"<b><%= h @query -%></b>"
 				returned 
 				<% if all_search %>
-					<%= pluralize(@results.total, "item") -%>
+					<%= pluralize(@results.count, "item") -%>
 				<% else %>
-					<%= pluralize(@results.total, @visible_search_type.singularize) -%>
+					<%= pluralize(@results.count, @visible_search_type.singularize) -%>
 				<% end %>
 			</p>
 		<% end %>
 	<% end %>
 </div>
-
 <span class="clear"></span>
-
 <% unless @query.blank? %>
-
-	<% if @results.nil? or @results.total == 0 %>
-	
+	<% if @results.nil? or @results.count == 0 %>
 	  <p class="none_text">No items found</p>
-	  
-	<% else %>
-	
+    <% else %>
 		<% if all_search %>
-		
-			<div id="search_results" class="tabber">
-				<% @results.result_scopes.each do |result_scope| %>
-				
-					<% unless [ "annotations" ].include? result_scope %>
-				
-						<% 
+    		<div id="search_results" class="tabber">
+				<% @scope_for_results.each do |result_scope| %>
+    				<% unless [ "annotations" ].include? result_scope %>
+	    				<%
 							 visible_result_scope = BioCatalogue::Search.scope_to_visible_search_type(result_scope)
-							 items = search_item_ids_to_objects(@results.paged_item_ids_for(result_scope, 1, @per_page), result_scope)
-							 count = @results.count_for(result_scope)
+                             items = @results.select {|result| result.class.name.underscore.pluralize == result_scope}
+							 count = items.count
 							 more_items = count > @per_page 
 						%>
-						
 						<% unless items.empty? %>
 							<div id='<%= "tab-#{result_scope}" -%>' class="tabbertab">
 								<% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}"  %>
@@ -83,12 +69,10 @@
 	                    <%= "Showing the top #{items.length} items out of #{count} in total" -%>
 										</div>
 	                <% end %>
-									
 									<div style="margin-top: 1em;">
 										<% if false %>
                     <%= link_to("Filter these services", services_url(:q => @query), :class => "button_slim", :style => "margin-right: 1.5em;") -%>
                     <% end %>
-										
 										<table style="width: 100%;">
 		                  <tr>
 		                    <td>
@@ -105,9 +89,7 @@
 		                </table>
 									</div>
 								</div>
-								
-								<%= render :partial => "#{result_scope}/listing", :locals => { :items => items } %>
-								
+							<%= render :partial => "#{result_scope}/listing", :locals => { :items => items } %>
 								<% if more_items %>
 									<p>
 										<%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)), 
@@ -115,16 +97,12 @@
 																:class => "button_slim") -%>
 									</p>
 								<% end %>
-								
 						  </div>
 						<% end %>
-					
 					<% end %>
-					
-				<% end %>
+			<% end %>
 			</div>
-	
-		<% else %>
+	<% else %>
 		
 			<% 
 				 result_scope = @scope

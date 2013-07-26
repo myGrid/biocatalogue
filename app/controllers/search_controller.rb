@@ -33,8 +33,10 @@ class SearchController < ApplicationController
 
       begin
         #@results = BioCatalogue::Search.search(@query, @scope)
-        @results = BioCatalogue::Search.sunspot_search(@query, @scope)
-        raise "nil @results object returned" if @results.nil?
+        result_set = BioCatalogue::Search.sunspot_search(@query, @scope)
+        @results = result_set[0]
+        @scope_for_results = result_set[1]
+          #raise "nil @results object returned" if @results.nil?
 
       rescue Exception => ex
         error("Sorry, search didn't work this time. Try with different keyword(s). Please <a href='#{contact_url}'>report this</a> if it fails for other searches too.".html_safe)
@@ -193,7 +195,7 @@ class SearchController < ApplicationController
 
   def remember_search
     unless is_non_html_request?
-      session[:last_search] = request.url if defined?(@results) && !@results.nil? && @results.total > 0
+      session[:last_search] = request.url if defined?(@results) && !@results.nil? && @results.count > 0
     end
   end
   
