@@ -202,7 +202,11 @@ BioCatalogue::Application.routes.draw do
       get :deployments
       get :resources
       post :edit_base_endpoint_by_popup
+    end
+
+    collection do
       post :update_base_endpoint
+      get :edit_base_endpoint_by_popup
     end
 
   end
@@ -211,9 +215,12 @@ BioCatalogue::Application.routes.draw do
 
     member do
       get :methods
-      post :add_new_resources
       get :annotations
+    end
+
+    collection do
       get :new_popup
+      post :add_new_resources
     end
 
   end
@@ -233,6 +240,10 @@ BioCatalogue::Application.routes.draw do
       get :annotations
       post :inline_add_endpoint_name
       post :edit_group_name_popup
+      get :update_resource_path
+      get :remove_endpoint_name
+      get :edit_endpoint_name_popup
+      get :edit_resource_path_popup
     end
 
   end
@@ -241,7 +252,19 @@ BioCatalogue::Application.routes.draw do
 
     member do
       get :annotations
+      put :inline_add_default_value
+      get :make_optional_or_mandatory
+      put :update_constrained_options
+      put :remove_default_value
+      put :remove_constrained_options
+      put :update_default_value
+      get :edit_constrained_options_popup
+      get :edit_default_value_popup
+    end
+
+    collection do
       post :add_new_parameters
+      get :new_popup
     end
 
   end
@@ -251,8 +274,12 @@ BioCatalogue::Application.routes.draw do
   resources :rest_representations do
 
     member do
-      post :add_new_representations
       get :annotations
+    end
+
+    collection do
+      post :add_new_representations
+      get :new_popup
     end
 
   end
