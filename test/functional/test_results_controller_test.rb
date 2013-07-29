@@ -10,12 +10,13 @@ class TestResultsControllerTest < ActionController::TestCase
 
   test "should create test_result" do
     session[:user_id] = @user.id
-    
+
     assert_difference('TestResult.count') do
       post :create, :test_result => {:result => 0, 
                                       :message => 'test passed', 
                                       :action  => 'simple test', 
-                                      :service_test_id => @service_test.id  }
+                                      :service_test_id => @service_test.id  },
+           :format => 'xml'
     end
     
     assert_response(:created)
@@ -27,7 +28,8 @@ class TestResultsControllerTest < ActionController::TestCase
     post :create, :test_result => {:result => 0, 
                                       :message => 'test passed', 
                                       :action  => 'simple test', 
-                                      :service_test_id => @service_test.id  }
+                                      :service_test_id => @service_test.id  },
+         :format => 'xml'
     
     assert_equal(count, TestResult.count, "result created without an authenticated user")
     assert_response(:found)
