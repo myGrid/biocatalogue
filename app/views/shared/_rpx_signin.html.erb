@@ -20,7 +20,7 @@
 		account then:
 		<ul class="simple_list" style="margin-top: 1em;">
 			<li>
-				<% a =  RPXNow.popup_code('click here to sign in', RPX_REALM,  url_for(:controller => :session, :action => :rpx_token, :only_path => false), :unobtrusive => true) -%>
+				<% a =  RPXNow.popup_code('click here to sign in', RPX_REALM,  session_rpx_token_path, :unobtrusive => true)-%>
               <%= a.html_safe%> OR
 			</li>
 			<li>
