@@ -26,6 +26,10 @@ BioCatalogue::Application.routes.draw do
       get :results
       put :enable
       put :disable
+      post :new_url_monitor_popup
+      post :create_monitoring_endpoint
+      post :edit_monitoring_endpoint_by_popup
+      post :update_monitoring_endpoint
     end
 
   end
@@ -260,6 +264,7 @@ BioCatalogue::Application.routes.draw do
       put :update_default_value
       get :edit_constrained_options_popup
       get :edit_default_value_popup
+      get :localise_globalise_parameter
     end
 
     collection do
