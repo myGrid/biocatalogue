@@ -99,7 +99,7 @@ class ServiceTestsController < ApplicationController
     
     respond_to do |format|      
       if error.nil?
-        flash[:notice] = "The monitoring endpoint for service '#{@service.display_name}' has been updated".html_safe
+        flash[:notice] = "The monitoring endpoint for service '#{BioCatalogue::Util.display_name(@service)}' has been updated".html_safe
       else
         flash[:error] = error
       end
@@ -152,7 +152,7 @@ class ServiceTestsController < ApplicationController
     respond_to do |format|      
       if error.nil?
         redirect_url = service_test_url(@service_test)
-        flash[:notice] = "A new monitoring endpoint has been created for service '#{@service.display_name}'".html_safe
+        flash[:notice] = "A new monitoring endpoint has been created for service '#{BioCatalogue::Util.display_name(@service)}'".html_safe
       else
         redirect_url = service_url(@service, :anchor => "monitoring")
         flash[:error] = error
