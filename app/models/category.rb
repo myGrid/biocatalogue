@@ -5,6 +5,10 @@
 # See license.txt for details
 
 class Category < ActiveRecord::Base
+
+  @@children = nil
+  @@list = nil
+
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache
     index :parent_id
@@ -35,33 +39,45 @@ class Category < ActiveRecord::Base
   end
   
   def self.find(*args)
-    load_categories if not defined?(@@list) or @@list.nil?
+    load_categories if @@list.nil?
     old_find(*args)
   end
   
   def self.list
-    load_categories if not defined?(@@list) or @@list.nil?
-    return @@list[1...@@list.length]    
+    self.full_list[1..-1]
+  end
+
+  def self.full_list
+    if @@list.nil?
+      load_categories
+    end
+    @@list
+  end
+
+  def self.children
+    if @@children.nil?
+      load_categories
+    end
+    @@children
   end
   
   def self.find_by_id(id_to_find)
-    load_categories if not defined?(@@list) or @@list.nil?
-    return @@list[id_to_find.to_i]
+    Category.full_list[id_to_find.to_i]
   end
   
   def self.root_categories
-    @@children[0]
+    Category.children[0]
   end
   
   # Parent/children methods here override the ones provided by rails
   # to use the array instead of an SQL query
   
   def parent
-    @@list[parent_id] unless parent_id.nil?
+    Category.full_list[parent_id] unless parent_id.nil?
   end
   
   def children
-    @@children[id]
+    Category.children[id]
   end
   
   def has_parent?
@@ -69,7 +85,7 @@ class Category < ActiveRecord::Base
   end
   
   def has_children?
-    not @@children[id].empty?
+    not Category.children[id].empty?
   end
   
   def ancestry
