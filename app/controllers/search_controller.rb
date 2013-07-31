@@ -140,7 +140,7 @@ class SearchController < ApplicationController
 
       # Check if the query is '*' in which case give the user an appropriate message.
       if query == '*'
-        error("It looks like you were trying to search for everything in #{SITE_NAME}! If you would like to browse all services then <a href='#{services_path}'>click here</a>.")
+        error("It looks like you were trying to search for everything in #{SITE_NAME}! If you would like to browse all services then <a href='#{services_path}'>click here</a>.".html_safe)
         return false
       end
 
