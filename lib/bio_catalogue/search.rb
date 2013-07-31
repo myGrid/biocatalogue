@@ -177,6 +177,7 @@ module BioCatalogue
           @total = search_result_docs.total_count
         else
           @total = 0
+          search_result_docs = []
         end
       else
         @total = search_result_docs.count
