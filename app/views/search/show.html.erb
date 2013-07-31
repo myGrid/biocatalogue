@@ -108,8 +108,7 @@
 
             <%
                result_scope = @scope
-
-               items = @results.paginate(:page => @page, :per_page => @per_page)
+               items = @results.select { |result| result.class.name.underscore.pluralize == result_scope }.paginate(:page => @page, :per_page => @per_page)
             %>
 
             <span style="float: right; margin-left: 2em; margin-top: 2.5em;">
