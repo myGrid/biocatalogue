@@ -4,7 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-total_pages = (@results.total.to_f / @per_page.to_f).ceil
+total_pages = (@results.length.to_f / @per_page.to_f).ceil
 
 # <?xml>
 xml.instruct! :xml
@@ -38,11 +38,12 @@ xml.tag! "search",
     xml.pages total_pages
     
     # <results>
-    xml.results @results.total
+    xml.results @results.length
     
     # <scopedResults> *
-    @results.result_scopes.each do |result_scope|
-      xml.scopedResults @results.count_for(result_scope), :scope => BioCatalogue::Search.scope_to_visible_search_type(result_scope)
+    @scope_for_results.each do |result_scope|
+      count = @results.select { |result| result.class.name.underscore.pluralize == result_scope }.count
+      xml.scopedResults count, :scope => BioCatalogue::Search.scope_to_visible_search_type(result_scope)
     end
       
   end
@@ -50,8 +51,8 @@ xml.tag! "search",
   # <results>
   xml.results do
     
-    paged_item_compound_ids = @results.paged_all_item_ids(@page, @per_page)
-    items = search_item_compound_ids_to_objects(paged_item_compound_ids)
+   # paged_item_compound_ids = @results.paged_all_item_ids(@page, @per_page)
+    items = @results.paginate(:page => @page, :per_page => @per_page)
     
     if @page < total_pages && items.length != @per_page
       BioCatalogue::Util.yell "Incorrect number of items per page! paged_item_compound_ids = #{paged_item_compound_ids.inspect}"
