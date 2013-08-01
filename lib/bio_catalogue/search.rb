@@ -113,7 +113,6 @@ module BioCatalogue
     end
 
 
-
     # sunspot_search replaces the original search which uses the acts_as_solr plugin.
     #NOTE: For some reason the Sunspot.search(model) method doesn't quite give the correct results
     # if you pass an array of models as a parameter, hence the iterator searching one at a time and
@@ -141,9 +140,11 @@ module BioCatalogue
                                [scope]
                              end
       end
+
       unless ignore_scope.blank?
         scopes_for_results = scopes_for_results - [ignore_scope].flatten
       end
+
       if scope.is_a? Array
         scope.map! { |s| s.downcase }
         scope.each do |s|
@@ -153,10 +154,11 @@ module BioCatalogue
         scope = scope.downcase
         return nil unless VALID_SEARCH_SCOPES_INCL_ALL.include?(scope)
       end
-      query = self.preprocess_query(query)
-      search_result_docs = nil
-      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, query)
 
+      query = self.preprocess_query(query)
+
+
+      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, query)
       # Try and get it from the cache...
       search_result_docs = Rails.cache.read(cache_key)
 
@@ -174,38 +176,29 @@ module BioCatalogue
           search_result_docs = process_search_results(search_results, scopes_for_results)
           # Finally write it to the cache...
           Rails.cache.write(cache_key, search_result_docs, :expires_in => SEARCH_ITEMS_FROM_SOLR_CACHE_TIME)
-          @total = search_result_docs.total_count
         else
-          @total = 0
           search_result_docs = []
         end
-      else
-        @total = search_result_docs.count
       end
       return search_result_docs, scopes_for_results
     end
 
 
-
-
     def self.process_search_results search_results, scopes
       search_result_docs = []
+      associated_model_classes = VALID_SEARCH_SCOPES.dup
+      associated_model_classes.map! { |model| model.singularize.classify }
       search_results.each do |search_result|
-        # Add each displayable object returned from the query to search_result_docs
-        if scopes.include?(search_result.class.name)
-          search_result_docs << search_result unless search_result.blank?
-        end
-        # and add any displayable objects that are associated with these too
-        scopes.each do |result_model_name|
-          if search_result.class.name != result_model_name
-            associated_result = BioCatalogue::Mapper.map_object_to_associated_model_object(search_result, result_model_name.classify)
-            search_result_docs << associated_result unless associated_result.nil?
-          end
+        # add any objects that are either a result with a valid scope or
+        # are an associated object of a result with a valid scope
+        associated_model_classes.each do |result_model_name|
+          associated_result = BioCatalogue::Mapper.map_object_to_associated_model_object(search_result, result_model_name)
+          search_result_docs << associated_result unless associated_result.nil?
         end
       end
       unless search_result_docs.nil?
         search_result_docs.uniq!
-        search_result_docs = Sunspot::Search::PaginatedCollection.new(search_result_docs, 1, @per_page, @limit)
+        return Sunspot::Search::PaginatedCollection.new(search_result_docs, 1, @per_page, @limit)
       end
     end
 

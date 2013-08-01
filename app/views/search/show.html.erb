@@ -6,7 +6,6 @@
    # See license.txt for details
 %>
 <% all_search = BioCatalogue::Search::ALL_SCOPE_SYNONYMS.include?(@scope) %>
-<%= "MESSAGE UP HERE: #{@message.to_s}" %>
 <% if @query.blank? %>
     <h1>Search</h1>
 <% else %>
@@ -31,7 +30,7 @@
 </div>
 <span class="clear"></span>
 <% unless @query.blank? %>
-    <% if @results.nil? or @total == 0 %>
+    <% if @results.nil? %>
         <p class="none_text">No items found</p>
     <% else %>
         <% if all_search %>
