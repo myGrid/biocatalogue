@@ -1,13 +1,12 @@
 <%
-
    # BioCatalogue: app/views/search/show.html.erb
    #
    # Copyright (c) 2008, University of Manchester, The European Bioinformatics
    # Institute (EMBL-EBI) and the University of Southampton.
    # See license.txt for details
-
 %>
 <% all_search = BioCatalogue::Search::ALL_SCOPE_SYNONYMS.include?(@scope) %>
+<%= "MESSAGE UP HERE: #{@message.to_s}" %>
 <% if @query.blank? %>
     <h1>Search</h1>
 <% else %>
@@ -23,26 +22,12 @@
   <b><%= link_to "Search by Data", search_by_data_url -%></b>
   feature - to search using your input/output data
 </div>
-<div class="search_query_info_box">
-  <% if @query.blank? %>
+<% if @query.blank? %>
+    <div class="search_query_info_box">
       <p>
         <%= search_provide_query_text -%>
       </P>
-  <% else %>
-      <% unless @results.nil? %>
-          <p>
-            Search query
-            "<b><%= h @query -%></b>"
-            returned
-
-            <% if all_search %>
-                <%= pluralize(@results.count, "item") -%>
-            <% else %>
-                <%= pluralize(@results.count, @visible_search_type.singularize) -%>
-            <% end %>
-          </p>
-      <% end %>
-  <% end %>
+<% end %>
 </div>
 <span class="clear"></span>
 <% unless @query.blank? %>
@@ -50,16 +35,21 @@
         <p class="none_text">No items found</p>
     <% else %>
         <% if all_search %>
+            <p>
+              Search query
+              "<b><%= h @query -%></b>"
+              returned
+              <%= pluralize(@results.length, "item") -%>
+            </p>
+
             <div id="search_results" class="tabber">
               <% @scope_for_results.each do |result_scope| %>
                   <% unless ["annotations"].include? result_scope %>
-                      <%
-                         visible_result_scope = BioCatalogue::Search.scope_to_visible_search_type(result_scope)
+                      <% visible_result_scope = BioCatalogue::Search.scope_to_visible_search_type(result_scope)
                          items = @results.select { |result| result.class.name.underscore.pluralize == result_scope }
                          count = items.count
                          items = items.paginate(:page => @page, :per_page => @per_page)
-                         more_items = count > @per_page
-                      %>
+                         more_items = count > @per_page %>
                       <% unless items.empty? %>
                           <div id='<%= "tab-#{result_scope}" -%>' class="tabbertab">
                             <% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}" %>
@@ -105,31 +95,27 @@
               <% end %>
             </div>
         <% else %>
-
-            <%
-               result_scope = @scope
-               items = @results.select { |result| result.class.name.underscore.pluralize == result_scope }.paginate(:page => @page, :per_page => @per_page)
+            <% result_scope = @scope
+               items = @results.select { |result| result.class.name.underscore.pluralize == result_scope }
+               count = items.count
+               items = items.paginate(:page => @page, :per_page => @per_page)
             %>
+            <p> Search query
+              "<b><%= h @query -%></b>"
+              returned
+              <%= pluralize(count, @visible_search_type.singularize) -%>  </p>
 
             <span style="float: right; margin-left: 2em; margin-top: 2.5em;">
 				<%= render :partial => "listing_type_switcher_link", :locals => {:result_scope => result_scope} -%>
-
               <%= link_to "Search for ALL items", search_url(:q => @query), :class => "button_slim", :style => "margin-left: 1.5em;" -%>
 			</span>
-
             <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => items, :entry_name => @scope.gsub('_', ' ').singularize} %>
-
             <div id="search_results" style="margin: 2em 0;">
               <%= render :partial => "#{@scope}/listing", :locals => {:items => items} %>
             </div>
-
             <%= render :partial => 'widgets/pagination_bottom', :locals => {:paginated_items => items} %>
-
         <% end %>
-
     <% end %>
-
 <% end %>
-
 <br/>
 
