@@ -1,6 +1,6 @@
 <%
 
-# TODO: add copyright statement here
+   # TODO: add copyright statement here
 
 %>
 
@@ -9,86 +9,86 @@
 <h1>Search By Data</h1>
 
 <div>
-	<div style="float: left; width: 38%;">
-		<p>
-			Paste in your input/output data and we will find all the
-			operations that you can potentially use to process/analyse it...
-		</p>
-		<% form_tag search_by_data_url  do %>
-			<p style="margin-top: 0;">
-				<%= text_area_tag "search_by_data[data]", (@query || "Add your input/output data here"), :id => "data_field", :size => "70x10", :style => "width: 99%;" -%>
-				<% unless @query %>
-					<script>
-						new DefaultTextInput($('data_field'));
-					</script>
-				<% end %>
-			</p>
-			
-			<p>
-				Maximum number of results:
-				<%= text_field_tag "search_by_data[limit]", value=@limit, :id => "limit_field", :maxlength => 3, :size => 3 -%>
-			</p>
-			
-			<p class="medium_linespaced">
-				Search data against:
-				<br/>
-        <%= radio_button_tag "search_by_data[search_type]", "input", @search_type.eql?("input") %>
-				Service Inputs
-				<br/>
-        <%= radio_button_tag "search_by_data[search_type]", "output", @search_type.eql?("output") %>
-				Service Outputs
-			</p>
+  <div style="float: left; width: 38%;">
+    <p>
+      Paste in your input/output data and we will find all the
+      operations that you can potentially use to process/analyse it...
+    </p>
+    <% form_tag search_by_data_url do %>
+        <p style="margin-top: 0;">
+          <%= text_area_tag "search_by_data[data]", (@query || "Add your input/output data here"), :id => "data_field", :size => "70x10", :style => "width: 99%;" -%>
+          <% unless @query %>
+              <script>
+                  new DefaultTextInput($('data_field'));
+              </script>
+          <% end %>
+        </p>
 
-			<%= submit_tag '', :class => "search_button" -%>
-		<% end %>
-		
-		<br/>
-		
-		<p class="box_info_standout">
-			<b>PLEASE NOTE: </b>
-			Your searches might be logged and used for analysis and/or annotation of services in the future. 
-			Therefore do not use any secure or confidential data here.
-		</p>
-	</div>
-	<div style="float: right; width: 60%;">
-		<% if @query %>
-			<p class="box_info_standout">
-				Help us improve these results by adding example input/output data to 
-				existing services
-			</p>
-		<% end %>	
-		<div id="search_results">
-			<% if @results %>
-	      <% @results.all_items.each do |result| %>
-			    <% unless result.annotation.nil? %>
-						<div class="listing_item">
+        <p>
+          Maximum number of results:
+          <%= text_field_tag "search_by_data[limit]", value=@limit, :id => "limit_field", :maxlength => 3, :size => 3 -%>
+        </p>
+
+        <p class="medium_linespaced">
+          Search data against:
+          <br/>
+          <%= radio_button_tag "search_by_data[search_type]", "input", @search_type.eql?("input") %>
+          Service Inputs
+          <br/>
+          <%= radio_button_tag "search_by_data[search_type]", "output", @search_type.eql?("output") %>
+          Service Outputs
+        </p>
+
+        <%= submit_tag '', :class => "search_button" -%>
+    <% end %>
+
+    <br/>
+
+    <p class="box_info_standout">
+      <b>PLEASE NOTE: </b>
+      Your searches might be logged and used for analysis and/or annotation of services in the future.
+      Therefore do not use any secure or confidential data here.
+    </p>
+  </div>
+  <div style="float: right; width: 60%;">
+    <% if @query %>
+        <p class="box_info_standout">
+          Help us improve these results by adding example input/output data to
+          existing services
+        </p>
+    <% end %>
+    <div id="search_results">
+      <% if @results %>
+          <% @results.all_items.each do |result| %>
+              <% unless result.annotation.nil? %>
+                  <div class="listing_item">
 							<span style="float: right;">
 								<%= service_latest_status_symbol(result.service) -%>
 							</span>
-							
-							<%= render :partial => "services/listing/name_section", :locals => { :service => result.service } -%>
-							
-							<br/>
-							
-							<p>
-								<b>Operation:</b>
-								<%= link_to(display_name(result.operation), url_for_web_interface(result.operation), :popup => true) -%>
-								|
-								<b>Port:</b>
-								<%= link_to(display_name(result.port), url_for_web_interface(result.port), :popup => true) -%>
-							</p>
-							
-							<p><b>Example data matched:</b></p>
-							<%= render :partial => "annotations/examples", :locals => { :annotations => [ result.annotation ], :show_add_box => false, :show_header => false } -%>
-						</div>
-					<% end %>
-	      <% end %>
-			<% elsif !@query.nil? %>
-				<span class="faded">No results</span>
-			<% end %>
-		</div>
-		
-	</div>
-	<span class="clear"></span>
+
+                    <%= render :partial => "services/listing/name_section", :locals => {:service => result.service} -%>
+
+                    <br/>
+
+                    <p>
+                      <b>Operation:</b>
+                      <%= link_to(display_name(result.operation), url_for_web_interface(result.operation), :popup => true) -%>
+                      |
+                      <b>Port:</b>
+                      <%= link_to(display_name(result.port), url_for_web_interface(result.port), :popup => true) -%>
+                    </p>
+
+                    <p><b>Example data matched:</b></p>
+                    <%= render :partial => "annotations/examples", :locals => {:annotations => [result.annotation], :show_add_box => false, :show_header => false} -%>
+                  </div>
+              <% end %>
+          <% end %>
+      <% elsif !@query.nil? %>
+          <span class="faded">No results</span>
+      <% end %>
+    </div>
+
+  </div>
+  <span class="clear"></span>
 </div>
 
