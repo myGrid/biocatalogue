@@ -119,6 +119,7 @@ module BioCatalogue
     # aggregating the results.
 
     def self.sunspot_search(query, scope=ALL_SCOPE_SYNONYMS[0], ignore_scope=nil)
+                                                a = Time.now
 
       return nil unless Search.on?
 
@@ -164,15 +165,10 @@ module BioCatalogue
 
       # If it isn't in cache
       if search_result_docs.nil?
-        # Query across all of the models to be searched upon
-        search_results = []
-        @@models_for_search.each do |model_for_search|
-          result = Sunspot.search(model_for_search) { fulltext query }.results
-          search_results << result if !result.nil? && !result.blank?
-        end
-        search_results.flatten!
+        # Find any objects that match the query
+        search_results = Sunspot.search(@@models_for_search) { fulltext query }.results
         if !search_results.nil? && search_results.count > 0
-          # This adds objects that are associated to the search results.
+          # Find objects that are associated with the search result objects.
           search_result_docs = process_search_results(search_results, scopes_for_results)
           # Finally write it to the cache...
           Rails.cache.write(cache_key, search_result_docs, :expires_in => SEARCH_ITEMS_FROM_SOLR_CACHE_TIME)

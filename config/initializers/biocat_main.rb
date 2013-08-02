@@ -118,6 +118,15 @@ end
 
 MAX_PAGE_SIZE = 50
 
+
+#  MAX_RESULTS is the total number of results to return.
+# The reason it is being assigned to default_per_page is because instead of pulling each page of results
+# one page at a time, we pull all pages at once so we can find all the associated models.
+# We're making it pull one MASSIVE page of results.
+MAX_RESULTS = 10000
+Sunspot.config.pagination.default_per_page = MAX_RESULTS
+
+
 # The amount of time to cache the metadata counts data.
 METADATA_COUNTS_DATA_CACHE_TIME = 60*60  # 60 minutes, in seconds.
 
