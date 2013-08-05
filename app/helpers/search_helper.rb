@@ -7,7 +7,7 @@
 module SearchHelper
   
   def search_provide_query_text
-    'Please specify a search query...<br/>Examples: "blast" "blast AND ebi" "blast OR ebi"'
+    'Please specify a search query...<br/>Examples: "blast" "blast AND ebi" "blast OR ebi"'.html_safe
   end
   
   # For a list of integer IDs
