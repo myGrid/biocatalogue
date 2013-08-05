@@ -65,11 +65,11 @@ module FilteringHelper
     less_text = ""
     case filter_type_query_key
       when :cat
-        more_text = "Show all subcategories"
-        less_text = "Show top level categories only"
+        more_text = "Show all subcategories".html_safe
+        less_text = "Show top level categories only".html_safe
       else
-        more_text = "Show all"
-        less_text = "Show top 10 only"
+        more_text = "Show all".html_safe
+        less_text = "Show top 10 only".html_safe
     end
     
     more_link_id = "more_link_#{filter_type_query_key}"

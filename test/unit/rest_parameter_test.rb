@@ -7,10 +7,11 @@ class RestParameterTest < ActiveSupport::TestCase
   end
 
   def test_parameter_count
+    original_count = RestParameter.count
     rest_one = create_rest_service(:endpoints => "/search?q={term}&style=raw")
     rest_two = create_rest_service(:endpoints => "/{db}/{id}")
     
-    assert_equal RestParameter.count, 3
+    assert_equal RestParameter.count, 3 + original_count
     
     rest_one.service.destroy
     rest_two.service.destroy

@@ -108,7 +108,11 @@
       <ISO_3166-1_Country_name>BOLIVIA, PLURINATIONAL STATE OF</ISO_3166-1_Country_name>
       <ISO_3166-1_Alpha-2_Code_element>BO</ISO_3166-1_Alpha-2_Code_element>
    </ISO_3166-1_Entry>
-   <ISO_3166-1_Entry>
+  <ISO_3166-1_Entry>
+    <ISO_3166-1_Country_name>BONAIRE, SINT EUSTATIUS AND SABA</ISO_3166-1_Country_name>
+    <ISO_3166-1_Alpha-2_Code_element>BQ</ISO_3166-1_Alpha-2_Code_element>
+  </ISO_3166-1_Entry>
+     <ISO_3166-1_Entry>
       <ISO_3166-1_Country_name>BOSNIA AND HERZEGOVINA</ISO_3166-1_Country_name>
       <ISO_3166-1_Alpha-2_Code_element>BA</ISO_3166-1_Alpha-2_Code_element>
    </ISO_3166-1_Entry>
@@ -620,10 +624,10 @@
       <ISO_3166-1_Country_name>NETHERLANDS</ISO_3166-1_Country_name>
       <ISO_3166-1_Alpha-2_Code_element>NL</ISO_3166-1_Alpha-2_Code_element>
    </ISO_3166-1_Entry>
-   <ISO_3166-1_Entry>
-      <ISO_3166-1_Country_name>NETHERLANDS ANTILLES</ISO_3166-1_Country_name>
-      <ISO_3166-1_Alpha-2_Code_element>AN</ISO_3166-1_Alpha-2_Code_element>
-   </ISO_3166-1_Entry>
+   <!--<ISO_3166-1_Entry>-->
+      <!--<ISO_3166-1_Country_name>NETHERLANDS ANTILLES</ISO_3166-1_Country_name>-->
+      <!--<ISO_3166-1_Alpha-2_Code_element>AN</ISO_3166-1_Alpha-2_Code_element>-->
+   <!--</ISO_3166-1_Entry>-->
    <ISO_3166-1_Entry>
       <ISO_3166-1_Country_name>NEW CALEDONIA</ISO_3166-1_Country_name>
       <ISO_3166-1_Alpha-2_Code_element>NC</ISO_3166-1_Alpha-2_Code_element>
@@ -796,7 +800,11 @@
       <ISO_3166-1_Country_name>SINGAPORE</ISO_3166-1_Country_name>
       <ISO_3166-1_Alpha-2_Code_element>SG</ISO_3166-1_Alpha-2_Code_element>
    </ISO_3166-1_Entry>
-   <ISO_3166-1_Entry>
+  <ISO_3166-1_Entry>
+    <ISO_3166-1_Country_name>SINT MAARTEN (DUTCH PART)</ISO_3166-1_Country_name>
+    <ISO_3166-1_Alpha-2_Code_element>SX</ISO_3166-1_Alpha-2_Code_element>
+  </ISO_3166-1_Entry>
+  <ISO_3166-1_Entry>
       <ISO_3166-1_Country_name>SLOVAKIA</ISO_3166-1_Country_name>
       <ISO_3166-1_Alpha-2_Code_element>SK</ISO_3166-1_Alpha-2_Code_element>
    </ISO_3166-1_Entry>
@@ -820,6 +828,10 @@
       <ISO_3166-1_Country_name>SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS</ISO_3166-1_Country_name>
       <ISO_3166-1_Alpha-2_Code_element>GS</ISO_3166-1_Alpha-2_Code_element>
    </ISO_3166-1_Entry>
+  <ISO_3166-1_Entry>
+    <ISO_3166-1_Country_name>SOUTH SUDAN</ISO_3166-1_Country_name>
+    <ISO_3166-1_Alpha-2_Code_element>SS</ISO_3166-1_Alpha-2_Code_element>
+  </ISO_3166-1_Entry>
    <ISO_3166-1_Entry>
       <ISO_3166-1_Country_name>SPAIN</ISO_3166-1_Country_name>
       <ISO_3166-1_Alpha-2_Code_element>ES</ISO_3166-1_Alpha-2_Code_element>

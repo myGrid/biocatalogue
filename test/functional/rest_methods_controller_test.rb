@@ -1,23 +1,27 @@
 require 'test_helper'
 
 class RestMethodsControllerTest < ActionController::TestCase
+
   def test_get_without_authentication
-    get :update_resource_path
+
+    rest = create_rest_service(:endpoints => "/{id}")
+
+    get :update_resource_path, :id => rest.rest_resources[0].rest_methods[0].id
     assert_redirected_to :login
     
-    get :edit_resource_path_popup
+    get :edit_resource_path_popup, :id => rest.rest_resources[0].rest_methods[0].id
     assert_redirected_to :login
     
-    get :update
+    get :update, :id => rest.rest_resources[0].rest_methods[0].id
     assert_redirected_to :login
     
-    get :edit_endpoint_name_popup
+    get :edit_endpoint_name_popup, :id => rest.rest_resources[0].rest_methods[0].id
     assert_redirected_to :login
     
-    get :remove_endpoint_name
+    get :remove_endpoint_name, :id => rest.rest_resources[0].rest_methods[0].id
     assert_redirected_to :login
     
-    get :inline_add_endpoint_name
+    post :inline_add_endpoint_name, :id => rest.rest_resources[0].rest_methods[0].id
     assert_redirected_to :login
   end
   

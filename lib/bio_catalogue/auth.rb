@@ -37,6 +37,8 @@ module BioCatalogue
           return true if check_user_is_responsible_for_service_with_thing(user, thing)
         when Service
           return true if thing.all_responsibles.include?(user)
+        when ServiceDeployment
+          return true if thing.service.all_responsibles.include?(user)
         when TestScript
           return true if thing.submitter_type == "User" && thing.submitter_id == user.id
           

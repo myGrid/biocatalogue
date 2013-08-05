@@ -10,8 +10,7 @@ Factory.define :test_script do |ts|
   ts.prog_language "soapui"
   ts.submitter {|a| a.association(:user)}
   ts.content_blob {|a| a.association(:content_blob)}
-  ts.service_test {|a| a.association(:service_test)}
-  
+  #ts.service_test {|a| a.association(:service_test)}
 end
 
 Factory.define :test_script_with_user, :parent => :test_script do |script|

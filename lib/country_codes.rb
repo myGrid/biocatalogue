@@ -18,29 +18,27 @@ module CountryCodes
 
     # Adjust some names (also titlecase breaks hyphenated and non-ascii names)
     entry = case code
-    when "TW"
-      "Taiwan"
-    when "BO"
-      "Bolivia"
-    when "MK"
-      "Macedonia, Republic of"
-    when "MD"
-      "Moldova"
-    when "MF"
-      "Saint Martin (French part)"
-    when "VE"
-      "Venezuela"
-    when "GW"
-      "Guinea-Bissau"
-    when "TL"
-      "Timor-Leste"
-    when "CI"
-      "Côte d'Ivoire"
-    when "BL"
-      "Saint Barthélemy"
-    else
-      e['ISO_3166_1_Country_name'].titlecase
-    end
+              when "AX"
+                "Aland Islands"
+              when "MF"
+                "Saint Martin (French part)"
+              when "GW"
+                "Guinea-Bissau"
+              when "TL"
+                "Timor-Leste"
+              when "CI"
+                "Cote d'Ivoire"
+              when "BL"
+                "Saint Barthelemy"
+              when "LY"
+                "Libya"
+              when "SH"
+                "Saint Helena, Ascension and Tristan da Cunha"
+              when "VN"
+                "Viet Nam"
+              else
+                e['ISO_3166_1_Country_name'].titlecase
+            end
 
     ["And", "The", "Of"].each do |w|
       entry.gsub!(w, w.downcase)

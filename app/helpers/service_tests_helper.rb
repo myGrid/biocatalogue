@@ -80,7 +80,7 @@ module ServiceTestsHelper
   
     redbox_hash = { :url => url_hash, :id => id_value, :failure => fail_value }
     
-    link_content = link_to(inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
+    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
     
     return link_content
   end

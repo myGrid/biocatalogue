@@ -50,7 +50,7 @@
 		<%# ... make available the option to show all, if there are more. %>
 		<% if filters.length > initial_no_to_show %>
 			<p class="more_less_links" style="margin-top: 0.8em;">
-				<%= render_show_hide_filters_links(filter_type, hidden_items_class) -%>
+				<%= render_show_hide_filters_links(filter_type, hidden_items_class).html_safe -%>
 			</p>
 		<% end %>
 		

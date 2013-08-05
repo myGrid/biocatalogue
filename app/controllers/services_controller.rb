@@ -7,7 +7,7 @@
 class ServicesController < ApplicationController
 
   before_filter :disable_action, :only => [ :edit, :update ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity, :filtered_index, :favourite, :unfavourite ]
+  before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity, :filtered_index, :favourite, :unfavourite, :bmb ]
 
   before_filter :login_or_oauth_required, :only => [ :destroy, :check_updates, :archive, :unarchive, :favourite, :unfavourite ]
 
@@ -333,6 +333,15 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html  # examples.html.erb
       format.js { render :layout => false }
+    end
+  end
+
+  def bmb
+    # Get all SOAP and REST services that have not been archived
+    @services = (RestService.includes(:service).where("services.archived_at is NULL") + SoapService.includes(:service).where("services.archived_at is NULL")).sort_by { |s| s.created_at }
+
+    respond_to do |format|
+      format.xml
     end
   end
 
