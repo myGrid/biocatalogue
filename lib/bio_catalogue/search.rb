@@ -114,9 +114,6 @@ module BioCatalogue
 
 
     # sunspot_search replaces the original search which uses the acts_as_solr plugin.
-    #NOTE: For some reason the Sunspot.search(model) method doesn't quite give the correct results
-    # if you pass an array of models as a parameter, hence the iterator searching one at a time and
-    # aggregating the results.
 
     def self.sunspot_search(query, scope=ALL_SCOPE_SYNONYMS[0], ignore_scope=nil)
                                                 a = Time.now
