@@ -130,6 +130,7 @@ BioCatalogue::Application.routes.draw do
       get :annotations_by
       get :annotations
       get :services
+      get :edit_by_popup
     end
 
   end
@@ -196,7 +197,7 @@ BioCatalogue::Application.routes.draw do
   match '/index.:format' => 'home#index', :as => :activity_feed
   match '/status_changes.:format' => 'home#status_changes', :as => :status_changes_feed
   match '/latest' => 'home#latest', :as => :latest
-  match 'service_providers/auto_complete' => 'service_providers#auto_complete', :as => :service_provider_auto_complete, :via => :get
+  match 'service_providers/auto_complete' => 'service_providers#auto_complete', :as => :service_provider_auto_complete, :via => :post
 
   resources :rest_services do
 
