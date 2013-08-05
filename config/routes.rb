@@ -106,13 +106,13 @@ BioCatalogue::Application.routes.draw do
 
     collection do
       delete :destroy_taggings
-      get :auto_complete
+      post :auto_complete
     end
 
 
   end
 
-  match '/search/auto_complete' => 'search#auto_complete', :as => :search_auto_complete, :via => :get
+  match '/search/auto_complete' => 'search#auto_complete', :as => :search_auto_complete, :via => :post
   match '/search/ignore_last' => 'search#ignore_last', :as => :ignore_last_search, :via => :post
   match '/search.:format' => 'search#show', :as => :search, :via => [:get, :post]
   match '/search' => 'search#show', :as => :search, :via => [:get, :post]
