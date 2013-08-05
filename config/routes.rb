@@ -352,6 +352,7 @@ BioCatalogue::Application.routes.draw do
     collection do
       post :filtered_index
       get :filters
+      get :bmb
     end
 
     member do
