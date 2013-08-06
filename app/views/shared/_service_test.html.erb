@@ -11,7 +11,7 @@
 
 <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, testable_item) %>
 
-	<%= form_tag (test_scripts_path, :method => :post, :multipart => true )  do -%>
+	<%= form_tag(test_scripts_path, :method => :post, :multipart => true )  do -%>
         <% if service_test %>
           <% service_test.errors.full_messages.each do |err|  %>
               <%= err %>
