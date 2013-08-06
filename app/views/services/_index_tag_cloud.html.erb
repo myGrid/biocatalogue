@@ -43,7 +43,7 @@
           <% if @tags.length > initial_number_of_tags %>
             <span style="vertical-align:middle; font-weight: normal; font-size: 85%; margin-left: 1.5em;">
               (
-              <%= link_to_function("more" + expand_image("0.5em"), :id => 'tag_cloud_more_link', :style => "text-decoration: none;") do |page| 
+              <%= link_to_function("more" + expand_image("0.5em"), :id => 'tag_cloud_more_link', :style => "text-decoration: none;").html_safe do |page|
                 page.toggle 'tag_cloud_more_link', 'tag_cloud_less_link', 'tag_cloud_normal', 'tag_cloud_bigger', 'tag_cloud_title_normal', 'tag_cloud_title_bigger'
               end -%>
               
