@@ -18,9 +18,11 @@
     <%= form_for :service_provider_hostname, :url => {:controller => "service_provider_hostnames",
                                                      :action => "reassign_provider", 
                                                      :id => @hostname.id } do |f| %>
+        <% if !@service_provider_hostname.nil? && !@service_provider_hostname.errors.nil? %>
         <% @service_provider_hostname.errors.full_messages.each do |err|  %>
             <%= err %>
         <% end %>
+            <% end %>
   
       <div>
         <div class="box_info_standout">
