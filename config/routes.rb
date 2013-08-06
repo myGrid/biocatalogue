@@ -232,7 +232,7 @@ BioCatalogue::Application.routes.draw do
     end
 
     collection do
-      get :new_popup
+      post :new_popup
       post :add_new_resources
     end
 
