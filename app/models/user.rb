@@ -47,7 +47,10 @@ class User < ActiveRecord::Base
         text :display_name, :affiliation, :country
     end
   end
-  
+
+  # For users with external accounts (e.g they registered through RPX)
+  # email and password confirmation isn't performed. The password and email
+  # will be saved nonetheless.
   validates_presence_of       :password, :if => :password_required?
   validates_presence_of       :password_confirmation, :if => :password_required?
   validates_confirmation_of   :password, :if => :password_required?
