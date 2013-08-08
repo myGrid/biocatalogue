@@ -4,7 +4,7 @@
 		Please give us the reason why you want to turn down this request:
 	</p>
 	
-	<% form_tag (deny_responsibility_request_url(resp_request), :method => :put, :confirm => "Are you sure")  do -%>
+	<%= form_tag (deny_responsibility_request_url(resp_request), :method => :put, :confirm => "Are you sure")  do -%>
 		
 		<p>
 			<%= text_area_tag 'responsibility_request[message]', resp_request.message ,:size => "50x10", :style => 'width:100%; height:50%' -%>
