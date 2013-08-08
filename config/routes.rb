@@ -119,11 +119,15 @@ BioCatalogue::Application.routes.draw do
   match '/search/by_data.:format' => 'search#by_data', :as => :search_by_data, :via => [:get, :post]
   match '/search/by_data' => 'search#by_data', :as => :search_by_data, :via => [:post, :get]
 
+
+
   resources :service_providers do
 
     collection do
       post :filtered_index
       get :filters
+      post :edit_by_popup
+      post :auto_complete
     end
 
     member do
@@ -135,7 +139,12 @@ BioCatalogue::Application.routes.draw do
 
   end
 
-  resources :service_provider_hostnames
+  resources :service_provider_hostnames do
+    collection do
+      post :reassign_provider_by_popup
+      post :reassign_provider
+    end
+  end
 
   resources :service_deployments do
 
@@ -224,7 +233,7 @@ BioCatalogue::Application.routes.draw do
     end
 
     collection do
-      get :new_popup
+      post :new_popup
       post :add_new_resources
     end
 
