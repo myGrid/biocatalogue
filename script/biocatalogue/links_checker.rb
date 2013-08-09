@@ -48,7 +48,8 @@ class LinksChecker
     ENV["RAILS_ENV"] = @options[:environment]
     #RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)  # RAILS_ENV is deprecated
 
-    require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
+    #require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
+    require File.expand_path('../../../config/environment.rb', __FILE__)
   end
   
   # Find all the services that have not been archived from the database
