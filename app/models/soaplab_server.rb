@@ -6,7 +6,7 @@
 
 require 'open-uri'
 require 'soap/wsdlDriver'
-require 'ftools'
+#require 'ftools'
 
 class SoaplabServer < ActiveRecord::Base
   
