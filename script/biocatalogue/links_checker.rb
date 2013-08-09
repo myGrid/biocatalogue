@@ -14,9 +14,9 @@
 #
 #    -h, --help                       Show this help message.
 #
-# Depedencies:
-# - Rails (v2.3.2)
-#
+# Run with ruby (e.g. in development mode):
+# ruby script/biocatalogue/links_checker.rb -e production
+# Defaults to development mode if no argument is given.
 
 require 'optparse'
 require 'benchmark'
@@ -28,29 +28,28 @@ class LinksChecker
   
   def initialize(args)
     @options = {
-      :environment => (ENV['RAILS_ENV'] || "production").dup,
+      :environment => (ENV['RAILS_ENV'] || "development").dup,
     }
-    
+
     args.options do |opts|
       opts.on("-e", "--environment=name", String,
               "Specifies the environment to run this script under (test|development|production).",
               "Default: development") { |v| @options[:environment] = v }
-    
+
       opts.separator ""
-    
+
       opts.on("-h", "--help", "Show this help message.") { puts opts; exit }
-      
+
       opts.parse!
     end
-  
+
     # Start the Rails app
-    
+
     ENV["RAILS_ENV"] = @options[:environment]
     #RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)  # RAILS_ENV is deprecated
-    Rails.env = ActiveSupport::StringInquirer.new(@options[:environment])
 
     require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
-  end  
+  end
   
   # Find all the services that have not been archived from the database
   # and extract any url from the descriptions and other annotatable attributes
@@ -58,7 +57,7 @@ class LinksChecker
   # or not. Flag the ones that are not accessible and generate an html report of
   # those.
   
-  def run 
+  def run
     @all_links           = []
     @all_data_with_links = []
     conditions           = 'archived_at IS NULL'
@@ -74,8 +73,9 @@ class LinksChecker
   protected
   
   def report(all_data_with_links, all_links_with_status)
-    puts "Redirecting output of $stdout to log file: '{Rails.root}/public/link_checker_report.html' ..."
-    $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'public', "links_checker_report.html"), "w")
+    report_file = File.join(File.dirname(__FILE__), '..', '..', 'public', "links_checker_report.html")
+    puts "Redirecting output of $stdout to log file: #{File.expand_path(report_file)}"
+    $stdout = File.new(report_file, "w")
     $stdout.sync = true
     puts '<html >'
     puts '<body bgcolor="#A6D785" width="70%">'
