@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "1.8.7"
+ruby "1.9.3"
 
 gem "rails", "~>3.2.13"
 gem "rdoc", "~>3.4"
@@ -14,9 +14,13 @@ gem "json"
 gem "addressable"
 gem "daemons"
 gem "dnsruby"
-gem "SystemTimer"
 gem 'libxml-ruby',"2.6.0",:require => "libxml"
-gem "mongrel"
+
+#Mongrel broken for 1.9.3. Using thin as suggested here
+# http://stackoverflow.com/questions/13851741/install-mongrel-in-ruby-1-9-3
+#gem "mongrel"
+gem 'thin'
+
 gem "tzinfo"
 gem "crack"
 gem "factory_girl", "<=2.6.5"

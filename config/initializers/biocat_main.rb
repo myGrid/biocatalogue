@@ -37,11 +37,11 @@ require 'hash'
 require 'numeric'
 require 'mime_type'
 require 'addressable/uri'
-require 'system_timer'
+
 require 'libxml'
 require 'dnsruby'
 require 'open-uri'
-require 'system_timer'
+
 require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'
