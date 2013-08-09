@@ -33,7 +33,9 @@ gem "twitter"
 gem "memcache-client", :require => "memcache"
 gem "ruby-hmac"
 gem "seer"
-gem "soap4r"
+#Soap4r not supported on r1.9 so using a branch
+#gem "soap4r"
+gem 'mumboe-soap4r'
 gem "google_analytics"
 gem "oauth-plugin"
 gem "validates_existence"
