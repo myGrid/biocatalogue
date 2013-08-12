@@ -252,8 +252,9 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { :load_wsdl => :post}
 
   map.resources :services,
-                :collection => { :filters => :get,
-                                 :filtered_index => :post },
+                :collection => {:filters => :get,
+                                :filtered_index => :post,
+                                :bmb => :get},
                 :member => { :categorise => :post,
                              :summary => :get,
                              :annotations => :get,
