@@ -14,7 +14,7 @@ namespace :biocatalogue do
       first_no = ENV['first']
       all      = ENV['all']
       services = []
-      if last_no.to_i > 0 :
+      if last_no.to_i > 0 then
         services.concat(Service.all.last(last_no.to_i))
       end
       if first_no.to_i > 0
