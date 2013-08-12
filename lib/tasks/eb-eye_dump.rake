@@ -4,8 +4,8 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-require 'parsedate'
-require 'libxml'
+require 'xml'
+#require 'libxml'
 require 'fileutils'
 require 'benchmark'
 
@@ -27,10 +27,7 @@ def truncate(text, *args)
 end
 
 def format_date(date)
-  parsed_date = ParseDate.parsedate(date.to_s)
-  date_to_time = Time.gm(*parsed_date)
-  month = date_to_time.strftime("%b").upcase
-  date_to_time.strftime("%d-#{month}-%Y")
+  return DateTime.parse(date.to_s).strftime('%d-%^b-%Y')
 end
 
 def escape_lt_gt(text)
