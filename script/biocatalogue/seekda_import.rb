@@ -291,7 +291,7 @@ class SeekDaImporter
             begin
               xml_content = ''
               
-              SystemTimer::timeout(10) do
+              timeout(10) do
                 xml_content = open(url, 
                                   :proxy => HTTP_PROXY, 
                                   :http_basic_authentication => [ @username, @password ],

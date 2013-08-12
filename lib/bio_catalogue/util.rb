@@ -16,7 +16,7 @@ module BioCatalogue
         
         address = ""
         
-        SystemTimer::timeout(4) { address = Dnsruby::Resolv.getaddress(Addressable::URI.parse(url).host) }
+        timeout(4) { address = Dnsruby::Resolv.getaddress(Addressable::URI.parse(url).host) }
         
         loc = Util.ip_geocode(address)
         
@@ -43,7 +43,7 @@ module BioCatalogue
       info = ''
       
       begin
-        SystemTimer::timeout(4) { info = open(url, :proxy => HTTP_PROXY).read }
+        timeout(4) { info = open(url, :proxy => HTTP_PROXY).read }
       rescue TimeoutError
         Rails.logger.error("Method BioCatalogue::Util.ip_geocode - timeout occurred when attempting to get info from HostIp.")
         Rails.logger.error($!)

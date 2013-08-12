@@ -650,7 +650,7 @@ class SoapService < ActiveRecord::Base
       desc  = nil 
       proxy = nil
       begin
-        SystemTimer.timeout(30.seconds) do
+        timeout(30.seconds) do
           proxy = SOAP::WSDLDriverFactory.new(self.wsdl_location).create_rpc_driver
         end
         if !proxy.respond_to?('describe')
@@ -696,7 +696,7 @@ protected
   
   def connect?
     begin
-      SystemTimer.timeout(30.seconds) do
+      timeout(30.seconds) do
         proxy = SOAP::WSDLDriverFactory.new(self.wsdl_location).create_rpc_driver
         operations = proxy.methods(false)
         if !operations.empty?
