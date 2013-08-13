@@ -145,6 +145,7 @@ class SoapServicesController < ApplicationController
     params[:annotations] = { }
     
     wsdl_location = params[:wsdl_url] || ''
+    wsdl_location.strip! unless wsdl_location.blank?
     wsdl_location = Addressable::URI.parse(wsdl_location).normalize.to_s unless wsdl_location.blank?
     
     if wsdl_location.blank?
