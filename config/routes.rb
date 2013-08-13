@@ -305,6 +305,7 @@ BioCatalogue::Application.routes.draw do
 
     collection do
       post :load_wsdl
+      get :load_wsdl
       get :bulk_new
       get :wsdl_locations
     end
