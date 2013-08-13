@@ -31,21 +31,21 @@ class RestResourcesController < ApplicationController
     
     respond_to do |format|
       unless results[:created].blank?
-        flash[:notice] ||= ""
+        flash[:notice] ||= "".html_safe
         flash[:notice] += "The following endpoints were successfully created:<br/>".html_safe
-        flash[:notice] += results[:created].to_sentence
+        flash[:notice] += results[:created].to_sentence.html_safe
         flash[:notice] += "<br/><br/>".html_safe
       end
       
       unless results[:updated].blank?
-        flash[:notice] ||= ""
+        flash[:notice] ||= "".html_safe
         flash[:notice] += "The following endpoints already exist and have been updated where possible:<br/>".html_safe
-        flash[:notice] += results[:updated].to_sentence
+        flash[:notice] += results[:updated].to_sentence.html_safe
       end
       
       unless results[:error].blank?
         flash[:error] = "The following endpoints could not be added:<br/>".html_safe
-        flash[:error] += results[:error].to_sentence
+        flash[:error] += results[:error].to_sentence.html_safe
       end
       
       redirect_url = if request.env["HTTP_REFERER"].include?('/rest_methods/')
