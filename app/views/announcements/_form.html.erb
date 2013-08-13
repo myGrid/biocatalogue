@@ -8,11 +8,11 @@
 
 %>
 
-
-<% @announcement.errors.full_messages.each do |err|  %>
-    <%= err %>
+<% if !@announcement.nil? && !@announcement.errors.nil? then %>
+    <% @announcement.errors.full_messages.each do |err|  %>
+        <%= err %>
+    <% end %>
 <% end %>
-
 <p>
 	<label for="announcement_title">Title</label>
 	<br/>

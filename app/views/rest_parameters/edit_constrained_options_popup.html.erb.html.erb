@@ -19,8 +19,10 @@
                                           :action => "update_constrained_options", 
                                           :id => @rest_parameter.id, 
                                           :rest_method_id => params[:rest_method_id] } do |f| %>
-          <% @rest_parameter.errors.full_messages.each do |err|  %>
-              <%= err %>
+          <% if !@rest_parameter.nil? && !@rest_parameter.errors.nil? then %>
+              <% @rest_parameter.errors.full_messages.each do |err| %>
+                  <%= err %>
+              <% end %>
           <% end %>
 
     <div>

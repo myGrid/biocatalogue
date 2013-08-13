@@ -13,15 +13,19 @@
 
 	<%= form_tag(test_scripts_path, :method => :post, :multipart => true )  do -%>
         <% if service_test %>
-          <% service_test.errors.full_messages.each do |err|  %>
-              <%= err %>
-          <% end %>
+              <% if !service_test.nil? && !service_test.errors.nil? then %>
+                  <% service_test.errors.full_messages.each do |err| %>
+                      <%= err %>
+                  <% end %>
+              <% end %>
           <br/>
         <% end %>
 		<% if script %>
-          <% script.errors.full_messages.each do |err|  %>
-            <%= err %>
-          <% end %>
+              <% if !script.nil? && !script.errors.nil? then %>
+                  <% script.errors.full_messages.each do |err| %>
+                      <%= err %>
+                  <% end %>
+              <% end %>
           <br/>
         <%end%>
 		<%= hidden_field_tag 'testable_id', testable_item.id -%>

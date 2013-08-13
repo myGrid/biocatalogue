@@ -11,8 +11,10 @@
 <h1>Editing service_provider</h1>
 
 <% form_for(@service_provider) do |f| %>
-    <% @service_provider.errors.full_messages.each do |err|  %>
-        <%= err %>
+    <% if !@service_provider.nil? && !@service_provider.errors.nil? then %>
+        <% @service_provider.errors.full_messages.each do |err| %>
+            <%= err %>
+        <% end %>
     <% end %>
 
   <p>

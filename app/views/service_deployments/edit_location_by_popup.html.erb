@@ -18,8 +18,10 @@
                           :action => "update_location",
                           :id => @service_deployment.id } do |f| %>
 
-        <% @service_deployment.errors.full_messages.each do |err|  %>
-            <%= err %>
+        <% if !@service_deployment.nil? && !@service_deployment.errors.nil? then %>
+            <% @service_deployment.errors.full_messages.each do |err| %>
+                <%= err %>
+            <% end %>
         <% end %>
 
     <div>

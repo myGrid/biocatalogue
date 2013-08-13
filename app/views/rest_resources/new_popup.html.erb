@@ -18,8 +18,10 @@
     <%= form_for :rest_service, :url => {:controller => "rest_resources",
                                         :action => "add_new_resources", 
                                         :rest_service_id => @rest_service.id } do |f| %>
-          <% @rest_service.errors.full_messages.each do |err|  %>
-              <%= err %>
+          <% if !@rest_service.nil? && !@rest_service.errors.nil? then %>
+              <% @rest_service.errors.full_messages.each do |err| %>
+                  <%= err %>
+              <% end %>
           <% end %>
 
     <div>

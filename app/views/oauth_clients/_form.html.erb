@@ -10,9 +10,11 @@
 
 <% field_styles = "float:right; width:70%;" %>
 <% errors = [] %>
-<% @client_application.errors.full_messages.each do |err| %>
-    <% errors << "#{err} </br>".html_safe %>
-<% end %>
+<% if !@client_application.nil? && !@client_application.errors.nil? then %>
+    <% @client_application.errors.full_messages.each do |err| %>
+        <% (errors << "#{err} </br>").html_safe %>
+    <% end %>
+< % end %>
 <% if errors != [] %>
     <% flash[:error] = errors.to_s.html_safe %>
 <% end %>

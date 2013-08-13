@@ -18,8 +18,10 @@
     <%= form_for :rest_method, :url => {:controller => "rest_methods",
                                        :action => "update_endpoint_name",
                                        :id => @rest_method.id} do |f| %>
-        <% @rest_method.errors.full_messages.each do |err|  %>
-            <%= err %>
+        <% if !@rest_method.nil? && !@rest_method.errors.nil? then %>
+            <% @rest_method.errors.full_messages.each do |err| %>
+                <%= err %>
+            <% end %>
         <% end %>
 
     <div>

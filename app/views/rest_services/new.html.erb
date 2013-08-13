@@ -32,11 +32,12 @@
   <!--FORM-->
   <%= form_for :rest_service, :url => { :action => :create } do |f| %>
 
-      <% if !(@rest_service.nil? || @rest_service.errors.nil?) %>
-      <% @rest_service.errors.full_messages.each do |err|  %>
-          <%= err %>
+      <% if !@rest_service.nil? && !@rest_service.errors.nil? then %>
+          <% @rest_service.errors.full_messages.each do |err| %>
+              <%= err %>
+          <% end %>
       <% end %>
-     <% end %>
+
     <div style="width: 45%; float: left">
       <!--STEP 1-->
       <p class="step_text">

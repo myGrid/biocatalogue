@@ -11,7 +11,9 @@
 <h1>Editing annotation</h1>
 
 <%= form_for(@annotation) do |f| %>
-    <% @annotation.errors.full_messages.each do |err|  %>
-        <%= err %>
+    <% if !@annotation.nil? && !@annotation.errors.nil? then %>
+        <% @annotation.errors.full_messages.each do |err|  %>
+            <%= err %>
+        <% end %>
     <% end %>
 <% end %>

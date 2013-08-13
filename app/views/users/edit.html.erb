@@ -14,8 +14,10 @@
 
 <br/>
 
-<% @user.errors.full_messages.each do |err|  %>
-    <%= err %>
+<% if !@user.nil? && !@user.errors.nil? then %>
+    <% @user.errors.full_messages.each do |err| %>
+        <%= err %>
+    <% end %>
 <% end %>
 
 <div class="box_form" style="width: 46%; float: left;">

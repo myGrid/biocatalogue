@@ -34,8 +34,10 @@
 
 	<%= form_for(@user) do |f| %>
 
-      <% @user.errors.full_messages.each do |err|  %>
-          <%= err %>
+      <% if !@user.nil? && !@user.errors.nil? then %>
+          <% @user.errors.full_messages.each do |err| %>
+              <%= err %>
+          <% end %>
       <% end %>
 		<fieldset>
 		  <legend>Email Address</legend>
