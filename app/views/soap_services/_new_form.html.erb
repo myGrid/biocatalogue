@@ -70,7 +70,7 @@
 					<div>
 						Location: <br/>
 						<% if @wsdl_geo_location %>
-							<p class="field"><%= geo_loc_to_text(@wsdl_geo_location) -%></p>
+							<p class="field"><%= geo_loc_to_text(@wsdl_geo_location).html_safe -%></p>
 						<% else %>
 							<p class="none_text">Not available</p>
 						<% end %>
