@@ -15,38 +15,36 @@
 	</div>
 
 	<div class="body">
-		<%= form_for :service_test, :url => {:controller => "service_tests", :action => "create_monitoring_endpoint", :service_id => @service.id } do |f| %>
-          <% if !@service_test.nil? && !@service_test.errors.nil? then %>
+      <%= form_for :service_test, :url => {:controller => "service_tests", :action => "create_monitoring_endpoint", :service_id => @service.id } do |f| %>
               <% if !@service_test.nil? && !@service_test.errors.nil? then %>
                   <% @service_test.errors.full_messages.each do |err| %>
-                  <%= err %>
+                      <%= err %>
+                  <% end %>
               <% end %>
+
+              <div>
+                <div class="box_info_standout">
+                  <%= annotation_add_info_text("monitoring_endpoint", @service) -%>
+                </div>
+
+                <p class="step_text">Enter the URL to monitor:</p>
+
+                <div class="box_info_standout" style="font-size:90%;">
+                  <b>Note:</b> the endpoint to be monitoring should be preceded by the base URL:<br/>
+                  <b><%= h(@service.service_deployments.first.endpoint) -%></b>
+                </div>
+
+                <p class="high_linespaced form_field_section">
+                  <%= text_field_tag "monitoring_endpoint", h(@service.service_deployments.first.endpoint), :style => "width: 99%;" %>
+                </p>
+
+                <!--SUBMIT-->
+                <p style="margin-top: 1.5em; text-align: center;">
+                  <%= f.submit "Submit", :disable_with => "Submitting..." -%>
+                  <%= button_to_function "Close", "RedBox.close()" -%>
+                </p>
+
+              </div>
           <% end %>
-
-			<div>
-				<div class="box_info_standout">
-					<%= annotation_add_info_text("monitoring_endpoint", @service) -%>
-				</div>
-	
-				<p class="step_text">Enter the URL to monitor:</p>
-	
-				<div class="box_info_standout" style="font-size:90%;">
-					<b>Note:</b> the enpoint to be monitoring should be preceded by the base URL:<br/>
-					<b><%= h(@service.service_deployments.first.endpoint) -%></b>
-				</div>
-	
-				<p class="high_linespaced form_field_section">
-					<%= text_field_tag "monitoring_endpoint", h(@service.service_deployments.first.endpoint), :style => "width: 99%;" %>
-				</p>
-	
-				<!--SUBMIT-->
-				<p style="margin-top: 1.5em; text-align: center;">
-					<%= f.submit "Submit", :disable_with => "Submitting..." -%>
-					<%= button_to_function "Close", "RedBox.close()" -%>
-				</p>
-	
-			</div>
-
-		<% end %>
 	</div>
 </div>
