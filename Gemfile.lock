@@ -66,6 +66,13 @@ GEM
     bourne (1.5.0)
       mocha (>= 0.13.2, < 0.15)
     builder (3.0.4)
+    coffee-rails (3.2.2)
+      coffee-script (>= 2.2.0)
+      railties (~> 3.2.0)
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.6.3)
     country-select (1.1.1)
     crack (0.4.0)
       safe_yaml (~> 0.9.0)
@@ -81,6 +88,8 @@ GEM
     eventmachine (1.0.3)
     exception_notification (3.0.1)
       actionmailer (>= 3.0.4)
+    execjs (1.4.0)
+      multi_json (~> 1.0)
     factory_girl (2.6.4)
       activesupport (>= 2.3.9)
     factory_girl_rails (1.7.0)
@@ -180,6 +189,11 @@ GEM
       builder (>= 2.1.2)
     ruby-hmac (0.4.0)
     safe_yaml (0.9.3)
+    sass (3.2.10)
+    sass-rails (3.2.6)
+      railties (~> 3.2.0)
+      sass (>= 3.1.10)
+      tilt (~> 1.3)
     seer (0.10.0)
     shoulda (3.1.1)
       shoulda-context (~> 1.0)
@@ -216,6 +230,9 @@ GEM
       multi_json (~> 1.0)
       simple_oauth (~> 0.2)
     tzinfo (0.3.37)
+    uglifier (2.1.2)
+      execjs (>= 0.3.0)
+      multi_json (~> 1.0, >= 1.0.2)
     validates_email_format_of (1.5.3)
     validates_existence (0.8.0)
     will_paginate (3.0.4)
@@ -227,6 +244,7 @@ DEPENDENCIES
   acts_as_trashable
   addressable
   better_logging
+  coffee-rails (~> 3.2.1)
   country-select
   crack
   daemons
@@ -259,6 +277,7 @@ DEPENDENCIES
   redbox!
   rpx_now
   ruby-hmac
+  sass-rails (~> 3.2.3)
   seer
   shoulda (< 3.2.0)
   solr-ruby
@@ -267,6 +286,7 @@ DEPENDENCIES
   thin
   twitter
   tzinfo
+  uglifier (>= 1.0.3)
   validates_email_format_of
   validates_existence
   version_info (= 0.7.1)!

@@ -77,3 +77,10 @@ gem 'progress_bar'
 # Frozen gems
 #New version_info requires ruby > 1.9.*  - leave frozen till Rails 3 upgrade
 gem "version_info", "0.7.1", :path => "vendor/gems/version_info-0.7.1"
+
+group :assets do
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+  gem 'uglifier', '>= 1.0.3'
+end
+
