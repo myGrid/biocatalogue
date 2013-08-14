@@ -5,6 +5,32 @@
  * Institute (EMBL-EBI) and the University of Southampton.
  * See license.txt for details
  */
+// This is a manifest file that'll be compiled into application.js, which will include all the files
+// listed below.
+//
+// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
+// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
+//
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// the compiled file.
+//
+// WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
+// GO AFTER THE REQUIRES BELOW.
+//
+//= require prototype
+//= require prototype_ujs
+//= require effects
+//= require dragdrop
+//= require boxover
+//= require controls
+//= require redbox
+//= require_self
+//= require textInputWithDefaultText
+//= require texpand
+//= require tabber
+//= require tablekit
+//= require p7exp
+//= require xregexp-min
 
 
 function getMenuValue(menu_id) {
@@ -114,7 +140,7 @@ function updateServiceCategoriesList() {
 
 	for (var key in service_categories) {
 		markup += '<span style="vertical-align: middle;">' + service_categories[key] + '&nbsp;&nbsp;&nbsp;<small><a href="#" onclick="javascript:removeServiceCategory(' + key + '); return false;">' +
-		'<img src="/images/delete.png" alt="Remove this category" style="vertical-align: middle;"/></a></small></span><br/>';
+		'<img src="/assets/delete.png" alt="Remove this category" style="vertical-align: middle;"/></a></small></span><br/>';
 	}
 
 	if (markup == '')
@@ -185,12 +211,12 @@ function categoryToggle(catID, expand) {
   
   if (expand == false) {
     setCategoryState(catID, false);
-    $(root_el_id).update("<img src='/images/plus.png' alt='Expand' />");
+    $(root_el_id).update("<img src='/assets/plus.png' alt='Expand' />");
     Effect.BlindUp(children_el_id, {duration:0.2});
   }
   else if (expand == true) {
     setCategoryState(catID, true);
-    $(root_el_id).update("<img src='/images/minus.png' alt='Collapse' />");
+    $(root_el_id).update("<img src='/assets/minus.png' alt='Collapse' />");
     Effect.BlindDown(children_el_id, {duration:0.2});
   }
 }

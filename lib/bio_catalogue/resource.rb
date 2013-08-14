@@ -134,7 +134,7 @@ module BioCatalogue
     begin
       return image_path("flags/#{code.downcase}.png")
     rescue
-      return "/images/flags/#{code.downcase}.png"
+      return "/assets/flags/#{code.downcase}.png"
     end
   end
 

@@ -18,8 +18,8 @@ module BioCatalogue
         {
           "label" => status.label,
           "message" => status.message,
-          "symbol" => BioCatalogue::Api.uri_for_path("/images/#{status.symbol_filename}"),
-          "small_symbol" => BioCatalogue::Api.uri_for_path("/images/#{status.small_symbol_filename}"),
+          "symbol" => BioCatalogue::Api.uri_for_path("/assets/#{status.symbol_filename}"),
+          "small_symbol" => BioCatalogue::Api.uri_for_path("/assets/#{status.small_symbol_filename}"),
           "last_checked" => (status.last_checked ? status.last_checked.iso8601 : nil)
         }
       end # self.monitoring_status

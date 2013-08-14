@@ -387,7 +387,7 @@ ARGV.options do |opt|
   opt.parse!
 end
 
-RAILS_ENV = config[:environment]
+#RAILS_ENV = config[:environment]      # Rails 2 deprecated constant
 
 if config.values.include?(nil)
   puts "Warning!!!"

@@ -141,7 +141,7 @@ is not enabled.
 .p7menubar li:hover a, .p7menubar a:focus,
 .p7menubar a:active, .p7menubar li.p7hvr a {
 	border: 1px solid #BBBBBB;
-	background-image: url('/images/button_slim_bg.png');
+	background-image: url('/assets/button_slim_bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #EEF6FF;
@@ -165,7 +165,7 @@ to show through.
 */
 .p7menubar li:hover ul a, .p7menubar li.p7hvr ul a {
 	border: 1px solid #BBBBBB;
-	background-image: url('/images/button_slim_bg.png');
+	background-image: url('/assets/button_slim_bg.png');
 	background-position: top;
 	background-repeat: repeat-x;
 	background-color: #EEF6FF;

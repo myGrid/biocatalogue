@@ -29,7 +29,7 @@ class FlagsAndCountryCodesTest < ActionView::TestCase
   test "Check flag icons are available" do 
     CountryCodes.codes.keys.each do |c|
       unless ApplicationHelper::EXCLUDED_FLAG_CODES.include? c
-        path = File.join(Rails.root, 'public', 'images', 'flags', "#{c.downcase}.png")
+        path = File.join(Rails.root, 'app', 'assets', 'images', 'flags', "#{c.downcase}.png")
         assert File.exist?(path), "Flag icon for code '#{c}' does not exist at path: #{path}"
       end
     end
