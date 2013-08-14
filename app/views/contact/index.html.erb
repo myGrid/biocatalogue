@@ -10,7 +10,7 @@
 
 <% t "Contact Us" %>
 
-<center>
+<div id="div-centered" style="width: 630px;">
 	
 	<h1>Contact the <%= SITE_NAME -%> Team</h1>
 
@@ -58,12 +58,12 @@
 	
 	<% end %>
 	
-</center>
+</div>
 
 
-<center>
+<div id="div-centered" style="width: 630px;">
 	
-	<div class="box_form" style="width: 600px; margin: 2em 0; text-align: left;">
+	<div class="box_form" style="margin: 2em 0; text-align: left;">
 		<%= form_tag(submit_feedback_url) do %>
 			<p><b>From</b></p>
 		  <%= text_field_tag :from, current_user.try(:display_name) || params[:from], :size => 30 %>
@@ -96,8 +96,8 @@
 		    <%= text_field_tag :length_check, "", :size => 6 %>
       </p>
 
-    	<center><%= submit_tag "Submit", :disable_with => "Submitting..." %></center>
+    	<div id="div-centered" ><%= submit_tag "Submit", :disable_with => "Submitting..." %></div>
 		<% end %>
 	</div>
 	
-</center>
+</div>
