@@ -1,74 +1,88 @@
 <%
 
-# BioCatalogue: app/views/layouts/_debug.html.erb
-#
-# Copyright (c) 2008, University of Manchester, The European Bioinformatics 
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+   # BioCatalogue: app/views/layouts/_debug.html.erb
+   #
+   # Copyright (c) 2008, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
 
 %>
 
 <div id="footer">
-	<div id="footer_links">
-		<ul>
-			<li><a href="/termsofuse">Terms of Use</a></li>
+  <div id="footer_links">
+    <ul>
+      <li><a href="/termsofuse">Terms of Use</a></li>
 
-			<li class="separator"><a href="http://wiki.biocatalogue.org" target="_blank">About Us</a></li>
-			<li class="separator"><a href="/contact">Contact Us</a></li>
-			<li class="separator"><a href="http://listserv.manchester.ac.uk/cgi-bin/wa?SUBED1=biocatalogue-friends&A=1" target="_blank">Join the friends list</a></li>
-			<li class="separator"><a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting Started</a></li>
-			<li class="separator"><a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help" target="_blank">Further Help</a></li>
-			<li class="separator"><a href="/stats" target="_blank">Registry Stats</a></li>
-			<li class="separator"><a href="http://apidocs.biocatalogue.org" target="_blank">API Docs</a></li>
-			<li class="separator"><a href="http://www.biocatalogue.org/wiki/doku.php?id=public:for_developers" target="_blank">For Developers</a></li>
-		</ul>
-	</div>
-	<span class="clear">&nbsp;</span>
-	
-	<center>
-		<div class="logos">
-			<p style="font-size: 108%;"><b>The BioCatalogue is brought to you by:</b></p>
-			<p>
-				<%= link_to(image_tag('manchester_logo.png', :alt => "University of Manchester"), "http://www.manchester.ac.uk/", :target => "_blank") -%>
-				<%= link_to(image_tag('ebi_logo.png', :alt => "EMBL-EBI"), "http://www.ebi.ac.uk/", :target => "_blank") -%>
-				<span>and the same people who brought you</span>
-				<%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>
-				<%= link_to(image_tag('taverna_logo.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>
-			</p>
-		</div>
-	</center>
-	
-	<p>
-		The BioCatalogue project is funded by the <a target="_blank" href="http://www.bbsrc.ac.uk/">BBSRC</a> (BB/F01046X/1, BB/F010540/1)
-	</p>
-	
-	<p style="margin-top: 1em;">
-		<%= link_to(image_tag('bbsrc_logo.png', :alt => "BBSRC"), "http://www.bbsrc.ac.uk/", :target => "_blank") -%>
-	</p>
-	
-	<p style="margin-top: 2em;">
-		<%= render :partial => "widgets/twitter", :locals => { :link_type => :big } -%>
-	</p>
-	
-	<p class="copyright">
-		Copyright (c) 2008 -
-		<%= Time.now.year -%>
-		<%= link_to "The University of Manchester", "http://www.manchester.ac.uk/", :target => '_blank' %> and the
-		<%= link_to("European Bioinformatics Institute (EMBL-EBI)", "http://www.ebi.ac.uk/", :target => "_blank") -%>
-	</p>
-
-  <div id="licensing_info">
-		<ul>
-      <li><span class="grayed_text">Codebase license:</span> <a href="http://biocatalogue.rubyforge.org/svn/trunk/license.txt" target="_blank">BSD License</a></li>
-			<li class="separator"/>
-      <li><span class="grayed_text">Content license:</span> <a href="http://creativecommons.org/licenses/publicdomain" target="_blank">Creative Commons Public Domain License</a></li>
-			<li class="separator"/>
-      <li><span class="grayed_text">System version:</span> <%=h BioCatalogue::VERSION -%></li>
-			<li class="separator"/>
-      <li><span class="grayed_text">API version:</span> <%=h BioCatalogue::API_VERSION -%></li>
+      <li class="separator"><a href="http://wiki.biocatalogue.org" target="_blank">About Us</a></li>
+      <li class="separator"><a href="/contact">Contact Us</a></li>
+      <li class="separator">
+        <a href="http://listserv.manchester.ac.uk/cgi-bin/wa?SUBED1=biocatalogue-friends&A=1" target="_blank">Join the
+          friends list</a></li>
+      <li class="separator">
+        <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting
+          Started</a></li>
+      <li class="separator">
+        <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help" target="_blank">Further Help</a></li>
+      <li class="separator"><a href="/stats" target="_blank">Registry Stats</a></li>
+      <li class="separator"><a href="http://apidocs.biocatalogue.org" target="_blank">API Docs</a></li>
+      <li class="separator">
+        <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:for_developers" target="_blank">For Developers</a>
+      </li>
     </ul>
   </div>
   <span class="clear">&nbsp;</span>
 
-  
+  <center>
+    <div class="logos">
+      <p style="font-size: 108%;"><b>The BioCatalogue is brought to you by:</b></p>
+
+      <p>
+        <%= link_to(image_tag('manchester_logo.png', :alt => "University of Manchester"), "http://www.manchester.ac.uk/", :target => "_blank") -%>
+        <%= link_to(image_tag('ebi_logo.png', :alt => "EMBL-EBI"), "http://www.ebi.ac.uk/", :target => "_blank") -%>
+        <span>and the same people who brought you</span>
+        <%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>
+        <%= link_to(image_tag('taverna_logo.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>
+      </p>
+    </div>
+  </center>
+
+  <p>
+    The BioCatalogue project is funded by the <a target="_blank" href="http://www.bbsrc.ac.uk/">BBSRC</a> (BB/F01046X/1,
+    BB/F010540/1)
+  </p>
+
+  <p style="margin-top: 1em;">
+    <%= link_to(image_tag('bbsrc_logo.png', :alt => "BBSRC"), "http://www.bbsrc.ac.uk/", :target => "_blank") -%>
+  </p>
+
+  <p style="margin-top: 2em;">
+    <%= render :partial => "widgets/twitter", :locals => {:link_type => :big} -%>
+  </p>
+
+  <p class="copyright">
+    Copyright (c) 2008 -
+    <%= Time.now.year -%>
+    <%= link_to "The University of Manchester", "http://www.manchester.ac.uk/", :target => '_blank' %> and the
+    <%= link_to("European Bioinformatics Institute (EMBL-EBI)", "http://www.ebi.ac.uk/", :target => "_blank") -%>
+  </p>
+
+  <div id="licensing_info">
+    <ul>
+      <li><span class="grayed_text">Codebase license:</span>
+        <a href="http://biocatalogue.rubyforge.org/svn/trunk/license.txt" target="_blank">BSD License</a></li>
+      <li class="separator"/>
+      <li><span class="grayed_text">Content license:</span>
+        <a href="http://creativecommons.org/licenses/publicdomain" target="_blank">Creative Commons Public Domain
+          License</a></li>
+      <li class="separator"/>
+      <li><span class="grayed_text">System version:</span> <%= h BioCatalogue::VERSION -%></li>
+      <li class="separator"/>
+      <li><span class="grayed_text">API version:</span> <%= h BioCatalogue::API_VERSION -%></li>
+      <li class="separator"/>
+      <li><span class="grayed_text">Runs on: </span> Ruby <%= RUBY_VERSION %> and Rails <%= h Rails.version -%></li>
+    </ul>
+  </div>
+  <span class="clear">&nbsp;</span>
+
+
 </div>
