@@ -151,8 +151,8 @@ module ApplicationHelper
       "<li>Submit your own services</li>".html_safe +
       "<li>Annotate (describe, tag etc) and curate your services as well as any other services in the catalogue</li>".html_safe +
       "<li>Rate services</li>".html_safe +
-      "<li>Favourite the services you use the most or like</li>".html_safe +
-      "<li>Contact other members of the catalogue as well as service providers (coming soon)</li>".html_safe
+      "<li>Favourite the services you use the most or like</li>".html_safe
+      #"<li>Contact other members of the catalogue as well as service providers (coming soon)</li>".html_safe
     end
 
     return output
