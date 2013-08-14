@@ -163,7 +163,7 @@ class RestParametersController < ApplicationController
       
       unless results[:updated].blank?
         flash[:notice] ||= "".html_safe
-        flash[:notice] += "The following parameters already exist and have been updated:<br/>".html_safeß
+        flash[:notice] += "The following parameters already exist and have been updated:<br/>".html_safe
         flash[:notice] += results[:updated].to_sentence
       end
       
