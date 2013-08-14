@@ -74,13 +74,13 @@
  */
 
 html {
-    background-color: $primay_colour;
+    background-color: $primary_colour;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background-color: $primay_colour;
+    background-color: $primary_colour;
     font-family: arial;
     color: #333333;
     min-width: 950px;
@@ -282,12 +282,12 @@ img, a img {
 
 .green_box {
     border: 1px dotted #999999;
-    background-color: $primay_colour;
+    background-color: $primary_colour;
     padding: 2px;
 }
 
 .green_highlight {
-    background-color: $primay_colour;
+    background-color: $primary_colour;
     padding: 3px 5px 3px 5px;
 }
 
@@ -502,7 +502,7 @@ a:hover.change_pwd {
 }
 
 #wrapper {
-    background: $primay_colour repeat-x top center;
+    background: $primary_colour repeat-x top center;
 }
 
 #wrapper #container, #header {
@@ -948,7 +948,7 @@ span.clear {
 }
 
 #login_links .inner {
-    background-color: $primay_colour;
+    background-color: $primary_colour;
     border-radius: 3px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -968,7 +968,7 @@ body.sidebar-right #wrapper #container #header #login_links {
     position: absolute;
     top: 3px;
     right: 3px;
-    background-color: $primay_colour;
+    background-color: $primary_colour;
     border: 2px solid #CCC;
     width: 320px;
     height: auto;
@@ -1243,7 +1243,7 @@ body.sidebar-right #login_box {
 
 .pagination span.current {
     font-weight: bold;
-    background: $primay_colour;
+    background: $primary_colour;
     color: #333333;
     border: 1px solid #CDEB8B;
 }
@@ -1256,11 +1256,11 @@ body.sidebar-right #login_box {
 
 .pagination a:hover,
 .pagination a:focus {
-    background: $primay_colour;
+    background: $primary_colour;
 }
 
 .pagination .page_info {
-    background: $primay_colour;
+    background: $primary_colour;
     color: #333333;
     padding: .4em .6em;
     width: 25em;
@@ -1780,7 +1780,7 @@ ul.tabbernav li a {
     background-image: url('/assets/transparency/tab-bg.png');
     background-position: bottom;
     background-repeat: repeat-x;
-    background-color: $primay_colour;
+    background-color: $primary_colour;
     text-decoration: none;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -1900,7 +1900,7 @@ ul.tabbernav li.tabberactive a:hover {
     background-image: url('/assets/transparency/tab-bg.png');
     background-position: bottom;
     background-repeat: repeat-x;
-    background-color: $primay_colour;
+    background-color: $primary_colour;
     text-decoration: none;
     display: block;
     border-top-left-radius: 6px;
@@ -2112,7 +2112,7 @@ ul.tabbernav li.tabberactive a:hover {
 }
 
 .box_info {
-    background: $primay_colour;
+    background: $primary_colour;
     color: #333333;
     padding: 0.6em 1em;
     margin: 0;
@@ -3590,7 +3590,7 @@ a.globalise_param_link {
 .rcontainer > .rbottom > div,
 .rcontainer > .rcontain,
 .biocat_green {
-    background-color: $primay_colour;
+    background-color: $primary_colour;
 }
 
 #header_container {

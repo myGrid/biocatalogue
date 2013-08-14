@@ -3,7 +3,7 @@
 */
 
 /* Main colour - Light */
-$primay_colour: #E9F7CC;
+$primary_colour: #E9F7CC;
 
  /* Header colour - Slightly Darker */
 $header_colour: #D3F78A;
