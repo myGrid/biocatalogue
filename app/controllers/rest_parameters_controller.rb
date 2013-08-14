@@ -49,9 +49,9 @@ class RestParametersController < ApplicationController
     
     respond_to do |format|
       if do_not_proceed
-        flash[:error] = "An error occured while trying to update the default value for parameter <b>#{@rest_parameter.name}</b>"
+        flash[:error] = "An error occured while trying to update the default value for parameter <b>".html_safe + @rest_parameter.name + "</b>".html_safe
       else
-        flash[:notice] = "The default value for parameter <b>#{@rest_parameter.name}</b> has been updated"
+        flash[:notice] = "The default value for parameter <b>".html_safe + @rest_parameter.name + "</b> has been updated".html_safe
       end
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
@@ -69,7 +69,7 @@ class RestParametersController < ApplicationController
     @rest_parameter.save!
     
     respond_to do |format|
-      flash[:notice] = "The default value has been deleted from parameter <b>#{@rest_parameter.name}</b>"
+      flash[:notice] = "The default value has been deleted from parameter <b>".html_safe + @rest_parameter.name + "</b>".html_safe
 
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
@@ -114,9 +114,9 @@ class RestParametersController < ApplicationController
     
     respond_to do |format|
       if do_not_proceed
-        flash[:error] = "An error occured while trying to update constraint for parameter <b>#{@rest_parameter.name}</b>"
+        flash[:error] = "An error occured while trying to update constraint for parameter <b>".html_safe + @rest_parameter.name +  "</b>".html_safe
       else
-        flash[:notice] = "Constrained values for parameter <b>#{@rest_parameter.name}</b> have been updated"
+        flash[:notice] = "Constrained values for parameter <b>".html_safe + @rest_parameter.name + "</b> have been updated".html_safe
       end
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
@@ -137,7 +137,7 @@ class RestParametersController < ApplicationController
     @rest_parameter.save!
     
     respond_to do |format|
-      flash[:notice] = "Constrained values have been deleted from parameter <b>#{@rest_parameter.name}</b>"
+      flash[:notice] = "Constrained values have been deleted from parameter <b>".html_safe + @rest_parameter.name + "</b>".html_safe
 
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
@@ -156,19 +156,19 @@ class RestParametersController < ApplicationController
     respond_to do |format|
       unless results[:created].blank?
         flash[:notice] ||= ""
-        flash[:notice] += "The following parameters were successfully created:<br/>"
+        flash[:notice] += "The following parameters were successfully created:<br/>".html_safe
         flash[:notice] += results[:created].to_sentence
-        flash[:notice] += "<br/><br/>"
+        flash[:notice] += "<br/><br/>".html_safe
       end
       
       unless results[:updated].blank?
-        flash[:notice] ||= ""
-        flash[:notice] += "The following parameters already exist and have been updated:<br/>"
+        flash[:notice] ||= "".html_safe
+        flash[:notice] += "The following parameters already exist and have been updated:<br/>".html_safe
         flash[:notice] += results[:updated].to_sentence
       end
       
       unless results[:error].blank?
-        flash[:error] = "The following parameters could not be added:<br/>"
+        flash[:error] = "The following parameters could not be added:<br/>".html_safe
         flash[:error] += results[:error].to_sentence
       end
       
@@ -197,9 +197,9 @@ class RestParametersController < ApplicationController
 
     respond_to do |format|
       if params[:make_local]
-        success_msg = "Parameter <b>#{param_name}</b> now has a copy unique for endpoint <b>" + associated_method.display_endpoint + "</b>"
+        success_msg = "Parameter <b>".html_safe + param_name + "</b> now has a copy unique for endpoint <b>".html_safe + associated_method.display_endpoint + "</b>".html_safe
       else
-        success_msg = "Parameter <b>#{param_name}</b> for endpoint <b>" + associated_method.display_endpoint + "</b> is now global"
+        success_msg = "Parameter <b>".html_safe + param_name + "</b> for endpoint <b>".html_safe + associated_method.display_endpoint + "</b> is now global".html_safe
       end
 
       format.html { redirect_to url_to_redirect_to }
@@ -212,14 +212,14 @@ class RestParametersController < ApplicationController
     @rest_parameter.save!
     
     respond_to do |format|
-      flash[:notice] = "Parameter <b>#{@rest_parameter.name}</b> is now " + (@rest_parameter.required ? 'mandatory':'optional')
+      flash[:notice] = "Parameter <b>".html_safe + @rest_parameter.name + "</b> is now ".html_safe + (@rest_parameter.required ? 'mandatory':'optional')
       format.html { redirect_to get_redirect_url }
       format.xml  { head :ok }
     end
   end
   
   def destroy
-    success_msg = "Parameter <b>#{@rest_parameter.name}</b> has been deleted"
+    success_msg = "Parameter <b>".html_safe + @rest_parameter.name + "</b> has been deleted".html_safe
 
     url_to_redirect_to = get_redirect_url()
     

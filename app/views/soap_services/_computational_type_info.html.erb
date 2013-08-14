@@ -28,7 +28,7 @@
 						</span>
 						<div class="computational_type_details">
 							<% if thing.computational_type_details.blank? %>
-								<%= h(thing.computational_type) -%>
+								<%= thing.computational_type.html_safe -%>
 							<% else %>
 								<%= render_computational_type_details(thing.computational_type_details) -%>
 							<% end %>
@@ -37,7 +37,6 @@
 				<% end %>
 			<% end %>
 		</div>
-		
 	</div>
 <% end %>
 

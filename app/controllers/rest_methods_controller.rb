@@ -251,7 +251,7 @@ class RestMethodsController < ApplicationController
     destroy_unused_objects(representation_ids, false) # is_parameter = false
     
     respond_to do |format|
-      success_msg = "Endpoint <b>" + deleted_endpoint + "</b> has been deleted".squeeze(' ')
+      success_msg = "Endpoint <b>".html_safe + deleted_endpoint + "</b> has been deleted".squeeze(' ').html_safe
       flash[:notice] = success_msg
       
       redirect_url = (service_url(rest_service.service) + '#endpoints') unless request.env["HTTP_REFERER"].include?('/rest_methods/')

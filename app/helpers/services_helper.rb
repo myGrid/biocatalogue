@@ -51,7 +51,7 @@ module ServicesHelper
   
   def render_computational_type_details(details_hash)
     return "" if details_hash.blank?
-    return details_hash.to_s if (!details_hash.is_a?(Hash) and !details_hash.is_a?(Array))
+    return details_hash.to_s.html_safe if (!details_hash.is_a?(Hash) and !details_hash.is_a?(Array))
     
     logger.info("computational type details class = #{details_hash.class.name}")
     
@@ -75,39 +75,39 @@ module ServicesHelper
   protected
   
   def render_computational_type_details_entries(entries)
-    html = ''
+    html = ''.html_safe
     
     return html if entries.empty?
     
     html << content_tag(:ul) do
-      x = ''
+      x = ''.html_safe
       entries.each do |entry|
-        x << render_computational_type_details_entry(entry)
+        x << render_computational_type_details_entry(entry).html_safe
       end
-      x
+      x.html_safe
     end
     
-    return html
+    return html.html_safe
   end
   
   def render_computational_type_details_entry(entry)
-    html = ''
+    html = ''.html_safe
     
     return html if entry.blank?
     
     html << content_tag(:li) do
-      x = entry['name']
+      x = entry['name'].html_safe
       if entry['documentation']
-        x << info_icon_with_tooltip(white_list(simple_format(entry['documentation'])))
+        x << info_icon_with_tooltip(white_list(simple_format(entry['documentation']))).html_safe
       end
       if entry['type'] and !entry['type'].blank?
-        x << content_tag(:span, "type:", :class => "type_keyword")
-        x << render_computational_type_details_entries([ entry['type'] ].flatten)
+        x << content_tag(:span, "type:", :class => "type_keyword").html_safe
+        x << render_computational_type_details_entries([ entry['type'] ].flatten).html_safe
       end
-      x
+      x.html_safe
     end
     
-    return html
+    return html.html_safe
   end
   
   def get_sorted_list_of_service_ids_from_metadata_counts(service_metadata_counts)
