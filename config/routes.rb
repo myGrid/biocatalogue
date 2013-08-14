@@ -268,9 +268,9 @@ BioCatalogue::Application.routes.draw do
       get :annotations
       put :inline_add_default_value
       put :make_optional_or_mandatory
-      put :update_constrained_options
-      put :remove_default_value
-      put :remove_constrained_options
+      post :update_constrained_options
+      get :remove_default_value
+      get :remove_constrained_options
       put :update_default_value
       post :edit_constrained_options_popup
       get :edit_default_value_popup
