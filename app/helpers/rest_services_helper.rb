@@ -95,13 +95,13 @@ module RestServicesHelper
 
     options[:style] += "float: right; margin: 3px;" 
     
-    actual_link_content = image_tag("user.png") + "<b>"
+    actual_link_content = image_tag("user.png") + "<b>".html_safe
     actual_link_content += link_to(object.submitter_name, 
                                            user_path(User.find(object.submitter_id)),
-                                           :title => "View #{object.submitter_name}'s profile.")
-    actual_link_content += "</b>"
+                                           :title => "View #{object.submitter_name}'s profile.").html_safe
+    actual_link_content += "</b>".html_safe
     
-    link_content = content_tag(:span, 'Added by ' + actual_link_content, :style => options[:style])
+    link_content = content_tag(:span, ('Added by ' + actual_link_content).html_safe, :style => options[:style])
     
     return link_content
   end

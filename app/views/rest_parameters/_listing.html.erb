@@ -45,7 +45,7 @@
   <% end %>
 
   <% uniq_id = "R#{resource.id}M#{method.id}P#{param.id}" %>
-  <% link_content = "<b>" + h(param.name) + "</b>" %>
+  <% link_content = ("<b>" + h(param.name) + "</b>").html_safe %>
   <% link_content = content_tag(:span, link_content, :class => "operation_name") if param.required %>
   
   <%= create_expand_collapse_link(uniq_id,

@@ -14,7 +14,7 @@
     <% @client_application.errors.full_messages.each do |err| %>
         <% (errors << "#{err} </br>").html_safe %>
     <% end %>
-< % end %>
+<% end %>
 <% if errors != [] %>
     <% flash[:error] = errors.to_s.html_safe %>
 <% end %>
