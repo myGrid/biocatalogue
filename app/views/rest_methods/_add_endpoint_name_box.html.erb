@@ -18,7 +18,7 @@
 
 <div class="add_box">
 	<% rounded(annotation_add_box_background_color, "#333", "100%") do %>
-		<% form_tag(:url => {:controller => "rest_methods",
+		<%= form_tag(:url => {:controller => "rest_methods",
                                 :action => "inline_add_endpoint_name", 
                                 :id => rest_method_id,
                                 :partial => partial_from }, 
