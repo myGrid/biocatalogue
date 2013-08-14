@@ -124,13 +124,13 @@ class RestParametersController < ApplicationController
   end
 
   def edit_constrained_options_popup
-    @old_constrained_options = @rest_parameter.constrained_options.join("\n") 
-    
+    @old_constrained_options = @rest_parameter.constrained_options.join("\n")
+
     respond_to do |format|
-      format.js { render :layout => false }
+      format.js { render "_edit_constrained_options_popup", :layout => false }
     end
   end
-  
+
   def remove_constrained_options
     @rest_parameter.constrained_options = []
     @rest_parameter.constrained = 0
