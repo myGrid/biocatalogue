@@ -331,7 +331,7 @@ class ServiceTestsController < ApplicationController
                                               :order => order)
                               
     if request.xml_http_request?
-      render :partial => "service_tests/listing", :locals => {:items => @service_tests }, :layout => false
+      render "service_tests/_listing", :locals => {:items => @service_tests }, :layout => false
     end
     
   end
