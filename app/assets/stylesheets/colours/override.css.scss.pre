@@ -10,3 +10,12 @@ $header_colour: #D3F78A;
 
 /* Secondary colour - used on tabs - Slightly Darker still */
 $secondary_colour: #BFE76F;
+
+/* Info box colour */
+$info_box: #FFFFCC;
+
+/* Notice flash colour */
+$notice_flash: #FFF6AF;
+
+/* Error flash colour */
+$error_flash: #FFDFDF;

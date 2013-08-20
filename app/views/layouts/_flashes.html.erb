@@ -11,7 +11,7 @@
 <% if flash[:error] %>
 
 	<div id="error_flash">
-		<% rounded "#FFDFDF", "#333", "auto" do %>
+		<% rounded nil, "#333", "auto" do %>
 			<%= link_to_function image_tag("close.gif", :style => "float: right; margin-left: 1em;"), 
 																		 visual_effect(:toggle_slide, "error_flash", :duration => 0.3) %>
 			<span style="vertical-align: middle;"><%= flash[:error] %></span>
@@ -23,7 +23,7 @@
 <% if flash[:notice] %>
 
 	<div id="notice_flash">
-		<% rounded "#FFF6AF", "#333", "auto" do %>
+		<% rounded nil, "#333", "auto" do %>
 				<%= link_to_function image_tag("close.gif", :style => "float: right; margin-left: 1em;"), 
 																			 visual_effect(:toggle_slide, "notice_flash", :duration => 0.3) %>
 				<span style="vertical-align: middle;"><%= flash[:notice] %></span>

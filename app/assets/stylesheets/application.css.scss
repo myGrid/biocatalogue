@@ -2124,7 +2124,7 @@ ul.tabbernav li.tabberactive a:hover {
 .box_info_standout {
     color: #333333;
     border: 1px solid #DDD;
-    background: #FFFFCC;
+    background: $info_box;
     padding: 0.3em 0.6em;
     margin-bottom: 1em;
     line-height: 1.7;
@@ -3620,4 +3620,12 @@ table.listings_table {
 #div-centered {
   margin:0px auto;
   text-align:center;
+}
+
+#notice_flash .rcontain, #notice_flash .rtop div, #notice_flash .rbottom div {
+  background-color: $notice_flash;
+}
+
+#error_flash .rcontain, #error_flash .rtop div, #error_flash .rbottom div {
+  background-color: $notice_flash;
 }
