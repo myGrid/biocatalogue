@@ -8,9 +8,10 @@
 # This extends the Annotation model defined in the Annotations plugin.
 #=====
 
-require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/models/annotation'
-
+#require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/models/annotation'
+require_dependency File.join(Gem.loaded_specs['my_annotations'].full_gem_path,'lib','app','models','annotation')
 class Annotation < ActiveRecord::Base
+
 #  if ENABLE_CACHE_MONEY
 #    is_cached :repository => $cache
 #    index :attribute_id, :limit => 5000, :buffer => 100

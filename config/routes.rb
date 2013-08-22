@@ -164,6 +164,7 @@ ActionController::Routing::Routes.draw do |map|
                              :services_responsible => :get,
                              :make_curator => :put,
                              :remove_curator => :put,
+                             :activate => :put,
                              :deactivate => :put }
                 
   map.resource :session
@@ -251,8 +252,9 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { :load_wsdl => :post}
 
   map.resources :services,
-                :collection => { :filters => :get,
-                                 :filtered_index => :post },
+                :collection => {:filters => :get,
+                                :filtered_index => :post,
+                                :bmb => :get},
                 :member => { :categorise => :post,
                              :summary => :get,
                              :annotations => :get,

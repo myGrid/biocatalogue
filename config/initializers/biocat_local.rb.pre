@@ -129,7 +129,7 @@ SEARCH_PERFORM_POST_SOLR_MAPPINGS = false
 
 # The message to display at the very top of the page.
 # Use this for extra special messages like very important announcements and maintenance notices.
-HEADER_MESSAGE = "The BioCatalogue will be undergoing maintenance on Tuesday March 9th 2010 between 16:00-19:00 GMT"
+HEADER_MESSAGE = ""
 
 
 # The list of email addresses that ALL status change emails should be sent to.

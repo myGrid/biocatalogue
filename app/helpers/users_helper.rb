@@ -44,5 +44,14 @@ module UsersHelper
       "To sign in to #{SITE_NAME} use the email address and password you registered with"
     end
   end
-   
+
+  def generate_include_deactivated_url(resource, should_include_deactivated)
+    params_dup = BioCatalogue::Util.duplicate_params(params)
+    params_dup[:include_deactivated] = should_include_deactivated.to_s
+
+    # Reset page param
+    params_dup.delete(:page)
+
+    return eval("#{resource}_url(params_dup)")
+  end
 end

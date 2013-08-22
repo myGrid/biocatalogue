@@ -295,7 +295,7 @@ module BioCatalogue
           return item[w] if item.is_a?(Hash) && item.has_key?(w)
         end
       end
-      return "#{item.class.name}_#{item.id}"  
+      return "#{item.class.name}_#{item.id}" unless item.nil?
     end
     
     # Given a set of params, this attempts to find the *single* object referred to.
@@ -438,7 +438,7 @@ module BioCatalogue
               end
         sql[0] = sql[0] + " AND http_cycle = '#{http_cycle.to_s}' LIMIT 1"
         
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results = RestMethod.connection.select_all(RestMethod.send(:sanitize_sql, sql))
         return false if results.empty?
       end
       

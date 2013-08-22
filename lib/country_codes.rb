@@ -7,75 +7,78 @@
 # Needs to take into account the fact that we are using a country select that has been modified.
 # (ie: we are using: http://github.com/ihower/country_and_region_select)
 module CountryCodes
-  
-  @@codes = Hash.new
-  
-# OLD:
-#  File.open(File.join(RAILS_ROOT, 'data', 'countries.tab')).each do |record|
-#    parts = record.split("\t")
-#    @@codes[parts[0]] = parts[1].strip
-#  end
 
-  # NEW: uses the official ISO 3166 country codes XML file...
+  @@codes = Hash.new
+
+  # Uses the official ISO 3166 country codes XML file, edited in accordance
+  # with the note above.
   raw = Hash.from_xml(IO.read(File.join(Rails.root, 'data', 'iso_3166-1_list_en.xml')))
-  raw['iso_3166_1_list_en']['iso_3166_1_entry'].each do |e|
-    @@codes[e['iso_3166_1_alpha_2_code_element']] = e['iso_3166_1_country_name']
+  raw['ISO_3166_1_List_en']['ISO_3166_1_Entry'].each do |e|
+    code = e['ISO_3166_1_Alpha_2_Code_element']
+
+    # Adjust some names (also titlecase breaks hyphenated and non-ascii names)
+    entry = case code
+    when "TW"
+      "Taiwan"
+    when "BO"
+      "Bolivia"
+    when "MK"
+      "Macedonia, Republic of"
+    when "MD"
+      "Moldova"
+    when "MF"
+      "Saint Martin (French part)"
+    when "VE"
+      "Venezuela"
+    when "GW"
+      "Guinea-Bissau"
+    when "TL"
+      "Timor-Leste"
+    when "CI"
+      "Côte d'Ivoire"
+    when "BL"
+      "Saint Barthélemy"
+    else
+      e['ISO_3166_1_Country_name'].titlecase
+    end
+
+    ["And", "The", "Of"].each do |w|
+      entry.gsub!(w, w.downcase)
+    end
+
+    @@codes[code] = entry
   end
-  
-  #puts "countries = " + @@codes.to_s
-  
+
   def self.country(code)
     return nil if code.blank?
-    
+
     code = code.upcase
     code = "GB" if code == "UK"
-    
-    case code
-      when "TW"
-        return "TAIWAN" 
-      when "BO"
-        "BOLIVIA"
-      when "MK"
-        "MACEDONIA, REPUBLIC OF"
-      when "MD"
-        "MOLDOVA"
-      when "MF"
-        "SAINT MARTIN (FRENCH PART)"
-      when "VE"
-        "VENEZUELA"
-      else
-        return @@codes[code]
-    end
+
+    return @@codes[code]
   end
-  
+
   def self.code(country)
     return nil if country.blank?
-    
+
     c = nil
-    
-    country = "TAIWAN, PROVINCE OF CHINA" if country.downcase == "taiwan"
-    country = "BOLIVIA, PLURINATIONAL STATE OF" if country.downcase == "bolivia"
-    country = "MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF" if country.downcase == "macedonia, republic of"
-    country = "MOLDOVA, REPUBLIC OF" if country.downcase == "moldova"
-    country = "SAINT MARTIN" if country.downcase == "saint martin (french part)"
-    country = "VENEZUELA, BOLIVARIAN REPUBLIC OF" if country.downcase == "venezuela"
-    
+
     @@codes.each do |key, val|
       if country.mb_chars.downcase.strip == val.mb_chars.downcase
         c = key
         break
       end
     end
-    
+
     return c
   end
-  
+
   def self.valid_code?(code)
     @@codes.key?(code)
   end
-  
+
   def self.codes
     @@codes
   end
-  
+
 end

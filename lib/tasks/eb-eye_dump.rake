@@ -1,6 +1,6 @@
 # BioCatalogue: lib/tasks/eb-eye_dump.rake
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics
+# Copyright (c) 2009-2012 University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -8,7 +8,6 @@ require 'parsedate'
 require 'libxml'
 require 'fileutils'
 require 'benchmark'
-require 'cgi'
 
 def truncate(text, *args)
   options = args.extract_options!
@@ -61,7 +60,7 @@ namespace :biocatalogue do
   <entries>"
           for sd in service_deployments
             id = "#{sd.service_id}-#{sd.service.unique_code}"
-            name = CGI.escape(sd.service.name)
+            name = XML::Node.new_text(sd.service.name)
             description = sd.service.description.nil? ? "" : truncate(sd.service.description.gsub(/[\t\n]+/,' ').squeeze(" "), :length => 300)
             description = escape_lt_gt(description)
             #description = truncate(sd.service.description.gsub(/[\t\n]+/,' ').squeeze(" "), :length => 300)

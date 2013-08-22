@@ -1,127 +1,188 @@
 <%
 
-# BioCatalogue: app/views/layouts/_head_tabber_pre.html.erb
-#
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+   # BioCatalogue: app/views/layouts/_head_tabber_pre.html.erb
+   #
+   # Copyright (c) 2009, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
 
 %>
 
-<%# 
+<%#
 	# The following code does helps in remembering which tab the user was in after redirects etc.
 	# It is based on code from the tabber website (http://www.barelyfitz.com/projects/tabber/).
 %>
 
 <script type="text/javascript">
-	
-/* Optional: Temporarily hide the "tabber" class so it does not "flash"
-   on the page as plain HTML. After tabber runs, the class is changed
-   to "tabberlive" and it will appear.
-*/
-/*document.write('<style type="text/css">.tabber{display:none;}<\/style>');*/
 
-/*==================================================
-  Set the tabber options (must do this before including tabber.js)
-  ==================================================*/
-var tabberOptions = {
-	'manualStartup':true,
+    /* Optional: Temporarily hide the "tabber" class so it does not "flash"
+     on the page as plain HTML. After tabber runs, the class is changed
+     to "tabberlive" and it will appear.
+     */
+    /*document.write('<style type="text/css">.tabber{display:none;}<\/style>');*/
 
-  'cookie':"tabber", /* Name to use for the cookie */
+    /*==================================================
+     Set the tabber options (must do this before including tabber.js)
+     ==================================================*/
+    var tabberOptions = {
+        'manualStartup': true,
 
-  'onLoad':function(argsObj)
-  {
-    // Only use cookie if anchor has not been explicitly specified in the URL 
-		// AND the use_tabs_cookie variable is set to true.
-		
-		var useCookie = <%= get_and_reset_use_tab_cookie_param_value -%>;
-		
-		var t = argsObj.tabber;
-		
-		/* Optional: Add the id of the tabber to the cookie name to allow
-			 for multiple tabber interfaces on the site.  If you have
-			 multiple tabber interfaces (even on different pages) I suggest
-			 setting a unique id on each one, to avoid having the cookie set
-			 the wrong tab. */
-		if (t.id) {
-			t.cookie = t.id + "_" + "tabber";
-		}
-		
-		if ((window.location.hash == null || window.location.hash == "") && useCookie == true) {
-			
-	    var i;
-			
-			/* If a cookie was previously set, restore the active tab */
-			i = parseInt(getCookie(t.cookie));
-			if (isNaN(i)) {
-				return;
-			}
-			t.tabShow(i);
-			
-			// Set anchor
-			var tabDomId = t.tabs[i].div.id;
-			setTabAnchor(tabDomId);
-		}
-  },
+        'cookie': "tabber", /* Name to use for the cookie */
 
-  'onClick':function(argsObj)
-  {
-    // Set cookie
-		var c = argsObj.tabber.cookie;
-    var i = argsObj.index;
-    setCookie(c, i);
-		
-		// Set anchor
-		var tabDomId = argsObj.tabber.tabs[argsObj.index].div.id;
-		setTabAnchor(tabDomId);
-  }
-};
+        'onLoad': function (argsObj) {
+            // Only use cookie if anchor has not been explicitly specified in the URL
+            // AND the use_tabs_cookie variable is set to true.
 
-/*==================================================
-  Tab Anchor functions
-  ==================================================*/
-function setTabAnchor(tabDomId) {
-	if (tabDomId && tabDomId != "") {
-		window.location.hash = "#" + tabDomId.substr(4);
-	} else {
-		window.location.hash = "";
-	}
-}
-	
-/*==================================================
-  Cookie functions
-  ==================================================*/
-function setCookie(name, value, expires, path, domain, secure) {
-    document.cookie= name + "=" + escape(value) +
-        ((expires) ? "; expires=" + expires.toGMTString() : "") +
-        ((path) ? "; path=" + path : "") +
-        ((domain) ? "; domain=" + domain : "") +
-        ((secure) ? "; secure" : "");
-}
+            var useCookie = <%= get_and_reset_use_tab_cookie_param_value -%>;
+            var t = argsObj.tabber;
 
-function getCookie(name) {
-    var dc = document.cookie;
-    var prefix = name + "=";
-    var begin = dc.indexOf("; " + prefix);
-    if (begin == -1) {
-        begin = dc.indexOf(prefix);
-        if (begin != 0) return null;
-    } else {
-        begin += 2;
+            /* Optional: Add the id of the tabber to the cookie name to allow
+             for multiple tabber interfaces on the site.  If you have
+             multiple tabber interfaces (even on different pages) I suggest
+             setting a unique id on each one, to avoid having the cookie set
+             the wrong tab. */
+            if (t.id) {
+                t.cookie = t.id + "_" + "tabber";
+            }
+
+            // If there is no anchor in the URL -
+            // clear the cookie as the user may have manually deleted it from the URL field in browser
+
+            // If a cookie with tab name was previously set, get its value
+         /*   var i = parseInt(getCookie(t.cookie));
+            if (isNaN(i)) {
+                return;
+            }
+            if (window.location.hash == null || window.location.hash == "") {
+                alert('Here I am - no hash');
+
+                // Change the active tab to the first tab and save its position in the cookie
+                setCookie(t.cookie, 0);
+                t.tabShow(0);
+
+            }
+            else {
+                // Get the tab name from the URL's anchor value, and find the id for that tab,
+                // if such tab exists (if user typed manually it is possible they typed the
+                // non-existent tab name).
+
+                alert('tab-' + window.location.hash.substr(1));
+
+                var tab_name_from_anchor = 'tab-' + window.location.hash.substr(1);
+                var tab_id_from_anchor;
+                var tab ;
+
+                for (var j=0; j < t.tabs.length; j++) {
+
+                    tab = t.tabs[j];
+                    alert('Tab div title ' + tab.div.title);
+
+                    if (tab.div.id == tab_name_from_anchor){
+                        tab_id_from_anchor = j;
+                        break;
+                    }
+                }
+
+                alert('Tab id from anchor ' + tab_id_from_anchor);
+
+                // If such a tab exists
+                if (typeof tab_id_from_anchor != 'undefined') {
+                    // If tab id saved in cookie is the same as tab from the URL's anchor -
+                    // do nothing you are already on the correct tab
+                    if (tab_id_from_anchor != i) {
+                        // Change the active tab
+                        t.tabShow(tab_id_from_anchor);
+
+                        // Set the new anchor
+                        var tabDomId = t.tabs[tab_id_from_anchor].div.id;
+                        setTabAnchor(tabDomId);
+
+                        // Set the new anchor/tab name in the cookie
+                        setCookie(t.cookie, tab_id_from_anchor);
+                    }
+                }
+                else {
+                    // Show whichever tab is saved in the cookie,
+                    // or the first tab if there is nothing in the cookie
+
+                }
+            }  */
+
+
+            /*if ((window.location.hash == null || window.location.hash == "") && useCookie == true) {
+
+                var i;
+
+                // If a cookie was previously set, restore the active tab
+                i = parseInt(getCookie(t.cookie));
+                if (isNaN(i)) {
+                    return;
+                }
+                t.tabShow(i);
+
+                // Set anchor
+                tabDomId = t.tabs[i].div.id;
+                setTabAnchor(tabDomId);
+            }  */
+        },
+
+        'onClick': function (argsObj) {
+            // Set cookie
+            var c = argsObj.tabber.cookie;
+            var i = argsObj.index;
+            setCookie(c, i);
+
+            // Set anchor
+            var tabDomId = argsObj.tabber.tabs[argsObj.index].div.id;
+            setTabAnchor(tabDomId);
+        }
+    };
+
+    /*==================================================
+     Tab Anchor functions
+     ==================================================*/
+    function setTabAnchor(tabDomId) {
+        if (tabDomId && tabDomId != "") {
+            window.location.hash = "#" + tabDomId.substr(4);
+        } else {
+            window.location.hash = "";
+        }
     }
-    var end = document.cookie.indexOf(";", begin);
-    if (end == -1) {
-        end = dc.length;
+
+    /*==================================================
+     Cookie functions
+     ==================================================*/
+    function setCookie(name, value, expires, path, domain, secure) {
+        document.cookie = name + "=" + escape(value) +
+        ((expires) ? "; expires=" + expires.toUTCString() : "") +
+                ((path) ? "; path=" + path : "") +
+                ((domain) ? "; domain=" + domain : "") +
+                ((secure) ? "; secure" : "");
     }
-    return unescape(dc.substring(begin + prefix.length, end));
-}
-function deleteCookie(name, path, domain) {
-    if (getCookie(name)) {
-        document.cookie = name + "=" +
-            ((path) ? "; path=" + path : "") +
-            ((domain) ? "; domain=" + domain : "") +
-            "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+
+    function getCookie(name) {
+        var dc = document.cookie;
+        var prefix = name + "=";
+        var begin = dc.indexOf("; " + prefix);
+        if (begin == -1) {
+            begin = dc.indexOf(prefix);
+            if (begin != 0) return null;
+        } else {
+            begin += 2;
+        }
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+            end = dc.length;
+        }
+        return unescape(dc.substring(begin + prefix.length, end));
     }
-}
+    function deleteCookie(name, path, domain) {
+        if (getCookie(name)) {
+            document.cookie = name + "=" +
+                    ((path) ? "; path=" + path : "") +
+                    ((domain) ? "; domain=" + domain : "") +
+                    "; expires=Thu, 01-Jan-70 00:00:01 GMT";
+        }
+    }
 
 </script>

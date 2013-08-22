@@ -28,6 +28,9 @@ require 'net/smtp'
 Mime::Type.register 'application/biocat-lite+json', :bljson
 
 # Require additional libraries
+
+require 'rpx_now/user_integration'
+require 'delayed_job'
 require 'array'
 require 'object'
 require 'string'
@@ -59,6 +62,9 @@ require 'bio_catalogue/annotations/extensions'
 require 'bio_catalogue/monitoring'
 require 'bio_catalogue/monitoring/status'
 
+
+
+
 # Never explicitly load the memcache-client library as we need to use 
 # the specific one vendored in our codebase.
 #NEVER DO:require 'memcache'
@@ -82,11 +88,7 @@ if ENABLE_BOOKMARKING_WIDGET
 end
 
 # Set Google Analytics code
-if ENABLE_GOOGLE_ANALYTICS
-  Rubaidh::GoogleAnalytics.tracker_id = GOOGLE_ANALYTICS_TRACKER_ID
-else
-  Rubaidh::GoogleAnalytics.tracker_id = nil
-end
+Rubaidh::GoogleAnalytics.tracker_id = GOOGLE_ANALYTICS_TRACKER_ID if ENABLE_GOOGLE_ANALYTICS
 
 # Set RPX API key (for OpenID, Twitter, Facebook, etc logins - see https://rpxnow.com/)
 if ENABLE_RPX
@@ -221,8 +223,9 @@ SERVICE_RATINGS_CATEGORIES = { "rating.documentation" => [ "Documentation",  "Ra
 # ==============================================================
 # Configure the Delayed::Jobs plugin (for background processing)
 # --------------------------------------------------------------
+Delayed::Worker.backend = :active_record
 
-Delayed::Job.destroy_failed_jobs = false
+Delayed::Worker.destroy_failed_jobs = false
 
 # ==============================================================
 

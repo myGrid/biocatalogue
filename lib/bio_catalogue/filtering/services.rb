@@ -287,7 +287,7 @@ module BioCatalogue
                   
                   unless providers.blank?
                     conditions[:service_deployments] = { } if conditions[:service_deployments].blank?
-                    conditions[:service_deployments][:service_providers] = { :id => providers }
+                    conditions[:service_deployments][:service_provider_id] = providers
                     joins << [ { :service_deployments => :provider } ]
                   end
                 when :c
@@ -455,7 +455,7 @@ module BioCatalogue
           sql[0] = sql[0] + " LIMIT #{limit}"
         end
         
-        items = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        items = Annotation.connection.select_all(Annotation.send(:sanitize_sql, sql))
         
         # Group these tags and find out how many services match.
         # NOTE: MUST take into account that multiple service substructure objects could belong to the same Service, AND
@@ -519,7 +519,7 @@ module BioCatalogue
                 WHERE users.id IN (?)",
                 user_display_names ]
         
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results = Service.connection.select_all(Service.send(:sanitize_sql, sql))
         
         return results.map{|r| r['id'].to_i}.uniq
       end
@@ -532,7 +532,7 @@ module BioCatalogue
                 WHERE registries.id IN (?)",
                 registry_display_names ]
         
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results = Service.connection.select_all(Service.send(:sanitize_sql, sql))
         
         return results.map{|r| r['id'].to_i}.uniq
       end
@@ -548,7 +548,7 @@ module BioCatalogue
           tag_values 
         ]
         
-        results = ActiveRecord::Base.connection.select_all(ActiveRecord::Base.send(:sanitize_sql, sql))
+        results = Annotation.connection.select_all(Annotation.send(:sanitize_sql, sql))
         results.reject! { |item| !BioCatalogue::Util.validate_as_rest_input_output_else_true(item, http_cycle) }        
 
         return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "Service").uniq     

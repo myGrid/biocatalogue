@@ -31,11 +31,13 @@ class UsersController < ApplicationController
   
   before_filter :find_users, :only => [ :index, :filtered_index ]
   
-  before_filter :find_user, :only => [ :show, :edit, :update, :change_password, 
+  before_filter :find_user, :only => [ :edit, :update, :change_password,
                                        :rpx_update, :annotations_by, :favourites, 
                                        :services_responsible, :make_curator, :remove_curator,
                                        :deactivate ]
-  
+
+  before_filter :find_user_inclusive, :only => [ :show, :activate ]
+
   before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
   
   before_filter :authorise, :only => [ :make_curator, :remove_curator, :deactivate ]
@@ -390,7 +392,21 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
+  def activate
+    respond_to do |format|
+      if @user
+        if @user.activate!
+          ActivityLog.create(@log_event_core_data.merge(:action => "activate", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
+          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been activated</div>"
+        else
+          flash[:error] = "<div class=\"flash_header\">Could not activate the user. Please contact a system admin.</div>"
+        end
+        format.html{ redirect_to :back }
+      end
+    end
+  end
+
   def deactivate
     respond_to do |format|
       if @user
@@ -405,6 +421,25 @@ class UsersController < ApplicationController
       end
     end
   end
+
+protected
+
+  def include_deactivated?
+    unless defined?(@include_deactivated)
+      session_key = "#{self.controller_name.downcase}_#{self.action_name.downcase}_include_deactivated"
+      if !params[:include_deactivated].blank?
+        @include_deactivated = !%w(false no 0).include?(params[:include_deactivated].downcase)
+        session[session_key] = @include_deactivated.to_s
+      elsif !session[session_key].blank?
+        @include_deactivated = (session[session_key] == "false")
+      else
+        @include_deactivated = false
+        session[session_key] = @include_deactivated.to_s
+      end
+    end
+    return @include_deactivated
+  end
+  helper_method :include_deactivated?
 
 private
   
@@ -451,7 +486,7 @@ private
     end
     
     conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-    conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL")
+    conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL") unless include_deactivated?
 
     if self.request.format == :bljson
       finder_options = {
@@ -474,6 +509,10 @@ private
   
   def find_user
     @user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")
+  end
+
+  def find_user_inclusive
+    @user = User.find(params[:id])
   end
 
   def check_user_rights

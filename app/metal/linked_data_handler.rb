@@ -36,7 +36,7 @@ class LinkedDataHandler
       puts "******"
       
       puts "LinkedDataHandler metal app..."
-      puts "Intial URL: #{env['REQUEST_URI']}"
+      puts "Initial URL: #{env['REQUEST_URI']}"
       
       puts Benchmark.measure {
         handler = LinkedDataHandlerApp.new

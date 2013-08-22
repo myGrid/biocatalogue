@@ -14,13 +14,12 @@ class CountryCodesTest < ActionView::TestCase
   
   test "Countries to codes" do
     assert_equal "TW", CountryCodes.code("Taiwan")
-    assert_equal "TW", CountryCodes.code("TAIWAN, PROVINCE OF CHINA")
     assert_equal "GB", CountryCodes.code("United Kingdom")
   end
   
   test "Codes to countries" do
-    assert_equal "TAIWAN", CountryCodes.country("TW")
-    assert_equal "UNITED KINGDOM", CountryCodes.country("GB")
+    assert_equal "Taiwan", CountryCodes.country("TW")
+    assert_equal "United Kingdom", CountryCodes.country("GB")
   end
   
 end

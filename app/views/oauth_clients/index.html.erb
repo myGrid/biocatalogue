@@ -24,14 +24,14 @@
   <div class="listings">
     
     <% @tokens.each do |token|%>
-      <% next if token.client_application.nil? %>
+      <% next if token.client_application.nil? %>     r
       
       <div class="listing_item" style="height:25px;">
         <%= link_to image_tag("delete_faded_darker.png", :mouseover => "delete.png") + content_tag(:span, " Revoke Access"), 
                     { :controller => :oauth, :action => :revoke, :token => token.token },
                     :confirm => "Are you you want to revoke this client application's access.  This cannot be undone.",
                     :class => "button_slim",
-                    :style => button_stlyes -%>
+                    :style => button_styles -%>
 
         <%= link_to h(token.client_application.name), token.client_application.url, :style => "font-weight:bold;" %>
         was allowed access on <%= token.authorized_at %>
@@ -44,12 +44,14 @@
 
 <% end %>
 
-
+<div class="header_left_bar" style="float: none; position: static;" id="center" >
+    <span class="actions_button_row" >
+      <span class="actions_button">
 <%= link_to image_tag(icon_filename_for(:add)) + content_tag(:span, " Register Your Application"),
-            { :controller => :oauth_clients, :action => :new },
-            :class => "button_slim", 
-            :style => "float:right; font-weight:bold;" -%>
-
+            { :controller => :oauth_clients, :action => :new } -%>
+        </span>
+    </span>
+  </div>
 <h2>For Developers</h2>
 
 <% if @client_applications.empty? %>

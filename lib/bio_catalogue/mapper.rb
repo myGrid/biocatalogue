@@ -130,7 +130,7 @@ module BioCatalogue
       return nil if compound_id.blank? or model_name.blank?
       
       source_model_name, source_id = split_compound_id(compound_id)
-      
+
       # First check if we can do this mapping...
       return nil if @@not_mappable[model_name] and @@not_mappable[model_name].include?(source_model_name)
       
@@ -140,12 +140,14 @@ module BioCatalogue
         associated_model_object_id = source_id
       else
         cache_key = generate_cache_key(compound_id, model_name)
-        
+
         # Try and get it from the cache...
         cached_value = Rails.cache.read(cache_key)
-        
-        if cached_value.nil?
-          # It's not in the cache so get the value and store it in the cache...
+
+        if (cached_value.nil? || cached_value == BioCatalogue::CacheHelper::NONE_VALUE)
+          # It's not in the cache or the cache value is somehow set to BioCatalogue::CacheHelper::NONE_VALUE -
+          # so get the value and store it in the cache... If the value cannot be obtained -
+          # leave it set to BioCatalogue::CacheHelper::NONE_VALUE
           
           new_value = nil
           
@@ -154,11 +156,11 @@ module BioCatalogue
             ann = Annotation.find(source_id)
             new_value = ann.annotatable_id if ann.annotatable_type == model_name
           end
-          
+
           # If nothing was found yet, carry on...
           if new_value.nil?
             new_value = case model_name.to_s
-              when "Service"
+            when "Service"
                 Mapper.get_ancestor_service_id(source_model_name, source_id)
               when "SoapOperation"
                 Mapper.get_ancestor_soap_operation_id(source_model_name, source_id)
@@ -166,10 +168,10 @@ module BioCatalogue
                 Mapper.get_ancestor_rest_method_id(source_model_name, source_id)
             end
           end
-          
+
           new_value = new_value.try(:to_i)
           new_value = nil if new_value == 0
-          
+
           if new_value.blank?
             Rails.cache.write(cache_key, BioCatalogue::CacheHelper::NONE_VALUE)
           else
@@ -182,7 +184,7 @@ module BioCatalogue
           end
         end
       end
-      
+
       return associated_model_object_id
     end
     
@@ -234,7 +236,7 @@ module BioCatalogue
       id_value = nil
       
       unless sql.blank?
-        id_value = ActiveRecord::Base.connection.select_value(ActiveRecord::Base.send(:sanitize_sql, sql)).try(:to_i)
+        id_value = Service.connection.select_value(Service.send(:sanitize_sql, sql)).try(:to_i)
         id_value = nil if id_value == 0
       end
       

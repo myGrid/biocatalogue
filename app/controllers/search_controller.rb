@@ -61,7 +61,7 @@ class SearchController < ApplicationController
     session[:last_search] = ""
     
     respond_to do |format|
-      format.js { render :text => "Bye bye :-( ..." }
+      format.js { render :text => "&nbsp;" }
     end
   end
   
