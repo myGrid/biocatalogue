@@ -1,4 +1,4 @@
-require 'test/test_helper'
+require Rails.root.join('test', 'test_helper')
 require Rails.root.join('lib', 'headliner')
 require 'action_view/helpers/tag_helper'
 
