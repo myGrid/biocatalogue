@@ -1,3 +1,6 @@
+require "erb"
+include ERB::Util
+
 module Jaap3
   module Addthis
     CONFIG = {:publisher => ""}
@@ -48,7 +51,7 @@ module Jaap3
       def addthis_feed_button(url, *args)
         options = FEED_BUTTON_DEFAULTS.merge(extract_addthis_options(args))
         options[:button_html] = yield if block_given?
-        s = %Q{<a href="http://www.addthis.com/feed.php?pub=#{options[:publisher]}&h1=#{url.gsub(/[^a-zA-Z0-9_\.\-]/n) {|c| sprintf('%%%02x', c[0]) }}&t1=" onclick="#{addthis_open("feed", url)}" title="#{options[:title]}" target="_blank">}
+        s = %Q{<a href="http://www.addthis.com/feed.php?pub=#{options[:publisher]}&h1=#{url.gsub(/[^a-zA-Z0-9_\.\-]/n) {|c| url_encode(c[0]).downcase }}&t1=" onclick="#{addthis_open("feed", url)}" title="#{options[:title]}" target="_blank">}
         addthis_tag(s, options)
       end
 
