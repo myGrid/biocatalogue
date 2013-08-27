@@ -98,7 +98,7 @@ module RestParametersHelper
       redbox_hash = {:url => create_url_hash(parent_object, options, "default_value"), 
                      :id => id_value, 
                      :failure => fail_value}
-      link_content = link_to(inner_html, redbox_hash, create_redbox_css_hash(options), :remote => true)
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options).merge(:remote => true))
     end
     
     return link_content
