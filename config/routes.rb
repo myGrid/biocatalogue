@@ -255,9 +255,10 @@ BioCatalogue::Application.routes.draw do
       post :inline_add_endpoint_name
       post :edit_group_name_popup
       post :update_resource_path
-      get :remove_endpoint_name
-      get :edit_endpoint_name_popup
+      put :remove_endpoint_name
+      post :edit_endpoint_name_popup
       post :edit_resource_path_popup
+      post :update_endpoint_name
     end
 
   end
@@ -266,14 +267,14 @@ BioCatalogue::Application.routes.draw do
 
     member do
       get :annotations
-      put :inline_add_default_value
+      post :inline_add_default_value
       put :make_optional_or_mandatory
       post :update_constrained_options
-      get :remove_default_value
+      put :remove_default_value
       get :remove_constrained_options
-      put :update_default_value
+      post :update_default_value
       post :edit_constrained_options_popup
-      get :edit_default_value_popup
+      post :edit_default_value_popup
       get :localise_globalise_parameter
     end
 

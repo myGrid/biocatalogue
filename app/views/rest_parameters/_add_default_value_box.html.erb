@@ -18,7 +18,7 @@
 
 <div class="add_box">
 	<% rounded(annotation_add_box_background_color, "#333", "100%") do %>
-		<% form_tag(:url => {:controller => "rest_parameters",
+		<%= form_tag_with_callbacks({:controller => "rest_parameters",
                                 :action => "inline_add_default_value", 
                                 :id => parameter_id,
                                 :rest_method_id => rest_method_id,
