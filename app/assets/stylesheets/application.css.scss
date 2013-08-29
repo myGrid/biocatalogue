@@ -1588,6 +1588,7 @@ ul.simple_list li {
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
     background-image: url("../assets/transparency/lighten_bg.png");
+    background-color: $box_section_home;
     background-size: 100% 100%;
     border: 1px solid #CCC;
     padding: 0.8em 1em;
@@ -2541,30 +2542,30 @@ span.ontology_term,
 /* BEGIN Section Boxes (usually for inner sidebars) */
 
 .box_section {
-    margin: 0;
-    text-align: center;
-    margin-bottom: 1em;
+  margin: 0;
+  text-align: center;
+  margin-bottom: 1em;
 }
 
 .box_section .content {
-    padding: 0.5em 0.8em;
-    border-top: none;
-    border-right: 1px solid #DDD;
-    border-bottom: none;
-    border-left: 1px solid #DDD;
-    background-image: url('/assets/box-bg1.png');
-    background-position: top;
-    background-repeat: repeat-x;
-    background-color: #FFC;
-    overflow: hidden;
-    line-height: 1.5;
+  padding: 0.5em 0.8em;
+  border-top: none;
+  border-right: 1px solid #DDD;
+  border-bottom: none;
+  border-left: 1px solid #DDD;
+  //background-image: url('/assets/box-bg1.png');
+  background-position: top;
+  background-repeat: repeat-x;
+  background-color: $box_section_service;
+  overflow: hidden;
+  line-height: 1.5;
 }
 
 .box_section .xtop,
 .box_section .xbottom {
-    display: block;
-    background: transparent;
-    font-size: 1px;
+  display: block;
+  background: transparent;
+  font-size: 1px;
 }
 
 .box_section .xb1,
@@ -2574,8 +2575,8 @@ span.ontology_term,
 .box_section .xb5,
 .box_section .xb6,
 .box_section .xb7 {
-    display: block;
-    overflow: hidden;
+  display: block;
+  overflow: hidden;
 }
 
 .box_section .xb1,
@@ -2583,81 +2584,87 @@ span.ontology_term,
 .box_section .xb3,
 .box_section .xb6,
 .box_section .xb7 {
-    height: 1px;
+  height: 1px;
 }
 
+//Lines composing top edge of box_section
 .box_section .xb2,
 .box_section .xb3,
 .box_section .xb4 {
-    background: #f4f0b0;
-    border-left: 1px solid #DDD;
-    border-right: 1px solid #DDD;
+  background: #f4f0b0;
+  border-left: 1px solid #DDD;
+  border-right: 1px solid #DDD;
+  background-color: $box_section_service;
 }
 
+//Lines composing bottom edge of box_section
 .box_section .xb5,
 .box_section .xb6,
 .box_section .xb7 {
-    background: #ffffcb;
-    border-left: 1px solid #DDD;
-    border-right: 1px solid #DDD;
+  background: #ffffcb;
+  border-left: 1px solid #DDD;
+  border-right: 1px solid #DDD;
+  background-color: $box_section_service;
 }
 
 .box_section .xb1 {
-    margin: 0 5px;
-    background: #DDD;
+  margin: 0 5px;
+  background: #DDD;
 }
 
 .box_section .xb2,
 .box_section .xb7 {
-    margin: 0 3px;
-    border-width: 0 2px;
+  margin: 0 3px;
+  border-width: 0 2px;
 }
 
 .box_section .xb3,
 .box_section .xb6 {
-    margin: 0 2px;
+  margin: 0 2px;
+
 }
 
 .box_section .xb4,
 .box_section .xb5 {
-    height: 2px;
-    margin: 0 1px;
+  height: 2px;
+  margin: 0 1px;
+
 }
 
 .box_section .heading {
-    font-size: 108%;
-    font-weight: bold;
-    line-height: 1.0;
-    margin-top: 0.2em;
+  font-size: 108%;
+  font-weight: bold;
+  line-height: 1.0;
+  margin-top: 0.2em;
 }
 
 .box_section .heading span {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .box_section .footer {
-    text-align: center;
-    margin-top: 1em;
-    border-top: 1px solid #DDD;
-    padding-top: 0.7em;
+  text-align: center;
+  margin-top: 1em;
+  border-top: 1px solid #DDD;
+  padding-top: 0.7em;
 }
 
 .box_section ul.items {
-    margin: 0 0 0.8em 1em;
-    text-align: left;
+  margin: 0 0 0.8em 1em;
+  text-align: left;
 }
 
 .box_section ul.items li {
-    list-style-type: none;
-    margin: 0.6em 0;
-    padding-left: 0.8em;
-    line-height: 1.1;
-    /*border-left: 3px solid #DDDDBB;*/
-    text-align: center;
+  list-style-type: none;
+  margin: 0.6em 0;
+  padding-left: 0.8em;
+  line-height: 1.1;
+  /*border-left: 3px solid #DDDDBB;*/
+  text-align: center;
 }
 
 .box_section ul.items li * {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 /* END Section Boxes (usually for inner sidebars) */
