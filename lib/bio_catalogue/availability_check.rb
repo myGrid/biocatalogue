@@ -146,7 +146,7 @@ module BioCatalogue
       end
 
       def try_again?
-        return @try_again.include? response_code
+        @response.blank? || @try_again.include?(response_code)
       end
 
       def follow_redirect(level=3)
