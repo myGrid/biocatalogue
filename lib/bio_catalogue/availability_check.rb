@@ -118,7 +118,7 @@ module BioCatalogue
       def get_response(url = @url, method = @method)
         puts "Trying #{url} with #{method}."
         begin
-          @response =  %x[curl -I --insecure --max-time 20 -X #{method} #{url}]
+          @response =  %x[curl -I --insecure --max-time 10 -X #{method} #{url}]
         rescue Exception => ex
           Rails.logger.error("problem occurred while accessing #{url}")
           Rails.logger.error(ex)
