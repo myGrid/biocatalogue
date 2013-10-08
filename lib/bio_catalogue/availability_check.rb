@@ -126,23 +126,23 @@ module BioCatalogue
       end
 
       def response_code
-        return @response.split[1]
+        @response.split[1]
       end
 
       def success?
-        return @success.include?(response_code)
+        @success.include?(response_code)
       end
 
       def redirect?
-        return @redirects.include?(response_code)
+        @redirects.include?(response_code)
       end
 
       def failure?
-        return @failure.include?(response_code)
+        @failure.include?(response_code)
       end
 
       def method_not_allowed?
-        return @not_allwd.include? response_code
+        @not_allwd.include?(response_code)
       end
 
       def try_again?
