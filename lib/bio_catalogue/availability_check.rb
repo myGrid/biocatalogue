@@ -105,11 +105,11 @@ module BioCatalogue
       def initialize(url)
         @url        = url
         @response   = nil
-        @success    = ['200', '202', '204']
+        @success    = ['200', '202', '204', '401'] # 401 is dubious, but not really failure either
         @redirects  = ['300', '301', '302', '303', '307']
         @not_allwd  = ['405']
-        @failure    = ['400', '404']
-        @try_again  = ['500']
+        @failure    = ['400', '403', '404', '410', '502', '503', '504']
+        @try_again  = ['500', '501'] # Some servers break on HEAD requests
         @method     = 'HEAD'
         @try_others = ['OPTIONS', 'GET']
         get_response
