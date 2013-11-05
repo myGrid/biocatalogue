@@ -38,7 +38,7 @@
 			<%# ... make available the option to show all, if there are more. %>
 			<% if similar_services.length > 10 %>
 				<p class="more_less_links" style="margin-top: 0.8em;">
-					<%= generic_render_show_hide_more_links("similar_services", "similar_services_hidden", 10) -%>
+					<%= generic_render_show_hide_more_links("similar_services", "similar_services_hidden", 10).html_safe -%>
 				</p>
 			<% end %>
 		<% else %>
