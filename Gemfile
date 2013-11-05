@@ -2,12 +2,12 @@ source "https://rubygems.org"
 
 ruby "1.9.3"
 
-gem "rails", "~>3.2.13"
+gem "rails", "~>3.2.14"
 gem "rdoc", "~>3.4"
 gem "rake"
 
 gem "mysql2"
-gem "mail", "2.5.3" # latest version won't send emails
+gem "mail"#, "2.5.3" # latest version won't send emails
 gem "rails_autolink"
 gem "solr-ruby"
 gem "json"
@@ -47,7 +47,7 @@ gem "my_annotations", :git => 'git://github.com/myGrid/annotations.git'
 gem "will_paginate"
 gem "better_logging"
 gem "exception_notification", "<4.0.0", :require => 'exception_notifier'
-gem 'prototype-rails', :git => 'git://github.com/rails/prototype-rails.git'
+gem 'prototype-rails'
 gem 'country-select'
 gem 'validates_email_format_of' # Replaces validates_email_veracity_of
 gem "dalli"
