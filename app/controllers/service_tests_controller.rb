@@ -330,7 +330,7 @@ class ServiceTestsController < ApplicationController
                                               :conditions => conditions,
                                               :order => order)
                               
-    if request.xml_http_request?
+    if request.xml_http_request? &&  ENABLE_TEST_SCRIPTS == true
       render "service_tests/_listing", :locals => {:items => @service_tests }, :layout => false
     end
     

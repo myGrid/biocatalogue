@@ -65,7 +65,8 @@
       <%= render :partial => "annotations/example_script", 
                  :locals => { :annotatable => @latest_version_instance } %>
     </div>
-    
+
+    <% if ENABLE_TEST_SCRIPTS %>
     <h4>
       Test scripts used to monitor this service
     </h4>
@@ -80,6 +81,7 @@
         <% end %>
       <% end %>
     </div>
+        <% end %>
   </div>
   
   <% if @latest_version_instance.class == SoapService %>
