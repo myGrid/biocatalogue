@@ -113,7 +113,7 @@
 			<% if !@soaplab_service.nil? or is_soaplab_service?(@service) %>
 				<div class="box_info_standout" style="text-align:center;">
 					This looks like a <b>Soaplab</b> service.
-					<%= link_to_function "Click here for more info and guidance on how to use this service" + expand_image, visual_effect(:toggle_blind, "about_soaplab", :duration => 0.3), :style => "text-decoration:none;" %>
+					<%= link_to_function "Click here for more info and guidance on how to use this service".html_safe + expand_image, visual_effect(:toggle_blind, "about_soaplab", :duration => 0.3), :style => "text-decoration:none;" %>
 					<div id="about_soaplab" style="display:none;">
 						<%= render :partial => "soaplab_servers/about_soaplab" -%>
 					</div>

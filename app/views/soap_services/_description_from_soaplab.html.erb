@@ -28,9 +28,9 @@
 						</span>
 						<div class="computational_type_details">
 						  <div id="soaplab_description_snippet">
-						    <%= render_description_from_soaplab_snippet(thing) -%>
+						    <%= render_description_from_soaplab_snippet(thing).html_safe -%>
                 <br/>
-                <%= link_to_function("<span>Show all</span> " + expand_image, 
+                <%= link_to_function("<span>Show all</span> ".html_safe + expand_image,
                       visual_effect(:toggle_blind, "soaplab_description_more", :duration => 0.3), 
                       :id => "soaplab_description_all_link", 
                       :style => "text-decoration:none;",
@@ -39,7 +39,7 @@
               </div>
               
               <div id="soaplab_description_more" style="display: none;">
-						    <%= render_description_from_soaplab(thing) -%>
+						    <%= render_description_from_soaplab(thing).html_safe -%>
               </div>
 						</div>
 					</div>
