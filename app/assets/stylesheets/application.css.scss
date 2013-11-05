@@ -591,6 +591,7 @@ body.sidebar-right #footer {
 
 #footer_links, #licensing_info {
     text-align: center;
+    padding: 10px;
 }
 
 #licensing_info {
@@ -631,9 +632,11 @@ body.sidebar-right #footer {
     -moz-border-radius: 15px;
     -webkit-border-radius: 15px;
     border: 1px solid #DDD;
-    width: 950px;
+    max-width: 1270px;
+    min-width: 980px;
     color: #333;
     background-color: #FFF;
+    margin:0 auto;
 }
 
 #footer .logos * {
