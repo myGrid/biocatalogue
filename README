@@ -1,16 +1,19 @@
 == BioCatalogue
 
-The BioCatalogue is a Web application that provides registry of Web Services. It
+The BioCatalogue is a Web application that provides a registry of Web services. It
 has been originally designed as a registry of biological services but in reality
 it is domain-independent and can be used for registering SOAP and REST services
 from any domain.
 
 The goals of the BioCatalogue are:
 
-- Provide a single registration point for Web service providers and a single search site for scientists and developers.
+- Provide a single registration point for Web service providers and a single search
+site for scientists and developers.
 - Provide a curated catalogue of life science Web services.
-- Providers, expert curators and users can provide oversight, monitor the catalogue and provide high quality annotations for services.
-- Provide a place where the community can find, contact and meet the experts and maintainers of these services.
+- Providers, expert curators and users can provide oversight, monitor the catalogue
+and provide high quality annotations for services.
+- Provide a place where the community can find, contact and meet the experts and
+maintainers of these services.
 
 The BioCatalogue was a BBSRC-funded project and has been running since 1st June 2008.
 The project was a joint venture between the University of Manchester (led by Carole Goble)
