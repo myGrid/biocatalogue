@@ -14,7 +14,7 @@
       Paste in your input/output data and we will find all the
       operations that you can potentially use to process/analyse it...
     </p>
-    <% form_tag search_by_data_url do %>
+    <%= form_tag search_by_data_url do %>
         <p style="margin-top: 0;">
           <%= text_area_tag "search_by_data[data]", (@query || "Add your input/output data here"), :id => "data_field", :size => "70x10", :style => "width: 99%;" -%>
           <% unless @query %>

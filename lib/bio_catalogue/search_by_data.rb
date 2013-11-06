@@ -97,7 +97,7 @@ module BioCatalogue
           else
             if force
               property.value=regex_result ? 1 : 0
-              if property.value==1:
+              if property.value==1 then
                   property.save()
               else
                 property.destroy
@@ -136,7 +136,7 @@ module BioCatalogue
         end
 
         result_score_for_annotation=result_scores_by_annotation[property.annotation_id]
-        if result_score_for_annotation==nil:
+        if result_score_for_annotation==nil then
             result_score_for_annotation=[0,0]
         end
         result_score_for_annotation[0]+=1

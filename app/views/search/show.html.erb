@@ -16,13 +16,14 @@
         <h1>Search Results <span class="faded">(<%= @visible_search_type -%> only)</span></h1>
     <% end %>
 <% end %>
-<!--
+
 <div class="box_info_standout" style="float: right;">
   Try our new
-  <b><%#= link_to "Search by Data", search_by_data_url -%></b>
+  <b><%= link_to "Search by Data", search_by_data_url -%></b>
   feature - to search using your input/output data
 </div>
--->
+
+
 <% if @query.blank? %>
     <div class="search_query_info_box">
       <p>
