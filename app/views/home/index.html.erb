@@ -10,7 +10,7 @@
 
 <div id="home_content">
 	
-	<p id="home_heading">The <%= SITE_NAME -%>: providing a curated catalogue of Life Science Web Services</p>
+	<p id="home_heading">The <%= SITE_NAME -%>: providing a curated catalogue of life science Web services</p>
 	
 	<div id="middle_column_wrapper">
 		<div id="middle_column">
@@ -68,44 +68,70 @@
 	
 	<div id="left_column">
 		<div class="column_inner">
+
+          <!-- Helpful Links -->
+          <div class="section_box">
+            <h4>
+              <%= generic_icon_for(:info, 'margin-right: 0.4em;') -%>
+              <span>Helpful Links</span>
+            </h4>
+
+            <div class="section_content" style="font-size: 85%;">
+              <p>
+                <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting started with the Catalogue</a>
+              </p>
+              <p>
+                <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:general_info_on_web_services" target="_blank">General info on Web services</a>
+              </p>
+              <p>
+                <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:making_web_services" target="_blank">Making Web services</a>
+              </p>
+              <p>
+                <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:executing_web_services" target="_blank">Executing Web services</a>
+              </p>
+              <p>
+                <a href="http://soaplab.sourceforge.net/soaplab2/StepByStep.html" target="_blank">Turn your command line application(s) into Web services</a>
+              </p>
+            </div>
+          </div>
 			
-			<!-- Latest Activity -->
-			<div class="section_box">
-				<h4>
-					<span style="float: right; margin-left: 0.3em;">
-            <%= feed_icon_tag "Latest Activity", activity_feed_path(:format => :atom) -%>
-          </span>
-					<%= generic_icon_for(:activity, 'margin-right: 0.4em;') -%>
-					<span>Latest Activity</span>
-				</h4>
-				
-				<div class="section_content" style="font-size: 85%;">
-					<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :simple } -%>
-				</div>
-				
-				<div class="section_footer">
-					<b><%= link_to "More", latest_url(:anchor => "activity") %></b>
-				</div>
-			</div>
+			<!--&lt;!&ndash; Latest Activity &ndash;&gt;-->
+			<!--<div class="section_box">-->
+				<!--<h4>-->
+					<!--<span style="float: right; margin-left: 0.3em;">-->
+            <!--<%= feed_icon_tag "Latest Activity", activity_feed_path(:format => :atom) -%>-->
+          <!--</span>-->
+					<!--<%= generic_icon_for(:activity, 'margin-right: 0.4em;') -%>-->
+					<!--<span>Latest Activity</span>-->
+				<!--</h4>-->
+				<!---->
+				<!--<div class="section_content" style="font-size: 85%;">-->
+					<!--<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :simple } -%>-->
+				<!--</div>-->
+				<!---->
+				<!--<div class="section_footer">-->
+					<!--<b><%= link_to "More", latest_url(:anchor => "activity") %></b>-->
+				<!--</div>-->
+			<!--</div>-->
 			
 			<!-- Monitoring Test Changes -->
-      <div class="section_box">
-        <h4>
-        	<span style="float: right; margin-left: 0.3em;">
-            <%= feed_icon_tag "Service Monitoring Status Changes", status_changes_feed_path(:format => :atom) -%>
-          </span>
-          <%= generic_icon_for(:activity, 'margin-right: 0.4em;') -%>
-          <span>Monitoring Test Changes</span>
-        </h4>
-        
-        <div class="section_content" style="font-size: 85%;">
-          <%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_monitoring, :style => :simple } -%>
-        </div>
-        
-        <div class="section_footer">
-          <b><%= link_to "More", latest_url(:anchor => "monitoring") %></b>
-        </div>
-      </div>
+      <!--<div class="section_box">-->
+        <!--<h4>-->
+        	<!--<span style="float: right; margin-left: 0.3em;">-->
+            <!--<%= feed_icon_tag "Service Monitoring Status Changes", status_changes_feed_path(:format => :atom) -%>-->
+          <!--</span>-->
+          <!--<%= generic_icon_for(:activity, 'margin-right: 0.4em;') -%>-->
+          <!--<span>Monitoring Test Changes</span>-->
+        <!--</h4>-->
+        <!---->
+        <!--<div class="section_content" style="font-size: 85%;">-->
+          <!--<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_monitoring, :style => :simple } -%>-->
+        <!--</div>-->
+        <!---->
+        <!--<div class="section_footer">-->
+          <!--<b><%= link_to "More", latest_url(:anchor => "monitoring") %></b>-->
+        <!--</div>-->
+      <!--</div>-->
 			
 		</div>
 	</div>
@@ -148,91 +174,65 @@
 			</div>
 			
 			<!-- Latest Services -->
-			<div class="section_box">
-				<h4>
-					<span style="float: right; margin-left: 0.3em;">
-						<%= feed_icon_tag "Latest Services", services_path(:format => :atom) -%>
-					</span>
-					<%= generic_icon_for(:services, 'margin-right: 0.4em;') -%>
-					<span>Latest Services</span>
-				</h4>
-				
-				<div class="section_content" style="font-size: 85%;">
-					<% unless (services = Service.latest(5)).empty? %>
-						<% services.each do |s| %>
-							<p style="margin-top: 0; margin-bottom: 0.7em; text-align: center;">
-								<%= link_to display_name(s), s -%>
-							</p> 
-						<% end %>
-					<% else %>
-						<p class="none_text">None</p>
-					<% end %>
-				</div>
-				
-				<div class="section_footer">
-					<b><%= link_to "More", latest_url(:anchor => "services") %></b>
-				</div>
-			</div>
+			<!--<div class="section_box">-->
+				<!--<h4>-->
+					<!--<span style="float: right; margin-left: 0.3em;">-->
+						<!--<%= feed_icon_tag "Latest Services", services_path(:format => :atom) -%>-->
+					<!--</span>-->
+					<!--<%= generic_icon_for(:services, 'margin-right: 0.4em;') -%>-->
+					<!--<span>Latest Services</span>-->
+				<!--</h4>-->
+				<!---->
+				<!--<div class="section_content" style="font-size: 85%;">-->
+					<!--<% unless (services = Service.latest(5)).empty? %>-->
+						<!--<% services.each do |s| %>-->
+							<!--<p style="margin-top: 0; margin-bottom: 0.7em; text-align: center;">-->
+								<!--<%= link_to display_name(s), s -%>-->
+							<!--</p> -->
+						<!--<% end %>-->
+					<!--<% else %>-->
+						<!--<p class="none_text">None</p>-->
+					<!--<% end %>-->
+				<!--</div>-->
+				<!---->
+				<!--<div class="section_footer">-->
+					<!--<b><%= link_to "More", latest_url(:anchor => "services") %></b>-->
+				<!--</div>-->
+			<!--</div>-->
 			
 			<!-- Top Curators -->
-			<div class="section_box">
-				<h4>
-					<%= generic_icon_for(:curators, 'margin-right: 0.4em;') -%>
-					<span>Top Contributors</span>
-				</h4>
-				
-				<div class="section_content">
-					<% unless (top_curators = User.top_curators).empty? %>
-						<table id="top_curators">
-							<% top_curators.each do |u| %>
-								<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations to the #{SITE_NAME}") -%>">
-									<td class="count">
-										<%= number_with_delimiter(u['count']) -%>
-									</td>
-									<td>
+			<!--<div class="section_box">-->
+				<!--<h4>-->
+					<!--<%= generic_icon_for(:curators, 'margin-right: 0.4em;') -%>-->
+					<!--<span>Top Contributors</span>-->
+				<!--</h4>-->
+				<!---->
+				<!--<div class="section_content">-->
+					<!--<% unless (top_curators = User.top_curators).empty? %>-->
+						<!--<table id="top_curators">-->
+							<!--<% top_curators.each do |u| %>-->
+								<!--<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations to the #{SITE_NAME}") -%>">-->
+									<!--<td class="count">-->
+										<!--<%= number_with_delimiter(u['count']) -%>-->
+									<!--</td>-->
+									<!--<td>-->
 										<%= user_link_with_flag(:id => u['id'], 
-                                            :display_name => u['name'], 
-                                            :country => u['country'], 
+#                                            :display_name => u['name'],
+#                                            :country => u['country'],
                                             :roles => u['roles']) -%>
-									</td>
-								</tr>
-							<% end %>
-						</table>
-					<% else %>
-						<p class="none_text">None</p>
-					<% end %>
-				</div>
-				
-				<div class="section_footer">
-					<b><%= link_to "More", latest_url(:anchor => "contributors") %></b>
-				</div>
-			</div>
-			
-			<!-- Helpful Links -->
-      <div class="section_box">
-        <h4>
-          <%= generic_icon_for(:info, 'margin-right: 0.4em;') -%>
-          <span>Helpful Links</span>
-        </h4>
-        
-        <div class="section_content" style="font-size: 85%;">
-          <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting started with the Catalogue</a>
-          </p>
-          <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:general_info_on_web_services" target="_blank">General Info on Web Services</a>
-          </p>
-          <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:making_web_services" target="_blank">Making Web Services</a>
-          </p>
-          <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:executing_web_services" target="_blank">Executing Web Services</a>
-          </p>
-          <p>
-            <a href="http://soaplab.sourceforge.net/soaplab2/StepByStep.html" target="_blank">Turn your command line application(s) into Web Services</a>
-          </p>
-        </div>
-      </div>
+									<!--</td>-->
+								<!--</tr>-->
+							<!--<% end %>-->
+						<!--</table>-->
+					<!--<% else %>-->
+						<!--<p class="none_text">None</p>-->
+					<!--<% end %>-->
+				<!--</div>-->
+				<!---->
+				<!--<div class="section_footer">-->
+					<!--<b><%= link_to "More", latest_url(:anchor => "contributors") %></b>-->
+				<!--</div>-->
+			<!--</div>-->
 			
 		</div>
 	</div>
