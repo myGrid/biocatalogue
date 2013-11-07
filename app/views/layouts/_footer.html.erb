@@ -12,60 +12,53 @@
 
   <span class="clear">&nbsp;</span>
 
-  <div id="div-centered">
-    <div class="logos">
-      <p class="copyright">
-        Copyright (c) 2008 -
-        <%= Time.now.year -%>
-        <%= link_to "The University of Manchester", "http://www.manchester.ac.uk/", :target => '_blank' %> and the
-        <%= link_to("European Bioinformatics Institute (EMBL-EBI)", "http://www.ebi.ac.uk/", :target => "_blank") -%>
-      </p>
-      <!--<p style="font-size: 108%;"><b>The BioCatalogue is brought to you by:</b></p>-->
-      <p>
-        <%= link_to(image_tag('manchester_logo.png', :alt => "University of Manchester"), "http://www.manchester.ac.uk/", :target => "_blank") -%>
-        <%= link_to(image_tag('ebi_logo.png', :alt => "EMBL-EBI"), "http://www.ebi.ac.uk/", :target => "_blank") -%>
-        <!--<span>and the same people who brought you</span>-->
-        <!--<% link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>-->
-        <!--<% link_to(image_tag('taverna_logo.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>-->
-        <%= link_to(image_tag('bbsrc_logo.png', :alt => "BBSRC"), "http://www.bbsrc.ac.uk/", :target => "_blank") -%>
-      </p>
-      <p>
-        The project is funded by the <a target="_blank" href="http://www.bbsrc.ac.uk/">BBSRC</a> (BB/F01046X/1,
-        BB/F010540/1)
-      </p>
-    </div>
+  <!--<div id="div-centered">-->
+  <div class="logos">
+    <p class="copyright">
+      Copyright (c) 2008 -
+      <%= Time.now.year -%>
+      <%= link_to "The University of Manchester", "http://www.manchester.ac.uk/", :target => '_blank' %> and the
+      <%= link_to("European Bioinformatics Institute (EMBL-EBI)", "http://www.ebi.ac.uk/", :target => "_blank") -%>
+    </p>
+    <!--<p style="font-size: 108%;"><b>The BioCatalogue is brought to you by:</b></p>-->
+    <p>
+      <%= link_to(image_tag('manchester_logo.png', :alt => "University of Manchester"), "http://www.manchester.ac.uk/", :target => "_blank") -%>
+      <%= link_to(image_tag('ebi_logo.png', :alt => "EMBL-EBI"), "http://www.ebi.ac.uk/", :target => "_blank") -%>
+      <!--<span>and the same people who brought you</span>-->
+      <!--
+      <% link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>-->
+      <!--
+      <% link_to(image_tag('taverna_logo.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>-->
+      <%= link_to(image_tag('bbsrc_logo.png', :alt => "BBSRC"), "http://www.bbsrc.ac.uk/", :target => "_blank") -%>
+    </p>
+
+    <p>
+      The project was funded by the <a target="_blank" href="http://www.bbsrc.ac.uk/">BBSRC</a> (BB/F01046X/1,
+      BB/F010540/1)
+    </p>
   </div>
 
-  <!--<p style="margin-top: 2em;">-->
-    <!--<% render :partial => "widgets/twitter", :locals => {:link_type => :big} -%>-->
-  <!--</p>-->
+  <div class="logos"  style="position:relative; top: -2px;">
+    <p style="font-size: 108%;"><b>Supporters, partners and friends</b></p>
 
-  <!--<p class="copyright">-->
-    <!--Copyright (c) 2008 --->
-    <!--<%= Time.now.year -%>-->
-    <!--<% link_to "The University of Manchester", "http://www.manchester.ac.uk/", :target => '_blank' %> and the -->
-    <!--<%= link_to("European Bioinformatics Institute (EMBL-EBI)", "http://www.ebi.ac.uk/", :target => "_blank") -%>-->
-  <!--</p>-->
-
-  <div>
-    <div class="logos">
-      <p style="font-size: 108%;"><b>Partners and friends</b></p>
-      <p>
-        <%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>
-        <%= link_to(image_tag('taverna_logo_footer.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>
-        <%= link_to(image_tag("embrace_logo.png", :alt => "EMBRACE Grid logo", :class => "logo"), "http://www.embracegrid.info/", :target => "_blank") -%>
-        <%= link_to(image_tag('mygrid_logo.png', :alt => "myGrid logo", :class => "logo"), "http://www.mygrid.org.uk/", :target => "_blank") -%>
-        <%= link_to(image_tag('seekda_logo.png', :alt => "SeekDa logo", :class => "logo"), "http://seekda.com/", :target => "_blank") -%>
-        <%= link_to(image_tag('biomoby_logo.gif', :alt => "BioMoby logo", :class => "logo"), "http://www.biomoby.org/", :target => "_blank") -%>
-      </p>
-    </div>
+    <p>
+      <%= link_to(image_tag('mygrid_logo.png', :alt => "myGrid logo", :class => "logo"), "http://www.mygrid.org.uk/", :target => "_blank") -%>
+      <%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment"), "http://www.myexperiment.org/", :target => "_blank") -%>
+      <%= link_to(image_tag('taverna_logo_footer.png', :alt => "Taverna"), "http://www.taverna.org.uk/", :target => "_blank") -%>
+      <%= link_to(image_tag('biovel-logo-official.png', :alt => "BioVeL logo", :class => "logo", :height => '60'), "http://www.biovel.eu/", :target => "_blank") -%>
+      <%= link_to(image_tag("embrace_logo.png", :alt => "EMBRACE Grid logo", :class => "logo"), "http://www.embracegrid.info/", :target => "_blank") -%>
+      <%= link_to(image_tag('seekda_logo.png', :alt => "SeekDa logo", :class => "logo"), "http://seekda.com/", :target => "_blank") -%>
+      <%= link_to(image_tag('biomoby_logo.gif', :alt => "BioMoby logo", :class => "logo"), "http://www.biomoby.org/", :target => "_blank") -%>
+    </p>
   </div>
+  <!--</div>-->
 
   <div id="footer_links">
     <ul>
       <li><a href="/termsofuse">Terms of Use</a></li>
 
-      <li class="separator"><a href="https://www.biocatalogue.org/wiki/doku.php?id=home" target="_blank">About Us</a></li>
+      <li class="separator"><a href="https://www.biocatalogue.org/wiki/doku.php?id=home" target="_blank">About Us</a>
+      </li>
       <li class="separator"><a href="/contact">Contact Us</a></li>
       <li class="separator">
         <a href="http://listserv.manchester.ac.uk/cgi-bin/wa?SUBED1=biocatalogue-friends&A=1" target="_blank">Join the
@@ -76,7 +69,8 @@
       <li class="separator">
         <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help" target="_blank">Further Help</a></li>
       <li class="separator"><a href="/stats" target="_blank">Registry Stats</a></li>
-      <li class="separator"><a href="https://www.biocatalogue.org/wiki/doku.php?id=public:api" target="_blank">API Docs</a></li>
+      <li class="separator">
+        <a href="https://www.biocatalogue.org/wiki/doku.php?id=public:api" target="_blank">API Docs</a></li>
       <li class="separator">
         <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:for_developers" target="_blank">For Developers</a>
       </li>

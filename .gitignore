@@ -10,7 +10,7 @@ config/initializers/geokit_local.rb
 config/initializers/mail.rb
 config/memcache.yml
 config/preinitializer.rb
-config/solr.yml
+config/sunspot.yml
 
 /db/schema.db
 /vendor/plugins/acts_as_solr/solr/solr/data/
@@ -24,11 +24,7 @@ data/eb-eye/eb-eye_dump_*
 app/assets/stylesheets/colours/override.css.scss
 public/assets
 
-/solr/production
-/solr/development
-/solr/test
-/solr/data
-/solr/pids
+solr/
 
 *.rails2
 .gitkeep

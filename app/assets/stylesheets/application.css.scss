@@ -579,7 +579,7 @@ body.sidebar-right #squeeze {
     float: none;
     clear: both;
     text-align: center;
-    padding-top: 1em;
+    //padding-top: 1em;
     padding-bottom: 1em;
     margin: 0 20px;
     /*margin: 4em 0 -3em;*/
@@ -629,10 +629,11 @@ body.sidebar-right #footer {
 }
 
 #footer .logos {
-    margin: 1.5em 0;
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
-    border: 1px solid #DDD;
+    //margin: 1.5em 0;
+    //-moz-border-radius: 15px;
+    //-webkit-border-radius: 15px;
+    border-top: 1px solid #DDD;
+    border-bottom: 1px solid #DDD;
     max-width: 1270px;
     min-width: 980px;
     color: #333;
