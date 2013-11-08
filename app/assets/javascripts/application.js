@@ -31,6 +31,7 @@
 //= require tablekit
 //= require p7exp
 //= require xregexp-min
+//= require widgets/tooltip
 
 
 function getMenuValue(menu_id) {
