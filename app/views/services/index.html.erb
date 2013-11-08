@@ -39,6 +39,9 @@
           <span class="separator">|</span>
           <%= render :partial => 'index_sortby' %>
           <span class="separator">|</span>
+                  <%= render :partial => "index_per_page",
+                      :locals => { :base_url_lambda => lambda { |extra_params| services_url(extra_params) } } -%>
+         <span class="separator">|</span>
           <%= render :partial => "shared/listing_type_switcher", 
                      :locals => { :base_url_lambda => lambda { |extra_params| services_url(extra_params) } } -%>
 				</span>

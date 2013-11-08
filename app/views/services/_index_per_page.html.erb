@@ -1,0 +1,31 @@
+<%
+
+   # BioCatalogue: app/views/shared/_listing_type_switcher.html.erb
+   #
+   # Copyright (c) 2009, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
+
+%>
+
+<%
+   # Set defaults for optional parameters to this partial...
+   style = "" unless local_assigns.has_key?(:style)
+%>
+
+<span class="inline-block" style="<%= style %>">
+  <span style="vertical-align: middle; font-weight: bold;">
+    Per Page:
+  </span>
+
+  <span style="vertical-align: middle; margin-left: 0.3em;">
+    <select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
+      <% @per_page_options.map { |l| l }.each do |t| %>
+          <option value="<%= base_url_lambda.call({ :per_page => t.to_sym, :listing => @listing, :page => @page }) -%>" <%= "selected" if @per_page == t.try(:to_i) -%>>
+            <%= t.to_s.humanize -%>
+          </option>
+      <% end %>
+    </select>
+  </span>
+</span>
+

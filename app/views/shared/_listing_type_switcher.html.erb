@@ -21,7 +21,7 @@
   <span style="vertical-align: middle; margin-left: 0.3em;">
     <select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
       <% @allowed_listing_types.map { |l| l.to_sym }.each do |t| %>
-        <option value="<%= base_url_lambda.call({ :listing => t, :page => @page }) -%>" <%= "selected" if @listing_type == t -%>>
+        <option value="<%= base_url_lambda.call({ :listing => t, :page => @page, :per_page => @per_page }) -%>" <%= "selected" if @listing_type == t -%>>
           <%= t.to_s.humanize -%>
         </option>
       <% end %>
