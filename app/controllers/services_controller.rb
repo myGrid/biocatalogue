@@ -39,6 +39,7 @@ class ServicesController < ApplicationController
   # GET /services
   # GET /services.xml
   def index
+    @per_page_options = %w{ 20 50 100 }
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
