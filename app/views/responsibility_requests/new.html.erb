@@ -20,7 +20,7 @@
 	Click the button below to submit a request to take responsibility for <%= link_to @service.name, service_url(@service) %>
 <p>
 
-<%= form_tag (responsibility_requests_path, :method => :post )  do -%>
+<%= form_tag(responsibility_requests_path, :method => :post )  do -%>
 	<%= hidden_field_tag 'responsibility_request[subject_id]', @service.id -%>
 	<%= hidden_field_tag 'responsibility_request[subject_type]', @service.class.name -%>
 	<%= hidden_field_tag 'responsibility_request[user_id]', current_user.id -%>
