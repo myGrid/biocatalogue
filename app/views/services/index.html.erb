@@ -35,7 +35,7 @@
         <!-- Advanced Search Option Bar-->
 
         <%= create_expand_collapse_link('advanced_search_options',
-                                        :link_text => "<b>Search Options<b>".html_safe,
+                                        :link_text => "<b>Search options<b>".html_safe,
                                         :icon_float => "right",
                                         :class => "collapsable_title") -%>
 
@@ -59,7 +59,7 @@
       <!-- Pagination Top -->
       <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => @services} %>
       <!-- Service Listings -->
-      <div id="latest_services" style="margin: 1em 0;">
+      <div id="latest_services">
         <%= render :partial => "listing", :locals => {:items => @services} %>
       </div>
       <!-- Pagination Bottom -->
