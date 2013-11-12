@@ -757,7 +757,7 @@ module ApplicationHelper
 
   def take_responsibility_action (service, current_user)
     if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, service)
-       link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'),
+       link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Request Responsibility'),
 		                        new_responsibility_request_url(:service_id => @service.id),
                             :style => "text-decoration:none" )
     end
