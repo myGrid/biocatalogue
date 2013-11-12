@@ -40,14 +40,14 @@
 			<p class="none_text">No one</p>
 		<% end %>
 		
-		<% if logged_in? and !@service.favourited_by_user?(current_user.id) -%>
-			<div style="padding: 0.4em 0; font-size: 85%; font-weight: bold;">
-				<%= link_to image_tag(icon_filename_for(:favourite)) + content_tag(:span, " Add to your Favourites"),
+		<%# if logged_in? and !@service.favourited_by_user?(current_user.id) -%>
+			<!--div style="padding: 0.4em 0; font-size: 85%; font-weight: bold;">
+				<%#= link_to image_tag(icon_filename_for(:favourite)) + content_tag(:span, " Add to your Favourites"),
 										favourites_url(:favouritable_type => "Service", :favouritable_id => @service.id), 
 										:method => :post, 
 								 		:class => "button_slim" -%>
-			</div>
-		<% end %>
+			</div-->
+		<%# end %>
 	</div>
 	<b class="xbottom"><b class="xb5"></b><b class="xb6"></b><b class="xb7"></b><b class="xb1"></b></b>
 </div>
