@@ -1,65 +1,72 @@
 <%
 
-# BioCatalogue: app/views/services/index.html.erb
-#
-# Copyright (c) 2008-2011, University of Manchester, The European Bioinformatics 
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+   # BioCatalogue: app/views/services/index.html.erb
+   #
+   # Copyright (c) 2008-2011, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
 
 %>
 
 <% t @page_title_suffix -%>
 
 <% if @current_filters.blank? and params[:q].blank? %>
-	<div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em; margin: 0;">
-		<%= render :partial => 'index_tag_cloud' %>
-	</div>
+    <div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em; margin: 0;">
+      <%= render :partial => 'index_tag_cloud' %>
+    </div>
 <% end %>
 
 <a name="browse"></a>
 
 <div style="margin-top: 1em;">
 
-	<%= render :partial => 'index_filter_message' %>
-	
-	<div>
-	
-		<!-- Left column -->
-		<div style="float: left; width: 20%;">
-			<%= render :partial => 'index_filters' %>
-		</div>
-		
-		<!-- Right column -->
-		<div style="float: right; width: 78%;">
-			<div style="margin-top: 5px; overflow: hidden;">
-				<%= render :partial => "index_search_within" -%>
-			
-				<span class="inline-block" style="line-height: 1.0; float: right; margin-left: 2em; text-align: right;">
-          <%= render :partial => 'index_include_archived_option' %>
-          <span class="separator">|</span>
-          <%= render :partial => 'index_sortby' %>
-          <span class="separator">|</span>
-                  <%= render :partial => "index_per_page",
-                      :locals => { :base_url_lambda => lambda { |extra_params| services_url(extra_params) } } -%>
-         <span class="separator">|</span>
-          <%= render :partial => "shared/listing_type_switcher", 
-                     :locals => { :base_url_lambda => lambda { |extra_params| services_url(extra_params) } } -%>
-				</span>
-				
-				<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @services } %>
-			</div>
-			
-			<div id="latest_services" style="margin: 1em 0;">
-				<%= render :partial => "listing", :locals => { :items => @services } %>
-			</div>
-			
-			<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @services } %>
-		</div>
-		
-		<span class="clear"></span>
-	
-	</div>
-	
+  <%= render :partial => 'index_filter_message' %>
+  <!-- Left column -->
+  <div style="float: left; width: 20%;">
+    <%= render :partial => 'index_filters' %>
+  </div>
+
+  <!-- Right column -->
+  <div style="float: right; width: 78%;">
+    <div style="margin-top: 5px; overflow: hidden;">
+      <%= render :partial => "index_search_within" -%>
+
+      <div class="search_options" style="float: right;width: 30%;padding: 10px;background-color: #EAEEFB;">
+        <!-- Advanced Search Option Bar-->
+
+        <%= create_expand_collapse_link('advanced_search_options',
+                                        :link_text => "<b>Search Options<b>".html_safe,
+                                        :icon_float => "right",
+                                        :class => "collapsable_title") -%>
+
+        <!-- Advanced Search Option Content -->
+        <% display_options = true if !params[:listing].nil? || !params[:per_page].nil? || !params[:sort_by].nil? || !params[:include_archived].nil? %>
+        <div id="advanced_search_options" style="display:<%= display_options ? "block":"none"%>; font-size:90%;">
+          <p>
+            <%= render :partial => 'index_include_archived_option' -%>
+            <br/>
+            <%= render :partial => 'index_sortby' -%>
+            <br/>
+            <%= render :partial => "index_per_page",
+                       :locals => {:base_url_lambda => lambda { |extra_params| services_url(extra_params) }} -%>
+            <br/>
+            <%= render :partial => "shared/listing_type_switcher",
+                       :locals => {:base_url_lambda => lambda { |extra_params| services_url(extra_params) }} -%>
+            <br>
+          </p>
+        </div>
+      </div>
+      <!-- Pagination Top -->
+      <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => @services} %>
+      <!-- Service Listings -->
+      <div id="latest_services" style="margin: 1em 0;">
+        <%= render :partial => "listing", :locals => {:items => @services} %>
+      </div>
+      <!-- Pagination Bottom -->
+      <%= render :partial => 'widgets/pagination_bottom', :locals => {:paginated_items => @services} %>
+    </div>
+    <span class="clear"></span>
+  </div>
 </div>
 
 <br/>
