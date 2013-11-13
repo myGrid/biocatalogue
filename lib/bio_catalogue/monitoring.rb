@@ -10,7 +10,9 @@ module BioCatalogue
     INTERNAL_TEST_TYPES = [ 'TestScript', 'UrlMonitor' ].freeze
     
     def self.pingable_url(actual_string)
-      actual_string.each_line do |line|
+      string = actual_string.try(:text)
+      string = actual_string unless !string.nil?
+      string.each_line do |line|
         line.chomp.split(' ').each do |token|
           token.strip!
           
