@@ -24,7 +24,11 @@ data/eb-eye/eb-eye_dump_*
 app/assets/stylesheets/colours/override.css.scss
 public/assets
 
-solr/
+solr/test/
+solr/pids/
+solr/production/
+solr/development
+solr/default
 
 *.rails2
 .gitkeep
