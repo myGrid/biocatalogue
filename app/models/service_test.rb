@@ -178,6 +178,7 @@ class ServiceTest < ActiveRecord::Base
     if count == 0
       self.success_rate = 0
     else
+      count = count * 1.0
       self.success_rate = (self.pass_count/count)*100
     end
     self.save
