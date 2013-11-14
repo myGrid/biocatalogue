@@ -2,14 +2,6 @@ require File.expand_path('../boot', __FILE__)
 
 #Configurations needed before the app init
 
-# Logs rotation
-# Set this to true to rotate the logs
-ROTATE_LOGS = false
-
-# Set the rotation parameters
-# Example CRONOLOG_PARAMS = "/my/server/cronolog /my/application/file/log/production.log.%Y%m%d"
-CRONOLOG_PARAMS = nil
-
 require 'rails/all'
 
 if defined?(Bundler)
