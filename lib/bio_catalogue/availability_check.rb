@@ -109,7 +109,7 @@ module BioCatalogue
         @redirects  = ['300', '301', '302', '303', '307']
         @not_allwd  = ['405']
         @failure    = ['400', '403', '404', '410', '502', '503', '504']
-        @try_again  = ['500', '501'] # Some servers break on HEAD requests
+        @try_again  = ['500', '501', '405'] # Some servers break on HEAD requests
         @method     = 'HEAD'
         @try_others = ['OPTIONS', 'GET']
         get_response
@@ -197,7 +197,7 @@ module BioCatalogue
           return true if success?
           return false if failure?
           follow_redirect if redirect?
-          try_again(allowed_methods) if method_not_allowed?
+          #try_again(allowed_methods) if method_not_allowed?
           try_again if try_again?
           return success?
         rescue Exception => ex
