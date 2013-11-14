@@ -100,6 +100,15 @@
 
     <useCompoundFile>true</useCompoundFile>
 
+
+    <useCompoundFile>false</useCompoundFile>
+    <mergeFactor>20</mergeFactor>
+    <maxBufferedDocs>1000</maxBufferedDocs>
+    <maxMergeDocs>2147483647</maxMergeDocs>
+    <maxFieldLength>10000</maxFieldLength>
+    <writeLockTimeout>10000</writeLockTimeout>
+    <commitLockTimeout>15000</commitLockTimeout>
+
     <!-- ramBufferSizeMB sets the amount of RAM that may be used by Lucene
          indexing for buffering added documents and deletions before they are
          flushed to the Directory.
