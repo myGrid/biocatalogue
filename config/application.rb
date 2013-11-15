@@ -56,18 +56,6 @@ module BioCatalogue
       config.autoload_paths += [File.join(Rails.root, 'app', s)]
     end
 
-    # Rotate logs when they reach a size of 10M and keep no more than 10 of these
-    #config.logger = Logger.new(config.log_path, 10, (1024**2)*10)
-
-    # Use cronolog for log rotation in production
-    # ROTATE_LOGS & CRONOLOG_PARAMS constants
-    # are set in config/preinitializer.rb
-    # By default log rotation is switched off
-    if ROTATE_LOGS && CRONOLOG_PARAMS
-      config.logger = Logger.new(IO.popen(CRONOLOG_PARAMS, "w"))
-      config.logger.level = Logger::DEBUG
-    end
-
     # Force all environments to use the same logger level
     # (by default production uses :info, the others :debug)
     config.log_level = :debug
