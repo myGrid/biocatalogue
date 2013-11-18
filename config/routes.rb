@@ -185,6 +185,8 @@ BioCatalogue::Application.routes.draw do
 
   end
 
+  match '/termsofuse' => 'termsofuse#index'
+
   match '/session' => 'sessions#create', :as => :session, :via => :post
 
   if ENABLE_RPX
