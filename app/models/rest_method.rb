@@ -5,6 +5,8 @@
 # See license.txt for details
 
 class RestMethod < ActiveRecord::Base
+  include RestServicesHelper #to access RestMethod template for as_csv export
+
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache
     index :rest_resource_id
@@ -140,7 +142,27 @@ class RestMethod < ActiveRecord::Base
   def display_endpoint
     return "#{self.method_type} #{self.rest_resource.path}"
   end
-  
+
+  def as_csv
+    service_id =  self.associated_service.unique_code
+    endpoint_name = self.endpoint_name
+    template = create_url_template(self)
+    method_type = self.method_type
+    description = self.preferred_description
+    submitter = self.submitter.display_name
+    documentation_url = self.documentation_url
+    annotations = self.get_service_tags
+    return [service_id,endpoint_name,template,method_type,description,submitter,documentation_url,annotations]
+  end
+
+
+  def get_service_tags
+    list = []
+    BioCatalogue::Annotations.get_tag_annotations_for_annotatable(self).each { |ann| list << ann.value_content }
+    return list.join("; ")
+  end
+
+
   # for sort
   # TODO: need to figure out whether this is really necessary now, considering the new grouping functionality.
   def <=>(other)

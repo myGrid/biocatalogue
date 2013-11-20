@@ -5,7 +5,10 @@
 # See license.txt for details.
 
 class CurationController < ApplicationController
-  
+
+  include RestServicesHelper #to access RestMethod template for CSV export
+
+
   before_filter :disable_action_for_api
 
   before_filter :login_or_oauth_required
@@ -45,7 +48,50 @@ class CurationController < ApplicationController
       format.html # copy_annotations.html.erb
     end
   end
-  
+
+  def spreadsheet_export
+    #All services in CSV format
+    File.open('tmp/services.csv', 'w+'){|f|
+      f.write(csv_of_services)}
+    File.open('tmp/rest_methods.csv', 'w+'){|f|
+      f.write(csv_of_rest_methods)}
+    File.open('tmp/soap_operations.csv', 'w+'){|f|
+      f.write(csv_of_soap_operations)}
+    system("zip tmp/csv_export.zip tmp/services.csv tmp/rest_methods.csv tmp/soap_operations.csv")
+    send_file 'tmp/csv_export.zip'
+  end
+
+
+  def csv_of_services
+    services = Service.first(300)
+    columns = ['Service ID','name','provider','location','submitter name','base url','annotations','category']
+    return CSV.generate do |csv|
+      csv << columns
+      services.each {|service| csv << service.as_csv }
+    end
+  end
+
+  def csv_of_soap_operations
+    soap_operations = SoapOperation.first(300)
+    columns =  ['Service ID','operation name','operation description','submitter','parameter order','annotations']
+    return CSV.generate do |csv|
+      csv << columns
+      soap_operations.each { |soap_operation| csv << soap_operation.as_csv }
+    end
+  end
+
+  def csv_of_rest_methods
+    rest_methods = RestMethod.first(300)
+    columns =  ['Service ID','endpoint name','template','method type','description','submitter','documentation url','annotations']
+    return CSV.generate do |csv|
+      csv << columns
+      rest_methods.each{ |rest_method| csv << rest_method.as_csv }
+    end
+  end
+
+
+
+
   def copy_annotations_preview
     type = params[:type]
     from = nil

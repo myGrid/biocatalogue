@@ -72,7 +72,23 @@ class SoapOperation < ActiveRecord::Base
     
     return desc
   end
-  
+
+  def as_csv
+    service_id = self.associated_service.unique_code
+    operation = self.name
+    description = self.preferred_description
+    submitter = self.associated_service.submitter.display_name
+    params_order = self.parameter_order
+    annotations = self.get_service_tags
+    return [service_id, operation,description,submitter,params_order,annotations]
+  end
+
+  def get_service_tags
+    list = []
+    BioCatalogue::Annotations.get_tag_annotations_for_annotatable(self).each { |ann| list << ann.value_content }
+    return list.join("; ")
+  end
+
   # This will attempt to copy over as many annotations as possible from this 
   # SoapOperation to another given SoapOperation.
   # 

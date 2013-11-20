@@ -93,7 +93,22 @@ class Service < ActiveRecord::Base
   def to_custom_json(collections)
     generate_json_with_collections(collections)
   end
-  
+
+
+  def as_csv
+    unique_id = self.unique_code
+    name = self.name
+    provider = self.list_of("providers").first["service_provider"]["name"]
+    location = self.list_of("locations").first.values_at(*["city", "country"])
+    submitter = self.submitter.display_name
+    base_url = self.list_of("endpoints").first["endpoint"]
+    annotations = self.get_service_tags
+    categories = []
+    self.list_of("category").each{|x| categories << x["name"] }
+    categories = categories.count > 1 ? categories.join("; ") : (categories.empty? ? "" : categories.first)
+    location = location.count > 1 ? location.join("; ") : (location.empty? ? "" : location.first)
+    [unique_id, name, provider,location,submitter,base_url,annotations, categories]
+  end
 #  def to_param
 #    "#{self.id}-#{self.unique_code}"
 #  end
@@ -488,8 +503,20 @@ class Service < ActiveRecord::Base
     return data
   end
 
-protected
-  
+
+  protected
+
+  def list_of(tags)
+    list_for_attribute(tags)
+  end
+
+  def get_service_tags
+    list = []
+    BioCatalogue::Annotations.get_tag_annotations_for_annotatable(self).each { |ann| list << ann.value_content }
+    return list.join("; ")
+  end
+
+
   def generate_unique_code
     salt = rand 1000000
     
