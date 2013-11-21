@@ -9,7 +9,11 @@ class StatsController < ApplicationController
   before_filter :disable_action_for_api
   
   def index
-    @stats = BioCatalogue::Stats.get_last_stats
+
+    # Do not attempt to generate stats if there are no services in the Catalogue
+    @service_count = Service.count
+
+    @stats = BioCatalogue::Stats.get_last_stats unless @service_count == 0
     
     respond_to do |format|
       format.html

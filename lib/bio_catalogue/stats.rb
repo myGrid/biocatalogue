@@ -94,8 +94,8 @@ module BioCatalogue
       def max_metadata_on_services(type=:all)
         result = { }
         max = @metadata_counts_per_service.values.map{|v| v[type]}.max
-        result[:count] = max
-        result[:services] = @metadata_counts_grouped_by_counts[type][max].map{|s_id| Service.find_by_id(s_id)}.reject{|s| s.blank?}
+        result[:count] = max unless max.blank?
+        result[:services] = @metadata_counts_grouped_by_counts[type][max].map{|s_id| Service.find_by_id(s_id)}.reject{|s| s.blank?} unless max.blank?
         result
       end
       
@@ -106,8 +106,8 @@ module BioCatalogue
       def min_metadata_on_services(type=:all)
         result = { }
         min = @metadata_counts_per_service.values.map{|v| v[type]}.min
-        result[:count] = min
-        result[:services] = @metadata_counts_grouped_by_counts[type][min].map{|s_id| Service.find_by_id(s_id)}.reject{|s| s.blank?}
+        result[:count] = min unless min.blank?
+        result[:services] = @metadata_counts_grouped_by_counts[type][min].map{|s_id| Service.find_by_id(s_id)}.reject{|s| s.blank?} unless min.blank?
         result
       end
       
@@ -165,7 +165,7 @@ module BioCatalogue
         @model_totals[User][:last_180] = User.count(:conditions => [ "activated_at IS NOT NULL AND created_at >= ?", Time.now.ago(180.days)])
       end
       
-      # Maintains a hash for all service metadat counts where:
+      # Maintains a hash for all service metadata counts where:
       # { service_id => metadata_counts_hash (as per return value of BioCatalogue::Annotations.metadata_counts_for_service) }
       def load_metadata_counts_per_service
         @metadata_counts_per_service = Hash[* Service.all.map{|s| [ s.id, BioCatalogue::Annotations.metadata_counts_for_service(s) ] }.flatten]
@@ -176,14 +176,16 @@ module BioCatalogue
       # where type is one of the types available in the results hash of BioCatalogue::Annotations.metadata_counts_for_service
       def load_metadata_counts_grouped_by_counts
         @metadata_counts_grouped_by_counts = { }
-        
-        @metadata_counts_per_service.values[0].keys.each do |type|
-          @metadata_counts_grouped_by_counts[type] = { } if @metadata_counts_grouped_by_counts[type].nil?
-          
-          counts = @metadata_counts_per_service.values.map{|v| v[type]}.uniq
-          
-          counts.each do |c|
-            @metadata_counts_grouped_by_counts[type][c] = @metadata_counts_per_service.select{|k,v| v[type] == c}.map{|el| el[0]}
+
+        unless @metadata_counts_per_service.values.blank?
+          @metadata_counts_per_service.values[0].keys.each do |type|
+            @metadata_counts_grouped_by_counts[type] = {} if @metadata_counts_grouped_by_counts[type].nil?
+
+            counts = @metadata_counts_per_service.values.map { |v| v[type] }.uniq
+
+            counts.each do |c|
+              @metadata_counts_grouped_by_counts[type][c] = @metadata_counts_per_service.select { |k, v| v[type] == c }.map { |el| el[0] }
+            end
           end
         end
         
