@@ -6,9 +6,6 @@
 
 class CurationController < ApplicationController
 
-  include RestServicesHelper #to access RestMethod template for CSV export
-
-
   before_filter :disable_action_for_api
 
   before_filter :login_or_oauth_required
@@ -49,18 +46,66 @@ class CurationController < ApplicationController
     end
   end
 
+  def download_latest_csv
+    if !latest_csv_export.nil?
+      send_file latest_csv_export
+    else
+      flash[:notice] = "There are currently no CSV exports to download. Please run 'Export Services as CSV' to create a new one."
+      redirect_to :back
+    end
+  end
+
   def spreadsheet_export
-    #All services in CSV format
+    require 'zip'
+    time = Time.now.strftime("%Y%M%d%H%M")
+    zip_file = "data/csv-exports/csv_export-#{time}.zip"
+    files = %w{tmp/services.csv tmp/rest_methods.csv tmp/soap_operations.csv}
+
+    files.each do |file|
+      File.delete(file) if File.exist?(file)
+    end
+
     File.open('tmp/services.csv', 'w+'){|f|
       f.write(csv_of_services)}
     File.open('tmp/rest_methods.csv', 'w+'){|f|
       f.write(csv_of_rest_methods)}
     File.open('tmp/soap_operations.csv', 'w+'){|f|
       f.write(csv_of_soap_operations)}
-    system("zip tmp/csv_export.zip tmp/services.csv tmp/rest_methods.csv tmp/soap_operations.csv")
-    send_file 'tmp/csv_export.zip'
+    zip_files(zip_file, files)
+    #system("zip -j data/csv-exports/csv_export-#{time}.zip tmp/services.csv tmp/rest_methods.csv tmp/soap_operations.csv")
+    if File.exist?(zip_file)
+      send_file zip_file
+    else
+      download_latest_csv
+    end
   end
 
+
+  def latest_csv_export
+    begin
+      directory = "data/csv-exports"
+      files = Dir.entries(directory)
+      files = files.select{|file| file.match("csv_export-") }
+      latest_file = files.sort.last
+      if !latest_file.nil? && latest_file != ""
+        return "#{directory}/#{latest_file}"
+      end
+    rescue Exception
+      return nil
+    end
+  end
+
+  def zip_files zip_file, files
+    if !File.exists?(zip_file)
+      Zip::File.open(zip_file, Zip::File::CREATE) do |zf|
+        files.each do |filename|
+          zf.add(filename, filename)
+        end
+      end
+    else
+      flash.now[:alert] = "Cannot export more than once a minute. Here is the last CSV export."
+    end
+  end
 
   def csv_of_services
     services = Service.first(300)

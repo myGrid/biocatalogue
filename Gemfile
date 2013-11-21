@@ -20,7 +20,7 @@ gem 'libxml-ruby',"2.6.0",:require => "libxml"
 # http://stackoverflow.com/questions/13851741/install-mongrel-in-ruby-1-9-3
 #gem "mongrel"
 gem 'thin'
-
+gem 'rubyzip'
 gem "tzinfo"
 gem "crack"
 gem "factory_girl", "<=2.6.5"
