@@ -57,9 +57,11 @@ class CurationController < ApplicationController
 
   def spreadsheet_export
     require 'zip'
-    time = Time.now.strftime("%Y%M%d%H%M")
+    time = Time.now.strftime("%Y%m%d%H%M")
     zip_file = "data/csv-exports/csv_export-#{time}.zip"
-    files = %w{tmp/services.csv tmp/rest_methods.csv tmp/soap_operations.csv}
+    tables = %w{services rest_methods soap_operations}
+    files = []
+    tables.each{|table_name| files << "tmp/#{table_name}.csv"}
 
     files.each do |file|
       File.delete(file) if File.exist?(file)
@@ -71,7 +73,7 @@ class CurationController < ApplicationController
       f.write(csv_of_rest_methods)}
     File.open('tmp/soap_operations.csv', 'w+'){|f|
       f.write(csv_of_soap_operations)}
-    zip_files(zip_file, files)
+    zip_files(zip_file, tables)
     #system("zip -j data/csv-exports/csv_export-#{time}.zip tmp/services.csv tmp/rest_methods.csv tmp/soap_operations.csv")
     if File.exist?(zip_file)
       send_file zip_file
@@ -95,11 +97,13 @@ class CurationController < ApplicationController
     end
   end
 
-  def zip_files zip_file, files
+  def zip_files zip_file, tables
+
     if !File.exists?(zip_file)
       Zip::File.open(zip_file, Zip::File::CREATE) do |zf|
-        files.each do |filename|
-          zf.add(filename, filename)
+        tables.each do |table|
+          file_path = "tmp/#{table}.csv"
+          zf.add("#{table}.csv", file_path)
         end
       end
     else
