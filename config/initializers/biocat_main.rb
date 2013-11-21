@@ -243,16 +243,6 @@ Annotations::Config::valid_value_types["category"] = "Category"
 SERVICE_RATINGS_CATEGORIES = { "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }.freeze
 #===============================================================
 
-# ==============================================================
-# Configure the Delayed::Jobs plugin (for background processing)
-# --------------------------------------------------------------
-#Delayed::Job.destroy_failed_jobs = false
-Delayed::Worker.backend = :active_record
-
-Delayed::Worker.destroy_failed_jobs = false
-
-# ==============================================================
-
 
 # ===============================================================
 # Configure global settings for the SuperExceptionNotifier plugin
@@ -267,7 +257,6 @@ BioCatalogue::Application.config.middleware.use ExceptionNotifier,
                                                     :send_email_error_codes => %W( 400 405 500 501 503 ),
                                                     :view_path => 'app/views/error'
                                                 }
-
 
 # ===============================================================
 

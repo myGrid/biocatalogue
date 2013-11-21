@@ -23,13 +23,13 @@
 		<% max_met = @stats.max_metadata_on_services(type) -%>
 		<%= number_with_delimiter(max_met[:count]) -%>
 		<br/>
-		<%= link_to_function("show services" + expand_image, visual_effect(:toggle_blind, "metadata_#{type}_max_services", :duration => 0.3), :class => "expand_link") %>
+		<%= link_to_function(("show services" + expand_image).html_safe, visual_effect(:toggle_blind, "metadata_#{type}_max_services", :duration => 0.3), :class => "expand_link") %>
 	</td>
 	<td class="value center">
 		<% min_met = @stats.min_metadata_on_services(type) -%>
 		<%= number_with_delimiter(min_met[:count]) -%>
 		<br/>
-		<%= link_to_function("show services" + expand_image, visual_effect(:toggle_blind, "metadata_#{type}_min_services", :duration => 0.3), :class => "expand_link") %>
+		<%= link_to_function(("show services" + expand_image).html_safe, visual_effect(:toggle_blind, "metadata_#{type}_min_services", :duration => 0.3), :class => "expand_link") %>
 	</td>
 </tr>
 
@@ -38,10 +38,12 @@
 		<b>Service(s) with the max no. of metadata, by <%= metadata_source_type_title_text(type) -%>:</b>
 		<br/>
 		|
-		<% max_met[:services].each do |s| %>
-			<%= link_to(display_name(s), s, :popup => true) -%>
-			|
-		<% end %>
+        <% unless max_met.blank? %>
+		    <% max_met[:services].each do |s| %>
+			    <%= link_to(display_name(s), s, :popup => true) -%>
+			    |
+		    <% end %>
+        <% end %>
 	</td>
 </tr>
 
@@ -50,9 +52,11 @@
 		<b>Service(s) with the min no. of metadata, by <%= metadata_source_type_title_text(type) -%>:</b>
 		<br/>
 		|
-		<% min_met[:services].each do |s| %>
+      <% unless min_met.blank? %>
+        <% min_met[:services].each do |s| %>
 			<%= link_to(display_name(s), s, :popup => true) -%>
 			|
 		<% end %>
+      <% end %>
 	</td>
 </tr>

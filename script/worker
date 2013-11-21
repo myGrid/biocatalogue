@@ -9,7 +9,7 @@ require 'optparse'
 require 'pp'
 
 app_dir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
- 
+
 daemon_options = {
   :multiple => true,
   :dir_mode => :normal,
@@ -38,7 +38,7 @@ Daemons.run_proc('biocatalogue_worker', daemon_options) do
   end
   
   Dir.chdir app_dir
-  
+
   # Should run in production mode by default.
   # So if you are testing locally (in development mode) then then you should pass
   # the environment variable as a command line option.
@@ -46,8 +46,8 @@ Daemons.run_proc('biocatalogue_worker', daemon_options) do
   RAILS_ENV=daemon_options[:environment]
   
   puts "Starting in Rails #{RAILS_ENV} mode"
-  
-  require File.join('config', 'environment')
-  
+
+  require File.join('./config', 'environment')
+
   Delayed::Worker.new.start
 end
