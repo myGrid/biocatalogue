@@ -113,28 +113,33 @@ class CurationController < ApplicationController
 
   def csv_of_services
     services = Service.first(300)
-    columns = ['Service ID','name','provider','location','submitter name','base url','annotations','category']
+    columns = ['Service ID','name','provider','location','submitter name',
+               'base url','documentation url','description','licence','costs',
+               'usage conditions','contact','publications','citations','annotations',
+               'categories']
     return CSV.generate do |csv|
       csv << columns
-      services.each {|service| csv << service.as_csv }
+      services.each {|service| csv << service.as_csv unless service.nil?}
     end
   end
 
   def csv_of_soap_operations
     soap_operations = SoapOperation.first(300)
-    columns =  ['Service ID','operation name','operation description','submitter','parameter order','annotations']
+    columns =  ['Service ID','operation name','operation description','submitter',
+                'parameter order','annotations', 'port name', 'port protocol', 'port location', 'port style']
     return CSV.generate do |csv|
       csv << columns
-      soap_operations.each { |soap_operation| csv << soap_operation.as_csv }
+      soap_operations.each { |soap_operation| csv << soap_operation.as_csv unless soap_operation.nil?}
     end
   end
 
   def csv_of_rest_methods
     rest_methods = RestMethod.first(300)
-    columns =  ['Service ID','endpoint name','template','method type','description','submitter','documentation url','annotations']
+    columns =  ['Service ID','endpoint name','method type','template','description',
+                'submitter','documentation url','example endpoints','annotations']
     return CSV.generate do |csv|
       csv << columns
-      rest_methods.each{ |rest_method| csv << rest_method.as_csv }
+      rest_methods.each{ |rest_method| csv << rest_method.as_csv unless rest_method.nil?}
     end
   end
 
