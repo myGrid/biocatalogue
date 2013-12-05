@@ -1,5 +1,6 @@
 module BioCatalogue
-  module Search  
+  module Search
+
     # Class to handle Search Results
     #    
     # Takes care of processing the raw results from the search engine to useful results for the system,
@@ -96,6 +97,20 @@ module BioCatalogue
       # If the result scope is invalid then 0 is returned. 
       def count_for(result_scope)
         return @grouped_results_ids[result_scope].try(:length) || 0
+      end
+
+      # New method for returning ids from the Sunspot search result array
+      def self.get_item_ids(search_results_array, result_scope)
+
+        return [] if search_results_array.blank?
+
+        item_ids = []
+        search_results_array[0].each do |result|
+          if result.instance_of? result_scope.camelize.classify.constantize
+            item_ids << result.id
+          end
+        end
+        return item_ids
       end
       
       protected
