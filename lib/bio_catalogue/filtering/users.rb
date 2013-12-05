@@ -103,7 +103,7 @@ module BioCatalogue
         
         # Take into account search query if present
         unless search_query.blank?
-          search_results = Search.search(search_query, "users")
+          search_results = Search.sunspot_search(search_query, "users")
           unless search_results.blank?
             user_ids_search_query = search_results.item_ids_for("users")
           end

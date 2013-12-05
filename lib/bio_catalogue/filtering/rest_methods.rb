@@ -111,7 +111,7 @@ module BioCatalogue
         
         # Take into account search query if present
         unless search_query.blank?
-          search_results = Search.search(search_query, "rest_methods")
+          search_results = Search.sunspot_search(search_query, "rest_methods")
           unless search_results.blank?
             rest_method_ids_search_query = search_results.item_ids_for("rest_methods")
           end
@@ -230,7 +230,7 @@ module BioCatalogue
         
         # Take into account search query if present
         unless search_query.blank?
-          search_results = Search.search(search_query, "rest_methods")
+          search_results = Search.sunspot_search(search_query, "rest_methods")
           unless search_results.blank?
             search_rest_method_ids = search_results.item_ids_for("rest_methods")
           end

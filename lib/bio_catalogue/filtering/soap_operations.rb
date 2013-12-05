@@ -111,7 +111,7 @@ module BioCatalogue
         
         # Take into account search query if present
         unless search_query.blank?
-          search_results = Search.search(search_query, "soap_operations")
+          search_results = Search.sunspot_search(search_query, "soap_operations")
           unless search_results.blank?
             soap_operation_ids_search_query = search_results.item_ids_for("soap_operations")
           end
@@ -225,7 +225,7 @@ module BioCatalogue
         
         # Take into account search query if present
         unless search_query.blank?
-          search_results = Search.search(search_query, "soap_operations")
+          search_results = Search.sunspot_search(search_query, "soap_operations")
           unless search_results.blank?
             search_soap_operation_ids = search_results.item_ids_for("soap_operations")
           end
