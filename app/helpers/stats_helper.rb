@@ -16,7 +16,7 @@ module StatsHelper
   end
   
   def render_show_hide_more_stats_links(name, hidden_class_name, top=10)
-    html = ""
+    html = "".html_safe
     
     more_text = "show all"
     less_text = "show top #{top.to_s} only"
@@ -24,21 +24,21 @@ module StatsHelper
     more_link_id = "#{name}_more_link"
     less_link_id = "#{name}_less_link"
     
-    html << link_to_function(more_text + expand_image("0.5em"), :id => more_link_id, :class => "expand_link") do |page| 
+    html << link_to_function(more_text.html_safe + expand_image("0.5em").html_safe, :id => more_link_id, :class => "expand_link") do |page|
       page.select(".#{hidden_class_name}").each do |el|
         el.show
       end
       page.toggle more_link_id, less_link_id
     end
     
-    html << link_to_function(less_text + collapse_image("0.5em"), :id => less_link_id, :class => "expand_link", :style => "display:none;") do |page| 
+    html << link_to_function(less_text.html_safe + collapse_image("0.5em").html_safe, :id => less_link_id, :class => "expand_link", :style => "display:none;") do |page|
       page.select(".#{hidden_class_name}").each do |el|
         el.hide
       end
       page.toggle more_link_id, less_link_id
     end
     
-    return html
+    return html.html_safe
   end
   
 end
