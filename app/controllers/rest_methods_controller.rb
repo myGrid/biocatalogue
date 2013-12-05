@@ -377,7 +377,7 @@ private # ========================================
         :joins => joins
       }
       
-      @rest_methods = ActiveRecord::Base.connection.select_all(RestMethod.send(:construct_finder_sql, finder_options))
+      @rest_methods = ActiveRecord::Base.connection.select_all(RestMethod.send(:construct_finder_arel, finder_options))
     else
       @rest_methods = RestMethod.paginate(:page => @page,
                                           :per_page => @per_page,

@@ -411,7 +411,7 @@ class ServicesController < ApplicationController
         :joins => joins
       }
 
-      @services = ActiveRecord::Base.connection.select_all(Service.send(:construct_finder_sql, finder_options))
+      @services = ActiveRecord::Base.connection.select_all(Service.send(:construct_finder_arel, finder_options))
     else
       # Must check if we need to include archived services or not
       if include_archived?

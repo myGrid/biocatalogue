@@ -144,7 +144,7 @@ protected
         :joins => joins
       }
       
-      @soap_operations = ActiveRecord::Base.connection.select_all(SoapOperation.send(:construct_finder_sql, finder_options))
+      @soap_operations = ActiveRecord::Base.connection.select_all(SoapOperation.send(:construct_finder_arel, finder_options))
     else
       @soap_operations = SoapOperation.paginate(:page => @page,
                                                 :per_page => @per_page,

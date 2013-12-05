@@ -501,7 +501,7 @@ private
         :joins => joins
       }
       
-      @users = ActiveRecord::Base.connection.select_all(User.send(:construct_finder_sql, finder_options))
+      @users = ActiveRecord::Base.connection.select_all(User.send(:construct_finder_arel, finder_options))
     else
       @users = User.paginate(:page => @page,
                              :per_page => @per_page,
