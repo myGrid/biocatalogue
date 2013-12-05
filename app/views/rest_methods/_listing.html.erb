@@ -16,7 +16,7 @@
     <div class="listing_item">
       <p class="name">
         <% link_text = "#{h(method.display_endpoint)} " %>
-        <%= "<i style='font-size:80%;'>#{h(method.endpoint_name)}</i> | " if method.endpoint_name -%>
+        <%= "<i style='font-size:80%;'>#{h(method.endpoint_name)}</i> | ".html_safe if method.endpoint_name -%>
         <%= link_to(link_text, method) -%>
       </p>
 			
