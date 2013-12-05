@@ -77,7 +77,7 @@ require 'will_paginate/array'
 #Dir[File.join(File.dirname(__FILE__), '../../lib/**/*.rb')].each {|file| require file}
 
 BioCatalogue::Util.say("Running in #{Rails.env} mode...")
-BioCatalogue::Util.say("Configuring the BioCatalogue application...")
+BioCatalogue::Util.say("Configuring the #{SITE_NAME} application...")
 
 # Never explicitly load the memcache-client library as we need to use 
 # the specific one vendored in our codebase.
