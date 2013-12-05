@@ -99,20 +99,47 @@ class Service < ActiveRecord::Base
     unique_id = self.unique_code
     name = self.name
     provider = self.list_of("providers").first["service_provider"]["name"]
-    location = self.list_of("locations").first.values_at(*["city", "country"])
+    location = join_array(self.list_of("locations").first.values_at(*["city", "country"]))
     submitter = self.submitter.display_name
     base_url = self.list_of("endpoints").first["endpoint"]
-    annotations = self.get_service_tags
+    doc_url =  join_array(self.list_of("documentation_url"))
+    description = join_array(self.list_of("description"))
+    license = join_array(self.list_of("license"))
+    costs = join_array(self.list_of("cost"))
+    usage_conditions = join_array(self.list_of("usage_condition"))
+    contact = join_array(self.list_of("contact"))
+    publications = join_array(self.list_of("publication"))
+    citations = join_array(self.list_of("citation"))
+    annotations = join_array(self.get_service_tags)
     categories = []
     self.list_of("category").each{|x| categories << x["name"] }
-    categories = categories.count > 1 ? categories.join("; ") : (categories.empty? ? "" : categories.first)
-    location = location.count > 1 ? location.join("; ") : (location.empty? ? "" : location.first)
-    [unique_id, name, provider,location,submitter,base_url,annotations, categories]
+    categories = join_array categories
+
+    [unique_id, name, provider,location,submitter,base_url,
+     doc_url, description, license, costs, usage_conditions, contact,
+     publications, citations, annotations, categories]
   end
+
+  def join_array array
+    array.compact!
+    array.delete('')
+
+    if array.nil? || array.empty? then
+      return ''
+    else
+      if array.count > 1 then
+        return array.join(';')
+      else
+        return array.first.to_s
+      end
+    end
+  end
+
 #  def to_param
 #    "#{self.id}-#{self.unique_code}"
 #  end
-  
+
+
   def latest_version
     self.service_versions.last
   end
@@ -504,16 +531,16 @@ class Service < ActiveRecord::Base
   end
 
 
-  protected
-
   def list_of(tags)
     list_for_attribute(tags)
   end
 
+  protected
+
   def get_service_tags
     list = []
     BioCatalogue::Annotations.get_tag_annotations_for_annotatable(self).each { |ann| list << ann.value_content }
-    return list.join("; ")
+    return list
   end
 
 

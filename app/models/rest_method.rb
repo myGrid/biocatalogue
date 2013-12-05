@@ -144,15 +144,16 @@ class RestMethod < ActiveRecord::Base
   end
 
   def as_csv
-    service_id =  self.associated_service.unique_code
+    service_id =  self.associated_service.unique_code unless self.associated_service.nil?
     endpoint_name = self.endpoint_name
     template = create_url_template(self)
     method_type = self.method_type
     description = self.preferred_description
     submitter = self.submitter.display_name
     documentation_url = self.documentation_url
+    example_endpoints = join_array(self.annotations_with_attribute('example_endpoint').collect{|annotation| annotation.value.text})
     annotations = self.get_service_tags
-    return [service_id,endpoint_name,template,method_type,description,submitter,documentation_url,annotations]
+    return [service_id,endpoint_name,method_type,template,description,submitter,documentation_url,example_endpoints,annotations]
   end
 
 
@@ -162,6 +163,20 @@ class RestMethod < ActiveRecord::Base
     return list.join("; ")
   end
 
+  def join_array array
+    array.compact!
+    array.delete('')
+
+    if array.nil? || array.empty? then
+      return ''
+    else
+      if array.count > 1 then
+        return array.join(';')
+      else
+        return array.first.to_s
+      end
+    end
+  end
 
   # for sort
   # TODO: need to figure out whether this is really necessary now, considering the new grouping functionality.

@@ -22,6 +22,7 @@ class RestServicesController < ApplicationController
   before_filter :parse_sort_params, :only => :index
   before_filter :find_rest_services, :only => :index
 
+
   oauth_authorize :create
   
   # GET /rest_services
@@ -78,16 +79,23 @@ class RestServicesController < ApplicationController
     endpoint.strip!
     if !endpoint.blank? && endpoint =~ /^http[s]?:\/\/\S+/
       endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
+      status = BioCatalogue::AvailabilityCheck::URLCheck.new(endpoint).available?
+      if !status
+        message = 'The URL you have provided could not be reached. Please ensure the URL is correct and that your service is running.'
+        endpoint = ''
+      end
     else
       endpoint = ''
+      message = 'Please provide a valid endpoint URL'
     end
 
+
     if endpoint.blank?
-      flash.now[:error] = "Please provide a valid endpoint URL"
+      flash.now[:error] = message
       respond_to do |format|
         format.html { render :action => "new" }
         # TODO: implement format.xml  { render :xml => '', :status => 406 }
-        format.json { error_to_back_or_home("Please provide a valid endpoint URL", false, 406) } 
+        format.json { error_to_back_or_home(message, false, 406) }
       end
     else
       if is_api_request? # Sanitize for API Request

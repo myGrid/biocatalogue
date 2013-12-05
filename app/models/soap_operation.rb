@@ -80,8 +80,39 @@ class SoapOperation < ActiveRecord::Base
     submitter = self.associated_service.submitter.display_name
     params_order = self.parameter_order
     annotations = self.get_service_tags
-    return [service_id, operation,description,submitter,params_order,annotations]
+    port = get_soap_port self
+    return [service_id, operation,description,submitter,params_order,annotations, port].flatten
   end
+
+  def get_soap_port soap_op
+      port = soap_op.soap_service_port
+      if port.nil?
+        return ["","","",""]
+      else
+        return [
+            port.name,
+            port.protocol,
+            port.location,
+            port.style
+        ]
+      end
+  end
+
+  def join_array array
+    array.compact!
+    array.delete('')
+
+    if array.nil? || array.empty? then
+      return ''
+    else
+      if array.count > 1 then
+        return array.join(';')
+      else
+        return array.first.to_s
+      end
+    end
+  end
+
 
   def get_service_tags
     list = []
