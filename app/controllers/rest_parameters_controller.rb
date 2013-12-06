@@ -155,9 +155,9 @@ class RestParametersController < ApplicationController
     
     respond_to do |format|
       unless results[:created].blank?
-        flash[:notice] ||= ""
+        flash[:notice] ||= "".html_safe
         flash[:notice] += "The following parameters were successfully created:<br/>".html_safe
-        flash[:notice] += results[:created].to_sentence
+        flash[:notice] += results[:created].to_sentence.html_safe
         flash[:notice] += "<br/><br/>".html_safe
       end
       
@@ -169,7 +169,7 @@ class RestParametersController < ApplicationController
       
       unless results[:error].blank?
         flash[:error] = "The following parameters could not be added:<br/>".html_safe
-        flash[:error] += results[:error].to_sentence
+        flash[:error] += results[:error].to_sentence.html_safe
       end
       
       format.html { redirect_to @rest_method }
@@ -197,9 +197,9 @@ class RestParametersController < ApplicationController
 
     respond_to do |format|
       if params[:make_local]
-        success_msg = "Parameter <b>".html_safe + param_name + "</b> now has a copy unique for endpoint <b>".html_safe + associated_method.display_endpoint + "</b>".html_safe
+        success_msg = ("Parameter <b>" + param_name + "</b> now has a copy unique for endpoint <b>" + associated_method.display_endpoint + "</b>").html_safe
       else
-        success_msg = "Parameter <b>".html_safe + param_name + "</b> for endpoint <b>".html_safe + associated_method.display_endpoint + "</b> is now global".html_safe
+        success_msg = ("Parameter <b>" + param_name + "</b> for endpoint <b>" + associated_method.display_endpoint + "</b> is now global").html_safe
       end
 
       format.html { redirect_to url_to_redirect_to }
