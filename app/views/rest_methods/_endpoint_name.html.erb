@@ -42,11 +42,8 @@
           No name
         </span>
 
-        <%= render :partial => "rest_methods/add_endpoint_name_box",
-                   :locals => { :partial_from => "endpoint_name",
-                                :rest_method_id => @rest_method.id,
-                                :text_area_default_text => "Add a name to this endpoint...",
-                                :main_div_id => main_div_id } if can_edit -%>
+              <%= edit_endpoint_property_by_popup(@rest_method, "endpoint_name",
+                                                  :class => "button_slim") -%>
       <% end %>
 
       <% if !logged_in? && @rest_method.endpoint_name.blank? %>
