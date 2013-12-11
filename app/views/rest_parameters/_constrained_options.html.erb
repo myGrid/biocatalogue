@@ -30,7 +30,7 @@
          This parameter <b>is</b> constrained to the following set of values:
       <% else %>
          This parameter <b>is not</b> constrained to any set of values.
-         <%= "<br />" unless can_edit %>
+         <%= "<br />".html_safe unless can_edit %>
          <%= edit_constraint_by_popup(parameter, :rest_method_id => rest_method_id, 
                                                  :link_text => "Make Constrained",  
                                                  :class => "button_slim") if logged_in? -%>
