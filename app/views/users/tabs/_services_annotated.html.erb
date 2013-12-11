@@ -1,0 +1,8 @@
+<div id="tab-annotated-services" class="tabbertab">
+  <h3><%= "Services Annotated (#{@users_paged_annotated_services.total_entries})" -%></h3>
+  <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_paged_annotated_services, :entry_name => "service" } %>
+  <div id="users_annotated_services" style="margin: 1em 0;">
+    <%= render :partial => "services/listing", :locals => { :items => @users_paged_annotated_services } %>
+  </div>
+  <%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users_paged_annotated_services } %>
+</div>

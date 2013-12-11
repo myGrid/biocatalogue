@@ -63,6 +63,9 @@ gem 'redbox', :git=>"git://github.com/SysMO-DB/redbox"
 
 gem "white_list", :git=>"https://github.com/neubloc/white_list.git"
 
+gem "tabs_on_rails"
+
+
 # sunspot_rails has nokogiri as a dependancy and Nokogiri 1.6.0 uses r1.9
 # so we need to install this specific version here
 gem 'nokogiri', '~>1.5.10'

@@ -1,0 +1,19 @@
+<% if mine?(@user) || (logged_in? && current_user.is_admin?) -%>
+    <div id="tab-status-notifications" class="tabbertab">
+
+      <h3><%= "Service Status Notifications (#{@users_services_responsible_for.total_entries}/#{@service_responsibles.total_entries}) " -%></h3>
+
+      <div>
+        <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @service_responsibles } %>
+      </div>
+
+      <div>
+        <div id="service_responsibles" style="margin: 1em 0;">
+          <%= render :partial => "service_responsibles/listing", :locals => { :items => @service_responsibles } %>
+        </div>
+      </div>
+      <div>
+        <%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @service_responsibles } %>
+      </div>
+    </div>
+<% end %>

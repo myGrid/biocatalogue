@@ -1,0 +1,8 @@
+<%= tabs_tag(:builder => MenuTabBuilder) do |tab| %>
+    <%= tab.profile      'Profile', user_path(@user) %>
+    <%= tab.services_submitted 'Services Submitted', services_submitted_user_path(@user) %>
+    <%= tab.services_responsible   'Services Responsible For', services_responsible_user_path(@user) %>
+    <%= tab.services_annotated 'Services Annotated', services_annotated_user_path(@user) %>
+    <%= tab.favourites 'Favourites', favourites_user_path(@user) %>
+    <%= tab.service_status_notifications 'Service Status Notifications', service_status_notifications_user_path(@user) %>
+<% end %>

@@ -211,6 +211,7 @@ GEM
       rails (>= 3)
       sunspot (= 2.1.0)
     sunspot_solr (2.1.0)
+    tabs_on_rails (2.2.0)
     thin (1.6.1)
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
@@ -279,6 +280,7 @@ DEPENDENCIES
   solr-ruby
   sunspot_rails
   sunspot_solr
+  tabs_on_rails
   thin
   twitter
   tzinfo

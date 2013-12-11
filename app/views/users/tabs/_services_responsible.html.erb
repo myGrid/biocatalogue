@@ -1,0 +1,12 @@
+<div id="tab-other-services-responsible" class="tabbertab">
+  <h3><%= "Services Responsible For (#{@users_services_responsible_for.total_entries})" -%></h3>
+
+  <%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @users_services_responsible_for } %>
+
+  <div id="users_responsible_services" style="margin: 1em 0;">
+    <%= render :partial => "services/listing", :locals => { :items => @users_services_responsible_for } %>
+  </div>
+
+  <%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @users_services_responsible_for } %>
+</div>
+

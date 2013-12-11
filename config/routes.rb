@@ -180,6 +180,10 @@ BioCatalogue::Application.routes.draw do
       post :rpx_update
       put :activate
       get :services_responsible
+      get :services_annotated
+      get :services_submitted
+      get :service_status_notifications
+      get :service_status
       get :saved_searches
       get :services
       put :make_curator

@@ -37,7 +37,7 @@ require 'hash'
 require 'numeric'
 require 'mime_type'
 require 'addressable/uri'
-
+require 'tabs_on_rails'
 require 'libxml'
 require 'dnsruby'
 require 'open-uri'
