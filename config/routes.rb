@@ -390,6 +390,10 @@ BioCatalogue::Application.routes.draw do
       post :categorise
       get :deployments
       post :check_updates
+      get :service_endpoint
+      get :example_scripts
+      get :example_data
+      get :example_workflows
     end
 
   end

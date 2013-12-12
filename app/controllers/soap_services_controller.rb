@@ -264,7 +264,7 @@ class SoapServicesController < ApplicationController
   
   def operations
     respond_to do |format|
-      format.html { disable_action }
+      format.html { render 'services/show' }
       format.xml  # operations.xml.builder
       format.json { render :json => @soap_service.to_custom_json("operations") }
     end

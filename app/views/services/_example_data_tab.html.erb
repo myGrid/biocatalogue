@@ -1,0 +1,36 @@
+<div id="tab-examples-data" class="tabberlive">
+  <% if @has_data_examples %>
+      <% @data_annotations.each do |d| %>
+          <% unless d[:annotations].empty? %>
+              <h4>
+                <%= d[:type_of_data].pluralize -%>
+                for
+                <%= resource_type_label_for_ui(d[:resource].class.name) -%>:
+                '<%= display_name(d[:resource]) %>'
+                <% case d[:resource].class.name; when "RestParameter", "RestRepresentation" %>
+                    (on <%= resource_type_label_for_ui(d[:resource].associated_rest_method.class.name) %>:
+                    '<%= display_name(d[:resource].associated_rest_method) %>')
+                <% when "SoapInput", "SoapOutput" %>
+                    (on SOAP Operation: '<%= display_name(d[:resource].soap_operation) %>')
+                <% end %>
+              </h4>
+
+              <div class="box_indented_with_bar">
+                <% case d[:annotations][0].attribute_name; when "example_data" %>
+                    <%= render :partial => "annotations/examples",
+                               :locals => { :annotatable => d[:resource],
+                                            :annotations => d[:annotations],
+                                            :show_header => false } %>
+                <% when "example_endpoint" %>
+                    <%= render :partial => "annotations/example_endpoints",
+                               :locals => { :annotatable => d[:resource],
+                                            :annotations => d[:annotations],
+                                            :show_header => false } %>
+                <% end %>
+              </div>
+          <% end %>
+      <% end %>
+  <% else %>
+      <p class="none_text">None</p>
+  <% end %>
+</div>

@@ -1,0 +1,33 @@
+<div id="tab-examples-scripts" class="tabberlive">
+
+  <div class="box_info_standout">
+    <span class="warning">WARNING:</span>
+    Before running any code/scripts, make sure they are safe to run! Do not run something if you're not sure what it does.
+    Code/scripts here have been submitted by external parties and there is the possibility that they have harmful consequences.
+  </div>
+
+  <h4>
+    Example snippets of code
+  </h4>
+  <div class="box_indented_with_bar">
+    <%= render :partial => "annotations/example_script",
+               :locals => { :annotatable => @latest_version_instance } %>
+  </div>
+
+  <% if ENABLE_TEST_SCRIPTS %>
+      <h4>
+        Test scripts used to monitor this service
+      </h4>
+      <div class="box_indented_with_bar">
+        <% if @test_script_service_tests.length == 0 %>
+            <p class="none_text">None</p>
+        <% else %>
+            <% @test_script_service_tests.each do |s| %>
+                <p>
+                  <%= link_to display_name(s.test), s -%>
+                </p>
+            <% end %>
+        <% end %>
+      </div>
+  <% end %>
+</div>
