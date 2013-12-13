@@ -37,8 +37,8 @@ class ServicesController < ApplicationController
 
   before_filter :show_page_variables, :only => [:monitoring, :service_endpoint, :activity, :examples, :example_data, :example_scripts, :example_workflows]
 
-  set_tab :scripts, :example_tab, :only => %w(example_scripts examples)
-  set_tab :data, :example_tab, :only => %(example_data)
+  set_tab :scripts, :example_tab, :only => %(example_scripts)
+  set_tab :data, :example_tab, :only => %w(example_data examples)
   set_tab :workflows, :example_tab, :only => %(example_workflows)
 
   set_tab :overview, :service, :only => %(show)
