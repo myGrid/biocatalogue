@@ -9,7 +9,7 @@
 %>
 
 
-
+<%= render :partial => 'services/tabs_common' %>
 <div id="service-tabs" class="tabberlive" style="margin-top: 1.5em;">
 
   <%= render :partial => 'tabs_bar' %>
@@ -29,12 +29,12 @@
 	<%= render :partial => "services/news_tab" -%>
   <% when 'examples' %>
     <%= render :partial => 'services/examples' %>
+  <% when 'data' %>
+      <%= render :partial => "services/example_data_tab" %>
   <% when 'scripts' %>
     <%= render :partial => "services/example_scripts_tab" %>
   <% when 'workflows' %>
     <%= render :partial => "services/example_workflows_tab" %>
-  <% when 'data' %>
-    <%= render :partial => "services/example_data_tab" %>
   <% end %>
 </div>
 
