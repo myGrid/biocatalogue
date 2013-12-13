@@ -1770,6 +1770,9 @@ ul.tabbernav {
     line-height: 24px;
     padding-bottom: 1px;
 }
+ul.tor {
+  padding-bottom: 0px;
+}
 
 ul.tabbernav li {
     list-style: none;
@@ -3185,6 +3188,7 @@ img.account_provider_logo {
 .toolbar {
     float: right;
 }
+
 
 .computational_type_details {
     font-size: 93%;

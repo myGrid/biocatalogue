@@ -1,6 +1,6 @@
 class MenuTabBuilder < TabsOnRails::Tabs::Builder
   def open_tabs(options = {})
-    @context.tag("ul", {:class => 'tabbernav'}, open = true)
+    @context.tag("ul", {:class => 'tabbernav tor'}, open = true)
   end
 
   def close_tabs(options = {})
