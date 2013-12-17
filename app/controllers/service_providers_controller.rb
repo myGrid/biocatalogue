@@ -21,12 +21,17 @@ class ServiceProvidersController < ApplicationController
   
   before_filter :find_service_providers, :only => [ :index, :filtered_index ]
   
-  before_filter :find_service_provider, :only => [ :show, :edit, :update, :destroy, :annotations, :annotations_by, :edit_by_popup ]
+  before_filter :find_service_provider, :only => [ :show, :edit, :update, :destroy, :annotations, :annotations_by,
+                                                   :edit_by_popup, :profile, :services, :hostnames]
   
   before_filter :authorise, :only => [ :edit_by_popup, :update, :destroy ]
-  
-  before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
-  
+
+  set_tab :profile, :service_providers, :only => [:profile, :show]
+  set_tab :services, :service_providers, :only => [:services]
+  set_tab :hostnames, :service_providers, :only => [:hostnames]
+  before_filter :load_tab_variables, :only => [:profile, :services, :hostnames, :show]
+  before_filter :show, :only => [:profile, :services, :hostnames]
+
   # GET /service_providers
   # GET /service_providers.xml
   def index
@@ -55,20 +60,25 @@ class ServiceProvidersController < ApplicationController
   # GET /service_providers/1
   # GET /service_providers/1.xml
   def show
-    @provider_hostnames = @service_provider.service_provider_hostnames
-    
-    unless is_api_request?
-      @provider_services = @service_provider.services.paginate(:page => params[:page], 
-                                                               :order => "created_at DESC")
-    end
-    
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render 'service_providers/show.html.erb'}# show.html.erb
       format.xml  # show.xml.builder
       format.json { render :json => @service_provider.to_json }
     end
   end
-  
+  def load_tab_variables
+  @provider_hostnames = @service_provider.service_provider_hostnames
+
+  unless is_api_request?
+    @provider_services = @service_provider.services.paginate(:page => params[:page],
+                                                             :order => "created_at DESC")
+  end
+  end
+
+  def profile ; end
+  def services ; end
+  def hostnames ; end
+
   def annotations
     respond_to do |format|
       format.html { disable_action }
