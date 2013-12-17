@@ -1,0 +1,32 @@
+<div id="tab-profile" class="tabbertab tor">
+
+  <!-- Left column -->
+  <div class="properties" style="float: left; width: 67%;">
+
+    <div class="property" style="margin-top: 0.5em;">
+      <%= render :partial => "annotations/descriptions",
+                 :locals => { :annotatable => @service_provider } -%>
+    </div>
+
+    <div class="property">
+      <%= render :partial => "annotations/websites",
+                 :locals => { :annotatable => @service_provider } -%>
+    </div>
+
+    <div class="property">
+      <%= render :partial => "annotations/contacts",
+                 :locals => { :annotatable => @service_provider } -%>
+    </div>
+
+  </div>
+
+  <!-- Right column -->
+  <div style="float: right; width: 30%;">
+
+    <%= render :partial => "show_tag_cloud_box" -%>
+
+  </div>
+
+  <span class="clear"></span>
+
+</div>

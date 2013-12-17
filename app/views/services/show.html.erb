@@ -9,7 +9,7 @@
 %>
 
 
-<%= render :partial => 'services/tabs_common' %>
+<%= render :partial => 'services/tabs/tabs_common' %>
 <div id="service-tabs" class="tabberlive" style="margin-top: 1.5em;">
 
   <%= render :partial => 'tabs_bar' %>
@@ -17,24 +17,24 @@
   <% current_tab(:service).to_s %>
   <% case current_tab(:service).to_s %>
   <% when 'overview' %>
-    <%= render :partial => "services/show_tabs/overview" %>
+    <%= render :partial => "services/tabs/overview" %>
   <% when 'service_endpoint' %>
       <%= render :partial => "#{@latest_version_instance.class.to_s.pluralize.underscore}/show_service_tabs",
       				 	 :locals => {  :service_version_instance =>  @latest_version_instance } %>
   <% when 'examples' %>
-    <%= render :partial => "services/examples_tab" -%>
+    <%= render :partial => "services/tabs/examples_tab" -%>
   <% when 'monitoring' %>
-    <%= render :partial => "services/monitoring_tab" -%>
+    <%= render :partial => "services/tabs/monitoring_tab" -%>
   <% when 'history' %>
-	<%= render :partial => "services/news_tab" -%>
+	<%= render :partial => "services/tabs/news_tab" -%>
   <% when 'examples' %>
-    <%= render :partial => 'services/examples' %>
+    <%= render :partial => "services/tabs/examples" -%>
   <% when 'data' %>
-      <%= render :partial => "services/example_data_tab" %>
+      <%= render :partial => "services/tabs/example_data_tab" -%>
   <% when 'scripts' %>
-    <%= render :partial => "services/example_scripts_tab" %>
+    <%= render :partial => "services/tabs/example_scripts_tab" -%>
   <% when 'workflows' %>
-    <%= render :partial => "services/example_workflows_tab" %>
+    <%= render :partial => "services/tabs/example_workflows_tab" -%>
   <% end %>
 </div>
 

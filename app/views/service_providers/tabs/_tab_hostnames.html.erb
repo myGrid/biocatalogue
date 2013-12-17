@@ -1,0 +1,18 @@
+<% unless @provider_hostnames.blank? %>
+    <div id="tab-hostnames" class="tabbertab">
+
+      <div class="listings">
+        <% @provider_hostnames.each do |hostname| %>
+            <div class="listing_item" style="padding-bottom:13px;">
+
+              <%= reassign_provider_by_popup(hostname,
+                                             :style => "text-align:right;",
+                                             :class => "button_slim" ) %>
+
+              <b><%= h hostname.hostname %></b>
+
+            </div>
+        <% end %>
+      </div>
+    </div>
+<% end %>

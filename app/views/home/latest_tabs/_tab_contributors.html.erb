@@ -1,0 +1,35 @@
+<div id="tab-contributors" class="tabbertab">
+  <h3>Contributors</h3>
+  <% unless (top_curators = User.top_curators(10000)).empty? %>
+      <% user_services = User.services_counts -%>
+      <table class="latest_contributors sortable" style="font-size: 108%;">
+        <thead>
+        <tr>
+          <th class="number center"><%= generic_icon_for :annotations -%></th>
+          <th class="number center"><%= generic_icon_for :services -%></th>
+          <th class="center"><%= generic_icon_for :users -%></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% top_curators.each do |u| %>
+            <tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations and #{user_services[u['id']]} services to #{SITE_NAME}") -%>">
+              <td class="value count">
+                <%= u['count'] -%>
+              </td>
+              <td class="value count">
+                <%= user_services[u['id']] -%>
+              </td>
+              <td>
+                <%= user_link_with_flag(:id => u['id'],
+                                        :display_name => u['name'],
+                                        :country => u['country'],
+                                        :roles => u['roles']) -%>
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+  <% else %>
+      <p class="none_text">None</p>
+  <% end %>
+</div>

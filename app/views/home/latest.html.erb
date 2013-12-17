@@ -10,74 +10,28 @@
 
 <h1>Latest in <%= SITE_NAME -%></h1>
 
-<div id="home-tabs" class="tabber">
-	
-	<div id="tab-activity" class="tabbertab">
-    <h3>Activity</h3>
-		
-		<span style="float: right; margin-left: 0.3em;">
-      <%= feed_icon_tag "Latest Activity", activity_feed_path(:format => :atom) -%>
-    </span>
-		
-		<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :detailed } -%>
-	</div>
-	
-	<div id="tab-monitoring" class="tabbertab">
-		<span style="float: right; margin-left: 0.3em;">
-      <%= feed_icon_tag "Service Monitoring Status Changes", status_changes_feed_path(:format => :atom) -%>
-    </span>
-		
-    <h3>Monitoring</h3>
-    <%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_monitoring, :style => :detailed } -%>
-  </div>
-	
-	<div id="tab-services" class="tabbertab">
-    <h3>Services</h3>
-		<p style="text-align: right; margin: 0 0 1em 0;">
-      <%= feed_icon_tag "Latest Services", services_path(:format => :atom) -%>
-    </p>
-		
-		<%= render :partial => "services/listing", :locals => { :items => Service.latest(10), :listing_type => :simple } -%>
-		
-		<p style="text-align: right;">
-			<%= link_to "Browse All Services", services_url, :class => "button_slim" -%>
-		</p>
-	</div>
-	
-	<div id="tab-contributors" class="tabbertab">
-    <h3>Contributors</h3>
-		<% unless (top_curators = User.top_curators(10000)).empty? %>
-			<% user_services = User.services_counts -%>
-			<table class="latest_contributors sortable" style="font-size: 108%;">
-				<thead>
-					<tr>
-						<th class="number center"><%= generic_icon_for :annotations -%></th>
-						<th class="number center"><%= generic_icon_for :services -%></th>
-						<th class="center"><%= generic_icon_for :users -%></th>
-					</tr>
-				</thead>
-				<tbody>
-					<% top_curators.each do |u| %>
-						<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations and #{user_services[u['id']]} services to #{SITE_NAME}") -%>">
-							<td class="value count">
-								<%= u['count'] -%>
-							</td>
-							<td class="value count">
-								<%= user_services[u['id']] -%>	
-							</td>
-							<td>
-                <%= user_link_with_flag(:id => u['id'], 
-                                            :display_name => u['name'], 
-                                            :country => u['country'], 
-                                            :roles => u['roles']) -%>
-							</td>
-						</tr>
-					<% end %>
-				</tbody>
-			</table>
-		<% else %>
-			<p class="none_text">None</p>
-		<% end %>
-	</div>
-	
+
+<div id="home-tabs" class="tabberlive">
+
+<%= tabs_tag(:builder => MenuTabBuilder, :namespace => :latest) do |tab| %>
+    <%= tab.activity            'Activity', activity_latest_index_path %>
+    <%= tab.monitoring          'Monitoring', monitoring_latest_index_path %>
+    <%= tab.services            'Services', services_latest_index_path %>
+    <%= tab.contributors        'Contributors', contributors_latest_index_path %>
+
+<% end %>
+
+  <% current_tab(:latest).to_s %>
+  <% case current_tab(:latest).to_s %>
+  <% when 'activity' %>
+      <%= render :partial => "home/latest_tabs/tab_activity" %>
+  <% when 'contributors' %>
+      <%= render :partial => "home/latest_tabs/tab_contributors" %>
+  <% when 'monitoring' %>
+      <%= render :partial => "home/latest_tabs/tab_monitoring" %>
+  <% when 'services' %>
+      <%= render :partial => "home/latest_tabs/tab_services" %>
+  <% else %>
+      <%= render :partial => "home/latest_tabs/tab_activity" %>
+  <% end %>
 </div>

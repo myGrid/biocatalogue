@@ -39,73 +39,22 @@
     </span>
       <% end %>
 
-<div id="provider-tabs" class="tabber" style="margin-top: 1.5em;">
-	
-	<div id="tab-profile" class="tabbertab">
-  	
-		<h3>Profile</h3>
-		
-		<!-- Left column -->
-		<div class="properties" style="float: left; width: 67%;">
-			
-			<div class="property" style="margin-top: 0.5em;">
-				<%= render :partial => "annotations/descriptions",
-									 :locals => { :annotatable => @service_provider } -%>
-			</div>
-			
-			<div class="property">
-				<%= render :partial => "annotations/websites",
-									 :locals => { :annotatable => @service_provider } -%>
-			</div>
-			
-			<div class="property">					 
-				<%= render :partial => "annotations/contacts",
-									 :locals => { :annotatable => @service_provider } -%>
-			</div>
-		
-		</div>
-		
-		<!-- Right column -->
-		<div style="float: right; width: 30%;">
-		
-			<%= render :partial => "show_tag_cloud_box" -%>
-		
-		</div>
-		
-		<span class="clear"></span>
-		
-	</div>
-	
-  <div id="tab-services" class="tabbertab">
-    <h3><%= "Services (#{@provider_services.total_entries})" -%></h3>
-    
-		<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => @provider_services } %>
-		
-		<div id="provider_services" style="margin: 1em 0;">
-			<%= render :partial => "services/listing", :locals => { :items => @provider_services } %>
-		</div>
-		
-		<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => @provider_services } %>
-  </div>
 
-  <% unless @provider_hostnames.blank? %>
-    <div id="tab-hostnames" class="tabbertab">
-      <h3><%= "Hostnames (#{@provider_hostnames.size})" -%></h3>
-      
-      <div class="listings">
-        <% @provider_hostnames.each do |hostname| %>
-          <div class="listing_item" style="padding-bottom:13px;">
-          
-            <%= reassign_provider_by_popup(hostname,
-                                           :style => "text-align:right;",
-                                           :class => "button_slim" ) %>
+<div id="provider-tabs" class="tabberlive" style="margin-top: 1.5em;">
+    <%= tabs_tag(:builder => MenuTabBuilder, :namespace => :service_providers) do |tab| %>
+    <%= tab.profile 'Profile', profile_service_provider_path(@service_provider) %>
+    <%= tab.services "Services (#{@provider_services.total_entries})", services_service_provider_path(@service_provider) %>
+    <%= tab.hostnames "Hostnames (#{@provider_hostnames.size})", hostnames_service_provider_path(@service_provider) unless @provider_hostnames.blank? %>
+<% end %>
 
-            <b><%= h hostname.hostname %></b>
-            
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
+     <% current_tab(:service_providers) %>
+	 <% case current_tab(:service_providers).to_s %>
+	 <% when 'profile' %>
+        <%= render :partial => 'service_providers/tabs/tab_profile' %>
+	 <% when 'services' %>
+        <%= render :partial => 'service_providers/tabs/tab_services' %>
+	 <% when 'hostnames' %>
+         <%= render :partial => 'service_providers/tabs/tab_hostnames' unless @provider_hostnames.blank?  %>
+     <% end %>
 
 </div>

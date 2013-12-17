@@ -28,7 +28,7 @@
      <span class="actions_button_row" >
          <span class="actions_button">
                 <%= link_to image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back To Service \"#{h(display_name(@rest_service.service))}\""),
-						  service_url(@rest_service.service, :anchor => "endpoints") -%>
+						  service_endpoint_service_url(@rest_service.service) -%>
         </span>
          <%= if show_button then ('<span class="actions_button">' + add_endpoints_by_popup(@rest_service, :style => "float:none; font-weight:normal") + '</span>').html_safe end %>
 

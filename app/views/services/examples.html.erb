@@ -8,8 +8,8 @@
 
 %>
 
-<%= render :partial => 'services/tabs_common' %>
-<div id="service-tabs" class="tabberlive">
+<%= render :partial => 'services/tabs/tabs_common' %>
+<div id="service-tabs" class="tabberlive" style="margin-top:1.5em">
   <%= render :partial => 'tabs_bar' %>
 
 
@@ -28,15 +28,15 @@
         <% case current_tab(:example_tab).to_s %>
         <% when 'data' %>
 
-            <%= render :partial => 'services/example_data_tab' %>
+            <%= render :partial => 'services/tabs/example_data_tab' %>
         <% when 'scripts' %>
-            <%= render :partial => 'services/example_scripts_tab' %>
+            <%= render :partial => 'services/tabs/example_scripts_tab' %>
         <% when 'workflows' %>
             <% if @latest_version_instance.class == SoapService %>
-                <%= render :partial => 'services/example_workflows_tab' %>
+                <%= render :partial => 'services/tabs/example_workflows_tab' %>
             <% end %>
         <% else %>
-            <%= render :partial => 'services/example_scripts_tab' %>
+            <%= render :partial => 'services/tabs/example_scripts_tab' %>
         <% end %>
       </div>
     </div>

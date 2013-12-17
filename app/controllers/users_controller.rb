@@ -53,6 +53,9 @@ class UsersController < ApplicationController
   set_tab :favourites, :only => %w(favourites)
   set_tab :service_status_notifications, :only => %w(service_status_notifications)
 
+  before_filter :show, :only => [:profile, :services_submitted, :services_responsible, :services_annotated, :service_status_notifications, :favourites]
+
+
   # GET /users
   # GET /users.xml
   def index
@@ -101,6 +104,13 @@ class UsersController < ApplicationController
       format.json { render :json => @user.to_json }
     end
   end
+
+  def favourites ;  end
+  def services_responsible ;  end
+  def services_annotated ;   end
+  def services_submitted ;  end
+  def service_status_notifications ;   end
+
 
   # GET /users/new
   # GET /users/new.xml
@@ -353,63 +363,6 @@ class UsersController < ApplicationController
       end
     else
       error("Not authorised", :status => :unauthorized)
-    end
-  end
-
-  def favourites
-    @live_tab = 'favourites'
-    respond_to do |format|
-      format.html { render 'users/display_tabs'}
-      format.xml { disable_action }
-      format.json { render :json => BioCatalogue::Api::Json.collection(@user.favourites) }
-    end
-  end
-
-  def services_responsible
-    @live_tab = 'services_responsible'
-    if !@user.nil? && !@user.services.nil?
-      @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
-    end
-
-    @users_paged_annotated_services = Service.where(:id => @users_paged_annotated_services).paginate(:page => @page, :per_page => @per_page)
-    respond_to do |format|
-      format.html { render 'users/display_tabs'}
-    end
-  end
-
-  def services_annotated
-    @live_tab = 'services_annotated'
-    if !@user.nil? && !@user.services.nil?
-      @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
-    end
-    @users_paged_annotated_services = Service.where(:id => @users_paged_annotated_services).paginate(:page => @page, :per_page => @per_page)
-    @users_paged_annotated_services_ids = @users_paged_annotated_services.map { |x| x.id }
-    respond_to do |format|
-      format.html { render 'users/display_tabs'}
-    end
-  end
-
-  def services_submitted
-    @live_tab = 'services_submitted'
-    if !@user.nil? && !@user.services.nil?
-      @users_services = @user.services.paginate(:page => @page,
-                                                :order => "created_at DESC")
-    end
-    respond_to do |format|
-      format.html { render 'users/display_tabs'}
-    end
-  end
-
-
-  def service_status_notifications
-    @live_tab = 'service_status_notifications'
-    if !@user.nil? && !@user.services.nil?
-      @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
-    end
-    @service_responsibles = @user.service_responsibles.paginate(:page => @page,
-                                                                :order => "status ASC, created_at DESC")
-    respond_to do |format|
-      format.html { render 'users/display_tabs'}
     end
   end
 
