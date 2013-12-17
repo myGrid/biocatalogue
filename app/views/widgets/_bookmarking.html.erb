@@ -9,9 +9,9 @@
 %>
 
 <% if ENABLE_BOOKMARKING_WIDGET %>
-	<%= addthis_share_button(:brand => SITE_NAME, :hover_delay => 1000) -%>
-	<% if false %>
+	<%= addthis_share_button(:brand => SITE_NAME, :hover_delay => 1000).html_safe -%>
+	<% if true %>
 	&nbsp;&nbsp;&nbsp;
-	<%= addthis_email_button -%>
+	<%= addthis_email_button.html_safe -%>
 	<% end %>
 <% end %>
