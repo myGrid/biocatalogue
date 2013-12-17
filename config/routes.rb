@@ -137,6 +137,11 @@ BioCatalogue::Application.routes.draw do
       get :annotations
       get :services
       post :edit_by_popup
+
+      #for loading tab partials
+      get :hostnames
+      get :profile
+      get :services
     end
 
   end
@@ -213,8 +218,19 @@ BioCatalogue::Application.routes.draw do
   match '/' => 'home#index', :as => :home
   match '/index.:format' => 'home#index', :as => :activity_feed
   match '/status_changes.:format' => 'home#status_changes', :as => :status_changes_feed
+
   match '/latest' => 'home#latest', :as => :latest
   match 'service_providers/auto_complete' => 'service_providers#auto_complete', :as => :service_provider_auto_complete, :via => :post
+
+
+  resources :latest do
+    collection do
+      get :activity
+      get :monitoring
+      get :contributors
+      get :services
+    end
+  end
 
   resources :rest_services do
 

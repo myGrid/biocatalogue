@@ -1,0 +1,8 @@
+<div id="tab-monitoring" class="tabbertab">
+		<span style="float: right; margin-left: 0.3em;">
+      <%= feed_icon_tag "Service Monitoring Status Changes", status_changes_feed_path(:format => :atom) -%>
+    </span>
+
+  <h3>Monitoring</h3>
+  <%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_monitoring, :style => :detailed } -%>
+</div>

@@ -1,0 +1,9 @@
+
+<div id="tab-activity" class="tabbertab">
+
+		<span style="float: right; margin-left: 0.3em;">
+      <%= feed_icon_tag "Latest Activity", activity_feed_path(:format => :atom) -%>
+    </span>
+
+  <%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :detailed } -%>
+</div>

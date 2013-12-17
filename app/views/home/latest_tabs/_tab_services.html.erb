@@ -1,0 +1,12 @@
+<div id="tab-services" class="tabbertab">
+  <h3>Services</h3>
+  <p style="text-align: right; margin: 0 0 1em 0;">
+    <%= feed_icon_tag "Latest Services", services_path(:format => :atom) -%>
+  </p>
+
+  <%= render :partial => "services/listing", :locals => { :items => Service.latest(10), :listing_type => :simple } -%>
+
+  <p style="text-align: right;">
+    <%= link_to "Browse All Services", services_url, :class => "button_slim" -%>
+  </p>
+</div>
