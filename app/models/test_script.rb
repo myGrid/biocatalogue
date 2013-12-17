@@ -13,9 +13,7 @@ class TestScript < ActiveRecord::Base
     index :name
     index :exec_name
   end
-  
-  after_create :create_service_test
-  
+
   has_one :service_test, 
           :as => :test, 
           :dependent => :destroy
@@ -73,10 +71,12 @@ class TestScript < ActiveRecord::Base
   # Helper class method to lookup all tests assigned
   # to all testable types for a given user.
   def self.find_tests_by_user(user)
-    find(:all,
-      :conditions => ["submitter_id = ?", user.id],
-      :order => "created_at DESC"
-    )
+    # Old Rails 2 style
+    #find(:all,
+    #  :conditions => ["submitter_id = ?", user.id],
+    #  :order => "created_at DESC"
+    #)
+    where(:submitter_id => user.id).order("created_at DESC")
   end
   
   # Create an entry into the content_blobs table
@@ -102,11 +102,7 @@ class TestScript < ActiveRecord::Base
   def recent_test_results(limit=5)
     self.service_test.recent_test_results(limit)
   end
-  
-  def service_id=(id)
-    @service_id = id
-  end
-  
+
   def activated?
     self.service_test.activated?
   end
@@ -114,21 +110,7 @@ class TestScript < ActiveRecord::Base
   def activated_at
     self.service_test.activated_at
   end
-  
-  def create_service_test
-    self.service_test = ServiceTest.new(:service_id   => @service_id,
-                                          :test_type  => self.class.name, 
-                                          :test_id    => self.id,
-                                          :activated_at => Time.now) 
-                                    
-    unless self.service_test.save
-      self.errors.add_to_base("Could not create an associated service test")
-      self.service_test.errors.full_messages.each  do |m|
-        self.errors.add_to_base(m)
-      end
-    end
-  end
-  
+
 #  def filename=(new_filename)
 #    write_attribute("filename", sanitize_filename(new_filename))
 #  end

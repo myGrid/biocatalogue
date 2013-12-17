@@ -1,16 +1,23 @@
 <%
 
-# BioCatalogue: app/views/oauth_clients/_form.html.erb
-#
-# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+   # BioCatalogue: app/views/oauth_clients/_form.html.erb
+   #
+   # Copyright (c) 2010, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
 
 %>
 
-<%= error_messages_for :client_application %>
-
 <% field_styles = "float:right; width:70%;" %>
+<% errors = [] %>
+<% if !@client_application.nil? && !@client_application.errors.nil? then %>
+    <% @client_application.errors.full_messages.each do |err| %>
+        <% (errors << "#{err} </br>").html_safe %>
+    <% end %>
+<% end %>
+<% if errors != [] %>
+    <% flash[:error] = errors.to_s.html_safe %>
+<% end %>
 
 <div>
   <p class="step_text">

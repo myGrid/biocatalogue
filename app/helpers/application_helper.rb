@@ -10,8 +10,8 @@
 # Need to do this so that we play nice with the annotations and favourites plugin.
 # THIS DOES UNFORTUNATELY MEAN THAT A SERVER RESTART IS REQUIRED WHENEVER CHANGES ARE MADE
 # TO THIS FILE, EVEN IN DEVELOPMENT MODE.
-#require_dependency RAILS_ROOT + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
-require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/helpers/application_helper'
+#require_dependency Rails.root.to_s + '/vendor/plugins/annotations/lib/app/helpers/application_helper'
+require_dependency Rails.root.to_s + '/lib/favourites/lib/app/helpers/application_helper'
 # ---
 
 module ApplicationHelper
@@ -27,7 +27,7 @@ module ApplicationHelper
   # -----------------
   
   def icon_filename_for(thing)
-    BioCatalogue::Resource.icon_filename_for(thing)
+    BioCatalogue::Resource.icon_filename_for(thing).html_safe
   end
   
   def generic_icon_for(thing, style='', tooltip_text=thing.to_s.titleize)
@@ -39,11 +39,11 @@ module ApplicationHelper
   end
   
   def icon_faded_with_hover(type)
-    image_tag(icon_filename_for("#{type.to_s}_faded".to_sym), :mouseover => icon_filename_for(type), :style => "vertical-align:middle;")
+    image_tag(icon_filename_for("#{type.to_s}_faded".to_sym), :mouseover => icon_filename_for(type), :style => "vertical-align:middle;").html_safe
   end
   
   def refresh_image
-    image_tag icon_filename_for(:refresh), :style => "vertical-align: middle;", :alt => "Refresh"
+    image_tag(icon_filename_for(:refresh), :style => "vertical-align: middle;", :alt => "Refresh").html_safe
   end
   
   def expand_image(margin_left="0.3em", float="")
@@ -52,7 +52,7 @@ module ApplicationHelper
     style = (float.empty? ? "margin-left: #{margin_left}; vertical-align: middle;" :
                             "float: #{float}; margin-right: 5px; vertical-align: middle;")
     
-    image_tag icon_filename_for(:expand), :style => style, :alt => 'Expand'
+    image_tag(icon_filename_for(:expand), :style => style, :alt => 'Expand').html_safe
   end
   
   def collapse_image(margin_left="0.3em", float="")
@@ -61,19 +61,19 @@ module ApplicationHelper
     style = (float.empty? ? "margin-left: #{margin_left}; vertical-align: middle;" :
                             "float: #{float}; margin-right: 5px; vertical-align: middle;")
 
-    image_tag icon_filename_for(:collapse), :style => style, :alt => 'Collapse'
+    image_tag(icon_filename_for(:collapse), :style => style, :alt => 'Collapse').html_safe
   end
   
   def help_icon_with_tooltip(help_text, delay=200)
     return image_tag(icon_filename_for(:help),
                      :title => tooltip_title_attrib(help_text, delay),
-                     :style => "vertical-align:middle;")
+                     :style => "vertical-align:middle;").html_safe
   end
 
   def info_icon_with_tooltip(info_text, delay=200)
     return image_tag(icon_filename_for(:info),
                      :title => tooltip_title_attrib(info_text, delay),
-                     :style => "vertical-align:middle;")
+                     :style => "vertical-align:middle;").html_safe
   end
   
   def feed_icon_tag(title, url, style='')
@@ -148,13 +148,13 @@ module ApplicationHelper
     end
     
     output << content_tag(:ul, :class => "simple_list") do
-      "<li>Submit your own services</li>" +
-      "<li>Annotate (describe, tag etc) and curate your services as well as any other services in the catalogue</li>" +
-      "<li>Rate services</li>" +
-      "<li>Favourite the services you use the most or like</li>" +
-      "<li>Contact other members of the catalogue as well as service providers (coming soon)</li>"
+      "<li>Submit your own services</li>".html_safe +
+      "<li>Annotate (describe, tag etc) and curate your services as well as any other services in the catalogue</li>".html_safe +
+      "<li>Rate services</li>".html_safe +
+      "<li>Favourite the services you use the most or like</li>".html_safe
+      #"<li>Contact other members of the catalogue as well as service providers (coming soon)</li>".html_safe
     end
-    
+
     return output
   end
   
@@ -219,12 +219,12 @@ module ApplicationHelper
       when "Member"
         user_link_with_flag(:user => submitter)
       else
-        link_to(display_name(submitter), submitter) 
+        link_to(display_name(submitter), submitter)
     end
-    
+
     output << '</span>'
     
-    return output
+    return output.html_safe
   end
   
   # Generate a link to a user's profile
@@ -425,7 +425,7 @@ module ApplicationHelper
   end
   
   def render_breadcrumbs_after_home
-    if FileTest.exist?(File.join(RAILS_ROOT, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb')) 
+    if FileTest.exist?(File.join(Rails.root, 'app', 'views', controller.controller_name.downcase, '_breadcrumbs.html.erb'))
       render :partial => "#{controller.controller_name.downcase}/breadcrumbs"
     end
   end
@@ -592,26 +592,26 @@ module ApplicationHelper
   def generic_render_show_hide_more_links(name, hidden_class_name, top=10)
     html = ""
     
-    more_text = "Show all"
-    less_text = "Show top #{top.to_s} only"
+    more_text = "Show all".html_safe
+    less_text = "Show top #{top.to_s} only".html_safe
     
     more_link_id = "#{name}_more_link"
     less_link_id = "#{name}_less_link"
     
-    html << link_to_function(more_text + expand_image("0.5em"), :id => more_link_id, :class => "expand_link") do |page| 
+    html << link_to_function(more_text + expand_image("0.5em"), :id => more_link_id, :class => "expand_link") do |page|
       page.select(".#{hidden_class_name}").each do |el|
         el.show
       end
       page.toggle more_link_id, less_link_id
     end
-    
-    html << link_to_function(less_text + collapse_image("0.5em"), :id => less_link_id, :class => "expand_link", :style => "display:none;") do |page| 
+
+    html << link_to_function(less_text + collapse_image("0.5em"), :id => less_link_id, :class => "expand_link", :style => "display:none;") do |page|
       page.select(".#{hidden_class_name}").each do |el|
         el.hide
       end
       page.toggle more_link_id, less_link_id
     end
-    
+
     return html
   end
   
@@ -652,11 +652,11 @@ module ApplicationHelper
     end
 
     unless options[:icon_float].blank?
-      expand_link = expand_image(options[:icon_left_margin], options[:icon_float]) + link_text
-      collapse_link = collapse_image(options[:icon_left_margin], options[:icon_float]) + link_text
+      expand_link = (expand_image(options[:icon_left_margin], options[:icon_float]) + link_text).html_safe
+      collapse_link = (collapse_image(options[:icon_left_margin], options[:icon_float]) + link_text).html_safe
     else
-      expand_link = link_text + expand_image(options[:icon_left_margin])
-      collapse_link = link_text + collapse_image(options[:icon_left_margin])
+      expand_link = (link_text + expand_image(options[:icon_left_margin])).html_safe
+      collapse_link = (link_text + collapse_image(options[:icon_left_margin])).html_safe
     end
 
     expand_link_id = update_element_id + '_name_more_link'
@@ -665,18 +665,19 @@ module ApplicationHelper
     expand_link_content = link_to_function(expand_link, :id => expand_link_id, :style => "vertical-align: baseline;  #{options[:link_style]}") do |page| 
                             page.toggle expand_link_id, collapse_link_id
                             page.visual_effect :toggle_blind, update_element_id, :duration => '0.2'
-                          end
+                          end.html_safe
 
     collapse_link_content = link_to_function(collapse_link, :id => collapse_link_id, :style => "display:none; vertical-align: baseline;  #{options[:link_style]}") do |page| 
                               page.toggle expand_link_id, collapse_link_id
                               page.visual_effect :toggle_blind, update_element_id, :duration => '0.2'
-                            end 
+                            end.html_safe
                             
     span_content = expand_link_content + collapse_link_content
     
     content = content_tag(:span, span_content, :class => options[:class], :style => "vertical-align: baseline; #{options[:style]}")
 
     return content
+
   end
   
   def display_text_for_sort_by(sort_by)
@@ -756,7 +757,7 @@ module ApplicationHelper
 
   def take_responsibility_action (service, current_user)
     if BioCatalogue::Auth.allow_user_to_claim_thing?(current_user, service)
-       link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Take Responsibility'),
+       link_to(image_tag(icon_filename_for(:curator)) + content_tag(:span, ' Request Responsibility'),
 		                        new_responsibility_request_url(:service_id => @service.id),
                             :style => "text-decoration:none" )
     end

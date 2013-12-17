@@ -8,7 +8,7 @@
 
 module BioCatalogue
   module CacheHelper
-    
+
     NONE_VALUE = "<none>".freeze
     
     def self.set_base_host(base_host)
@@ -69,7 +69,8 @@ module BioCatalogue
           "search_items_from_solr_#{args[0].gsub(" ", "_")}"
       end
     end
-    
+
+    # This method is not being used any more; we are using dalli gem now instead of memcache-client.
     def self.setup_caches
       Util.say("Setting up caches...")
       
@@ -80,10 +81,10 @@ module BioCatalogue
       # IMPORTANT: it's absolutely crucial that you leave a space after "servers:"
       # otherwise the app will refuse to start!
       
-      config_path = File.join(RAILS_ROOT, "config", "memcache.yml")
+      config_path = File.join(Rails.root, "config", "memcache.yml")
       
       if File.exist?(config_path)
-        config = YAML.load(IO.read(config_path))[RAILS_ENV]
+        config = YAML.load(IO.read(config_path))[Rails.env]
         
         if config and !config['servers'].blank?
           
@@ -139,7 +140,7 @@ module BioCatalogue
           end
           
         else
-          Util.say("No cache defined for #{RAILS_ENV} environment. That's okay, an in memory store will be used instead for caching...")
+          Util.say("No cache defined for #{Rails.env} environment. That's okay, an in memory store will be used instead for caching...")
         end
         
       else
@@ -152,49 +153,59 @@ module BioCatalogue
       
       CACHE.reset if defined?(CACHE) and !CACHE.nil?
       
-      if defined?(RAILS_CACHE) and !RAILS_CACHE.nil?
-        RAILS_CACHE.instance_eval do 
+      if defined?(Rails.cache) and !Rails.cache.nil?
+        Rails.cache.instance_eval do
           @data.reset
         end
       end
     end
     
     module Expires
-      require 'action_controller/test_process'
-      
-      def expire_fragment(key, options=nil)
+      #require 'action_controller/test_process'
+
+      #def expire_fragment(key, options=nil)
+      # Not using urls for fragments any more as the actual route must exist for url_for to work.
+      # For example, the routes with :action => 'listing' were non existent and were not working after
+      # the default catch-all route was removed from routes.rb.
+      def expire_fragment(fragment_key)
         if defined?(BASE_HOST) or defined?(SITE_BASE_HOST)
           if @controller.nil?
             @controller = ActionController::Base.new
             @controller.request = ActionController::TestRequest.new
             @controller.request.host = (defined?(BASE_HOST) ? BASE_HOST : SITE_BASE_HOST)
-            @controller.instance_eval do
-              @url = ActionController::UrlRewriter.new(request, {})
-            end
+            #@controller.instance_eval do
+            #  @url = ActionController::UrlRewriter.new(request, {})
+            #end
           end
-  
-          @controller.expire_fragment(key, options)
+
+          #@controller.expire_fragment(Rails.application.routes.url_helpers.url_for(key.merge({:only_path => true})), options)
+          @controller.expire_fragment(fragment_key)
         end
       end
       
       def expire_service_index_tag_cloud
-        expire_fragment(:controller => 'services', :action => 'index', :part => 'tag_cloud')
+        #expire_fragment(:controller => 'services', :action => 'index', :part => 'tag_cloud')
+        expire_fragment(['services', 'index', 'tag_cloud'].join('/'))
       end
       
       def expire_annotations_tags_flat_partial(annotatable_type, annotatable_id)
-        expire_fragment(:controller => 'annotations', :action => 'tags_flat', :annotatable_type => annotatable_type, :annotatable_id => annotatable_id)
+        #expire_fragment(:controller => 'annotations', :action => 'tags_flat', :annotatable_type => annotatable_type, :annotatable_id => annotatable_id)
+        expire_fragment(['annotations', 'tags_flat', annotatable_type, annotatable_id.to_s].join('/'))
       end
       
       def expire_categories_in_service_listing(service_id)
-        expire_fragment(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service_id)
+        #expire_fragment(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service_id)
+        expire_fragment(['services', 'listing', "categories", service_id.to_s].join('/'))
       end
       
       def expire_name_aliases_in_service_listing(service_id)
-        expire_fragment(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service_id)
+        #expire_fragment(:controller => 'services', :action => 'listing', :part => "name_aliases", :service_id => service_id)
+        expire_fragment(['services', 'listing', "name_aliases", service_id.to_s].join('/'))
       end
       
       def expire_descriptions_in_service_listing(service_id)
-        expire_fragment(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service_id)
+        #expire_fragment(:controller => 'services', :action => 'listing', :part => "descriptions", :service_id => service_id)
+        expire_fragment(['services', 'listing', "descriptions", service_id.to_s].join('/'))
       end
       
       def reload_number_of_services_for_category_and_parents_caches(category)

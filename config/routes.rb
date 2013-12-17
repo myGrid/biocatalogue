@@ -1,327 +1,462 @@
-# BioCatalogue: app/config/routes.rb
-#
-# Copyright (c) 2008-2010, University of Manchester, The European Bioinformatics
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+BioCatalogue::Application.routes.draw do
 
-ActionController::Routing::Routes.draw do |map|
+  resources :oauth_clients
 
-  map.resources :oauth_clients
+  match '/oauth/test_request' => 'oauth#test_request', :as => :test_request
+  match '/oauth/access_token' => 'oauth#access_token', :as => :access_token
+  match '/oauth/request_token' => 'oauth#request_token', :as => :request_token
+  match '/oauth/authorize' => 'oauth#authorize', :as => :authorize
+  match '/oauth' => 'oauth#index', :as => :oauth
+  match '/curation' => 'curation#show', :as => :curation, :via => :get
+  match '/curation/reports/potential_duplicate_operations_within_service' => 'curation#potential_duplicate_operations_within_service', :as => :curation_reports_potential_duplicate_operations_within_service, :via => :get
+  match '/curation/reports/providers_without_services' => 'curation#providers_without_services', :as => :curation_reports_providers_without_services, :via => :get
+  match '/curation/reports/services_missing_annotations' => 'curation#services_missing_annotations', :as => :curation_reports_services_missing_annotations, :via => [:get, :post]
+  match '/curation/tools/copy_annotations' => 'curation#copy_annotations', :as => :curation_tools_copy_annotations, :via => [:get, :post]
+  match '/curation/tools/copy_annotations_preview' => 'curation#copy_annotations_preview', :as => :curation_tools_copy_annotations_preview, :via => :post
+  match '/curation/reports/annotation_level' => 'curation#annotation_level', :as => :curation_annotation_level, :via => :get
+  match '/curation/tools/spreadsheet_export' => 'curation#spreadsheet_export', :as => :spreadsheet_export, :via => :get
+  match '/curation/tools/download_latest_csv' => 'curation#download_latest_csv', :as => :download_latest_csv, :via => :get
+  match '/api.:format' => 'api#show', :as => :api
+  match '/lookup.:format' => 'lookup#show', :as => :lookup
+  match '/lookup' => 'lookup#show', :as => :lookup
 
-  map.test_request '/oauth/test_request', :controller => 'oauth', :action => 'test_request'
-  map.access_token '/oauth/access_token', :controller => 'oauth', :action => 'access_token'
-  map.request_token '/oauth/request_token', :controller => 'oauth', :action => 'request_token'
-  map.authorize '/oauth/authorize', :controller => 'oauth', :action => 'authorize'
-  map.oauth '/oauth', :controller => 'oauth', :action => 'index'
-  
-  # =========================
-  # Curation Dashboard routes
-  # -------------------------
-  
-  # Main
-  
-   map.curation '/curation',
-    :controller => 'curation',
-    :action => 'show',
-    :conditions => { :method => :get }
+  resources :announcements
 
-  # Reports
-  
-  map.curation_reports_potential_duplicate_operations_within_service '/curation/reports/potential_duplicate_operations_within_service', 
-    :controller => 'curation', 
-    :action => 'potential_duplicate_operations_within_service', 
-    :conditions => { :method => :get }
-    
-  map.curation_reports_providers_without_services '/curation/reports/providers_without_services', 
-    :controller => 'curation', 
-    :action => 'providers_without_services', 
-    :conditions => { :method => :get }
+  resources :service_tests do
 
-  map.curation_reports_services_missing_annotations '/curation/reports/services_missing_annotations',
-    :controller => 'curation',
-    :action => 'services_missing_annotations',
-    :conditions => { :method => [ :get, :post ] }
-  
-  # Tools
-  
-  map.curation_tools_copy_annotations '/curation/tools/copy_annotations',
-    :controller => 'curation', 
-    :action => 'copy_annotations', 
-    :conditions => { :method => [ :get, :post ] }
-  
-  map.curation_tools_copy_annotations_preview '/curation/tools/copy_annotations_preview',
-    :controller => 'curation', 
-    :action => 'copy_annotations_preview', 
-    :conditions => { :method => :post }
-       
-  map.curation_annotation_level '/curation/reports/annotation_level', 
-    :controller => 'curation', 
-    :action => 'annotation_level', 
-    :conditions => { :method => :get }
-     
-  # =========================
-  
-  
-  map.api '/api.:format', :controller => 'api', :action => 'show'
-  
-  map.lookup '/lookup.:format', :controller => 'lookup', :action => 'show'
-  map.lookup '/lookup', :controller => 'lookup', :action => 'show'
-  
-  map.resources :announcements
+    member do
+      get :results
+      put :enable
+      put :disable
+      post :new_url_monitor_popup
+      post :create_monitoring_endpoint
+      post :edit_monitoring_endpoint_by_popup
+      post :update_monitoring_endpoint
+    end
 
-  map.resources :service_tests,
-                :member => { :results => :get,
-                             :enable => :put,
-                             :disable => :put }
-  
-  map.resources :test_results
-  
-  map.resources :test_scripts, 
-                :member => { :download => :get }
-  
-  # To test error messages
-  map.fail_page '/fail/:http_code', :controller => 'fail', :action => 'index'
-  
-  # Stats
-  map.stats_index '/stats', :controller => 'stats', :action => 'index'
-  map.refresh_stats '/stats/refresh', :controller => 'stats', :action => 'refresh', :conditions => { :method => :post }
-  map.resources :stats
-  
-  map.resources :categories,
-                :member => { :services => :get }
-  
-  map.resources :registries,
-                :member => { :annotations_by => :get,
-                             :services => :get }
-  
-  map.resources :agents,
-                :member => { :annotations_by => :get }
-  
-  # Routes from the favourites plugin + extensions
-  Favourites.map_routes(map)
+  end
 
-  # Routes from the annotations plugin + extensions
-  Annotations.map_routes(map,
-                         { :new_popup => :post,
-                           :create_inline => :post,
-                           :filters => :get,
-                           :filtered_index => :post,
-                           :bulk_create => :post },
-                         { :edit_popup => :post,
-                           :download => :get,
-                           :promote_alternative_name => :post })
-  
-  map.resources :annotation_attributes,
-                :member => { :annotations => :get }
-  
-  # Tags (ordering is important!)
-#  map.tags_index '/tags', :controller => 'tags', :action => 'index', :conditions => { :method => :get }
-#  map.tags_auto_complete '/tags/auto_complete', :controller => 'tags', :action => 'auto_complete', :conditions => { :method => :get }
-#  map.tag_show '/tags/:tag_keyword', :controller => 'tags', :action => 'show', :conditions => { :method => :get }
-#  map.destroy_tag '/tags', :controller => 'tags', :action => 'destroy', :conditions => { :method => :delete }
-  
-  map.resources :tags,
-                :only => [ :index, :show, :destroy ],
-                :collection => { :auto_complete => :get,
-                                 :destroy_taggings => :delete }
+  resources :test_results
 
-  # Search (ordering is important!)
-  map.search_auto_complete '/search/auto_complete', :controller => 'search', :action => 'auto_complete', :conditions => { :method => :get }
-  map.ignore_last_search '/search/ignore_last', :controller => 'search', :action => 'ignore_last', :conditions => { :method => :post }
-  #map.connect '/search/:q', :controller => 'search', :action => 'show', :conditions => { :method => :get }
-  map.search '/search.:format', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }
-  map.search '/search', :controller => 'search', :action => 'show', :conditions => { :method => [ :get, :post ] }
-  map.search_by_data '/search/by_data.:format', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :get, :post ] }
-  map.search_by_data '/search/by_data', :controller => 'search', :action => 'by_data', :conditions => { :method => [ :post, :get ] }
+  resources :test_scripts do
 
-  map.resources :service_providers,
-                :collection => { :filters => :get,
-                                 :filtered_index => :post },
-                :member => { :annotations => :get,
-                             :annotations_by => :get,
-                             :services => :get }
-  
-  map.resources :service_provider_hostnames
-  
-  map.resources :service_deployments,
-                :member => { :annotations => :get }
+    member do
+      get :download
+    end
 
-  #map.resources :service_versions
+  end
 
-  map.resources :users, 
-                :collection => { :activate_account => :get,
-                                 :rpx_merge_setup => :get,
-                                 :rpx_merge => :post,
-                                 :filters => :get,
-                                 :filtered_index => :post,
-                                 :whoami => :get }, 
-                :member => { :change_password => [ :get, :post ],
-                             :rpx_update => [ :get, :post ],
-                             :annotations_by => :get,
-                             :services => :get,
-                             :saved_searches => :get,
-                             :favourites => :get,
-                             :services_responsible => :get,
-                             :make_curator => :put,
-                             :remove_curator => :put,
-                             :activate => :put,
-                             :deactivate => :put }
-                
-  map.resource :session
+  match '/fail/:http_code' => 'fail#index', :as => :fail_page
+  match '/stats' => 'stats#index', :as => :stats_index
+  match '/stats/refresh' => 'stats#refresh', :as => :refresh_stats, :via => :post
+
+  resources :stats
+
+  resources :categories do
+
+    member do
+      get :services
+    end
+
+  end
+
+  resources :registries do
+
+    member do
+      get :annotations_by
+      get :services
+    end
+
+  end
+
+  resources :agents do
+
+    member do
+      get :annotations_by
+    end
+
+  end
+
+  resources :annotations do
+
+    collection do
+      post :create_multiple
+      post :new_popup
+      post :create_inline
+      post :filtered_index
+      get :filters
+      post :bulk_create
+    end
+
+    member do
+      post :edit_popup
+      post :promote_alternative_name
+      get :download
+    end
+
+  end
+
+  resources :annotation_attributes do
+
+    member do
+      get :annotations
+    end
+
+  end
+
+  resources :tags, :only => [:index, :show, :destroy] do
+
+    collection do
+      delete :destroy_taggings
+      post :auto_complete
+    end
+
+
+  end
+
+  match '/search/auto_complete' => 'search#auto_complete', :as => :search_auto_complete, :via => :post
+  match '/search/ignore_last' => 'search#ignore_last', :as => :ignore_last_search, :via => :post
+  match '/search.:format' => 'search#show', :as => :search, :via => [:get, :post]
+  match '/search' => 'search#show', :as => :search, :via => [:get, :post]
+  match '/search/by_data.:format' => 'search#by_data', :as => :search_by_data, :via => [:get, :post]
+  match '/search/by_data' => 'search#by_data', :as => :search_by_data, :via => [:post, :get]
+
+
+
+  resources :service_providers do
+
+    collection do
+      post :filtered_index
+      get :filters
+      post :edit_by_popup
+      post :auto_complete
+    end
+
+    member do
+      get :annotations_by
+      get :annotations
+      get :services
+      post :edit_by_popup
+    end
+
+  end
+
+  resources :service_provider_hostnames do
+    collection do
+      post :reassign_provider_by_popup
+      post :reassign_provider
+    end
+  end
+
+  resources :service_deployments do
+
+    member do
+      get :annotations
+      post :edit_location_by_popup
+      post :update_location
+    end
+
+  end
+
+  resources :users do
+
+    collection do
+      get :whoami
+      get :activate_account
+      post :filtered_index
+      get :rpx_merge_setup
+      get :filters
+      post :rpx_merge
+    end
+
+    member do
+      put :remove_curator
+      get :annotations_by
+      put :deactivate
+      get :change_password
+      post :change_password
+      get :favourites
+      get :rpx_update
+      post :rpx_update
+      put :activate
+      get :services_responsible
+      get :services_annotated
+      get :services_submitted
+      get :service_status_notifications
+      get :service_status
+      get :saved_searches
+      get :services
+      put :make_curator
+    end
+
+  end
+
+  match '/termsofuse' => 'termsofuse#index'
+
+  match '/session' => 'sessions#create', :as => :session, :via => :post
 
   if ENABLE_RPX
-    map.rpx_token_sessions '/sessions/rpx_token', :controller => 'sessions', :action => 'rpx_token'
+    match '/session/rpx_token' => 'sessions#rpx_token', :as => :session_rpx_token
   end
-  
-  map.register '/register', :controller => 'users', :action => 'new'
-  map.signup '/signup', :controller => 'users', :action => 'new'
-  map.login '/login', :controller => 'sessions', :action => 'new'
-  map.signin '/signin', :controller => 'sessions', :action => 'new'
-  map.logout '/logout', :controller => 'sessions', :action => 'destroy', :conditions => { :method => :delete }
-  map.activate_account '/activate_account/:security_token', :controller => 'users', :action => 'activate_account', :security_token => nil
-  map.forgot_password '/forgot_password', :controller => 'users', :action => 'forgot_password'
-  map.request_reset_password '/request_reset_password', :controller => 'users', :action => 'request_reset_password'
-  map.reset_password '/reset_password/:security_token', :controller => 'users', :action => 'reset_password', :security_token => nil
-  map.submit_feedback '/contact', :controller => 'contact', :action => 'create', :conditions => { :method => :post }
-  map.contact '/contact', :controller => 'contact', :action => 'index', :conditions => { :method => :get }
-  map.home '/', :controller => 'home', :action => 'index'
-  map.activity_feed '/index.:format', :controller => 'home', :action => 'index'
-  map.status_changes_feed '/status_changes.:format', :controller => 'home', :action => 'status_changes'
-  map.latest '/latest', :controller => 'home', :action => 'latest'
 
-  map.service_provider_auto_complete 'service_providers/auto_complete', :controller => 'service_providers', :action => 'auto_complete', :conditions => { :method => :get }
+  match '/register' => 'users#new', :as => :register
+  match '/signup' => 'users#new', :as => :signup
+  match '/login' => 'sessions#new', :as => :login
+  match '/signin' => 'sessions#new', :as => :signin
+  match '/logout' => 'sessions#destroy', :as => :logout, :via => :delete
+  match '/activate_account/:security_token' => 'users#activate_account', :as => :activate_account, :security_token => nil
+  match '/forgot_password' => 'users#forgot_password', :as => :forgot_password
+  match '/request_reset_password' => 'users#request_reset_password', :as => :request_reset_password
+  match '/reset_password/:security_token' => 'users#reset_password', :as => :reset_password, :security_token => nil
+  match '/contact' => 'contact#create', :as => :submit_feedback, :via => :post
+  match '/contact' => 'contact#index', :as => :contact, :via => :get
+  match '/' => 'home#index', :as => :home
+  match '/index.:format' => 'home#index', :as => :activity_feed
+  match '/status_changes.:format' => 'home#status_changes', :as => :status_changes_feed
+  match '/latest' => 'home#latest', :as => :latest
+  match 'service_providers/auto_complete' => 'service_providers#auto_complete', :as => :service_provider_auto_complete, :via => :post
 
-  map.resources :rest_services,
-                :member => { :annotations => :get,
-                             :deployments => :get,
-                             :update_base_endpoint => :post,
-                             :resources => :get,
-                             :methods => :get }
-                
-  map.resources :rest_resources, 
-                :member => { :add_new_resources => :post,
-                             :annotations => :get,
-                             :methods => :get }
+  resources :rest_services do
 
-  map.resources :rest_methods,
-                :collection => { :filters => :get,
-                                 :filtered_index => :post },
-                :member => { :inline_add_endpoint_name => :post,
-                             :edit_group_name_popup => :post,
-                             :update_group_name => :post,
-                             :group_name_auto_complete => :post,
-                             :inputs => :get,
-                             :outputs => :get,
-                             :annotations => :get }
-                
-  map.resources :rest_parameters,
-                :member => { :add_new_parameters => :post,
-                             :annotations => :get }
-                
-  map.resources :rest_method_parameters
+    member do
+      get :methods
+      get :annotations
+      get :deployments
+      get :resources
+      post :edit_base_endpoint_by_popup
+    end
 
-  map.resources :rest_representations,
-                :member => { :add_new_representations => :post,
-                             :annotations => :get }
+    collection do
+      post :update_base_endpoint
+      get :edit_base_endpoint_by_popup
+    end
 
-  map.resources :rest_method_representations
+  end
 
-  map.resources :soap_services,
-                :collection => { :load_wsdl => :post,
-                                 :bulk_new => :get,
-                                 :wsdl_locations => :get },
-                :member => { :annotations => :get,
-                             :operations => :get,
-                             :deployments => :get,
-                             :latest_wsdl => :get }
+  resources :rest_resources do
 
-  map.resources :soap_operations,
-                :collection => { :filters => :get,
-                                 :filtered_index => :post },
-                :member => { :annotations => :get,
-                             :inputs => :get,
-                             :outputs => :get }
-                
-  map.resources :soap_inputs,
-                :member => { :annotations => :get }
-                
-  map.resources :soap_outputs,
-                :member => { :annotations => :get }
+    member do
+      get :methods
+      get :annotations
+    end
 
-  map.resources :soaplab_servers,
-                :collection => { :load_wsdl => :post}
+    collection do
+      post :new_popup
+      post :add_new_resources
+    end
 
-  map.resources :services,
-                :collection => {:filters => :get,
-                                :filtered_index => :post,
-                                :bmb => :get},
-                :member => { :categorise => :post,
-                             :summary => :get,
-                             :annotations => :get,
-                             :deployments => :get,
-                             :variants => :get,
-                             :monitoring => :get,
-                             :check_updates => :post,
-                             :archive => :post,
-                             :unarchive => :post,
-                             :favourite => :post,
-                             :unfavourite => :post,
-                             :activity => :get,
-                             :examples => :get }
-                             
-  map.resources :responsibility_requests,
-                :member => { :approve => :put,
-                             :deny    => :put,
-                             :turn_down => :get,
-                             :cancel => :put}
-  
-  map.resources :service_responsibles,
-                :member => {:activate => :put,
-                            :deactivate => :put }
-  
-  map.resources :saved_searches
+  end
 
-  # Root of website
-  map.root :controller => 'home', :action => 'index'
+  resources :rest_methods do
 
-  # The priority is based upon order of creation: first created -> highest priority.
+    collection do
+      post :filtered_index
+      get :filters
+    end
 
-  # Sample of regular route:
-  #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
-  # Keep in mind you can assign values other than :controller and :action
+    member do
+      post :update_group_name
+      post :group_name_auto_complete
+      get :inputs
+      get :outputs
+      get :annotations
+      post :inline_add_endpoint_name
+      post :edit_group_name_popup
+      post :update_resource_path
+      put :remove_endpoint_name
+      post :edit_endpoint_name_popup
+      post :edit_resource_path_popup
+      post :update_endpoint_name
+    end
 
-  # Sample of named route:
-  #   map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
-  # This route can be invoked with purchase_url(:id => product.id)
+  end
 
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   map.resources :products
+  resources :rest_parameters do
 
-  # Sample resource route with options:
-  #   map.resources :products, :member => { :short => :get, :toggle => :post }, :collection => { :sold => :get }
+    member do
+      get :annotations
+      post :inline_add_default_value
+      put :make_optional_or_mandatory
+      post :update_constrained_options
+      put :remove_default_value
+      get :remove_constrained_options
+      post :update_default_value
+      post :edit_constrained_options_popup
+      post :edit_default_value_popup
+      get :localise_globalise_parameter
+    end
 
-  # Sample resource route with sub-resources:
-  #   map.resources :products, :has_many => [ :comments, :sales ], :has_one => :seller
+    collection do
+      get :add_new_parameters
+      post :add_new_parameters
+      post :new_popup
+    end
 
-  # Sample resource route with more complex sub-resources
-  #   map.resources :products do |products|
-  #     products.resources :comments
-  #     products.resources :sales, :collection => { :recent => :get }
-  #   end
+  end
 
-  # Sample resource route within a namespace:
-  #   map.namespace :admin do |admin|
-  #     # Directs /admin/products/* to Admin::ProductsController (app/controllers/admin/products_controller.rb)
-  #     admin.resources :products
-  #   end
+  resources :rest_method_parameters
 
-  # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  # map.root :controller => "welcome"
+  resources :rest_representations do
 
-  # See how all your routes lay out with "rake routes"
+    member do
+      get :annotations
+    end
 
-  # Install the default routes as the lowest priority.
-  map.connect ':controller/:action/:id'
-  #map.connect ':controller/:action/:id.:format'
-  
+    collection do
+      post :add_new_representations
+      post :new_popup
+    end
+
+  end
+
+  resources :rest_method_representations
+
+  resources :soap_services do
+
+    collection do
+      post :load_wsdl
+      get :load_wsdl
+      get :bulk_new
+      get :wsdl_locations
+    end
+
+    member do
+      get :operations
+      get :annotations
+      get :latest_wsdl
+      get :deployments
+    end
+
+  end
+
+  resources :soap_operations do
+
+    collection do
+      post :filtered_index
+      get :filters
+    end
+
+    member do
+      get :inputs
+      get :outputs
+      get :annotations
+    end
+
+  end
+
+  resources :soap_inputs do
+
+    member do
+      get :annotations
+    end
+
+  end
+
+  resources :soap_outputs do
+
+    member do
+      get :annotations
+    end
+
+  end
+
+  resources :soaplab_servers do
+    collection do
+      post :load_wsdl
+    end
+
+
+  end
+
+  resources :services do
+
+    collection do
+      post :filtered_index
+      get :filters
+      get :bmb
+    end
+
+    member do
+      post :unarchive
+      post :unfavourite
+      post :favourite
+      get :variants
+      get :monitoring
+      get :examples
+      get :activity
+      get :summary
+      post :archive
+      get :annotations
+      post :categorise
+      get :deployments
+      post :check_updates
+      get :service_endpoint
+      get :example_scripts
+      get :example_data
+      get :example_workflows
+    end
+
+  end
+
+  resources :responsibility_requests do
+
+    member do
+      put :cancel
+      get :turn_down
+      put :approve
+      put :deny
+    end
+
+  end
+
+  resources :service_responsibles do
+
+    member do
+      put :deactivate
+      put :activate
+    end
+
+  end
+
+  resources :saved_searches
+
+  # Routes for the favourites plugin
+  resources :favourites
+  # Old Rails 2 route for favourites:
+  # Favourites.map_routes(map)
+
+  # Routes for the annotations plugin
+  resources :annotations do
+
+    collection do
+      get :filters
+      post :new_popup, :create_inline, :filtered_index, :bulk_create
+    end
+
+    member do
+      get :download
+      post :edit_popup, :promote_alternative_name
+    end
+  end
+  # Old Rails 2 route for annotations:
+  # Annotations.map_routes(map,
+  #                       { :new_popup => :post,
+  #                         :create_inline => :post,
+  #                         :filters => :get,
+  #                         :filtered_index => :post,
+  #                         :bulk_create => :post },
+  #                       { :edit_popup => :post,
+  #                         :download => :get,
+  #                         :promote_alternative_name => :post })
+
+
+  # Route to old metal "alive" now in app/controllers/alive_controller.rb
+  match '/alive' => 'alive#index'
+
+  # Replaced with root :to => 'home#index' as we use root_url and root_path in the code
+  #match '/' => 'home#index'
+  root :to => 'home#index'
+
+  #match '/:controller(/:action(/:id))'
 end
+

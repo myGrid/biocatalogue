@@ -55,4 +55,3 @@ WSDL
 Helpdesk (don't think BC have this)
 Source (always "BioCatalogue")
 =end
-

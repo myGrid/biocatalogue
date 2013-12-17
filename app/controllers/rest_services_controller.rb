@@ -22,6 +22,7 @@ class RestServicesController < ApplicationController
   before_filter :parse_sort_params, :only => :index
   before_filter :find_rest_services, :only => :index
 
+
   oauth_authorize :create
   
   # GET /rest_services
@@ -76,15 +77,25 @@ class RestServicesController < ApplicationController
     endpoint = params[:endpoint] || ""
     endpoint.chomp!
     endpoint.strip!
-    endpoint = "http://" + endpoint unless endpoint.blank? or endpoint.starts_with?("http://") or endpoint.starts_with?("https://")
-    endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
-    
+    if !endpoint.blank? && endpoint =~ /^http[s]?:\/\/\S+/
+      endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
+      status = BioCatalogue::AvailabilityCheck::URLCheck.new(endpoint).available?
+      if !status
+        message = 'The URL you have provided could not be reached. Please ensure the URL is correct and that your service is running.'
+        endpoint = ''
+      end
+    else
+      endpoint = ''
+      message = 'Please provide a valid endpoint URL'
+    end
+
+
     if endpoint.blank?
-      flash.now[:error] = "Please provide a valid endpoint URL"
+      flash.now[:error] = message
       respond_to do |format|
         format.html { render :action => "new" }
         # TODO: implement format.xml  { render :xml => '', :status => 406 }
-        format.json { error_to_back_or_home("Please provide a valid endpoint URL", false, 406) } 
+        format.json { error_to_back_or_home(message, false, 406) }
       end
     else
       if is_api_request? # Sanitize for API Request
@@ -139,8 +150,9 @@ class RestServicesController < ApplicationController
           
           respond_to do |format|
             if @rest_service.submit_service(endpoint, current_user, params[:annotations].clone)
-              success_msg = 'Service was successfully submitted.'
-              success_msg += "<br/>You may now add endpoints via the Endpoints tab."
+              success_msg = 'Service was successfully submitted.'.html_safe
+              success_msg += "<br/>You may now add endpoints via the Endpoints tab.".html_safe
+
               
               flash[:notice] = success_msg
               format.html { redirect_to(@rest_service.service(true)) }
@@ -155,8 +167,8 @@ class RestServicesController < ApplicationController
                 }.to_json, :status => 201
               }
             else
-              err_text = "An error has occurred with the submission.<br/>" +
-                "Please <a href='/contact'>contact us</a> if you need assistance with this."
+              err_text = "An error has occurred with the submission.<br/>".html_safe +
+                "Please <a href='/contact'>contact us</a> if you need assistance with this.".html_safe
               flash.now[:error] = err_text
               format.html { render :action => "new" }
               # TODO: implement format.xml  { render :xml => '', :status => 500 }
@@ -178,10 +190,12 @@ class RestServicesController < ApplicationController
     endpoint = params[:new_endpoint] || ""
     endpoint.chomp!
     endpoint.strip!
-    endpoint = "http://" + endpoint unless endpoint.blank? or endpoint.starts_with?("http://") or endpoint.starts_with?("https://")
-    
-    endpoint = Addressable::URI.parse(endpoint).normalize.to_s unless endpoint.blank?
-    
+    if !endpoint.blank? && endpoint =~ /^http[s]?:\/\/\S+/
+      endpoint = Addressable::URI.parse(endpoint).normalize.to_s
+    else
+      endpoint = ''
+    end
+
     not_changed = params[:new_endpoint] == @service_deployment.endpoint
     exists = !RestService.check_duplicate(endpoint).nil?
     

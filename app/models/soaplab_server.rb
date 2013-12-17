@@ -6,7 +6,7 @@
 
 require 'open-uri'
 require 'soap/wsdlDriver'
-require 'ftools'
+#require 'ftools'
 
 class SoaplabServer < ActiveRecord::Base
   
@@ -20,7 +20,9 @@ class SoaplabServer < ActiveRecord::Base
   end
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :location ])
+    searchable do
+      text :location
+    end
   end
   
   if ENABLE_TRASHING
@@ -35,8 +37,8 @@ class SoaplabServer < ActiveRecord::Base
   
   validates_presence_of :location
   validates_uniqueness_of :location, :message => " for this server seems to exist in #{SITE_NAME}"
-  validates_url_format_of :location,
-                          :allow_nil => false
+  #validates_url_format_of :location,
+  #                        :allow_nil => false
                   
   
   
@@ -222,7 +224,7 @@ class SoaplabServer < ActiveRecord::Base
   # find a class of objects that are related to the soaplab server
   # e.g. to get all services we would do :  related_services = related_objects_by_type("Service")
   def related_objects_by_type(related_str)
-    rels = Relationship.find(:all, :conditions => ["subject_type = ? and object_type = ? and object_id =? ", 
+    rels = Relationship.all(:conditions => ["subject_type = ? and object_type = ? and object_id =? ",
                                                     related_str, self.class.name, self.id] )
     
     related_str.constantize.find(rels.collect{ |r| r.subject_id})

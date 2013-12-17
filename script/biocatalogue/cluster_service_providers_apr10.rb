@@ -24,13 +24,13 @@ class UpdateServiceProviderRelationships
     
     
     # add the path to the gems in vendor/gems
-    Gem.path << "#{RAILS_ROOT}/vendor/gems" if defined?(RAILS_ROOT)
+    Gem.path << "#{Rails.root}/vendor/gems" if defined?(Rails.root)
     Gem.source_index.refresh!
         
     # load up CSV data file
     @service_providers = {}
     # Specify the path to the CSV data file in here
-    csv_file_path = "#{RAILS_ROOT}/data/service-providers.csv"
+    csv_file_path = "#{Rails.root}/data/service-providers.csv"
     load_service_providers_from_csv_file(csv_file_path)
   end
 
@@ -137,7 +137,7 @@ end
 # ========================================
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/update_service_providers_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/update_service_providers_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "update_service_providers_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

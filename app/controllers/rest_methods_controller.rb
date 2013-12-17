@@ -251,7 +251,7 @@ class RestMethodsController < ApplicationController
     destroy_unused_objects(representation_ids, false) # is_parameter = false
     
     respond_to do |format|
-      success_msg = "Endpoint <b>" + deleted_endpoint + "</b> has been deleted".squeeze(' ')
+      success_msg = "Endpoint <b>".html_safe + deleted_endpoint + "</b> has been deleted".squeeze(' ').html_safe
       flash[:notice] = success_msg
       
       redirect_url = (service_url(rest_service.service) + '#endpoints') unless request.env["HTTP_REFERER"].include?('/rest_methods/')
@@ -327,7 +327,9 @@ private # ========================================
   end
 
   def find_rest_method
-    @rest_method = RestMethod.find(params[:id], :include => :rest_resource)
+    #Old Rails 2 style
+    #@rest_method = RestMethod.find(params[:id], :include => :rest_resource)
+    @rest_method = RestMethod.includes(:rest_resource).find(params[:id])
   end
   
   def find_rest_methods
@@ -375,7 +377,7 @@ private # ========================================
         :joins => joins
       }
       
-      @rest_methods = ActiveRecord::Base.connection.select_all(RestMethod.send(:construct_finder_sql, finder_options))
+      @rest_methods = ActiveRecord::Base.connection.select_all(RestMethod.send(:construct_finder_arel, finder_options))
     else
       @rest_methods = RestMethod.paginate(:page => @page,
                                           :per_page => @per_page,
@@ -388,10 +390,14 @@ private # ========================================
   def destroy_unused_objects(id_list, is_parameter=true)
     id_list.sort.each do |obj_id|
       if is_parameter
-        not_used = RestMethodParameter.find(:all, :conditions => {:rest_parameter_id => obj_id}).empty?
+        # Old Rails 2 style
+        #not_used = RestMethodParameter.all(:conditions => {:rest_parameter_id => obj_id}).empty?
+        not_used = RestMethodParameter.where(:rest_parameter_id => obj_id).empty?
         RestParameter.destroy(obj_id) if not_used
       else
-        not_used = RestMethodRepresentation.find(:all, :conditions => {:rest_representation_id => obj_id}).empty?
+        # Old Rails 2 style
+        #not_used = RestMethodRepresentation.all(:conditions => {:rest_representation_id => obj_id}).empty?
+        not_used = RestMethodRepresentation.where(:rest_representation_id => obj_id).empty?
         RestRepresentation.destroy(obj_id) if not_used      
       end
     end # id_list.each

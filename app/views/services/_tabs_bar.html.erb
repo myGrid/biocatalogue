@@ -1,0 +1,10 @@
+
+
+<%= tabs_tag(:builder => MenuTabBuilder, :namespace => :service) do |tab| %>
+    <%= tab.overview      'Overview', service_path(@service) %>
+    <% tab_name = @latest_version_instance.class.to_s %>
+    <%= tab.service_endpoint tab_name.titleize, service_endpoint_service_path(@service) %>
+    <%= tab.examples 'Examples', examples_service_path(@service) %>
+    <%= tab.monitoring 'Monitoring', monitoring_service_path(@service) %>
+    <%= tab.history 'History', activity_service_path(@service) %>
+<% end %>

@@ -43,10 +43,14 @@ class User < ActiveRecord::Base
   end
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :display_name, :affiliation, :country ],
-                 :if => proc{|u| u.activated?})
+    searchable :if => proc{|u| u.activated?} do
+        text :display_name, :affiliation, :country
+    end
   end
-  
+
+  # For users with external accounts (e.g they registered through RPX)
+  # email and password confirmation isn't performed. The password and email
+  # will be saved nonetheless.
   validates_presence_of       :password, :if => :password_required?
   validates_presence_of       :password_confirmation, :if => :password_required?
   validates_confirmation_of   :password, :if => :password_required?
@@ -54,7 +58,8 @@ class User < ActiveRecord::Base
   validates_presence_of       :email, :if => :email_required?
   validates_confirmation_of   :email, :if => :email_required?
   validates_uniqueness_of     :email, :case_sensitive => false, :if => :email_required?
-  validates_email_veracity_of :email, :public_email
+  validates_email_format_of   :email
+  validates_email_format_of   :public_email, { :allow_blank => true, :allow_nil => true }
   
   # TODO: this, with allow/ignore nil - validates_uniqueness_of :identifier, :case_sensitive => false
 
@@ -83,7 +88,9 @@ class User < ActiveRecord::Base
     return nil if login.blank? or password.blank?
 
     # Check for a User with email matching 'login'
-    u = find(:first, :conditions => ["email = ?", login])
+    # Old Rails 2 style
+    #u = find(:first, :conditions => ["email = ?", login])
+    u = where("email = ?", login).first
 
     u && u.activated? && u.authenticated?(password) ? u : nil
   end
@@ -217,7 +224,14 @@ class User < ActiveRecord::Base
       def record_timestamps; false; end
     end
     self.last_active = time
-    self.send(:update_without_callbacks)
+
+    # self.send(:update_without_callbacks) # Old Rails 2 style
+
+    # Rails 3 way to update a single attribute, without calling save.
+    # Validation and callbacks is skipped.
+    # updated_at/updated_on column is not updated if that column is available.
+    self.update_column(:last_active, time)
+
     class << self
       remove_method :record_timestamps
     end
@@ -241,9 +255,10 @@ class User < ActiveRecord::Base
   
   # TODO: see #other_services_responsible; need to clarify how these two methods are related and possibly combine/separate out the logic somewhere else.
   def active_services_responsible_for
-    Service.find(:all,
-                 :joins => [ :service_responsibles ],
-                 :conditions => [ "service_responsibles.user_id = ? AND service_responsibles.status = 'active'", self.id ])
+    # Old Rails 2 style
+    #Service.all(                 :joins => [ :service_responsibles ],
+    #                             :conditions => [ "service_responsibles.user_id = ? AND service_responsibles.status = 'active'", self.id ])
+    Service.joins(:service_responsibles).where(["service_responsibles.user_id = ? AND service_responsibles.status = 'active'", self.id ])
   end
   
   def is_admin?

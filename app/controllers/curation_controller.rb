@@ -5,7 +5,7 @@
 # See license.txt for details.
 
 class CurationController < ApplicationController
-  
+
   before_filter :disable_action_for_api
 
   before_filter :login_or_oauth_required
@@ -45,7 +45,107 @@ class CurationController < ApplicationController
       format.html # copy_annotations.html.erb
     end
   end
-  
+
+  def download_latest_csv
+    if !latest_csv_export.nil?
+      send_file latest_csv_export
+    else
+      flash[:notice] = "There are currently no CSV exports to download. Please run 'Export Services as CSV' to create a new one."
+      redirect_to :back
+    end
+  end
+
+  def spreadsheet_export
+    require 'zip'
+    time = Time.now.strftime("%Y%m%d%H%M")
+    zip_file = "data/csv-exports/csv_export-#{time}.zip"
+    tables = %w{services rest_methods soap_operations}
+    files = []
+    tables.each{|table_name| files << "tmp/#{table_name}.csv"}
+
+    files.each do |file|
+      File.delete(file) if File.exist?(file)
+    end
+
+    File.open('tmp/services.csv', 'w+'){|f|
+      f.write(csv_of_services)}
+    File.open('tmp/rest_methods.csv', 'w+'){|f|
+      f.write(csv_of_rest_methods)}
+    File.open('tmp/soap_operations.csv', 'w+'){|f|
+      f.write(csv_of_soap_operations)}
+    zip_files(zip_file, tables)
+    #system("zip -j data/csv-exports/csv_export-#{time}.zip tmp/services.csv tmp/rest_methods.csv tmp/soap_operations.csv")
+    if File.exist?(zip_file)
+      send_file zip_file
+    else
+      download_latest_csv
+    end
+  end
+
+
+  def latest_csv_export
+    begin
+      directory = "data/csv-exports"
+      files = Dir.entries(directory)
+      files = files.select{|file| file.match("csv_export-") }
+      latest_file = files.sort.last
+      if !latest_file.nil? && latest_file != ""
+        return "#{directory}/#{latest_file}"
+      end
+    rescue Exception
+      return nil
+    end
+  end
+
+  def zip_files zip_file, tables
+
+    if !File.exists?(zip_file)
+      Zip::File.open(zip_file, Zip::File::CREATE) do |zf|
+        tables.each do |table|
+          file_path = "tmp/#{table}.csv"
+          zf.add("#{table}.csv", file_path)
+        end
+      end
+    else
+      flash.now[:alert] = "Cannot export more than once a minute. Here is the last CSV export."
+    end
+  end
+
+  def csv_of_services
+    services = Service.first(300)
+    columns = ['Service ID','name','provider','location','submitter name',
+               'base url','documentation url','description','licence','costs',
+               'usage conditions','contact','publications','citations','annotations',
+               'categories']
+    return CSV.generate do |csv|
+      csv << columns
+      services.each {|service| csv << service.as_csv unless service.nil?}
+    end
+  end
+
+  def csv_of_soap_operations
+    soap_operations = SoapOperation.first(300)
+    columns =  ['Service ID','operation name','operation description','submitter',
+                'parameter order','annotations', 'port name', 'port protocol', 'port location', 'port style']
+    return CSV.generate do |csv|
+      csv << columns
+      soap_operations.each { |soap_operation| csv << soap_operation.as_csv unless soap_operation.nil?}
+    end
+  end
+
+  def csv_of_rest_methods
+    rest_methods = RestMethod.first(300)
+    columns =  ['Service ID','endpoint name','method type','template','description',
+                'submitter','documentation url','example endpoints','annotations']
+    return CSV.generate do |csv|
+      csv << columns
+      rest_methods.each{ |rest_method| csv << rest_method.as_csv unless rest_method.nil?}
+    end
+  end
+
+
+
+
   def copy_annotations_preview
     type = params[:type]
     from = nil

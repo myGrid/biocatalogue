@@ -25,9 +25,9 @@ class RestRepresentation < ActiveRecord::Base
   validates_existence_of :submitter # User must exist in the db beforehand.
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :content_type, :description, :submitter_name,
-                              { :associated_service_id => :r_id },
-                              { :associated_rest_method_id => :r_id } ] )
+    searchable do
+      text :content_type, :description, :submitter_name
+    end
   end
 
   if USE_EVENT_LOG

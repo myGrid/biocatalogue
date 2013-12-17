@@ -12,16 +12,20 @@
 
 <h1>New SOAP Service</h1>
 
-<%= error_messages_for :soap_service %>
+<% if !@soap_service.nil? && !@soap_service.errors.nil? then %>
+    <% @soap_service.errors.full_messages.each do |err| %>
+        <%= err %>
+    <% end %>
+<% end %>
 
 <p class="step_text">1. Specify the URL to the WSDL of the service, then click preview:</p>
 
-<% form_remote_tag(:url => load_wsdl_soap_services_url, 
+<%= form_tag_with_callbacks(load_wsdl_soap_services_url, {
 								   :update => { :success => 'soap_service_after_wsdl_load' }, 
 							 		 :success => "new Effect.Highlight('soap_service_form', { duration: 1.5 });",
 									 :failure => "alert('Sorry, an error has occurred.');",
 							     :loading => "Element.show('spinner')",
-                   :complete => "Element.hide('spinner')") do %>
+                   :complete => "Element.hide('spinner')"}) do %>
 	
 	<div>
 		<p style=" margin-top: 0;">

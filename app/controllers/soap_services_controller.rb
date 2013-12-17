@@ -145,6 +145,7 @@ class SoapServicesController < ApplicationController
     params[:annotations] = { }
     
     wsdl_location = params[:wsdl_url] || ''
+    wsdl_location.strip! unless wsdl_location.blank?
     wsdl_location = Addressable::URI.parse(wsdl_location).normalize.to_s unless wsdl_location.blank?
     
     if wsdl_location.blank?
@@ -155,7 +156,7 @@ class SoapServicesController < ApplicationController
       
       err_text = "Failed to load the WSDL URL provided.<br/>" +
         "Please check that it points to a valid WSDL file.<br/>" +
-        "If this problem persists, please <a href='/contact'>contact us</a>"
+        "If this problem persists, please <a href='/contact'>contact us</a>".html_safe
       
       begin
         @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
@@ -173,7 +174,7 @@ class SoapServicesController < ApplicationController
               @wsdl_geo_location = BioCatalogue::Util.url_location_lookup(@wsdl_info["endpoint"])
             else
               @error_message = err_text
-              @error_message_details = err_msgs.to_sentence
+              @error_message_details = err_msgs.to_sentence.html_safe
             end
           else
             # Submit a job to run the service updater
@@ -181,16 +182,16 @@ class SoapServicesController < ApplicationController
           end
         else
           @error_message = err_text
-          @error_message_details = err_msgs.to_sentence
+          @error_message_details = err_msgs.to_sentence.html_safe
         end
       rescue Exception => ex
         @error_message = err_text
         @error_message_details = ex.message
-        BioCatalogue::Util.yell("Failed to load WSDL from URL - #{wsdl_location}.\nException: #{ex.message}.\nStack trace: #{ex.backtrace.join('\n')}")
+        BioCatalogue::Util.yell("Failed to load WSDL from URL - #{wsdl_location}.\nException: #{ex.message}.\nStack trace: #{ex.backtrace.join('\n')}".html_safe)
       end
     end
     respond_to do |format|
-      format.html { render :partial => "after_wsdl_load" }
+      format.html { render :action => "new" }
       format.js { render :partial => "after_wsdl_load" }
       format.xml  { render :xml => '', :status => 406 }
     end
@@ -221,8 +222,8 @@ class SoapServicesController < ApplicationController
       
         urls.each do |url|
           begin
-            if SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
-              @soap_service = SoapService.find(:first, :conditions => ["wsdl_location = ?", url])
+            if SoapService.first(:conditions => ["wsdl_location = ?", url])
+              @soap_service = SoapService.first(:conditions => ["wsdl_location = ?", url])
               @existing_services << @soap_service.service(true) if @soap_service != nil
             else
               @soap_service = SoapService.new({:wsdl_location => url})        
@@ -231,7 +232,7 @@ class SoapServicesController < ApplicationController
                 pc_success = @soap_service.post_create(data['endpoint'], current_user)
                 if pc_success 
                   @new_services << @soap_service.service(true)
-                  flash[:notice] = 'SoapService was successfully created.'
+                  flash[:notice] = 'Soap service was successfully created.'
                 else
                   @soap_service.errors.add_to_base("Service with url, #{url}, was not saved. post_create failed!")
                   @error_urls << url
@@ -263,7 +264,7 @@ class SoapServicesController < ApplicationController
   
   def operations
     respond_to do |format|
-      format.html { disable_action }
+      format.html { render 'services/show' }
       format.xml  # operations.xml.builder
       format.json { render :json => @soap_service.to_custom_json("operations") }
     end
@@ -278,7 +279,7 @@ class SoapServicesController < ApplicationController
   end
   
   def wsdl_locations
-    @wsdl_locations = SoapService.find(:all, :select => "wsdl_location").map { |s| s.wsdl_location }.uniq.compact
+    @wsdl_locations = SoapService.all(:select => "wsdl_location").map { |s| s.wsdl_location }.uniq.compact
     respond_to do |format|
       format.html { disable_action }
       format.xml  # wsdl_locations.xml.builder

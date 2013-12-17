@@ -49,17 +49,20 @@ class RestServicesControllerTest < ActionController::TestCase
   end
   
   def test_unauthorised_update_base_endpoint
-    do_login_for_functional_test
-    
-    base = BASE_ENDPOINT + "/new_version"
-    
-    post :create, :endpoint => base, 
-                  :rest_service => {:name => "test 1"},
-                  :annotations => {}
+    #do_login_for_functional_test
+    #
+    #base = BASE_ENDPOINT + "/new_version"
+    #
+    #post :create, :endpoint => base,
+    #              :rest_service => {:name => "test 1"},
+    #              :annotations => {}
+
+    service_deployment = service_deployments(:cinemaquery_deployment1)
+    base = service_deployment.endpoint
     
     do_login_for_functional_test # login as a different user
     
-    post :update_base_endpoint, :service_deployment_id => ServiceDeployment.find_by_endpoint(base).id,
+    post :update_base_endpoint, :service_deployment_id => service_deployment.id,
                                 :new_endpoint => base + '/changed'
     
     assert_nil ServiceDeployment.find_by_endpoint(base + '/changed')

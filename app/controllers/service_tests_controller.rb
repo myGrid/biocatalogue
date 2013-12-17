@@ -60,7 +60,7 @@ class ServiceTestsController < ApplicationController
   def update_monitoring_endpoint
     error = nil
     
-    error = "This service test cannot be updated because it is not a custom endpoint monitor." unless @service_test.is_custom_endpoint_monitor? 
+    error = "This service test cannot be updated because it is not a custom endpoint monitor.".html_safe unless @service_test.is_custom_endpoint_monitor?
     monitoring_endpoint_annotation = @service_test.test.parent
     
     # sanitize user input
@@ -73,7 +73,7 @@ class ServiceTestsController < ApplicationController
       
       if error.nil?
         existing_endpoint = monitoring_endpoint_annotation.value_content
-        error = "The service test could not be updated as the new endpoint was the same as the existing one." if existing_endpoint.downcase == new_endpoint.downcase
+        error = "The service test could not be updated as the new endpoint was the same as the existing one.".html_safe if existing_endpoint.downcase == new_endpoint.downcase
       end 
     end
     
@@ -89,7 +89,7 @@ class ServiceTestsController < ApplicationController
           @service_test.save!
         end
       rescue Exception => ex
-        error = "Failed to update monitoring endpoint."
+        error = "Failed to update monitoring endpoint.".html_safe
         
         logger.error("Failed to update monitoring endpoint. Exception:")
         logger.error(ex.message)
@@ -99,7 +99,7 @@ class ServiceTestsController < ApplicationController
     
     respond_to do |format|      
       if error.nil?
-        flash[:notice] = "The monitoring endpoint for service '#{@service.display_name}' has been updated"
+        flash[:notice] = "The monitoring endpoint for service '#{BioCatalogue::Util.display_name(@service)}' has been updated".html_safe
       else
         flash[:error] = error
       end
@@ -112,7 +112,7 @@ class ServiceTestsController < ApplicationController
   def create_monitoring_endpoint
     error = nil
     
-    error = "The service already contains a custom endpoint to monitor." unless @service.has_capacity_for_new_monitoring_endpoint?
+    error = "The service already contains a custom endpoint to monitor.".html_safe unless @service.has_capacity_for_new_monitoring_endpoint?
     
     # sanitize user input
     if error.nil?
@@ -141,7 +141,7 @@ class ServiceTestsController < ApplicationController
           @service_test.save!
         end
       rescue Exception => ex
-        error = "Failed to create monitoring endpoint"
+        error = "Failed to create monitoring endpoint".html_safe
         
         logger.error("Failed to create monitoring endpoint: #{monitoring_endpoint}. Exception:")
         logger.error(ex.message)
@@ -152,7 +152,7 @@ class ServiceTestsController < ApplicationController
     respond_to do |format|      
       if error.nil?
         redirect_url = service_test_url(@service_test)
-        flash[:notice] = "A new monitoring endpoint has been created for service '#{@service.display_name}'"
+        flash[:notice] = "A new monitoring endpoint has been created for service '#{BioCatalogue::Util.display_name(@service)}'".html_safe
       else
         redirect_url = service_url(@service, :anchor => "monitoring")
         flash[:error] = error
@@ -198,13 +198,13 @@ class ServiceTestsController < ApplicationController
 
     respond_to do |format|
       if @service_test.deactivate!
-        flash[:notice] = "<div class=\"flash_header\">Service test has been deactivated</div><div class=\"flash_body\">.</div>"
+        flash[:notice] = "<div class=\"flash_header\">Service test has been deactivated</div><div class=\"flash_body\">.</div>".html_safe
         format.html{redirect_to(service_test_url(@service_test)) }
         Delayed::Job.enqueue(BioCatalogue::Jobs::ServiceTestDisableNotification.new(current_user, @service_test, 
                                                                                       MONITORING_STATUS_CHANGE_RECIPIENTS, base_host))
         format.xml { disable_action }
       else
-        flash[:notice] = "<div class=\"flash_header\">Could not deactivate service test</div><div class=\"flash_body\">.</div>"
+        flash[:notice] = "<div class=\"flash_header\">Could not deactivate service test</div><div class=\"flash_body\">.</div>".html_safe
         format.html{redirect_to(service_test_url(@service_test)) }
         format.xml { disable_action }
       end
@@ -216,11 +216,11 @@ class ServiceTestsController < ApplicationController
     respond_to do |format|
       if @service_test
         if @service_test.activate!
-          flash[:notice] = "<div class=\"flash_header\">Service test has been activated</div><div class=\"flash_body\">.</div>"
+          flash[:notice] = "<div class=\"flash_header\">Service test has been activated</div><div class=\"flash_body\">.</div>".html_safe
           format.html{redirect_to(service_test_url(@service_test)) }
           format.xml { disable_action }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not activate service test</div><div class=\"flash_body\">.</div>"
+          flash[:error] = "<div class=\"flash_header\">Could not activate service test</div><div class=\"flash_body\">.</div>".html_safe
           format.html{redirect_to(service_test_url(@service_test)) }
           format.xml { disable_action }
         end
@@ -233,11 +233,11 @@ class ServiceTestsController < ApplicationController
   def destroy
     respond_to do |format|
       if @service_test.destroy
-        flash[:notice] = "ServiceTest with id '#{@service_test.id}' has been deleted"
+        flash[:notice] = "ServiceTest with id '#{@service_test.id}' has been deleted".html_safe
         format.html { redirect_to service_url(@service_test.service) }
         format.xml  { head :ok }
       else
-        flash[:error] = "Failed to delete ServiceTest with id '#{@service_test.id}'"
+        flash[:error] = "Failed to delete ServiceTest with id '#{@service_test.id}'".html_safe
         format.html { redirect_to service_url(@service_test.service) }
       end
     end
@@ -252,7 +252,7 @@ class ServiceTestsController < ApplicationController
   
   def authorise
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_test.service)
-      flash[:error] = "You are not allowed to perform this action!"
+      flash[:error] = "You are not allowed to perform this action!".html_safe
       redirect_to @service_test.service
     end
   end
@@ -261,21 +261,21 @@ class ServiceTestsController < ApplicationController
     return if is_api_request?
     
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service_test.service) || @service_test.enabled?
-      flash[:error] = "Service test is disabled!"
+      flash[:error] = "Service test is disabled!".html_safe
       redirect_to @service_test.service
     end
   end
   
   def authorise_for_create
     unless BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service)
-      flash[:error] = "You are not allowed to perform this action!"
+      flash[:error] = "You are not allowed to perform this action!".html_safe
       redirect_to @service
     end
   end
 
   def authorise_for_destroy
     if @service_test.test.is_a?(UrlMonitor)
-      flash[:error] = "You are not allowed to perform this action!"
+      flash[:error] = "You are not allowed to perform this action!".html_safe
       redirect_to @service_test.service
     end
   end
@@ -330,8 +330,8 @@ class ServiceTestsController < ApplicationController
                                               :conditions => conditions,
                                               :order => order)
                               
-    if request.xml_http_request?
-      render :partial => "service_tests/listing", :locals => {:items => @service_tests }, :layout => false
+    if request.xml_http_request? &&  ENABLE_TEST_SCRIPTS == true
+      render "service_tests/_listing", :locals => {:items => @service_tests }, :layout => false
     end
     
   end
@@ -348,7 +348,7 @@ class ServiceTestsController < ApplicationController
       # validate the provided endpoint
       URI.parse(monitoring_endpoint)
     rescue Exception => ex
-      error = "The URL provided was invalid and could not be used"
+      error = "The URL provided was invalid and could not be used".html_safe
       
       logger.error("Failed to validate monitoring endpoint: #{monitoring_endpoint}. Exception:")
       logger.error(ex.message)
@@ -360,9 +360,9 @@ class ServiceTestsController < ApplicationController
       base_url = service.service_deployments.first.endpoint
       
       if base_url.downcase == monitoring_endpoint.downcase
-        error = "The endpoint to monitor cannot be the same as the base URL."
+        error = "The endpoint to monitor cannot be the same as the base URL.".html_safe
       elsif !monitoring_endpoint.downcase.starts_with?(base_url.downcase)
-        error = "The endpoint to monitor should start with the base URL of the service."
+        error = "The endpoint to monitor should start with the base URL of the service.".html_safe
       end
     end
     

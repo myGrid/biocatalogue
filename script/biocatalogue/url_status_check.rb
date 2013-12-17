@@ -141,7 +141,7 @@ attr_accessor :options
     end
     
 
-    UrlMonitor.find(:all).each do |monitor|
+    UrlMonitor.all.each do |monitor|
       # get all the attributes of the services to be monitors
       # and run the checks agains them
       result = {}

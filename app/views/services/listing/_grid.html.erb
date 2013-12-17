@@ -7,78 +7,86 @@
 # See license.txt for details
 
 %>
+<table class="listings_table">
+<tbody>
+<% services.each_slice(3) do |grid_row| %>
+  <tr>
+  <% grid_row.each do |service| %>
+    <td>
+    <% if service.archived? %>
 
-<% tableize services, 
-  :header => nil,
-  :name => "listings",
-  :generate_css => 'false' do |service| %>
-  
-  <% if service.archived? %>
-  
-    <div class="archived grid_archived">
-      <span style="float: right; text-align: right; margin-top: 0.5em; margin-right: 0.5em; background: transparent;">
-        <%= service_type_badges(service.service_types) -%>
-      </span>
-      
-      <p class="name">
-        <%= link_to(display_name(service).ellipsisize(20, 12), service_path(service), 
-                    :title => tooltip_title_attrib(display_name(service), 200)) -%>
-      </p>
+      <div class="archived grid_archived">
+        <span style="float: right; text-align: right; margin-top: 0.5em; margin-right: 0.5em; background: transparent;">
+          <%= service_type_badges(service.service_types).html_safe -%>
+        </span>
 
-      <p class="archived_status_text" style="margin-top: 2em;">
-        This service has been archived because it may not be active anymore (or is close to being non active).
-      </p>
-    </div>
-  
-  <% else %>
-  
-    <% benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
-      <span style="float: right; margin-top: -1.2em; margin-right: -1.6em;">
-        <%= service_latest_status_symbol(service, true) -%>
-      </span>
-    <% end %>
-    
-    <span style="float: right; text-align: right; margin-top: 0.5em; margin-right: 0.5em; background: transparent;">
-      <%= service_type_badges(service.service_types) -%>
-    </span>
-    
-    <p class="name">
-      <%= link_to(display_name(service).ellipsisize(20, 12), 
-            service_path(service), 
-            :title => tooltip_title_attrib(display_name(service), 200)) -%>
-    </p>
-    
-    <% cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do -%>
-      <div style="margin-top: 0.8em;">
-        <%= render :partial => "annotations/categories", 
-                   :locals => { :service => service,
-                                :show_add_option => false,
-                                :show_modify_options => false,
-                                :small => true,
-                                :show_title => false,
-                                :show_none => false } -%>
+        <p class="name">
+          <%= link_to(display_name(service).ellipsisize(20, 12), service_path(service),
+                      :title => tooltip_title_attrib(display_name(service), 200)) -%>
+        </p>
+
+        <p class="archived_status_text" style="margin-top: 2em;">
+          This service has been archived because it may not be active anymore (or is close to being non active).
+        </p>
       </div>
-    <% end %>
-    
-    <div class="box_annotations detail">
-      <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
-        <% unless (desc = service.preferred_description).blank? %>
-          <div class="text">
-            <%= annotation_prepare_description(desc, true, 120, false) -%>
-          </div>
-        <% else %>
-          <div class="text none_text">no description yet</div>
-        <% end %>
-      <% end %>
-    </div>
-    
-    <p class="detail">
-      <b>Provider:</b>
-      <% service.providers.each do |provider| %>
-        <%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
-      <% end %>
-    </p>
 
+    <% else %>
+
+      <% benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
+        <span style="float: right; margin-top: -1.2em; margin-right: -1.6em;">
+          <%= service_latest_status_symbol(service, true) -%>
+        </span>
+      <% end %>
+
+      <span style="float: right; text-align: right; margin-top: 0.5em; margin-right: 0.5em; background: transparent;">
+        <%= service_type_badges(service.service_types).html_safe -%>
+      </span>
+
+      <p class="name">
+        <%= link_to(display_name(service).ellipsisize(20, 12),
+              service_path(service),
+              :title => tooltip_title_attrib(display_name(service), 200)) -%>
+      </p>
+
+      <% #cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do
+         cache(['services', 'listing', "categories", service.id.to_s].join('/')) do -%>
+        <div style="margin-top: 0.8em;">
+          <%= render :partial => "annotations/categories",
+                     :locals => { :service => service,
+                                  :show_add_option => false,
+                                  :show_modify_options => false,
+                                  :small => true,
+                                  :show_title => false,
+                                  :show_none => false } -%>
+        </div>
+      <% end %>
+
+      <div class="box_annotations detail">
+        <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+          <% unless (desc = service.preferred_description).blank? %>
+            <div class="text" style="word-wrap: break-word; max-width: 250px">
+              <%= annotation_prepare_description(desc, true, 120, false) -%>
+            </div>
+          <% else %>
+            <div class="text none_text">no description yet</div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <p class="detail">
+        <b>Provider:</b>
+        <% service.providers.each do |provider| %>
+          <%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
+        <% end %>
+      </p>
+
+    <% end %>
+    </td>
   <% end %>
-    
+  <% (3 - grid_row.size).times do %>
+    <td class="blank"> </td>
+  <% end %>
+  </tr>
 <% end %>
+</tbody>
+</table>

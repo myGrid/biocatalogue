@@ -1,0 +1,34 @@
+### Sample localization file for English. Add more files in this directory for other locales.
+### See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+en:
+#  will_paginate:
+#    models:
+#      user:
+#        page_entries_info:
+#          multi_page: "Displaying users %{from} - %{to} of %{count} in total"
+#          multi_page_html: "Displaying users <b>%{from} - %{to}</b> of <b>%{count}</b> in total"
+#          single_page:
+#            one: "Displaying 1 user"
+#            other: "Displaying all %{count} users"
+#            zero: "No users found"
+#          single_page_html:
+#            one: "Displaying <b>1</b> user"
+#            other: "Displaying <b>all %{count}</b> users"
+#            zero: "No users found"
+  will_paginate:
+    models:
+      user:
+        zero:  "users"
+        one:   "user"
+        few:   "users"
+        other: "users"
+      service:
+        zero:  "services"
+        one:   "service"
+        few:   "services"
+        other: "services"
+      service_provider:
+        zero:  "service providers"
+        one:   "service provider"
+        few:   "service providers"
+        other: "service providers"

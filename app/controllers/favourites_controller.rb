@@ -8,7 +8,7 @@
 # This extends the Favourites controller defined in the Favourites plugin.
 #=====
 
-require_dependency RAILS_ROOT + '/vendor/plugins/favourites/lib/app/controllers/favourites_controller'
+require_dependency Rails.root.to_s + '/lib/favourites/lib/app/controllers/favourites_controller'
 
 class FavouritesController < ApplicationController
   

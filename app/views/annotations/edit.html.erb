@@ -10,6 +10,10 @@
 
 <h1>Editing annotation</h1>
 
-<% form_for(@annotation) do |f| %>
-  <%= f.error_messages %>
+<%= form_for(@annotation) do |f| %>
+    <% if !@annotation.nil? && !@annotation.errors.nil? then %>
+        <% @annotation.errors.full_messages.each do |err|  %>
+            <%= err %>
+        <% end %>
+    <% end %>
 <% end %>

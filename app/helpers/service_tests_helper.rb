@@ -12,14 +12,14 @@ module ServiceTestsHelper
     return result
   end
   
-  def sort_link_helper(text, param, order)
+  def service_tests_sort_link_helper(text, param, order)
     key   = param
     order = order
     order = reverse_order(params[:sort_order]) if params[:sort_by] == param
     params.delete(:page) # reset page
     options = {
       :url => {:action => 'index', :params => params.merge({:sort_by => key , :sort_order => order})}, #:page =>param[:page]
-      :update => 'service_tests',
+      :update => {:success => 'service_tests'},
       :before => "Element.show('spinner')",
       :success => "Element.hide('spinner')"
       }
@@ -27,7 +27,7 @@ module ServiceTestsHelper
       :title => "Sort by this field",
       :href => url_for(:action => 'index', :params => params.merge({:sort_by => key, :sort_order => order })) #:page => params[:page]
       }
-    link_to_remote(text, options, html_options)
+    link_to_with_callbacks(text, options, html_options.merge(:remote => true))
   end
   
   def reverse_order(order)
@@ -124,7 +124,7 @@ module ServiceTestsHelper
     id_value = "edit_for_#{service_test.class.name}_#{service_test.id}_redbox"
     
     redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options).merge(:remote => true))
     
     return link_content
   end

@@ -10,9 +10,13 @@
 
 <h1>New Announcement</h1>
 
-<%= error_messages_for :announcement %>
+<% if !@announcement.nil? && !@announcement.errors.nil? then %>
+    <% @announcement.errors.full_messages.each do |err| %>
+        <%= err unless err.nil? %>
+    <% end %>
+<% end %>
 
-<% form_for :announcement, :url => announcements_path do |form| -%>
+<%= form_for :announcement, :url => announcements_path do |form| -%>
   <%= render :partial => 'form', :object => form %>
   <%= submit_tag "Create", :disable_with => "Creating..." %>
 <% end -%>

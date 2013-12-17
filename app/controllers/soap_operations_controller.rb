@@ -144,7 +144,7 @@ protected
         :joins => joins
       }
       
-      @soap_operations = ActiveRecord::Base.connection.select_all(SoapOperation.send(:construct_finder_sql, finder_options))
+      @soap_operations = ActiveRecord::Base.connection.select_all(SoapOperation.send(:construct_finder_arel, finder_options))
     else
       @soap_operations = SoapOperation.paginate(:page => @page,
                                                 :per_page => @per_page,
@@ -155,7 +155,9 @@ protected
   end
   
   def find_soap_operation
-    @soap_operation = SoapOperation.find(params[:id], :include => [ :soap_inputs, :soap_outputs ])
+    # Old Rails 2 style
+    #@soap_operation = SoapOperation.find(params[:id], :include => [ :soap_inputs, :soap_outputs ])
+    @soap_operation = SoapOperation.includes(:soap_inputs, :soap_outputs).find(params[:id])
   end
   
 private
@@ -169,13 +171,17 @@ private
     # Now add any other filters, if specified by "also=..."
     
     if @api_params[:also].include?('inputs')
-      @soap_operation.soap_inputs.find(:all, :select => "id").each do |input|
-        new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asin, input.id)
+      # Old Rails 2 style
+      #@soap_operation.soap_inputs.all(:select => "id").each do |input|
+      @soap_operation.soap_inputs.select("id").each do |input|
+          new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asin, input.id)
       end
     end
     
     if @api_params[:also].include?('outputs')
-      @soap_operation.soap_outputs.find(:all, :select => "id").each do |output|
+      # Old Rails 2 style
+      #@soap_operation.soap_outputs.all(:select => "id").each do |output|
+      @soap_operation.soap_outputs.select("id").each do |output|
         new_params = BioCatalogue::Filtering.add_filter_to_params(new_params, :asout, output.id)
       end
     end

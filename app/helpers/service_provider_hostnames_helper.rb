@@ -45,7 +45,7 @@ module ServiceProviderHostnamesHelper
     id_value = "edit_for_#{hostname.class.name}_#{hostname.id}_redbox"
     
     redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options).merge(:remote => true))
     
     return link_content
   end

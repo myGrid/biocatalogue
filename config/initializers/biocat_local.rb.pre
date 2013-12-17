@@ -18,6 +18,9 @@ SHOW_DEBUG = false
 # Switch event / activity logging on or off.
 USE_EVENT_LOG = true
 
+# Enable test scripts
+ENABLE_TEST_SCRIPTS = false
+
 # Set a proxy for open-uri calls
 #If :proxy option is specified, the value should be String, 
 #URI, boolean or nil. When String or URI is given, 
@@ -44,8 +47,19 @@ ENABLE_STATUS_DISPLAY = true
 # Configure local settings for the SuperExceptionNotifier plugin
 # --------------------------------------------------------------
 
+#New format for Rails 3. The independently assigned values below are commented out. They are the old rails 2 versions.
+BioCatalogue::Application.config.middleware.use ExceptionNotifier,
+
+                                                :email => {
+                                                    :email_prefix => "[APP-#{Rails.env.capitalize} ERROR]",
+                                                    :sender_address => %{"BioCatalogue Error" <biocatalogue-errors@company.com>},
+                                                    :exception_recipients => %w{exceptions@example.com}
+                                                }
+
+
+
 # defaults to exception.notifier@default.com
-ExceptionNotifier.sender_address = %("BioCatalogue Errors" <biocatalogue-errors@company.com>)
+#ExceptionNotifier.sender_address = %("BioCatalogue Errors" <biocatalogue-errors@company.com>)
 
 # defaults to "[ERROR] "
 #ExceptionNotifier.email_prefix = "[APP-#{RAILS_ENV.capitalize} ERROR] "
@@ -54,16 +68,9 @@ ExceptionNotifier.sender_address = %("BioCatalogue Errors" <biocatalogue-errors@
 # For local development purposes this SHOULD be set to true.
 #ExceptionNotifier.render_only = true
 
-ExceptionNotifier.exception_recipients = %w(joe@example.com bill@example.com)
+#ExceptionNotifier.exception_recipients = %w(joe@example.com bill@example.com)
 
 # ==============================================================
-
-
-# Enable or disable the cache-money plugin, which caches AR models in memcached.
-# This setting may be useful in instances when cache-money is not working as required.
-# NOTE: this doesn't currently work so please disable it until the forseeable future.
-ENABLE_CACHE_MONEY = false
-
 
 # The sender email address for emails sent from the application.
 SENDER_EMAIL_ADDRESS = "biocatalogue-support@example.com"
@@ -71,6 +78,10 @@ SENDER_EMAIL_ADDRESS = "biocatalogue-support@example.com"
 # The email address used for sending feedback from users to.
 FEEDBACK_EMAIL_ADDRESS = "contact@example.com"
 
+# Enable or disable the cache-money plugin, which caches AR models in memcached.
+# This setting may be useful in instances when cache-money is not working as required.
+# NOTE: this doesn't currently work so please disable it until the forseeable future.
+ENABLE_CACHE_MONEY = false
 
 # reCAPTCHA settings:
 ENV["RECAPTCHA_PUBLIC_KEY"] = "123abc"
@@ -142,9 +153,6 @@ MONITORING_STATUS_CHANGE_RECIPIENTS = [ "tom@example.org", "dick@example.org", "
 # submitters or anyone responsible for the service in 
 # addition to those included in the status recipients list above.
 NOTIFY_SERVICE_RESPONSIBLE = false
-
-# This setting determines whether SSL (via the ssl_requirement plugin) is used.
-ENABLE_SSL = true
 
 # For cases where an 'identifier' is not set for new annotation attributes,
 # this config setting is be used as the default "catch all" template for generating 

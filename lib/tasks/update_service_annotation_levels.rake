@@ -8,7 +8,7 @@ namespace :biocatalogue do
   namespace :curation do
     desc "Update all service annotation levels"
     task :update_service_annotation_level => :environment do
-      Service.find(:all).each  do |service|
+      Service.all.each  do |service|
         puts "Updataing service annotation level : #{service.id}"      
         service.annotation_level = BioCatalogue::Curation::AnnotationLevel.annotation_level_for_service(service)
         begin
@@ -24,7 +24,7 @@ namespace :biocatalogue do
     
     desc "Reset all service annotation levels"
     task :reset_service_annotation_level => :environment do
-      Service.find(:all).each  do |service|
+      Service.all.each  do |service|
         puts "Resetting service annotation level : #{service.id}"      
         begin
           service.annotation_level = nil

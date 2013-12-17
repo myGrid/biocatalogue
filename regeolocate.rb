@@ -17,7 +17,7 @@ RAILS_ENV = env
 # Load up the Rails app
 require File.dirname(__FILE__) + '/config/environment'
 
-ServiceDeployment.find(:all).each do |sd|
+ServiceDeployment.all.each do |sd|
   if sd.location.blank?
     puts "ServiceDeployment id #{sd.id} does not have city and country set. Attempting geolocation..."
     geoloc = BioCatalogue::Util.url_location_lookup(sd.endpoint)

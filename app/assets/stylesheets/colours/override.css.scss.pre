@@ -1,0 +1,36 @@
+/* This file is intended to be used as a convenient way of replacing BioCatalogues main (green) colour scheme
+  To use, create a copy of the file with the ".pre" suffix removed, then alter the following RGB colour codes as needed.
+  header_colour and secondary_colour can be set to scales of the primary_colour by uncommenting the line below their definition
+*/
+
+
+/* Main colour - Light */
+$primary_colour: #E9F7CC;
+
+/* Header colour - Slightly Darker */
+$header_colour: #D3F78A;
+//$header_colour: $primary_colour * 0.85;
+
+/* Secondary colour - used on tabs - Slightly Darker still */
+$secondary_colour: #BFE76F;
+//$secondary_colour: $primary_colour * 0.65;
+
+/* Info box colour */
+$info_box: #FFFFCC;
+
+/* Notice flash colour */
+$notice_flash: #FFF6AF;
+
+/* Error flash colour */
+$error_flash: #FFDFDF;
+
+/* Colours for right hand column on each service page. */
+$box_section_service: rgba(255, 255, 0, 0.34);
+
+/* Colours for boxes on left and right columns of home page */
+$box_section_home: #E9F7CC;
+//$box_section_home: $primary_colour * 0.8;
+
+
+
+

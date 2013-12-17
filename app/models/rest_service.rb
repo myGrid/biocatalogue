@@ -23,13 +23,13 @@ class RestService < ActiveRecord::Base
   
   validates_associated :rest_resources
   
-  validates_url_format_of :interface_doc_url,
-                          :allow_nil => true,
-                          :message => 'is not valid'
+  #validates_url_format_of :interface_doc_url,
+   #                       :allow_nil => true,
+   #                       :message => 'is not valid'
                           
-  validates_url_format_of :documentation_url,
-                          :allow_nil => true,
-                          :message => 'is not valid'
+  #validates_url_format_of :documentation_url,
+  #                        :allow_nil => true,
+  #                        :message => 'is not valid'
 
   has_many :url_monitors, 
            :as => :parent,
@@ -48,8 +48,9 @@ class RestService < ActiveRecord::Base
            :order => "rest_resources.path ASC"
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :interface_doc_url, :documentation_url, :service_type_name,
-                              { :associated_service_id => :r_id } ])
+    searchable do
+      text :name, :description, :interface_doc_url, :documentation_url, :service_type_name
+    end
   end
   
   if USE_EVENT_LOG
@@ -65,8 +66,8 @@ class RestService < ActiveRecord::Base
   def self.check_duplicate(endpoint)
     endpoint.sub!(/\/$/, '') # remove trailing '/' from endpoint
     
-    obj = ServiceDeployment.find(:first, :conditions => { :endpoint => endpoint })
-    obj = ServiceDeployment.find(:first, :conditions => { :endpoint => endpoint + '/' }) unless obj
+    obj = ServiceDeployment.first(:conditions => { :endpoint => endpoint })
+    obj = ServiceDeployment.first(:conditions => { :endpoint => endpoint + '/' }) unless obj
           
     return (obj.nil? ? nil : obj.service)
   end

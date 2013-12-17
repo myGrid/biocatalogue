@@ -146,10 +146,12 @@ class ServiceProvidersController < ApplicationController
 
   def auto_complete
     @name_fragment = params[:name] || ''
-    
-    @results = ServiceProvider.find(:all , 
-                                    :conditions => "name like '%" + @name_fragment.downcase + "%'")
-                                    
+
+    # Old Rails 2 style
+    #@results = ServiceProvider.all(
+    #                                :conditions => "name like '%" + @name_fragment.downcase + "%'")
+    @results = ServiceProvider.where("name like '%" + @name_fragment.downcase + "%'")
+
     render :inline => "<%= auto_complete_result @results, 'name', @name_fragment %>", :layout => false
   end
 
@@ -228,7 +230,7 @@ protected
         :joins => joins
       }
       
-      @service_providers = ActiveRecord::Base.connection.select_all(ServiceProvider.send(:construct_finder_sql, finder_options))
+      @service_providers = ActiveRecord::Base.connection.select_all(ServiceProvider.send(:construct_finder_arel, finder_options))
     else
       @service_providers = ServiceProvider.paginate(:page => @page,
                                                     :per_page => @per_page,

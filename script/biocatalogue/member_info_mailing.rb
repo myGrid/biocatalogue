@@ -59,7 +59,7 @@ class MemberInfoMailing
     members = User.all
     members.each do |member|
       if member.respond_to?(:email) && member.email && member.receive_notifications && member.activated_at
-        Delayed::Job.enqueue(BioCatalogue::Jobs::MemberInfoEmail.new(@subject, @message, member.email), 0, 5.seconds.from_now)
+        Delayed::Job.enqueue(BioCatalogue::Jobs::MemberInfoEmail.new(@subject, @message, member.email), :priority => 0, :run_at => 5.seconds.from_now)
       end
     end
   end

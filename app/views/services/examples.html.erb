@@ -1,102 +1,44 @@
 <%
 
-# BioCatalogue: app/views/services/examples.html.erb
-#
-# Copyright (c) 2011, University of Manchester, The European Bioinformatics 
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+   # BioCatalogue: app/views/services/examples.html.erb
+   #
+   # Copyright (c) 2011, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
 
 %>
 
-<div id="service-examples-tabs" class="tabber">
-  
-  <div id="tab-examples-data" class="tabbertab">
-    <h3>Data</h3>
-    
-    <% if @has_data_examples %>
-      <% @data_annotations.each do |d| %>
-        <% unless d[:annotations].empty? %>
-          <h4>
-            <%= d[:type_of_data].pluralize -%> 
-            for
-            <%= resource_type_label_for_ui(d[:resource].class.name) -%>:
-            '<%= display_name(d[:resource]) %>'
-            <% case d[:resource].class.name; when "RestParameter", "RestRepresentation" %>
-              (on <%= resource_type_label_for_ui(d[:resource].associated_rest_method.class.name) %>:
-              '<%= display_name(d[:resource].associated_rest_method) %>')
-            <% when "SoapInput", "SoapOutput" %>
-              (on SOAP Operation: '<%= display_name(d[:resource].soap_operation) %>') 
-            <% end %>
-          </h4>
-          
-          <div class="box_indented_with_bar">
-            <% case d[:annotations][0].attribute_name; when "example_data" %>
-              <%= render :partial => "annotations/examples", 
-                         :locals => { :annotatable => d[:resource], 
-                                      :annotations => d[:annotations], 
-                                      :show_header => false } %>
-            <% when "example_endpoint" %>
-              <%= render :partial => "annotations/example_endpoints", 
-                         :locals => { :annotatable => d[:resource], 
-                                      :annotations => d[:annotations], 
-                                      :show_header => false } %>
-            <% end %>
-          </div>
-        <% end %>
-      <% end %>
-    <% else %>
-      <p class="none_text">None</p>
-    <% end %>
-  </div>
-  
-  <div id="tab-examples-scripts" class="tabbertab">
-    <h3>Scripts</h3>
-    
-    <div class="box_info_standout">
-      <span class="warning">WARNING:</span>
-      Before running any code/scripts, make sure they are safe to run! Do not run something if you're not sure what it does.
-      Code/scripts here have been submitted by external parties and there is the possibility that they have harmful consequences.
-    </div>
-    
-    <h4>
-      Example snippets of code
-    </h4>
-    <div class="box_indented_with_bar">
-      <%= render :partial => "annotations/example_script", 
-                 :locals => { :annotatable => @latest_version_instance } %>
-    </div>
-    
-    <h4>
-      Test scripts used to monitor this service
-    </h4>
-    <div class="box_indented_with_bar">
-      <% if @test_script_service_tests.length == 0 %>
-        <p class="none_text">None</p>
-      <% else %>
-        <% @test_script_service_tests.each do |s| %>
-          <p>
-            <%= link_to display_name(s.test), s -%>
-          </p>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-  
-  <% if @latest_version_instance.class == SoapService %>
-    <div id="tab-examples-workflows" class="tabbertab">
-      <h3>Workflows</h3>
-      
-      <p>
-        Find
-        <%= link_to "all workflows on myExperiment that use this service",
-                    "http://www.myexperiment.org/workflows?filter=WSDL_ENDPOINT%28%22#{CGI.escape(@latest_version_instance.wsdl_location)}%22%29",
-                    :popup => true -%> 
-      </p>
-    </div>
-  <% end %>
-  
-</div> 
+<%= render :partial => 'services/tabs_common' %>
+<div id="service-tabs" class="tabberlive">
+  <%= render :partial => 'tabs_bar' %>
 
-<script>
-  tabberLoadHashAware();
-</script>
+
+  <div id="tab-examples" class="tabbertab tabbertabdefault" title>
+    <div id="examples_tab_inner">
+      <div id="service-examples-tabs" class="tabberlive">
+            <%= tabs_tag(:builder => MenuTabBuilder, :namespace => :example_tab) do |tag| %>
+            <%= tag.data 'Data', example_data_service_path(@service) %>
+            <%= tag.scripts 'Scripts', example_scripts_service_path(@service) %>
+            <% if @latest_version_instance.class == SoapService %>
+                <%= tag.workflows 'Workflows', example_workflows_service_path(@service) %>
+            <% end %>
+        <% end %>
+
+        <% current_tab(:example_tab) %>
+        <% case current_tab(:example_tab).to_s %>
+        <% when 'data' %>
+
+            <%= render :partial => 'services/example_data_tab' %>
+        <% when 'scripts' %>
+            <%= render :partial => 'services/example_scripts_tab' %>
+        <% when 'workflows' %>
+            <% if @latest_version_instance.class == SoapService %>
+                <%= render :partial => 'services/example_workflows_tab' %>
+            <% end %>
+        <% else %>
+            <%= render :partial => 'services/example_scripts_tab' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

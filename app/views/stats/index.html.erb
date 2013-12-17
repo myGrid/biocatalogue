@@ -12,7 +12,11 @@
 
 <h1>Statistics</h1>
 
-<% if @stats.nil? %>
+<% if @service_count == 0 %>
+    <p style="font-weight: bold;">
+      Stats are not available as there are no services in the Catalogue.
+    </p>
+<% elsif @stats.nil? %>
 
 	<p style="font-weight: bold;">
 		Stats are being generated...
@@ -205,17 +209,17 @@
 		
 			</div>
 
-			<div id="tab-categories" class="tabbertab">
-				
-				<h3>Service Categories</h3>
-		
-				<% benchmark "Statistics - Service Categories" do %>
-				
-					<p style="font-size: 123.1%; font-weight: bold; color: red;">Coming Soon!</p>
-					
-				<% end %>
-		
-			</div>
+			<!--<div id="tab-categories" class="tabbertab">-->
+				<!---->
+				<!--<h3>Service Categories</h3>-->
+		<!---->
+				<!--<% benchmark "Statistics - Service Categories" do %>-->
+				<!---->
+					<!--<p style="font-size: 123.1%; font-weight: bold; color: red;">Coming Soon!</p>-->
+					<!---->
+				<!--<% end %>-->
+		<!---->
+			<!--</div>-->
 			
 			<div id="tab-tags" class="tabbertab">
 				
@@ -325,6 +329,7 @@
 			
 			</div>
 			
-	</div>
+	    </div>
+    </div>
 
 <% end %>

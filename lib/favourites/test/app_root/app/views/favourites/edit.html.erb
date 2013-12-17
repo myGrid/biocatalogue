@@ -1,0 +1,16 @@
+<h1>Editing favourite</h1>
+
+<%= form_for(@favourite) do |f| %>
+    <% if !@favourite.nil? && !@favourite.errors.nil? then %>
+        <% @favourite.errors.full_messages.each do |err| %>
+            <%= err %>
+        <% end %>
+    <% end %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @favourite %> |
+<%= link_to 'Back', favourites_path %>

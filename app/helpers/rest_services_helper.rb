@@ -58,15 +58,16 @@ module RestServicesHelper
       end
 
       redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+      link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options).merge(:remote => true))
     else # NOT LOGGED IN
       inner_html = image_tag("add_inactive.png")
       inner_html += content_tag(:span, options[:link_text], :style => options[:style])
       
-      link_content = link_to(inner_html, login_path, 
-                             :class => options[:class], 
+      link_content = link_to_remote_redbox(inner_html, login_path,
+                             { :class => options[:class],
                              :style => options[:style], 
-                             :title => tooltip_title_attrib("Login to #{options[:tooltip_text].downcase}"))
+                             :title => tooltip_title_attrib("Login to #{options[:tooltip_text].downcase}") }.merge(:remote => true) )
+
     end
     
     return link_content
@@ -94,13 +95,13 @@ module RestServicesHelper
 
     options[:style] += "float: right; margin: 3px;" 
     
-    actual_link_content = image_tag("user.png") + "<b>"
+    actual_link_content = image_tag("user.png") + "<b>".html_safe
     actual_link_content += link_to(object.submitter_name, 
                                            user_path(User.find(object.submitter_id)),
-                                           :title => "View #{object.submitter_name}'s profile.")
-    actual_link_content += "</b>"
+                                           :title => "View #{object.submitter_name}'s profile.").html_safe
+    actual_link_content += "</b>".html_safe
     
-    link_content = content_tag(:span, 'Added by ' + actual_link_content, :style => options[:style])
+    link_content = content_tag(:span, ('Added by ' + actual_link_content).html_safe, :style => options[:style])
     
     return link_content
   end
@@ -140,8 +141,6 @@ module RestServicesHelper
     options[:style] += "float: right; " unless options[:style].include?('float')
     options[:style] += "font-weight: bold; " unless options[:style].include?('font-weight')
 
-    link_content = ''
-    
     inner_html = image_tag("pencil.gif") + content_tag(:span, " " + options[:link_text])
     
     url_hash = {:controller => "rest_services", 
@@ -152,7 +151,7 @@ module RestServicesHelper
     id_value = "edit_base_endpoint_for_#{service_deployment.class.name}_#{service_deployment.id}_redbox"
     
     redbox_hash = {:url => url_hash, :id => id_value, :failure => fail_value}
-    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options))
+    link_content = link_to_remote_redbox(inner_html, redbox_hash, create_redbox_css_hash(options).merge(:remote => true))
     
     return link_content
   end

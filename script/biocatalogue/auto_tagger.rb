@@ -25,7 +25,7 @@
 #  ruby auto_tagger.rb -h             <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/auto_tagger_{current_time}.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to '{Rails.root}/log/auto_tagger_{current_time}.log' so you won't see any normal output in the console.
 #
 #
 # Depedencies:
@@ -145,7 +145,7 @@ class AutoTagger
                 puts ""
                 puts "> Processing services that have a WSDL location of '#{text}' (will add tag '#{tag_name}')"
               
-                soap_services = SoapService.find(:all, :conditions => [ "wsdl_location LIKE ?", text ])
+                soap_services = SoapService.all(:conditions => [ "wsdl_location LIKE ?", text ])
                 
                 soap_services.each do |ss|
                   service = ss.service
@@ -264,7 +264,7 @@ class AutoTagger
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/auto_tagger_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/auto_tagger_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "auto_tagger_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

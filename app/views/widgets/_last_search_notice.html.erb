@@ -12,13 +12,13 @@
 	<div id="last_search_notice" style="display: none;">
 		<div class="inner">
 			<%= link_to("Click here to return back to your last search results", session[:last_search]) -%>
-			<%= link_to_remote(image_tag("close.gif"),
+			<%= link_to_with_callbacks(image_tag("close.gif"),
 												 { :url => ignore_last_search_url,
 													 :method => :post,
 													 :update => { :success => "last_search_notice" },
-													 :complete => "new Effect.BlindUp('last_search_notice', { duration: 0.7 });" },
+													 :complete => "new Effect.BlindUp('last_search_notice', { duration: 0.7 });"},
 												 { :style => "margin-left:1em;",
-													 :title => tooltip_title_attrib("Click this close button to get rid of this message") }) -%>
+													 :title => tooltip_title_attrib("Click this close button to get rid of this message")}) -%>
 		</div>
 	</div>
 <% end %>

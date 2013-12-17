@@ -44,20 +44,20 @@ class RestRepresentationsController < ApplicationController
     
     respond_to do |format|
       unless results[:created].blank?
-        flash[:notice] ||= ""
-        flash[:notice] += "The following representations were successfully created:<br/>"
+        flash[:notice] ||= "".html_safe
+        flash[:notice] += "The following representations were successfully created:<br/>".html_safe
         flash[:notice] += results[:created].to_sentence
-        flash[:notice] += "<br/><br/>"
+        flash[:notice] += "<br/><br/>".html_safe
       end
       
       unless results[:updated].blank?
-        flash[:notice] ||= ""
-        flash[:notice] += "The following parameters already exist:<br/>"
+        flash[:notice] ||= "".html_safe
+        flash[:notice] += "The following parameters already exist:<br/>".html_safe
         flash[:notice] += results[:updated].to_sentence
       end
       
       unless results[:error].blank?
-        flash[:error] = "The following representations could not be added:<br/>"
+        flash[:error] = "The following representations could not be added:<br/>".html_safe
         flash[:error] += results[:error].to_sentence
       end
 
@@ -66,12 +66,12 @@ class RestRepresentationsController < ApplicationController
   end
 
   def destroy
-    success_msg = "Representation <b>#{@rest_representation.content_type}</b> has been deleted"
+    success_msg = "Representation <b>".html_safe + @rest_representation.content_type + "</b> has been deleted".html_safe
     url_to_redirect_to = get_redirect_url()
     
     destroy_method_rep_map()
     
-    is_not_used = RestMethodRepresentation.find(:all, :conditions => {:rest_representation_id => @rest_representation.id}).empty?
+    is_not_used = RestMethodRepresentation.all(:conditions => {:rest_representation_id => @rest_representation.id}).empty?
     @rest_representation.destroy if is_not_used
     
     respond_to do |format|
@@ -125,7 +125,7 @@ class RestRepresentationsController < ApplicationController
   end
     
   def get_redirect_url()
-    method_rep_map = RestMethodRepresentation.find(:first, 
+    method_rep_map = RestMethodRepresentation.first(
                          :conditions => {:rest_representation_id => @rest_representation.id, 
                          :rest_method_id => params[:rest_method_id]})
 
@@ -135,7 +135,7 @@ class RestRepresentationsController < ApplicationController
   end
   
   def destroy_method_rep_map() # USES params[:rest_method_id], params[:http_cycle], and @rest_representation.id
-    method_rep_map = RestMethodRepresentation.find(:first, 
+    method_rep_map = RestMethodRepresentation.first(
                          :conditions => {:rest_representation_id => @rest_representation.id, 
                          :rest_method_id => params[:rest_method_id],
                          :http_cycle => params[:http_cycle]})

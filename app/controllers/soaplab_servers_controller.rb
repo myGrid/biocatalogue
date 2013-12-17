@@ -126,7 +126,7 @@ class SoaplabServersController < ApplicationController
     else
       err_text = "Failed to load the WSDL URL provided.<br/>" +
         "Please check that it points to a valid WSDL file.<br/>" +
-        "If this problem persists, please <a href='/contact'>contact us</a>."
+        "If this problem persists, please <a href='/contact'>contact us</a>.".html_safe
         
       @soap_service = SoapService.new(:wsdl_location => wsdl_location)
       @soaplab_server = SoaplabServer.new(:location =>wsdl_location)

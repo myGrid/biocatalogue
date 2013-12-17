@@ -18,7 +18,7 @@ begin
   
   ActivityLog.transaction do 
     
-    ActivityLog.find(:all, :conditions => { :action => 'status_change' }).each do |al|
+    ActivityLog.all(:conditions => { :action => 'status_change' }).each do |al|
       if al.activity_loggable and al.referenced_id.nil?
         al.referenced = al.activity_loggable.service
         al.save!

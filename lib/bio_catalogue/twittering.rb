@@ -18,7 +18,7 @@ module BioCatalogue
       return false unless ENABLE_TWITTER
       
       begin
-        SystemTimer::timeout(TIMEOUT) {
+        timeout(TIMEOUT) {
           @httpauth ||= Twitter::HTTPAuth.new(TWITTER_ACCOUNT_EMAIL, TWITTER_ACCOUNT_PASSWORD, :ssl => true)
           @client ||= Twitter::Base.new(@httpauth)
           @client.update(tweet_text) 

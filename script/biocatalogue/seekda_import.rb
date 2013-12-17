@@ -29,7 +29,7 @@
 #  ruby seekda_import.rb -h                               <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/seekda_import_{current_time}.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to '{Rails.root}/log/seekda_import_{current_time}.log' so you won't see any normal output in the console.
 #
 #
 # Depedencies:
@@ -291,7 +291,7 @@ class SeekDaImporter
             begin
               xml_content = ''
               
-              SystemTimer::timeout(10) do
+              timeout(10) do
                 xml_content = open(url, 
                                   :proxy => HTTP_PROXY, 
                                   :http_basic_authentication => [ @username, @password ],
@@ -547,7 +547,7 @@ class SeekDaImporter
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/seekda_import_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/seekda_import_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "seekda_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

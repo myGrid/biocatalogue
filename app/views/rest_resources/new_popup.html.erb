@@ -15,10 +15,14 @@
 	</div>
 	
 	<div class="body">
-    <% form_for :rest_service, :url => {:controller => "rest_resources", 
+    <%= form_for :rest_service, :url => {:controller => "rest_resources",
                                         :action => "add_new_resources", 
                                         :rest_service_id => @rest_service.id } do |f| %>
-    <%= f.error_messages %>
+          <% if !@rest_service.nil? && !@rest_service.errors.nil? then %>
+              <% @rest_service.errors.full_messages.each do |err| %>
+                  <%= err %>
+              <% end %>
+          <% end %>
 
     <div>
 			<div class="box_info_standout">

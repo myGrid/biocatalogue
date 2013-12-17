@@ -14,9 +14,9 @@
 #
 #    -h, --help                       Show this help message.
 #
-# Depedencies:
-# - Rails (v2.3.2)
-#
+# Run with ruby (e.g. in development mode):
+# ruby script/biocatalogue/links_checker.rb -e production
+# Defaults to development mode if no argument is given.
 
 require 'optparse'
 require 'benchmark'
@@ -28,28 +28,29 @@ class LinksChecker
   
   def initialize(args)
     @options = {
-      :environment => (ENV['RAILS_ENV'] || "production").dup,
+      :environment => (ENV['RAILS_ENV'] || "development").dup,
     }
-    
+
     args.options do |opts|
       opts.on("-e", "--environment=name", String,
               "Specifies the environment to run this script under (test|development|production).",
               "Default: development") { |v| @options[:environment] = v }
-    
+
       opts.separator ""
-    
+
       opts.on("-h", "--help", "Show this help message.") { puts opts; exit }
-      
+
       opts.parse!
     end
-  
+
     # Start the Rails app
-    
+
     ENV["RAILS_ENV"] = @options[:environment]
-    RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)
-    
-    require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
-  end  
+    #RAILS_ENV.replace(@options[:environment]) if defined?(RAILS_ENV)  # RAILS_ENV is deprecated
+
+    #require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
+    require File.expand_path('../../../config/environment.rb', __FILE__)
+  end
   
   # Find all the services that have not been archived from the database
   # and extract any url from the descriptions and other annotatable attributes
@@ -57,11 +58,11 @@ class LinksChecker
   # or not. Flag the ones that are not accessible and generate an html report of
   # those.
   
-  def run 
+  def run
     @all_links           = []
     @all_data_with_links = []
     conditions           = 'archived_at IS NULL'
-    Service.find(:all, :conditions => conditions ).each do |service|
+    Service.where(conditions).each do |service|
       puts "Searching links for service : #{service.name}"
       @all_links.concat(links_for_service(service))
       @all_data_with_links << links_for_service_h(service) unless links_for_service_h(service).empty?
@@ -73,8 +74,9 @@ class LinksChecker
   protected
   
   def report(all_data_with_links, all_links_with_status)
-    puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/public/link_checker_report.html' ..."
-    $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'public', "links_checker_report.html"), "w")
+    report_file = File.join(File.dirname(__FILE__), '..', '..', 'public', "links_checker_report.html")
+    puts "Redirecting output of $stdout to log file: #{File.expand_path(report_file)}"
+    $stdout = File.new(report_file, "w")
     $stdout.sync = true
     puts '<html >'
     puts '<body bgcolor="#A6D785" width="70%">'
@@ -194,11 +196,11 @@ class LinksChecker
         links.concat(self.get_links_from_text(annotatable.description))
       end
       self.non_provider_annotations(annotatable).each do |ann|
-        links.concat(self.get_links_from_text(ann))  
+        links.concat(self.get_links_from_text(ann.ann_content))
       end
       if annotatable.is_a?(SoapService) || annotatable.is_a?(RestService)
         self.non_provider_annotations(annotatable, 'documentation_url').each do |ann|
-          links.concat(self.get_links_from_text(ann))  
+          links.concat(self.get_links_from_text(ann.ann_content))
         end
       end
     end

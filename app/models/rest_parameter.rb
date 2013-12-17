@@ -26,9 +26,9 @@ class RestParameter < ActiveRecord::Base
   validates_existence_of :submitter # User must exist in the db beforehand.
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :submitter_name, 
-                              { :associated_service_id => :r_id },
-                              { :associated_rest_method_id => :r_id } ] )
+    searchable do
+      text :name, :submitter_name, :description
+    end
   end
 
   if USE_EVENT_LOG
@@ -55,7 +55,7 @@ class RestParameter < ActiveRecord::Base
   
   # For the given rest_method object, find duplicate entry based on 'param_name'
   def self.check_duplicate(rest_method, param_name, search_local_context=false)
-    p = rest_method.request_parameters.find(:first, 
+    p = rest_method.request_parameters.first(
                                             :conditions => {:name => param_name, 
                                                             :is_global => !search_local_context})
 

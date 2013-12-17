@@ -10,7 +10,9 @@ module BioCatalogue
     INTERNAL_TEST_TYPES = [ 'TestScript', 'UrlMonitor' ].freeze
     
     def self.pingable_url(actual_string)
-      actual_string.each_line do |line|
+      string = actual_string.try(:text)
+      string = actual_string unless !string.nil?
+      string.each_line do |line|
         line.chomp.split(' ').each do |token|
           token.strip!
           
@@ -31,7 +33,7 @@ module BioCatalogue
     class MonitorUpdate
     
       def self.run
-        Service.find(:all).each do |service|
+        Service.all.each do |service|
           update_service_monitors(service)          
         end
       end
@@ -77,7 +79,7 @@ module BioCatalogue
       def self.update_deployment_monitors(deployments)
   
         deployments.each do |dep|
-          monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", dep.id, dep.class.to_s ])
+          monitor = UrlMonitor.first(:conditions => ["parent_id= ? AND parent_type= ?", dep.id, dep.class.to_s ])
           if monitor.nil?
               mon = UrlMonitor.new(:parent_id => dep.id, 
                               :parent_type => dep.class.to_s, 
@@ -103,7 +105,7 @@ module BioCatalogue
       def self.update_soap_service_monitors(soap_services)
         
         soap_services.each do |ss|
-          monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ss.id, ss.class.to_s ])
+          monitor = UrlMonitor.first(:conditions => ["parent_id= ? AND parent_type= ?", ss.id, ss.class.to_s ])
           if monitor.nil?
             mon = UrlMonitor.new(:parent_id => ss.id, 
                               :parent_type => ss.class.to_s, 
@@ -124,7 +126,7 @@ module BioCatalogue
       end
       
       def self.update_rest_service_monitors(*params)  
-        Annotation.find(:all, 
+        Annotation.all(
                         :joins => :attribute,
                         :conditions => { :annotatable_type => 'RestMethod',
                         :annotation_attributes => { :name => "example_endpoint" } }).each  do |ann|
@@ -133,7 +135,7 @@ module BioCatalogue
       end # update_rest_service_monitors
       
       def self.update_user_created_monitors
-        Annotation.find(:all, 
+        Annotation.all(
                         :joins => :attribute,
                         :conditions => { :annotatable_type => 'Service',
                         :annotation_attributes => { :name => "monitoring_endpoint" } }).each  do |ann|
@@ -143,7 +145,7 @@ module BioCatalogue
       
       def self.build_url_monitor(parent, property, service, max_monitors_per_service = 2)
         
-        monitor_count = ServiceTest.find(:all , :conditions => ["service_id=? AND test_type=?", service.id, "UrlMonitor"]).count
+        monitor_count = ServiceTest.all(:conditions => ["service_id=? AND test_type=?", service.id, "UrlMonitor"]).count
         
         if monitor_count < max_monitors_per_service
           mon = UrlMonitor.new(:parent_id => parent.id, 
@@ -182,7 +184,7 @@ module BioCatalogue
         if from_trusted_source?(ann)
           can_be_monitored = !Monitoring.pingable_url(ann.value_content).nil?
           
-          monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
+          monitor = UrlMonitor.first(:conditions => ["parent_id= ? AND parent_type= ?", ann.id, ann.class.name ])
           
           # create new monitor if a pingable URL exists in annotation
           if monitor.nil? && can_be_monitored
@@ -310,7 +312,7 @@ module BioCatalogue
         end
         
         if options[:all]
-          monitors = UrlMonitor.find(:all)
+          monitors = UrlMonitor.all
         elsif options[:service_ids]
           monitors = []
           services = Service.find(options[:service_ids])
@@ -320,7 +322,7 @@ module BioCatalogue
         end
         
         monitors.each do |monitor|
-        #UrlMonitor.find(:all).each do |monitor|
+        #UrlMonitor.all.each do |monitor|
           # get all the attributes of the services to be monitors
           # and run the checks agains them
           if monitor.service_test.activated?

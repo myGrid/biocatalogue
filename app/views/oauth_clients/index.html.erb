@@ -89,7 +89,8 @@
         </div>
               
         <% uniq_id = "Client::#{client.id}##{client.name}##{client.url}" %>
-        <% link_content = "<b>" + h(client.name) + "</b>" %>
+        <% link_content = "<b>" + h(client.name) + "</b>"%>
+        <% link_content = link_content.html_safe %>
 
         <%= create_expand_collapse_link(uniq_id,
                                         :link_text => link_content, 

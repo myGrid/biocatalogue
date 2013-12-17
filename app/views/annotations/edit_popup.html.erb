@@ -1,10 +1,10 @@
 <%
 
-# BioCatalogue: app/views/annotations/edit_popup.html.erb
-#
-# Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics 
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+   # BioCatalogue: app/views/annotations/edit_popup.html.erb
+   #
+   # Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
 
 %>
 
@@ -14,34 +14,34 @@
 		<span style="vertical-align:middle;">
 			Edit Annotation - <%=  h(@annotation.attribute_name) -%>
 		</span>
-	</div>
-	
-	<div class="body">
-		<% form_for :annotation, @annotation, :url => annotation_url(@annotation), :html => { :method => :put } do |f| %>
-		  
-      <% display_annotatable = if @annotation.annotatable_type == "RestMethod"
-                                 "Endpoint: <b/>#{h(@annotation.annotatable.display_endpoint)}"
-                               else
-                                 "#{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name)}"
-                               end
-      %>
-			
-      <div class="box_info_standout">
-				<%= "You are editing an annotation you previously made, for #{display_annotatable}" -%>
-			</div>
-			
-			<p style="margin-bottom: 0.4em;">
-				<b><%=  h(@annotation.attribute_name) -%></b>
-			</p>
-			<p style="margin-top: 0.3em;">
-				<%= f.text_area :value, :value=> "#{@annotation.value.ann_content}", :size => "50x10", :style => "width: 98%;" -%>
-			</p>
-			
-		  <p style="text-align: center;">
-		    <%= f.submit "Update", :disable_with => "Updating..." -%>
-				<%= button_to_function "Close", "RedBox.close()" -%>
-		  </p>
-			
-		<% end %>
-	</div>
+  </div>
+
+  <div class="body">
+    <%= form_for @annotation, :url => annotation_url(@annotation), :html => { :method => :put } do |f| %>
+
+        <% display_annotatable = if @annotation.annotatable_type == "RestMethod"
+                                   "Endpoint: <b/>#{h(@annotation.annotatable.display_endpoint)}"
+                                 else
+                                   "#{@annotation.annotatable_type.titleize}: <b/>#{h(@annotation.annotatable.annotatable_name)}"
+                                 end
+        %>
+
+        <div class="box_info_standout">
+          <%= "You are editing an annotation you previously made, for #{display_annotatable}".html_safe -%>
+        </div>
+
+        <p style="margin-bottom: 0.4em;">
+          <b><%= @annotation.attribute_name -%></b>
+        </p>
+        <p style="margin-top: 0.3em;">
+          <%= f.text_area :value, :value=> "#{@annotation.value.ann_content}", :size => "50x10", :style => "width: 98%;" -%>
+        </p>
+
+        <p style="text-align: center;">
+          <%= f.submit "Update", :disable_with => "Updating..." -%>
+          <%= button_to_function "Close", "RedBox.close()" -%>
+        </p>
+
+    <% end %>
+  </div>
 </div>

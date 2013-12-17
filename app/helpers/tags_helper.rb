@@ -55,7 +55,7 @@ module TagsHelper
     
     unless [ :weighted, :flat ].include?(cloud_type)
       BioCatalogue::Util.yell("ERROR: Tried to build a tag cloud with an invalid cloud_type.")
-      return ""      
+      return ""
     end
     
     # Do options the Rails Way ;-)
@@ -142,21 +142,23 @@ module TagsHelper
                   # IMPORTANT: The delete AJAX functionality depends on the parent container for the tag clouds having
                   # an ID of "#{annotatable.class.name}_#{annotatable.id}_tag_cloud"
                   if logged_in? and 
-                     options[:allow_delete] and 
-                     !options[:annotatable].nil? and 
-                     !submitters.nil? and 
-                     BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :tag, :tag_submitters => submitters) then
+                    options[:allow_delete] and
+                    !options[:annotatable].nil? and
+                    !submitters.nil? and
+                    BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, :tag, :tag_submitters => submitters) then
                      
-                    link_to_remote(icon_faded_with_hover(:delete),
-                                  :url => "#{destroy_taggings_tags_url(:tag_name => tag_name, :annotatable_type => options[:annotatable].class.name, :annotatable_id => options[:annotatable].id)}",
+                    link_to_with_callbacks(icon_faded_with_hover(:delete).html_safe,
+                                  {:url => "#{destroy_taggings_tags_url(:tag_name => tag_name, :annotatable_type => options[:annotatable].class.name, :annotatable_id => options[:annotatable].id)}",
                                   :method => :delete,
                                   :update => { :success => "#{options[:annotatable].class.name}_#{options[:annotatable].id}_tag_cloud", :failure => '' },
                                   :loading => "Element.show('tags_spinner')",
                                   :complete => "Element.hide('tags_spinner')", 
                                   :success => "new Effect.Highlight('#{options[:annotatable].class.name}_#{options[:annotatable].id}_tags', { duration: 0.5 });",
                                   :failure => "Element.hide('tags_spinner'); alert('Sorry, an error has occurred.');",
-                                  :html => { :title => tooltip_title_attrib("Delete this tag"), :style => "margin-left:0.4em;" },
-                                  :confirm => "Are you sure you want to delete this tag?")
+                                  :confirm => "Are you sure you want to delete this tag?"},
+                                  {:title => tooltip_title_attrib("Delete this tag"),
+                                  :style => "margin-left:0.4em;",
+                                  :remote => true})
                   end
                   
                 end
@@ -174,6 +176,6 @@ module TagsHelper
       
     end
     
-    return output.to_s
+    return output.to_s.html_safe
   end
 end

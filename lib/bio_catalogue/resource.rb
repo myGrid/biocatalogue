@@ -121,6 +121,10 @@ module BioCatalogue
         "small-tick-sphere-16.png"
       when :monitoring_status_change_unchecked
         "small-query-sphere-16.png"
+      when :latest
+        "newspaper.png"
+      when :search_by_data
+        "page_white_magnify.png"
       else
         ''
     end
@@ -134,7 +138,7 @@ module BioCatalogue
     begin
       return image_path("flags/#{code.downcase}.png")
     rescue
-      return "/images/flags/#{code.downcase}.png"
+      return "/assets/flags/#{code.downcase}.png"
     end
   end
 

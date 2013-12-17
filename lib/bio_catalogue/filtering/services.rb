@@ -323,9 +323,10 @@ module BioCatalogue
         
         # Take into account search query if present
         unless search_query.blank?
-          search_results = Search.search(search_query, "services")
+          search_results = Search.sunspot_search(search_query, "services")
           unless search_results.blank?
-            service_ids_search_query = search_results.item_ids_for("services")
+            #service_ids_search_query = search_results.item_ids_for("services")
+            service_ids_search_query = BioCatalogue::Search::Results::get_item_ids(search_results, 'services')
           end
         end
         

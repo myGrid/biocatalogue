@@ -5,6 +5,8 @@
 # See license.txt for details
 
 class RestMethod < ActiveRecord::Base
+  include RestServicesHelper #to access RestMethod template for as_csv export
+
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache
     index :rest_resource_id
@@ -86,7 +88,10 @@ class RestMethod < ActiveRecord::Base
   
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :endpoint_name, :group_name, :display_endpoint, :method_type, :description, :submitter_name, :rest_resource_search_terms, { :associated_service_id => :r_id } ])
+    searchable do
+       text :endpoint_name, :group_name, :display_endpoint, :method_type,
+            :submitter_name, :rest_resource_search_terms, :description
+    end
   end
   
   if USE_EVENT_LOG
@@ -137,7 +142,42 @@ class RestMethod < ActiveRecord::Base
   def display_endpoint
     return "#{self.method_type} #{self.rest_resource.path}"
   end
-  
+
+  def as_csv
+    service_id =  self.associated_service.unique_code unless self.associated_service.nil?
+    endpoint_name = self.endpoint_name
+    template = create_url_template(self)
+    method_type = self.method_type
+    description = self.preferred_description
+    submitter = self.submitter.display_name
+    documentation_url = self.documentation_url
+    example_endpoints = join_array(self.annotations_with_attribute('example_endpoint').collect{|annotation| annotation.value.text})
+    annotations = self.get_service_tags
+    return [service_id,endpoint_name,method_type,template,description,submitter,documentation_url,example_endpoints,annotations]
+  end
+
+
+  def get_service_tags
+    list = []
+    BioCatalogue::Annotations.get_tag_annotations_for_annotatable(self).each { |ann| list << ann.value_content }
+    return list.join("; ")
+  end
+
+  def join_array array
+    array.compact!
+    array.delete('')
+
+    if array.nil? || array.empty? then
+      return ''
+    else
+      if array.count > 1 then
+        return array.join(';')
+      else
+        return array.first.to_s
+      end
+    end
+  end
+
   # for sort
   # TODO: need to figure out whether this is really necessary now, considering the new grouping functionality.
   def <=>(other)

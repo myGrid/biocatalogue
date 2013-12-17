@@ -305,8 +305,11 @@ module Embrace
            a_test.content_type = 'application/zip'
            a_test.description  = description 
            a_test.service_id   = existing_service.id
+           service_test = ServiceTest.new(:service_id => existing_service.id,
+                          :test => a_test,
+                          :activated_at => Time.now)
            begin
-              if a_test.save!
+              if service_test.save!
                 @stats.counts[:success_script_imports] +=1                                                 
                 relationship = Relationship.new(:subject_type => a_test.service_test.class.name,
                                                     :subject_id   => a_test.service_test.id,
@@ -327,7 +330,7 @@ module Embrace
         end
         
         def self.already_imported?(test_id)
-         hist = Relationship.find(:first, :conditions => {:object_id => test_id, :object_type => 'EmbraceTest'} )
+         hist = Relationship.first(:conditions => {:object_id => test_id, :object_type => 'EmbraceTest'} )
          unless hist.nil?
            return true
          end
@@ -384,7 +387,7 @@ ARGV.options do |opt|
   opt.parse!
 end
 
-RAILS_ENV = config[:environment]
+#RAILS_ENV = config[:environment]      # Rails 2 deprecated constant
 
 if config.values.include?(nil)
   puts "Warning!!!"
@@ -399,7 +402,7 @@ end
 require File.join(File.dirname(__FILE__),'..','..', 'config', 'environment')
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/embrace_test_scripts_import_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/embrace_test_scripts_import_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "embrace_test_scripts_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

@@ -1,6 +1,6 @@
 # BioCatalogue: lib/bio_catalogue/availability_check.rb
 #
-# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2010, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
@@ -10,10 +10,10 @@ require 'pp'
 
 module BioCatalogue
   module AvailabilityCheck
-    
+
     class SoapResponseParser
       attr_accessor :document
-  
+
       def initialize(response_string)
         @document = nil
         unless response_string.nil?
@@ -29,9 +29,9 @@ module BioCatalogue
           end
         end
       end
-      
+
       # All soap faults are expected to be wrapped
-      # in a soap envelope. 
+      # in a soap envelope.
       def soap_fault?
         begin
           ns_prefix.each  do |prefix|
@@ -45,7 +45,7 @@ module BioCatalogue
           return false
         end
       end
-    
+
       def ns_prefix
         prefixes = []
         unless @document.nil?
@@ -55,40 +55,40 @@ module BioCatalogue
         end
         return prefixes
       end
-    
+
       def dump
         pp @document
       end
     end
-  
+
     class SoapFault
       attr_accessor :fault
-    
+
       def initialize(url)
         @url    = url
         @fault  = get_response
       end
-    
+
       def get_response(url = @url)
         @response = %x[curl --insecure --max-time 20 --header "Content-Type: text/xml" --data '<?xml version="1.0"?> ' #{url}]
-        unless @response.length == 0 
+        unless @response.length == 0
           return @response
         end
         return nil
       end
     end
-  
+
     class SoapEndPoint
       attr_accessor :fault, :parser
-      
+
       def initialize(url)
         @fault  = SoapFault.new(url).fault
-        @parser = SoapResponseParser.new(@fault) 
+        @parser = SoapResponseParser.new(@fault)
       end
-    
+
       def available?
         begin
-          
+
           return true if (@fault && @fault.split[0]== '<?xml')
           return true if (@parser &&  @parser.soap_fault?)
           return false
@@ -98,62 +98,62 @@ module BioCatalogue
         end
       end
     end
-  
+
     class URLCheck
       attr_accessor :response
-    
+
       def initialize(url)
         @url        = url
         @response   = nil
-        @success    = ['200', '202', '204']
+        @success    = ['200', '202', '204', '401'] # 401 is dubious, but not really failure either
         @redirects  = ['300', '301', '302', '303', '307']
         @not_allwd  = ['405']
-        @failure    = ['400', '404']
-        @try_again  = ['500']
+        @failure    = ['400', '403', '404', '410', '502', '503', '504']
+        @try_again  = ['500', '501', '405'] # Some servers break on HEAD requests
         @method     = 'HEAD'
         @try_others = ['OPTIONS', 'GET']
         get_response
       end
-    
+
       def get_response(url = @url, method = @method)
         puts "Trying #{url} with #{method}."
         begin
-          @response =  %x[curl -I --insecure --max-time 20 -X #{method} #{url}]
+          @response =  %x[curl -I --insecure --max-time 10 -X #{method} #{url}]
         rescue Exception => ex
           Rails.logger.error("problem occurred while accessing #{url}")
           Rails.logger.error(ex)
         end
       end
-    
+
       def response_code
-        return @response.split[1]
+        @response.split[1]
       end
-    
+
       def success?
-        return @success.include?(response_code)
+        @success.include?(response_code)
       end
-    
+
       def redirect?
-        return @redirects.include?(response_code)
+        @redirects.include?(response_code)
       end
-    
+
       def failure?
-        return @failure.include?(response_code)
+        @failure.include?(response_code)
       end
 
       def method_not_allowed?
-        return @not_allwd.include? response_code
+        @not_allwd.include?(response_code)
       end
 
       def try_again?
-        return @try_again.include? response_code
+        @response.blank? || @try_again.include?(response_code)
       end
 
       def follow_redirect(level=3)
         Rails.logger.info("Now following redirect. Max of #{level} redirects will be followed ")
         while level > 0 && redirect?
           @response = get_response(redirect_location) if redirect_location
-          level = level - 1 
+          level = level - 1
         end
       end
 
@@ -197,7 +197,7 @@ module BioCatalogue
           return true if success?
           return false if failure?
           follow_redirect if redirect?
-          try_again(allowed_methods) if method_not_allowed?
+          #try_again(allowed_methods) if method_not_allowed?
           try_again if try_again?
           return success?
         rescue Exception => ex
@@ -205,9 +205,9 @@ module BioCatalogue
           Rails.logger.error(ex)
           return false
         end
-      end  
+      end
     end
-  end 
+  end
 end
 
 

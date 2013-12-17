@@ -36,7 +36,7 @@
 #  ruby embrace_import.rb -h                                      <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/embrace_import_{current_time}.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to '{Rails.root}/log/embrace_import_{current_time}.log' so you won't see any normal output in the console.
 #
 #
 # Depedencies:
@@ -343,7 +343,7 @@ class EmbraceImporter
               u.activate!
               
               unless @options[:test]
-                UserMailer.deliver_reset_password(u, "www.biocatalogue.org")
+                UserMailer.reset_password(u, "www.biocatalogue.org").deliver
               end
               
               puts "INFO: new user added to DB and a reset password email has been sent"
@@ -616,7 +616,7 @@ class EmbraceImporter
     annotation = nil
     
     # Check for an existing annotation made previously with the source being the EMBRACE Registry object
-    existing = annotatable.annotations.find(:first, 
+    existing = annotatable.annotations.first(
                                             :conditions => { :annotation_attributes => { :name => attribute.to_s }, 
                                                              :value => value,
                                                              :source_type => @registry_source.class.name,
@@ -632,7 +632,7 @@ class EmbraceImporter
           
           # Check for an alternative name with that value
           
-          existing = annotatable.annotations.find(:first, 
+          existing = annotatable.annotations.first(
                                                   :conditions => { :annotation_attributes => { :name => "alternative_name" }, 
                                                                    :value => value,
                                                                    :source_type => @registry_source.class.name,
@@ -735,7 +735,7 @@ class EmbraceImporter
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/embrace_import_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/embrace_import_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "embrace_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

@@ -19,7 +19,7 @@ class UpdateModelCountryValues
     
     
     # add the path to the gems in vendor/gems
-    Gem.path << "#{RAILS_ROOT}/vendor/gems" if defined?(RAILS_ROOT)
+    Gem.path << "#{Rails.root}/vendor/gems" if defined?(Rails.root)
     Gem.source_index.refresh!
   end
 
@@ -52,7 +52,7 @@ end
 # ========================================
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/fix_models_with_county_vietnam_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/fix_models_with_county_vietnam_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__), '..', '..', 'log', "fix_models_with_county_vietnam_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

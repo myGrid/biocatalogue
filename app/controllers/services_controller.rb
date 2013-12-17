@@ -19,7 +19,7 @@ class ServicesController < ApplicationController
 
   before_filter :find_services, :only => [ :index, :filtered_index ]
 
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples, :service_endpoint, :example_data, :example_scripts, :example_workflows ]
 
   before_filter :find_favourite, :only => [ :favourite, :unfavourite ]
 
@@ -35,10 +35,42 @@ class ServicesController < ApplicationController
 
   before_filter :set_listing_type_local, :only => [ :index ]
 
+  before_filter :show_page_variables, :only => [:monitoring, :service_endpoint, :activity, :examples, :example_data, :example_scripts, :example_workflows]
+
+  set_tab :scripts, :example_tab, :only => %(example_scripts)
+  set_tab :data, :example_tab, :only => %w(example_data examples)
+  set_tab :workflows, :example_tab, :only => %(example_workflows)
+
+  set_tab :overview, :service, :only => %(show)
+  set_tab :examples, :service, :only => %w(examples example_workflows example_data example_scripts)
+  set_tab :monitoring, :service, :only => %(monitoring)
+  set_tab :history, :service, :only => %(activity)
+  set_tab :service_endpoint, :service, :only => %(service_endpoint)
+
+
+
+
+  def example_scripts
+    respond_to do |format|
+      format.html { render 'services/examples' }
+    end
+  end
+  def example_workflows
+    respond_to do |format|
+      format.html { render 'services/examples' }
+    end
+  end
+  def example_data
+    respond_to do |format|
+      format.html { render 'services/examples' }
+    end
+  end
+
 
   # GET /services
   # GET /services.xml
   def index
+    @per_page_options = %w{ 20 50 100 }
     respond_to do |format|
       format.html # index.html.erb
       format.xml  # index.xml.builder
@@ -216,7 +248,7 @@ class ServicesController < ApplicationController
     end
 
     respond_to do |format|
-      format.html # monitoring.html.erb
+      format.html { render 'services/show'}# monitoring.html.erb
       format.xml  # monitoring.xml.builder
       format.json { render :json => @service.to_custom_json("monitoring") }
       format.js { render :layout => false }
@@ -254,11 +286,18 @@ class ServicesController < ApplicationController
 
   def activity
     respond_to do |format|
-      format.html  # activity.html.erb
+      format.html { render 'services/show'} # activity.html.erb
       format.atom  # activity.atom.builder
       format.js { render :layout => false }
     end
   end
+
+  def service_endpoint
+    respond_to do |format|
+      format.html { render 'services/show'}
+    end
+  end
+
 
   def favourite
     if @favourite
@@ -314,6 +353,36 @@ class ServicesController < ApplicationController
     end
   end
 
+  # For the 'show' service page. Each tab needs to have these ready to render the rest of the page.
+  def show_page_variables
+    @latest_version = @service.latest_version
+    @latest_version_instance = @latest_version.service_versionified
+    @latest_deployment = @service.latest_deployment
+
+    @all_service_version_instances = @service.service_version_instances
+    @all_service_types = @service.service_types
+
+    @soaplab_server = @service.soaplab_server
+
+    @pending_responsibility_requests = @service.pending_responsibility_requests
+
+    if @latest_version_instance.is_a?(RestService)
+      @grouped_rest_methods = @latest_version_instance.group_all_rest_methods_from_rest_resources
+    end
+
+    @data_annotations = @service.data_example_annotations
+
+    @has_data_examples = false
+    @data_annotations.each do |d|
+      unless d[:annotations].blank?
+        @has_data_examples = true
+        break
+      end
+    end
+
+    @test_script_service_tests = @service.service_tests_by_type("TestScript")
+  end
+
   def examples
     @latest_version = @service.latest_version
     @latest_version_instance = @latest_version.service_versionified
@@ -331,15 +400,14 @@ class ServicesController < ApplicationController
     @test_script_service_tests = @service.service_tests_by_type("TestScript")
 
     respond_to do |format|
-      format.html  # examples.html.erb
+      format.html { render 'services/examples'} # examples.html.erb
       format.js { render :layout => false }
     end
   end
 
-  # For BioMedBridges project - get all services in BMB-specific format
   def bmb
     # Get all SOAP and REST services that have not been archived
-    @services = (RestService.all(:include => :service, :conditions => 'services.archived_at IS NULL') + SoapService.all(:include => :service, :conditions => 'services.archived_at IS NULL')).sort_by { |s| s.created_at }
+    @services = (RestService.includes(:service).where("services.archived_at is NULL") + SoapService.includes(:service).where("services.archived_at is NULL")).sort_by { |s| s.created_at }
 
     respond_to do |format|
       format.xml
@@ -411,7 +479,7 @@ class ServicesController < ApplicationController
         :joins => joins
       }
 
-      @services = ActiveRecord::Base.connection.select_all(Service.send(:construct_finder_sql, finder_options))
+      @services = ActiveRecord::Base.connection.select_all(Service.send(:construct_finder_arel, finder_options))
     else
       # Must check if we need to include archived services or not
       if include_archived?
@@ -445,7 +513,7 @@ class ServicesController < ApplicationController
   end
 
   def find_favourite
-    @favourite = Favourite.find(:first, :conditions => { :favouritable_type => "Service", :favouritable_id => params[:id], :user_id => current_user.id })
+    @favourite = Favourite.first(:conditions => { :favouritable_type => "Service", :favouritable_id => params[:id], :user_id => current_user.id })
   end
 
   def check_if_user_wants_to_categorise

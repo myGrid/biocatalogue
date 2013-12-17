@@ -13,7 +13,7 @@
 
 <div class="box_info_standout center" style="margin: 1.5em auto; width: 680px;">
   Provides a graphical view of the annotation level for services in <%= SITE_NAME -%>.
-  <%= link_to_function "...more" + expand_image, visual_effect(:toggle_blind, "about_ann_level", :duration => 0.3), :style => "text-decoration:none;" %>
+  <%= link_to_function(("...more" + expand_image).html_safe, visual_effect(:toggle_blind, "about_ann_level", :duration => 0.3), :style => "text-decoration:none;").html_safe %>
 	<div id="about_ann_level" style="display:none;text-align:left;">
 		<h4>Annotation Level</h4>
 			The annotation level is calculated as a ratio of the expected
@@ -35,10 +35,10 @@
               	</a>
 				<ul>
 	  				<li <%= sort_li_class_helper "created", "desc" %>>
-        				<%= sort_link_helper "Created", "created", "desc"-%>
+        				<%= curation_sort_link_helper "Created", "created", "desc"-%>
       				</li> <br/>
 					<li <%= sort_li_class_helper "ann_level", "desc"%>>
-        				<%= sort_link_helper "Annotation Level", "ann_level", "desc"-%>
+        				<%= curation_sort_link_helper "Annotation Level", "ann_level", "desc"-%>
       				</li>
        			</ul>
             </li>

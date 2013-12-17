@@ -21,8 +21,8 @@ class RestMethodParameterTest < ActiveSupport::TestCase
     rest = create_rest_service(:endpoints => "/{id}")    
     map = rest.rest_resources[0].rest_methods[0].rest_method_parameters[0]
     
-    assert_equal map.rest_method_id, RestMethod.first.id
-    assert_equal map.rest_parameter_id, RestParameter.first.id
+    assert_equal map.rest_method_id, rest.rest_resources[0].rest_methods[0].id
+    assert_equal map.rest_parameter_id, rest.rest_resources[0].rest_methods[0].request_parameters[0].id
 
     rest.service.destroy
   end

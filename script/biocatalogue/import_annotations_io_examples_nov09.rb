@@ -21,7 +21,7 @@ RAILS_ENV = env
 
 # Load up the Rails app
 require File.join(File.dirname(__FILE__), '..', '..', 'config', 'environment')
-IMPORT_ANNOTATION_FILE_PATH=File.join(RAILS_ROOT,'data','annotations_io_examples_nov09.xml')
+IMPORT_ANNOTATION_FILE_PATH=File.join(Rails.root,'data','annotations_io_examples_nov09.xml')
 DEFAULT_LOGIN="jerzyo"
 
 #imports annotatation from XML file
@@ -100,7 +100,7 @@ def self.import_annotations(user_display_name,annotations_file_path=IMPORT_ANNOT
           elsif ports.length>1
             ambiguous_ports+=1
           else
-            port=SoapInput.find(:first,:conditions=>["id=?",ports[0].values[0]])
+            port=SoapInput.first(:conditions=>["id=?",ports[0].values[0]])
             annotation_value2=CGI.unescapeHTML(annotation_value)
             new_annotations=port.create_annotations({"Example"=>[annotation_value2]},user)
             if new_annotations.length==1
@@ -126,7 +126,7 @@ def self.import_annotations(user_display_name,annotations_file_path=IMPORT_ANNOT
           elsif ports.length>1
             ambiguous_ports+=1
           else
-            port=SoapOutput.find(:first,:conditions=>["id=?",ports[0].values[0]])
+            port=SoapOutput.first(:conditions=>["id=?",ports[0].values[0]])
             annotation_value2=CGI.unescapeHTML(annotation_value)
             new_annotations=port.create_annotations({"Example"=>[annotation_value2]},user)
             if new_annotations.length==1

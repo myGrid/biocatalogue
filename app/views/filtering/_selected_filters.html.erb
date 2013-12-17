@@ -44,7 +44,7 @@
 							<% filter_group_subs_count += 1 %>
 					
 							<p class="type_small">
-								<%= BioCatalogue::Filtering.filter_type_to_display_name(filter_type) -%>
+								<%= BioCatalogue::Filtering.filter_type_to_display_name(filter_type).html_safe -%>
 							</p>
 							
 							<ul class="top_level">
@@ -54,7 +54,7 @@
 								<% values.each do |value| %>
 									
 									<% 
-										 filter = { "id" => value, "name" => display_name_for_filter(filter_type, value) }
+										 filter = { "id" => value, "name" => display_name_for_filter(filter_type, value).html_safe }
 										 filter_items_count += 1
 									%>
 									

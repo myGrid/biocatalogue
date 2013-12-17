@@ -10,13 +10,13 @@
 
 <div id="home_content">
 	
-	<p id="home_heading">The <%= SITE_NAME -%>: providing a curated catalogue of Life Science Web Services</p>
+	<p id="home_heading">The <%= SITE_NAME -%>: providing a curated catalogue of life science Web services</p>
 	
 	<div id="middle_column_wrapper">
 		<div id="middle_column">
 			
 			<div id="home_stats_bar">
-		    <center>
+		    <div id="div-centered" style="width: 100%;">
 		    	<% rounded nil, "#333", "100%" do %>
             <%= SITE_NAME -%> currently has
 					  <strong><%= link_to pluralize(Service.count, "service"), services_path -%></strong>,
@@ -24,7 +24,7 @@
 					  <strong><%= link_to pluralize(User.count_activated, "member"), users_url -%></strong>
 						<%= info_icon_with_tooltip("<b>Members</b> are registered users of #{SITE_NAME}.<br/><br/>If you would like to sign up for an account and become a member please click on 'Sign Up' towards the top right. <br/><br/>#{sign_up_benefits_text}") -%>
 					<% end %>
-		    </center>
+		    </div>
 		  </div>
 			
 			<%= render :partial => "home/info_boxes" -%>
@@ -42,71 +42,53 @@
 		    </ul>
 			</div>
 			<% end %>
-			
-			<div style="width: 470px; margin: 0 auto; margin-top: 1.5em;">
-				<h3>Our Partners</h3>
-		    <p style="text-align: center;">
-					<%= link_to(image_tag("embrace_logo.png", :alt => "EMBRACE Grid logo", :class => "logo"), "http://www.embracegrid.info/", :target => "_blank") -%>
-					<%= link_to(image_tag('myexp_logo.png', :alt => "myExperiment logo", :class => "logo"), "http://www.myexperiment.org/", :target => "_blank") -%>
-					<%= link_to(image_tag('mygrid_logo.png', :alt => "myGrid logo", :class => "logo"), "http://www.mygrid.org.uk/", :target => "_blank") -%>
-					<%= link_to(image_tag('seekda_logo.png', :alt => "SeekDa logo", :class => "logo"), "http://seekda.com/", :target => "_blank") -%>
-					<%= link_to(image_tag('biomoby_logo.gif', :alt => "BioMoby logo", :class => "logo"), "http://www.biomoby.org/", :target => "_blank") -%>
-				</p>
-				<p class="box_info_standout" style="margin-top: 1em; font-weight: bold; text-align: center; padding: 0.2em 0.3em;">
-					The <a href="http://www.embraceregistry.net/" target="_blank">EMBRACE Registry</a> and the BioCatalogue have now been merged
-				</p>
-			</div>
-			
-			<div style="width: 470px; margin: 0 auto; margin-top: 3em;">
-				<h3>
-					Click <a href="http://www.biocatalogue.org/wiki" target="_blank">here</a> for more information about the BioCatalogue project
-				</h3>
-			</div>
-			
 		</div>
 	</div>
 	
 	<div id="left_column">
 		<div class="column_inner">
-			
-			<!-- Latest Activity -->
-			<div class="section_box">
-				<h4>
-					<span style="float: right; margin-left: 0.3em;">
-            <%= feed_icon_tag "Latest Activity", activity_feed_path(:format => :atom) -%>
-          </span>
-					<%= generic_icon_for(:activity, 'margin-right: 0.4em;') -%>
-					<span>Latest Activity</span>
-				</h4>
-				
-				<div class="section_content" style="font-size: 85%;">
-					<%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_main, :style => :simple } -%>
-				</div>
-				
-				<div class="section_footer">
-					<b><%= link_to "More", latest_url(:anchor => "activity") %></b>
-				</div>
-			</div>
-			
-			<!-- Monitoring Test Changes -->
-      <div class="section_box">
-        <h4>
-        	<span style="float: right; margin-left: 0.3em;">
-            <%= feed_icon_tag "Service Monitoring Status Changes", status_changes_feed_path(:format => :atom) -%>
-          </span>
-          <%= generic_icon_for(:activity, 'margin-right: 0.4em;') -%>
-          <span>Monitoring Test Changes</span>
-        </h4>
-        
-        <div class="section_content" style="font-size: 85%;">
-          <%= render :partial => 'shared/activity', :locals => { :activity_logs => @activity_logs_monitoring, :style => :simple } -%>
-        </div>
-        
-        <div class="section_footer">
-          <b><%= link_to "More", latest_url(:anchor => "monitoring") %></b>
-        </div>
-      </div>
-			
+
+          <!-- Helpful Links -->
+          <div class="section_box">
+            <h4>
+              <%= generic_icon_for(:info, 'margin-right: 0.4em;') -%>
+              <span>Helpful Links</span>
+            </h4>
+
+            <div class="section_content" style="font-size: 85%;">
+              <p>
+                <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting started with the Catalogue</a>
+              </p>
+              <p>
+                <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:general_info_on_web_services" target="_blank">General info on Web services</a>
+              </p>
+              <p>
+                <a href="http://dev.mygrid.org.uk/wiki/display/scrap/Web+services+guidelines" target="_blank">Best practice guide for developing Web services</a>
+              </p>
+              <p>
+                <a href="http://www.software.ac.uk/blog/2013-12-04-top-tips-creating-web-services" target="_blank">SSI's top tips on creating Web services</a>
+              </p>
+              <p>
+                <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:executing_web_services" target="_blank">Executing Web services</a>
+              </p>
+              <p>
+                <a href="http://soaplab.sourceforge.net/soaplab2/StepByStep.html" target="_blank">Turn your command line application(s) into Web services</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="section_box">
+            <h4>
+              <%= generic_icon_for(:info, 'margin-right: 0.4em;') -%>
+              <span>Citing BioCatalogue</span>
+            </h4>
+
+            <div class="section_content" style="font-size: 85%;">
+              <p>Bhagat, J., Tanoh, F., Nzuobontane, E., Laurent, T., Orlowski, J., Roos, M., Wolstencroft, K., Aleksejevs, S., Stevens, R., Pettifer, S., Lopez, R., Goble, C.A.</p>
+              <p><i><a href="http://dx.doi.org/10.1093/nar/gkq394">BioCatalogue: a universal catalogue of web services for the life sciences</a></i></p>
+              <p>Nucl. Acids Res. (2010) 38: 689-694 <br> doi:10.1093/nar/gkq394</p>
+            </div>
+            </div>
 		</div>
 	</div>
 	
@@ -146,94 +128,6 @@
 					<b><%= link_to "More", announcements_url %></b>
 				</div>
 			</div>
-			
-			<!-- Latest Services -->
-			<div class="section_box">
-				<h4>
-					<span style="float: right; margin-left: 0.3em;">
-						<%= feed_icon_tag "Latest Services", services_path(:format => :atom) -%>
-					</span>
-					<%= generic_icon_for(:services, 'margin-right: 0.4em;') -%>
-					<span>Latest Services</span>
-				</h4>
-				
-				<div class="section_content" style="font-size: 85%;">
-					<% unless (services = Service.latest(5)).empty? %>
-						<% services.each do |s| %>
-							<p style="margin-top: 0; margin-bottom: 0.7em; text-align: center;">
-								<%= link_to display_name(s), s -%>
-							</p> 
-						<% end %>
-					<% else %>
-						<p class="none_text">None</p>
-					<% end %>
-				</div>
-				
-				<div class="section_footer">
-					<b><%= link_to "More", latest_url(:anchor => "services") %></b>
-				</div>
-			</div>
-			
-			<!-- Top Curators -->
-			<div class="section_box">
-				<h4>
-					<%= generic_icon_for(:curators, 'margin-right: 0.4em;') -%>
-					<span>Top Contributors</span>
-				</h4>
-				
-				<div class="section_content">
-					<% unless (top_curators = User.top_curators).empty? %>
-						<table id="top_curators">
-							<% top_curators.each do |u| %>
-								<tr title="<%= tooltip_title_attrib("#{u['name']} has added #{u['count']} annotations to the #{SITE_NAME}") -%>">
-									<td class="count">
-										<%= number_with_delimiter(u['count']) -%>
-									</td>
-									<td>
-										<%= user_link_with_flag(:id => u['id'], 
-                                            :display_name => u['name'], 
-                                            :country => u['country'], 
-                                            :roles => u['roles']) -%>
-									</td>
-								</tr>
-							<% end %>
-						</table>
-					<% else %>
-						<p class="none_text">None</p>
-					<% end %>
-				</div>
-				
-				<div class="section_footer">
-					<b><%= link_to "More", latest_url(:anchor => "contributors") %></b>
-				</div>
-			</div>
-			
-			<!-- Helpful Links -->
-      <div class="section_box">
-        <h4>
-          <%= generic_icon_for(:info, 'margin-right: 0.4em;') -%>
-          <span>Helpful Links</span>
-        </h4>
-        
-        <div class="section_content" style="font-size: 85%;">
-          <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:getting_started" target="_blank">Getting started with the Catalogue</a>
-          </p>
-          <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:general_info_on_web_services" target="_blank">General Info on Web Services</a>
-          </p>
-          <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:making_web_services" target="_blank">Making Web Services</a>
-          </p>
-          <p>
-            <a href="http://www.biocatalogue.org/wiki/doku.php?id=public:help:executing_web_services" target="_blank">Executing Web Services</a>
-          </p>
-          <p>
-            <a href="http://soaplab.sourceforge.net/soaplab2/StepByStep.html" target="_blank">Turn your command line application(s) into Web Services</a>
-          </p>
-        </div>
-      </div>
-			
 		</div>
 	</div>
 		

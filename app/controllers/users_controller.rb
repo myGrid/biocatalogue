@@ -6,55 +6,64 @@
 
 class UsersController < ApplicationController
 
-  before_filter :disable_action, :only => [ :destroy ]
-  before_filter :disable_action_for_api, :except => [ :index, :show, :annotations_by, :services, :filters, :filtered_index, 
-                                                      :saved_searches, :whoami, :favourites, :services_responsible ]
+  before_filter :disable_action, :only => [:destroy]
+  before_filter :disable_action_for_api, :except => [:index, :show, :annotations_by, :services, :filters, :filtered_index,
+                                                     :saved_searches, :whoami, :favourites, :services_responsible]
 
-  before_filter :login_or_oauth_required, :except => [ :index, :new, :create, :show, :activate_account, :forgot_password, 
-                                                       :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by, 
-                                                       :services, :filtered_index, :filters, :favourites, :services_responsible, 
-                                                       :deactivate ]
+  before_filter :login_or_oauth_required, :except => [:index, :new, :create, :show, :activate_account, :forgot_password,
+                                                      :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by,
+                                                      :services, :filtered_index, :filters, :favourites, :services_responsible,
+                                                      :deactivate]
 
-  before_filter :check_user_rights, :only => [ :edit, :update, :change_password, :saved_searches ]
-  
-  before_filter :initialise_updated_user, :only => [ :edit, :update ]
-  
-  skip_before_filter :verify_authenticity_token, :only => [ :rpx_update ]
+  before_filter :check_user_rights, :only => [:edit, :update, :change_password, :saved_searches]
+
+  before_filter :initialise_updated_user, :only => [:edit, :update]
+
+  skip_before_filter :verify_authenticity_token, :only => [:rpx_update]
 
   before_filter :parse_filtered_index_params, :only => :filtered_index
-  
-  before_filter :parse_current_filters, :only => [ :index, :filtered_index ]
-  
-  before_filter :get_filter_groups, :only => [ :filters ]
-  
-  before_filter :parse_sort_params, :only => [ :index, :filtered_index ]
-  
-  before_filter :find_users, :only => [ :index, :filtered_index ]
-  
-  before_filter :find_user, :only => [ :edit, :update, :change_password,
-                                       :rpx_update, :annotations_by, :favourites, 
-                                       :services_responsible, :make_curator, :remove_curator,
-                                       :deactivate ]
 
-  before_filter :find_user_inclusive, :only => [ :show, :activate ]
+  before_filter :parse_current_filters, :only => [:index, :filtered_index]
 
-  before_filter :add_use_tab_cookie_to_session, :only => [ :show ]
-  
-  before_filter :authorise, :only => [ :make_curator, :remove_curator, :deactivate ]
-  
+  before_filter :get_filter_groups, :only => [:filters]
+
+  before_filter :parse_sort_params, :only => [:index, :filtered_index]
+
+  before_filter :find_users, :only => [:index, :filtered_index]
+
+  before_filter :find_user, :only => [:edit, :update, :change_password,
+                                      :rpx_update, :annotations_by, :favourites,
+                                      :services_responsible, :make_curator, :remove_curator,
+                                      :deactivate]
+
+  before_filter :find_user_inclusive, :only => [:show, :activate,
+                                                :services_submitted, :services_annotated,
+                                                :services_responsible, :service_status_notifications]
+
+  before_filter :add_use_tab_cookie_to_session, :only => [:show]
+
+  before_filter :authorise, :only => [:make_curator, :remove_curator, :deactivate]
+
   oauth_authorize :saved_searches
+
+  set_tab :profile, :only => %w(show)
+  set_tab :services_submitted, :only => %w(services_submitted)
+  set_tab :services_responsible, :only => %w(services_responsible)
+  set_tab :services_annotated, :only => %w(services_annotated)
+  set_tab :favourites, :only => %w(favourites)
+  set_tab :service_status_notifications, :only => %w(service_status_notifications)
 
   # GET /users
   # GET /users.xml
   def index
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  # index.xml.builder
+      format.xml # index.xml.builder
       format.json { render :json => BioCatalogue::Api::Json.index("users", json_api_params, @users).to_json }
       format.bljson { render :json => BioCatalogue::Api::Bljson.index("users", @users).to_json }
     end
   end
-  
+
   # POST /filtered_index
   # Example Input (differs based on available filters):
   #
@@ -75,21 +84,21 @@ class UsersController < ApplicationController
     unless is_api_request?
       @users_services = @user.services.paginate(:page => @page,
                                                 :order => "created_at DESC")
-                                                
-      @users_paged_annotated_services_ids = @user.annotated_service_ids.paginate(:page => @page, :per_page => @per_page)
-      @users_paged_annotated_services = BioCatalogue::Mapper.item_ids_to_model_objects(@users_paged_annotated_services_ids, "Service")
-      
+
+      @users_paged_annotated_services = Service.where(:id => @users_paged_annotated_services).paginate(:page => @page, :per_page => @per_page)
+      @users_paged_annotated_services_ids = @users_paged_annotated_services.map { |x| x.id }
+
       @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
-      
-      @service_responsibles = @user.service_responsibles.paginate(:page => @page, 
+
+      @service_responsibles = @user.service_responsibles.paginate(:page => @page,
                                                                   :order => "status ASC, created_at DESC")
-                                                                  
+
     end
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.xml  # show.xml.builder
-      format.json { render :json =>  @user.to_json }
+      format.html { render 'users/display_tabs' } # show.html.erb
+      format.xml # show.xml.builder
+      format.json { render :json => @user.to_json }
     end
   end
 
@@ -97,15 +106,15 @@ class UsersController < ApplicationController
   # GET /users/new.xml
   def new
     if logged_in? && !is_api_request?
-      flash[:error] = "You cannot sign up for a new account because you are already logged in"
+      flash[:error] = "You cannot sign up for a new account because you are already logged in."
       redirect_to home_url
     else
       @user = User.new
-  
+
       respond_to do |format|
         format.html # new.html.erb
-        format.xml  { render :xml => @user }
-      end    
+        format.xml { render :xml => @user }
+      end
     end
   end
 
@@ -120,16 +129,16 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        UserMailer.deliver_registration_notification(@user, base_host)
+        UserMailer.registration_notification(@user, base_host).deliver
         #flash[:notice] = "Your account was successfully created.<p><b>Your account now needs to be activated.</b></p><p>You'll receive an email shortly to confirm the creation of your account and activate it.</p>"
-        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you don't receive this email in the next few minutes, please contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>"
+        flash[:notice] = "<div class=\"flash_header\">An <b>email</b> has been sent to your address in order to complete your registration.</div><div class=\"flash_body\">If you do not receive this email in the next few minutes, please contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>".html_safe
         format.html { redirect_to home_url }
         #format.xml  { render :xml => @user, :status => :created, :location => @user }
         format.xml { disable_action }
       else
         flash.now[:error] = 'Could not create new account.'
         format.html { render :action => "new" }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
+        format.xml { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -139,13 +148,13 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        flash.now[:notice] = 'Successfully updated'
+        flash.now[:notice] = 'Successfully updated.'
         format.html { render :action => "edit" }
-        format.xml  { head :ok }
+        format.xml { head :ok }
       else
         flash.now[:error] = 'Could not update. Please see errors below...'
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
+        format.xml { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -156,13 +165,13 @@ class UsersController < ApplicationController
       if user
         if user.activate!
           session[:previous_url] = "/users/#{user.id}"
-          flash[:notice] = "<div class=\"flash_header\">Account activated</div><div class=\"flash_body\">You can log into your account now.</div>"
+          flash[:notice] = "<div class=\"flash_header\">Account activated</div><div class=\"flash_body\">You can log into your account now.</div>".html_safe
           ActivityLog.create(@log_event_core_data.merge(:action => "activate", :activity_loggable => user)) if USE_EVENT_LOG
           return
         end
       end
     end
-    flash[:error] = "<div class=\"flash_header\">Wrong activation code</div><div class=\"flash_body\">Please check the activation link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>"
+    flash[:error] = "<div class=\"flash_header\">Wrong activation code</div><div class=\"flash_body\">Please check the activation link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.</div>".html_safe
   end
 
   def forgot_password
@@ -173,10 +182,10 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user = User.find_by_email(params[:user][:email], :conditions => "activated_at IS NOT NULL")
         @user.generate_security_token!
-        UserMailer.deliver_reset_password(@user, base_host)
+        UserMailer.reset_password(@user, base_host).deliver
         format.html # request_reset_password.html.erb
       else
-        flash[:error] = "No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact <a href=\"/contact\">#{SITE_NAME} Support</a>"
+        flash[:error] = "No matching email address has been found or the account corresponding is not activated.<br />Please check the email address you entered or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.".html_safe
         format.html { redirect_to forgot_password_url }
       end
     end
@@ -186,7 +195,7 @@ class UsersController < ApplicationController
     if params[:security_token] != nil && @user = User.find_by_security_token(params[:security_token], :conditions => "activated_at IS NOT NULL")
       if request.post?
         if @user.reset_password!(params[:user][:password], params[:user][:password_confirmation])
-          flash[:notice] = "<div class=\"flash_header\">New password accepted.</div><div class=\"flash_body\">Please log in with your new password.</div>"
+          flash[:notice] = "<div class=\"flash_header\">New password accepted.</div><div class=\"flash_body\">Please log in with your new password.</div>".html_safe
           session[:previous_url] = "/users/#{@user.id}"
           flash[:error] = nil
           ActivityLog.create(@log_event_core_data.merge(:action => "reset_password", :activity_loggable => @user)) if USE_EVENT_LOG
@@ -195,7 +204,7 @@ class UsersController < ApplicationController
         end
       end
     else
-      flash[:error] = "No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>"
+      flash[:error] = "No matching reset code has been found or the account corresponding is not activated.<br />Please check the reset link or contact <a href=\"/contact\">#{SITE_NAME} Support</a>.".html_safe
       flash[:notice] = nil
     end
   end
@@ -203,7 +212,7 @@ class UsersController < ApplicationController
   def change_password
     if request.post?
       if @user.reset_password!(params[:user][:password], params[:user][:password_confirmation])
-        flash[:notice] = "<div class=\"flash_header\">New password accepted.</div>"
+        flash[:notice] = "New password accepted."
         session[:previous_url] = "/users/#{@user.id}"
         flash[:error] = nil
         ActivityLog.create(@log_event_core_data.merge(:action => "change_password", :activity_loggable => @user)) if USE_EVENT_LOG
@@ -212,19 +221,19 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
   def rpx_merge_setup
     if ENABLE_RPX
       if params[:token].blank? || (data = RPXNow.user_data(params[:token])).blank? || (rpx_user = User.find_by_identifier(data[:identifier])).nil?
-        error("Unable to complete the merging of accounts", :status => 500)
+        error("Unable to complete the merging of accounts.", :status => 500)
         return
       else
         # This action is used for 2 different parts of the workflow:
         # 1) initial stage, where we get the user to log into the existing account.
         # 2) final stage, filling in any required fields/options and submitting the merge.
-        
+
         if rpx_user.id == current_user.id
-          flash[:notice] = "<b>Please sign in to the existing member account that you want to merge your new account into</b>"
+          flash[:notice] = "Please sign in to the existing member account that you want to merge your new account into."
           @rpx_login_required = true
         else
           @rpx_login_required = false
@@ -244,17 +253,17 @@ class UsersController < ApplicationController
   def rpx_merge
     if ENABLE_RPX
       if params[:token].blank? || (data = RPXNow.user_data(params[:token])).blank? || (rpx_user = User.find_by_identifier(data[:identifier])).nil? || !rpx_user.allow_merge?
-        error("Unable to complete the merging of accounts", :status => 500)
+        error("Unable to complete the merging of accounts.", :status => 500)
         return
       else
         begin
           current_user.identifier = rpx_user.identifier
           current_user.save!
           rpx_user.destroy
-          
-          ActivityLog.create(@log_event_core_data.merge(:action => "rpx_merge", :activity_loggable => current_user, :data => { :deleted_account_id => rpx_user.id }))
-          
-          flash[:notice] = "Accounts successfully merged!"
+
+          ActivityLog.create(@log_event_core_data.merge(:action => "rpx_merge", :activity_loggable => current_user, :data => {:deleted_account_id => rpx_user.id}))
+
+          flash[:notice] = "Accounts successfully merged."
           redirect_to(current_user)
         rescue Exception => ex
           logger.error "Failed to merge new RPX based account with an existing #{SITE_NAME} account. Exception: #{ex.class.name} - #{ex.message}"
@@ -279,7 +288,7 @@ class UsersController < ApplicationController
             else
               @user.identifier = data[:identifier]
               if @user.save
-                flash[:notice] = 'You have successfully updated your external account and can now log in with it'
+                flash[:notice] = 'You have successfully updated your external account and can now log in with it.'
                 format.html { redirect_to edit_user_url(@user) }
               else
                 flash.now[:error] = 'Could not update your external account identifier. Please see errors below...'
@@ -346,48 +355,95 @@ class UsersController < ApplicationController
       error("Not authorised", :status => :unauthorized)
     end
   end
-  
+
   def favourites
+    @live_tab = 'favourites'
     respond_to do |format|
-      format.html { redirect_to user_path(@user, :anchor => "favourites") }
-      format.xml  { disable_action }
+      format.html { render 'users/display_tabs'}
+      format.xml { disable_action }
       format.json { render :json => BioCatalogue::Api::Json.collection(@user.favourites) }
     end
   end
-  
+
   def services_responsible
+    @live_tab = 'services_responsible'
+    if !@user.nil? && !@user.services.nil?
+      @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
+    end
+
+    @users_paged_annotated_services = Service.where(:id => @users_paged_annotated_services).paginate(:page => @page, :per_page => @per_page)
     respond_to do |format|
-      format.html { redirect_to user_path(@user, :anchor => "other-services-responsible") }
-      format.xml  { disable_action }
-      format.json { render :json => BioCatalogue::Api::Json.collection(@user.active_services_responsible_for) }
+      format.html { render 'users/display_tabs'}
     end
   end
-  
+
+  def services_annotated
+    @live_tab = 'services_annotated'
+    if !@user.nil? && !@user.services.nil?
+      @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
+    end
+    @users_paged_annotated_services = Service.where(:id => @users_paged_annotated_services).paginate(:page => @page, :per_page => @per_page)
+    @users_paged_annotated_services_ids = @users_paged_annotated_services.map { |x| x.id }
+    respond_to do |format|
+      format.html { render 'users/display_tabs'}
+    end
+  end
+
+  def services_submitted
+    @live_tab = 'services_submitted'
+    if !@user.nil? && !@user.services.nil?
+      @users_services = @user.services.paginate(:page => @page,
+                                                :order => "created_at DESC")
+    end
+    respond_to do |format|
+      format.html { render 'users/display_tabs'}
+    end
+  end
+
+
+  def service_status_notifications
+    @live_tab = 'service_status_notifications'
+    if !@user.nil? && !@user.services.nil?
+      @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
+    end
+    @service_responsibles = @user.service_responsibles.paginate(:page => @page,
+                                                                :order => "status ASC, created_at DESC")
+    respond_to do |format|
+      format.html { render 'users/display_tabs'}
+    end
+  end
+
+
+  def service_status
+    respond_to do |format|
+    end
+  end
+
   def make_curator
     respond_to do |format|
       if @user
         if @user.make_curator!
           ActivityLog.create(@log_event_core_data.merge(:action => "make_curator", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is now a curator</div>"
-          format.html{ redirect_to(user_url(@user)) }
+          flash[:notice] = "#{@user.display_name} is now a curator."
+          format.html { redirect_to(user_url(@user)) }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not make user a curator</div>"
-          format.html{ redirect_to(user_url(@user)) }
+          flash[:error] = "Could not make user a curator."
+          format.html { redirect_to(user_url(@user)) }
         end
       end
     end
   end
-  
+
   def remove_curator
     respond_to do |format|
       if @user
         if @user.remove_curator!
           ActivityLog.create(@log_event_core_data.merge(:action => "remove_curator", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} is no longer a curator</div>"
-          format.html{ redirect_to(user_url(@user)) }
+          flash[:notice] = "#{@user.display_name} is no longer a curator."
+          format.html { redirect_to(user_url(@user)) }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not remove curator rights on user</div>"
-          format.html{ redirect_to(user_url(@user)) }
+          flash[:error] = "Could not remove curator rights on user."
+          format.html { redirect_to(user_url(@user)) }
         end
       end
     end
@@ -398,11 +454,11 @@ class UsersController < ApplicationController
       if @user
         if @user.activate!
           ActivityLog.create(@log_event_core_data.merge(:action => "activate", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been activated</div>"
+          flash[:notice] = "#{@user.display_name} has been activated."
         else
-          flash[:error] = "<div class=\"flash_header\">Could not activate the user. Please contact a system admin.</div>"
+          flash[:error] = "Could not activate the user. Please contact a system admin."
         end
-        format.html{ redirect_to :back }
+        format.html { redirect_to :back }
       end
     end
   end
@@ -412,19 +468,22 @@ class UsersController < ApplicationController
       if @user
         if @user.deactivate!
           ActivityLog.create(@log_event_core_data.merge(:action => "deactivate", :culprit => current_user, :activity_loggable => @user)) if USE_EVENT_LOG
-          flash[:notice] = "<div class=\"flash_header\">#{@user.display_name} has been deactivated</div>"
-          format.html{ redirect_to(root_url) }
+          flash[:notice] = "#{@user.display_name} has been deactivated."
+          format.html { redirect_to(root_url) }
         else
-          flash[:error] = "<div class=\"flash_header\">Could not deactivate the user. Please contact a system admin.</div>"
-          format.html{ redirect_to(user_url(@user)) }
+          flash[:error] = "Could not deactivate the user. Please contact a system admin."
+          format.html { redirect_to(user_url(@user)) }
         end
       end
     end
   end
 
-protected
+  protected
 
   def include_deactivated?
+    #if user is not logged in or is not a curator then do not let them
+    # see deactivated users whatever is in the query parameters
+    return false if !logged_in? || !current_user.is_curator?
     unless defined?(@include_deactivated)
       session_key = "#{self.controller_name.downcase}_#{self.action_name.downcase}_include_deactivated"
       if !params[:include_deactivated].blank?
@@ -439,76 +498,81 @@ protected
     end
     return @include_deactivated
   end
+
   helper_method :include_deactivated?
 
-private
-  
+  private
+
   def parse_sort_params
-    sort_by_allowed = [ "activated", "name" ]
+    sort_by_allowed = ["activated", "name"]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
-      params[:sort_by].downcase
-    else
-      "activated"
-    end
-    
-    sort_order_allowed = [ "asc", "desc" ]
+                 params[:sort_by].downcase
+               else
+                 "activated"
+               end
+
+    sort_order_allowed = ["asc", "desc"]
     @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
-      params[:sort_order].downcase
-    else
-      "desc"
-    end
+                    params[:sort_order].downcase
+                  else
+                    "desc"
+                  end
   end
-  
+
   def find_users
-    
+
     # Sorting
-    
+
     order = 'users.activated_at DESC'
     order_field = nil
     order_direction = nil
-    
+
     case @sort_by
       when 'activated'
         order_field = "activated_at"
       when 'name'
         order_field = "display_name"
     end
-    
+
     case @sort_order
       when 'asc'
         order_direction = 'ASC'
       when 'desc'
         order_direction = "DESC"
     end
-    
+
     unless order_field.blank? or order_direction.nil?
       order = "users.#{order_field} #{order_direction}"
     end
-    
-    conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
-    conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL") unless include_deactivated?
 
+    conditions, joins = BioCatalogue::Filtering::Users.generate_conditions_and_joins_from_filters(@current_filters, params[:q])
+    #TODO merge conditions using 'where' rather than deprecated 'merge_conditions' method
+    #conditions = User.merge_conditions(conditions, "activated_at IS NOT NULL") unless include_deactivated?
+    conditions_string = User.send(:sanitize_sql, conditions) # naughty was of doing things but things only works if we pass the conditions as a string
+    conditions_string = "#{conditions_string} #{conditions_string.blank? ? '' : 'AND'} activated_at IS NOT NULL" unless include_deactivated?
     if self.request.format == :bljson
       finder_options = {
-        :select => "users.id, users.display_name",
-        :order => order,
-        :conditions => conditions,
-        :joins => joins
+          :select => "users.id, users.display_name",
+          :order => order,
+          :conditions => conditions_string,
+          :joins => joins
       }
-      
-      @users = ActiveRecord::Base.connection.select_all(User.send(:construct_finder_sql, finder_options))
+
+      @users = ActiveRecord::Base.connection.select_all(User.send(:construct_finder_arel, finder_options))
     else
       @users = User.paginate(:page => @page,
                              :per_page => @per_page,
                              :order => order,
-                             :conditions => conditions,
+                             :conditions => conditions_string,
                              :joins => joins)
-  
+
     end
   end
   
   def find_user
-    @user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")
+    # Old Rails 2 style
+    #@user = User.find(params[:id], :conditions => "activated_at IS NOT NULL")
+    @user = User.where("activated_at IS NOT NULL").find(params[:id])
   end
 
   def find_user_inclusive
@@ -517,16 +581,16 @@ private
 
   def check_user_rights
     find_user if !defined?(@user) or @user.nil?
-    unless mine?(@user)     
+    unless mine?(@user)
       respond_to do |format|
-        flash[:error] = "You don't have the rights to perform this action."
+        flash[:error] = "You do not have the rights to perform this action."
         format.html { redirect_to :users }
-        format.xml  { redirect_to :users => @user.errors, :status => :unprocessable_entity }
-        format.json  { error_to_back_or_home("You are not allowed to perform this action") }
+        format.xml { redirect_to :users => @user.errors, :status => :unprocessable_entity }
+        format.json { error_to_back_or_home("You are not allowed to perform this action") }
       end
     end
   end
-  
+
   def initialise_updated_user
     # Initialise a dummy user object for use in forms,
     # so that it remembers any data in between submission failures.

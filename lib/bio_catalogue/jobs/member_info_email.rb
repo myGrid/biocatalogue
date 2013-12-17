@@ -9,7 +9,7 @@ module BioCatalogue
     class MemberInfoEmail < Struct.new(:subject, :text, :email)
       def perform
           begin
-          	MemberInfoMailer.deliver_text_to_email(subject, text, email) 
+          	MemberInfoMailer.text_to_email(subject, text, email).deliver
          	rescue Exception => ex
           	Rails.logger.error("Failed to deliver email to #{email}") 
             Rails.logger.error(ex.to_s)

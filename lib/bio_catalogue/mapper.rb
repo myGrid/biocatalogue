@@ -76,7 +76,7 @@ module BioCatalogue
       
       model = model_name.classify.constantize
       
-      items_temp = model.find(:all, :conditions => { :id => item_ids })
+      items_temp = model.all(:conditions => { :id => item_ids })
       
       # Order back to the same ordering as the initial item_ids list
       item_ids.each do |i|
@@ -93,7 +93,7 @@ module BioCatalogue
       
       compound_ids.each do |c|
         model, id = Mapper.split_compound_id(c, true)
-        item = model.find(:first, :conditions => { :id => id })
+        item = model.first(:conditions => { :id => id })
         items << item unless item.nil?
       end
       

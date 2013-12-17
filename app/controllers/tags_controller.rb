@@ -53,7 +53,7 @@ class TagsController < ApplicationController
     annotatable = Annotation.find_annotatable(params[:annotatable_type], params[:annotatable_id])
     
     if !annotatable.nil?
-      existing = Annotation.find(:all, 
+      existing = Annotation.all(
                                  :conditions => { :annotatable_type => annotatable.class.name,
                                                   :annotatable_id => annotatable.id,
                                                   :attribute_id => AnnotationAttribute.find_by_name("tag").id, 

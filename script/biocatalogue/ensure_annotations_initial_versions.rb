@@ -20,7 +20,7 @@ Annotation::Version.record_timestamps = false
 
 count = 0
 
-Annotation.find(:all).each do |ann|
+Annotation.all.each do |ann|
   if (ann.versions.length == 0) and (ann.version == 1)
     av = Annotation::Version.new
     

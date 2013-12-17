@@ -30,7 +30,7 @@ module BioCatalogue
         wsdl_url = CGI::escape(wsdl_url)
         xml= nil
         begin
-          SystemTimer.timeout(20.seconds) do 
+          timeout(20.seconds) do
             xml = open(PARSER_URI + wsdl_url).read
           end
           doc = REXML::Document.new(xml) unless xml.nil?
@@ -120,7 +120,7 @@ module BioCatalogue
         service_info       = {}
         wsdl_file_contents = nil
         begin
-          SystemTimer.timeout(20.seconds) do
+          timeout(20.seconds) do
             wsdl_file_contents  = open(wsdl.strip(), :proxy => HTTP_PROXY, "User-Agent" => HTTP_USER_AGENT).read
           end
         

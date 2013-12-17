@@ -12,7 +12,11 @@
 
 <h1>New Soaplab Server</h1>
 
-<%= error_messages_for :soaplab_server %>
+<% if !@soaplab_server.nil? && !@soaplab_server.errors.nil? then %>
+    <% @soaplab_server.errors.full_messages.each do |err| %>
+        <%= err %>
+    <% end %>
+<% end %>
 
 <p class="step_text">1. Specify the URL to the WSDL that lists all the tools in the soaplab server, then preview...</p>
 <i>e.g <br/>
@@ -20,12 +24,12 @@
    http://www.ebi.ac.uk/soaplab/services/AnalysisFactory?wsdl
 </i>
 <p/>
-<% form_remote_tag(:url => load_wsdl_soaplab_servers_url, 
+<% form_tag(:url => load_wsdl_soaplab_servers_url,
 								   :update => 'soaplab_server_after_wsdl_load', 
 							 		 :success => "new Effect.Highlight('soap_service_form', { duration: 1.5 });",
 									 :failure => "alert('Sorry, an error has occurred.');",
 							     :loading => "Element.show('spinner')",
-                   :complete => "Element.hide('spinner')") do %>
+                   :complete => "Element.hide('spinner')", :remote => true) do %>
 	
 	<div>
 		<p style=" margin-top: 0;">

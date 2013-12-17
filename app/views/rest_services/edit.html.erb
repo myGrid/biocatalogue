@@ -10,8 +10,12 @@
 
 <h1>Editing rest_service</h1>
 
-<% form_for(@rest_service) do |f| %>
-  <%= f.error_messages %>
+<%= form_for(@rest_service) do |f| %>
+    <% if !@rest_service.nil? && !@rest_service.errors.nil? then %>
+        <% @rest_service.errors.full_messages.each do |err| %>
+            <%= err %>
+        <% end %>
+    <% end %>
 
   <p>
     <%= f.submit "Update" %>

@@ -10,8 +10,12 @@
 
 <h1>Editing Service</h1>
 
-<% form_for(@service) do |f| %>
-  <%= f.error_messages %>
+<%= form_for(@service) do |f| %>
+    <% if !@service.nil? && !@service.errors.nil? then %>
+        <% @service.errors.full_messages.each do |err| %>
+            <%= err %>
+        <% end %>
+    <% end %>
 
   <p>
     <%= f.label :service_type %><br />

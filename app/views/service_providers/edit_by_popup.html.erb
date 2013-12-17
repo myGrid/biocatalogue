@@ -15,8 +15,12 @@
   </div>
   
   <div class="body">
-    <% form_for @service_provider do |f| %>
-      <%= f.error_messages %>
+    <%= form_for @service_provider do |f| %>
+        <% if !@service_provider.nil? && !@service_provider.errors.nil? then %>
+            <% @service_provider.errors.full_messages.each do |err| %>
+                <%= err %>
+            <% end %>
+        <% end %>
   
       <div>
         <div class="box_info_standout">

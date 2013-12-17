@@ -8,8 +8,12 @@
 
 %>
 
-<% form_for(@soap_service) do |f| %>
-	<%= f.error_messages %>
+<%= form_for(@soap_service) do |f| %>
+    <% if !@soap_service.nil? && !@soap_service.errors.nil? then %>
+        <% @soap_service.errors.full_messages.each do |err| %>
+            <%= err %>
+        <% end %>
+    <% end %>
 	
 	<table style="width: 100%; line-height: 1.5;">
 		<tr>
@@ -68,7 +72,7 @@
 					<div>
 						Location: <br/>
 						<% if @wsdl_geo_location %>
-							<p class="field"><%= geo_loc_to_text(@wsdl_geo_location) -%></p>
+							<p class="field"><%= geo_loc_to_text(@wsdl_geo_location).html_safe -%></p>
 						<% else %>
 							<p class="none_text">Not available</p>
 						<% end %>

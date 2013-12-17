@@ -144,7 +144,7 @@ module BioCatalogue
         wsdl_hash          = nil
         
         begin
-          SystemTimer.timeout(20.seconds) do
+          timeout(20.seconds) do
           	wsdl_hash, wsdl_file_contents = get_wsdl_hash_and_file_contents(wsdl_url)
   				end
           if wsdl_hash.nil?

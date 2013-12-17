@@ -19,9 +19,9 @@ class SoapInput < ActiveRecord::Base
   serialize :computational_type_details
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :computational_type, :computational_type_details_for_solr,
-                              { :associated_service_id => :r_id },
-                              { :associated_soap_operation_id => :r_id } ])
+    searchable do
+      text :name, :computational_type, :computational_type_details_for_solr, :description
+    end
   end
   
   if USE_EVENT_LOG

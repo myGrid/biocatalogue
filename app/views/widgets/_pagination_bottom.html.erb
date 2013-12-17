@@ -8,4 +8,7 @@
 
 %>
 
-<%= will_paginate paginated_items -%>
+<%= will_paginate(paginated_items,
+                  :renderer => PaginationListLinkRenderer,
+                  :previous_label => "« Previous",
+                  :next_label => "Next »") -%>

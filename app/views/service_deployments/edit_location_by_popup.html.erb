@@ -13,12 +13,16 @@
   </div>
 
   <div class="body">
-    <% form_for :service_deployment,
+    <%= form_for :service_deployment,
                 :url => { :controller => "service_deployments",
                           :action => "update_location",
                           :id => @service_deployment.id } do |f| %>
 
-    <%= f.error_messages %>
+        <% if !@service_deployment.nil? && !@service_deployment.errors.nil? then %>
+            <% @service_deployment.errors.full_messages.each do |err| %>
+                <%= err %>
+            <% end %>
+        <% end %>
 
     <div>
       <div class="box_info_standout">

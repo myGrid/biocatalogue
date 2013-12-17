@@ -43,8 +43,9 @@ class SoapOperation < ActiveRecord::Base
            :order => "soap_outputs.name ASC"
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :description, :parent_port_type,
-                              { :associated_service_id => :r_id } ] )
+    searchable do
+      text :name, :parent_port_type, :description
+    end
   end
   
   if USE_EVENT_LOG
@@ -71,7 +72,54 @@ class SoapOperation < ActiveRecord::Base
     
     return desc
   end
-  
+
+  def as_csv
+    service_id = self.associated_service.unique_code
+    operation = self.name
+    description = self.preferred_description
+    submitter = self.associated_service.submitter.display_name
+    params_order = self.parameter_order
+    annotations = self.get_service_tags
+    port = get_soap_port self
+    return [service_id, operation,description,submitter,params_order,annotations, port].flatten
+  end
+
+  def get_soap_port soap_op
+      port = soap_op.soap_service_port
+      if port.nil?
+        return ["","","",""]
+      else
+        return [
+            port.name,
+            port.protocol,
+            port.location,
+            port.style
+        ]
+      end
+  end
+
+  def join_array array
+    array.compact!
+    array.delete('')
+
+    if array.nil? || array.empty? then
+      return ''
+    else
+      if array.count > 1 then
+        return array.join(';')
+      else
+        return array.first.to_s
+      end
+    end
+  end
+
+
+  def get_service_tags
+    list = []
+    BioCatalogue::Annotations.get_tag_annotations_for_annotatable(self).each { |ann| list << ann.value_content }
+    return list.join("; ")
+  end
+
   # This will attempt to copy over as many annotations as possible from this 
   # SoapOperation to another given SoapOperation.
   # 

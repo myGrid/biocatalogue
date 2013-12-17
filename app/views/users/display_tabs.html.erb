@@ -1,0 +1,77 @@
+<%
+
+   # BioCatalogue: app/views/users/show.html.erb
+   #
+   # Copyright (c) 2009, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
+
+%>
+
+<% t "#{display_name(@user)}" -%>
+
+<h1>
+  <div class="resource_title">
+    <%= generic_icon_for(:member, 'margin-right: 0.3em;', "Member of #{SITE_NAME}") -%>
+    <span><%= display_name(@user) %></span>
+    <span><%= user_role_badge(@user.roles, "margin-left: 1.5em;") %></span>
+  </div>
+</h1>
+
+<% if logged_in? and (mine? @user or current_user.is_curator?) %>
+    <div class="header_left_bar" style="float: none; position: static;" id="center">
+          <span class="actions_button_row">
+				  <% if mine? @user %>
+		            	<span class="actions_button">
+                        <%= link_to(image_tag(icon_filename_for(:user_edit)) + content_tag(:span, ' Edit Account or Profile'), edit_user_path(@user)) -%>
+
+                        </span>
+                  <% end %>
+
+            <% if current_user.is_curator? %>
+                  <% if @user.is_curator? %>
+                        <span class="actions_button">
+                        <%= link_to(image_tag(icon_filename_for(:minus)) + " Remove Curator Rights", remove_curator_user_url(@user), :method => :put, :confirm => "Are you sure?") -%>
+                        </span>
+                  <% elsif @user.activated? %>
+                        <span class="actions_button">
+                        <%= link_to(image_tag(icon_filename_for(:plus)) + " Make a Curator", make_curator_user_url(@user), :method => :put, :confirm => "Are you sure?") -%>
+                        </span>
+                  <% end %>
+
+
+                <% if @user.activated? %>
+                        <span class="actions_button">
+                        <%= link_to(image_tag(icon_filename_for(:delete)) + content_tag(:span, ' Deactivate'), deactivate_user_url(@user), :method => :put, :confirm => "Are you sure you want to deactivate this user? This action can only be undone by a sys admin.") -%>
+                        </span>
+                  <% else %>
+                         <span class="actions_button">
+                          <%= link_to(image_tag(icon_filename_for(:monitoring_status_change_passed)) + " Activate", activate_user_url(@user), :method => :put, :confirm => "Are you sure you want to activate this user? They would usually activate themselves via email.") -%>
+                         </span>
+                  <% end %>
+              <% end %>
+			</span>
+    </div>
+<% end %>
+
+
+<div id='user-tabs' class='tabberlive'>
+
+  <%= render :partial => 'tabs_bar' %>
+
+  <% current_tab %>
+  <% case current_tab.to_s %>
+  <% when 'profile' %>
+      <%= render :partial => 'users/tabs/profile' %>
+  <% when 'favourites' %>
+      <%= render :partial => 'users/tabs/favourites' %>
+  <% when 'services_responsible' %>
+      <%= render :partial => 'users/tabs/services_responsible' %>
+  <% when 'services_annotated' %>
+      <%= render :partial => 'users/tabs/services_annotated' %>
+  <% when 'services_submitted' %>
+      <%= render :partial => 'users/tabs/services_submitted' %>
+  <% when 'service_status_notifications' %>
+      <%= render :partial => 'users/tabs/service_status_notifications' %>
+  <% end %>
+</div>

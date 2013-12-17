@@ -13,7 +13,7 @@ class SoapServicePort < ActiveRecord::Base
   
   validates_presence_of :name
   
-  validates_url_format_of :location,
-                          :allow_nil => false,
-                          :message => 'is not valid'
+  #validates_url_format_of :location,
+  #                        :allow_nil => false,
+  #                        :message => 'is not valid'
 end

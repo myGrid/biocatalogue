@@ -10,7 +10,7 @@ module BioCatalogue
       def perform
         emails.each do |email| 
           begin
-          	StatusChangeMailer.deliver_text_to_email(subject, text, email) 
+          	StatusChangeMailer.text_to_email(subject, text, email).deliver
          	rescue Exception => ex
           	Rails.logger.error("Failed to deliver email to #{email}") 
             Rails.logger.error(ex.to_s)

@@ -99,7 +99,7 @@ module BioCatalogue
         objs = { }
         item_ids = results.map { |x| x['id'] }
         
-        annotatable_type.constantize.find(:all, :conditions => { :id => item_ids }).each do |obj|
+        annotatable_type.constantize.all(:conditions => { :id => item_ids }).each do |obj|
           objs[obj.id.to_s] = obj
         end
         
@@ -135,7 +135,7 @@ module BioCatalogue
         objs = { }
         item_ids = results.map { |x| x['id'] }
         
-        source_type.constantize.find(:all, :conditions => { :id => item_ids }).each do |obj|
+        source_type.constantize.all(:conditions => { :id => item_ids }).each do |obj|
           objs[obj.id.to_s] = obj
         end
         

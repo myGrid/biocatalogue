@@ -10,6 +10,10 @@
 
 <h1>New Favourite</h1>
 
-<% form_for(@favourite) do |f| %>
-  <%= f.error_messages %>
+<%= form_for(@favourite) do |f| %>
+    <% if !@favourite.nil? && !@favourite.errors.nil? then %>
+        <% @favourite.errors.full_messages.each do |err| %>
+            <%= err %>
+        <% end %>
+    <% end %>
 <% end %>

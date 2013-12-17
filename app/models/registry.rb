@@ -30,7 +30,9 @@ class Registry < ActiveRecord::Base
   end
 
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name, :display_name, :description, :homepage ] )
+    searchable do
+       text :name, :display_name, :homepage, :description
+    end
   end
 
   def to_inline_json

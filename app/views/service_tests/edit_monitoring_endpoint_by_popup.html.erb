@@ -15,8 +15,12 @@
 	</div>
 
 	<div class="body">
-		<% form_for :service_test, :url => {:controller => "service_tests", :action => "update_monitoring_endpoint", :id => @service_test.id } do |f| %>
-			<%= f.error_messages %>
+		<%= form_for :service_test, :url => {:controller => "service_tests", :action => "update_monitoring_endpoint", :id => @service_test.id } do |f| %>
+          <% if !@service_test.nil? && !@service_test.errors.nil? then %>
+              <% @service_test.errors.full_messages.each do |err| %>
+                  <%= err %>
+              <% end %>
+          <% end %>
 	
 			<div>
 				<div class="box_info_standout">
@@ -31,7 +35,7 @@
 				</div>
 	
 				<p class="high_linespaced form_field_section">
-					<%= text_field_tag "new_monitoring_endpoint", h(@service_test.test.parent.value), :style => "width: 99%;" %>
+					<%= text_field_tag "new_monitoring_endpoint", h(@service_test.test.parent.value.text), :style => "width: 99%;" %>
 				</p>
 	
 				<!--SUBMIT-->

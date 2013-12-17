@@ -12,7 +12,7 @@
 
 <% if ENABLE_RPX %>
   <div style="margin: 1.5em 0; text-align: center;">
-    You can either create a new account (left) or use an existing <%= list_of_rpx_accounts -%> account (right).
+    You can either create a new account (left) or use an existing <%= list_of_rpx_accounts.html_safe -%> account (right).
   </div>
 <% end %>
 
@@ -25,16 +25,20 @@
 	<% end %>
 	
 	<div class="box_info_standout" style="font-size: 108%; padding: 0.7em 1.2em;">
-		<%= sign_up_benefits_text -%>	
+		<%= sign_up_benefits_text.html_safe -%>
 	</div>
 	
 </div>
 
 <div class="box_form" style="width: 40%;">
 
-	<% form_for(@user) do |f| %>
-	
-	  <%= f.error_messages %>
+	<%= form_for(@user) do |f| %>
+
+      <% if !@user.nil? && !@user.errors.nil? then %>
+          <% @user.errors.full_messages.each do |err| %>
+              <%= err %>
+          <% end %>
+      <% end %>
 		<fieldset>
 		  <legend>Email Address</legend>
 		  <p>
@@ -72,7 +76,7 @@
 		    <%= f.text_field :display_name %>
 		  </p>
 			<p>
-		    <%= f.label :public_email, "Your public email address <span class='faded'>(so people can contact you)</span>" %><br />
+		    <%= f.label :public_email, "Your public email address <span class='faded'>(so people can contact you)</span>".html_safe %><br />
 		    <%= f.text_field :public_email, :size => 45 %>
 		  </p>
 		  <p>
@@ -91,7 +95,7 @@
 		</fieldset>
 		
 		<p class="center">
-			By clicking 'Sign up' you agree to our <%= link_to "terms of use", "/termsofuse", :target => '_blank' -%> 
+			By clicking 'Sign up' you agree to our <%= link_to "terms of use", termsofuse_path, :target => '_blank' -%>
 		</p>
 		
 		<p class="center">

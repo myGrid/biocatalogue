@@ -121,8 +121,8 @@ class ResponsibilityRequestsController < ApplicationController
   
   def turn_down
     respond_to do |format|
-      format.html{ render :partial => 'deny_responsibility', 
-                                :layout =>'application_wide', :locals => {:resp_request => @req}}
+      format.html{ render '_deny_responsibility',
+                                :layout => 'application', :locals => {:resp_request => @req}}
       format.xml {disable_action}
     end
   end
@@ -190,13 +190,13 @@ class ResponsibilityRequestsController < ApplicationController
   
   def authorise_create(limit=5)
     service = Service.find(params[:responsibility_request][:subject_id])
-    req = ResponsibilityRequest.find(:first, :conditions => {:user_id => current_user.id,
+    req = ResponsibilityRequest.first(:conditions => {:user_id => current_user.id,
                                                           :subject_id => service.id,
                                                           :subject_type => service.class.name })
-    pending = ResponsibilityRequest.find(:all, :conditions => ["user_id=? AND status = ? ", current_user.id, 'pending']).first(limit)
+    pending = ResponsibilityRequest.all(:conditions => ["user_id=? AND status = ? ", current_user.id, 'pending']).first(limit)
     if req || pending.count == limit
-      msg = "<p> You are not allowed to perform this action. You have reached your limit of #{limit} pending requests. </p>"
-      msg = msg + "Please <a href='#{SITE_BASE_HOST}/contact'> contact</a> #{SITE_NAME} for further assistance. "
+      msg = "<p> You are not allowed to perform this action. You have reached your limit of #{limit} pending requests. </p>".html_safe
+      msg = msg + "Please <a href='#{SITE_BASE_HOST}/contact'> contact</a> #{SITE_NAME} for further assistance. ".html_safe
       flash[:error] = msg
       redirect_to service_url(service)
     end

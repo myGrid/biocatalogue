@@ -10,7 +10,7 @@
 
 <%
 	attribute_name = "example_script"
-	examples_annotations = (local_assigns.has_key?(:annotations) ? annotations : annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.updated_at <=> b.updated_at})
+	examples_annotations = (local_assigns.has_key?(:annotations) ? annotations : annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| b.updated_at <=> a.updated_at})
 	main_div_id = "example_scripts_#{rand(10000000)}"
 
 	show_add_box = true unless local_assigns.has_key?(:show_add_box)
@@ -28,19 +28,40 @@ Code:
 %>
 
 <div id="<%= main_div_id -%>" class="annotations_container">
+
+  <% if show_add_box %>
+      <% if logged_in? %>
+
+          <%= render :partial => "annotations/common/default_add_box",
+                     :locals => { :partial_from => "example_script",
+                                  :annotatable => annotatable,
+                                  :attribute_name => attribute_name,
+                                  :text_area_default_text => new_default_text,
+                                  :text_area_default_value => new_default_text,
+                                  :main_div_id => main_div_id } -%>
+
+      <% else %>
+          <div class="login_link_box">
+            <small><%= link_to("Login to add example scripts/snippets", login_path) -%></small>
+          </div>
+      <% end %>
+  <% end %>
+   <br/>
 	<div class="box_annotations">
 		<% unless examples_annotations.empty? %>
 			<% examples_annotations.each do |ann| %>
-				<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+              <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 					<div class="text">
-					  <%= annotation_source_text(ann) -%>
+                      <%= annotation_source_text(ann) -%>
 						<div style="margin-top: 0.7em;">
-							<pre>
-							  <%= annotation_prepare_description(ann.value_content, false, nil, false, false, false) -%>
-              </pre>
+							<pre style="max-height: 400px;">
+                              <% desc = annotation_prepare_description(ann.value_content, false, nil, false, false, false) %>
+                              <!-- Dirty hack to fix an issue with <pre> tag which centers the first line so we are adding a new line -->
+                              <%= ("\n" + desc).html_safe-%>
+                            </pre>
 						</div>
-						<%= render :partial => "annotations/common/default_modify_options",
-											 :locals => { :annotation => ann, :ann_type => "example script" } -%>
+                      <%= render :partial => "annotations/common/default_modify_options",
+                                 :locals => { :annotation => ann, :ann_type => "example script" } -%>
 					</div>
 				<% end %>
 			<% end %>
@@ -48,22 +69,4 @@ Code:
 			<span class="none_text">None</span>
 		<% end %>
 	</div>
-	
-	<% if show_add_box %>
-		<% if logged_in? %>
-			
-			<%= render :partial => "annotations/common/default_add_box",
-								 :locals => { :partial_from => "example_script",
-															:annotatable => annotatable,
-															:attribute_name => attribute_name,
-															:text_area_default_text => new_default_text,
-                               :text_area_default_value => new_default_text,
-															:main_div_id => main_div_id } -%>
-		
-		<% else %>
-			<div class="login_link_box">
-				<small><%= link_to("Login to add example scripts/snippets", login_path) -%></small>
-			</div>
-		<% end %>
-	<% end %>
 </div>

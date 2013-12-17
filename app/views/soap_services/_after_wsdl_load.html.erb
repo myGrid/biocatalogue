@@ -11,12 +11,12 @@
 <% if !@error_message.blank? -%>
 	<div class="box_form">
 		<p class="error_text">
-			<%= @error_message -%>
+			<%= @error_message.html_safe -%>
 			<% unless @error_message_details.blank? %>
 				<br/><br/>
 				<%= create_expand_collapse_link("after_wsdl_load_error_details", :link_text => "Click to show error details") -%>
 				<div id="after_wsdl_load_error_details" style="display: none; margin-top: 0.7em;">
-				  <%= white_list(simple_format(@error_message_details)) -%>
+				  <%= simple_format(@error_message_details.html_safe) -%>
 				</div>
 			<% end %>
 		</p>

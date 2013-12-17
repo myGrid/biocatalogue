@@ -15,11 +15,11 @@ module BioCatalogue
         
         __send__ :include, InstanceMethods
         
-        named_scope :archived, lambda { 
+        scope :archived, lambda {
           { :conditions => "#{self.table_name}.archived_at IS NOT NULL" }
         }
         
-        named_scope :not_archived, lambda {
+        scope :not_archived, lambda {
           { :conditions => "#{self.table_name}.archived_at IS NULL" }
         }
         

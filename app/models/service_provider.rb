@@ -34,7 +34,9 @@ class ServiceProvider < ActiveRecord::Base
   validates_uniqueness_of :name
   
   if ENABLE_SEARCH
-    acts_as_solr(:fields => [ :name ] )
+    searchable do
+      text :name
+    end
   end
   
   if USE_EVENT_LOG
@@ -229,7 +231,7 @@ private
       recipients = []
       User.admins.each { |user| recipients << user.email }
 
-      UserMailer.deliver_orphaned_provider_notification(recipients.join(", "), SITE_BASE_HOST.gsub("http://", '').gsub("https://", ''), self)
+      UserMailer.orphaned_provider_notification(recipients.join(", "), SITE_BASE_HOST.gsub("http://", '').gsub("https://", ''), self).deliver
     end
   end
   

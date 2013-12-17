@@ -15,12 +15,16 @@
 	</div>
 	
 	<div class="body">
-    <% form_for :rest_service, :url => {:controller => "rest_services", 
+    <%= form_for :rest_service, :url => {:controller => "rest_services",
                                         :action => "update_base_endpoint", 
                                         :service_deployment_id => @service_deployment.id } do |f| %>
-    <%= f.error_messages %>
+          <% if !@rest_service.nil? && !@rest_service.errors.nil? then %>
+              <% @rest_service.errors.full_messages.each do |err| %>
+                  <%= err %>
+              <% end %>
+          <% end %>
 
-    <div>
+          <div>
 			<div class="box_info_standout">
 				<%= annotation_add_info_text("ignore this text", @service_deployment.service_version.service_versionified) -%>				
 			</div>

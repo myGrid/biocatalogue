@@ -45,16 +45,16 @@
     	<ul>
       
 			<% unless @soap_operation.archived? %>
-				<li class="active" title="<%= tooltip_title_attrib(display_name(@soap_operation)) -%>">
-	        <% op_label = content_tag(:span, truncate(display_name(@soap_operation), :length => 20), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(@soap_operation.soap_inputs.length, 'input')}, #{pluralize(@soap_operation.soap_outputs.length, 'output')}", :class => 'detail') -%>
+				<li class="active" title="<%= tooltip_title_attrib(display_name(@soap_operation)).html_safe -%>">
+	        <% op_label = content_tag(:span, truncate(display_name(@soap_operation), :length => 20), :class => 'name') + "<br/>".html_safe + content_tag(:span, "#{pluralize(@soap_operation.soap_inputs.length, 'input')}, #{pluralize(@soap_operation.soap_outputs.length, 'output')}", :class => 'detail') -%>
 	        <%= link_to op_label, @soap_operation -%>
 	      </li>
 			<% end %>
 			
       <% @soap_service.soap_operations.each do |op| %>
 			  <% unless op == @soap_operation %>
-	        <li title="<%= tooltip_title_attrib(display_name(op)) -%>">
-						<% op_label = content_tag(:span, truncate(display_name(op), :length => 20), :class => 'name') + "<br/>" + content_tag(:span, "#{pluralize(op.soap_inputs.length, 'input')}, #{pluralize(op.soap_outputs.length, 'output')}", :class => 'detail') -%>
+	        <li title="<%= tooltip_title_attrib(display_name(op)).html_safe -%>">
+						<% op_label = content_tag(:span, truncate(display_name(op), :length => 20), :class => 'name') + "<br/>".html_safe + content_tag(:span, "#{pluralize(op.soap_inputs.length, 'input')}, #{pluralize(op.soap_outputs.length, 'output')}", :class => 'detail') -%>
 	          <%= link_to op_label, op -%>
 	        </li>
 				<% end %>

@@ -43,32 +43,34 @@
     <%end%>
   </div>
 
+<% if ENABLE_TEST_SCRIPTS == true %>
  <div id="tab-test-scripts" class="tabbertab">
-    <h3><%= "TestScripts (#{service_tests_for_display(@test_script_service_tests).count})" -%></h3>  
-  
+    <h3><%= "TestScripts (#{service_tests_for_display(@test_script_service_tests).count})" -%></h3>
+
   <div class="box_info_standout" style="text-align:center;">
-    About <b>TestScripts</b> 
-    <%= link_to_function "Click here for more info on test scripts" + expand_image, visual_effect(:toggle_blind, "about_testscripts", :duration => 0.3), :style => "text-decoration:none;" %>
+    <!--About <b>Test scripts:</b> -->
+    <%= link_to_function( "Click here for more info on test scripts".html_safe + expand_image.html_safe, visual_effect(:toggle_blind, "about_testscripts", :duration => 0.3).html_safe, :style => "text-decoration:none;".html_safe) %>
     <div id="about_testscripts" style="display:none;">
       <%= render :partial => "test_scripts/about_testscripts" -%>
     </div>
   </div>
+<% end %>
 
     <% if @service.archived? %>
         <p class="none_text"> This service is archived.  No monitoring information is available. </p>
-  <% elsif service_tests_for_display(@test_script_service_tests).empty? -%>
+  <% elsif service_tests_for_display(@test_script_service_tests).empty? && ENABLE_TEST_SCRIPTS -%>
     <p class="none_text"> None available yet. Please check back later. </p>
-  <%else%>
+  <% elsif ENABLE_TEST_SCRIPTS %>
     <div class='listing_item'>
       <span class="heading"> TestScripts </span>
       <div id="latest_service_test" style="margin: 1em 0;">
         <%= render :partial => "service_tests/listing", :locals => { :items => service_tests_for_display(@test_script_service_tests) } %>
       </div>
     </div>
-  <%end%> 
-   
+  <%end%>
+
   <div>
-    <%if logged_in? -%>
+    <%if logged_in? && ENABLE_TEST_SCRIPTS -%>
       <% if BioCatalogue::Auth.allow_user_to_curate_thing?(current_user, @service) -%>
         <div id='tests' style="margin-top: 2em; border-top: 2px solid #CCF; padding-top: 1em;">
           <%= render :partial => 'shared/service_test', :locals => {:service => @service} -%>

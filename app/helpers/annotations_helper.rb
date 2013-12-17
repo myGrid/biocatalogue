@@ -83,15 +83,16 @@ module AnnotationsHelper
       
       link_class = (options[:only_show_on_hover] == true ? "active #{options[:class]}" : options[:class])
 
-      link_content =  link_to_remote_redbox(link_inner_html,
-                                   { :url => new_popup_annotations_url(url_options),
-                                     :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
-                                     :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
-                                   { :style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
-                                     :class => link_class,
-                                     :alt => options[:tooltip_text],
-                                     :title => tooltip_title_attrib(options[:tooltip_text]) })
-    
+      link_content = link_to_remote_redbox(link_inner_html.html_safe,
+                                             {:url => new_popup_annotations_url(url_options),
+                                              :id => "annotate_#{annotatable.class.name}_#{annotatable.id}_#{options[:attribute_name]}_redbox",
+                                              :failure => "alert('Sorry, an error has occurred.'); RedBox.close();"},
+                                             {:style => "text-decoration: none; vertical-align: middle; #{options[:style]}",
+                                             :class => link_class,
+                                             :alt => options[:tooltip_text],
+                                             :title => tooltip_title_attrib(options[:tooltip_text])
+                                            })
+
       # Add the greyed out inactive bit if required
       if options[:only_show_on_hover] == true
         inactive_span = content_tag(:span, 
@@ -170,26 +171,27 @@ module AnnotationsHelper
     end
 
     return link_to_remote_redbox(link_html,
-                                 { :url => edit_popup_annotation_url(annotation),
-                                   :id => "edit_ann_#{annotation.id}_redbox",
-                                   :failure => "alert('Sorry, an error has occurred.'); RedBox.close();" },
-                                 { :style => (options[:show_icon] ? 
-                                              "text-decoration: none; vertical-align: baseline; #{options[:style]}" : 
-                                              options[:style]),
-                                   :alt => options[:tooltip_text],
-                                   :title => tooltip_title_attrib(options[:tooltip_text]),
-                                   :class => options[:class] })
+                                 {:url => edit_popup_annotation_url(annotation),
+                                  :failure => "alert('Sorry, an error has occurred.'); RedBox.close();",
+                                 },
+                                 {:id => "edit_ann_#{annotation.id}_redbox",
+                                  :style => (options[:show_icon] ?
+                                      "text-decoration: none; vertical-align: baseline; #{options[:style]}" :
+                                      options[:style]),
+                                  :alt => options[:tooltip_text],
+                                  :title => tooltip_title_attrib(options[:tooltip_text]),
+                                  :class => options[:class]})
   end
 
   def annotation_add_info_text(attribute_name, annotatable)
     return '' if annotatable.nil?
 
     if attribute_name.blank?
-      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
+      return "You are adding a custom annotation for the #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>".html_safe
     elsif annotatable.class.name == "RestMethod"
-      return "For Endpoint: <b/>#{h(annotatable.display_endpoint)}</b>"
+      return "For Endpoint: <b/>#{h(annotatable.display_endpoint)}</b>".html_safe
     else
-      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>"
+      return "For #{annotatable.class.name.titleize}: <b/>#{h(annotatable.annotatable_name)}</b>".html_safe
     end
 
   end
@@ -241,11 +243,12 @@ module AnnotationsHelper
     return '' if annotation.nil?
 
     return content_tag(:span, :class => "annotation_source_text #{annotation_source_cssclass(annotation)}", :style => style) do
-      o = "<span>by </span>"
-      o << annotation_source_icon(annotation.source_type)
-      o << "#{link_to(h(annotation.source.annotation_source_name), annotation.source)} "
-      o << user_role_badge(annotation.source.roles) if annotation.source_type == "User"
-      o << "<span class='ago'>(#{distance_of_time_in_words_to_now(annotation.updated_at)} ago)</span>"
+      o = "".html_safe
+      o.safe_concat("<span>by </span>")
+      o.safe_concat(annotation_source_icon(annotation.source_type))
+      o.safe_concat("#{link_to(h(annotation.source.annotation_source_name), annotation.source)} ")
+      o.safe_concat(user_role_badge(annotation.source.roles)) if annotation.source_type == "User"
+      o.safe_concat("<span class='ago'>(#{distance_of_time_in_words_to_now(annotation.updated_at)} ago)</span>")
     end
   end
 
@@ -272,7 +275,7 @@ module AnnotationsHelper
       onExpand: function(event) {
       }
     });
-    new DefaultTextInput($('#{text_area_id}'));"
+    new DefaultTextInput($('#{text_area_id}'));".html_safe
   end
   
 end

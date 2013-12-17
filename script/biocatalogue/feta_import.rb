@@ -33,7 +33,7 @@
 #  ruby feta_import.rb -h                                   <- displays help text for this script.  
 #
 #
-# NOTE (1): $stdout has been redirected to '{RAILS_ROOT}/log/feta_import_{current_time}.log' so you won't see any normal output in the console.
+# NOTE (1): $stdout has been redirected to '{Rails.root}/log/feta_import_{current_time}.log' so you won't see any normal output in the console.
 #
 # NOTE (2): this script DOES NOT import any Soaplab service metadata due to the discrepancies with the way operations are defined in Feta for Soaplab services.
 # 
@@ -381,7 +381,7 @@ class FetaImporter
                   end
                   
                   # Find the operation in the service
-                  operation = soap_service.soap_operations.find(:first, :conditions => { :name => op_name })
+                  operation = soap_service.soap_operations.first(:conditions => { :name => op_name })
                   
                   if operation.nil?
                     stats["total_xml_service_operations_that_do_not_exist_in_service_now"].increment
@@ -470,7 +470,7 @@ class FetaImporter
     param_name_split = param_name.split(':')
     
     # Find the object that needs to be annotated
-    parameter = collection_to_find_annotatable.find(:first, :conditions => { :name => param_name_split[0] })
+    parameter = collection_to_find_annotatable.first(:conditions => { :name => param_name_split[0] })
     
     if parameter.nil?
       stats["total_xml_service_parameters_that_do_not_exist_in_service_now"].increment
@@ -560,7 +560,7 @@ class FetaImporter
 end
 
 # Redirect $stdout to log file
-puts "Redirecting output of $stdout to log file: '{RAILS_ROOT}/log/feta_import_{current_time}.log' ..."
+puts "Redirecting output of $stdout to log file: '{Rails.root}/log/feta_import_{current_time}.log' ..."
 $stdout = File.new(File.join(File.dirname(__FILE__),'..', '..', 'log', "feta_import_#{Time.now.strftime('%Y%m%d-%H%M')}.log"), "w")
 $stdout.sync = true
 

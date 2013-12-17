@@ -23,13 +23,13 @@
 	
 	<% if category.has_children? %>
     <% @cat_array << category.id.to_s %>
-		<%= link_to_function (cat_expanded ? image_tag("minus.png", :alt => "Collapse") : image_tag("plus.png", :alt => "Expand")), 
+		<%= link_to_function (cat_expanded ? image_tag("minus.png", :alt => "Collapse") : image_tag("plus.png", :alt => "Expand")),
 												 "categoryToggle(#{category.id});", 
 												 :class => "active", 
 												 :style => "float: left; vertical-align: middle; margin-right: 0.4em;",
 												 :id => "toggle_category_#{category.id}" -%>
 	<% else %>
-		<%= image_tag "grey_box_icon.png", :style => "float: left; vertical-align: middle; margin-right: 0.4em;" -%>	
+		<%= image_tag "grey_box_icon.png", :style => "float: left; vertical-align: middle; margin-right: 0.4em;" -%>
 	<% end %>
 
 	<%= render :partial => 'filtering/filter_option_item',

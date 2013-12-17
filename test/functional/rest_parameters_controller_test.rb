@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RestParametersControllerTest < ActionController::TestCase
   def test_get_without_authentication
-    get :make_optional_or_mandatory
+    get :make_optional_or_mandatory, :id => rest_parameters(:test_rest_parameter).id
     assert_redirected_to :login
     
     get :add_new_parameters
@@ -11,19 +11,19 @@ class RestParametersControllerTest < ActionController::TestCase
     get :new_popup
     assert_redirected_to :login
     
-    get :update_constrained_options
+    get :update_constrained_options, :id => rest_parameters(:test_rest_parameter).id
     assert_redirected_to :login
     
-    get :edit_constrained_options_popup
+    get :edit_constrained_options_popup, :id => rest_parameters(:test_rest_parameter).id
     assert_redirected_to :login
     
-    get :inline_add_default_value
+    get :inline_add_default_value, :id => rest_parameters(:test_rest_parameter).id
     assert_redirected_to :login
     
-    get :edit_default_value_popup
+    get :edit_default_value_popup, :id => rest_parameters(:test_rest_parameter).id
     assert_redirected_to :login
 
-    get :update_default_value
+    get :update_default_value, :id => rest_parameters(:test_rest_parameter).id
     assert_redirected_to :login
   end
 
@@ -32,12 +32,12 @@ class RestParametersControllerTest < ActionController::TestCase
     method = rest.rest_resources[0].rest_methods[0]
     
     assert_difference('RestParameter.count', 0) do # adding parameter that exists
-      post :add_new_parameters, :rest_method_id => method.id, 
+      post :add_new_parameters, :rest_method_id => method.id,
                                 :rest_parameters => "id"
     end
     
     assert_difference('RestParameter.count', 1) do
-      post :add_new_parameters, :rest_method_id => method.id, 
+      post :add_new_parameters, :rest_method_id => method.id,
                                 :rest_parameters => "x"
     end
     
@@ -62,7 +62,7 @@ class RestParametersControllerTest < ActionController::TestCase
     method = rest.rest_resources[0].rest_methods[0]
     
     assert_difference('RestParameter.count', 3) do # adding multiple params
-      post :add_new_parameters, :rest_method_id => method.id, 
+      post :add_new_parameters, :rest_method_id => method.id,
                                 :rest_parameters => "x={x} !\ny !\n z=z"
     end
     

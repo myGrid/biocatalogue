@@ -40,7 +40,7 @@
         <% uniq_id = (is_http_request ? "R#{resource.id}M#{method.id}InR#{rep.id}" :
                                         "R#{resource.id}M#{method.id}OotR#{rep.id}") %>
                                         
-        <% link_content = "<b>" + rep.content_type + "</b>" %>
+        <% link_content = "<b>".html_safe + rep.content_type + "</b>".html_safe %>
         
         <%= create_expand_collapse_link(uniq_id, 
                                         :link_text => link_content, 

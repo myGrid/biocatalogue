@@ -16,11 +16,12 @@
 	
 	<div style="font-size: 123.1%; margin-bottom: 1em;">
 		If you already have an
-		<%= list_of_rpx_accounts -%> 
+		<%= list_of_rpx_accounts.html_safe -%>
 		account then:
 		<ul class="simple_list" style="margin-top: 1em;">
 			<li>
-				<%= RPXNow.popup_code('click here to sign in', RPX_REALM, rpx_token_sessions_url) -%> OR
+				<% a =  RPXNow.popup_code('click here to sign in', RPX_REALM,  session_rpx_token_path, :unobtrusive => true)-%>
+              <%= a.html_safe%> OR
 			</li>
 			<li>
 				you can add it to your existing <%= SITE_NAME -%> account
@@ -34,9 +35,9 @@
 	</div>	
 	
 	<p style="font-size: 85%; margin-bottom: 0;">
-		Note that this might take you to another website called '<%= link_to "RPXNow", "https://rpxnow.com/", :popup => true -%>'. 
+		Note that this might take you to another website called '<%= (link_to "RPXNow", "https://rpxnow.com/", :popup => true).html_safe -%>'.
 		This is the service we use to enable logging in via external accounts. 
-		<%= link_to_function "More info" + expand_image, visual_effect(:toggle_blind, "rpx_more_info_box", :duration => 0.3), :style => "text-decoration:none;" %>
+		<%= (link_to_function "More info".html_safe + expand_image.html_safe, visual_effect(:toggle_blind, "rpx_more_info_box", :duration => 0.3), :style => "text-decoration:none;").html_safe %>
 	</p>
 	
 	<div id="rpx_more_info_box" style="margin-top: 1em; display: none;">

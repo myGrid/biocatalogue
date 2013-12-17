@@ -14,15 +14,15 @@ namespace :biocatalogue do
       first_no = ENV['first']
       all      = ENV['all']
       services = []
-      if last_no.to_i > 0 :
-        services.concat(Service.find(:all).last(last_no.to_i))
+      if last_no.to_i > 0 then
+        services.concat(Service.all.last(last_no.to_i))
       end
       if first_no.to_i > 0
-        services.concat(Service.find(:all).last(first_no.to_i))
+        services.concat(Service.all.last(first_no.to_i))
       end
       
       if all
-        services = Service.find(:all)
+        services = Service.all
       end
       if (!last_no && !first_no && !all)
         puts "You need to pass configuation parameters. For example, to check the first 3 services in development do :"

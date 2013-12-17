@@ -4,8 +4,7 @@
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details
 
-BioCatalogue::Util.say("Running in #{RAILS_ENV} mode...")
-BioCatalogue::Util.say("Configuring the BioCatalogue application...")
+
 
 # Set up loggers to STDOUT if in script/console 
 # (so now things like SQL queries etc are shown in the console instead of the development/production/etc logs).
@@ -38,15 +37,16 @@ require 'hash'
 require 'numeric'
 require 'mime_type'
 require 'addressable/uri'
-require 'system_timer'
+require 'tabs_on_rails'
 require 'libxml'
 require 'dnsruby'
 require 'open-uri'
-require 'system_timer'
+
 require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'
 
+require 'exception_notifier'
 require 'bio_catalogue/annotations/custom_migration_to_v3'
 
 # NOTE: 
@@ -62,8 +62,22 @@ require 'bio_catalogue/annotations/extensions'
 require 'bio_catalogue/monitoring'
 require 'bio_catalogue/monitoring/status'
 
+require 'bio_catalogue/util'
+require 'bio_catalogue/categorising'
 
+require 'bio_catalogue/cache_helper'
+require 'oauth_authorize'
 
+require 'bio_catalogue/resource'
+require 'country_codes'
+
+require 'will_paginate/array'
+
+# Require all .rb files from lib/ directory
+#Dir[File.join(File.dirname(__FILE__), '../../lib/**/*.rb')].each {|file| require file}
+
+BioCatalogue::Util.say("Running in #{Rails.env} mode...")
+BioCatalogue::Util.say("Configuring the #{SITE_NAME} application...")
 
 # Never explicitly load the memcache-client library as we need to use 
 # the specific one vendored in our codebase.
@@ -76,7 +90,7 @@ ActiveSupport::XmlMini.backend = 'LibXML'
 CountryCodes
 
 # Set up caches
-BioCatalogue::CacheHelper.setup_caches
+#BioCatalogue::CacheHelper.setup_caches
 
 # Load the up categories data into the DB if required
 BioCatalogue::Categorising.load_data
@@ -102,7 +116,16 @@ class ActiveRecord::Base
   @@per_page = PAGE_ITEMS_SIZE
 end
 
-MAX_PAGE_SIZE = 50
+MAX_PAGE_SIZE = 100
+
+
+#  MAX_RESULTS is the total number of results to return.
+# The reason it is being assigned to default_per_page is because instead of pulling each page of results
+# one page at a time, we pull all pages at once so we can find all the associated models.
+# We're making it pull one MASSIVE page of results.
+MAX_RESULTS = 10000
+Sunspot.config.pagination.default_per_page = MAX_RESULTS
+
 
 # The amount of time to cache the metadata counts data.
 METADATA_COUNTS_DATA_CACHE_TIME = 60*60  # 60 minutes, in seconds.
@@ -220,23 +243,20 @@ Annotations::Config::valid_value_types["category"] = "Category"
 SERVICE_RATINGS_CATEGORIES = { "rating.documentation" => [ "Documentation",  "Rate the level and usefulness of documentation you feel this service has" ] }.freeze
 #===============================================================
 
-# ==============================================================
-# Configure the Delayed::Jobs plugin (for background processing)
-# --------------------------------------------------------------
-Delayed::Worker.backend = :active_record
-
-Delayed::Worker.destroy_failed_jobs = false
-
-# ==============================================================
-
 
 # ===============================================================
 # Configure global settings for the SuperExceptionNotifier plugin
 # ---------------------------------------------------------------
 
-ExceptionNotifier.send_email_error_codes = %W( 400 405 500 501 503 )
+#ExceptionNotifier::Notifier.send_email_error_codes = %W( 400 405 500 501 503 )
 
-ExceptionNotifier.view_path = 'app/views/error'
+#ExceptionNotifier.view_path = 'app/views/error'
+
+BioCatalogue::Application.config.middleware.use ExceptionNotifier,
+                                                :email => {
+                                                    :send_email_error_codes => %W( 400 405 500 501 503 ),
+                                                    :view_path => 'app/views/error'
+                                                }
 
 # ===============================================================
 

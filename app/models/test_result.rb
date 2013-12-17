@@ -33,8 +33,7 @@ class TestResult < ActiveRecord::Base
   
   # Results for a given service test
   def self.results_for(service_test, limit=5)
-    TestResult.find(:all,
-                    :conditions =>  { :service_test_id => service_test.id },
+    TestResult.all(                    :conditions =>  { :service_test_id => service_test.id },
                     :order => "created_at DESC",
                     :limit => limit)
   end
@@ -104,7 +103,7 @@ class TestResult < ActiveRecord::Base
             if ENABLE_TWITTER
               BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so submitting a job to tweet about..."
               msg = "Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label} (#{self.created_at.strftime("%Y-%m-%d %H:%M %Z")})"
-              Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), 0, 5.seconds.from_now)
+              Delayed::Job.enqueue(BioCatalogue::Jobs::PostTweet.new(msg), :priority => 0, :run_at => 5.seconds.from_now)
             end
           
             unless MONITORING_STATUS_CHANGE_RECIPIENTS.empty?
@@ -116,7 +115,7 @@ class TestResult < ActiveRecord::Base
               BioCatalogue::Util.say "Called TestResult#update_status. A status change has occurred so emailing the special set of recipients about it..."
               subject = "[#{SITE_NAME}] Service '#{BioCatalogue::Util.display_name(service)}' has a test change status from #{previous_status.label} to #{current_status.label}"
               text = "A monitoring test status change has occurred! Service '#{BioCatalogue::Util.display_name(service)}' has a test (#{self.service_test.test_type}, ID: #{self.service_test.test_id}) change status from #{previous_status.label} to #{current_status.label}. Last test result message: #{current_status.message}. Go to Service: #{BioCatalogue::Api.uri_for_object(service)}"
-              Delayed::Job.enqueue(BioCatalogue::Jobs::StatusChangeEmails.new(subject, text, status_recipients_emails), 0, 5.seconds.from_now)
+              Delayed::Job.enqueue(BioCatalogue::Jobs::StatusChangeEmails.new(subject, text, status_recipients_emails), :priority => 0, :run_at => 5.seconds.from_now)
             end
           
           end

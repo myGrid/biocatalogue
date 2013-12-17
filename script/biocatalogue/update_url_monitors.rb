@@ -63,7 +63,7 @@ class MonitorUpdate
       puts "*************************************************************"
      end
 
-      Service.find(:all).each do |service|
+      Service.all.each do |service|
       # get all service deploments
       deployments = service.service_deployments
     
@@ -91,7 +91,7 @@ protected
 def update_deployment_monitors(deployments)
   
   deployments.each do |dep|
-    monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", dep.id, dep.class.to_s ])
+    monitor = UrlMonitor.first(:conditions => ["parent_id= ? AND parent_type= ?", dep.id, dep.class.to_s ])
     if monitor.nil?
       mon = UrlMonitor.new(:parent_id => dep.id, 
                               :parent_type => dep.class.to_s, 
@@ -114,7 +114,7 @@ end
 def update_soap_service_monitors(soap_services)
   
   soap_services.each do |ss|
-    monitor = UrlMonitor.find(:first , :conditions => ["parent_id= ? AND parent_type= ?", ss.id, ss.class.to_s ])
+    monitor = UrlMonitor.first(:conditions => ["parent_id= ? AND parent_type= ?", ss.id, ss.class.to_s ])
     if monitor.nil?
       mon = UrlMonitor.new(:parent_id => ss.id, 
                               :parent_type => ss.class.to_s, 

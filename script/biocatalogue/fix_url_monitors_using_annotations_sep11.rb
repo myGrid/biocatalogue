@@ -28,7 +28,7 @@ begin
   UrlMonitor.record_timestamps = false
   
   UrlMonitor.transaction do 
-    UrlMonitor.find(:all, :conditions => { :parent_type => "Annotation", :property => "value" }).each do |u|
+    UrlMonitor.all(:conditions => { :parent_type => "Annotation", :property => "value" }).each do |u|
       u.property = "value_content"
       u.save!
       count += 1
