@@ -35,36 +35,23 @@ class ServicesController < ApplicationController
 
   before_filter :set_listing_type_local, :only => [ :index ]
 
-  before_filter :show_page_variables, :only => [:monitoring, :service_endpoint, :activity, :examples, :example_data, :example_scripts, :example_workflows]
+  before_filter :show_page_variables, :only => [:monitoring, :show, :service_endpoint, :activity, :examples, :example_data, :example_scripts, :example_workflows]
 
-  set_tab :scripts, :example_tab, :only => %(example_scripts)
+  set_tab :scripts, :example_tab, :only => %w(example_scripts)
   set_tab :data, :example_tab, :only => %w(example_data examples)
-  set_tab :workflows, :example_tab, :only => %(example_workflows)
-
-  set_tab :overview, :service, :only => %(show)
+  set_tab :workflows, :example_tab, :only => %w(example_workflows)
   set_tab :examples, :service, :only => %w(examples example_workflows example_data example_scripts)
-  set_tab :monitoring, :service, :only => %(monitoring)
-  set_tab :history, :service, :only => %(activity)
-  set_tab :service_endpoint, :service, :only => %(service_endpoint)
+  before_filter :examples, :only => %w(example_scripts example_data example_workflows)
 
+  set_tab :overview, :service, :only => %w(show)
+  set_tab :monitoring, :service, :only => %w(monitoring)
+  set_tab :history, :service, :only => %w(activity)
+  set_tab :service_endpoint, :service, :only => %w(service_endpoint)
+  before_filter :show, :only => %w(overview examples history)
 
-
-
-  def example_scripts
-    respond_to do |format|
-      format.html { render 'services/examples' }
-    end
-  end
-  def example_workflows
-    respond_to do |format|
-      format.html { render 'services/examples' }
-    end
-  end
-  def example_data
-    respond_to do |format|
-      format.html { render 'services/examples' }
-    end
-  end
+  def example_scripts ;     end
+  def example_workflows ;  end
+  def example_data ;       end
 
 
   # GET /services
@@ -107,7 +94,11 @@ class ServicesController < ApplicationController
     @soaplab_server = @service.soaplab_server
 
     @pending_responsibility_requests = @service.pending_responsibility_requests
-
+    unless is_api_request?
+      @service_tests = @service.service_tests
+      @test_script_service_tests  = @service.service_tests_by_type("TestScript")
+      @url_monitor_service_tests  = @service.service_tests_by_type("UrlMonitor")
+    end
     if @latest_version_instance.is_a?(RestService)
       @grouped_rest_methods = @latest_version_instance.group_all_rest_methods_from_rest_resources
     end
@@ -241,17 +232,8 @@ class ServicesController < ApplicationController
   end
 
   def monitoring
-    unless is_api_request?
-      @service_tests = @service.service_tests
-      @test_script_service_tests  = @service.service_tests_by_type("TestScript")
-      @url_monitor_service_tests  = @service.service_tests_by_type("UrlMonitor")
-    end
-
     respond_to do |format|
-      format.html { render 'services/show'}# monitoring.html.erb
-      format.xml  # monitoring.xml.builder
-      format.json { render :json => @service.to_custom_json("monitoring") }
-      format.js { render :layout => false }
+      format.html { render 'services/show'}
     end
   end
 
@@ -368,6 +350,12 @@ class ServicesController < ApplicationController
 
     if @latest_version_instance.is_a?(RestService)
       @grouped_rest_methods = @latest_version_instance.group_all_rest_methods_from_rest_resources
+    end
+
+    unless is_api_request?
+      @service_tests = @service.service_tests
+      @test_script_service_tests  = @service.service_tests_by_type("TestScript")
+      @url_monitor_service_tests  = @service.service_tests_by_type("UrlMonitor")
     end
 
     @data_annotations = @service.data_example_annotations

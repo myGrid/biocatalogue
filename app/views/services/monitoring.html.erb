@@ -21,7 +21,7 @@
   <% end -%>
 </div>
 
-<div id="service-test-tabs" class="tabber">
+<div id="service-test-tabs" class="tabbertab">
   
   <div id="tab-availability-checks" class="tabbertab">
       <h3><%= "Availability Checks (#{service_tests_for_display(@url_monitor_service_tests).count})" -%></h3> 
@@ -36,7 +36,7 @@
     <%else%>
       <div class='listing_item'>
         <span class="heading"> Availability Checks </span>  
-        <div id="latest_service_test" style="margin: 1em 0;">
+        <div id="latest_service_test">
           <%= render :partial => "service_tests/listing", :locals => { :items => service_tests_for_display(@url_monitor_service_tests) } %>
         </div>
       </div>
@@ -81,7 +81,3 @@
 </div>
 
 </div>
-
-<script>
-  tabberLoadHashAware();
-</script>
