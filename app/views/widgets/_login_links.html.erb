@@ -18,7 +18,7 @@
 			<%= link_to "My Profile", current_user, :id => "user_profile_link", :class => "" -%>
 			
 			<span class="sep">|</span>
-			<%= link_to "My Favourites", user_path(current_user, :anchor => 'favourites') -%>
+			<%= link_to "My Favourites", favourites_user_path(current_user) -%>
 
 			<!--<span class="sep">|</span>-->
 			<% #link_to "OAuth Applications", oauth_clients_path -%>
