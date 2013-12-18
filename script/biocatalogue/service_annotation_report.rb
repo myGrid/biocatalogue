@@ -22,7 +22,7 @@ require 'ostruct'
 require 'hashie'
 require 'pp'
 
-require File.join(File.dirname(__FILE__), "shared", "counter")
+require File.join(File.dirname(__FILE__), "shared", "counter.rb")
 
 NOT_APPLICABLE = "N/A".freeze
 
@@ -485,7 +485,7 @@ class Helper
     case value
       when Numeric
         if total and total.is_a? Numeric
-          return "#{number_with_delimiter(value)}&nbsp;&nbsp;[<b>#{value.percent_of(total).round_with_precision(1)}%</b>]"
+          return "#{number_with_delimiter(value)}&nbsp;&nbsp;[<b>#{value.percent_of(total).round(1)}%</b>]"
         else
           return number_with_delimiter(value)
         end
