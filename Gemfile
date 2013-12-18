@@ -66,6 +66,7 @@ gem "white_list", :git=>"https://github.com/neubloc/white_list.git"
 gem "tabs_on_rails"
 
 gem "haml"
+gem "hashie"
 
 # sunspot_rails has nokogiri as a dependancy and Nokogiri 1.6.0 uses r1.9
 # so we need to install this specific version here
