@@ -17,7 +17,7 @@
 <div style="margin: 0 auto; width: 700px;">
 
    <p class="center">
-     <% form_tag curation_reports_services_missing_annotations_path, :class => "box_form center" do %>
+     <%= form_tag curation_reports_services_missing_annotations_path, :class => "box_form center" do %>
        Find all services that don't have 
        <%= select_tag("attribute_name", 
                       options_for_select({ "Descriptions" => "description",
