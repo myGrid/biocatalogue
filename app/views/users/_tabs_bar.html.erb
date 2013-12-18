@@ -5,5 +5,5 @@
     <%= tab.services_responsible   "Services Responsible For (#{@users_services_responsible_for.total_entries})", services_responsible_user_path(@user) %>
     <%= tab.services_annotated "Services Annotated (#{@users_paged_annotated_services.total_entries})", services_annotated_user_path(@user) %>
     <%= tab.favourites "Favourites (#{@user.favourites.length})", favourites_user_path(@user) %>
-    <%= tab.service_status_notifications "Service Status Notifications (#{@users_services_responsible_for.total_entries}/#{@service_responsibles.total_entries})", service_status_notifications_user_path(@user) %>
+    <%= tab.service_status_notifications "Service Status Notifications (#{@users_services_responsible_for.total_entries}/#{@service_responsibles.total_entries})", service_status_notifications_user_path(@user) if mine?(@user) || (logged_in? && current_user.is_admin?) %>
 <% end %>

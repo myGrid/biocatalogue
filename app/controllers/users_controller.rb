@@ -13,7 +13,8 @@ class UsersController < ApplicationController
   before_filter :login_or_oauth_required, :except => [:index, :new, :create, :show, :activate_account, :forgot_password,
                                                       :request_reset_password, :reset_password, :rpx_merge_setup, :annotations_by,
                                                       :services, :filtered_index, :filters, :favourites, :services_responsible,
-                                                      :deactivate]
+                                                      :deactivate, :profile, :services_submitted, :services_responsible, :services_annotated,
+                                                      :favourites]
 
   before_filter :check_user_rights, :only => [:edit, :update, :change_password, :saved_searches]
 
