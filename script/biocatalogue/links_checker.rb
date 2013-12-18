@@ -28,7 +28,7 @@ class LinksChecker
   
   def initialize(args)
     @options = {
-      :environment => (ENV['RAILS_ENV'] || "development").dup,
+      :environment => (ENV['RAILS_ENV'] || "production").dup,
     }
 
     args.options do |opts|
