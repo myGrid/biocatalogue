@@ -95,6 +95,8 @@ GEM
     google_analytics (1.1.5)
       actionpack
       activesupport
+    haml (4.0.4)
+      tilt
     highline (1.6.20)
     hike (1.2.3)
     httparty (0.12.0)
@@ -252,6 +254,7 @@ DEPENDENCIES
   factory_girl_rails (< 4.0)
   geokit
   google_analytics
+  haml
   httparty
   json
   libxml-ruby (= 2.6.0)
