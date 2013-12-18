@@ -80,7 +80,7 @@ class LinksChecker
     $stdout.sync = true
     puts '<html >'
     puts '<body bgcolor="#A6D785" width="70%">'
-    puts "<h3> Web links in BioCatalogue data that need curator attention : Generated on #{Time.now.strftime("%A %B %d  %Y.")}</h3>"
+    puts "<h3> Web links in the catalogue data that need curator attention : Generated on #{Time.now.strftime("%A %B %d  %Y.")}</h3>"
     puts "<hr/>"
     
     puts '<table border=2 bgcolor="#ffffff">'
