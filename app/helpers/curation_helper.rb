@@ -20,6 +20,8 @@ module CurationHelper
      latest_file = files.sort.last
      if !latest_file.nil? && latest_file != ""
        return "#{directory}/#{latest_file}"
+     else
+       return nil
      end
    rescue Exception
      return nil
