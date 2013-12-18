@@ -82,21 +82,6 @@ class CurationController < ApplicationController
     end
   end
 
-
-  def latest_csv_export
-    begin
-      directory = "data/csv-exports"
-      files = Dir.entries(directory)
-      files = files.select{|file| file.match("csv_export-") }
-      latest_file = files.sort.last
-      if !latest_file.nil? && latest_file != ""
-        return "#{directory}/#{latest_file}"
-      end
-    rescue Exception
-      return nil
-    end
-  end
-
   def zip_files zip_file, tables
 
     if !File.exists?(zip_file)
@@ -112,7 +97,7 @@ class CurationController < ApplicationController
   end
 
   def csv_of_services
-    services = Service.first(300)
+    services = Service.all
     columns = ['Service ID','name','provider','location','submitter name',
                'base url','documentation url','description','licence','costs',
                'usage conditions','contact','publications','citations','annotations',
@@ -124,7 +109,7 @@ class CurationController < ApplicationController
   end
 
   def csv_of_soap_operations
-    soap_operations = SoapOperation.first(300)
+    soap_operations = SoapOperation.all
     columns =  ['Service ID','operation name','operation description','submitter',
                 'parameter order','annotations', 'port name', 'port protocol', 'port location', 'port style']
     return CSV.generate do |csv|
@@ -134,7 +119,7 @@ class CurationController < ApplicationController
   end
 
   def csv_of_rest_methods
-    rest_methods = RestMethod.first(300)
+    rest_methods = RestMethod.all
     columns =  ['Service ID','endpoint name','method type','template','description',
                 'submitter','documentation url','example endpoints','annotations']
     return CSV.generate do |csv|

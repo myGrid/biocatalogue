@@ -10,9 +10,33 @@ module CurationHelper
     result = 'class="sortup"' if (params[:sort_by] == param && params[:sort_order] == order)
     result = 'class="sortdown"' if (params[:sort_by] == param && params[:sort_order] == reverse_order(order))  
     return result
-  end
-  
-  def curation_sort_link_helper(text, param, order)
+ end
+
+ def latest_csv_export
+   begin
+     directory = "data/csv-exports"
+     files = Dir.entries(directory)
+     files = files.select{|file| file.match("csv_export-") }
+     latest_file = files.sort.last
+     if !latest_file.nil? && latest_file != ""
+       return "#{directory}/#{latest_file}"
+     end
+   rescue Exception
+     return nil
+   end
+ end
+
+ def time_of_export file_name
+   begin
+     file_name.gsub!(/\D+/, '')
+     file_name.to_time.strftime("%e %b %Y %H:%M:%S %Z")
+   rescue Exception
+     return nil
+   end
+ end
+
+
+ def curation_sort_link_helper(text, param, order)
     key   = param
     order = order
     order = reverse_order(params[:sort_order]) if params[:sort_by] == param
