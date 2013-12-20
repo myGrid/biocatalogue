@@ -6,6 +6,9 @@
 
 class CurationController < ApplicationController
 
+
+  include CurationHelper
+
   before_filter :disable_action_for_api
 
   before_filter :login_or_oauth_required
