@@ -3,6 +3,14 @@ BioCatalogue::Application.configure do
 
   # The production environment is meant for finished, "live" apps.
 
+  # Rotate logs when they reach a size of 10M and keep no more than 10 of these
+  #config.logger = Logger.new(config.log_path, 10, (1024**2)*10)
+
+  if ROTATE_LOGS && CRONOLOG_PARAMS
+    config.logger = Logger.new(IO.popen(CRONOLOG_PARAMS, "w"))
+    config.logger.level = Logger::INFO
+  end
+
   # Code is not reloaded between requests
   config.cache_classes = true
 
