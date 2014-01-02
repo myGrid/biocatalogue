@@ -59,9 +59,14 @@ class CurationController < ApplicationController
   end
 
   def spreadsheet_export
+    export_folder = Rails.root.join('data',"#{Rails.env}-csv-exports")
+    unless File.directory?(export_folder)
+      Dir.mkdir(export_folder)
+    end
+
     require 'zip'
     time = Time.now.strftime("%Y%m%d%H%M")
-    zip_file = "data/csv-exports/csv_export-#{time}.zip"
+    zip_file = "#{export_folder}/csv_export-#{time}.zip"
     tables = %w{services rest_methods soap_operations}
     files = []
     tables.each{|table_name| files << "tmp/#{table_name}.csv"}

@@ -13,28 +13,20 @@ module CurationHelper
  end
 
  def latest_csv_export
-   begin
-     directory = "data/csv-exports"
-     files = Dir.entries(directory)
-     files = files.select{|file| file.match("csv_export-") }
-     latest_file = files.sort.last
-     if !latest_file.nil? && latest_file != ""
-       return "#{directory}/#{latest_file}"
-     else
-       return nil
-     end
-   rescue Exception
+   directory = Rails.root.join('data',"#{Rails.env}-csv-exports")
+   files = Dir.entries(directory)
+   files = files.select{|file| file.match("csv_export-") }
+   latest_file = files.sort.last
+   if !latest_file.nil? && latest_file != ""
+     return "#{directory}/#{latest_file}"
+   else
      return nil
    end
  end
 
  def time_of_export file_name
-   begin
-     file_name.gsub!(/\D+/, '')
-     file_name.to_time.strftime("%e %b %Y %H:%M:%S %Z")
-   rescue Exception
-     return nil
-   end
+   file_name.gsub!(/\D+/, '')
+   file_name.to_time.strftime("%e %b %Y %H:%M:%S %Z")
  end
 
 
