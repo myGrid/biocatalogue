@@ -45,7 +45,7 @@
       </br>
       </br>
       <% if !latest_csv_export.blank? %>
-        <%= link_to ("Download the Last CSV Export of Services <br>(Generated at: #{time_of_export(latest_csv_export)}").html_safe, download_latest_csv_path, :class => "button_slim" -%>
+        <%= link_to ("Download the Last CSV Export of Services <br>(Generated at: #{time_of_export(latest_csv_export)})").html_safe, download_latest_csv_path, :class => "button_slim" -%>
       <% end %>
 	</div>
 
