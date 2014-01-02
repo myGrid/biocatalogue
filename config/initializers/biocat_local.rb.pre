@@ -6,15 +6,6 @@
 
 # Private settings that apply to individual deployments.
 
-# Log rotation
-# Set this to true to rotate the logs (recommended for production)
-ROTATE_LOGS = false
-
-# Use cronolog for log rotation in production
-# Example CRONOLOG_PARAMS = "/my/server/cronolog /my/application/file/log/production.log.%Y%m%d"
-CRONOLOG_PARAMS = nil
-#CRONOLOG_PARAMS  =  "/usr/bin/cronolog /var/webapps/biocatalogue/log/production.log.%Y%m%d"
-
 # This setting determines where trashing (via the acts_as_trashable plugin) is used.
 ENABLE_TRASHING = true
 
