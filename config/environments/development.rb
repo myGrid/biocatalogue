@@ -1,14 +1,6 @@
 BioCatalogue::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
-  # Log rotation
-  # Set this to true to rotate the logs (recommended for production)
-  ROTATE_LOGS = false
-
-  # Use cronolog for log rotation in production
-  # Example CRONOLOG_PARAMS = "/my/server/cronolog /my/application/file/log/production.log.%Y%m%d"
-  CRONOLOG_PARAMS = nil
-
   # In the development environment your application's code is reloaded on
   # every request.  This slows down response time but is perfect for development
   # since you don't have to restart the webserver when you make code changes.

@@ -3,23 +3,6 @@ BioCatalogue::Application.configure do
 
   # The production environment is meant for finished, "live" apps.
 
-  # Log rotation
-  # Set this to true to rotate the logs (recommended for production)
-  ROTATE_LOGS = true
-
-  # Use cronolog for log rotation in production
-  # Example CRONOLOG_PARAMS = "/my/server/cronolog /my/application/file/log/production.log.%Y%m%d"
-  CRONOLOG_PARAMS = nil
-
-# Rotate logs when they reach a size of 10M and keep no more than 10 of these
-  #config.logger = Logger.new(config.log_path, 10, (1024**2)*10)
-
-  if ROTATE_LOGS && CRONOLOG_PARAMS
-    config.logger = Logger.new(IO.popen(CRONOLOG_PARAMS, "w"), 10, (1024**2)*10)
-    config.logger.level = Logger::INFO
-  end
-  config.log_level = :info
-
   # Code is not reloaded between requests
   config.cache_classes = true
 
