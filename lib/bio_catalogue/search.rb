@@ -210,7 +210,21 @@ module BioCatalogue
     end
 
     def self.search_term_from_hash(h)
-      h[:query] || h[:q] || h['query'] || h['q']
+
+      #This should be passed a hash where the query key's value can be extracted and returned
+      #however, 4 times using the Biocatalogue's database values such as this are being passed rather than a hash
+      #filters:
+      #    p:
+      #    - "21"
+      #   t:
+      #    - `SOAP
+      #   query:
+      # so for now we just discard these values
+       if h.is_a?(Hash) then
+         return (h[:query] || h[:q] || h['query'] || h['q'])
+       else
+         return nil
+       end
     end
 
     protected
