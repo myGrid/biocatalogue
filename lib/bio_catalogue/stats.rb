@@ -34,10 +34,14 @@ module BioCatalogue
         
       # Write it to the cache...
       Rails.cache.write(@@cache_key, stats)
-      
+
+      # Write it to a yaml file too...
+      registry_stats_file = Rails.root.join('data', "#{Rails.env}-registry_stats.yml")
+      File.open(registry_stats_file, File::WRONLY|File::CREAT) {|file| file.write(stats.to_yaml)}
+
       return stats
     end
-    
+
     def self.submit_job_to_refresh_stats
       # Only submit a job if if necessary... 
       unless BioCatalogue::DelayedJobs.job_exists?("BioCatalogue::Jobs::UpdateStats")

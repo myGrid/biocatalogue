@@ -14,7 +14,10 @@ class StatsController < ApplicationController
     @service_count = Service.count
 
     @stats = BioCatalogue::Stats.get_last_stats unless @service_count == 0
-    
+
+    registry_stats_file = Rails.root.join('data', "#{Rails.env}-registry_stats.yml").to_s
+    @stats = YAML.load(File.open(registry_stats_file)) unless !File.exists?(registry_stats_file)
+
     respond_to do |format|
       format.html
     end
