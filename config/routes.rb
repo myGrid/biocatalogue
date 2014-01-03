@@ -14,8 +14,10 @@ BioCatalogue::Application.routes.draw do
   match '/curation/tools/copy_annotations' => 'curation#copy_annotations', :as => :curation_tools_copy_annotations, :via => [:get, :post]
   match '/curation/tools/copy_annotations_preview' => 'curation#copy_annotations_preview', :as => :curation_tools_copy_annotations_preview, :via => :post
   match '/curation/reports/annotation_level' => 'curation#annotation_level', :as => :curation_annotation_level, :via => :get
-  match '/curation/tools/spreadsheet_export' => 'curation#spreadsheet_export', :as => :spreadsheet_export, :via => :get
+  #match '/curation/tools/spreadsheet_export' => 'curation#spreadsheet_export', :as => :spreadsheet_export, :via => :get
   match '/curation/tools/download_latest_csv' => 'curation#download_latest_csv', :as => :download_latest_csv, :via => :get
+  match '/curation/tools/csv_export' => 'curation#download_csv_page', :as => :download_csv_page, :via => :get
+
   match '/api.:format' => 'api#show', :as => :api
   match '/lookup.:format' => 'lookup#show', :as => :lookup
   match '/lookup' => 'lookup#show', :as => :lookup

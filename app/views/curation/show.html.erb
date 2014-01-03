@@ -41,12 +41,11 @@
 		<%= link_to "Copy Annotations From Item to Item", curation_tools_copy_annotations_path, :class => "button_slim" -%>
         </br>
         </br>
-        <%= link_to "Generate a New CSV Export of Services", spreadsheet_export_path, :class => "button_slim" -%>
-      </br>
-      </br>
-      <% if !latest_csv_export.blank? %>
-        <%= link_to ("Download the Last CSV Export of Services <br>(Generated at: #{time_of_export(latest_csv_export)})").html_safe, download_latest_csv_path, :class => "button_slim" -%>
-      <% end %>
+        <%#= link_to "Generate a New CSV Export of Services", spreadsheet_export_path, :class => "button_slim" -%>
+      <%# if !latest_csv_export.blank? %>
+        <%#= link_to ("Download the Last CSV Export of Services <br>(Generated at: #{time_of_export(latest_csv_export)}").html_safe, download_latest_csv_path, :class => "button_slim" -%>
+      <%# end %>
+      <%= link_to ("CSV Export of Services").html_safe, download_csv_page_path, :class => "button_slim" -%>
 	</div>
 
 	<span class="clear"></span>

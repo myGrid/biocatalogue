@@ -49,6 +49,12 @@ class CurationController < ApplicationController
     end
   end
 
+  def download_csv_page
+    respond_to do |format|
+      format.html
+    end
+  end
+
   def download_latest_csv
     if !latest_csv_export.nil?
       send_file latest_csv_export

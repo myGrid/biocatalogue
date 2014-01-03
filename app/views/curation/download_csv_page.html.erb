@@ -1,0 +1,35 @@
+<%
+
+   # BioCatalogue: app/views/curation/download_csv_page.html.erb
+   #
+   # Copyright (c) 2010, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
+
+%>
+
+<%= render :partial => 'header', :locals => { :sub => "- Services CSV Export" } %>
+
+<div class="box_info_standout center" style="margin: 1.5em auto; width: 500px;">
+  <br>
+  The last export was generated <b><%= time_of_export(latest_csv_export) %>.</b>
+  <br>
+  <br>
+  The zipped CSV export contains 3 CSV tables containing all Web services, SOAP operations, and REST methods in the <%= SITE_NAME %>.
+  <br>
+  The export is regenerated on a regular basis but if you require a more up to date one please use the button below to request one.
+  <br>
+  <br>
+</div>
+
+<div style="margin: 0 auto; width: 700px;">
+  <p class="center">
+    <%= link_to ("Download CSV Export").html_safe, download_latest_csv_path, :class => "button_slim" %>
+    <br>
+    <br>
+    <b><%= mail_to "#{FEEDBACK_EMAIL_ADDRESS}", 'Request new CSV Export', { :subject => "#{SITE_NAME} CSV Export Request", :encode => "hex", :class => "button_slim"} %></b>
+  </p>
+</div>
+
+
+
