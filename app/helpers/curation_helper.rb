@@ -14,6 +14,9 @@ module CurationHelper
 
  def latest_csv_export
    directory = Rails.root.join('data',"#{Rails.env}-csv-exports")
+   unless File.directory?(directory)
+     Dir.mkdir(directory)
+   end
    files = Dir.entries(directory)
    files = files.select{|file| file.match("csv_export-") }
    latest_file = files.sort.last
