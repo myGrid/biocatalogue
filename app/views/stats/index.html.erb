@@ -313,6 +313,7 @@
 						
 						<% search_queries_count = 0 %>
 						<% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
+                          <% query = query.encode('UTF-8', :invalid => :replace, :undef => :replace) %>
 							<% 
 								search_queries_count += 1
 								row_class = (search_queries_count > 30 ? "search_query_hidden" : "")
