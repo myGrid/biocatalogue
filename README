@@ -9,7 +9,7 @@ The goals of the BioCatalogue are:
 
 - Provide a single registration point for Web service providers and a single search
 site for scientists and developers.
-- Provide a curated catalogue of life science Web services.
+- Provide a curated catalogue of Web services.
 - Providers, expert curators and users can provide oversight, monitor the catalogue
 and provide high quality annotations for services.
 - Provide a place where the community can find, contact and meet the experts and
@@ -22,7 +22,8 @@ and the EMBL-EBI (led by Rodrigo Lopez).
 The service is still running at http://www.biocatalogue.org and is maintained by the
 University of Manchester.
 
-You can read more about the project at https://www.biocatalogue.org/wiki/doku.php?id=home.
+You can read more about the project at https://www.biocatalogue.org/wiki/.
 
-You can stand up your own instance of BioCatalogue by downloading the source code from
-https://github.com/myGrid/biocatalogue and following the installation instructions.
+You can stand up your own instance of BioCatalogue by following the installation instructions at:
+http://dev.mygrid.org.uk/wiki/display/servicecatalographer/Installation+Instructions+-+Production
+http://dev.mygrid.org.uk/wiki/display/servicecatalographer/Installation+Instructions+-+Development
