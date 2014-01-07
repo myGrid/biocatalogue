@@ -14,62 +14,19 @@
 
 <% if @service_count == 0 %>
     <p style="font-weight: bold;">
-      Stats are not available as there are no services in the Catalogue.
+      Statistics report is not available as there are no services in the <%= SITE_NAME %> at the moment.
     </p>
 <% elsif @stats.nil? %>
-
-	<p style="font-weight: bold;">
-		Stats are being generated...
-	</p>
-	
-	<p>
-		This page will automatically refresh every 60 seconds until the stats data is available.
-		<br/>
-		<small class="faded">JavaScript needs to be enabled for the auto refresh to work.</small>
-	</p>
-	
-	<script language="JavaScript"> 
-		// CREDITS: 
-		// Automatic Page Refresher by Peter Gehrig and Urs Dudli www.24fun.com 
-		// Permission given to use the script provided that this notice remains as is. 
-		// Additional scripts can be found at http://www.hypergurl.com 
-		// Configure refresh interval (in seconds) var refreshinterval=5 
-		// Shall the coundown be displayed inside your status bar? Say "yes" or "no" below: var displaycountdown="yes"
-		var displaycountdown="yes"
-		// Do not edit the code below 
-		var starttime;
-		var nowtime; 
-		var reloadseconds=0; 
-		var secondssinceloaded=0; 
-		function starttime() { 
-			starttime=new Date();
-			starttime=starttime.getTime();
-			countdown(); 
-		} 
-		function countdown() { 
-			nowtime= new Date();
-			nowtime=nowtime.getTime();
-			secondssinceloaded=(nowtime-starttime)/1000;
-			reloadseconds=Math.round(refreshinterval-secondssinceloaded);
-			if (refreshinterval>=secondssinceloaded) { 
-				var timer=setTimeout("countdown()",1000) 
-				if (displaycountdown=="yes") { 
-					window.status="Page refreshing in "+reloadseconds+ " seconds";
-				} 
-			} else { 
-				clearTimeout(timer); 
-				window.location.reload(true);
-			} 
-		} 
-		window.onload=starttime;
-	</script>
-
+    <p>There is no current statistics report. Please use the button below to request it.</p>
+    <p>
+      <b><%= mail_to "#{FEEDBACK_EMAIL_ADDRESS}", 'Request New Statistics Report', { :subject => "#{SITE_NAME} Statistics Report Request", :encode => "hex", :class => "button_slim"} %></b>
+    </p>
 <% else %>
 
 	<table class="box_info_standout" style="width: 450px;">
 		<tr>
 			<td style="vertical-align:middle;"><b>Last calculated:</b> <%= @stats.created_at.to_s -%></td>
-			<td style="text-align:right;"><%= link_to(refresh_image + " Refresh", refresh_stats_path, :class => "button_slim", :method => :post, :style => "margin-left: 3em;") -%></td>
+			<!--<td style="text-align:right;"><% link_to(refresh_image + " Refresh", refresh_stats_path, :class => "button_slim", :method => :post, :style => "margin-left: 3em;") -%></td>-->
 		</tr>
 	</table>
 		
