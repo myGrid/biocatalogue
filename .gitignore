@@ -23,12 +23,8 @@ public/stylesheets/base_packaged.css
 
 data/search_query_suggestions.txt
 data/eb-eye/eb-eye_dump_*
-data/*-csv-exports
 
-data/registry_stats.yml
-data/development-registry_stats.yml
-data/production-registry_stats.yml
-data/test-registry_stats.yml
+data/*_reports
 
 
 app/assets/stylesheets/colours/override.css.scss
