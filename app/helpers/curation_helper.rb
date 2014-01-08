@@ -13,15 +13,19 @@ module CurationHelper
  end
 
  def latest_csv_export
-   directory = Rails.root.join('data',"#{Rails.env}-csv-exports")
-   unless File.directory?(directory)
-     Dir.mkdir(directory)
+   report_folder = Rails.root.join('data',"#{Rails.env}_reports")
+   export_folder = Rails.root.join('data',"#{Rails.env}_reports", "csv_exports")
+   unless Dir.exists?(report_folder)
+     Dir.mkdir(report_folder)
    end
-   files = Dir.entries(directory)
+   unless File.directory?(export_folder)
+     Dir.mkdir(export_folder)
+   end
+   files = Dir.entries(export_folder)
    files = files.select{|file| file.match("csv_export-") }
    latest_file = files.sort.last
    if !latest_file.nil? && latest_file != ""
-     return "#{directory}/#{latest_file}"
+     return "#{export_folder}/#{latest_file}"
    else
      return nil
    end
@@ -34,7 +38,11 @@ module CurationHelper
 
 
  def spreadsheet_export
-   export_folder = Rails.root.join('data',"#{Rails.env}-csv-exports")
+   report_folder = Rails.root.join('data',"#{Rails.env}_reports")
+   export_folder = Rails.root.join('data',"#{Rails.env}_reports", "csv_exports")
+   unless Dir.exists?(report_folder)
+     Dir.mkdir(report_folder)
+   end
    unless File.directory?(export_folder)
      Dir.mkdir(export_folder)
    end
