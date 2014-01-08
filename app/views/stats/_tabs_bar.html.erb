@@ -1,0 +1,6 @@
+<%= tabs_tag(:builder => MenuTabBuilder, :namespace => :stats) do |tab| %>
+    <%= tab.general     'General',  general_stats_path %>
+    <%= tab.metadata    'Metadata', metadata_stats_path %>
+    <%= tab.tags        'Tags',     tags_stats_path %>
+    <%= tab.search      'Search',   search_stats_path %>
+<% end %>

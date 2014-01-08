@@ -1,13 +1,26 @@
 # BioCatalogue: app/controllers/stats_controller.rb
 #
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics
 # Institute (EMBL-EBI) and the University of Southampton.
 # See license.txt for details.
 
 class StatsController < ApplicationController
-  
+
   before_filter :disable_action_for_api
-  
+
+  set_tab :general, :stats, :only => %w(general index)
+  set_tab :metadata, :stats, :only => %w(metadata)
+  set_tab :tags, :stats, :only => %w(tags)
+  set_tab :search, :stats, :only => %w(search)
+
+  before_filter :index, :only => [:general, :metadata, :tags, :search]
+
+  def general ;  end
+  def metadata ; end
+  def tags ;     end
+  def search ;   end
+
+
   def index
     @service_count = Service.count
 
@@ -19,7 +32,7 @@ class StatsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html
+      format.html {render 'stats/index'}
     end
   end
   

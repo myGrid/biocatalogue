@@ -1,0 +1,51 @@
+<div id="tab-general" class="tabbertab">
+
+  <h3>General</h3>
+
+  <% benchmark "Statistics - General" do %>
+
+      <table class="biocat_table">
+        <tr>
+          <th></th>
+          <th>Total:</th>
+          <th>Last 7 days:</th>
+          <th>Last 30 days:</th>
+          <th>Last 90 days:</th>
+          <th>Last 180 days:</th>
+        </tr>
+
+        <% BioCatalogue::Stats::MODELS.each do |m| %>
+            <tr>
+              <td>
+                <b><%= m.name.titleize.pluralize -%></b>
+              </td>
+              <td class="value center">
+                <%= number_with_delimiter(@stats.total_for_model(m)) -%>
+              </td>
+              <td class="value center">
+                <%= number_with_delimiter(@stats.total_for_model(m, :last_7)) -%>
+              </td>
+              <td class="value center">
+                <%= number_with_delimiter(@stats.total_for_model(m, :last_30)) -%>
+              </td>
+              <td class="value center">
+                <%= number_with_delimiter(@stats.total_for_model(m, :last_90)) -%>
+              </td>
+              <td class="value center">
+                <%= number_with_delimiter(@stats.total_for_model(m, :last_180)) -%>
+              </td>
+            </tr>
+        <% end %>
+      </table>
+
+      <br/>
+
+      <p class="box_info_standout">
+        NOTE: the Annotations count above is only for the metadata stored within the generic Annotations mechanism and
+        does not include metadata from service description docs (like from WSDLs for SOAP services). To see all metadata counts go to the
+        <a href="#metadata">Metadata</a> tab.
+      </p>
+
+  <% end %>
+
+</div>

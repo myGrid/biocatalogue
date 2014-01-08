@@ -1,0 +1,56 @@
+<div id="tab-search" class="tabbertab">
+
+  <h3>Search</h3>
+
+  <% benchmark "Statistics - Search" do %>
+
+      <p>
+        Note: this includes searches carried out through the API but doesn't include
+        paging through the same search results (i.e. searching then paging only counts
+        as one search event.
+      </p>
+
+      <p>
+        <b>Total searches taken place:</b>
+        <span class="value"><%= number_with_delimiter(@stats.total_searches_non_unique) -%></span>
+      </p>
+
+      <p>
+        <b>Total unique search queries:</b>
+        <span class="value"><%= number_with_delimiter(@stats.total_searches_unique) -%></span>
+      </p>
+
+      <h5>
+        Queries Breakdown
+
+        <% if @stats.search_queries_with_frequencies_sorted_descending.length > 10 %>
+							<span style="padding-left: 2em;">
+								<%= render_show_hide_more_stats_links("search_queries", "search_query_hidden") -%>
+							</span>
+        <% end %>
+      </h5>
+
+      <table class="biocat_table" style="max-width: 100%">
+        <tr>
+          <th>Query:</th>
+          <th>Frequency:</th>
+        </tr>
+
+        <% search_queries_count = 0 %>
+        <% @stats.search_queries_with_frequencies_sorted_descending.each do |query, frequency| %>
+            <% query = query.encode('UTF-8', :invalid => :replace, :undef => :replace) %>
+            <%
+               search_queries_count += 1
+               row_class = (search_queries_count > 30 ? "search_query_hidden" : "")
+               show_row = row_class.blank?
+            %>
+            <tr class="<%= row_class -%>" style="<%= show_row ? "" : "display: none;" -%>">
+              <td><%= link_to(h(query), search_url(:q => query), :popup => true) -%></td>
+              <td class="value center"><%= frequency -%></td>
+            </tr>
+        <% end %>
+      </table>
+
+  <% end %>
+
+</div>

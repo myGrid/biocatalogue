@@ -1,0 +1,79 @@
+<div id="tab-metadata" class="tabbertab">
+
+  <h3>Metadata</h3>
+
+  <% benchmark "Statistics - Metadata" do %>
+
+      <p class="box_info_standout">
+        <b>NOTE:</b> these include all the annotations stored via the generic Annotations mechanism AND
+        metadata from service description docs (like from WSDLs for SOAP services).
+      </p>
+
+      <br/>
+
+      <table class="biocat_table">
+        <tr>
+          <th></th>
+          <th>Total on services:</th>
+          <th>Average per service:</th>
+          <th>Max no. on services:</th>
+          <th>Min no. on services:</th>
+        </tr>
+
+        <% BioCatalogue::Annotations.metadata_sources.concat([ :all ]).each do |type| %>
+            <%= render :partial => 'metadata_stats_for_type', :locals => { :type => type } -%>
+        <% end %>
+      </table>
+
+      <br />
+
+      <h5>Breakdown by Services</h5>
+
+      <% if false %>
+          <p>
+            <%= link_to_function("show " + expand_image, visual_effect(:toggle_blind, "services_metadata_breakdown", :duration => 0.3), :class => "expand_link") %>
+          </p>
+      <% end %>
+
+      <div id="services_metadata_breakdown">
+
+        <p><span class="faded">(Click on column headers to sort. Note: this might take some time to process.)</span></p>
+
+        <table class="biocat_table sortable">
+          <thead>
+          <tr>
+            <th>Service:</th>
+            <% BioCatalogue::Annotations.metadata_sources.concat([ :all ]).each do |type| %>
+                <th class="number">By <%= metadata_source_type_title_text(type) -%>:</th>
+            <% end %>
+          </tr>
+          </thead>
+
+          <% sorted_service_ids = get_sorted_list_of_service_ids_from_metadata_counts(@stats.metadata_counts_per_service) %>
+
+          <tbody>
+          <% sorted_service_ids.each do |s_id| %>
+              <tr>
+                <td>
+                  <% service = Service.find_by_id(s_id) %>
+                  <% if service %>
+                      <%= link_to(display_name(service), service, :popup => true) -%>
+                  <% else %>
+                      (unknown service)
+                  <% end %>
+                </td>
+                <% BioCatalogue::Annotations.metadata_sources.concat([ :all ]).each do |type| %>
+                    <td class="value center">
+                      <%= @stats.metadata_counts_per_service[s_id][type] -%>
+                    </td>
+                <% end %>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+
+      </div>
+
+  <% end %>
+
+</div>

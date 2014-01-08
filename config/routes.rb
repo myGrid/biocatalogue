@@ -52,7 +52,15 @@ BioCatalogue::Application.routes.draw do
   match '/stats' => 'stats#index', :as => :stats_index
   match '/stats/refresh' => 'stats#refresh', :as => :refresh_stats, :via => :post
 
-  resources :stats
+  resources :stats do
+
+    collection do
+      get :general
+      get :metadata
+      get :tags
+      get :search
+    end
+  end
 
   resources :categories do
 
