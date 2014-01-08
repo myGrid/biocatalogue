@@ -1,0 +1,51 @@
+
+<%= render :partial => 'header', :locals => { :sub => "- Reports - Links Checker" } %>
+
+<div class="box_info_standout center" style="margin: 1.5em auto; width: 700px;">
+  This is a list of flagged links found in <%= SITE_NAME %>.
+  <br>The links have been flagged because they cannot currently be accessed.
+  <br>It is recommended that the curator review these and take the appropriate action.
+</div>
+
+
+<div style="margin: 0 auto; width: 700px;">
+  <% if @stats.nil? %>
+      none
+  <% else %>
+      <table class="biocat_table">
+        <th> Service Name </th>
+        <th> Component Name </th>
+        <th> Link </th>
+        <th> Link Status </th>
+        <% all_data_with_links = @stats.first %>
+        <% all_links_with_status = @stats.last %>
+
+        <% all_data_with_links.each do |service_item| %>
+            <% service_item.each do |name, component_links| # service_item is a hash %>
+                <%   component_links.each do |cl| # each cl is a hash %>
+                    <%  cl.each do |cname, links|                     %>
+                        <%  links.each do |link|                      %>
+                            <%  if all_links_with_status[link] == false %>
+                                <tr>
+                                  <td>
+                                    <a href='<%="#{root_url}services/#{name.split('_')[-1]}"%>' target='_blank'><%="#{name}"%></a>
+                                  </td>
+                                  <td>
+                                    <a href=<%="#{root_url}#{cname.split('_')[0].underscore.pluralize}/#{cname.split('_')[1]}"%> target='_blank'> <%="#{cname}"%></a>
+                                  </td>
+                                  <td>
+                                    <a href='<%="#{link}"%>' target='_blank'><%="#{link}"%></a>
+                                  </td>
+                                  <td>
+                                    <%="#{all_links_with_status[link]}" %>
+                                  </td>
+                                </tr>
+                            <% end%>
+                        <% end%>
+                    <% end%>
+                <% end%>
+            <% end%>
+        <% end %>
+      </table>
+  <% end %>
+</div>

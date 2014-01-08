@@ -64,6 +64,12 @@ class CurationController < ApplicationController
     end
   end
 
+  def links_checker
+    file = Rails.root.join('data', "#{Rails.env}_reports", 'links_checker_report.yml')
+    if File.exists?(file)
+      @stats = YAML.load(File.open(file))
+    end
+  end
 
   def copy_annotations_preview
     type = params[:type]
