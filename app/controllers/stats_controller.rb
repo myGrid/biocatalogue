@@ -20,15 +20,20 @@ class StatsController < ApplicationController
   def tags ;     end
   def search ;   end
 
+  include BioCatalogue::Stats
 
   def index
     @service_count = Service.count
-
-    file = Rails.root.join('data', "#{Rails.env}_reports", 'registry_stats.yml').to_s
-    if File.exists?(file)
-      @stats = YAML.load(File.open(file))
-    else
-      flash[:error] = "No links checker report found. Please contact #{SITE_NAME} administators for help"
+    @stats = Rails.cache.read('registry_stats')
+    if @stats.nil?
+      #read stats from yaml file and write to cache
+      file = Rails.root.join('data', "#{Rails.env}_reports", 'registry_stats.yml').to_s
+      if File.exists?(file)
+        @stats = YAML.load(File.open(file))
+        Rails.cache.write('registry_stats', @stats)
+      else
+        flash[:error] = "No stats report found. Please contact #{SITE_NAME} administators for help"
+      end
     end
 
     respond_to do |format|
