@@ -8,11 +8,11 @@
 </div>
 
 
-<div style="margin: 0 auto; width: 700px;">
+<div style="margin: 0 auto; width: 100%">
   <% if @stats.nil? %>
       <div class='none_text' style="text-align: center">No links flagged</div>
   <% else %>
-      <table class="biocat_table">
+      <table class="biocat_table" style='width: 100%'>
         <th> Service Name </th>
         <th> Component Name </th>
         <th> Link </th>
@@ -27,13 +27,13 @@
                         <%  links.each do |link|                      %>
                             <%  if all_links_with_status[link] == false %>
                                 <tr>
-                                  <td>
+                                  <td style='word-break: break-all'>
                                     <a href='<%="#{root_url}services/#{name.split('_')[-1]}"%>' target='_blank'><%="#{name}"%></a>
                                   </td>
                                   <td>
                                     <a href='<%="#{root_url}#{cname.split('_')[0].underscore.pluralize}/#{cname.split('_')[1]}"%>' target='_blank'> <%="#{cname}"%></a>
                                   </td>
-                                  <td>
+                                  <td style='word-break: break-all'>
                                     <a href='<%="#{link}"%>' target='_blank'><%="#{link}"%></a>
                                   </td>
                                   <td>
