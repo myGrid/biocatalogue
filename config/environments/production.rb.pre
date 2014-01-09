@@ -25,7 +25,7 @@ BioCatalogue::Application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
-  options = {:compress => true, :value_max_bytes => 2500000} #2.5MB
+  options = {:compress => true, :value_max_bytes => 4000000} #4MB
   config.cache_store = :dalli_store, 'localhost:11211', options
 
   config.active_support.deprecation = :notify
