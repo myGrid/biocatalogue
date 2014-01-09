@@ -44,7 +44,7 @@
                row_class = (search_queries_count > 30 ? "search_query_hidden" : "")
                show_row = row_class.blank?
             %>
-            <tr class="<%= row_class -%>" style="<%= show_row ? "" : "display: none;" -%>">
+            <tr class="<%= row_class -%>" style="max-width: 90%; <%= show_row ? "" : "display: none;" -%>; word-break: break-all">
               <td><%= link_to(h(query), search_url(:q => query), :popup => true) -%></td>
               <td class="value center"><%= frequency -%></td>
             </tr>
