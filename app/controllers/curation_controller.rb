@@ -67,6 +67,7 @@ class CurationController < ApplicationController
   def links_checker
     file = Rails.root.join('data', "#{Rails.env}_reports", 'links_checker_report.yml')
     if File.exists?(file)
+      @last_modified = File.mtime(file)
       @stats = YAML.load(File.open(file))
     end
   end

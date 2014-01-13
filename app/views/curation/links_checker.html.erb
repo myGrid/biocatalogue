@@ -2,9 +2,12 @@
 <%= render :partial => 'header', :locals => { :sub => "- Reports - Links Checker" } %>
 
 <div class="box_info_standout center" style="margin: 1.5em auto; width: 700px;">
-  This is a list of flagged links found in <%= SITE_NAME %>.
+  This is reguarly generated list of flagged links found in <%= SITE_NAME %>.
   <br>The links have been flagged because they cannot currently be accessed.
   <br>It is recommended that the curator review these and take the appropriate action.
+  <% unless @stats.nil? || @last_modified.nil? %>
+      <br>This list was generated <%= @last_modified %>
+  <% end %>
 </div>
 
 
