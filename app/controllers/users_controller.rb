@@ -33,11 +33,11 @@ class UsersController < ApplicationController
   before_filter :find_users, :only => [:index, :filtered_index]
 
   before_filter :find_user, :only => [:edit, :update, :change_password,
-                                      :rpx_update, :annotations_by, :favourites,
-                                      :services_responsible, :make_curator, :remove_curator,
+                                      :rpx_update, :annotations_by,
+                                      :make_curator, :remove_curator,
                                       :deactivate]
 
-  before_filter :find_user_inclusive, :only => [:show, :activate,
+  before_filter :find_user_inclusive, :only => [:show, :activate, :favourites,
                                                 :services_submitted, :services_annotated,
                                                 :services_responsible, :service_status_notifications]
 
