@@ -513,7 +513,7 @@ class Service < ActiveRecord::Base
                 :resource => rmp.rest_parameter,
                 :type_of_data => "Example data",
                 :annotations => rmp.rest_parameter.annotations_with_attribute("example_data")
-              }
+              } unless rmp.rest_parameter.nil?
             end
             
             rm.rest_method_representations.each do |rmr|
@@ -521,7 +521,7 @@ class Service < ActiveRecord::Base
                 :resource => rmr.rest_representation,
                 :type_of_data => "Example data",
                 :annotations => rmr.rest_representation.annotations_with_attribute("example_data"),
-              }
+              } unless rmr.rest_representation.nil?
             end
           end
       end
