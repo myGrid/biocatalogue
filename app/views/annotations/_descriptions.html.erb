@@ -39,7 +39,7 @@
 							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(annotatable.updated_at)} ago)" -%></span>
 						</span>
 						<div>
-							<%= annotation_prepare_description(desc, 
+							<%= annotation_prepare_description(CGI.escapeHTML(desc),
 																								 (truncate_desc != false), 
 																								 (truncate_desc ==  false ? nil : truncate_desc), 
 																								 auto_link_desc) -%>
