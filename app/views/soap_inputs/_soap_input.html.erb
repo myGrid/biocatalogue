@@ -31,7 +31,7 @@
 			  <% unless (desc = input.preferred_description).blank? %>
           <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
             <div class="text">
-              <%= annotation_prepare_description(desc, true, 150, false) -%>
+              <%= annotation_prepare_description(CGI.escapeHTML(desc), true, 150, false) -%>
             </div>
           <% end %>
         <% end %>
