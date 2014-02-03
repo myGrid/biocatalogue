@@ -258,7 +258,7 @@ module AnnotationsHelper
     # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
     if desc.strip.start_with?('http://', 'https://')
       desc = desc.strip # remove leading and trailing whitespace
-      desc = desc.gsub!(/\s/,'+')
+      desc = desc.gsub(/\s/,'+')
     end
     desc = strip_tags(desc) if do_strip_tags
     desc = truncate(desc, :length => truncate_length) unless truncate_length.nil?
