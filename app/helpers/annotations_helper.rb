@@ -254,10 +254,10 @@ module AnnotationsHelper
 
   def annotation_prepare_description(desc, do_strip_tags=false, truncate_length=nil, do_auto_link=true, do_simple_format=!do_strip_tags, do_white_list=true)
     return '' if desc.nil?
-    desc.strip # remove leading and trailing whitespace
     # If it is a URL - do a simple check if it contains spaces and replace them with '+'
     # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
-    if desc.start_with?('http://', 'https://')
+    if desc.strip.start_with?('http://', 'https://')
+      desc = desc.strip # remove leading and trailing whitespace
       desc = desc.gsub!(/\s/,'+')
     end
     desc = strip_tags(desc) if do_strip_tags
