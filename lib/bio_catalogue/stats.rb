@@ -42,8 +42,8 @@ module BioCatalogue
       unless Dir.exist?(reports_dir)
         Dir.mkdir(reports_dir)
       end
-      links_checker_file = reports_dir.to_s + '/registry_stats.yml'
-      File.open(links_checker_file, File::WRONLY|File::CREAT) {|file| file.write(report_values.to_yaml)}
+      registry_stats_file = reports_dir.to_s + '/registry_stats.yml'
+      File.open(registry_stats_file, File::WRONLY|File::CREAT) {|file| file.write(report_values.to_yaml)}
     end
 
     def self.submit_job_to_refresh_stats
