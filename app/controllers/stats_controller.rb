@@ -28,9 +28,14 @@ class StatsController < ApplicationController
     if File.exists?(file)
       modified_time = File.mtime(file)
       @stats = Rails.cache.read('registry_stats')
-      # load stats from file if
-      # there's no cached copy OR
-      # the stats file is newer than the stats.
+      # Load stats from file if there's no cached copy OR
+      # the stats file is newer than the stats (careful when comparing as there is
+      # some time lag between generating the new stats object (which has created_at field)
+      # and serialising it to the file so the 'last modified time' of the file is always a
+      # couple of seconds younger than the stats object it contains so technically the file is
+      # always younger than the @stats object it contains but we only want to load the file the
+      # next time it is generated from a background job and not every time so we are giving it + 1 minute
+      # when checking).
       if @stats.nil? || (@stats.created_at + 1.minutes) < modified_time
         @stats = YAML.load(File.open(file))
         Rails.cache.write('registry_stats', @stats)
