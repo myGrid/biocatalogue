@@ -25,7 +25,7 @@
 
 	<table class="box_info_standout" style="width: 450px;">
 		<tr>
-			<td style="vertical-align:middle;"><b>Last calculated:</b> <%= @stats.created_at.to_s -%></td>
+			<td style="vertical-align:middle;"><b>Last calculated:</b> <%= format_time(@stats.created_at)-%></td>
 			<!--<td style="text-align:right;"><% link_to(refresh_image + " Refresh", refresh_stats_path, :class => "button_slim", :method => :post, :style => "margin-left: 3em;") -%></td>-->
 		</tr>
 	</table>

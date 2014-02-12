@@ -33,9 +33,12 @@ module CurationHelper
 
  def time_of_export file_name
    file_name.gsub!(/\D+/, '')
-   file_name.to_time.strftime("%e %b %Y %H:%M:%S %Z")
+   format_time(file_name.to_time)
  end
 
+ def format_time(time)
+    time.strftime("%e %b %Y %H:%M:%S %Z") || 'not available'
+  end
 
  def spreadsheet_export
    report_folder = Rails.root.join('data',"#{Rails.env}_reports")

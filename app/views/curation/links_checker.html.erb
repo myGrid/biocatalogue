@@ -6,7 +6,7 @@
   <br>The links have been flagged because they cannot currently be accessed.
   <br>It is recommended that the curator review these and take the appropriate action.
   <% unless @stats.nil? || @last_modified.nil? %>
-      <br>This list was generated <%= @last_modified %>
+      <br>This list was generated <b><%= format_time(@last_modified) %></b>
   <% end %>
 </div>
 
