@@ -42,11 +42,17 @@ module BioCatalogue
            Dir.mkdir(reports_dir)
         end
         links_checker_file = reports_dir.to_s + '/links_checker_report.yml'
+        backup_last_report(links_checker_file)
         File.open(links_checker_file, File::WRONLY|File::CREAT) {|file| file.write(report_values.to_yaml)}
       end
 
       protected
 
+      def backup_last_report(links_checker_file)
+        if File.exist?(links_checker_file)
+          File.rename(links_checker_file, links_checker_file + '.backup')
+        end
+      end
 
       # Generates a list of child object of a Service for which
       # links need to be checked. Return the empty list if there
