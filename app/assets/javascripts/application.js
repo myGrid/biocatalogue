@@ -134,6 +134,7 @@ function addLoadEvent(func) {
 /* BEGIN code for service categories in service submission form */
 
 var service_categories = new Object();
+var edam_topics = new Object();
 
 function updateServiceCategoriesList() {
 
@@ -173,6 +174,46 @@ function addServiceCategory(dropdown_id) {
 
   updateServiceCategoriesList();
 }
+
+function updateEdamTopicsList() {
+
+    var markup = '';
+
+    for (var key in edam_topics) {
+        markup += '<span style="vertical-align: middle;">' + edam_topics[key] + '&nbsp;&nbsp;&nbsp;<small><a href="#" onclick="javascript:removeServiceCategory(' + key + '); return false;">' +
+            '<img src="/assets/delete.png" alt="Remove this category" style="vertical-align: middle;"/></a></small></span><br/>';
+    }
+
+    if (markup == '')
+    {
+        markup = '<i>None</i>';
+    }
+
+    $('selected_edam_topics_list').innerHTML = markup;
+
+    // also update the hidden input element
+
+    var service_edam_topics_list = '';
+
+    for (var key in edam_topics) {
+        service_edam_topics_list += key + ',';
+    }
+
+    $('selected_edam_topics_input').value = service_edam_topics_list;
+}
+
+function addEdamTopics(dropdown_id) {
+    var x = $(dropdown_id);
+
+    if (x.options.length > 0)	{
+        var y = x.options[x.selectedIndex];
+        edam_topics[y.value] = y.text.gsub('-', '').strip();
+    }
+
+    updateEdamTopicsList();
+}
+
+
 
 function removeServiceCategory(key) {
 

@@ -19,7 +19,7 @@ class ServicesController < ApplicationController
 
   before_filter :find_services, :only => [ :index, :filtered_index ]
 
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples, :service_endpoint, :example_data, :example_scripts, :example_workflows ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :add_edam_topic, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples, :service_endpoint, :example_data, :example_scripts, :example_workflows ]
 
   before_filter :find_favourite, :only => [ :favourite, :unfavourite ]
 
@@ -182,6 +182,26 @@ class ServicesController < ApplicationController
       else
         "Categories successfully added"
       end
+      format.html { redirect_to(service_url(@service)) }
+    end
+  end
+
+  def add_edam_topic
+    categories = [ ]
+    anns = [ ]
+
+    categories = params[:categories] if params.has_key?(:categories)
+
+    unless categories.empty?
+      anns = @service.create_annotations({ "edam_topic" => categories.split(',').compact.map{|x| x.strip}.reject{|x| x == ""} }, current_user)
+    end
+
+    respond_to do |format|
+      flash[:notice] = if anns.empty?
+                         "No new edam topics specified"
+                       else
+                         "Edam topics successfully added"
+                       end
       format.html { redirect_to(service_url(@service)) }
     end
   end

@@ -414,6 +414,7 @@ BioCatalogue::Application.routes.draw do
       post :archive
       get :annotations
       post :categorise
+      post :add_edam_topic
       get :deployments
       post :check_updates
       get :service_endpoint
