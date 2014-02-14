@@ -132,25 +132,6 @@
 			<% end %>
 		</div>
 
-      <div id="add_service_category_box" class="box_form" style="width: 550px; margin: 1em 0; -%>;">
-      <%= form_for :annotation, :url => add_edam_topic_service_url(service) do |f| %>
-          <input id="selected_edam_topics_input" type="hidden" name="categories"/>
-          <p style="margin-bottom: 0.5em;">
-            <b>Annotate with EDAM Ontology Topics:</b>
-            <%= info_icon_with_tooltip("Here you can specify what EDAM topics this service can be classified under. You can set more than one, but please try and be as specific as possible.") -%>
-          </p>
-          <div id="selected_edam_topics_list" class="form_selected_values">
-            <i>None</i>
-          </div>
-          <p style="margin-top: 0.7em;">
-            <%= edam_select_tag f, 'edam', 'edam_uri'-%>
-            <b><a href="#" onclick="javascript:addEdamTopics('annotation_edam'); return false;" class="button_slim" style="margin-left: 0.6em; padding: 0.2em 0.4em;"><span>Add to list</span></a></b>
-          </p>
-          <p style="text-align: center;">
-            <%= f.submit "Submit", :disable_with => "Submitting..." -%>
-          </p>
-      <% end %>
-      </div>
 		<script type="text/javascript"> 
 
 		function handleEnter(evt) {
