@@ -84,7 +84,7 @@
                               <% link_text = image_tag('add_annotation_hover.png', :style => 'vertical-align:middle;margin-right:0.3em;') +
                                       content_tag(:span, "Add categories", :style => "vertical-align: middle; text-decoration: underline;") %>
                               <%= link_to_function(link_text + expand_image,
-                                                   visual_effect(:toggle_slide, "add_service_category_box", :duration => 0.3),
+                                                   visual_effect(:toggle_slide, "add_edam_topic_box", :duration => 0.3),
                                                    :class => "active",
                                                    :style => "text-decoration: none; vertical-align: middle;") %>
 
@@ -112,7 +112,7 @@
   </div>
 
   <% if show_add_option and logged_in? %>
-      <div id="add_service_category_box" class="box_form" style="width: 550px; margin: 1em 0; -%>;">
+      <div id="add_edam_topic_box" class="box_form" style="width: 550px; margin: 1em 0; display: <%= params.has_key?(:categorise) ? 'block' : 'none' -%>;">
         <%= form_for :annotation, :url => add_edam_topic_service_url(service) do |f| %>
             <input id="selected_edam_topics_input" type="hidden" name="categories"/>
             <p style="margin-bottom: 0.5em;">
