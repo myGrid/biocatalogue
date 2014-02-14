@@ -13,7 +13,8 @@ module OntologyHelper
   end
 
   def render_ontology_class_options clz,depth=0
-    result = [["--"*depth+clz.label + " [#{get_edam_id(clz.uri.to_s)}]:"]]
+    #result = [["--"*depth+clz.label + " [#{get_edam_id(clz.uri.to_s)}]:"]]
+    result = [["--"*depth+clz.label]]
     clz.subclasses.each do |c|
       result += render_ontology_class_options(c,depth+1)
     end
