@@ -196,7 +196,7 @@ module ServicesHelper
       when 'Tree Inference'
         return {:name => 'Phylogeny reconstruction', :uri => 'http://edamontology.org/topic_0191'}
       else
-        return {:name => topic, :uri => ''}
+        return {:name => nil, :uri => nil}
     end
   end
 
