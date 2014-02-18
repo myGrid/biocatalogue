@@ -15,7 +15,7 @@
                         <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
                       </div>
                       <%= render :partial => "annotations/common/default_modify_options",
-                                 :locals => { :annotation => ann, :ann_type => "license info" } -%>
+                                 :locals => { :annotation => ann, :ann_type => "license info", :edit_enabled => false} -%>
                     </div>
                 <% end %>
             <% end %>
