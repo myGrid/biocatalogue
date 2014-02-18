@@ -1,0 +1,32 @@
+<% unless annotatable.nil? %>
+    <div id="<%= 'license' -%>" class="annotations_container">
+      <div style="margin-top: 1em;">
+        <b>SWO License(s):</b>
+        <%= info_icon_with_tooltip("Please select the appropriate license for your software from the SoftWare Ontology (SWO) licenses") -%>
+      </div>
+      <div class="box_annotations">
+        <% swo_license_annotations = annotatable.annotations_with_attribute("swo_license", true).sort {|a,b| a.updated_at <=> b.updated_at}  %>
+        <% unless swo_license_annotations.empty? %>
+            <% swo_license_annotations.each do |ann| %>
+                <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+                    <div class="text">
+                      <%= annotation_source_text(ann) -%>
+                      <div>
+                        <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
+                      </div>
+                      <%= render :partial => "annotations/common/default_modify_options",
+                                 :locals => { :annotation => ann, :ann_type => "license info" } -%>
+                    </div>
+                <% end %>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+<% end %>
+
+<% if logged_in? %>
+    <%= form_for :annotation, :url => add_ontology_annotation_service_url(@service) do |f| %>
+        <%= ontology_select_tag f, 'swo_license', 'swo_license', 'swo_license_uri', {} -%>
+        <%= submit_tag 'Add', {:class=>"button_slim", :style=>"margin-left: 0.6em; padding: 0.2em 0.4em;"} %>
+    <% end %>
+<% end %>

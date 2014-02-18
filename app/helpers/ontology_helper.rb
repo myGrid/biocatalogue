@@ -1,9 +1,17 @@
 module OntologyHelper
+  ONTOLOGIES = ['swo_license', 'edam_topic']
 
-  def edam_select_tag form, element_id, selected_uri,html_options={}
-    ontology_select_tag form, "edam",element_id,selected_uri,html_options
+  def attributes_for_ontologies
+    return AnnotationAttribute.find_all_by_name(ONTOLOGIES)
   end
 
+  def edam_hierachy_text(edam_topic)
+  end
+
+  def remove_formatting_of ontology_concept
+    return '' if ontology_concept.nil?
+    return ontology_concept.gsub('--', '').strip
+  end
 
   def ontology_select_tag form,type,element_id,selected_uri,html_options={}
     reader = reader_for_type(type)
@@ -13,7 +21,6 @@ module OntologyHelper
   end
 
   def render_ontology_class_options clz,depth=0
-    #result = [["--"*depth+clz.label + " [#{get_edam_id(clz.uri.to_s)}]:"]]
     result = [["--"*depth+clz.label]]
     clz.subclasses.each do |c|
       result += render_ontology_class_options(c,depth+1)

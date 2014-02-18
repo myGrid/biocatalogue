@@ -101,6 +101,11 @@
     </div>
 
     <div class="property">
+      <%= render :partial => "annotations/swo_licenses",
+                 :locals => { :annotatable => @service } -%>
+    </div>
+
+    <div class="property">
       <%= render :partial => "annotations/costs",
                  :locals => { :annotatable => @latest_deployment } -%>
     </div>
