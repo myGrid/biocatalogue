@@ -195,11 +195,12 @@ class ServicesController < ApplicationController
 
     case ontology_type
       when 'edam'
+        ontology_type = 'edam_topic'
         unless categories.empty?
           anns = @service.create_annotations({ "edam_topic" => categories.split(',').compact.map{|x| x.strip}.reject{|x| x == ""} }, current_user)
-          ontology_type = 'edam_topic'
         end
       when 'swo_license'
+        ontology_type = 'license'
         unless params[:annotation].count < 2 && params[:annotation].values.first == 'software license'
           anns = @service.create_annotations({ "swo_license" => params[:annotation].values.compact.map{|x| remove_formatting_of(x)}.reject{|x| x == ""} }, current_user)
         end
