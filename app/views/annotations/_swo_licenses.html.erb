@@ -15,7 +15,7 @@
                         <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
                       </div>
                       <%= render :partial => "annotations/common/default_modify_options",
-                                 :locals => { :annotation => ann, :ann_type => "license info", :edit_enabled => false} -%>
+                                 :locals => { :annotation => ann, :ann_type => "swo license"} -%>
                     </div>
                 <% end %>
             <% end %>
@@ -26,7 +26,9 @@
 
 <% if logged_in? %>
     <%= form_for :annotation, :url => add_ontology_annotation_service_url(@service) do |f| %>
-        <%= ontology_select_tag f, 'swo_license', 'swo_license', 'swo_license_uri', {} -%>
-        <%= submit_tag 'Add', {:class=>"button_slim", :style=>"margin-left: 0.6em; padding: 0.2em 0.4em;"} %>
+        <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+             <%= ontology_select_tag f, 'swo_license', 'swo_license', 'swo_license_uri', {:style => "width: 90%"} -%>
+            <%= submit_tag 'Add', {:class=>"button_slim", :style=>"margin-left: 0.6em; padding: 0.2em 0.4em;"} %>
+        <% end %>
     <% end %>
 <% end %>
