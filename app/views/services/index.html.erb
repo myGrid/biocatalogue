@@ -40,7 +40,7 @@
                                         :class => "collapsable_title") -%>
 
         <!-- Advanced Search Option Content -->
-        <% display_options = true if !params[:listing].nil? || !params[:per_page].nil? || !params[:sort_by].nil? || !params[:include_archived].nil? %>
+        <% display_options = true #if !params[:listing].nil? || !params[:per_page].nil? || !params[:sort_by].nil? || !params[:include_archived].nil? %>
         <div id="advanced_search_options" style="display:<%= display_options ? "block":"none"%>; font-size:90%;">
           <p>
             <%= render :partial => 'index_include_archived_option' -%>
