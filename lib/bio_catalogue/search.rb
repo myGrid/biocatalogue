@@ -115,8 +115,7 @@ module BioCatalogue
 
     # sunspot_search replaces the original search which uses the acts_as_solr plugin.
 
-    def self.sunspot_search(query, scope=ALL_SCOPE_SYNONYMS[0], ignore_scope=nil)
-                                                a = Time.now
+    def self.sunspot_search(query, scope=ALL_SCOPE_SYNONYMS[0], include_archived=false, ignore_scope=nil )
 
       return nil unless Search.on?
 
@@ -159,14 +158,15 @@ module BioCatalogue
       cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, query)
       # Try and get it from the cache...
       search_result_docs = Rails.cache.read(cache_key)
-
+      search_result_docs = nil
       # If it isn't in cache
       if search_result_docs.nil?
         # Find any objects that match the query
         search_results = Sunspot.search(@@models_for_search) { fulltext query }.results
         if !search_results.nil? && search_results.count > 0
           # Find objects that are associated with the search result objects.
-          search_result_docs = process_search_results(search_results, scopes_for_results)
+          # and drop any archived results if include_archived is false.
+          search_result_docs = process_search_results(search_results, scopes_for_results, include_archived)
           # Finally write it to the cache...
           Rails.cache.write(cache_key, search_result_docs, :expires_in => SEARCH_ITEMS_FROM_SOLR_CACHE_TIME)
         else
@@ -177,16 +177,20 @@ module BioCatalogue
     end
 
 
-    def self.process_search_results search_results, scopes
+    def self.process_search_results search_results, scopes, include_archived
       search_result_docs = []
       associated_model_classes = VALID_SEARCH_SCOPES.dup
       associated_model_classes.map! { |model| model.singularize.classify }
       search_results.each do |search_result|
         # add any objects that are either a result with a valid scope or
         # are an associated object of a result with a valid scope
+
+        # also drop any archived results unless include_archived is true.
         associated_model_classes.each do |result_model_name|
           associated_result = BioCatalogue::Mapper.map_object_to_associated_model_object(search_result, result_model_name)
-          search_result_docs << associated_result unless associated_result.nil?
+          unless associated_result.nil?
+            search_result_docs << associated_result unless (!include_archived && associated_result.try(:archived?) == true)
+          end
         end
       end
       unless search_result_docs.nil?

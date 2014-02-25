@@ -79,6 +79,16 @@
                                     <td style="text-align: right;">
                                       <%= render :partial => "listing_type_switcher_link", :locals => {:result_scope => result_scope} -%>
                                     </td>
+                                    <td style="float: right">
+                                      <% if @include_archived == 'true'%>
+                                          <% search_url = url_for(search_url(:q => @query)) %>
+                                          <% checked = 'checked'%>
+                                      <% else %>
+                                          <% search_url = url_for(search_url(:q => @query, :include_archived => true)) %>
+                                          <% checked = 'unchecked' %>
+                                      <% end %>
+                                      <label><input type="checkbox" onchange="window.location=('<%=search_url%>');" <%=checked%>/> <b>Include archived services?</b></label>
+                                    </td>
                                   </tr>
                                 </table>
                               </div>
