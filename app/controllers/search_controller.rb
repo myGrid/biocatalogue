@@ -132,7 +132,11 @@ class SearchController < ApplicationController
       error('Search is unavailable at this time', :status => 404)
       return false
     end
-    @include_archived = params[:include_archived] || false
+    @include_archived = false
+    if !params[:include_archived].nil? && params[:include_archived] == 'true'
+      @include_archived = true
+    end
+
 
     query = (params[:q] || '').strip
 
