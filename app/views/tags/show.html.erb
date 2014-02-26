@@ -28,21 +28,20 @@
 	returned <%= pluralize(count, "services") -%>
 </p>
 
-<table>
-  <tr>
-    <td style="float: right; margin-bottom: 10px;">
-      <% if @include_archived %>
-          <% search_url = tag_url(@tag.name) %>
-          <% checked = 'checked'%>
-      <% else %>
-          <% search_url = url_for(tag_url(@tag.name, :include_archived => true)) %>
-          <% checked = 'unchecked' %>
-      <% end %>
-      <label><input type="checkbox" onchange="window.location=('<%=search_url%>');" <%=checked%>/> <b>Include archived services?</b><br></label>
-    </td>
-  </tr>
+<span class="inline-block" style="float: right; margin: 10px 10px">
+  <span style="vertical-align: middle; font-weight: bold;">
+    Include archived services?
+  </span>
 
-</table>
+  <span style="vertical-align: middle; padding: 0; margin-left: 0.1em; width: 100%;">
+    <input type="checkbox"
+           name="include_archived"
+           id="include_archived"
+           data-onchange-url="<%= generate_include_archived_url('tag', !include_archived?) %>"
+           onchange="loadUrlFromCheckboxInputTag(this); return false;"
+           <%= "checked='yes'" if include_archived? %> />
+  </span>
+</span>
 
 <% if @service_ids.empty? %>
 

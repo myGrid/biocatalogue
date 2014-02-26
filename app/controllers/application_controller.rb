@@ -498,7 +498,7 @@ protected
       elsif !session[session_key].blank?
         @include_archived = (session[session_key] == "true")
       else
-        @include_archived = true
+        @include_archived = false
         session[session_key] = @include_archived.to_s
       end
     end
