@@ -35,6 +35,12 @@
      </span>
 </div>
 
+<% if @rest_service.service.archived? %>
+    <%= render :partial => 'shared/archived_status_banner',
+               :locals => { :status_text => "This service has been archived because it may not be active anymore (or is close to being non active). Please do not use it as it may not be accessible.",
+                            :item => @service } -%>
+<% end %>
+
 <a name='endpoints_top'></a>
 
 <div class="operations_quick_browse_box">
