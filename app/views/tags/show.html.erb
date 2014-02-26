@@ -28,13 +28,28 @@
 	returned <%= pluralize(count, "services") -%>
 </p>
 
+<table>
+  <tr>
+    <td style="float: right; margin-bottom: 10px;">
+      <% if @include_archived %>
+          <% search_url = tag_url(@tag.name) %>
+          <% checked = 'checked'%>
+      <% else %>
+          <% search_url = url_for(tag_url(@tag.name, :include_archived => true)) %>
+          <% checked = 'unchecked' %>
+      <% end %>
+      <label><input type="checkbox" onchange="window.location=('<%=search_url%>');" <%=checked%>/> <b>Include archived services?</b><br></label>
+    </td>
+  </tr>
+
+</table>
+
 <% if @service_ids.empty? %>
 
   <p class="none_text">No services.</p>
-  
-<% else %>
 
-    <%
+<% else %>
+        <%
          services = Service.where(:id => @service_ids).paginate(:page => params[:page], :per_page => @per_page)
          #TODO figure out why current_page_ids only works as an array of Services rather than an array of ids
          current_page_ids = services
