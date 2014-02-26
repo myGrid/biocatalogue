@@ -17,12 +17,13 @@
     <% end %>
 <% end %>
 
+
+
 <div class="box_info_standout" style="float: right;">
   Try our new
   <b><%= link_to "Search by Data", search_by_data_url -%></b>
   feature - to search using your input/output data
 </div>
-
 
 <% if @query.blank? %>
     <div class="search_query_info_box">
@@ -33,6 +34,21 @@
 </div>
 <span class="clear"></span>
 <% unless @query.blank? %>
+    <table style="float: right; margin: 10px 10px">
+      <tr>
+        <td >
+          <% if @include_archived == true%>
+              <% search_url = url_for(search_url(:q => @query)) %>
+              <% checked = 'checked'%>
+          <% else %>
+              <% search_url = url_for(search_url(:q => @query, :include_archived => true)) %>
+              <% checked = 'unchecked' %>
+          <% end %>
+          <label><input type="checkbox" onchange="window.location=('<%=search_url%>');" <%=checked%>/> <b>Include archived services?</b></label>
+        </td>
+      </tr>
+    </table>
+
     <% if @results.nil? %>
         <p class="none_text">No items found</p>
     <% else %>
@@ -78,16 +94,6 @@
                                     </td>
                                     <td style="text-align: right;">
                                       <%= render :partial => "listing_type_switcher_link", :locals => {:result_scope => result_scope} -%>
-                                    </td>
-                                    <td style="float: right">
-                                      <% if @include_archived == true%>
-                                          <% search_url = url_for(search_url(:q => @query)) %>
-                                          <% checked = 'checked'%>
-                                      <% else %>
-                                          <% search_url = url_for(search_url(:q => @query, :include_archived => true)) %>
-                                          <% checked = 'unchecked' %>
-                                      <% end %>
-                                      <label><input type="checkbox" onchange="window.location=('<%=search_url%>');" <%=checked%>/> <b>Include archived services?</b></label>
                                     </td>
                                   </tr>
                                 </table>
