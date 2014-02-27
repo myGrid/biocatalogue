@@ -23,7 +23,7 @@ BioCatalogue::Application.configure do
   config.action_dispatch.best_standards_support = :builtin
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_assets = true
+  config.serve_static_assets = false
 
   # Do not compress assets
   config.assets.compress = false
