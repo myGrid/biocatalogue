@@ -27,6 +27,17 @@
                                     :small => true } -%>
           </div>
         <% end %>
+
+        <% #cache(:controller => 'services', :action => 'listing', :part => "categories", :service_id => service.id) do
+           cache(['services', 'listing', "edam_topics", service.id.to_s].join('/')) do -%>
+            <div style="margin-top: 0.8em;">
+              <%= render :partial => "annotations/edam_topics",
+                         :locals => { :service => service,
+                                      :show_add_option => false,
+                                      :show_modify_options => false,
+                                      :small => true } -%>
+            </div>
+        <% end %>
       
         <%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
           <td style="width: 60px; text-align: right; vertical-align: top; padding-bottom: 0.5em;"> <%= service_latest_status_symbol(service) -%></td>

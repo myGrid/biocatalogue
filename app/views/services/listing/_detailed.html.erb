@@ -39,6 +39,18 @@
                                     :small => true } -%>
           </div>
         <% end %>
+
+       <%
+        cache(['services', 'listing', "edam_topics", service.id.to_s].join('/')) do -%>
+        <div style="margin-top: 1em;">
+          <%= render :partial => "annotations/edam_topics",
+                     :locals => { :service => service,
+                                  :show_add_option => false,
+                                  :show_modify_options => false,
+                                  :small => true } -%>
+        </div>
+        <% end %>
+
       </td>
       <td style="text-align: right; width: 300px; vertical-align: middle; padding-top: 0.4em;">
         <%= render :partial => "services/annotation_counts",
