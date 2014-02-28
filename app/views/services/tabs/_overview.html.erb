@@ -37,6 +37,8 @@
       <b>Provider:</b>
       <br/>
       <% @service.providers.each do |provider| %>
+          <%= provider_logo(provider) %>
+          <br>
           <%= link_to(display_name(provider), service_provider_path(provider)) %>
           <br/>
       <% end %>

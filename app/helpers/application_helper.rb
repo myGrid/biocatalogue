@@ -80,7 +80,16 @@ module ApplicationHelper
     alt_text = "Subscribe to <b>#{title}</b> feed"
     link_to image_tag(icon_filename_for(:atom), :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0; #{style}"), url
   end
-  
+
+  def provider_logo( provider, include_default=false )
+    if icon_filename_for(:provider) == provider.logo.url
+      ''
+    else
+      link_to image_tag(provider.logo.url(:thumb)).html_safe, service_provider_url(provider)
+    end
+  end
+
+
   def flag_icon_from_country(country, *args)
     return '' if country.blank?
     
