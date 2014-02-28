@@ -1,0 +1,20 @@
+<div class="annotations_container">
+  <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+      <% if (service_provider.logo.url == icon_filename_for(:provider)) %>
+              <span class="none_text" style="display: block; margin-bottom: 10px">
+                No project logo has been uploaded.
+              </span>
+          <%= form_for service_provider, :url => upload_logo_service_provider_path(service_provider), :html => { :multipart => true } do |form| %>
+              <%= form.file_field :logo, :onchange => "submit();" %>
+          <% end %>
+      <% else %>
+          <%= service_provider.logo.name %>
+          <%= image_tag service_provider.logo.url, :width => '60%' %>
+          <%#= form_for service_provider, :url => remove_logo_service_provider_path(service_provider) do |form| %>
+          <%#= submit_tag "Delete" %>
+          <%# end %>
+          <%= button_to "Delete", {:controller => :service_providers,
+                                   :action => 'remove_logo', :id => service_provider.id}, :method => :delete %>
+      <% end %>
+  <% end %>
+</div>

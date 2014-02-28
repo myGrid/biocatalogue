@@ -21,10 +21,10 @@ class ServiceProvidersController < ApplicationController
   
   before_filter :find_service_providers, :only => [ :index, :filtered_index ]
   
-  before_filter :find_service_provider, :only => [ :show, :edit, :update, :upload_logo, :destroy, :annotations, :annotations_by,
+  before_filter :find_service_provider, :only => [ :show, :edit, :update, :upload_logo, :remove_logo, :destroy, :annotations, :annotations_by,
                                                    :edit_by_popup, :profile, :services, :hostnames]
   
-  before_filter :authorise, :only => [ :edit_by_popup, :update, :upload_logo, :destroy ]
+  before_filter :authorise, :only => [ :edit_by_popup, :update, :upload_logo, :remove_logo, :destroy ]
 
   set_tab :profile, :service_providers, :only => [:profile, :show]
   set_tab :services, :service_providers, :only => [:services]
@@ -127,6 +127,15 @@ class ServiceProvidersController < ApplicationController
     end # if success
   end
 
+  def remove_logo
+    @service_provider.logo = nil
+    @service_provider.save!
+    respond_to do |format|
+      format.html { redirect_to @service_provider }
+      format.xml  { render :xml => '', :status => 406 }
+    end
+
+  end
 
   def update
     name = params[:name] || ""

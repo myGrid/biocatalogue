@@ -148,6 +148,7 @@ BioCatalogue::Application.routes.draw do
       get :services
       post :edit_by_popup
       put :upload_logo
+      delete :remove_logo
 
       #for loading tab partials
       get :hostnames
