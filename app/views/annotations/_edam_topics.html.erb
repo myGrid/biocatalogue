@@ -37,7 +37,7 @@
                         <li>
 										<span class="main">
 											<%= link_to(h(remove_formatting_of(category.text)),
-                                                        services_path(:cat => "[#{category.id}]"),
+                                                        services_path(:edam => "[#{category_annotation.id}]"),
                                                         :class => "category",
                                                         :style => (small ? 'font-size: 85%;' : ''),
                                                         :title => tooltip_title_attrib(edam_hierachy_text(category.text))) -%>

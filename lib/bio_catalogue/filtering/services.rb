@@ -9,7 +9,7 @@
 module BioCatalogue
   module Filtering
     module Services
-      
+
       # ======================
       # Filter options finders
       # ----------------------
@@ -251,6 +251,7 @@ module BioCatalogue
         # Now build the conditions and joins...
         
         service_ids_categories = [ ]
+        service_ids_topics = [ ]
         service_ids_submitters = [ ]
         service_ids_all_tags = [ ]
         service_ids_tags_s = [ ]
@@ -266,6 +267,8 @@ module BioCatalogue
               case filter_type
                 when :cat
                   service_ids_categories = get_service_ids_with_categories(filter_values)
+                when :edam
+                  service_ids_topics = get_service_ids_with_topics(filter_values)
                 when :t
                   service_types = [ ]
                   filter_values.each do |f|
@@ -336,6 +339,7 @@ module BioCatalogue
         
         # To carry out this process properly, we set a dummy value of 0 to any array that returned NO service IDs.
         service_ids_categories = [ 0 ] if service_ids_categories.empty? and filters.has_key?(:cat)
+        service_ids_topics = [ 0 ] if service_ids_topics.empty? and filters.has_key?(:edam)
         service_ids_submitters = [ 0 ] if service_ids_submitters.empty? and (filters.has_key?(:su) or filters.has_key?(:sr))
         service_ids_all_tags = [ 0 ] if service_ids_all_tags.empty? and filters.has_key?(:tag)
         service_ids_tags_s = [ 0 ] if service_ids_tags_s.empty? and filters.has_key?(:tag_s)
@@ -357,6 +361,7 @@ module BioCatalogue
         
         service_id_arrays_to_process = [ ]
         service_id_arrays_to_process << service_ids_categories unless service_ids_categories.blank?
+        service_id_arrays_to_process << service_ids_topics unless service_ids_topics.blank?
         service_id_arrays_to_process << service_ids_submitters unless service_ids_submitters.blank?
         service_id_arrays_to_process << service_ids_all_tags unless service_ids_all_tags.blank?
         service_id_arrays_to_process << service_ids_tags_s unless service_ids_tags_s.blank?
@@ -385,6 +390,7 @@ module BioCatalogue
           # If filter(s) / query were specified but nothing was found that means we have an empty result set
           final_service_ids = [ -1 ] if final_service_ids.blank? and 
                                         (filters.has_key?(:cat) or
+                                         filters.has_key?(:edam) or
                                          filters.has_key?(:su) or 
                                          filters.has_key?(:sr) or 
                                          filters.has_key?(:tag) or
@@ -509,6 +515,16 @@ module BioCatalogue
           results.concat(Categorising.get_service_ids_with_category(c_id))
         end
         
+        return results
+      end
+
+      def self.get_service_ids_with_topics(topic_ids)
+        results = []
+
+        topic_ids.map{|topics| topics.to_i}.each do |annotation_id|
+          results.concat([Annotation.find(annotation_id).annotatable.id])
+          #results.concat([Annotation.find_annotatables_with_attribute_name_and_value('edam_topic', ann_text)])
+        end
         return results
       end
       
