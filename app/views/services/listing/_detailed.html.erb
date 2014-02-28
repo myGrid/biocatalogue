@@ -59,6 +59,12 @@
               :show_add_box => false } -%>
     </div>
   <% end %>
+
+  <div style="float: right; position: relative; ">
+  <% service.providers.each do |provider| %>
+      <%= provider_logo(provider) %>
+  <% end %>
+  </div>
     
   <table style="width:100%;">
     <tr>
