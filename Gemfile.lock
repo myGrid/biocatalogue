@@ -59,6 +59,10 @@ GEM
     bourne (1.5.0)
       mocha (>= 0.13.2, < 0.15)
     builder (3.0.4)
+    climate_control (0.0.3)
+      activesupport (>= 3.0)
+    cocaine (0.5.3)
+      climate_control (>= 0.0.3, < 1.0)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
@@ -145,6 +149,11 @@ GEM
       rack (~> 1.2)
     options (2.3.0)
       fattr
+    paperclip (4.1.1)
+      activemodel (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      cocaine (~> 0.5.3)
+      mime-types
     polyglot (0.3.3)
     pr_geohash (1.0.0)
     progress_bar (1.0.0)
@@ -269,6 +278,7 @@ DEPENDENCIES
   mysql2
   nokogiri (~> 1.5.10)
   oauth-plugin
+  paperclip (~> 4.1)
   progress_bar
   prototype-rails
   rails (~> 3.2.14)

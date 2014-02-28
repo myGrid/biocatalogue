@@ -147,6 +147,7 @@ BioCatalogue::Application.routes.draw do
       get :annotations
       get :services
       post :edit_by_popup
+      put :upload_logo
 
       #for loading tab partials
       get :hostnames

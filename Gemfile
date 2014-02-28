@@ -52,6 +52,8 @@ gem 'country-select'
 gem 'validates_email_format_of' # Replaces validates_email_veracity_of
 gem "dalli"
 
+gem "paperclip", "~> 4.1"
+
 group :test do
 # gem "webmock"
   gem 'shoulda', '<3.2.0'

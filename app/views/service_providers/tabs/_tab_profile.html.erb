@@ -18,6 +18,11 @@
                  :locals => { :annotatable => @service_provider } -%>
     </div>
 
+    <div class="property">
+      <%= render :partial => "service_providers/logo_form",
+                 :locals => {:service_provider => @service_provider }%>
+    </div>
+
   </div>
 
   <!-- Right column -->
