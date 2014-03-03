@@ -17,9 +17,9 @@
   <% else %>
       <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
           <div class="box_annotations">
-            <u><%= service_provider.logo.original_filename %></u>
+            <u><%= link_to service_provider.logo.original_filename, asset_path(service_provider.logo.url) %></u>
             <br>
-            <%= image_tag service_provider.logo.url, :width => '60%' %>
+            <%= link_to(image_tag(service_provider.logo.url, :width => '60%'), asset_path(service_provider.logo.url)) %>
             <% if mine?(service_provider) ||
                     (current_user && (current_user.is_curator? || current_user.is_admin?)) %>
                 <div class="actions">
