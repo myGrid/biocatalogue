@@ -8,20 +8,29 @@
               </span>
       <% if mine?(service_provider) ||
               (current_user && (current_user.is_curator? || current_user.is_admin?)) %>
-      <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
-          <%= form_for service_provider, :url => upload_logo_service_provider_path(service_provider), :html => { :multipart => true } do |form| %>
-              <%= form.file_field :logo, :onchange => "submit();" %>
+          <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+              <%= form_for service_provider, :url => upload_logo_service_provider_path(service_provider), :html => { :multipart => true } do |form| %>
+                  <%= form.file_field :logo, :onchange => "submit();" %>
+              <% end %>
           <% end %>
       <% end %>
-      <% end %>
   <% else %>
+      <% can_delete = mine?(service_provider) ||
+              (current_user && (current_user.is_curator? || current_user.is_admin?)) %>
+
       <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
           <div class="box_annotations">
-            <u><%= link_to service_provider.logo.original_filename, asset_path(service_provider.logo.url) %></u>
-            <br>
-            <%= link_to(provider_logo(service_provider, :original), asset_path(service_provider.logo.url)) %>
-            <% if mine?(service_provider) ||
-                    (current_user && (current_user.is_curator? || current_user.is_admin?)) %>
+            <% if service_provider.logo.exists? %>
+                <%= link_to service_provider.logo.original_filename, asset_path(service_provider.logo.url) %>
+                <br />
+                <%= link_to(provider_logo(service_provider, :original), asset_path(service_provider.logo.url)) %>
+            <% else %>
+                <span class="none_text">Image file cannot be accessed.
+                <%= "<br> Please try deleting the file and adding it again
+                <br> If this does not work please #{link_to 'contact us', contact_path}".html_safe if can_delete %>
+                </span>
+            <% end %>
+            <% if can_delete %>
                 <div class="actions">
                   <%= link_to "delete", {:controller => :service_providers,
                                          :action => 'remove_logo',
