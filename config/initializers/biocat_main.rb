@@ -259,7 +259,7 @@ BioCatalogue::Application.config.middleware.use ExceptionNotifier,
                                                 }
 
 Paperclip::Attachment.default_options[:path] = ':rails_root/app/assets/images/:url'
-Paperclip::Attachment.default_options[:url] = ':class/:id/:filename/:style.:extension'
+Paperclip::Attachment.default_options[:url] = ":class/#{Rails.env}/:id/:filename/:style.:extension"
 
 
 # ===============================================================
