@@ -85,7 +85,7 @@ module ApplicationHelper
     if icon_filename_for(:provider) == provider.logo.url
       ''
     else
-      link_to image_tag(provider.logo.url(:thumb)).html_safe, service_provider_url(provider)
+      link_to(image_tag(provider.logo.url(:medium)).html_safe, service_provider_url(provider))
     end
   end
 
