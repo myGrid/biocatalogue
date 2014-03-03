@@ -17,12 +17,13 @@
     <% end %>
 <% end %>
 
+
+
 <div class="box_info_standout" style="float: right;">
   Try our new
   <b><%= link_to "Search by Data", search_by_data_url -%></b>
   feature - to search using your input/output data
 </div>
-
 
 <% if @query.blank? %>
     <div class="search_query_info_box">
@@ -33,6 +34,24 @@
 </div>
 <span class="clear"></span>
 <% unless @query.blank? %>
+
+
+<span class="inline-block" style="float: right; margin: 10px 10px">
+  <span style="vertical-align: middle; font-weight: bold;">
+    Include archived services?
+  </span>
+
+  <span style="vertical-align: middle; padding: 0; margin-left: 0.1em; width: 100%;">
+    <input type="checkbox"
+           name="include_archived"
+           id="include_archived"
+           data-onchange-url="<%= generate_include_archived_url('search', !include_archived?) %>"
+           onchange="loadUrlFromCheckboxInputTag(this); return false;"
+           <%= "checked='yes'" if include_archived? %> />
+  </span>
+</span>
+
+
     <% if @results.nil? %>
         <p class="none_text">No items found</p>
     <% else %>

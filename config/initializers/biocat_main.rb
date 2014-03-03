@@ -258,6 +258,10 @@ BioCatalogue::Application.config.middleware.use ExceptionNotifier,
                                                     :view_path => 'app/views/error'
                                                 }
 
+Paperclip::Attachment.default_options[:path] = ':rails_root/app/assets/images/:url'
+Paperclip::Attachment.default_options[:url] = ":class/#{Rails.env}/:id/:filename/:style.:extension"
+
+
 # ===============================================================
 
 WhiteListHelper.tags = %w(strong em b i p code pre tt output samp kbd var sub sup dfn cite big small address hr br div span h1 h2 h3 h4 h5 h6 ul ol li dt dd abbr acronym a img blockquote del ins fieldset legend table th td tr tbody)

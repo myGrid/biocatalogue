@@ -10,16 +10,23 @@
 
 <div class="listings">
 	<% items.each do |method| %>
-	  <% resource = method.rest_resource %>
-		<% base_endpoint = resource.rest_service.service.latest_deployment.endpoint %>
-    
-    <div class="listing_item">
+
+      <% resource = method.rest_resource %>
+      <% service = resource.rest_service.service %>
+      <% base_endpoint = service.latest_deployment.endpoint %>
+
+      <div class="listing_item <%= service.archived? ? 'archived' : ''%>">
       <p class="name">
         <% link_text = "#{h(method.display_endpoint)} " %>
         <%= "<i style='font-size:80%;'>#{h(method.endpoint_name)}</i> | ".html_safe if method.endpoint_name -%>
         <%= link_to(link_text, method) -%>
       </p>
-			
+      <% if service.archived? %>
+          <p class="archived_status_text">
+            This REST Endpoint belongs to the service <b><%=link_to service.name,service%></b> which has been archived.
+          </p>
+      <% else %>
+
 			<% if method.associated_service %>
         <p class="detail">
           <b>Part of Service:</b>
@@ -67,6 +74,7 @@
         </table>
       </div>
       
+  <% end %>
     </div>
   <% end %>
 </div>

@@ -28,13 +28,27 @@
 	returned <%= pluralize(count, "services") -%>
 </p>
 
+<span class="inline-block" style="float: right; margin: 10px 10px">
+  <span style="vertical-align: middle; font-weight: bold;">
+    Include archived services?
+  </span>
+
+  <span style="vertical-align: middle; padding: 0; margin-left: 0.1em; width: 100%;">
+    <input type="checkbox"
+           name="include_archived"
+           id="include_archived"
+           data-onchange-url="<%= generate_include_archived_url('tag', !include_archived?) %>"
+           onchange="loadUrlFromCheckboxInputTag(this); return false;"
+           <%= "checked='yes'" if include_archived? %> />
+  </span>
+</span>
+
 <% if @service_ids.empty? %>
 
   <p class="none_text">No services.</p>
-  
-<% else %>
 
-    <%
+<% else %>
+        <%
          services = Service.where(:id => @service_ids).paginate(:page => params[:page], :per_page => @per_page)
          #TODO figure out why current_page_ids only works as an array of Services rather than an array of ids
          current_page_ids = services

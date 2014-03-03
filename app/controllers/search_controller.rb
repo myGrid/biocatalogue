@@ -32,7 +32,7 @@ class SearchController < ApplicationController
     else
 
       begin
-        @results, @scope_for_results = BioCatalogue::Search.sunspot_search(@query, @scope)
+        @results, @scope_for_results = BioCatalogue::Search.sunspot_search(@query, @scope, @include_archived)
         raise "nil @results object returned" if @results.nil?
       rescue Exception => ex
         error("Sorry, search didn't work this time. Try with different keyword(s). Please <a href='#{contact_url}'>report this</a> if it fails for other searches too.".html_safe)
@@ -132,6 +132,11 @@ class SearchController < ApplicationController
       error('Search is unavailable at this time', :status => 404)
       return false
     end
+    @include_archived = false
+    if !params[:include_archived].nil? && params[:include_archived] == 'true'
+      @include_archived = true
+    end
+
 
     query = (params[:q] || '').strip
 

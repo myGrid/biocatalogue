@@ -29,6 +29,7 @@ data/*_reports
 
 app/assets/stylesheets/colours/override.css.scss
 public/assets
+app/assets/images/service_providers
 
 solr/test/
 solr/pids/

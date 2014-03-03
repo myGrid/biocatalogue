@@ -32,6 +32,13 @@ class ServiceProvider < ActiveRecord::Base
            
   validates_presence_of :name
   validates_uniqueness_of :name
+
+  attr_accessible :logo
+  has_attached_file :logo,
+                    :styles => { :medium => "300x300>", :thumb => "100x100>", :icon => "40x40" },
+                    :default_url => BioCatalogue::Resource.icon_filename_for(:provider).html_safe,
+                    :use_timestamp => false
+  validates_attachment_content_type :logo, :content_type => /\Aimage\/.*\Z/
   
   if ENABLE_SEARCH
     searchable do

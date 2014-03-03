@@ -21,10 +21,10 @@ class ServiceProvidersController < ApplicationController
   
   before_filter :find_service_providers, :only => [ :index, :filtered_index ]
   
-  before_filter :find_service_provider, :only => [ :show, :edit, :update, :destroy, :annotations, :annotations_by,
+  before_filter :find_service_provider, :only => [ :show, :edit, :update, :upload_logo, :remove_logo, :destroy, :annotations, :annotations_by,
                                                    :edit_by_popup, :profile, :services, :hostnames]
   
-  before_filter :authorise, :only => [ :edit_by_popup, :update, :destroy ]
+  before_filter :authorise, :only => [ :edit_by_popup, :update, :upload_logo, :remove_logo, :destroy ]
 
   set_tab :profile, :service_providers, :only => [:profile, :show]
   set_tab :services, :service_providers, :only => [:services]
@@ -107,6 +107,35 @@ class ServiceProvidersController < ApplicationController
     respond_to do |format|
       format.js { render :layout => false }
     end
+  end
+
+  def upload_logo
+    @service_provider.logo = params[:service_provider][:logo]
+    success = @service_provider.save!
+
+    if success
+      respond_to do |format|
+        flash[:notice] = "Successfully added #{@service_provider.logo.original_filename}"
+        format.html { redirect_to @service_provider }
+        format.xml  { head :ok }
+      end
+    else # failure
+      respond_to do |format|
+        flash[:notice] = "Failed to add #{@service_provider.logo.original_filename}"
+        format.html { redirect_to @service_provider }
+        format.xml  { render :xml => '', :status => 406 }
+      end
+    end # if success
+  end
+
+  def remove_logo
+    @service_provider.logo = nil
+    @service_provider.save!
+    respond_to do |format|
+      format.html { redirect_to @service_provider }
+      format.xml  { render :xml => '', :status => 406 }
+    end
+
   end
 
   def update

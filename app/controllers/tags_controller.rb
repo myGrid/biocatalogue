@@ -111,13 +111,19 @@ protected
 
     raise ActiveRecord::RecordNotFound.new if @tag.nil?
   end
-  
+
   def find_tag_results
     unless is_api_request?
       @service_ids = [ ]
-      
+
+      @include_archived = false
+      if !params[:include_archived].nil? && params[:include_archived] == 'true'
+        @include_archived = true
+      end
+
       unless @tag.blank?
         @service_ids = BioCatalogue::Tags.get_service_ids_for_tag(@tag.name)
+        @service_ids.reject!{|service_id| !@include_archived && Service.find_by_id(service_id).try(:archived?) }
       end
     end
   end

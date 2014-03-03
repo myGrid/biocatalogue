@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130619112049) do
+ActiveRecord::Schema.define(:version => 20140228121452) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -175,8 +175,8 @@ ActiveRecord::Schema.define(:version => 20130619112049) do
     t.datetime "locked_at"
     t.datetime "failed_at"
     t.string   "locked_by"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
     t.string   "queue"
   end
 
@@ -204,6 +204,10 @@ ActiveRecord::Schema.define(:version => 20130619112049) do
 
   add_index "favourites", ["favouritable_type", "favouritable_id"], :name => "favourites_favouritable_index"
   add_index "favourites", ["user_id"], :name => "favourites_user_id_index"
+
+  create_table "innodb_lock_monitor", :id => false, :force => true do |t|
+    t.integer "a"
+  end
 
   create_table "number_value_versions", :force => true do |t|
     t.integer  "number_value_id",    :null => false
@@ -248,6 +252,14 @@ ActiveRecord::Schema.define(:version => 20130619112049) do
   end
 
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
+
+  create_table "ontology_concepts", :force => true do |t|
+    t.string   "ontology_name"
+    t.text     "label"
+    t.string   "uri"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
 
   create_table "registries", :force => true do |t|
     t.string   "name"
@@ -435,6 +447,10 @@ ActiveRecord::Schema.define(:version => 20130619112049) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
+    t.integer  "logo_file_size"
+    t.datetime "logo_updated_at"
   end
 
   add_index "service_providers", ["name"], :name => "service_providers_name_index"
@@ -631,10 +647,10 @@ ActiveRecord::Schema.define(:version => 20130619112049) do
   add_index "test_scripts", ["submitter_id"], :name => "t_scripts_user_id_index"
 
   create_table "text_value_versions", :force => true do |t|
-    t.integer  "text_value_id",                          :null => false
-    t.integer  "version",                                :null => false
+    t.integer  "text_value_id",                            :null => false
+    t.integer  "version",                                  :null => false
     t.integer  "version_creator_id"
-    t.text     "text",               :limit => 16777215, :null => false
+    t.text     "text",               :limit => 2147483647, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -642,9 +658,9 @@ ActiveRecord::Schema.define(:version => 20130619112049) do
   add_index "text_value_versions", ["text_value_id"], :name => "index_text_value_versions_on_text_value_id"
 
   create_table "text_values", :force => true do |t|
-    t.integer  "version",                                :null => false
+    t.integer  "version",                                  :null => false
     t.integer  "version_creator_id"
-    t.text     "text",               :limit => 16777215, :null => false
+    t.text     "text",               :limit => 2147483647, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
