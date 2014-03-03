@@ -13,7 +13,7 @@
 
 <h1>
   <div class="resource_title">
-    <%= image_tag @service_provider.logo.url(:icon) %>
+    <%= link_to(provider_logo(@service_provider, :icon), service_provider_path(@service_provider)) %>
     <%= display_name(@service_provider) -%>
   </div>
 </h1>

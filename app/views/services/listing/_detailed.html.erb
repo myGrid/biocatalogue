@@ -62,7 +62,7 @@
 
   <div style="float: right; position: relative; ">
   <% service.providers.each do |provider| %>
-      <%= provider_logo(provider) %>
+      <%= link_to(provider_logo(provider, :thumb), service_provider_path(provider)) %>
   <% end %>
   </div>
     

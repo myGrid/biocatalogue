@@ -81,11 +81,11 @@ module ApplicationHelper
     link_to image_tag(icon_filename_for(:atom), :alt => alt_text, :title => tooltip_title_attrib(alt_text), :style => "vertical-align: middle; padding: 0; #{style}"), url
   end
 
-  def provider_logo( provider, include_default=false )
-    if icon_filename_for(:provider) == provider.logo.url
+  def provider_logo( provider, size=:medium, include_default=false )
+    if !provider.logo.exists? or icon_filename_for(:provider) == provider.logo.url
       ''
     else
-      link_to(image_tag(provider.logo.url(:medium)).html_safe, service_provider_url(provider))
+      return image_tag(provider.logo.url(size), :style=>'max-width: 100%').html_safe
     end
   end
 
