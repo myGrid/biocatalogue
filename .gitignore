@@ -28,6 +28,8 @@ data/*_reports
 
 
 app/assets/stylesheets/colours/override.css.scss
+app/assets/images/service_providers/
+public/assets/service_providers/
 public/assets
 
 solr/test/
