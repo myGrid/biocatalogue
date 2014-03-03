@@ -110,17 +110,18 @@ class ServiceProvidersController < ApplicationController
   end
 
   def upload_logo
-    @service_provider
     @service_provider.logo = params[:service_provider][:logo]
     success = @service_provider.save!
 
     if success
       respond_to do |format|
+        flash[:notice] = "Successfully added #{@service_provider.logo.original_filename}"
         format.html { redirect_to @service_provider }
         format.xml  { head :ok }
       end
     else # failure
       respond_to do |format|
+        flash[:notice] = "Failed to add #{@service_provider.logo.original_filename}"
         format.html { redirect_to @service_provider }
         format.xml  { render :xml => '', :status => 406 }
       end
