@@ -72,12 +72,6 @@
     </div>
   <% end %>
 
-  <div style="float: right; position: relative; ">
-  <% service.providers.each do |provider| %>
-      <%= link_to(provider_logo(provider, :thumb), service_provider_path(provider)) %>
-  <% end %>
-  </div>
-    
   <table style="width:100%;">
     <tr>
       <td>
@@ -118,7 +112,12 @@
       </td>
       
       <%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
-        <td style="width: 60px; text-align: right; vertical-align: bottom; padding-bottom: 0.5em;">
+        <td style="width: 150px; text-align: right; vertical-align: bottom; padding-bottom: 0.5em;">
+          <div style="margin-bottom: 10px">
+            <% service.providers.each do |provider| %>
+                <%= link_to(provider_logo(provider, :thumb), service_provider_path(provider)) %>
+            <% end %>
+          </div>
           <%= service_latest_status_symbol(service) -%>
         </td>
       <% end %>
