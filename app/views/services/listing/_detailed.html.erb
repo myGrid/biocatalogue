@@ -68,7 +68,8 @@
           
           <b>Provider:</b>
           <% service.providers.each do |provider| %>
-            <%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
+              <%= ('<span style="display:inline-block; vertical-align:middle;">' + link_to(provider_logo(provider, :icon), service_provider_path(provider)) + '</span>&nbsp;').html_safe if provider.logo.exists? %>
+              <%= link_to(display_name(provider), service_provider_path(provider), :style => "vertical-align: middle;") %>
           <% end %>
           
           <span class="separator">|</span>
@@ -101,11 +102,6 @@
       
       <%  benchmark "Rendered services/_listing/service_latest_status_symbol" do %>
         <td style="width: 150px; text-align: right; vertical-align: bottom; padding-bottom: 0.5em;">
-          <div style="margin-bottom: 10px">
-            <% service.providers.each do |provider| %>
-                <%= link_to(provider_logo(provider, :thumb), service_provider_path(provider)) %>
-            <% end %>
-          </div>
           <%= service_latest_status_symbol(service) -%>
         </td>
       <% end %>
