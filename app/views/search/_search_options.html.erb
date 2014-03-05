@@ -18,7 +18,9 @@
             </span>
             <%= render :partial => "listing_type_switcher_link", :locals => {:result_scope => result_scope} %>
             <br>
-            <%= link_to("Filter these services", services_url(:q => @query), :class => "button_slim", :style => "margin-right: 1.5em;") %>
+            <% if result_scope == "services" %>
+                <%= link_to("Filter these services", services_url(:q => @query), :class => "button_slim", :style => "margin-right: 1.5em;") %>
+            <% end %>
       </div>
     </div>
   </div>
