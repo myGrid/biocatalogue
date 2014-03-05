@@ -227,7 +227,7 @@ protected
 
   def set_per_page
     if self.request.format == :atom
-      @per_page = 20
+      @per_page = 21
     else
       per_page = (params[:per_page] || PAGE_ITEMS_SIZE).try(:to_i)
       if per_page < 1
