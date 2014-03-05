@@ -33,13 +33,14 @@
         </div>
     <% end %>
 
-    <p style="margin-top: 0.5em;">
+    <p>
       <b>Provider:</b>
       <br/>
       <% @service.providers.each do |provider| %>
-          <%= link_to(provider_logo(provider), service_provider_path(provider)) %>
-          <br>
-          <%= link_to(display_name(provider), service_provider_path(provider)) %>
+        <%= ('<span style="display:inline-block; vertical-align:middle;">' + link_to(provider_logo(provider, :icon), service_provider_path(provider)) + '</span>&nbsp;').html_safe if provider.logo.exists? %>
+        <span style="display:inline-block; vertical-align:middle;">
+              <%= link_to(display_name(provider), service_provider_path(provider)) %>
+            </span>
           <br/>
       <% end %>
     </p>

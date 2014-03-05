@@ -21,8 +21,6 @@
       <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
           <div class="box_annotations">
             <% if service_provider.logo.exists? %>
-                <%= link_to service_provider.logo.original_filename, asset_path(service_provider.logo.url) %>
-                <br />
                 <%= link_to(provider_logo(service_provider, :original), asset_path(service_provider.logo.url)) %>
             <% else %>
                 <span class="none_text">Image file cannot be accessed.
