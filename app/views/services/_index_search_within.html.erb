@@ -26,14 +26,11 @@
                                   :min_chars => 3 -%>
 
           <%= submit_tag '', :class => "search_button" -%>
-      <% end %>
-
-      <% unless @current_filters.blank? and params[:q].blank? %>
-          <% if params[:q] %>
-              <p style="margin-bottom: 0; margin-top: 0.5em;">
-                <% new_params = BioCatalogue::Util.duplicate_params(params); new_params.delete(:q) %>
-                <%= link_to "Clear search", services_url(new_params) -%>
-              </p>
+          <% unless @current_filters.blank? and params[:q].blank? %>
+              <% if params[:q] %>
+                    <% new_params = BioCatalogue::Util.duplicate_params(params); new_params.delete(:q) %>
+                    <%= link_to "Clear", services_url(new_params), {:class => 'button_slim'} -%>
+              <% end %>
           <% end %>
       <% end %>
   <% end %>

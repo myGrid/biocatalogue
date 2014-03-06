@@ -3645,3 +3645,18 @@ table.listings_table {
 #error_flash .rcontain, #error_flash .rtop div, #error_flash .rbottom div {
   background-color: $notice_flash;
 }
+
+.search_options {
+  float: right;
+  width: 25%;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #EAEEFB;
+  inline: block;
+  font-size:90%;
+}
+
+.search_option {
+  padding: 2px;
+}

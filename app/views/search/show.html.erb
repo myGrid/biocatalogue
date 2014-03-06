@@ -37,15 +37,16 @@
         <p class="none_text">No items found</p>
     <% else %>
         <% if all_search %>
+
             <p>
               Search query
               "<b><%= h @query -%></b>"
               returned
               <%= pluralize(@results.length, "item") -%>
             </p>
-
             <div id="search_results" class="tabber">
               <% @scope_for_results.each do |result_scope| %>
+
                   <% unless ["annotations"].include? result_scope %>
                       <% visible_result_scope = BioCatalogue::Search.scope_to_visible_search_type(result_scope)
                          items = @results.select { |result| result.class.name.underscore.pluralize == result_scope }
@@ -58,7 +59,7 @@
                             <% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}" %>
                             <h3><%= "#{visible_result_scope} (#{count_text})" -%></h3>
 
-                            <%= render :partial => 'search_options', :locals => {:result_scope => result_scope, :include_archived => include_archived?} %>
+                            <%= render :partial => 'search_options', :locals => {:result_scope => result_scope, :include_archived => include_archived?}%>
 
                             <div style="margin: 0 0 1.5em 0;">
                               <% if more_items %>
@@ -80,6 +81,8 @@
                                 </table>
                               </div>
                             </div>
+
+                            <div style="clear: both;"></div>
 
                             <%= render :partial => "#{result_scope}/listing", :locals => {:items => items} %>
                             <% if more_items %>

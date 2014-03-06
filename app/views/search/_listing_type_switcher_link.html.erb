@@ -13,8 +13,6 @@
    style = "" unless local_assigns.has_key?(:style)
 %>
 
-<% if result_scope == "services" %>
-    <%= render :partial => "shared/listing_type_switcher",
-               :locals => {:base_url_lambda => lambda { |extra_params| search_url(extra_params.merge(BioCatalogue::Util.remove_rails_special_params_from(params, ["listing"]))) },
-                           :style => style} -%>
-<% end %>
+<%= render :partial => "shared/listing_type_switcher",
+           :locals => {:base_url_lambda => lambda { |extra_params| search_url(extra_params.merge(BioCatalogue::Util.remove_rails_special_params_from(params, ["listing"]))) },
+                       :style => style} -%>
