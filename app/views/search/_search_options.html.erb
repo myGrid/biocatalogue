@@ -1,0 +1,28 @@
+<div style="float: right; width: 78%;">
+  <div style="margin-top: 5px; overflow: hidden;">
+    <div class="search_options" style="float: right;width: 30%;padding: 10px;background-color: #EAEEFB;">
+      <div id="advanced_search_options" style="inline: block; font-size:90%;">
+        <p>
+          <td style="text-align: right;">
+
+            <span style="vertical-align: middle; font-weight: bold;">
+            Include archived services?
+            </span>
+            <span style="vertical-align: middle; padding: 0; margin-left: 0.1em; width: 100%;">
+                <input type="checkbox"
+                name="include_archived"
+                id="include_archived"
+                data-onchange-url="<%= generate_include_archived_url('search', !include_archived?) %>"
+                onchange="loadUrlFromCheckboxInputTag(this); return false;"
+                <%= "checked='yes'" if include_archived? %> />
+            </span>
+            <%= render :partial => "listing_type_switcher_link", :locals => {:result_scope => result_scope} %>
+            <br>
+            <% if result_scope == "services" %>
+                <%= link_to("Filter these services", services_url(:q => @query), :class => "button_slim", :style => "margin-right: 1.5em;") %>
+            <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<p>

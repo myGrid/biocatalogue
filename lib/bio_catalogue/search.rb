@@ -155,14 +155,16 @@ module BioCatalogue
       query = self.preprocess_query(query)
 
 
-      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, query)
+      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, "#{query}#{scopes_for_results.join('-')}")
       # Try and get it from the cache...
       search_result_docs = Rails.cache.read(cache_key)
-      search_result_docs = nil
       # If it isn't in cache
       if search_result_docs.nil?
         # Find any objects that match the query
-        search_results = Sunspot.search(@@models_for_search) { fulltext query }.results
+        search_results = Sunspot.search(@@models_for_search){
+            fulltext query
+        }.results
+
         if !search_results.nil? && search_results.count > 0
           # Find objects that are associated with the search result objects.
           # and drop any archived results if include_archived is false.
@@ -179,7 +181,7 @@ module BioCatalogue
 
     def self.process_search_results search_results, scopes, include_archived
       search_result_docs = []
-      associated_model_classes = VALID_SEARCH_SCOPES.dup
+      associated_model_classes = scopes.dup
       associated_model_classes.map! { |model| model.singularize.classify }
       search_results.each do |search_result|
         # add any objects that are either a result with a valid scope or

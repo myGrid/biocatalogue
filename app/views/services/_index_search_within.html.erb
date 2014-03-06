@@ -1,41 +1,41 @@
 <%
 
-# BioCatalogue: app/views/services/_index_search_within.html.erb
-#
-# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+   # BioCatalogue: app/views/services/_index_search_within.html.erb
+   #
+   # Copyright (c) 2009, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
 
 %>
 
-<% unless @current_filters.blank? and params[:q].blank? %>
-	<div id="search_within">
-		<% rounded "#EEE", "#333", "100%" do %>
-			<% form_tag(services_url, :method => :get) do %>
-				<% @current_filters.each do |k,v| %>
-					<%= hidden_field_tag(k, BioCatalogue::Filtering.values_to_query_parameter_text(v)) -%>
-				<% end %>
-			
-			  <b>Search within results:</b>
-				<%= text_field_tag :q, params[:q], :id => "services_index_page_search_field", :size => 40, :autocomplete => "off" -%>
-				
-				<div class="auto_complete" id="services_index_page_auto_complete"></div>
-				
-				<%= auto_complete_field "services_index_page_search_field",
-						:update => "services_index_page_auto_complete",
-						:url => search_auto_complete_url,
-						:min_chars => 3 -%>
-						
-			  <%= submit_tag '', :class => "search_button" -%>
-			<% end %>
-			
-			<% if params[:q] %>
-				<p style="margin-bottom: 0; margin-top: 0.5em;">
-					<% new_params = BioCatalogue::Util.duplicate_params(params); new_params.delete(:q) %>
-					<%= link_to "Clear search", services_url(new_params) -%>
-				</p>
-			<% end %>
-		<% end %>
-	</div>
-<% end %>
+<div id="search_within">
+  <% rounded "#EEE", "#333", "100%" do %>
+      <%= form_tag(services_url, :method => :get) do %>
+          <% @current_filters.each do |k,v| %>
+              <%= hidden_field_tag(k, BioCatalogue::Filtering.values_to_query_parameter_text(v)) -%>
+          <% end %>
+
+          <b>Search within results:</b>
+          <%= text_field_tag :q, params[:q], :id => "services_index_page_search_field", :size => 40, :autocomplete => "off" -%>
+
+          <div class="auto_complete" id="services_index_page_auto_complete"></div>
+
+          <%= auto_complete_field "services_index_page_search_field",
+                                  :update => "services_index_page_auto_complete",
+                                  :url => search_auto_complete_url,
+                                  :min_chars => 3 -%>
+
+          <%= submit_tag '', :class => "search_button" -%>
+      <% end %>
+
+      <% unless @current_filters.blank? and params[:q].blank? %>
+          <% if params[:q] %>
+              <p style="margin-bottom: 0; margin-top: 0.5em;">
+                <% new_params = BioCatalogue::Util.duplicate_params(params); new_params.delete(:q) %>
+                <%= link_to "Clear search", services_url(new_params) -%>
+              </p>
+          <% end %>
+      <% end %>
+  <% end %>
+</div>
 
