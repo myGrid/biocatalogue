@@ -10,11 +10,9 @@
 
 <% t @page_title_suffix -%>
 
-<% if @current_filters.blank? and params[:q].blank? %>
-    <div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em; margin: 0;">
-      <%= render :partial => 'index_tag_cloud' %>
-    </div>
-<% end %>
+<div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em; margin: 0;">
+    <%= render :partial => 'index_tag_cloud' %>
+</div>
 
 <a name="browse"></a>
 
@@ -46,7 +44,7 @@
                        :locals => {:base_url_lambda => lambda { |extra_params| services_url(extra_params) }} -%>
           </div>
           <div class="search_option">
-            <%= render :partial => "shared/listing_type_switcher_link",
+            <%= render :partial => "services/listing_type_switcher_link",
                        :locals => {:base_url_lambda => lambda { |extra_params| services_url(extra_params) }} -%>
           </div>
       </div>
