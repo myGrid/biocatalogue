@@ -45,7 +45,7 @@
             <%= render :partial => "index_per_page",
                        :locals => {:base_url_lambda => lambda { |extra_params| services_url(extra_params) }} -%>
             <br/>
-            <%= render :partial => "shared/listing_type_switcher",
+            <%= render :partial => "services/listing_type_switcher_link",
                        :locals => {:base_url_lambda => lambda { |extra_params| services_url(extra_params) }} -%>
             <br>
           </p>
