@@ -51,6 +51,7 @@ class Annotation < ActiveRecord::Base
   if ENABLE_SEARCH
     searchable do
       text :value_for_solr
+      text :description_value_for_solr, :boost => 3.0
     end
   end
 
@@ -174,9 +175,15 @@ end
   end
   
 protected
-  
+
+  DESCRIPTION_ANNOTATION_ATTRIBUTE = AnnotationAttribute.find_by_name("description")
+
+  def description_value_for_solr
+    return self.value_content if self.attribute == DESCRIPTION_ANNOTATION_ATTRIBUTE
+  end
+
   def value_for_solr
-    return self.value_content
+    return self.value_content unless self.attribute == DESCRIPTION_ANNOTATION_ATTRIBUTE
   end
   
   def process_post_destroy_custom_logic

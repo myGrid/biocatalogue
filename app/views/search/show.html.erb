@@ -17,8 +17,6 @@
     <% end %>
 <% end %>
 
-
-
 <div class="box_info_standout" style="float: right;">
   Try our new
   <b><%= link_to "Search by Data", search_by_data_url -%></b>
@@ -35,36 +33,20 @@
 <span class="clear"></span>
 <% unless @query.blank? %>
 
-
-<span class="inline-block" style="float: right; margin: 10px 10px">
-  <span style="vertical-align: middle; font-weight: bold;">
-    Include archived services?
-  </span>
-
-  <span style="vertical-align: middle; padding: 0; margin-left: 0.1em; width: 100%;">
-    <input type="checkbox"
-           name="include_archived"
-           id="include_archived"
-           data-onchange-url="<%= generate_include_archived_url('search', !include_archived?) %>"
-           onchange="loadUrlFromCheckboxInputTag(this); return false;"
-           <%= "checked='yes'" if include_archived? %> />
-  </span>
-</span>
-
-
     <% if @results.nil? %>
         <p class="none_text">No items found</p>
     <% else %>
         <% if all_search %>
+
             <p>
               Search query
               "<b><%= h @query -%></b>"
               returned
               <%= pluralize(@results.length, "item") -%>
             </p>
-
             <div id="search_results" class="tabber">
               <% @scope_for_results.each do |result_scope| %>
+
                   <% unless ["annotations"].include? result_scope %>
                       <% visible_result_scope = BioCatalogue::Search.scope_to_visible_search_type(result_scope)
                          items = @results.select { |result| result.class.name.underscore.pluralize == result_scope }
@@ -72,9 +54,12 @@
                          items = items.paginate(:page => @page, :per_page => @per_page)
                          more_items = count > @per_page %>
                       <% unless items.empty? %>
+
                           <div id='<%= "tab-#{result_scope}" -%>' class="tabbertab">
                             <% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}" %>
                             <h3><%= "#{visible_result_scope} (#{count_text})" -%></h3>
+
+                            <%= render :partial => 'search_options', :locals => {:result_scope => result_scope, :include_archived => include_archived?}%>
 
                             <div style="margin: 0 0 1.5em 0;">
                               <% if more_items %>
@@ -83,9 +68,6 @@
                                   </div>
                               <% end %>
                               <div style="margin-top: 1em;">
-                                <% if false %>
-                                    <%= link_to("Filter these services", services_url(:q => @query), :class => "button_slim", :style => "margin-right: 1.5em;") -%>
-                                <% end %>
                                 <table style="width: 100%;">
                                   <tr>
                                     <td>
@@ -95,13 +77,13 @@
                                                       :class => "button_slim") -%>
                                       <% end %>
                                     </td>
-                                    <td style="text-align: right;">
-                                      <%= render :partial => "listing_type_switcher_link", :locals => {:result_scope => result_scope} -%>
-                                    </td>
                                   </tr>
                                 </table>
                               </div>
                             </div>
+
+                            <div style="clear: both;"></div>
+
                             <%= render :partial => "#{result_scope}/listing", :locals => {:items => items} %>
                             <% if more_items %>
                                 <p>

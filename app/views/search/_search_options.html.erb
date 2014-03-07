@@ -1,0 +1,29 @@
+
+<% if %w[services soap_operations rest_methods].include?(result_scope) %>
+    <div class="search_options" style="margin-bottom: 10px;">
+      <div class="search_option">
+            <span style="vertical-align: middle; font-weight: bold;">
+            Include archived?
+            </span>
+            <span style="vertical-align: middle; padding: 0; margin-left: 0.1em; width: 100%;">
+                <input type="checkbox"
+                       name="include_archived"
+                       id="include_archived"
+                       data-onchange-url="<%= generate_include_archived_url('search', !include_archived?) %>"
+                       onchange="loadUrlFromCheckboxInputTag(this); return false;"
+                       <%= "checked='yes'" if include_archived? %> />
+            </span>
+      </div>
+      <% if result_scope == 'services' %>
+          <div class="search_option">
+            <%= render :partial => "listing_type_switcher_link", :locals => {:result_scope => result_scope} %>
+          </div>
+
+          <% params_dup = BioCatalogue::Util.duplicate_params(params) %>
+          <% params_dup = BioCatalogue::Util.remove_rails_special_params_from(params_dup) %>
+          <div class="search_option">
+            <%= link_to("Filter services", services_path(params_dup.merge(:q => @query)), :class => "button_slim") %>
+          </div>
+      <% end %>
+    </div>
+<% end %>

@@ -10,11 +10,9 @@
 
 <% t @page_title_suffix -%>
 
-<% if @current_filters.blank? and params[:q].blank? %>
-    <div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em; margin: 0;">
-      <%= render :partial => 'index_tag_cloud' %>
-    </div>
-<% end %>
+<div style="border-bottom: 1px solid #DDD; padding-bottom: 0.8em; margin: 0;">
+    <%= render :partial => 'index_tag_cloud' %>
+</div>
 
 <a name="browse"></a>
 
@@ -31,30 +29,24 @@
     <div style="margin-top: 5px; overflow: hidden;">
       <%= render :partial => "index_search_within" -%>
 
-      <div class="search_options" style="float: right;width: 30%;padding: 10px;background-color: #EAEEFB;">
+      <div class="search_options">
         <!-- Advanced Search Option Bar-->
-
-        <%= create_expand_collapse_link('advanced_search_options',
-                                        :link_text => "<b>Search options<b>".html_safe,
-                                        :icon_float => "right",
-                                        :class => "collapsable_title") -%>
-
         <!-- Advanced Search Option Content -->
         <% display_options = true #if !params[:listing].nil? || !params[:per_page].nil? || !params[:sort_by].nil? || !params[:include_archived].nil? %>
-        <div id="advanced_search_options" style="display:<%= display_options ? "block":"none"%>; font-size:90%;">
-          <p>
+          <div class="search_option">
             <%= render :partial => 'index_include_archived_option' -%>
-            <br/>
+          </div>
+          <div class="search_option">
             <%= render :partial => 'index_sortby' -%>
-            <br/>
+          </div>
+          <div class="search_option">
             <%= render :partial => "index_per_page",
                        :locals => {:base_url_lambda => lambda { |extra_params| services_url(extra_params) }} -%>
-            <br/>
-            <%= render :partial => "shared/listing_type_switcher",
+          </div>
+          <div class="search_option">
+            <%= render :partial => "services/listing_type_switcher_link",
                        :locals => {:base_url_lambda => lambda { |extra_params| services_url(extra_params) }} -%>
-            <br>
-          </p>
-        </div>
+          </div>
       </div>
       <!-- Pagination Top -->
       <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => @services} %>

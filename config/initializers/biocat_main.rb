@@ -110,13 +110,13 @@ if ENABLE_RPX
 end
 
 # Set global pagination per_page parameter in all models.
-PAGE_ITEMS_SIZE = 20
+PAGE_ITEMS_SIZE = 21
 class ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = PAGE_ITEMS_SIZE
 end
 
-MAX_PAGE_SIZE = 100
+MAX_PAGE_SIZE = 99
 
 
 #  MAX_RESULTS is the total number of results to return.
