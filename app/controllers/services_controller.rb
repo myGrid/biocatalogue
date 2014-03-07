@@ -5,6 +5,7 @@
 # See license.txt for details.
 
 class ServicesController < ApplicationController
+  include OntologyHelper
 
   before_filter :disable_action, :only => [ :edit, :update ]
   before_filter :disable_action_for_api, :except => [ :index, :show, :filters, :summary, :annotations, :deployments, :variants, :monitoring, :activity, :filtered_index, :favourite, :unfavourite, :bmb ]
@@ -19,7 +20,7 @@ class ServicesController < ApplicationController
 
   before_filter :find_services, :only => [ :index, :filtered_index ]
 
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples, :service_endpoint, :example_data, :example_scripts, :example_workflows ]
+  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :add_ontology_annotation, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples, :service_endpoint, :example_data, :example_scripts, :example_workflows ]
 
   before_filter :find_favourite, :only => [ :favourite, :unfavourite ]
 
@@ -178,10 +179,39 @@ class ServicesController < ApplicationController
 
     respond_to do |format|
       flash[:notice] = if anns.empty?
-        "No new categories specified"
-      else
-        "Categories successfully added"
-      end
+                         "No new categories specified"
+                       else
+                         "Categories successfully added"
+                       end
+      format.html { redirect_to(service_url(@service)) }
+    end
+  end
+
+  def add_ontology_annotation
+    categories = [ ]
+    anns = [ ]
+    categories = params[:categories] if params.has_key?(:categories)
+    ontology_type = params[:annotation].keys.first
+
+    case ontology_type
+      when 'edam'
+        ontology_type = 'edam_topic'
+        unless categories.empty?
+          anns = @service.create_annotations({ "edam_topic" => categories.split(',').compact.map{|x| x.strip}.reject{|x| x == ""} }, current_user)
+        end
+      when 'swo_license'
+        ontology_type = 'license'
+        unless params[:annotation].count < 2 && params[:annotation].values.first == 'software license'
+          anns = @service.create_annotations({ "swo_license" => params[:annotation].values.compact.map{|x| remove_formatting_of(x)}.reject{|x| x == ""} }, current_user)
+        end
+    end
+
+    respond_to do |format|
+      flash[:notice] = if anns.empty?
+                         "No new #{ontology_type.humanize} specified"
+                       else
+                         "#{ontology_type.humanize} successfully added"
+                       end
       format.html { redirect_to(service_url(@service)) }
     end
   end
@@ -296,11 +326,11 @@ class ServicesController < ApplicationController
         format.json {
           if new_favourite
             render :json => {
-                      :success => {
-                        :message => "The service '#{@service.display_name}' has been successfully favourited.",
-                        :resource => service_url(@service)
-                      }
-                    }.to_json, :status => 201
+                :success => {
+                    :message => "The service '#{@service.display_name}' has been successfully favourited.",
+                    :resource => service_url(@service)
+                }
+            }.to_json, :status => 201
           else
             error_to_back_or_home("Could not favourite service with ID #{params[:id]}.", false, 408)
           end
@@ -318,11 +348,11 @@ class ServicesController < ApplicationController
         format.json {
           if deleted_favourite
             render :json => {
-                      :success => {
-                        :message => "The service '#{@service.display_name}' has been successfully unfavourited.",
-                        :resource => service_url(@service)
-                      }
-                    }.to_json, :status => 205
+                :success => {
+                    :message => "The service '#{@service.display_name}' has been successfully unfavourited.",
+                    :resource => service_url(@service)
+                }
+            }.to_json, :status => 205
           else
             error_to_back_or_home("Could not unfavourite service with ID #{params[:id]}.", false, 408)
           end
@@ -408,17 +438,17 @@ class ServicesController < ApplicationController
   def parse_sort_params
     sort_by_allowed = [ "created", "name", "annotated" ]
     @sort_by = if params[:sort_by] && sort_by_allowed.include?(params[:sort_by].downcase)
-      params[:sort_by].downcase
-    else
-      "created"
-    end
+                 params[:sort_by].downcase
+               else
+                 "created"
+               end
 
     sort_order_allowed = [ "asc", "desc" ]
     @sort_order = if params[:sort_order] && sort_order_allowed.include?(params[:sort_order].downcase)
-      params[:sort_order].downcase
-    else
-      "desc"
-    end
+                    params[:sort_order].downcase
+                  else
+                    "desc"
+                  end
   end
 
   def find_services
@@ -462,10 +492,10 @@ class ServicesController < ApplicationController
 
     if self.request.format == :bljson
       finder_options = {
-        :select => "services.id, services.name, services.archived_at",
-        :order => order,
-        :conditions => conditions,
-        :joins => joins
+          :select => "services.id, services.name, services.archived_at",
+          :order => order,
+          :conditions => conditions,
+          :joins => joins
       }
 
       @services = ActiveRecord::Base.connection.select_all(Service.send(:construct_finder_arel, finder_options))
@@ -519,10 +549,10 @@ class ServicesController < ApplicationController
       # Set feed title
       @feed_title = "#{SITE_NAME} - "
       @feed_title << if (text = BioCatalogue::Filtering.filters_text_if_filters_present(@current_filters)).blank?
-        "Latest Services"
-      else
-        "Services - #{text}"
-      end
+                       "Latest Services"
+                     else
+                       "Services - #{text}"
+                     end
     end
   end
 

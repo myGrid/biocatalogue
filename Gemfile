@@ -16,6 +16,10 @@ gem "daemons"
 gem "dnsruby"
 gem 'libxml-ruby',"2.6.0",:require => "libxml"
 
+# For use in reading ontologies in
+gem 'linkeddata'
+gem 'equivalent-xml'
+
 #Mongrel broken for 1.9.3. Using thin as suggested here
 # http://stackoverflow.com/questions/13851741/install-mongrel-in-ruby-1-9-3
 #gem "mongrel"

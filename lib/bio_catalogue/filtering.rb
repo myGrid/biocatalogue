@@ -6,10 +6,12 @@
 
 # Module for the core filtering functionality
 
+include OntologyHelper
+
 module BioCatalogue
-  
+
   module Filtering
-    
+
     # ====================
     # Filtering URL format
     # --------------------
@@ -23,7 +25,7 @@ module BioCatalogue
     
     UNKNOWN_TEXT = "(unknown)".freeze
     
-    FILTER_KEYS = { :services => [ :cat, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_rms, :tag_ins, :tag_outs, :c ],
+    FILTER_KEYS = { :services => [ :cat, :edam, :t, :p, :su, :sr, :tag, :tag_s, :tag_ops, :tag_rms, :tag_ins, :tag_outs, :c ],
                     :soap_operations => [ :tag, :tag_ops, :tag_ins, :tag_outs ],
                     :rest_methods => [ :tag, :tag_rms, :tag_ins, :tag_outs ],
                     :users => [ :c ],
@@ -37,6 +39,7 @@ module BioCatalogue
     TAG_FILTER_KEYS = [ :tag, :tag_s, :tag_ops, :tag_rms, :tag_ins, :tag_outs ].freeze
     
     FILTER_GROUPS = { :services => [ { "Service Categories" => [ :cat ] },
+                                     { "Edam Topics" => [ :edam ] },
                                      { "Service Types" => [ :t ] },
                                      { "Service Providers" => [ :p ] },
                                      { "Submitters / Sources" => [ :su, :sr ] },
@@ -62,6 +65,7 @@ module BioCatalogue
                                         { "Sources" => [ :soa, :sor, :sosp, :sou ] } ] }.freeze
     
     FILTER_KEY_DISPLAY_NAMES = { :cat => "Service Categories",
+                                 :edam => "Edam Topics",
                                  :t => "Service Types",
                                  :p => "Service Providers",
                                  :su => "Members",
@@ -222,6 +226,9 @@ module BioCatalogue
           when :cat
             c = Category.find_by_id(filter_id)
             (c.nil? ? "(unknown category)" : c.name)
+          when :edam
+            e = Annotation.find_by_id(filter_id)
+            (e.nil? ? "(unknown edam topic)" : remove_formatting_of(e.value.text))
           when :p, :asp, :sosp
             s = ServiceProvider.find_by_id(filter_id)
             (s.nil? ? "(unknown provider)" : BioCatalogue::Util.display_name(s, false))

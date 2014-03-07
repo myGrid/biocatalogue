@@ -196,7 +196,7 @@ module ServicesHelper
       when 'Tree Inference'
         return {:name => 'Phylogeny reconstruction', :uri => 'http://edamontology.org/topic_0191'}
       else
-        return {:name => topic, :uri => ''}
+        return {:name => nil, :uri => nil}
     end
   end
 
@@ -209,64 +209,30 @@ module ServicesHelper
         return {:name => 'Protein function prediction', :uri => 'http://edamontology.org/operation_1777'}
       when 'Protein Structure Prediction'
         return {:name => 'Protein structure prediction', :uri => 'http://edamontology.org/operation_0474'}
-      when 'Protein Interaction'
-        return {:name => '', :uri => ''}
       when 'Sequence Analysis'
         return {:name => 'Sequence analysis', :uri => 'http://edamontology.org/operation_2403'}
-      when 'Biostatistics'
-        return {:name => '', :uri => ''}
-      when 'Chemoinformatics'
-        return {:name => '', :uri => ''}
-      when 'Comparative Genomics'
-        return {:name => '', :uri => ''}
       when 'Data Retrieval'
         return {:name => 'Data retrieval', :uri => 'http://edamontology.org/operation_2422'}
-      when 'Document Clustering'
-        return {:name => '', :uri => ''}
       when 'Document Discovery'
         return {:name => 'Literature search', :uri => 'http://edamontology.org/operation_0305'}
-      when 'Document Similarity'
-        return {:name => '', :uri => ''}
-      when 'Domains'
-        return {:name => '', :uri => ''}
       when 'Evolutionary Distance Measurements'
         return {:name => 'Phylogenetic tree construction (minimum distance methods)', :uri => 'http://edamontology.org/operation_0546'}
-      when 'Functional Genomics'
-        return {:name => '', :uri => ''}
       when 'Gene Prediction'
         return {:name => 'Gene and gene component prediction', :uri => 'http://edamontology.org/operation_2454'}
       when 'Genome Annotation'
         return {:name => 'Genome annotation', :uri => 'http://edamontology.org/operation_0362'}
-      when 'Genomics'
-        return {:name => '', :uri => ''}
       when 'Identifier Retrieval'
         return {:name => 'Data retrieval (metadata and documentation)', :uri => 'http://edamontology.org/operation_0304'}
       when 'Image Retrieval'
         return {:name => 'Data retrieval', :uri => 'http://edamontology.org/operation_2422'}
-      when 'Ligand Interaction'
-        return {:name => '', :uri => ''}
       when 'Literature retrieval'
         return {:name => 'Literature search', :uri => 'http://edamontology.org/operation_0305'}
-      when 'Microarrays'
-        return {:name => '', :uri => ''}
-      when 'Model Analysis'
-        return {:name => '', :uri => ''}
-      when 'Model Creation'
-        return {:name => '', :uri => ''}
-      when 'Model Execution'
-        return {:name => '', :uri => ''}
-      when 'Motifs'
-        return {:name => '', :uri => ''}
-      when 'Named Entity Recognition'
-        return {:name => '', :uri => ''}
       when 'Nucleotide Multiple Alignment'
         return {:name => 'Multiple sequence alignment construction', :uri => 'http://edamontology.org/operation_0492'}
       when 'Nucleotide Pairwise Alignment'
         return {:name => 'Pairwise sequence alignment construction', :uri => 'http://edamontology.org/operation_0491'}
       when 'Nucleotide Secondary Structure'
         return {:name => 'RNA secondary structure prediction', :uri => 'http://edamontology.org/operation_0278'}
-      when 'Nucleotide Sequence Alignment'
-        return {:name => '', :uri => ''}
       when 'Nucleotide Sequence Analysis'
         return {:name => 'Nucleic acid sequence analysis', :uri => 'http://edamontology.org/operation_2478'}
       when 'Nucleotide Sequence Similarity'
@@ -275,18 +241,10 @@ module ServicesHelper
         return {:name => 'Nucleic acid structure prediction', :uri => 'http://edamontology.org/operation_0475'}
       when 'Nucleotide Tertiary Structure'
         return {:name => 'Nucleic acid structure prediction', :uri => 'http://edamontology.org/operation_0475'}
-      when 'Ontology'
-        return {:name => '', :uri => ''}
-      when 'Ontology Annotation'
-        return {:name => '', :uri => ''}
       when 'Ontology Lookup'
         return {:name => 'Data retrieval', :uri => 'http://edamontology.org/operation_2422'}
       when 'Pathway Retrieval'
         return {:name => 'Data retrieval', :uri => 'http://edamontology.org/operation_2422'}
-      when 'Pathways'
-        return {:name => '', :uri => ''}
-      when 'Phylogeny'
-        return {:name => '', :uri => ''}
       when 'Promoter Prediction'
         return {:name => 'Promoter prediction', :uri => 'http://edamontology.org/operation_0440'}
       when 'Protein Multiple Alignment'
@@ -295,26 +253,16 @@ module ServicesHelper
         return {:name => 'Pairwise sequence alignment construction', :uri => 'http://edamontology.org/operation_0491'}
       when 'Protein Secondary Structure'
         return {:name => 'Protein secondary structure prediction', :uri => 'http://edamontology.org/operation_0267'}
-      when 'Protein Sequence Alignment'
-        return {:name => '', :uri => ''}
       when 'Protein Sequence Similarity'
         return {:name => 'Protein sequence comparison', :uri => 'http://edamontology.org/operation_2509'}
       when 'Protein Tertiary Structure'
         return {:name => 'Protein structure analysis', :uri => 'http://edamontology.org/operation_2406'}
-      when 'Proteomics'
-        return {:name => '', :uri => ''}
-      when 'Repeats'
-        return {:name => '', :uri => ''}
       when 'Sequence Retrieval'
         return {:name => 'Sequence retrieval', :uri => 'http://edamontology.org/operation_1813'}
       when 'Statistical Robustness'
         return {:name => 'Phylogenetic tree analysis', :uri => 'http://edamontology.org/operation_0324'}
-      when 'Structural Genomics'
-        return {:name => '', :uri => ''}
       when 'Structure Retrieval'
         return {:name => 'Structure retrieval', :uri => 'http://edamontology.org/operation_1814'}
-      when 'Systems Biology'
-        return {:name => '', :uri => ''}
       when 'Text Mining'
         return {:name => 'Text mining', :uri => 'http://edamontology.org/operation_0306'}
       when 'Transcription Factors'
