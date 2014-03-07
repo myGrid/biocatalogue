@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(:version => 20140228121452) do
 
   create_table "annotation_value_seeds", :force => true do |t|
     t.integer  "attribute_id",                                        :null => false
-    t.string   "old_value"
+    t.string   "old_value",                  :default => ""
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "value_type",   :limit => 50, :default => "TextValue", :null => false
@@ -252,14 +252,6 @@ ActiveRecord::Schema.define(:version => 20140228121452) do
   end
 
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
-
-  create_table "ontology_concepts", :force => true do |t|
-    t.string   "ontology_name"
-    t.text     "label"
-    t.string   "uri"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-  end
 
   create_table "registries", :force => true do |t|
     t.string   "name"
@@ -647,10 +639,10 @@ ActiveRecord::Schema.define(:version => 20140228121452) do
   add_index "test_scripts", ["submitter_id"], :name => "t_scripts_user_id_index"
 
   create_table "text_value_versions", :force => true do |t|
-    t.integer  "text_value_id",                            :null => false
-    t.integer  "version",                                  :null => false
+    t.integer  "text_value_id",                          :null => false
+    t.integer  "version",                                :null => false
     t.integer  "version_creator_id"
-    t.text     "text",               :limit => 2147483647, :null => false
+    t.text     "text",               :limit => 16777215, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -658,9 +650,9 @@ ActiveRecord::Schema.define(:version => 20140228121452) do
   add_index "text_value_versions", ["text_value_id"], :name => "index_text_value_versions_on_text_value_id"
 
   create_table "text_values", :force => true do |t|
-    t.integer  "version",                                  :null => false
+    t.integer  "version",                                :null => false
     t.integer  "version_creator_id"
-    t.text     "text",               :limit => 2147483647, :null => false
+    t.text     "text",               :limit => 16777215, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
