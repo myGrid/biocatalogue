@@ -17,7 +17,7 @@ module BioCatalogue
     # As new models are indexed (and therefore need to be searched on) add them here.
     @@models_for_search = (Mapper::SERVICE_STRUCTURE_MODELS + [ServiceProvider, User, Registry, Annotation]).freeze
 
-    @@search_query_suggestions_file_path = File.join(Rails.root, 'data', 'search_query_suggestions.txt')
+    @@search_query_suggestions_file_path = File.join(Rails.root, 'data', "search_query_suggestions-#{Rails.env.to_s}.txt")
 
     @@limit = 10000
 
@@ -100,6 +100,7 @@ module BioCatalogue
 
         current_terms.each do |t|
           s = t.downcase
+          query_fragment.downcase!
           suggestions << CGI.escapeHTML(t) if s.match(query_fragment)
         end
 
