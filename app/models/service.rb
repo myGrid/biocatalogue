@@ -65,7 +65,7 @@ class Service < ActiveRecord::Base
   
   if ENABLE_SEARCH
     searchable do
-      text :name
+      text :name, :boost => 6.0
       text :unique_code
       text :submitter_name
     end

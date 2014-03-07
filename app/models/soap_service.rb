@@ -69,7 +69,13 @@ class SoapService < ActiveRecord::Base
  
   if ENABLE_SEARCH
     searchable do
-      text :name, :namespace, :documentation_url, :wsdl_location, :service_type_name, :description, :description_from_soaplab
+      text :name, :boost => 6.0
+      text :wsdl_location, :boost => 4.0
+      text :documentation_url, :boost => 4.0
+      text :description, :boost => 3.0
+      text :namespace, :boost => 1.0
+      text :service_type_name, :boost => 1.0
+      text :description_from_soaplab, :boost => 1.0
     end
   end
   

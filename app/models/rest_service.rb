@@ -49,7 +49,11 @@ class RestService < ActiveRecord::Base
 
   if ENABLE_SEARCH
     searchable do
-      text :name, :description, :interface_doc_url, :documentation_url, :service_type_name
+      text :name, :boost => 6.0
+      text :documentation_url => 4.0
+      text :interface_doc_url => 4.0
+      text :description => 3.0
+      text :service_type_name => 1.0
     end
   end
   
