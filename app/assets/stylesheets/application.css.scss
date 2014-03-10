@@ -3030,6 +3030,61 @@ ul.categories li span.main:hover {
 
 /* END categories styles */
 
+/* BEGIN EDAM topics styles */
+
+.edam_topics_box {
+  line-height: 16px;
+}
+
+ul.edam_topics {
+  float: left;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+ul.edam_topics li {
+  display: inline;
+  font-size: 85%;
+}
+
+ul.edam_topics li span.main {
+  display: -moz-inline-block;
+  display: -moz-inline-box;
+  display: inline-block;
+  background-color: #EAEEFB;
+  margin-bottom: 0.4em;
+  margin-right: 0.5em;
+  padding: 1px 4px;
+  /*
+  border-top: 1px solid #DEDEDE;
+  border-left: 1px solid #DEDEDE;
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+  */
+  border: 1px solid #DDD;
+  border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+
+ul.edam_topics li span.main a.edam_topic {
+  line-height: 1.6;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+ul.edam_topics li span.main a.edam_topic:hover {
+  color: #000;
+}
+
+ul.edam_topics li span.main:hover {
+  background-color: #bdb9fb;
+}
+
+/* END EDAM topics styles */
+
 /* BEGIN stats bar styles */
 
 .stats_bar {
