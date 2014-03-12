@@ -11,7 +11,7 @@
 <div class="listings">
   <% items.each do |op| %>
 
-      <div id="<%= "soap_operation_#{op.id}" -%>" class="listing_item <%= op.archived? ? 'archived' : '' -%>">
+      <div id="<%= "soap_operation_#{op.id}" -%>" class="listing_item <%= (op.archived? || op.soap_service.service.archived?) ? 'archived' : '' -%>">
 
         <div class="simple_listing">
 
