@@ -9,7 +9,7 @@
                 <input type="checkbox"
                        name="include_archived"
                        id="include_archived"
-                       data-onchange-url="<%= generate_include_archived_url('search', !include_archived?) %>"
+                       data-onchange-url="<%= generate_include_archived_url('search', !include_archived?, result_scope) %>"
                        onchange="loadUrlFromCheckboxInputTag(this); return false;"
                        <%= "checked='yes'" if include_archived? %> />
             </span>

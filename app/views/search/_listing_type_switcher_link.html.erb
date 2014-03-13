@@ -14,5 +14,5 @@
 %>
 
 <%= render :partial => "shared/listing_type_switcher",
-           :locals => {:base_url_lambda => lambda { |extra_params| search_url(extra_params.merge(BioCatalogue::Util.remove_rails_special_params_from(params, ["listing"]))) },
+           :locals => {:base_url_lambda => lambda { |extra_params| search_url(extra_params.merge(BioCatalogue::Util.remove_rails_special_params_from(params, ["listing"])))  + (result_scope.blank? ? "" : "##{result_scope}") },
                        :style => style} -%>
