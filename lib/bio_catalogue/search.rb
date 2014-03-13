@@ -158,7 +158,7 @@ module BioCatalogue
       query = self.preprocess_query(query)
 
 
-      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, "#{query}#{scopes_for_results.join('-')}")
+      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, "#{query}#{scopes_for_results.join('-')}#{include_archived==true ? '1' : '0'}")
       # Try and get it from the cache...
       search_result_docs = Rails.cache.read(cache_key)
       # If it isn't in cache
