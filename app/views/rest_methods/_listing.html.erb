@@ -1,80 +1,89 @@
 <%
 
-# BioCatalogue: app/views/rest_methods/_listing.html.erb
-#
-# Copyright (c) 2010, University of Manchester, The European Bioinformatics 
-# Institute (EMBL-EBI) and the University of Southampton.
-# See license.txt for details
+   # BioCatalogue: app/views/rest_methods/_listing.html.erb
+   #
+   # Copyright (c) 2010, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
 
 %>
 
 <div class="listings">
-	<% items.each do |method| %>
+  <% items.each do |method| %>
 
-      <% resource = method.rest_resource %>
-      <% service = resource.rest_service.service %>
-      <% base_endpoint = service.latest_deployment.endpoint %>
+      <% service_archived = op.archived? || op.belongs_to_archived_service? %>
+      <% service = method.associated_service %>
 
-      <div class="listing_item <%= service.archived? ? 'archived' : ''%>">
-      <p class="name">
-        <% link_text = "#{h(method.display_endpoint)} " %>
-        <%= "<i style='font-size:80%;'>#{h(method.endpoint_name)}</i> | ".html_safe if method.endpoint_name -%>
-        <%= link_to(link_text, method) -%>
-      </p>
-      <% if service.archived? %>
-          <p class="archived_status_text">
-            This REST Endpoint belongs to the service <b><%=link_to service.name,service%></b> which has been archived.
-          </p>
+      <% if service_archived && @include_archived %>
+
+          <div class="listing_item archived">
+            <p class="name">
+              <% link_text = "#{h(method.display_endpoint)} " %>
+              <%= "<i style='font-size:80%;'>#{h(method.endpoint_name)}</i> | ".html_safe if method.endpoint_name -%>
+              <%= link_to(link_text, method) -%>
+            </p>
+
+            <p class="archived_status_text">
+              This REST Endpoint belongs to the service <b><%=link_to service.name,service%></b> which has been archived.
+            </p>
+          </div>
       <% else %>
+          <div class="listing_item">
+            <p class="name">
+              <% link_text = "#{h(method.display_endpoint)} " %>
+              <%= "<i style='font-size:80%;'>#{h(method.endpoint_name)}</i> | ".html_safe if method.endpoint_name -%>
+              <%= link_to(link_text, method) -%>
+            </p>
 
-			<% if method.associated_service %>
-        <p class="detail">
-          <b>Part of Service:</b>
-          <%= link_to display_name(method.associated_service), method.associated_service -%>
-        </p>
+            <% if method.associated_service %>
+                <p class="detail">
+                  <b>Part of Service:</b>
+                  <%= link_to display_name(method.associated_service), method.associated_service -%>
+                </p>
+            <% end %>
+
+            <p class="detail">
+              <b>Part of Endpoint Group:</b>
+              <% unless method.group_name.blank? %>
+                  <%=h method.group_name -%>
+              <% else %>
+                  <span class="none_text">none</span>
+              <% end %>
+            </p>
+
+            <p class="detail faded">
+              <b>Template:</b>
+              <%= help_icon_with_tooltip("This is an example of how the endpoint's URL will look. This includes the minimal set of parameters needed to be able to use the endpoint.") -%>
+
+              <%=h create_url_template(method) -%>
+            </p>
+
+            <div style="font-size: 85%;">
+              <%= render :partial => "annotations/descriptions",
+                         :locals => { :annotatable => method,
+                                      :show_header => false,
+                                      :truncate_desc => 400,
+                                      :auto_link_desc => false,
+                                      :show_modify_options => false,
+                                      :show_add_box => false } -%>
+            </div>
+
+            <div class="detail">
+              <table>
+                <tr>
+                  <td style="width: 17em; line-height: 1.5; padding-top: 1px; text-align: left;">
+                    <b>Tags on this endpoint:</b>
+                  </td>
+                  <td>
+                    <%= render :partial => "annotations/tags_flat",
+                               :locals => { :annotatable => method } -%>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
       <% end %>
-      
-      <p class="detail">
-        <b>Part of Endpoint Group:</b> 
-        <% unless method.group_name.blank? %>
-          <%=h method.group_name -%>
-        <% else %> 
-          <span class="none_text">none</span>         
-        <% end %>
-      </p>
-              
-      <p class="detail faded">
-        <b>Template:</b>
-        <%= help_icon_with_tooltip("This is an example of how the endpoint's URL will look. This includes the minimal set of parameters needed to be able to use the endpoint.") -%>
+      </div>
+  <% end %>
+  </div>
 
-        <%=h create_url_template(method) -%>
-      </p>
-      
-      <div style="font-size: 85%;">
-        <%= render :partial => "annotations/descriptions",
-                   :locals => { :annotatable => method,
-                                :show_header => false,
-                                :truncate_desc => 400,
-                                :auto_link_desc => false,
-                                :show_modify_options => false,
-                                :show_add_box => false } -%>
-      </div>
-      
-      <div class="detail">
-        <table>
-          <tr>
-            <td style="width: 17em; line-height: 1.5; padding-top: 1px; text-align: left;">
-              <b>Tags on this endpoint:</b>
-            </td>
-            <td>
-              <%= render :partial => "annotations/tags_flat",
-                         :locals => { :annotatable => method } -%>
-            </td>
-          </tr>
-        </table>
-      </div>
-      
-  <% end %>
-    </div>
-  <% end %>
-</div>
