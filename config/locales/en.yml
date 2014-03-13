@@ -32,3 +32,8 @@ en:
         one:   "service provider"
         few:   "service providers"
         other: "service providers"
+      soap_operation:
+              zero:  "SOAP operations"
+              one:   "SOAP operation"
+              few:   "SOAP operations"
+              other: "SOAP operations"

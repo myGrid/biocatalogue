@@ -124,8 +124,7 @@
               <%= pluralize(count, @visible_search_type.singularize) -%>  </p>
 
             <span style="float: right; margin-left: 2em; margin-top: 2.5em;">
-				<%= render :partial => "listing_type_switcher_link", :locals => {:result_scope => result_scope} -%>
-              <%= link_to "Search for ALL items", search_url(:q => @query), :class => "button_slim", :style => "margin-left: 1.5em;" -%>
+                <%= link_to "Back to all search results", search_url(:q => @query), :class => "button_slim", :style => "margin-left: 1.5em;" -%>
 			</span>
             <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => items, :entry_name => @scope.gsub('_', ' ').singularize} %>
             <div id="search_results" style="margin: 2em 0;">
