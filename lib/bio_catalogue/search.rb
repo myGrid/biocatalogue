@@ -92,6 +92,8 @@ module BioCatalogue
     def self.get_query_suggestions(query_fragment, limit=100)
       return [] if query_fragment.blank?
 
+      return [] unless File.exist?(@@search_query_suggestions_file_path)
+
       suggestions = []
 
       begin
