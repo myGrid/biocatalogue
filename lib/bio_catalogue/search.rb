@@ -192,7 +192,7 @@ module BioCatalogue
         associated_model_classes.each do |result_model_name|
           associated_result = BioCatalogue::Mapper.map_object_to_associated_model_object(search_result, result_model_name)
           unless associated_result.nil?
-            search_result_docs << associated_result unless (!include_archived && associated_result.try(:archived?) == true)
+            search_result_docs << associated_result unless (!include_archived && ((associated_result.try(:archived?) == true) || (associated_result.try(:belongs_to_archived_service?))))
           end
         end
       end
