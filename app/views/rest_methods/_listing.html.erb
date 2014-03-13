@@ -11,7 +11,7 @@
 <div class="listings">
   <% items.each do |method| %>
 
-      <% service_archived = op.archived? || op.belongs_to_archived_service? %>
+      <% service_archived = method.archived? || method.belongs_to_archived_service? %>
       <% service = method.associated_service %>
 
       <% if service_archived && @include_archived %>
