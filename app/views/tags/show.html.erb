@@ -8,24 +8,19 @@
 
 %>
 
-<% 
-	count = @service_ids.length
-	
-%>
-
 <% t "Results for tag '#{@tag.name}'" -%>
 
 <h1>Tag Results</h1>
 
 <p style="font-size: 123.1%;">
-	Tag
-	"<b><%= h(@tag.label) -%></b>"
+  Tag
+  "<b><%= h(@tag.label) -%></b>"
   <% unless @tag.name == @tag.label %>
-    (
-    <%= @tag.name -%>
-    )
+      (
+      <%= @tag.name -%>
+      )
   <% end %>
-	returned <%= pluralize(count, "services") -%>
+  returned <%= pluralize(@count, "results") -%>
 </p>
 
 <div class="search_options">
@@ -49,30 +44,63 @@
   </div>
 </div>
 
-<% if @service_ids.empty? %>
 
-  <p class="none_text">No services.</p>
+<% if @results.empty? || @results.blank? %>
+
+    <p class="none_text">No services.</p>
 
 <% else %>
-        <%
-         services = Service.where(:id => @service_ids).paginate(:page => params[:page], :per_page => @per_page)
-         #TODO figure out why current_page_ids only works as an array of Services rather than an array of ids
-         current_page_ids = services
+    <div id="search_results" class="tabber">
+      <% @results.each do |result_scope_string, result_models| %>
+          <% result_scope = result_scope_string.underscore.pluralize %>
 
-       #ORIGINAL
-		 #current_page_ids = @service_ids.paginate(:page => params[:page], :per_page => @per_page)
-         #services = search_item_ids_to_objects(current_page_ids, "service")
-	 %>
-	
-	<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => current_page_ids, :entry_name => 'service' } %>
-	
-	<div id="search_results" style="margin: 2em 0;">
-		<%= render :partial => "services/listing", :locals => { :items => services } %>
-	</div>
-		
-	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => current_page_ids } %>
-	
-<% end %>
 
+          <% visible_result_scope = BioCatalogue::Search.scope_to_visible_search_type(result_scope)
+             items = result_models
+             count = items.length
+             items = items.paginate(:page => @page, :per_page => @per_page)
+             more_items = count > @per_page %>
+          <% unless items.empty? %>
+
+              <div id='<%= "tab-#{result_scope}" -%>' class="tabbertab">
+                <% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}" %>
+                <h3><%= "#{visible_result_scope} (#{count_text})" -%></h3>
+
+                <div style="margin: 0 0 1.5em 0;">
+                  <% if more_items %>
+                      <div style="color: #555;">
+                        <%= "Showing the top #{items.length} items out of #{count} in total" -%>
+                      </div>
+                  <% end %>
+                  <div style="margin-top: 1em;">
+                    <table style="width: 100%;">
+                      <tr>
+                        <td>
+                          <% if more_items %>
+                              <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
+                                          tag_url(@tag,:page => 2),
+                                          :class => "button_slim") -%>
+                          <% end %>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+
+                <div style="clear: both;"></div>
+
+                <%= render :partial => "#{result_scope}/listing", :locals => {:items => items} %>
+                <% if more_items %>
+                    <p>
+                      <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
+                                  tag_url(@tag,:page => 2),
+                                  :class => "button_slim") -%>
+                    </p>
+                <% end %>
+              </div>
+          <% end #unless items.empty?%>
+      <% end #each result%>
+    </div>
+<% end #results empty %>
 <br />
 

@@ -9,7 +9,7 @@ module BioCatalogue
     
     TAG_NAMESPACES = { "http://www.mygrid.org.uk/ontology" => "mygrid-domain-ontology", 
                        "http://www.mygrid.org.uk/mygrid-moby-service" => "mygrid-service-ontology" }.freeze
-    
+    @@models_for_search = ['Service', 'RestMethod', 'SoapOperation']
     # ====================================
     # IMPORTANT - Tags hash data structure
     # ------------------------------------
@@ -48,8 +48,13 @@ module BioCatalogue
               tag_name ]
       
       results = Tag.connection.select_all(Tag.send(:sanitize_sql, sql))
-      
-      return BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, "Service").uniq 
+
+      result_hash = {}
+      @@models_for_search.each do |type|
+        result_hash[type] = BioCatalogue::Mapper.process_compound_ids_to_associated_model_object_ids(results.map{|r| BioCatalogue::Mapper.compound_id_for(r['type'], r['id']) }, type).uniq
+        result_hash.delete(type) if result_hash[type].empty?
+      end
+      return result_hash
     end
 
     # Takes in a set of annotations and returns a collection of tags in the tags hash data structure 
