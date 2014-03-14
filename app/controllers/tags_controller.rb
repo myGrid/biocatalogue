@@ -122,7 +122,8 @@ protected
       end
 
       unless @tag.blank?
-        @results = {}
+        @scope = params[:scope]
+        @results = { }
         @count = 0
         ids_for_results = BioCatalogue::Tags.get_service_ids_for_tag(@tag.name)
         ids_for_results.each do |scope, values|
