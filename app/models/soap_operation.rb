@@ -11,7 +11,7 @@ class SoapOperation < ActiveRecord::Base
   end
   
   acts_as_annotatable :name_field => :name
-  
+
   acts_as_archived
   
   belongs_to :soap_service
@@ -59,7 +59,11 @@ class SoapOperation < ActiveRecord::Base
   def associated_service
     @associated_service ||= Service.find_by_id(associated_service_id)
   end
-  
+
+  def belongs_to_archived_service?
+    self.associated_service.archived?
+  end
+
   def preferred_description
     # Either the description from the service description doc, 
     # or the last description annotation.

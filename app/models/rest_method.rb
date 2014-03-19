@@ -115,7 +115,12 @@ class RestMethod < ActiveRecord::Base
   def to_custom_json(collections)
     generate_json_with_collections(collections)
   end
-  
+
+
+  def belongs_to_archived_service?
+    self.associated_service.archived?
+  end
+
   # Check that an endpoint name does not exist in the parent service
   def check_endpoint_name_exists(name)
     rest_service = self.rest_resource.rest_service

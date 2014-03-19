@@ -17,7 +17,7 @@ module BioCatalogue
     # As new models are indexed (and therefore need to be searched on) add them here.
     @@models_for_search = (Mapper::SERVICE_STRUCTURE_MODELS + [ServiceProvider, User, Registry, Annotation]).freeze
 
-    @@search_query_suggestions_file_path = File.join(Rails.root, 'data', 'search_query_suggestions.txt')
+    @@search_query_suggestions_file_path = File.join(Rails.root, 'data', "search_query_suggestions-#{Rails.env.to_s}.txt")
 
     @@limit = 10000
 
@@ -92,6 +92,8 @@ module BioCatalogue
     def self.get_query_suggestions(query_fragment, limit=100)
       return [] if query_fragment.blank?
 
+      return [] unless File.exist?(@@search_query_suggestions_file_path)
+
       suggestions = []
 
       begin
@@ -100,6 +102,7 @@ module BioCatalogue
 
         current_terms.each do |t|
           s = t.downcase
+          query_fragment.downcase!
           suggestions << CGI.escapeHTML(t) if s.match(query_fragment)
         end
 
@@ -155,7 +158,7 @@ module BioCatalogue
       query = self.preprocess_query(query)
 
 
-      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, "#{query}#{scopes_for_results.join('-')}")
+      cache_key = BioCatalogue::CacheHelper.cache_key_for(:search_items_from_solr, "#{query}#{scopes_for_results.join('-')}#{include_archived==true ? '1' : '0'}")
       # Try and get it from the cache...
       search_result_docs = Rails.cache.read(cache_key)
       # If it isn't in cache
@@ -191,7 +194,7 @@ module BioCatalogue
         associated_model_classes.each do |result_model_name|
           associated_result = BioCatalogue::Mapper.map_object_to_associated_model_object(search_result, result_model_name)
           unless associated_result.nil?
-            search_result_docs << associated_result unless (!include_archived && associated_result.try(:archived?) == true)
+            search_result_docs << associated_result unless (!include_archived && ((associated_result.try(:archived?) == true) || (associated_result.try(:belongs_to_archived_service?))))
           end
         end
       end
