@@ -88,7 +88,7 @@
                                     <td>
                                       <% if more_items %>
                                           <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
-                                                      search_url(:q => @query, :scope => result_scope, :page => 2),
+                                                      search_url(:q => @query, :scope => result_scope, :page => 2, :include_archived => include_archived?),
                                                       :class => "button_slim") -%>
                                       <% end %>
                                     </td>
@@ -103,7 +103,7 @@
                             <% if more_items %>
                                 <p>
                                   <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
-                                              search_url(:q => @query, :scope => result_scope, :page => 2),
+                                              search_url(:q => @query, :scope => result_scope, :page => 2, :include_archived => include_archived?),
                                               :class => "button_slim") -%>
                                 </p>
                             <% end %>
@@ -123,9 +123,25 @@
               returned
               <%= pluralize(count, @visible_search_type.singularize) -%>  </p>
 
-            <span style="float: right; margin-left: 2em; margin-top: 2.5em;">
-                <%= link_to "Back to all search results", search_url(:q => @query), :class => "button_slim", :style => "margin-left: 1.5em;" -%>
-			</span>
+            <div class="search_options" style="margin-bottom: 10px;">
+              <div class="search_option">
+                <span style="vertical-align: middle; font-weight: bold;">
+                    Include archived?
+                </span>
+                <span style="vertical-align: middle; padding: 0; margin-left: 0.1em; width: 100%;">
+                    <input type="checkbox"
+                       name="include_archived"
+                       id="include_archived"
+                       data-onchange-url="<%= generate_include_archived_url('search', !include_archived?) %>"
+                       onchange="loadUrlFromCheckboxInputTag(this); return false;"
+                       <%= "checked='yes'" if include_archived? %> />
+                </span>
+              </div>
+              <div class="search_option">
+                  <%= link_to (image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, "Back to all search results")), search_url(:q => @query, :include_archived => include_archived?), :class => "button_slim" -%>
+	          </div>
+            </div>
+
             <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => items, :entry_name => @scope.gsub('_', ' ').singularize} %>
             <div id="search_results" style="margin: 2em 0;">
               <%= render :partial => "#{@scope}/listing", :locals => {:items => items} %>
