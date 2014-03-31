@@ -122,8 +122,21 @@ protected
       end
 
       unless @tag.blank?
-        @service_ids = BioCatalogue::Tags.get_service_ids_for_tag(@tag.name)
-        @service_ids.reject!{|service_id| !@include_archived && Service.find_by_id(service_id).try(:archived?) }
+        @scope = params[:scope]
+        @results = { }
+        @count = 0
+        ids_for_results = BioCatalogue::Tags.get_service_ids_for_tag(@tag.name)
+        ids_for_results.each do |scope, values|
+          result_models = BioCatalogue::Mapper.item_ids_to_model_objects(values,scope)
+          result_models.reject!{|result_model| !@include_archived && (result_model.try(:archived?) || result_model.try(:belongs_to_archived_service?))}
+          @results[scope] = result_models unless result_models.nil?
+
+        end
+        @results.each_value do |result_scope|
+          @count += result_scope.length
+        end
+
+        @results
       end
     end
   end
