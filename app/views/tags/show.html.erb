@@ -1,11 +1,16 @@
 <%
 
-   # BioCatalogue: app/views/tags/show.html.erb
-   #
-   # Copyright (c) 2009, University of Manchester, The European Bioinformatics
-   # Institute (EMBL-EBI) and the University of Southampton.
-   # See license.txt for details
+# BioCatalogue: app/views/tags/show.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
 
+%>
+
+<% 
+	count = @service_ids.length
+	
 %>
 
 <% t "Results for tag '#{@tag.name}'" -%>
@@ -129,5 +134,6 @@
       <% end %>
     </div>
 <% end #results empty %>
+
 <br />
 
