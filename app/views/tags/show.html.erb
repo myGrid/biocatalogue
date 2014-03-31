@@ -12,18 +12,21 @@
 
 <h1>Tag Results</h1>
 
-<p style="font-size: 123.1%;">
-  Tag
-  "<b><%= h(@tag.label) -%></b>"
-  <% unless @tag.name == @tag.label %>
-      (
-      <%= @tag.name -%>
-      )
-  <% end %>
-  returned <%= pluralize(@count, "results") -%>
-</p>
+<% unless @scope %>
+    <p style="font-size: 123.1%;">
+      Tag
+      "<b><%= h(@tag.label) -%></b>"
+      <% unless @tag.name == @tag.label %>
+          (
+          <%= @tag.name -%>
+          )
+      <% end %>
+      returned <%= pluralize(@count, "results") -%>
+    </p>
+<% end %>
+<span class="clear"></span>
 
-<div class="search_options">
+<div class="search_options" style="margin-top: 40px; margin-right: 10px;">
   <div class="search_option">
             <span style="vertical-align: middle; font-weight: bold;">
             Include archived?
@@ -42,9 +45,16 @@
   <div class="search_option">
     <%= link_to("Filter services", services_path(params_dup.merge(:tag => "[#{@tag.label}]")), :class => "button_slim") %>
   </div>
+  <% unless @scope.nil? %>
+      <div class="search_option">
+        <% if @include_archived %>
+            <%= link_to "Back to all tag results", tag_path(@tag.name, :include_archived => 'true'), :class => "button_slim" -%>
+        <% else %>
+            <%= link_to "Back to all tag results", tag_path(@tag.name), :class => "button_slim" -%>
+        <% end %>
+      </div>
+  <% end %>
 </div>
-
-
 <% if @results.empty? || @results.blank? %>
 
     <p class="none_text">No services.</p>
@@ -53,9 +63,7 @@
     <div id="search_results" class="tabber">
       <% if @scope.nil? %>
           <% @results.each do |result_scope_string, result_models| %>
-              <% result_scope = result_scope_string.underscore.pluralize %>
-
-
+              <% result_scope = result_scope_string.to_s.underscore.pluralize %>
               <% visible_result_scope = BioCatalogue::Search.scope_to_visible_search_type(result_scope)
                  items = result_models
                  count = items.length
@@ -79,7 +87,7 @@
                             <td>
                               <% if more_items %>
                                   <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
-                                              tag_url(@tag.name,:page => 2, :scope => result_scope),
+                                              tag_url(@tag.name,:page => 2, :scope => result_scope, :include_archived => @include_archived),
                                               :class => "button_slim") -%>
                               <% end %>
                             </td>
@@ -94,7 +102,7 @@
                     <% if more_items %>
                         <p>
                           <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
-                                      tag_url(@tag.name,:page => 2, :scope => result_scope),
+                                      tag_url(@tag.name,:page => 2, :scope => result_scope, :include_archived => @include_archived),
                                       :class => "button_slim") -%>
                         </p>
                     <% end %>
@@ -103,19 +111,16 @@
           <% end #each result%>
 
       <% else %>
-          <% result_scope = @scope
-             items = @results
-             count = @count
+          <%  @visible_search_type = @scope.humanize
+             result_scope = @scope.singularize.camelize
+             items = @results[result_scope]
+             count = items.length
              items = items.paginate(:page => @page, :per_page => @per_page)
           %>
-          <p> Search query
-            "<b><%= h @query -%></b>"
+          <p> Tags for
+            "<b><%= h @tag.name -%></b>"
             returned
             <%= pluralize(count, @visible_search_type.singularize) -%>  </p>
-
-            <span style="float: right; margin-left: 2em; margin-top: 2.5em;">
-                <%= link_to "Back to all search results", search_url(:q => @query), :class => "button_slim", :style => "margin-left: 1.5em;" -%>
-			</span>
           <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => items, :entry_name => @scope.gsub('_', ' ').singularize} %>
           <div id="search_results" style="margin: 2em 0;">
             <%= render :partial => "#{@scope}/listing", :locals => {:items => items} %>
