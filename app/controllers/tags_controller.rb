@@ -106,7 +106,7 @@ protected
       dup_params[:tag_keyword] = dup_params[:id]
       tag_name = BioCatalogue::Tags.get_tag_name_from_params(dup_params)
     end
-
+    @namespace = params[:namespace] || nil
     @tag = Tag.find_by_name(tag_name)
 
     raise ActiveRecord::RecordNotFound.new if @tag.nil?

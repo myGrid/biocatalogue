@@ -48,7 +48,7 @@
   <% params_dup = BioCatalogue::Util.duplicate_params(params) %>
   <% params_dup = BioCatalogue::Util.remove_rails_special_params_from(params_dup) %>
   <div class="search_option">
-    <%= link_to("Filter services", services_path(params_dup.merge(:tag => "[#{@tag.label}]")), :class => "button_slim") %>
+    <%= link_to("Filter services", services_path(:tag => "[#{@tag.name}]", :include_archived => @include_archived || false), :class => "button_slim") %>
   </div>
   <% unless @scope.nil? %>
       <div class="search_option">
@@ -85,6 +85,9 @@
                           <div style="color: #555;">
                             <%= "Showing the top #{items.length} items out of #{count} in total" -%>
                           </div>
+                          <% next_page_parameters = {:page => 2, :scope => result_scope} %>
+                          <% next_page_parameters[:include_archived] = @include_archived unless @include_archived.nil? %>
+                          <% next_page_parameters[:namespace] = @namespace unless @namespace.nil? %>
                       <% end %>
                       <div style="margin-top: 1em;">
                         <table style="width: 100%;">
@@ -92,7 +95,7 @@
                             <td>
                               <% if more_items %>
                                   <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
-                                              tag_url(@tag.name,:page => 2, :scope => result_scope, :include_archived => @include_archived),
+                                              tag_url(@tag.label,next_page_parameters),
                                               :class => "button_slim") -%>
                               <% end %>
                             </td>
@@ -100,14 +103,12 @@
                         </table>
                       </div>
                     </div>
-
                     <div style="clear: both;"></div>
-
                     <%= render :partial => "#{result_scope}/listing", :locals => {:items => items} %>
                     <% if more_items %>
                         <p>
                           <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
-                                      tag_url(@tag.name,:page => 2, :scope => result_scope, :include_archived => @include_archived),
+                                      tag_url(@tag.label,next_page_parameters),
                                       :class => "button_slim") -%>
                         </p>
                     <% end %>
@@ -123,7 +124,7 @@
              items = items.paginate(:page => @page, :per_page => @per_page)
           %>
           <p> Tags for
-            "<b><%= h @tag.name -%></b>"
+            "<b><%= h @tag.label -%></b>"
             returned
             <%= pluralize(count, @visible_search_type.singularize) -%>  </p>
           <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => items, :entry_name => @scope.gsub('_', ' ').singularize} %>
