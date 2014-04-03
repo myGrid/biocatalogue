@@ -21,7 +21,7 @@
   <span style="vertical-align: middle; margin-left: 0.3em;">
     <select name="url_field" onchange="loadUrlFromSelectInputTag(this); return false;">
       <% @per_page_options.map { |l| l }.each do |t| %>
-          <% results_hash = { :per_page => t.to_sym, :listing => @listing, :page => @page }.merge(BioCatalogue::Util.remove_rails_special_params_from(params, ["per_page"])) %>
+          <% results_hash = { :per_page => t.to_sym, :listing => @listing}.merge(BioCatalogue::Util.remove_rails_special_params_from(params, ["per_page", "page"])) %>
           <option value="<%= base_url_lambda.call(results_hash) -%>" <%= "selected" if @per_page == t.try(:to_i) -%>>
             <%= t.to_s.humanize -%>
           </option>
