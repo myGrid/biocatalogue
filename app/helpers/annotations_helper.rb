@@ -253,6 +253,12 @@ module AnnotationsHelper
   end
 
   def annotation_prepare_description(desc, do_strip_tags=false, truncate_length=nil, do_auto_link=true, do_simple_format=!do_strip_tags, do_white_list=true)
+    renderer = Redcarpet::Render::HTML.new(hard_wrap: true)
+    markdown = Redcarpet::Markdown.new(renderer, autolink: true, tables: true)
+
+    desc = markdown.render(desc.html_safe).html_safe
+
+=begin
     return '' if desc.nil?
     # If it is a URL - do a simple check if it contains spaces and replace them with '+'
     # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
@@ -265,8 +271,8 @@ module AnnotationsHelper
     desc = simple_format(desc) if do_simple_format
     desc = (do_white_list ? white_list(desc) : html_escape(desc))
     desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if do_auto_link
-
     return desc
+=end
   end
   
   def default_add_box_js_for_textarea(text_area_id, text_area_initial_height=100)
