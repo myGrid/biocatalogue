@@ -252,27 +252,49 @@ module AnnotationsHelper
     end
   end
 
-  def annotation_prepare_description(desc, do_strip_tags=false, truncate_length=nil, do_auto_link=true, do_simple_format=!do_strip_tags, do_white_list=true)
-    renderer = Redcarpet::Render::HTML.new(hard_wrap: true)
-    markdown = Redcarpet::Markdown.new(renderer, autolink: true, tables: true)
+  def annotation_prepare_markdown_description(desc)
+      renderer = Redcarpet::Render::HTML.new(hard_wrap: true, prettify: true, no_styles: true)
+      markdown = Redcarpet::Markdown.new(renderer, :autolink => true,
+                                         :tables => true,
+                                         :quote => true,
+                                         :lax_spacing => true,
+                                         :no_intra_emphasis => true,
+                                         :fenced_code_blocks => true,
+                                         :disable_indented_code_blocks => false,
+                                         :footnotes => true)
 
-    desc = markdown.render(desc.html_safe).html_safe
+      desc = markdown.render(desc).html_safe
+  end
 
-=begin
+  def annotation_prepare_description(desc, options={})
     return '' if desc.nil?
-    # If it is a URL - do a simple check if it contains spaces and replace them with '+'
+    {   :markdown_text=>true,
+        :do_strip_tags=>false,
+        :truncate_length=>nil,
+        :do_auto_link=>true,
+        :do_simple_format=>!:do_strip_tags,
+        :do_white_list=>true
+    }.merge(options){|key, default_hash, new_hash| new_hash.nil? ? default_hash : new_hash}.each do |attr, val|
+      instance_variable_set("@#{attr}", val)
+    end if options
+
+    if MARKDOWN_ENABLED && @markdown_text
+      desc = annotation_prepare_markdown_description(desc)
+    else
+          # If it is a URL - do a simple check if it contains spaces and replace them with '+'
     # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
     if desc.strip.start_with?('http://', 'https://')
       desc = desc.strip # remove leading and trailing whitespace
       desc = desc.gsub(/\s/,'+')
     end
-    desc = strip_tags(desc) if do_strip_tags
-    desc = truncate(desc, :length => truncate_length) unless truncate_length.nil?
-    desc = simple_format(desc) if do_simple_format
-    desc = (do_white_list ? white_list(desc) : html_escape(desc))
-    desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if do_auto_link
-    return desc
-=end
+    desc = strip_tags(desc) if @do_strip_tags
+    desc = truncate(desc, :length => @truncate_length) unless @truncate_length.nil?
+    desc = simple_format(desc) if @do_simple_format
+    desc = (@do_white_list ? white_list(desc) : html_escape(desc))
+    desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if @do_auto_link
+
+    end
+   return desc
   end
   
   def default_add_box_js_for_textarea(text_area_id, text_area_initial_height=100)

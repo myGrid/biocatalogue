@@ -55,7 +55,7 @@ Code:
                       <%= annotation_source_text(ann) -%>
 						<div style="margin-top: 0.7em;">
 							<pre style="max-height: 400px;">
-                              <% desc = annotation_prepare_description(ann.value_content, false, nil, false, false, false) %>
+                              <% desc = annotation_prepare_description(CGI.escapeHTML(ann.value_content), false, nil, false, false, false, markdown_text=false) %>
                               <!-- Dirty hack to fix an issue with <pre> tag which centers the first line so we are adding a new line -->
                               <%= ("\n" + desc).html_safe-%>
                             </pre>

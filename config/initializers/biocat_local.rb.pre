@@ -21,6 +21,9 @@ USE_EVENT_LOG = true
 # Enable test scripts
 ENABLE_TEST_SCRIPTS = false
 
+# Render markdown in annotation
+MARKDOWN_ENABLED = true
+
 # Set a proxy for open-uri calls
 #If :proxy option is specified, the value should be String, 
 #URI, boolean or nil. When String or URI is given, 
