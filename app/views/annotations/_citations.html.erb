@@ -27,7 +27,7 @@
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
-							<div>
+							<div class="annotation_display">
 								<%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
 							</div>
 							<%= render :partial => "annotations/common/default_modify_options",
