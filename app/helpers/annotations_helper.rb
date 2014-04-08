@@ -253,7 +253,7 @@ module AnnotationsHelper
   end
 
   def annotation_prepare_markdown_description(desc)
-      renderer = Redcarpet::Render::HTML.new(hard_wrap: true, prettify: true, no_styles: true)
+      renderer = Redcarpet::Render::HTML.new(hard_wrap: true, prettify: true, escape_html: true)
       markdown = Redcarpet::Markdown.new(renderer, :autolink => true,
                                          :tables => true,
                                          :quote => true,
@@ -278,23 +278,25 @@ module AnnotationsHelper
       instance_variable_set("@#{attr}", val)
     end if options
 
+
     if MARKDOWN_ENABLED && @markdown_text
       desc = annotation_prepare_markdown_description(desc)
     else
-          # If it is a URL - do a simple check if it contains spaces and replace them with '+'
-    # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
-    if desc.strip.start_with?('http://', 'https://')
-      desc = desc.strip # remove leading and trailing whitespace
-      desc = desc.gsub(/\s/,'+')
+      #RedCarpet renderer handles escaping so need to escape when not marking_down
+      desc = CGI.escapeHTML(desc) unless @do_strip_tags
+      # If it is a URL - do a simple check if it contains spaces and replace them with '+'
+      # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
+      if desc.strip.start_with?('http://', 'https://')
+        desc = desc.strip # remove leading and trailing whitespace
+        desc = desc.gsub(/\s/,'+')
+      end
+      desc = strip_tags(desc) if @do_strip_tags
+      desc = simple_format(desc) if @do_simple_format
+      desc = (@do_white_list ? white_list(desc) : html_escape(desc))
+      desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if @do_auto_link
     end
-    desc = strip_tags(desc) if @do_strip_tags
     desc = truncate(desc, :length => @truncate_length) unless @truncate_length.nil?
-    desc = simple_format(desc) if @do_simple_format
-    desc = (@do_white_list ? white_list(desc) : html_escape(desc))
-    desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if @do_auto_link
-
-    end
-   return desc
+    return desc.html_safe
   end
   
   def default_add_box_js_for_textarea(text_area_id, text_area_initial_height=100)

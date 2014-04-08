@@ -36,7 +36,13 @@
 							</span>
 						</div>
 						<div style="margin-top: 0.7em;">
-							<pre><%= annotation_prepare_description(ann.value_content, {:do_auto_link => false, :do_simple_format => false, :do_white_list => false, :markdown_text => false}) -%></pre>
+							<pre><%= annotation_prepare_description(ann.value_content,
+                                                                    {:do_auto_link => false,
+                                                                     :do_simple_format => false,
+                                                                     :do_white_list => true,
+                                                                     :do_strip_tags => false,
+                                                                     :markdown_text => false
+                                                                    }) -%></pre>
 						</div>
 						<%= render :partial => "annotations/common/default_modify_options",
 											 :locals => { :annotation => ann, :ann_type => "example data" } -%>

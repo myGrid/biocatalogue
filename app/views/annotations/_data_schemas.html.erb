@@ -33,7 +33,7 @@
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
 							<div style="font-family: monospace; font-size: 100%;">
-                              <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content), {:markdown_text=>false}) -%>
+                              <%= annotation_prepare_description(ann.value_content, {:markdown_text=>false}) -%>
 							</div>
 
 							<% if show_modify_options %>
