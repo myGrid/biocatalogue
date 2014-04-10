@@ -242,9 +242,9 @@ module BioCatalogue
       
       if BioCatalogue::Tags.is_ontology_term_uri?(tag_name)
         namespace, keyword = BioCatalogue::Tags.split_ontology_term_uri(tag_name)
-        url = "/tags/#{URI::escape(keyword)}?#{namespace.to_query("namespace")}"
+        url = "/tags/#{URI::escape(keyword, "/")}?#{namespace.to_query("namespace")}"
       else
-        url = "/tags/#{URI::escape(tag_name)}"
+        url = "/tags/#{URI::escape(tag_name, "/")}"
       end
       
        return url
