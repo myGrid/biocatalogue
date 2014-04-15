@@ -24,9 +24,13 @@
 			<%= counts[:users] -%>
 		<% end %>
 		
-		<%= content_tag(:span, :class => "annotation_source_registry end", :title => tooltip_title_attrib("Total number of annotations sourced from other registries."))  do %>
+		<%= content_tag(:span, :class => "annotation_source_registry", :title => tooltip_title_attrib("Total number of annotations sourced from other registries."))  do %>
 			<%= image_tag(icon_filename_for(:annotation_source_registry), :alt => "Total number of annotations sourced from other registries.") -%>
 			<%= counts[:registries] -%>
 		<% end %>
+      <%= content_tag(:span, :class => "annotation_source_registry end", :title => tooltip_title_attrib("This service has #{@annotation_level}% of its possible annotations filled in"))  do %>
+          <%= image_tag(icon_filename_for(:annotation_level), :alt => "The percentage of annotation completeness.") -%>
+          <%= @annotation_level -%>
+      <% end %>
 	</div>
 </div>

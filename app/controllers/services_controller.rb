@@ -347,6 +347,8 @@ class ServicesController < ApplicationController
 
     @soaplab_server = @service.soaplab_server
 
+    @annotation_level = @service.annotation_level
+
     @pending_responsibility_requests = @service.pending_responsibility_requests
 
     if @latest_version_instance.is_a?(RestService)

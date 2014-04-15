@@ -73,6 +73,8 @@ module BioCatalogue
         "page_white_code.png"
       when :registry, :registries, :annotation_source_registry
         "world_link.png"
+      when :annotation_level
+        "percentage.png"
       when :agent, :annotation_source_agent
         "server_connect.png"
       when :twitter
