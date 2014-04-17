@@ -49,6 +49,12 @@
         <%#= link_to ("Download the Last CSV Export of Services <br>(Generated at: #{time_of_export(latest_csv_export)}").html_safe, download_latest_csv_path, :class => "button_slim" -%>
       <%# end %>
       <%= link_to ("CSV Export of Services").html_safe, download_csv_page_path, :class => "button_slim" -%>
+      </br>
+      </br>
+      <%= link_to ("Export XLS").html_safe, external_curation_export_path(:format => :xls), :class => "button_slim" %>
+      </br>
+      </br>
+      <%= link_to ("Import XLS").html_safe, external_curation_new_import_path, :class => "button_slim" %>
 	</div>
 
 	<span class="clear"></span>

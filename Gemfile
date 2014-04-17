@@ -16,6 +16,10 @@ gem "daemons"
 gem "dnsruby"
 gem 'libxml-ruby',"2.6.0",:require => "libxml"
 
+#Curation pipeline gems
+gem 'to_xls-rails'
+gem 'roo'
+
 #Mongrel broken for 1.9.3. Using thin as suggested here
 # http://stackoverflow.com/questions/13851741/install-mongrel-in-ruby-1-9-3
 #gem "mongrel"

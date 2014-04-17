@@ -49,6 +49,18 @@ class CurationController < ApplicationController
     end
   end
 
+  def download_xls
+
+    @services = Annotation.all
+
+    respond_to do |format|
+    format.xls {
+      filename = "services-#{Time.now.strftime("%Y%m%d%H%M%S")}.xls"
+      send_data(@services.to_xls, :type => "application/excel; charset=utf-8; header=present", :filename => filename)
+    }
+    end
+  end
+
   def download_csv_page
     respond_to do |format|
       format.html

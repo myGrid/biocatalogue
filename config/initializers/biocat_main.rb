@@ -42,6 +42,10 @@ require 'libxml'
 require 'dnsruby'
 require 'open-uri'
 
+require 'to_xls-rails'
+require 'roo'
+require 'iconv'
+
 require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'

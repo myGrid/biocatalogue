@@ -1,0 +1,14 @@
+<%= render :partial => 'curation/header', :locals => { :sub => "- Import XLS Wizard" } %>
+
+<div class="box_info_standout center" style="margin: 1.5em auto; width: 700px;">
+  Import a modified XLS export.
+  Please ensure you save the document in Excel before
+  <br>
+  Warning - may destory entire <%= SITE_NAME %>.
+</div>
+
+<%= form_for :xls_import, :url => external_curation_import_path, :html => {:multipart => true} do  %>
+    <%= file_field_tag :xls_file %>
+    <%= submit_tag "Import"%>
+<% end %>
+

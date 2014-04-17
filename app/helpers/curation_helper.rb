@@ -116,6 +116,28 @@ module CurationHelper
  end
 
 
+
+ def xls_of_services
+   row_array = []
+   services = Service.all
+   services.each {|service| row_array << service.as_csv unless service.nil?}
+   return row_array
+ end
+
+ def xls_of_soap_operations
+   row_array = []
+   soap_operations = SoapOperation.all
+   soap_operations.each { |soap_operation| row_array << soap_operation.as_csv unless soap_operation.nil?}
+   return row_array
+ end
+
+ def xls_of_rest_methods
+   row_array = []
+   rest_methods = RestMethod.all
+   rest_methods.each{ |rest_method| row_array << rest_method.as_csv unless rest_method.nil?}
+   return row_array
+ end
+
  def curation_sort_link_helper(text, param, order)
     key   = param
     order = order

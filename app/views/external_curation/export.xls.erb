@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Services">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">Service ID</Data></Cell>
+        <Cell><Data ss:Type="String">Name</Data></Cell>
+        <Cell><Data ss:Type="String">Provider</Data></Cell>
+        <Cell><Data ss:Type="String">Location</Data></Cell>
+        <Cell><Data ss:Type="String">Submitter Name</Data></Cell>
+        <Cell><Data ss:Type="String">Base URL</Data></Cell>
+        <Cell><Data ss:Type="String">Documentation URL</Data></Cell>
+        <Cell><Data ss:Type="String">Description</Data></Cell>
+        <Cell><Data ss:Type="String">License</Data></Cell>
+        <Cell><Data ss:Type="String">Costs</Data></Cell>
+        <Cell><Data ss:Type="String">Usage Conditions</Data></Cell>
+        <Cell><Data ss:Type="String">Contact</Data></Cell>
+        <Cell><Data ss:Type="String">Publications</Data></Cell>
+        <Cell><Data ss:Type="String">Citations</Data></Cell>
+        <Cell><Data ss:Type="String">Annotations</Data></Cell>
+        <Cell><Data ss:Type="String">Categories</Data></Cell>
+      </Row>
+      <% services.each do |row| %>
+          <Row>
+            <% row.each do |column| %>
+                <Cell><Data ss:Type="String"><%= column %></Data></Cell>
+            <% end %>
+          </Row>
+      <% end %>
+    </Table>
+  </Worksheet>
+
+
+  <Worksheet ss:Name="SoapOperations">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">Service ID</Data></Cell>
+        <Cell><Data ss:Type="String">Operation Name</Data></Cell>
+        <Cell><Data ss:Type="String">Operation Description</Data></Cell>
+        <Cell><Data ss:Type="String">Submitter</Data></Cell>
+        <Cell><Data ss:Type="String">Parameter Order</Data></Cell>
+        <Cell><Data ss:Type="String">Annotations</Data></Cell>
+        <Cell><Data ss:Type="String">Port Name</Data></Cell>
+        <Cell><Data ss:Type="String">Port Protocol</Data></Cell>
+        <Cell><Data ss:Type="String">Port Location</Data></Cell>
+        <Cell><Data ss:Type="String">Port Style</Data></Cell>
+      </Row>
+      <% soap_operations.each do |row| %>
+          <Row>
+            <% row.each do |column| %>
+                <Cell><Data ss:Type="String"><%= column %></Data></Cell>
+            <% end %>
+          </Row>
+      <% end %>
+    </Table>
+  </Worksheet>
+
+  <Worksheet ss:Name="RestMethods">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">Service ID</Data></Cell>
+        <Cell><Data ss:Type="String">Endpoint Name</Data></Cell>
+        <Cell><Data ss:Type="String">Method Type</Data></Cell>
+        <Cell><Data ss:Type="String">Template</Data></Cell>
+        <Cell><Data ss:Type="String">Description</Data></Cell>
+        <Cell><Data ss:Type="String">Submitter</Data></Cell>
+        <Cell><Data ss:Type="String">Documentation URL</Data></Cell>
+        <Cell><Data ss:Type="String">Example Endpoints</Data></Cell>
+        <Cell><Data ss:Type="String">Annotations</Data></Cell>
+      </Row>
+      <% rest_methods.each do |row| %>
+          <Row>
+            <% row.each do |column| %>
+                <Cell><Data ss:Type="String"><%= column %></Data></Cell>
+            <% end %>
+          </Row>
+      <% end %>
+    </Table>
+  </Worksheet>&ndash;&gt;
+</Workbook>

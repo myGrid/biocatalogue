@@ -1,5 +1,9 @@
 BioCatalogue::Application.routes.draw do
 
+  get "external_curation/export"
+  get "external_curation/new_import"
+  post "external_curation/import"
+
   resources :oauth_clients
 
   match '/oauth/test_request' => 'oauth#test_request', :as => :test_request
@@ -17,6 +21,7 @@ BioCatalogue::Application.routes.draw do
   match '/curation/reports/links_checker' => 'curation#links_checker', :as => :link_checker, :via => :get
   match '/curation/tools/download_latest_csv' => 'curation#download_latest_csv', :as => :download_latest_csv, :via => :get
   match '/curation/tools/csv_export' => 'curation#download_csv_page', :as => :download_csv_page, :via => :get
+  match '/curation/tools/xls_export' => 'curation#download_xls', :as => :download_xls, :via => :get
 
   match '/api.:format' => 'api#show', :as => :api
   match '/lookup.:format' => 'lookup#show', :as => :lookup
