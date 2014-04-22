@@ -6,6 +6,7 @@
   <br>
   Warning - may destory entire <%= SITE_NAME %>.
 </div>
+<%= @error unless @error.nil? %>
 
 <%= form_for :xls_import, :url => external_curation_import_path, :html => {:multipart => true} do  %>
     <%= file_field_tag :xls_file %>

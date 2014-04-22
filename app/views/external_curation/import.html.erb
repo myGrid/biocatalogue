@@ -1,1 +1,18 @@
-HEY - <%= xls %>
+Services = <% services = xls['Services'] %>
+<table>
+<% services.each do |service| %>
+      <tr>
+        <%service.values.each do |attr| %>
+        <td><%= attr %></td>
+        <% end %>
+      </tr>
+<% end %>
+</table>
+<br/>
+<br/><br/>
+<br/>
+Rest Methods = <% xls['RestMethods'] %>
+<br/>
+<br/><br/>
+<br/>
+Soap Operations = <% xls['SoapOperations'] %>
