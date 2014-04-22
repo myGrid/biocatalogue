@@ -144,6 +144,7 @@ class RestMethod < ActiveRecord::Base
   end
 
   def as_csv
+    id = self.id.to_s
     service_id =  self.associated_service.unique_code unless self.associated_service.nil?
     endpoint_name = self.endpoint_name
     template = create_url_template(self)
@@ -153,7 +154,7 @@ class RestMethod < ActiveRecord::Base
     documentation_url = self.documentation_url
     example_endpoints = join_array(self.annotations_with_attribute('example_endpoint').collect{|annotation| annotation.value.text})
     annotations = self.get_service_tags
-    return [service_id,endpoint_name,method_type,template,description,submitter,documentation_url,example_endpoints,annotations]
+    return [id, service_id,endpoint_name,method_type,template,description,submitter,documentation_url,example_endpoints,annotations]
   end
 
 

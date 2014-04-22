@@ -5,7 +5,19 @@
 # See license.txt for details.
 
 module CurationHelper
-  
+
+
+  SOAP_OPERATION_COLUMNS = ['ID', 'Service ID','operation name','operation description','submitter',
+                            'parameter order','annotations', 'port name', 'port protocol', 'port location', 'port style']
+
+  REST_METHOD_COLUMNS = ['ID', 'Service ID','endpoint name','method type','template','description',
+                                    'submitter','documentation url','example endpoints','annotations']
+
+  SERVICE_COLUMNS = ['ID', 'Service ID','name','provider','location','submitter name',
+                     'base url','documentation url','description','licence','costs',
+                     'usage conditions','contact','publications','citations','annotations',
+                     'categories']
+
  def sort_li_class_helper(param, order)
     result = 'class="sortup"' if (params[:sort_by] == param && params[:sort_order] == order)
     result = 'class="sortdown"' if (params[:sort_by] == param && params[:sort_order] == reverse_order(order))  
@@ -85,32 +97,24 @@ module CurationHelper
 
  def csv_of_services
    services = Service.all
-   columns = ['Service ID','name','provider','location','submitter name',
-              'base url','documentation url','description','licence','costs',
-              'usage conditions','contact','publications','citations','annotations',
-              'categories']
    return CSV.generate do |csv|
-     csv << columns
+     csv << SERVICE_COLUMNS
      services.each {|service| csv << service.as_csv unless service.nil?}
    end
  end
 
  def csv_of_soap_operations
    soap_operations = SoapOperation.all
-   columns =  ['Service ID','operation name','operation description','submitter',
-               'parameter order','annotations', 'port name', 'port protocol', 'port location', 'port style']
    return CSV.generate do |csv|
-     csv << columns
+     csv << SOAP_OPERATION_COLUMNS
      soap_operations.each { |soap_operation| csv << soap_operation.as_csv unless soap_operation.nil?}
    end
  end
 
  def csv_of_rest_methods
    rest_methods = RestMethod.all
-   columns =  ['Service ID','endpoint name','method type','template','description',
-               'submitter','documentation url','example endpoints','annotations']
    return CSV.generate do |csv|
-     csv << columns
+     csv << REST_METHOD_COLUMNS
      rest_methods.each{ |rest_method| csv << rest_method.as_csv unless rest_method.nil?}
    end
  end

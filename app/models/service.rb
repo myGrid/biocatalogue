@@ -96,6 +96,7 @@ class Service < ActiveRecord::Base
 
 
   def as_csv
+    id = self.id.to_s
     unique_id = self.unique_code
     name = self.name
     provider = self.list_of("providers").first["service_provider"]["name"]
@@ -115,7 +116,7 @@ class Service < ActiveRecord::Base
     self.list_of("category").each{|x| categories << x["name"] }
     categories = join_array categories
 
-    [unique_id, name, provider,location,submitter,base_url,
+    [id, unique_id, name, provider,location,submitter,base_url,
      doc_url, description, license, costs, usage_conditions, contact,
      publications, citations, annotations, categories]
   end

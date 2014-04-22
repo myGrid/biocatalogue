@@ -74,6 +74,7 @@ class SoapOperation < ActiveRecord::Base
   end
 
   def as_csv
+    id = self.id.to_s
     service_id = self.associated_service.unique_code unless self.associated_service.nil?
     operation = self.name
     description = self.preferred_description
@@ -81,7 +82,7 @@ class SoapOperation < ActiveRecord::Base
     params_order = self.parameter_order
     annotations = self.get_service_tags
     port = get_soap_port self
-    return [service_id, operation,description,submitter,params_order,annotations, port].flatten
+    return [id, service_id, operation,description,submitter,params_order,annotations, port].flatten
   end
 
   def get_soap_port soap_op
