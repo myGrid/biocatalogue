@@ -27,9 +27,18 @@ class ExternalCurationController < ApplicationController
     begin
       spreadsheet = open_spreadsheet(file)
       raise "There was a problem loading the spreadsheet. Please ensure you have read the instructions" if spreadsheet.nil?
-      modified_lines = find_modified_rows(spreadsheet)
+=begin
+      modifications = Rails.cache.read(file.original_filename.to_s)
+      if modifications.nil?
+=end
+      modifications = find_modified_rows(spreadsheet)
+=begin
+        Rails.cache.write(file.original_filename.to_s, modifications)
+      end
+=end
+
       respond_to do |format|
-        format.html {render :locals => {:xls => modified_lines}}
+        format.html {render :locals => {:xls => modifications}}
       end
     rescue Exception => e
       flash[:notice] = "There was an error loading the document"
@@ -42,31 +51,47 @@ class ExternalCurationController < ApplicationController
 
   private
   def find_modified_rows spreadsheet
-    modified_rows = {}
+    modifications = {}
     unless spreadsheet.nil?
       spreadsheet.each_with_pagename do |sheet_name, sheet|
         header = sheet.row(1)
         if check_headers_match(header, sheet_name)
-          modified_rows[sheet_name] = []
+          modifications[sheet_name] = []
           (2..sheet.last_row).each do |i|
-            service_row = sheet.row(i)
-            service_hash = Hash[[header, service_row].transpose]
-            modified_rows[sheet_name] << service_hash if record_changed?(sheet_name, service_row)
+            excel_record_array = sheet.row(i)
+            db_record_array = get_database_record(sheet_name, excel_record_array)
+            modifications[sheet_name] << changes_to_record(sheet_name, header, excel_record_array, db_record_array)
           end
         else
           raise 'At least one of the column headings in the imported document do not match up to the original export headers'
         end
       end
     end
-    return modified_rows
+    return modifications
   end
 
-  def record_changed?(record_type, record)
+  def get_database_record(record_type, record)
     record_class = record_type.singularize.constantize
-    db_record = record_class.find(record.first)
-    db_record_as_csv = db_record.as_csv
-    return record != db_record_as_csv
+    return record_class.find(record.first)
   end
+
+  def changes_to_record(record_type, header, xls_record, db_record)
+    changes = []
+    db_record_array = db_record.as_csv
+    if db_record_array != xls_record
+      excel_record_hash = Hash[[header, xls_record].transpose]
+      db_record_hash = Hash[[header, db_record_array].transpose]
+      excel_record_hash.each do |field, value|
+        if db_record_hash[field] != value
+          changes << {:old => db_record_hash[field], :new => value, :field => field}
+        end
+      end
+      return {:object => db_record, :changes => changes}
+    else
+      return nil
+    end
+  end
+
 
   # Check the column titles match up with the original ones
   def check_headers_match new_header, sheet_name

@@ -1,12 +1,40 @@
+<h1>Confirm which things you want to save.</h1>
 Services = <% services = xls['Services'] %>
+<!--
+Access Like
+xls['Services'][:object]
+
+xls['Services'][:changes][:old]
+xls['Services'][:changes][:new]
+xls['Services'][:changes][:field]
+-->
+
+<style>
+    table {border-collapse:collapse; table-layout:fixed; width:100%}
+    table td {word-wrap:break-word;}
+</style>
+
 <table>
-<% services.each do |service| %>
-      <tr>
-        <%service.values.each do |attr| %>
-        <td><%= attr %></td>
-        <% end %>
-      </tr>
-<% end %>
+  <thead>
+  <th><b>Service ID</b></th>
+  <th><b>Old Value</b></th>
+  <th><b>New Value</b></th>
+  <th><b>Field</b></th>
+  </thead>
+  <tbody>
+  <% services.each do |service| %>
+      <% unless service.nil? %>
+          <% service[:changes].each do |change| %>
+              <tr>
+                <td><%= link_to(service[:object].name, url_for(service[:object]) ) %></td>
+                <td><%=h change[:old] %></td>
+                <td><%=h change[:new] %></td>
+                <td><%= change[:field] %></td>
+              </tr>
+          <% end %>
+      <% end %>
+  <% end %>
+  </tbody>
 </table>
 <br/>
 <br/><br/>
