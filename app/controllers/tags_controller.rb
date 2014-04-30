@@ -123,6 +123,7 @@ protected
 
       unless @tag.blank?
         @scope = params[:scope]
+        @visible_search_type = BioCatalogue::Search.scope_to_visible_search_type(@scope) unless is_api_request?
         @results = { }
         @count = 0
         ids_for_results = BioCatalogue::Tags.get_service_ids_for_tag(@tag.name)

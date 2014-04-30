@@ -15,7 +15,11 @@
 
 <% t "Results for tag '#{@tag.name}'" -%>
 
-<h1>Tag Results</h1>
+<% if @visible_search_type.blank? %>
+    <h1>Tag Results</h1>
+<% else %>
+    <h1>Tag Results <span class="faded">(<%= @visible_search_type -%> only)</span></h1>
+<% end %>
 
 <% unless @scope %>
     <p style="font-size: 123.1%;">
@@ -53,9 +57,9 @@
   <% unless @scope.nil? %>
       <div class="search_option">
         <% if @include_archived %>
-            <%= link_to "Back to all tag results", tag_path(@tag.name, :include_archived => 'true'), :class => "button_slim" -%>
+            <%= link_to "Back to all results for tag", tag_path(@tag.label, :include_archived => 'true'), :class => "button_slim" -%>
         <% else %>
-            <%= link_to "Back to all tag results", tag_path(@tag.name), :class => "button_slim" -%>
+            <%= link_to "Back to all results for tag", tag_path(@tag.label), :class => "button_slim" -%>
         <% end %>
       </div>
   <% end %>
