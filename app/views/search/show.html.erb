@@ -35,7 +35,7 @@
 
     <% if @results.blank? %>
         <p class="none_text">No items found</p>
-        <div class="search_options" style="margin-bottom: 10px;">
+        <div class="search_options">
           <div class="search_option">
             <span style="vertical-align: middle; font-weight: bold;">
             Include archived?
@@ -123,7 +123,7 @@
               returned
               <%= pluralize(count, @visible_search_type.singularize) -%>  </p>
 
-            <div class="search_options" style="margin-bottom: 10px;">
+            <div class="search_options">
               <div class="search_option">
                 <span style="vertical-align: middle; font-weight: bold;">
                     Include archived?
