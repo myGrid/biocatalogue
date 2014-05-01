@@ -42,7 +42,7 @@ module BioCatalogue
 
         search_synonyms = self.all_terms_from_pseudo_synonyms
 
-        latest_search_queries = ActivityLog.find_all_by_action("search").map { |a| a.data[:query] }.compact.uniq
+        latest_search_queries = ActivityLog.find_all_by_action("search").map { |a| a.data.try(:query)}.compact.uniq
 
         categories = Category.all.map { |c| c.name }.compact
 

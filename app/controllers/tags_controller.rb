@@ -106,7 +106,7 @@ protected
       dup_params[:tag_keyword] = dup_params[:id]
       tag_name = BioCatalogue::Tags.get_tag_name_from_params(dup_params)
     end
-
+    @namespace = params[:namespace] || nil
     @tag = Tag.find_by_name(tag_name)
 
     raise ActiveRecord::RecordNotFound.new if @tag.nil?
@@ -122,8 +122,22 @@ protected
       end
 
       unless @tag.blank?
-        @service_ids = BioCatalogue::Tags.get_service_ids_for_tag(@tag.name)
-        @service_ids.reject!{|service_id| !@include_archived && Service.find_by_id(service_id).try(:archived?) }
+        @scope = params[:scope]
+        @visible_search_type = BioCatalogue::Search.scope_to_visible_search_type(@scope) unless is_api_request?
+        @results = { }
+        @count = 0
+        ids_for_results = BioCatalogue::Tags.get_service_ids_for_tag(@tag.name)
+        ids_for_results.each do |scope, values|
+          result_models = BioCatalogue::Mapper.item_ids_to_model_objects(values,scope)
+          result_models.reject!{|result_model| !@include_archived && (result_model.try(:archived?) || result_model.try(:belongs_to_archived_service?))}
+          @results[scope] = result_models unless result_models.nil?
+
+        end
+        @results.each_value do |result_scope|
+          @count += result_scope.length
+        end
+
+        @results
       end
     end
   end

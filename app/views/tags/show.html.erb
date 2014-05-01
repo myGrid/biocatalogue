@@ -15,20 +15,27 @@
 
 <% t "Results for tag '#{@tag.name}'" -%>
 
-<h1>Tag Results</h1>
+<% if @visible_search_type.blank? %>
+    <h1>Tag Results</h1>
+<% else %>
+    <h1>Tag Results <span class="faded">(<%= @visible_search_type -%> only)</span></h1>
+<% end %>
 
-<p style="font-size: 123.1%;">
-	Tag
-	"<b><%= h(@tag.label) -%></b>"
-  <% unless @tag.name == @tag.label %>
-    (
-    <%= @tag.name -%>
-    )
-  <% end %>
-	returned <%= pluralize(count, "services") -%>
-</p>
+<% unless @scope %>
+    <p style="font-size: 123.1%;">
+      Tag
+      "<b><%= h(@tag.label) -%></b>"
+      <% unless @tag.name == @tag.label %>
+          (
+          <%= @tag.name -%>
+          )
+      <% end %>
+      returned <%= pluralize(@count, "results") -%>
+    </p>
+<% end %>
+<span class="clear"></span>
 
-<div class="search_options">
+<div class="search_options" style="margin-top: 40px; margin-right: 10px;">
   <div class="search_option">
             <span style="vertical-align: middle; font-weight: bold;">
             Include archived?
@@ -45,34 +52,93 @@
   <% params_dup = BioCatalogue::Util.duplicate_params(params) %>
   <% params_dup = BioCatalogue::Util.remove_rails_special_params_from(params_dup) %>
   <div class="search_option">
-    <%= link_to("Filter services", services_path(params_dup.merge(:tag => "[#{@tag.label}]")), :class => "button_slim") %>
+    <%= link_to("Filter services", services_path(:tag => "[#{@tag.name}]", :include_archived => @include_archived || false), :class => "button_slim") %>
   </div>
+  <% unless @scope.nil? %>
+      <div class="search_option">
+        <% if @include_archived %>
+            <%= link_to  (image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back to all results for tag")), tag_path(@tag.label, :include_archived => 'true'), :class => "button_slim" -%>
+      <% else %>
+            <%= link_to  (image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back to all results for tag")), tag_path(@tag.label), :class => "button_slim" -%>
+      <% end %>
+      </div>
+  <% end %>
 </div>
+<% if @results.empty? || @results.blank? %>
 
-<% if @service_ids.empty? %>
-
-  <p class="none_text">No services.</p>
+    <p class="none_text">No services.</p>
 
 <% else %>
-        <%
-         services = Service.where(:id => @service_ids).paginate(:page => params[:page], :per_page => @per_page)
-         #TODO figure out why current_page_ids only works as an array of Services rather than an array of ids
-         current_page_ids = services
+    <div id="search_results" class="tabber">
+      <% if @scope.nil? %>
+          <% @results.each do |result_scope_string, result_models| %>
+              <% result_scope = result_scope_string.to_s.underscore.pluralize %>
+              <% visible_result_scope = BioCatalogue::Search.scope_to_visible_search_type(result_scope)
+                 items = result_models
+                 count = items.length
+                 items = items.paginate(:page => @page, :per_page => @per_page)
+                 more_items = count > @per_page %>
+              <% unless items.empty? %>
 
-       #ORIGINAL
-		 #current_page_ids = @service_ids.paginate(:page => params[:page], :per_page => @per_page)
-         #services = search_item_ids_to_objects(current_page_ids, "service")
-	 %>
-	
-	<%= render :partial => 'widgets/pagination_top', :locals => { :paginated_items => current_page_ids, :entry_name => 'service' } %>
-	
-	<div id="search_results" style="margin: 2em 0;">
-		<%= render :partial => "services/listing", :locals => { :items => services } %>
-	</div>
-		
-	<%= render :partial => 'widgets/pagination_bottom', :locals => { :paginated_items => current_page_ids } %>
-	
-<% end %>
+                  <div id='<%= "tab-#{result_scope}" -%>' class="tabbertab">
+                    <% count_text = more_items ? "#{items.length} of #{count}" : "#{items.length}" %>
+                    <h3><%= "#{visible_result_scope} (#{count_text})" -%></h3>
+
+                    <div style="margin: 0 0 1.5em 0;">
+                      <% if more_items %>
+                          <div style="color: #555;">
+                            <%= "Showing the top #{items.length} items out of #{count} in total" -%>
+                          </div>
+                          <% next_page_parameters = {:page => 2, :scope => result_scope} %>
+                          <% next_page_parameters[:include_archived] = @include_archived unless @include_archived.nil? %>
+                          <% next_page_parameters[:namespace] = @namespace unless @namespace.nil? %>
+                      <% end %>
+                      <div style="margin-top: 1em;">
+                        <table style="width: 100%;">
+                          <tr>
+                            <td>
+                              <% if more_items %>
+                                  <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
+                                              tag_url(@tag.label,next_page_parameters),
+                                              :class => "button_slim") -%>
+                              <% end %>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                    <div style="clear: both;"></div>
+                    <%= render :partial => "#{result_scope}/listing", :locals => {:items => items} %>
+                    <% if more_items %>
+                        <p>
+                          <%= link_to(content_tag(:span, "Next page of results ") + image_tag(icon_filename_for(:arrow_forward)),
+                                      tag_url(@tag.label,next_page_parameters),
+                                      :class => "button_slim") -%>
+                        </p>
+                    <% end %>
+                  </div>
+              <% end #unless items.empty?%>
+          <% end #each result%>
+
+      <% else %>
+          <%  @visible_search_type = @scope.humanize
+             result_scope = @scope.singularize.camelize
+             items = @results[result_scope]
+             count = items.length
+             items = items.paginate(:page => @page, :per_page => @per_page)
+          %>
+          <p> Tags for
+            "<b><%= h @tag.label -%></b>"
+            returned
+            <%= pluralize(count, @visible_search_type.singularize) -%>  </p>
+          <%= render :partial => 'widgets/pagination_top', :locals => {:paginated_items => items, :entry_name => @scope.gsub('_', ' ').singularize} %>
+          <div id="search_results" style="margin: 2em 0;">
+            <%= render :partial => "#{@scope}/listing", :locals => {:items => items} %>
+          </div>
+          <%= render :partial => 'widgets/pagination_bottom', :locals => {:paginated_items => items} %>
+      <% end %>
+    </div>
+<% end #results empty %>
 
 <br />
 
