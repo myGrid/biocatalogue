@@ -57,10 +57,10 @@
   <% unless @scope.nil? %>
       <div class="search_option">
         <% if @include_archived %>
-            <%= link_to "Back to all results for tag", tag_path(@tag.label, :include_archived => 'true'), :class => "button_slim" -%>
-        <% else %>
-            <%= link_to "Back to all results for tag", tag_path(@tag.label), :class => "button_slim" -%>
-        <% end %>
+            <%= link_to  (image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back to all results for tag")), tag_path(@tag.label, :include_archived => 'true'), :class => "button_slim" -%>
+      <% else %>
+            <%= link_to  (image_tag(icon_filename_for(:arrow_backward)) + content_tag(:span, " Back to all results for tag")), tag_path(@tag.label), :class => "button_slim" -%>
+      <% end %>
       </div>
   <% end %>
 </div>
