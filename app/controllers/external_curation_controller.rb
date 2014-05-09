@@ -26,6 +26,7 @@ class ExternalCurationController < ApplicationController
     file = params[:xls_file]
     begin
       spreadsheet = open_spreadsheet(file)
+      spreadsheet.parse(:clean => true)
       raise "There was a problem loading the spreadsheet. Please ensure you have read the instructions" if spreadsheet.nil?
 =begin
       modifications = Rails.cache.read(file.original_filename.to_s)
@@ -82,8 +83,21 @@ class ExternalCurationController < ApplicationController
       excel_record_hash = Hash[[header, xls_record].transpose]
       db_record_hash = Hash[[header, db_record_array].transpose]
       excel_record_hash.each do |field, value|
-        if db_record_hash[field] != value
-          changes << {:old => db_record_hash[field], :new => value, :field => field}
+        old_value = db_record_hash[field]#.force_encoding("UTF-8") unless db_record_hash[field].blank?
+        if old_value != value && !(old_value.blank? && value.blank?)
+          a = 0
+          old_value.each_byte do |x|
+            a += x
+          end
+          puts "#{old_value}"
+          puts "OLD-#{a}\n\n\n"
+
+          puts "#{value}"
+          puts "NEW-#{a}\n\n\n"
+        end
+
+        if old_value != value && !(old_value.blank? && value.blank?)
+          changes << {:old => old_value, :new => value, :field => field}
         end
       end
       return {:object => db_record, :changes => changes}
