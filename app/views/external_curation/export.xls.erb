@@ -31,7 +31,8 @@
       <% services.each do |row| %>
           <Row>
             <% row.each do |column| %>
-                <Cell><Data ss:Type="String"><%= column.gsub("\n", "&#13;") unless column.blank? -%></Data></Cell>
+                <Cell><Data ss:Type="String"><%= column unless column.blank? -%></Data></Cell>
+                <!--<Cell><Data ss:Type="String"><%#= column.gsub("\n", "&#13;") unless column.blank? -%></Data></Cell>-->
             <% end %>
           </Row>
       <% end %>
@@ -49,7 +50,7 @@
       <% soap_operations.each do |row| %>
           <Row>
             <% row.each do |column| %>
-                <Cell><Data ss:Type="String"><%= column.gsub("\n", "&#13;") unless column.blank? %></Data></Cell>
+                <Cell><Data ss:Type="String"><%= column unless column.blank? %></Data></Cell>
             <% end %>
           </Row>
       <% end %>
@@ -66,7 +67,7 @@
       <% rest_methods.each do |row| %>
           <Row>
             <% row.each do |column| %>
-                <Cell><Data ss:Type="String"><%= column.gsub("\n", "&#13;") unless column.blank? %></Data></Cell>
+                <Cell><Data ss:Type="String"><%= column unless column.blank? %></Data></Cell>
             <% end %>
           </Row>
       <% end %>
