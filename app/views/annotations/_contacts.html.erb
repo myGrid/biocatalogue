@@ -16,7 +16,7 @@
 <% unless annotatable.nil? %>
 	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
-		  <b>Contact Info:</b>
+		  <b>Contact info:</b>
 			<%= info_icon_with_tooltip("Who can be contacted about this #{annotatable.class.name.titleize}?") -%>
 		</div>
 		
@@ -36,7 +36,7 @@
 					<% end %>
 				<% end %>
 			<% else %>
-				<span class="none_text">None</span>
+				<span class="none_text">No info yet</span>
 			<% end %>
 		</div>
 		
