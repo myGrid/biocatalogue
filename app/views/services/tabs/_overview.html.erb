@@ -119,17 +119,17 @@
     </div>
 
     <div class="property">
+      <%= render :partial => "annotations/how_to_cite",
+                 :locals => { :annotatable => @latest_version_instance } -%>
+    </div>
+
+    <div class="property">
       <%= render :partial => "annotations/publications",
                  :locals => { :annotatable => @latest_version_instance } -%>
     </div>
 
     <div class="property">
       <%= render :partial => "annotations/citations",
-                 :locals => { :annotatable => @latest_version_instance } -%>
-    </div>
-
-    <div class="property">
-      <%= render :partial => "annotations/how_to_cite",
                  :locals => { :annotatable => @latest_version_instance } -%>
     </div>
 
