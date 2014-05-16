@@ -1,0 +1,58 @@
+<%
+
+   # BioCatalogue: app/views/annotations/_workflows.html.erb
+   #
+   # Copyright (c) 2009-2011, University of Manchester, The European Bioinformatics
+   # Institute (EMBL-EBI) and the University of Southampton.
+   # See license.txt for details
+
+%>
+
+<%
+   attribute_name = "workflows"
+   main_div_id = "workflows_#{rand(10000000)}"
+%>
+
+<% unless annotatable.nil? %>
+    <div id="<%= main_div_id -%>" class="annotations_container">
+      <div style="margin-top: 1em;">
+        <b>Workflows using this Web Service:</b>
+        <%= info_icon_with_tooltip("What workflows utilize this web services. This can be a URI to the workflow e.g. on myExperiment") -%>
+      </div>
+
+      <div class="box_annotations">
+        <% workflows_annotations = annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.updated_at <=> b.updated_at} %>
+        <% unless workflows_annotations.empty? %>
+            <% workflows_annotations.each do |ann| %>
+                <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+                    <div class="text">
+                      <%= annotation_source_text(ann) -%>
+                      <div>
+                        <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
+                      </div>
+                      <%= render :partial => "annotations/common/default_modify_options",
+                                 :locals => { :annotation => ann, :ann_type => "workflow info" } -%>
+                    </div>
+                <% end %>
+            <% end %>
+        <% else %>
+            <span class="none_text">None</span>
+        <% end %>
+      </div>
+
+      <% if logged_in? %>
+
+          <%= render :partial => "annotations/common/default_add_box",
+                     :locals => { :partial_from => "workflows",
+                                  :annotatable => annotatable,
+                                  :attribute_name => attribute_name,
+                                  :text_area_default_text => "Add info on a workflow for this service (including links and DOIs)...",
+                                  :main_div_id => main_div_id } -%>
+
+      <% else %>
+          <div class="login_link_box">
+            <small><%= link_to("Login to add workflow info", login_path) -%></small>
+          </div>
+      <% end %>
+    </div>
+<% end %>
