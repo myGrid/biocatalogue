@@ -16,7 +16,12 @@
 <% unless annotatable.nil? %>
     <div id="<%= main_div_id -%>" class="annotations_container">
       <div style="margin-top: 1em;">
-        <b>Workflows using this Web Service:</b>
+      <b>Workflows using this Web Service:</b>
+        <% if @latest_version_instance.class == SoapService %>
+        Find <%= link_to "all workflows on myExperiment that use this service",
+                    "http://www.myexperiment.org/workflows?filter=WSDL_ENDPOINT%28%22#{CGI.escape(@latest_version_instance.wsdl_location)}%22%29",
+                    :popup => true, :target => '_blank' -%>
+      <% end %>
         <%= info_icon_with_tooltip("What workflows utilize this web services. This can be a URI to the workflow e.g. on myExperiment") -%>
       </div>
 
