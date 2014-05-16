@@ -17,7 +17,7 @@
 	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
 		  <b>Publications:</b>
-			<%= info_icon_with_tooltip("What papers have been published <b>for</b> this service. This can be a URI to the publication and/or a DOI.") -%>
+			<%= info_icon_with_tooltip("What papers have been published <b>for</b> this service (this can be in a common citation format like Bibtex, MLA or APA, a DOI, a URL, etc.)") -%>
 		</div>
 		
 		<div class="box_annotations">
@@ -46,7 +46,7 @@
 								 :locals => { :partial_from => "publications",
 															:annotatable => annotatable,
 															:attribute_name => attribute_name,
-															:text_area_default_text => "Add info on a publication for this service (including links and DOIs)...",
+															:text_area_default_text => "Add publications for this service (this can be in a common citation format like Bibtex, MLA or APA, a DOI, a URL, etc.)...",
 															:main_div_id => main_div_id } -%>
 		
 		<% else %>

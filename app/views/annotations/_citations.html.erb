@@ -17,7 +17,7 @@
 	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
 		  <b>Citations:</b>
-			<%= info_icon_with_tooltip("Where has this service been cited? This should be in a common citation format (such as Bibtex, MLA, APA etc).") -%>
+			<%= info_icon_with_tooltip("Where has this service been cited? (This can be in a common citation format like Bibtex, MLA or APA, a DOI, a URL, etc.)") -%>
 		</div>
 		
 		<div class="box_annotations">
@@ -46,7 +46,7 @@
 								 :locals => { :partial_from => "citations",
 															:annotatable => annotatable,
 															:attribute_name => attribute_name,
-															:text_area_default_text => "Add a citation (this can be in a common citation format like Bibtex, MLA, APA etc.)...",
+															:text_area_default_text => "Add publications that cite this service (this can be in a common citation format like Bibtex, MLA or APA, a DOI, a URL, etc.)...",
 															:main_div_id => main_div_id } -%>
 		
 		<% else %>

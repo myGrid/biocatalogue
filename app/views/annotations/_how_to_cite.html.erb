@@ -17,7 +17,7 @@
     <div id="<%= main_div_id -%>" class="annotations_container">
       <div style="margin-top: 1em;">
         <b>How to cite this service:</b>
-        <%= info_icon_with_tooltip("A publication that others ought to use when citing this service") -%>
+        <%= info_icon_with_tooltip("A publication that others ought to use when citing this service (this can be in a common citation format like Bibtex, MLA or APA, a DOI, a URL, etc.)") -%>
       </div>
 
       <div class="box_annotations">
@@ -46,7 +46,7 @@
                      :locals => { :partial_from => "how_to_cite",
                                   :annotatable => annotatable,
                                   :attribute_name => attribute_name,
-                                  :text_area_default_text => "Add how to sice this service information...",
+                                  :text_area_default_text => "Add info on how to cite this service (this can be in a common citation format like Bibtex, MLA or APA, a DOI, a URL, etc.)...",
                                   :main_div_id => main_div_id } -%>
 
       <% else %>
