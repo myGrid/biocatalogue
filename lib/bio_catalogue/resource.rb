@@ -15,6 +15,8 @@ module BioCatalogue
 
   def self.icon_filename_for(thing)
     case thing
+      when :markdown
+        "markdown_logo.png"
       when :activity
         "time.png"
       when :announcement, :announcements

@@ -18,8 +18,9 @@
 		<div style="margin-top: 1em;">
 		  <b>Publications:</b>
 			<%= info_icon_with_tooltip("What papers have been published <b>for</b> this service. This can be a URI to the publication and/or a DOI.") -%>
+            <%= render :partial => 'shared/markdown_notification'%>
 		</div>
-		
+
 		<div class="box_annotations">
 			<% publications_annotations = annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.updated_at <=> b.updated_at} %>
 			<% unless publications_annotations.empty? %>
@@ -41,7 +42,6 @@
 		</div>
 		
 		<% if logged_in? %>
-			
 			<%= render :partial => "annotations/common/default_add_box",
 								 :locals => { :partial_from => "publications",
 															:annotatable => annotatable,

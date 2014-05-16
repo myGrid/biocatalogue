@@ -18,6 +18,7 @@
 		<div style="margin-top: 1em;">
 		  <b>Contact Info:</b>
 			<%= info_icon_with_tooltip("Who can be contacted about this #{annotatable.class.name.titleize}?") -%>
+            <%= render :partial => 'shared/markdown_notification'%>
 		</div>
 		
 		<div class="box_annotations">
