@@ -20,11 +20,11 @@
         <%= info_icon_with_tooltip("Example workflows that utilize this service (e.g. a link to a workflow on myExperiment)") -%>
       </div>
       <% if @latest_version_instance.class == SoapService %>
-          <div style="margin-top: 10px; margin-bottom: 10px;">
+          <% rounded('#E9F7CC', '#E9F7CC', '100%') do %>
           <%= link_to "See all workflows on myExperiment that use this service",
                            "http://www.myexperiment.org/workflows?filter=WSDL_ENDPOINT%28%22#{CGI.escape(@latest_version_instance.wsdl_location)}%22%29",
                            :popup => true, :target => '_blank' -%>
-          </div>
+          <% end %>
       <% end %>
       <div class="box_annotations">
         <% workflows_annotations = annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.updated_at <=> b.updated_at} %>
