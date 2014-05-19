@@ -177,7 +177,7 @@ class Service < ActiveRecord::Base
     desc = self.description
     
     if desc.blank?
-      desc = self.latest_version.service_versionified.annotations_with_attribute("description", true).first.try(:value_content)
+      desc = self.latest_version.service_versionified.annotations_with_attribute("description", true).last.try(:value_content)
     end
     
     return desc
