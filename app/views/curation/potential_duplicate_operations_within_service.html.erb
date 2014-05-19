@@ -46,7 +46,7 @@
 			        <tr>
 			        	<td><%= link_to(display_name(op), op, :popup => true) -%></td>
 								<td><%= op.id -%></td>
-								<td><%= op.archived? ? '<span style="color: #990000;">Yes</span>' : 'No' -%></td>
+								<td><%= op.archived? ? '<span style="color: #990000;">Yes</span>'.html_safe : 'No' -%></td>
 								<td><%= op.parent_port_type -%></td>
 								<td><%= distance_of_time_in_words_to_now(op.updated_at) -%> ago</td>
 			        </tr>

@@ -6,9 +6,10 @@
 
 module BioCatalogue
   module Monitoring
-    
-    INTERNAL_TEST_TYPES = [ 'TestScript', 'UrlMonitor' ].freeze
-    
+
+    INTERNAL_TEST_TYPES = [ 'TestScript', 'UrlMonitor' ].freeze if ENABLE_TEST_SCRIPTS
+    INTERNAL_TEST_TYPES = [ 'UrlMonitor' ].freeze unless ENABLE_TEST_SCRIPTS
+
     def self.pingable_url(actual_string)
       string = actual_string.try(:text)
       string = actual_string unless !string.nil?

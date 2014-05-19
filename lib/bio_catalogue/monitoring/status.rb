@@ -174,12 +174,14 @@ module BioCatalogue
           msg +="<li> Could not access <b>#{t.service_test.test.property} </b>.</li>\n"
           #msg +="<li> Failing since: <b>#{t.service_test.failing_since.strftime("%A %B %d , %Y")} </b> .</li>\n"
         end
-        
+
+        if ENABLE_TEST_SCRIPTS
         test_scripts.each do |t|
           msg +="<li> Test Script: <b>#{t.service_test.test.name} </b> failed.</li>\n"
           #msg +="<li> Failing since: <b>#{t.service_test.failing_since.strftime("%A %B %d , %Y")} </b> .</li>\n"
         end
-        msg +="</ul></p>" 
+        msg +="</ul></p>"
+        end
         
         return msg
       end
