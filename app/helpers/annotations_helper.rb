@@ -272,7 +272,7 @@ module AnnotationsHelper
         :do_strip_tags=>false,
         :truncate_length=>nil,
         :do_auto_link=>true,
-        :do_simple_format=>!:do_strip_tags,
+        :do_simple_format=>true, #!:do_strip_tags,
         :do_white_list=>true
     }.merge(options){|key, default_hash, new_hash| new_hash.nil? ? default_hash : new_hash}.each do |attr, val|
       instance_variable_set("@#{attr}", val)
@@ -296,7 +296,7 @@ module AnnotationsHelper
       desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if @do_auto_link
     end
     desc = truncate(desc, :length => @truncate_length) unless @truncate_length.nil?
-    return desc.html_safe
+    return desc
   end
   
   def default_add_box_js_for_textarea(text_area_id, text_area_initial_height=100)
