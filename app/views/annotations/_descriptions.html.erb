@@ -40,7 +40,7 @@
 							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(annotatable.updated_at)} ago)" -%></span>
 						</span>
 						<div>
-							<%= annotation_prepare_description(desc, :markdown_text => true ) -%>
+							<%= annotation_prepare_description(desc, :is_markdownable => true ) -%>
 						</div>
 					</div>
 				<% end %>

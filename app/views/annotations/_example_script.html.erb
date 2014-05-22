@@ -59,7 +59,7 @@ Code:
                                                                        :do_strip_tags => false,
                                                                        :do_auto_link => false,
                                                                        :do_white_list => false,
-                                                                       :markdown_text=>false) %>
+                                                                       :is_markdownable=>false) %>
                               <!-- Dirty hack to fix an issue with <pre> tag which centers the first line so we are adding a new line -->
                               <%= ("\n" + desc).html_safe-%>
                             </pre>

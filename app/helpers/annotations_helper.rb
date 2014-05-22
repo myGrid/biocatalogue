@@ -268,7 +268,7 @@ module AnnotationsHelper
 
   def annotation_prepare_description(desc, options={})
     return '' if desc.nil?
-    {   :markdown_text=>true,
+    {   :is_markdownable=>true,
         :do_strip_tags=>false,
         :truncate_length=>nil,
         :do_auto_link=>true,
@@ -279,11 +279,11 @@ module AnnotationsHelper
     end if options
 
 
-    if MARKDOWN_ENABLED && @markdown_text
+    if MARKDOWN_ENABLED && @is_markdownable
       desc = annotation_prepare_markdown_description(desc)
     else
       #RedCarpet renderer handles escaping so need to escape when not marking_down
-      desc = CGI.escapeHTML(desc) unless @do_strip_tags
+      #desc = CGI.escapeHTML(desc) unless @do_strip_tags
       # If it is a URL - do a simple check if it contains spaces and replace them with '+'
       # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
       if desc.strip.start_with?('http://', 'https://')
@@ -296,7 +296,7 @@ module AnnotationsHelper
       desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if @do_auto_link
     end
     desc = truncate(desc, :length => @truncate_length) unless @truncate_length.nil?
-    return desc
+    return desc.html_safe
   end
   
   def default_add_box_js_for_textarea(text_area_id, text_area_initial_height=100)
