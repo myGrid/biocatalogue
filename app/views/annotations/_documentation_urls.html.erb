@@ -15,10 +15,6 @@
 
 <% unless annotatable.nil? %>
 	<div id="<%= main_div_id -%>" class="annotations_container">
-		<div style="margin-top: 1em;">
-		  <b>Documentation URL(s):</b>
-          <%= render :partial => 'shared/markdown_notification'%>
-		</div>
 		
 		<div class="box_annotations">
 			<% unless (doc_url = annotatable.documentation_url).blank? %>
@@ -31,7 +27,7 @@
 							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(annotatable.created_at)} ago)" -%></span>
 						</span>
 						<div>
-							<%= annotation_prepare_description(doc_url) -%>
+							<%= annotation_prepare_description(doc_url, {:is_markdownable => false}) -%>
 						</div>
 					</div>
 				<% end %>
