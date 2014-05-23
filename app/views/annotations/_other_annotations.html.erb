@@ -48,7 +48,7 @@
 								<%= h(ann.attribute_name) -%>
 							</p>
 							<div>
-								<%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
+								<%= annotation_prepare_description(ann.value_content) -%>
 							</div>
 							<% if show_modify_options %>
 								<%= render :partial => "annotations/common/default_modify_options",

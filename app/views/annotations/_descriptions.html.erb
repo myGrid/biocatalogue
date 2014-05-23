@@ -25,6 +25,7 @@
 		<% if show_header == true %>
 			<div style="margin-top: 1em;">
 			  <b>Description(s):</b>
+              <%= render :partial => 'shared/markdown_notification'%>
 			</div>
 		<% end %>
 		
@@ -39,10 +40,7 @@
 							<span class='ago'><%= "(#{distance_of_time_in_words_to_now(annotatable.updated_at)} ago)" -%></span>
 						</span>
 						<div>
-							<%= annotation_prepare_description(CGI.escapeHTML(desc),
-																								 (truncate_desc != false), 
-																								 (truncate_desc ==  false ? nil : truncate_desc), 
-																								 auto_link_desc) -%>
+							<%= annotation_prepare_description(desc, :is_markdownable => true ) -%>
 						</div>
 					</div>
 				<% end %>
@@ -54,11 +52,9 @@
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
-							<div>
-								<%= annotation_prepare_description(ann.value_content, 
-																									 (truncate_desc != false), 
-																									 (truncate_desc ==  false ? nil : truncate_desc), 
-																									 auto_link_desc) -%>
+							<div class="annotation_display">
+                              <%= annotation_prepare_description(ann.value_content) -%>
+
 							</div>
 							<% if show_modify_options %>
 								<%= render :partial => "annotations/common/default_modify_options",

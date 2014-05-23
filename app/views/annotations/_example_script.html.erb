@@ -55,7 +55,11 @@ Code:
                       <%= annotation_source_text(ann) -%>
 						<div style="margin-top: 0.7em;">
 							<pre style="max-height: 400px;">
-                              <% desc = annotation_prepare_description(ann.value_content, false, nil, false, false, false) %>
+                              <% desc = annotation_prepare_description(ann.value_content,
+                                                                       :do_strip_tags => false,
+                                                                       :do_auto_link => false,
+                                                                       :do_white_list => false,
+                                                                       :is_markdownable=>false) %>
                               <!-- Dirty hack to fix an issue with <pre> tag which centers the first line so we are adding a new line -->
                               <%= ("\n" + desc).html_safe-%>
                             </pre>

@@ -18,6 +18,7 @@
 		<div style="margin-top: 1em;">
 		  <b>Contact info:</b>
 			<%= info_icon_with_tooltip("Who can be contacted about this #{annotatable.class.name.titleize}?") -%>
+            <%= render :partial => 'shared/markdown_notification'%>
 		</div>
 		
 		<div class="box_annotations">
@@ -27,8 +28,8 @@
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
                             <%= annotation_source_text(ann) -%>
-							<div>
-                              <%= annotation_prepare_description(CGI.escapeHTML((ann.value_content))) -%>
+                          <div class="annotation_display">
+                              <%= annotation_prepare_description(ann.value_content) -%>
 							</div>
 							<%= render :partial => "annotations/common/default_modify_options",
 												 :locals => { :annotation => ann, :ann_type => "contact_info" } -%>

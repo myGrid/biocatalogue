@@ -2198,6 +2198,30 @@ ul.tabbernav li.tabberactive a:hover {
     display: inline-block;
 }
 
+div.annotation_display {
+  table {
+    border-collapse: collapse;
+  }
+  td, th {
+    border: 1px solid black;
+    padding: 5px;
+  }
+  th {
+    font-weight: bold;
+  }
+  blockquote {
+    margin-left: 30px ;
+  }
+  ul li  {
+    list-style: circle;
+    margin-left: 30px;
+  }
+  ol li  {
+    list-style: decimal;
+    margin-left: 30px;
+  }
+}
+
 .annotations_container .active {
     line-height: 1.0;
     text-decoration: none;

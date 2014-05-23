@@ -52,6 +52,7 @@ gem 'country-select'
 gem 'validates_email_format_of' # Replaces validates_email_veracity_of
 gem "dalli"
 
+gem 'redcarpet'
 gem "paperclip", "~> 4.1"
 
 group :test do

@@ -30,9 +30,7 @@
       <%= render :partial => "index_search_within" -%>
 
       <div class="search_options">
-        <!-- Advanced Search Option Bar-->
         <!-- Advanced Search Option Content -->
-        <% display_options = true #if !params[:listing].nil? || !params[:per_page].nil? || !params[:sort_by].nil? || !params[:include_archived].nil? %>
           <div class="search_option">
             <%= render :partial => 'index_include_archived_option' -%>
           </div>

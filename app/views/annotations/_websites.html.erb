@@ -17,6 +17,7 @@
 	<div id="<%= main_div_id -%>" class="annotations_container">
 		<div style="margin-top: 1em;">
 		  <b>Website(s):</b>
+          <%= render :partial => 'shared/markdown_notification'%>
 		</div>
 		
 		<div class="box_annotations">
@@ -27,7 +28,7 @@
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
 							<div>
-								<%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
+								<%= annotation_prepare_description(ann.value_content) -%>
 							</div>
 							<%= render :partial => "annotations/common/default_modify_options",
 												 :locals => { :annotation => ann, :ann_type => "website URL" } -%>

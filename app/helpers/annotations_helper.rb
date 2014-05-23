@@ -252,19 +252,55 @@ module AnnotationsHelper
     end
   end
 
-  def annotation_prepare_description(desc, do_strip_tags=false, truncate_length=nil, do_auto_link=true, do_simple_format=!do_strip_tags, do_white_list=true)
+  def annotation_prepare_markdown_description(desc)
+      renderer = Redcarpet::Render::HTML.new(hard_wrap: true, prettify: true, escape_html: true)
+      markdown = Redcarpet::Markdown.new(renderer, :autolink => true,
+                                         :tables => true,
+                                         :quote => true,
+                                         :lax_spacing => true,
+                                         :no_intra_emphasis => true,
+                                         :fenced_code_blocks => true,
+                                         :disable_indented_code_blocks => false,
+                                         :footnotes => true)
+
+      desc = markdown.render(desc).html_safe
+  end
+
+  def annotation_prepare_description(desc, options={})
+
+    default_options = {
+        :do_strip_tags => false,
+        :truncate_length => nil,
+        :do_auto_link => true,
+        :do_simple_format => true,
+        :do_white_list => true,
+        :is_markdownable => true, # Does this annotation field supports Markdown markup? This is different from weather Markdown support is turned ON or OFF.
+    }
+
+    options = options.reverse_merge(default_options)
+
     return '' if desc.nil?
     # If it is a URL - do a simple check if it contains spaces and replace them with '+'
     # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
+    # This is a silly hack and will not work properly if there is any text after the URL as all spaces will be replaced by '+'s.
     if desc.strip.start_with?('http://', 'https://')
       desc = desc.strip # remove leading and trailing whitespace
       desc = desc.gsub(/\s/,'+')
     end
-    desc = strip_tags(desc) if do_strip_tags
-    desc = truncate(desc, :length => truncate_length) unless truncate_length.nil?
-    desc = simple_format(desc) if do_simple_format
-    desc = (do_white_list ? white_list(desc) : html_escape(desc))
-    desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if do_auto_link
+
+    desc = truncate(desc, :length => options[:truncate_length]) unless options[:truncate_length].nil?
+
+    if MARKDOWN_ENABLED && options[:is_markdownable]
+      desc = annotation_prepare_markdown_description(desc)
+    else
+      desc = strip_tags(desc) if options[:do_strip_tags] # This will strip all tags
+
+      desc = simple_format(desc) if options[:do_simple_format]
+
+      desc = (options[:do_white_list] ? white_list(desc) : html_escape(desc))  # only white-listed tags will remain
+
+      desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if options[:do_auto_link]
+    end
 
     return desc
   end

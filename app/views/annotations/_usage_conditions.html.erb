@@ -18,6 +18,7 @@
 		<div style="margin-top: 1em;">
 		  <b>Usage conditions:</b>
 			<%= info_icon_with_tooltip("What are the usage conditions on this service? For example: not allowed more than 2 requests per minute and 100 requests per hour.") -%>
+            <%= render :partial => 'shared/markdown_notification'%>
 		</div>
 		
 		<div class="box_annotations">
@@ -27,8 +28,8 @@
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
-							<div>
-								<%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
+                            <div class="annotation_display">
+								<%= annotation_prepare_description(ann.value_content) -%>
 							</div>
 							<%= render :partial => "annotations/common/default_modify_options",
 												 :locals => { :annotation => ann, :ann_type => "usage condition info" } -%>
