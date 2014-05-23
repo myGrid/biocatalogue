@@ -66,8 +66,7 @@
           <% unless (desc = service.preferred_description).blank? %>
             <div class="text" style="word-wrap: break-word; max-width: 250px">
               <%= annotation_prepare_description(desc,
-                                                 :is_markdownable=>false,
-                                                 :truncate_length=>120) -%>
+                                                 {:truncate_length=>120}) -%>
             </div>
           <% else %>
             <div class="text none_text">no description yet</div>
