@@ -23,6 +23,10 @@ Sequence Analysis [1]:
       - Domains [11]
       - Motifs [12]
       - Repeats [13]
+    Protein Composition [76]:
+    Protein Motifs [77]:
+    Protein Mutation [78]:
+    Protein Profiles [79]:
   Nucleotide Sequence Analysis [14]:
     Nucleotide Sequence Alignment [15]:
       - Nucleotide Multiple Alignment [16]
@@ -34,7 +38,17 @@ Sequence Analysis [1]:
     Gene Prediction [19]:
     Promoter Prediction [20]:
     Transcription Factors [21]:
-
+    Nucleic Codon Usage [66]:
+    Nucleic Acid Composition [67]:
+    Nucleic CPG Islands [68]:
+    Nucleic Motifs [69]:
+    Nucleic Mutation [70]:
+    Primer Design [71]:
+    Nucleic Acid Profiles [72]:
+    Nucleic Acid Repeats [73]:
+    Restriction Enzyme Sites [74]:
+    Nucleic Sequence Translation [75]:
+  
 Text Mining [22]:
   - Document Discovery [23]
   - Document Similarity [24]
@@ -84,3 +98,13 @@ Chemoinformatics [57]:
 Gene Expression [61]:
 
 Molecular Markers and Mapping Tools [62]:
+
+Display Data [63]:
+
+Data Editing [64]:
+
+Enzyme kinetics [65]:
+
+Data Extraction [80]:
+  - Feature Tables [81]
+  - Information [82]
