@@ -24,7 +24,7 @@ class ServiceProvidersController < ApplicationController
   before_filter :find_service_provider, :only => [ :show, :edit, :update, :upload_logo, :remove_logo, :destroy, :annotations, :annotations_by,
                                                    :edit_by_popup, :profile, :services, :hostnames]
   
-  before_filter :authorise, :only => [ :edit_by_popup, :update, :upload_logo, :remove_logo, :destroy ]
+  before_filter :authorise, :only => [ :edit_by_popup, :update,  :destroy ]
 
   set_tab :profile, :service_providers, :only => [:profile, :show]
   set_tab :services, :service_providers, :only => [:services]

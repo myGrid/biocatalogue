@@ -2,12 +2,13 @@
   <div style="margin-top: 1em;">
     <b>Service Provider Logo:</b>
   </div>
+
   <% if (service_provider.logo.url == icon_filename_for(:provider)) %>
               <span class="none_text" style="display: block; margin-bottom: 10px">
                 No project logo has been uploaded.
               </span>
-      <% if mine?(service_provider) ||
-              (current_user && (current_user.is_curator? || current_user.is_admin?)) %>
+      <% if logged_in? #mine?(service_provider) ||
+           #(current_user && (current_user.is_curator? || current_user.is_admin?)) %>
           <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
               <%= form_for service_provider, :url => upload_logo_service_provider_path(service_provider), :html => { :multipart => true } do |form| %>
                   <%= form.file_field :logo, :onchange => "submit();" %>
@@ -15,8 +16,8 @@
           <% end %>
       <% end %>
   <% else %>
-      <% can_delete = mine?(service_provider) ||
-              (current_user && (current_user.is_curator? || current_user.is_admin?)) %>
+      <% can_delete = logged_in? #mine?(service_provider) ||
+              #(current_user && (current_user.is_curator? || current_user.is_admin?)) %>
 
       <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
           <div class="box_annotations">
