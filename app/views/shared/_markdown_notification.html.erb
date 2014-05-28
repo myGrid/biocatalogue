@@ -14,7 +14,7 @@
 <% if logged_in? && MARKDOWN_ENABLED == true %>
 
     <%= link_to(image_tag(icon_filename_for(:markdown), :size => '21x14', :style => 'vertical-align:middle'),
-                "https://wiki.biovel.eu/display/doc/Markdown+Syntax",
+                MARKDOWN_DOCUMENTATION_LINK,
                 {:title => tooltip_title_attrib("This annotation field supports Markdown formatting. Click the logo to find out how to format text using Markdown.", 200),
                 :target => "_blank" }
         )

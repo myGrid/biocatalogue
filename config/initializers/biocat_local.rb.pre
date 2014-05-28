@@ -24,6 +24,10 @@ ENABLE_TEST_SCRIPTS = false
 # Render markdown in annotation
 MARKDOWN_ENABLED = true
 
+MARKDOWN_DOCUMENTATION_LINK = "http://dev.mygrid.org.uk/wiki/display/servicecatalographer/How+to+Annotate+using+Markdown"
+#MARKDOWN_DOCUMENTATION_LINK = "https://wiki.biovel.eu/display/doc/Markdown+Syntax"
+
+
 # Set a proxy for open-uri calls
 #If :proxy option is specified, the value should be String, 
 #URI, boolean or nil. When String or URI is given, 
