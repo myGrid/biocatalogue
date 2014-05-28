@@ -17,7 +17,7 @@ module BioCatalogue
   include VersionInfo
   VERSION.file_name = File.expand_path("version_info.yml", ".")
   
-  API_VERSION = "1.2.0b"
+  API_VERSION = "1.2.1"
 end
 
 # This is not loaded in Rails 2.3 anymore (apparently).
