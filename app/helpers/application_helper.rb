@@ -85,7 +85,7 @@ module ApplicationHelper
     if !provider.logo.exists? or icon_filename_for(:provider) == provider.logo.url
       ''
     else
-      return image_tag(provider.logo.url(size), :style=>'max-width: 100%').html_safe
+      return image_tag(provider.logo.url(size), :style=>'max-width: 100%; vertical-align:middle').html_safe
     end
   end
 
