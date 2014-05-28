@@ -15,3 +15,5 @@ dc_xml_tag parent_xml, :description, service_provider.preferred_description
 
 # <dcterms:created>
 dcterms_xml_tag parent_xml, :created, service_provider.created_at
+
+parent_xml.logo URI.join(SITE_BASE_HOST, asset_path(service_provider.logo.url)) unless !service_provider.logo.exists?
