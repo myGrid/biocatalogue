@@ -71,10 +71,11 @@ module BioCatalogue
     #   }
     def self.parse(wsdl_url)
       service_info, error_messages, wsdl_file_contents = BioCatalogue::WsdlUtils::ParserClient.parse(wsdl_url)
-      if service_info.blank?
-        Util.warn "Trying the old parser - BioCatalogue::WsdlParser::Legacy.parse(...) - because the BioCatalogue::WsdlUtils::ParserClient.parse(...) failed"
-        service_info, error_messages, wsdl_file_contents = BioCatalogue::WsdlParser::Legacy.parse(wsdl_url)
-      end
+      # Forget about the legacy parser - it is even worse and wipes out all useful error messages from WSDLUtils
+      #if service_info.blank?
+      #  Util.warn "Trying the old parser - BioCatalogue::WsdlParser::Legacy.parse(...) - because the BioCatalogue::WsdlUtils::ParserClient.parse(...) failed"
+      #  service_info, error_messages, wsdl_file_contents = BioCatalogue::WsdlParser::Legacy.parse(wsdl_url)
+      #end
       return [ service_info, error_messages, wsdl_file_contents ]
     end
     
