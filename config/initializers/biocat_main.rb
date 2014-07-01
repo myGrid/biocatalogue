@@ -45,7 +45,7 @@ require 'redcarpet'
 require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'
-
+require 'rjb'
 require 'exception_notifier'
 require 'bio_catalogue/annotations/custom_migration_to_v3'
 
@@ -78,6 +78,11 @@ require 'will_paginate/array'
 
 BioCatalogue::Util.say("Running in #{Rails.env} mode...")
 BioCatalogue::Util.say("Configuring the #{SITE_NAME} application...")
+
+BioCatalogue::Util.say("Loading RJB JVM for WSDL parsing ...")
+path = "#{Rails.root}/lib/wsdl-generic-1.11.0-service-catalogue-SNAPSHOT-jar-with-dependencies.jar"
+Rjb::load(classpath = path, jvmargs=[])
+Rjb::primitive_conversion = true # convert primitive data types to Ruby's native
 
 # Never explicitly load the memcache-client library as we need to use 
 # the specific one vendored in our codebase.

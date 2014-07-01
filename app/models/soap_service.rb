@@ -191,7 +191,7 @@ class SoapService < ActiveRecord::Base
     end
     
     if success
-      service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
+      service_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse_via_tavernas_wsdl_generic(self.wsdl_location)
       
       if service_info.blank?
         errors.add_to_base("Failed to parse the WSDL file.")
@@ -273,7 +273,7 @@ class SoapService < ActiveRecord::Base
     
     begin
       transaction do
-        new_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse(self.wsdl_location)
+        new_info, err_msgs, wsdl_file_contents = BioCatalogue::WsdlParser.parse_via_tavernas_wsdl_generic(self.wsdl_location)
         
         if new_info.blank? or !err_msgs.empty?
           success = false
