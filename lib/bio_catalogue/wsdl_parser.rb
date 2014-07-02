@@ -172,7 +172,7 @@ module BioCatalogue
               input = inputs.get(j)
               inp = {}
               inp['name'] = input.getName()
-              inp['description'] = input.getDocumentation()
+              #inp['description'] = input.getDocumentation()
               inp['computational_type'] = input.getType()
               computational_type_details = build_message_type_details(input)
               if input._classname != 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
@@ -190,7 +190,7 @@ module BioCatalogue
               output = outputs.get(j)
               out = {}
               out['name'] = output.getName()
-              out['description'] = input.getDocumentation()
+              #out['description'] = input.getDocumentation()
               out['computational_type'] = output.getType()
               computational_type_details = build_message_type_details(output)
               if output._classname != 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
@@ -244,7 +244,7 @@ module BioCatalogue
             parts << build_message_type_details(elements.get(i))
             i += 1
           end
-        else
+        elsif elements.size() == 1
           parts = build_message_type_details(elements.get(0))
         end
         message_type_details['type'] = parts
