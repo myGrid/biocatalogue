@@ -231,7 +231,8 @@ module BioCatalogue
       return {} if type_descriptor.nil?
 
       message_type_details = {}
-      message_type_details['name'] = type_descriptor.getName()
+      message_type_details['name'] = type_descriptor.getName().nil? ? '' : type_descriptor.getName();
+
       if type_descriptor._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
         message_type_details['type'] = type_descriptor.getType()
       elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
