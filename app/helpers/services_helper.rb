@@ -372,6 +372,16 @@ module ServicesHelper
   end
 
 
+  # Renders a hash like:
+  # {
+  #   'name' => '...',
+  #   'type' => [
+  #               {'name' => '...',
+  #                'type' => [...]
+  #               },
+  #               ...
+  #             ]
+  # }
   def render_computational_type_details_entries_new(computational_type_details_hash)
     html = ''.html_safe
 
@@ -399,8 +409,8 @@ module ServicesHelper
           entry_hash['type'].each do |element|
             x << render_computational_type_details_entries_new(element).html_safe
           end
-        elsif entry_hash['type'].is_a?(Hash)
-          x << render_computational_type_details_entries_new(entry_hash['type']).html_safe
+        #elsif entry_hash['type'].is_a?(Hash)
+        #  x << render_computational_type_details_entries_new(entry_hash['type']).html_safe
         else
           x << entry_hash['type'].html_safe
         end

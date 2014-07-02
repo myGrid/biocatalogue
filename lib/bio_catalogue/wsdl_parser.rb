@@ -226,7 +226,17 @@ module BioCatalogue
 
     # Build message type elements from net.sf.taverna.wsdl.parser.TypeDescriptor
     # Each TypeDescriptor represents one input parameter for a SOAP operation and
-    # can be simple, complex, an array or an attribute type.
+    # can be simple, complex, or an array.
+    # It returns a recursive hash like:
+    # {
+    #   'name' => '...',
+    #   'type' => [
+    #               {'name' => '...',
+    #                'type' => [...]
+    #               },
+    #               ...
+    #             ]
+    # }
     def self.build_message_type_details(type_descriptor)
       return {} if type_descriptor.nil?
 
@@ -237,20 +247,20 @@ module BioCatalogue
         message_type_details['type'] = type_descriptor.getType()
       elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
         elements = type_descriptor.getElements()
+        parts = []
         if elements.size() > 1
-          parts = []
           i = 0
           while i < elements.size() do
             parts << build_message_type_details(elements.get(i))
             i += 1
           end
         elsif elements.size() == 1
-          parts = build_message_type_details(elements.get(0))
+          parts = [build_message_type_details(elements.get(0))]
         end
         message_type_details['type'] = parts
       elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ArrayTypeDescriptor'
         type_descriptor.getElementType().setName(type_descriptor.getElementType().getType())
-        message_type_details['type'] = build_message_type_details(type_descriptor.getElementType())
+        message_type_details['type'] = [build_message_type_details(type_descriptor.getElementType())]
       end
       return message_type_details
     end
