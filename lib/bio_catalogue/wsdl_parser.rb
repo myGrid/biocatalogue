@@ -93,18 +93,20 @@ module BioCatalogue
         Rails.logger.error(error_message)
         Rails.logger.error(error_stacktrace)
         error_messages << error_message + error_stacktrace
+        service_info = nil
+        wsdl_file_contents = nil
         return [service_info, error_messages, wsdl_file_contents]
       end
 
       begin
-        taverna_wsdl_parser = Rjb::import('net.sf.taverna.wsdl.parser.WSDLParser')
+        taverna_wsdl_parser_class = Rjb::import('net.sf.taverna.wsdl.parser.WSDLParser')
 
-        parsed_wsdl = taverna_wsdl_parser.new(wsdl_url)
+        parsed_wsdl = taverna_wsdl_parser_class.new(wsdl_url)
 
         definition = parsed_wsdl.getDefinition()
 
         if definition == nil
-          error_messages << "No <definitions> element found in the WSDL at #{wsdl_url}"
+          error_messages << "No <definitions> element found in the WSDL at #{wsdl_url}."
         else
           # We only care about the first service defined - if there is such
           service = definition.getServices().values().iterator().next()
@@ -128,67 +130,69 @@ module BioCatalogue
           # Populate service ports
           port_itr = service.getPorts().values().iterator()
           while port_itr.hasNext()
-            port = port_itr.next()
+            p = port_itr.next()
 
             # Get binding for this port
-            binding = port.getBinding()
+            binding = p.getBinding()
 
             # Disregard this port if it is NOT using SOAP binding, i.e. binding's protocol is not "http://schemas.xmlsoap.org/soap/http"
             next unless parsed_wsdl.isSOAPBinding(binding)
 
-            p = {}
-            p['name'] = port.getName()
-            p['protocol'] = parsed_wsdl.getTransportForSOAPBinding(binding)
-            p['style'] = parsed_wsdl.getStyle()
-            p['location'] = parsed_wsdl.getSOAPAddressLocationForPort(port)
+            port = {}
+            port['name'] = p.getName()
+            port['protocol'] = parsed_wsdl.getTransportForSOAPBinding(binding)
+            port['style'] = parsed_wsdl.getStyle()
+            port['location'] = parsed_wsdl.getSOAPAddressLocationForPort(p)
 
-            service_info['ports'] << p
+            service_info['ports'] << port
           end
 
           # Populate service operations - list all operations for all ports of this service with
           # all the details about the operations - inputs, outputs, computational types, order, etc.
-          op_itr = operations.iterator()
-          while op_itr.hasNext()
-            operation = op_itr.next()
+          i = 0
+          while i < operations.size() do
+            op = operations.get(i)
 
-            op = {}
-            op['name'] = operation.getName()
-            op['description'] = parsed_wsdl.getOperationDocumentation(operation.getName())
-            endpoint_locations = parsed_wsdl.getOperationEndpointLocations(operation.getName())
-            op['action'] = endpoint_locations.isEmpty() ? '' : endpoint_locations.get(0)
-            op['operation_type'] = '' #?
-            op['parameter_order'] = parsed_wsdl.getParameterOrder(operation)
-            op['parent_port_type'] = parsed_wsdl.getPortForOperation(operation.getName()).getName() # the name of the port (not portType!) element that contains the binding that this operation belongs to
-            op['inputs'] = []
-            op['outputs'] = []
+            operation = {}
+            operation['name'] = op.getName()
+            operation['description'] = parsed_wsdl.getOperationDocumentation(op.getName())
+            endpoint_locations = parsed_wsdl.getOperationEndpointLocations(op.getName())
+            operation['action'] = endpoint_locations.isEmpty() ? '' : endpoint_locations.get(0)
+            operation['operation_type'] = '' #?
+            operation['parameter_order'] = parsed_wsdl.getParameterOrder(op)
+            operation['parent_port_type'] = parsed_wsdl.getPortForOperation(op.getName()).getName() # the name of the port (not portType!) element that contains the binding that this operation belongs to
+            operation['inputs'] = []
+            operation['outputs'] = []
 
             # Build hashes for inputs and outputs of this operation
-            in_itr = parsed_wsdl.getOperationInputParameters(operation.getName()).iterator()
-            while in_itr.hasNext() do
-              input = in_itr.next()
+            inputs = parsed_wsdl.getOperationInputParameters(op.getName())
+            j = 0
+            while j < inputs.size() do
+              input = inputs.get(j)
               inp = {}
               inp['name'] = input.getName()
               inp['description'] = input.getDocumentation()
-              inp['computational_type'] = '' #?
-              inp['computational_type_details'] = {}
-              #if inp['computational_type'].is_complex?
-              #  inp['computational_type_details'] = {} #?
-              #end
-              op['inputs'] << inp
+              inp['computational_type'] = input.getType()
+              inp['computational_type_details'] = build_message_type_details(input)
+              operation['inputs'] << inp
+              j += 1
             end
 
-            out_itr = parsed_wsdl.getOperationOutputParameters(operation.getName()).iterator()
-            while out_itr.hasNext() do
-              output = out_itr.next()
+            outputs = parsed_wsdl.getOperationOutputParameters(op.getName())
+            j = 0
+            while j < outputs.size() do
+              output = outputs.get(j)
               out = {}
               out['name'] = output.getName()
               out['description'] = output.getDocumentation()
-              out['computational_type'] = '' #?
-              out['computational_type_details'] = {} #?
-              op['outputs'] << out
+              out['computational_type'] = output.getType()
+              out['computational_type_details'] = build_message_type_details(output)
+              operation['outputs'] << out
+              j += 1
             end
 
-            service_info['operations'] << op
+            service_info['operations'] << operation
+            i += 1
           end
 
           # Set the location of the first port as the default endpoint - this is not
@@ -200,13 +204,40 @@ module BioCatalogue
         error_stacktrace = ex.backtrace.join("\n")
         Rails.logger.error(error_message)
         Rails.logger.error(error_stacktrace)
+        service_info = nil
+        wsdl_file_contents = nil
         error_messages << error_message + error_stacktrace
       end
 
       return [service_info, error_messages, wsdl_file_contents]
     end
 
-    # Location/URI of the first endpoint (port element)
+    # Build message type elements from net.sf.taverna.wsdl.parser.TypeDescriptor
+    # Each TypeDescriptor represents one input parameter for a SOAP operation and
+    # can be simple, complex, an array or an attribute type.
+    def self.build_message_type_details(type_descriptor)
+      return {} if type_descriptor.nil?
+      message_type_details = {}
+      message_type_details['name'] = type_descriptor.getName().nil? ? '' : type_descriptor.getName();
+
+      if type_descriptor._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+        message_type_details['type'] = type_descriptor.getType()
+      elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+        elements = type_descriptor.getElements()
+        parts = []
+        i = 0
+        while i < elements.size() do
+          parts << build_message_type_details(elements.get(i))
+          i += 1
+        end
+        message_type_details['type'] = parts
+      elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ArrayTypeDescriptor'
+        message_type_details['type'] = type_descriptor.getElementType().nil? ? {} : build_message_type_details(type_descriptor.getElementType());
+      end
+      return message_type_details
+    end
+
+    # Get location/URI of the first endpoint (port element)
     def self.get_default_endpoint(ports)
       endpoint = nil
       unless ports.empty?
