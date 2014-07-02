@@ -159,8 +159,11 @@ class SoapServicesController < ApplicationController
         "If this problem persists, please <a href='/contact'>contact us</a>".html_safe
       
       begin
+        Rails.logger.info("Parsing WSDL doc at:  #{@soap_service.wsdl_location}")
+        # Old parser using the external WSDLUtils PHP services.
+        #@wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse(@soap_service.wsdl_location)
         @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse_via_tavernas_wsdl_generic(@soap_service.wsdl_location)
-        
+
         # Check for a duplicate
         @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["endpoint"])
         

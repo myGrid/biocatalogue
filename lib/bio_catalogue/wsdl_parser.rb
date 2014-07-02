@@ -70,6 +70,7 @@ module BioCatalogue
     #       ] 
     #   }
     def self.parse(wsdl_url)
+      Rails.logger.info('Using PHP WSDLUtils parser.')
       service_info, error_messages, wsdl_file_contents = BioCatalogue::WsdlUtils::ParserClient.parse(wsdl_url)
       # Forget about the legacy parser - it is even worse and wipes out all useful error messages from WSDLUtils
       #if service_info.blank?
@@ -80,7 +81,7 @@ module BioCatalogue
     end
 
     def self.parse_via_tavernas_wsdl_generic(wsdl_url)
-
+      Rails.logger.info("Using Taverna's wsdl-generic WSDL parser.")
       service_info, error_messages, wsdl_file_contents = {}, [], nil
 
       begin
@@ -173,7 +174,12 @@ module BioCatalogue
               inp['name'] = input.getName()
               inp['description'] = input.getDocumentation()
               inp['computational_type'] = input.getType()
-              inp['computational_type_details'] = build_message_type_details(input)
+              computational_type_details = build_message_type_details(input)
+              if input._classname != 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+                # Fix the name of the top element of complex and array types
+                computational_type_details['name'] = input.getType()
+              end
+              inp['computational_type_details'] = computational_type_details
               operation['inputs'] << inp
               j += 1
             end
@@ -184,9 +190,15 @@ module BioCatalogue
               output = outputs.get(j)
               out = {}
               out['name'] = output.getName()
-              out['description'] = output.getDocumentation()
+              out['description'] = input.getDocumentation()
               out['computational_type'] = output.getType()
-              out['computational_type_details'] = build_message_type_details(output)
+              computational_type_details = build_message_type_details(output)
+              if output._classname != 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+                # Fix the name of the top element of complex and array types
+                computational_type_details['name'] = output.getType()
+              end
+              out['computational_type_details'] = computational_type_details
+
               operation['outputs'] << out
               j += 1
             end
@@ -217,22 +229,27 @@ module BioCatalogue
     # can be simple, complex, an array or an attribute type.
     def self.build_message_type_details(type_descriptor)
       return {} if type_descriptor.nil?
-      message_type_details = {}
-      message_type_details['name'] = type_descriptor.getName().nil? ? '' : type_descriptor.getName();
 
+      message_type_details = {}
+      message_type_details['name'] = type_descriptor.getName()
       if type_descriptor._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
         message_type_details['type'] = type_descriptor.getType()
       elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
         elements = type_descriptor.getElements()
-        parts = []
-        i = 0
-        while i < elements.size() do
-          parts << build_message_type_details(elements.get(i))
-          i += 1
+        if elements.size() > 1
+          parts = []
+          i = 0
+          while i < elements.size() do
+            parts << build_message_type_details(elements.get(i))
+            i += 1
+          end
+        else
+          parts = build_message_type_details(elements.get(0))
         end
         message_type_details['type'] = parts
       elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ArrayTypeDescriptor'
-        message_type_details['type'] = type_descriptor.getElementType().nil? ? {} : build_message_type_details(type_descriptor.getElementType());
+        type_descriptor.getElementType().setName(type_descriptor.getElementType().getType())
+        message_type_details['type'] = build_message_type_details(type_descriptor.getElementType())
       end
       return message_type_details
     end
