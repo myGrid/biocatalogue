@@ -138,11 +138,19 @@
                  :locals => { :annotatable => @latest_version_instance } -%>
     </div>
 
+    <% if BIOVEL_ENABLED %>
+    <div class="property">
+      <%= render :partial => "annotations/maturity_url",
+                 :locals => { :annotatable => @latest_version_instance } -%>
+    </div>
+    <% end %>
+
+
 
     <% if false %>
         <div class="property">
           <%= render :partial => "annotations/other_annotations",
-                     :locals => { :annotatable => @service } -%>
+                     :locals => { :annotatable => @latest_version_instance } -%>
         </div>
     <% end %>
   </div>
