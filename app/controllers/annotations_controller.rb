@@ -140,13 +140,13 @@ class AnnotationsController < ApplicationController
       string.strip!
       string = "#{link}<br/><hl/><h2>#{string}"
     end
-    return string.html_safe
+    return string
   end
 
   def add_maturity_level_annotation parameters
     annotation = Annotation.new(parameters[:annotation])
     maturity_string = find_maturity(parameters[:annotation][:value])
-    unless maturity_string.empty?
+    unless maturity_string.nil? || maturity_string.empty?
       annotation.value = maturity_string
       annotation.annotatable = @annotatable
       annotation.save!
