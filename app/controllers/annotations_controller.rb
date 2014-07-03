@@ -131,16 +131,23 @@ class AnnotationsController < ApplicationController
   end
 
   def find_maturity link
-    document = `curl #{link}`
-    document.gsub!("\n", "")
-    match = /(Actionstoimprovetheservicedescription\">)+(.*?<\/div>)/.match(document)
-    unless match.nil? or match.captures.nil?
-      string = match.captures.last
-      string.gsub!("</div>", "")
-      string.strip!
-      string = "#{link}<br/><hl/><h2>#{string}"
+    #document = `curl #{link}`
+
+    document = open(link, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
+    if !document.nil?
+      document = document.read
+      document.gsub!("\n", "")
+      match = /(Actionstoimprovetheservicedescription\">)+(.*?<\/div>)/.match(document)
+      unless match.nil? or match.captures.nil?
+        string = match.captures.last
+        string.gsub!("</div>", "")
+        string.strip!
+        string = "#{link}<br/><hl/><h2>#{string}"
+      end
+      return string
+    else
+      return ''
     end
-    return string
   end
 
   def add_maturity_level_annotation parameters

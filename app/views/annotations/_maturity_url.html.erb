@@ -16,8 +16,9 @@
 <% unless annotatable.nil? %>
     <div id="<%= main_div_id -%>" class="annotations_container">
       <div style="margin-top: 1em;">
-        <b>Link to Maturity URL:</b>
-        <%= info_icon_with_tooltip("Link to BioVeL Doc page with maturity URL attached") -%>
+        <b>Actions To Improve This Service Description:</b>
+        <%= info_icon_with_tooltip("Add a link to the BioVeL Documentation page of this service (for example https://wiki.biovel.eu/display/doc/BioVeL+Service+-+BioSTIF). \n
+                                   This will pull in the maturity level of the service and a list of actions that can be taken to improve its maturity rating.") -%>
       </div>
       <div class="box_annotations">
         <% maturity_url_annotations = annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.updated_at <=> b.updated_at} %>
@@ -31,13 +32,13 @@
 
                     </div>
                       <%= render :partial => "annotations/common/default_modify_options",
-                                 :locals => { :annotation => ann, :ann_type => "workflow info" } -%>
+                                 :locals => { :annotation => ann, :ann_type => "maturity_url info" } -%>
                     </div>
                 <% end %>
             <% end %>
         <% else %>
             <% if @latest_version_instance.class != SoapService %>
-                <span class="none_text">No info yet</span>
+                <span class="none_text">No links to BioVeL documentation pages yet</span>
             <% end %>
         <% end %>
       </div>
@@ -48,7 +49,7 @@
                      :locals => { :partial_from => "maturity_url",
                                   :annotatable => annotatable,
                                   :attribute_name => attribute_name,
-                                  :text_area_default_text => "Add info on maturity_url that use this service (e.g. a link to a workflow on myExperiment)...",
+                                  :text_area_default_text => "Add a link to a BioVeL Documentation Page (e.g https://wiki.biovel.eu/display/doc/BioVeL+Service+-+BioSTIF)",
                                   :main_div_id => main_div_id } -%>
 
       <% else %>
