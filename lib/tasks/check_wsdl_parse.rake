@@ -20,7 +20,7 @@ namespace :biocatalogue do
       report_file = "#{wsdl_parsing_comparison_report_folder}/comparison_report-#{time}.txt"
 
       # Get all SOAP services
-      soap_services = SoapService.where(:id => 1..10) #all
+      soap_services = SoapService.all #where(:id => 1..10)
 
       comparison_result = ''
       problematic_services = []
@@ -30,6 +30,8 @@ namespace :biocatalogue do
 
           wsdl_url = soap_service.wsdl_location
           comparison_result += "\n\n*****************************************************************\nService id: #{soap_service.service.id}; WSDL: #{wsdl_url}.\n"
+
+          Rails.logger.info("Processing service id #{soap_service.service.id}.\n")
 
           # Check is WSDL doc is reachable at all
           begin
