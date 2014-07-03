@@ -134,7 +134,6 @@ class AnnotationsController < ApplicationController
     #document = `curl #{link}`
     if link =~ URI::regexp
         document = open(link, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
-
       if !document.nil?
         document = document.read
         document.gsub!("\n", "")
@@ -146,11 +145,8 @@ class AnnotationsController < ApplicationController
           string = "#{link}<br/><hl/><h2>#{string}"
         end
         return string
-        flash[:error] = "NOOOOO"
       else return ''
       end
-
-    flash[:error] = "NOOOOO"
     else return ''
     end
   end
