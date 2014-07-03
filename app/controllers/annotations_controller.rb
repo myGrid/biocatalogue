@@ -132,21 +132,26 @@ class AnnotationsController < ApplicationController
 
   def find_maturity link
     #document = `curl #{link}`
+    if link =~ URI::regexp
+        document = open(link, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
 
-    document = open(link, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
-    if !document.nil?
-      document = document.read
-      document.gsub!("\n", "")
-      match = /(Actionstoimprovetheservicedescription\">)+(.*?<\/div>)/.match(document)
-      unless match.nil? or match.captures.nil?
-        string = match.captures.last
-        string.gsub!("</div>", "")
-        string.strip!
-        string = "#{link}<br/><hl/><h2>#{string}"
+      if !document.nil?
+        document = document.read
+        document.gsub!("\n", "")
+        match = /(Actionstoimprovetheservicedescription\">)+(.*?<\/div>)/.match(document)
+        unless match.nil? or match.captures.nil?
+          string = match.captures.last
+          string.gsub!("</div>", "")
+          string.strip!
+          string = "#{link}<br/><hl/><h2>#{string}"
+        end
+        return string
+        flash[:error] = "NOOOOO"
+      else return ''
       end
-      return string
-    else
-      return ''
+
+    flash[:error] = "NOOOOO"
+    else return ''
     end
   end
 
