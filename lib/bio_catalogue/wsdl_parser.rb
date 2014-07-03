@@ -227,6 +227,11 @@ module BioCatalogue
     # Build message type elements from net.sf.taverna.wsdl.parser.TypeDescriptor
     # Each TypeDescriptor represents one input parameter for a SOAP operation and
     # can be simple, complex, or an array.
+    #
+    # We are also caching the types we have seen before for handling types that contain elements
+    # that reference itself or another parent. Without the caching, this could lead to
+    # infinite recursion.
+
     # It returns a recursive hash like:
     # {
     #   'name' => '...',
@@ -237,30 +242,48 @@ module BioCatalogue
     #               ...
     #             ]
     # }
-    def self.build_message_type_details(type_descriptor)
+    def self.build_message_type_details(type_descriptor, cached_types = {})
       return {} if type_descriptor.nil?
 
       message_type_details = {}
       message_type_details['name'] = type_descriptor.getName().nil? ? '' : type_descriptor.getName();
 
+      ############################################################################
+      # Remember that for RJB to work you have to set JAVA_HOME variable on linux.
+      # On a Mac OS X, you need to set appropriate Java version using /System/Library/Frameworks/JavaVM.framework/Libraries symbolic link.
+      type_descriptor_class = Rjb::import('net.sf.taverna.wsdl.parser.TypeDescriptor')
+
       if type_descriptor._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
         message_type_details['type'] = type_descriptor.getType()
-      elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
-        elements = type_descriptor.getElements()
-        parts = []
-        if elements.size() > 1
-          i = 0
-          while i < elements.size() do
-            parts << build_message_type_details(elements.get(i))
-            i += 1
+      else
+        # Caching the type here for handling types that contain elements
+        # that reference itself or another parent. Without the caching, this could lead to
+        # infinite recursion.
+        if type_descriptor_class.isCyclic(type_descriptor)
+          if !cached_types["#{type_descriptor.getQname().toString()}"].nil?
+            message_type_details['type'] = type_descriptor.getType
+            return message_type_details
           end
-        elsif elements.size() == 1
-          parts = [build_message_type_details(elements.get(0))]
+          cached_types["#{type_descriptor.getQname().toString()}"] = type_descriptor.getQname().toString()
         end
-        message_type_details['type'] = parts
-      elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ArrayTypeDescriptor'
-        type_descriptor.getElementType().setName(type_descriptor.getElementType().getType())
-        message_type_details['type'] = [build_message_type_details(type_descriptor.getElementType())]
+
+        if type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+          elements = type_descriptor.getElements()
+          parts = []
+          if elements.size() > 1
+            i = 0
+            while i < elements.size() do
+              parts << build_message_type_details(elements.get(i), cached_types)
+              i += 1
+            end
+          elsif elements.size() == 1
+            parts = [build_message_type_details(elements.get(0)), cached_types]
+          end
+          message_type_details['type'] = parts
+        elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ArrayTypeDescriptor'
+          type_descriptor.getElementType().setName(type_descriptor.getElementType().getType()) if type_descriptor.getElementType().getName().nil?
+          message_type_details['type'] = [build_message_type_details(type_descriptor.getElementType(), cached_types)]
+        end
       end
       return message_type_details
     end
