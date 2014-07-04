@@ -50,12 +50,6 @@ HTTP_USER_AGENT = "BioCatalogue (Ruby/#{RUBY_VERSION})"
 ENABLE_STATUS_DISPLAY = true
 
 
-#When this is enabled, the services page will have a 'maturity url' annotation
-#which, when given a link to a BioVeL service documentation page, pulls the services maturity information from the link.
-BIOVEL_ENABLED = false
-
-
-
 # ==============================================================
 # Configure local settings for the SuperExceptionNotifier plugin
 # --------------------------------------------------------------

@@ -283,13 +283,9 @@ module AnnotationsHelper
     # If it is a URL - do a simple check if it contains spaces and replace them with '+'
     # We had an evil URL like this: http://alicegrid17.ba.infn.it:8080/INFN.Grid.FrontEnd/services/QueryJob/InsertJobs?NAME=MrBayesPPtest&arguments={pippo http://testjst.ba.infn.it/giacinto/mb/ba55abe3-fa67-4326-8407-1b5ebf1dac41/pippo-output.tar.gz 100 11}&sessionId={11111}
     # This is a silly hack and will not work properly if there is any text after the URL as all spaces will be replaced by '+'s.
-    # EDIT: I've added a hack to the hack. BioVeL maturity levels have a <br/> right after the URL. So it splits by this, '+'s the URL and
-    # stitches it back together. If there's no <br/> - the usual behaviour applies. Niall
     if desc.strip.start_with?('http://', 'https://')
       desc = desc.strip # remove leading and trailing whitespace
-      desc = desc.split('<br/>')
-      desc[0] = desc[0].gsub(/\s/,'+')
-      desc = desc.join('<br/>')
+      desc = desc.gsub(/\s/,'+')
     end
 
     desc = truncate(desc, :length => options[:truncate_length]) unless options[:truncate_length].nil?

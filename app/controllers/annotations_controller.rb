@@ -129,54 +129,19 @@ class AnnotationsController < ApplicationController
       error_to_back_or_home "Cannot perform this action!"
     end
   end
-
-  def find_maturity link
-    #document = `curl #{link}`
-    if link =~ URI::regexp
-        document = open(link, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
-      if !document.nil?
-        document = document.read
-        document.gsub!("\n", "")
-        match = /(Actionstoimprovetheservicedescription\">)+(.*?<\/div>)/.match(document)
-        unless match.nil? or match.captures.nil?
-          string = match.captures.last
-          string.gsub!("</div>", "")
-          string.strip!
-          string = "#{link}<br/><hl/><h2>#{string}"
-        end
-        return string
-      else return ''
-      end
-    else return ''
-    end
-  end
-
-  def add_maturity_level_annotation parameters
-    annotation = Annotation.new(parameters[:annotation])
-    maturity_string = find_maturity(parameters[:annotation][:value])
-    unless maturity_string.nil? || maturity_string.empty?
-      annotation.value = maturity_string
-      annotation.annotatable = @annotatable
-      annotation.save!
-    end
-  end
-
+  
   def create_inline
     # Set source as the current logged in user
     params[:annotation][:source_type] = current_user.class.name
     params[:annotation][:source_id] = current_user.id
-
+    
     # Do we create multiple annotations or a single annotation?
     if params[:multiple]
       success, annotations, errors = Annotation.create_multiple(params[:annotation], params[:separator])
     else
-      if BIOVEL_ENABLED && params[:partial] == 'maturity_url'
-        add_maturity_level_annotation(params)
-      else
-        annotation = Annotation.new(params[:annotation])
-        annotation.annotatable = @annotatable
-        annotation.save!    # This will raise an exception if it fails
-      end
+      annotation = Annotation.new(params[:annotation])
+      annotation.annotatable = @annotatable
+      annotation.save!    # This will raise an exception if it fails
     end
     
     respond_to do |format|
