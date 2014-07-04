@@ -31,7 +31,7 @@ namespace :biocatalogue do
           wsdl_url = soap_service.wsdl_location
           comparison_result += "\n\n*****************************************************************\nService id: #{soap_service.service.id}; WSDL: #{wsdl_url}.\n"
 
-          Rails.logger.info("Processing service id #{soap_service.service.id}.\n")
+          puts("Comparing WSDL parsers: processing service id #{soap_service.service.id}.\n")
 
           # Check is WSDL doc is reachable at all
           begin
@@ -55,30 +55,40 @@ namespace :biocatalogue do
                 problem = false
 
                 if service_info['name'] != service_info_old['name']
-                  comparison_result << "Name differs. New: #{service_info['name']}. Old: #{service_info_old['name']}.\n"
-                  problem = true
+                  # They may differ but one may be nil and the other one '' - in this case we treat them as if they are the same
+                  if !(service_info['name'].blank? && service_info_old['name'].blank?)
+                    comparison_result << "Name differs. New: #{service_info['name']}. Old: #{service_info_old['name']}.\n"
+                    problem = true
+                  end
                 end
                 if service_info['description'] != service_info_old['description']
-                  comparison_result << "Description differs. New: #{service_info['description']}. Old: #{service_info_old['description']}.\n"
-                  problem = true
+                  if !(service_info['description'].blank? && service_info_old['description'].blank?)
+                    comparison_result << "Description differs. New: #{service_info['description']}. Old: #{service_info_old['description']}.\n"
+                    problem = true
+                  end
                 end
                 if service_info['namespace'] != service_info_old['namespace']
-                  comparison_result << "Namespace differs. New: #{service_info['namespace']}. Old: #{service_info_old['namespace']}.\n"
-                  problem = true
+                  if !(service_info['namespace'].blank? && service_info_old['namespace'].blank?)
+                    comparison_result << "Namespace differs. New: #{service_info['namespace']}. Old: #{service_info_old['namespace']}.\n"
+                    problem = true
+                  end
                 end
                 if service_info['ports'].count != service_info_old['ports'].count
-                  comparison_result << "Number of ports differ. New: #{service_info['ports'].count}. Old: #{service_info_old['ports'].count}.\n"
-                  problem = true
+                  if !(service_info['ports'].blank? && service_info_old['ports'].blank?)
+                    comparison_result << "Number of ports differ. New: #{service_info['ports'].count}. Old: #{service_info_old['ports'].count}.\n"
+                    problem = true
+                  end
                 end
                 if service_info['operations'].count != service_info_old['operations'].count
-                  comparison_result << "Number of operations differ. New: #{service_info['operations'].count}. Old: #{service_info_old['operations'].count}.\n"
-                  problem = true
+                  if !(service_info['operations'].blank? && service_info_old['operations'].blank?)
+                    comparison_result << "Number of operations differ. New: #{service_info['operations'].count}. Old: #{service_info_old['operations'].count}.\n"
+                    problem = true
+                  end
                 end
 
                 problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url} if problem
               else
                 comparison_result << "New parser parsed. Old parser failed to parse with the following errors: #{error_messages_old}.\n"
-                problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
               end
             else
               if !service_info_old.blank?

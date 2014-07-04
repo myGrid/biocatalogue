@@ -118,11 +118,11 @@ module BioCatalogue
 
           service_info = {}
 
-          service_info['name'] = service.getQName().getLocalPart()
+          service_info['name'] = service.getQName().nil? ? '' : service.getQName().getLocalPart()
 
-          service_info['description'] = parsed_wsdl.getServiceDocumentation()
+          service_info['description'] = parsed_wsdl.getServiceDocumentation().nil? ? '' : parsed_wsdl.getServiceDocumentation()
 
-          service_info['namespace'] = definition.getTargetNamespace()
+          service_info['namespace'] = definition.getTargetNamespace().nil? ? '' : definition.getTargetNamespace()
 
           service_info['ports'] = []
 
