@@ -55,7 +55,6 @@ ENABLE_STATUS_DISPLAY = true
 BIOVEL_ENABLED = false
 
 
-
 # ==============================================================
 # Configure local settings for the SuperExceptionNotifier plugin
 # --------------------------------------------------------------

@@ -170,7 +170,7 @@ class AnnotationsController < ApplicationController
     if params[:multiple]
       success, annotations, errors = Annotation.create_multiple(params[:annotation], params[:separator])
     else
-      if BIOVEL_ENABLED && params[:partial] == 'maturity_url'
+      if defined?(BIOVEL_ENABLED) && BIOVEL_ENABLED && params[:partial] == 'maturity_url'
         add_maturity_level_annotation(params)
       else
         annotation = Annotation.new(params[:annotation])

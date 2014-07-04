@@ -138,7 +138,7 @@
                  :locals => { :annotatable => @latest_version_instance } -%>
     </div>
 
-    <% if BIOVEL_ENABLED %>
+    <% if defined?(BIOVEL_ENABLED) && BIOVEL_ENABLED %>
     <div class="property">
       <%= render :partial => "annotations/maturity_url",
                  :locals => { :annotatable => @latest_version_instance } -%>

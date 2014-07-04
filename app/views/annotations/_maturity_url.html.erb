@@ -16,8 +16,8 @@
 <% unless annotatable.nil? %>
     <div id="<%= main_div_id -%>" class="annotations_container">
       <div style="margin-top: 1em;">
-        <b>Actions To Improve This Service Description:</b>
-        <%= info_icon_with_tooltip("Add a link to the BioVeL Documentation page of this service (for example https://wiki.biovel.eu/display/doc/BioVeL+Service+-+BioSTIF). \n
+        <b>Maturity level of this service (from BioVeL wiki) and actions to improve it:</b>
+        <%= info_icon_with_tooltip("Add a URL to the BioVeL documentation page of this service (for example https://wiki.biovel.eu/display/doc/BioVeL+Service+-+BioSTIF).\n
                                    This will pull in the maturity level of the service and a list of actions that can be taken to improve its maturity rating.") -%>
       </div>
       <div class="box_annotations">
@@ -38,7 +38,7 @@
             <% end %>
         <% else %>
             <% if @latest_version_instance.class != SoapService %>
-                <span class="none_text">No links to BioVeL documentation pages yet</span>
+                <span class="none_text">No URL to the BioVeL documentation page for this service provided yet</span>
             <% end %>
         <% end %>
       </div>
@@ -49,7 +49,7 @@
                      :locals => { :partial_from => "maturity_url",
                                   :annotatable => annotatable,
                                   :attribute_name => attribute_name,
-                                  :text_area_default_text => "Add a link to a BioVeL Documentation Page (e.g https://wiki.biovel.eu/display/doc/BioVeL+Service+-+BioSTIF)",
+                                  :text_area_default_text => "Add a URL to the BioVeL documentation page for this service (e.g https://wiki.biovel.eu/display/doc/BioVeL+Service+-+BioSTIF)",
                                   :main_div_id => main_div_id } -%>
 
       <% else %>
