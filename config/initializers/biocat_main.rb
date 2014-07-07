@@ -79,9 +79,9 @@ require 'will_paginate/array'
 BioCatalogue::Util.say("Running in #{Rails.env} mode...")
 BioCatalogue::Util.say("Configuring the #{SITE_NAME} application...")
 
-# Remember that for RJB to work you have to set JAVA_HOME variable on linux.
+# Remember that for RJB to work you have to set JAVA_HOME (path to Java JDK not JRE!) variable on linux.
 # On Mac OS X, JAVA_HOME is reported by calling /usr/libexec/java_home.
-BioCatalogue::Util.say("Loading RJB JVM for WSDL parsing ...\nFor RJB JVM to work remember to set JAVA_HOME under Linux or the appropriate Java version using /System/Library/Frameworks/JavaVM.framework/Libraries symbolic link on Mac OS X.")
+BioCatalogue::Util.say("Loading RJB JVM for WSDL parsing ...\nFor RJB JVM to work remember to set JAVA_HOME (path to Java JDK not JRE!) under Linux or the appropriate Java version using /System/Library/Frameworks/JavaVM.framework/Libraries symbolic link on Mac OS X.")
 path = "#{Rails.root}/lib/wsdl-generic-1.11.0-service-catalogue-SNAPSHOT-jar-with-dependencies.jar"
 Rjb::load(classpath = path, jvmargs=[])
 Rjb::primitive_conversion = true # convert primitive data types to Ruby's native
