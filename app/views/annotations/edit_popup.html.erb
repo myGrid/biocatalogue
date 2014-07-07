@@ -33,9 +33,24 @@
         <p style="margin-bottom: 0.4em;">
           <b><%= @annotation.attribute_name -%></b>
         </p>
-        <p style="margin-top: 0.3em;">
-          <%= f.text_area :value, :value=> "#{@annotation.value.ann_content}", :size => "50x10", :style => "width: 98%;" -%>
-        </p>
+        <% if BIOVEL_ENABLED && @annotation.attribute_name == 'maturity_url' %>
+            <% desc = @annotation.value.ann_content
+               if desc.strip.start_with?('http://', 'https://')
+                 desc = desc.strip # remove leading and trailing whitespace
+                 desc = desc.split('<br/>')
+                 url = desc[0].gsub(/\s/,'+')
+                  %>
+                 <p style="margin-top: 0.3em;">
+                    <%= f.text_area :value, :value=> "#{url}", :size => "50x10", :style => "width: 98%;" -%>
+                    <%= desc[1].html_safe unless desc[1].nil?-%>
+                </p>
+               <% end %>
+        <% else %>
+            <p style="margin-top: 0.3em;">
+              <%= f.text_area :value, :value=> "#{@annotation.value.ann_content}", :size => "50x10", :style => "width: 98%;" -%>
+            </p>
+        <% end %>
+
 
         <p style="text-align: center;">
           <%= f.submit "Update", :disable_with => "Updating..." -%>

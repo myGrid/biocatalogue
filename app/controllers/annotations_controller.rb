@@ -106,10 +106,22 @@ class AnnotationsController < ApplicationController
   def update
     # Only allow update for certain kind of annotation values
     if [ 'TextValue', 'NumberValue' ].include?(@annotation.value_type)
-      @annotation.value.ann_content = params[:annotation][:value]
+      if @annotation.attribute.name == 'maturity_url'
+        begin
+          annotation_value = find_maturity(params[:annotation][:value])
+        rescue
+          flash[:error] = "An error occured loading the maturity levels and actions for this service.
+                  <br/> Please ensure you have put the correct URL for the BioVeL Wiki Document and nothing else in the annotation box".html_safe
+          annotation_value = nil
+        end
+      else
+        annotation_value = params[:annotation][:value]
+      end
+      @annotation.value.ann_content = annotation_value
       @annotation.version_creator_id = current_user.id
+
       respond_to do |format|
-        if @annotation.save
+        if !annotation_value.nil? && @annotation.save
           flash[:notice] = 'Annotation was successfully updated.'
 
           url_to_redirect_to = if @annotation.annotatable_type =~ /RestParameter|RestRepresentation/
@@ -154,11 +166,9 @@ class AnnotationsController < ApplicationController
   def add_maturity_level_annotation parameters
     annotation = Annotation.new(parameters[:annotation])
     maturity_string = find_maturity(parameters[:annotation][:value])
-    unless maturity_string.nil? || maturity_string.empty?
-      annotation.value = maturity_string
-      annotation.annotatable = @annotatable
-      annotation.save!
-    end
+    annotation.value = maturity_string
+    annotation.annotatable = @annotatable
+    annotation.save!
   end
 
   def create_inline
@@ -171,7 +181,12 @@ class AnnotationsController < ApplicationController
       success, annotations, errors = Annotation.create_multiple(params[:annotation], params[:separator])
     else
       if defined?(BIOVEL_ENABLED) && BIOVEL_ENABLED && params[:partial] == 'maturity_url'
-        add_maturity_level_annotation(params)
+        begin
+          add_maturity_level_annotation(params)
+        rescue
+          @error_msg = "An error occured loading the maturity levels and actions for this service.
+                  <br/> Please ensure you have put the correct URL for the BioVeL Wiki Document and nothing else in the annotation box".html_safe
+        end
       else
         annotation = Annotation.new(params[:annotation])
         annotation.annotatable = @annotatable

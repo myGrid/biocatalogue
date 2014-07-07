@@ -44,7 +44,9 @@
       </div>
 
       <% if logged_in? %>
-
+          <% if !@error_msg.nil? %>
+            <span class="error_text"><%= @error_msg %></span>
+          <% end %>
           <%= render :partial => "annotations/add_box_for_biovel_maturity",
                      :locals => { :partial_from => "maturity_url",
                                   :annotatable => annotatable,
