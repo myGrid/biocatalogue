@@ -411,8 +411,11 @@ module ServicesHelper
   end
   
   def service_tests_for_display(service_tests)
+
     return service_tests if service_tests.empty?
-    
+
+    service_tests.reject!{|st| st.test_type == "TestScript"} if ENABLE_TEST_SCRIPTS == false
+
     if logged_in? 
       return service_tests if (current_user.is_admin? || service_tests.first.service.all_responsibles.include?(current_user))
     end
