@@ -155,7 +155,7 @@ module BioCatalogue
       
       if defined?(Rails.cache) and !Rails.cache.nil?
         Rails.cache.instance_eval do
-          @data.reset
+          @data.reset unless @data.nil?
         end
       end
     end

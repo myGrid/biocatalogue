@@ -45,7 +45,6 @@ require 'redcarpet'
 require 'pp'
 require 'rexml/document'
 require 'acts_as_archived'
-require 'rjb'
 require 'exception_notifier'
 require 'bio_catalogue/annotations/custom_migration_to_v3'
 
@@ -81,6 +80,7 @@ BioCatalogue::Util.say("Configuring the #{SITE_NAME} application...")
 
 # Remember that for RJB to work you have to set JAVA_HOME (path to Java JDK not JRE!) variable on linux.
 # On Mac OS X, JAVA_HOME is reported by calling /usr/libexec/java_home.
+require 'rjb'
 BioCatalogue::Util.say("Loading RJB JVM for WSDL parsing ...\nFor RJB JVM to work remember to set JAVA_HOME (path to Java JDK not JRE!) under Linux or the appropriate Java version using /System/Library/Frameworks/JavaVM.framework/Libraries symbolic link on Mac OS X.")
 path = "#{Rails.root}/lib/wsdl-generic-1.11.0-service-catalogue-SNAPSHOT-jar-with-dependencies.jar"
 Rjb::load(classpath = path, jvmargs=[])
