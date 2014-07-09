@@ -412,7 +412,7 @@ module ServicesHelper
         #elsif entry_hash['type'].is_a?(Hash)
         #  x << render_computational_type_details_entries_new(entry_hash['type']).html_safe
         else
-          x << entry_hash['type'].html_safe
+          x << entry_hash['type'].blank? ? '' : entry_hash['type'].html_safe
         end
       end
       x.html_safe

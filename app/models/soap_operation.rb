@@ -61,7 +61,9 @@ class SoapOperation < ActiveRecord::Base
   end
 
   def belongs_to_archived_service?
-    self.associated_service.archived?
+    # If we cannot find the associated parent service then just forget about this SOAP operation
+    # This should not really happen unless the DB is corrupted?
+    self.associated_service.nil? ? true : self.associated_service.archived?
   end
 
   def preferred_description
