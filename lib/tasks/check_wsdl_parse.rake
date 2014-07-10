@@ -19,19 +19,24 @@ namespace :biocatalogue do
       time = Time.now.strftime("%Y%m%d%H%M")
       report_file = "#{wsdl_parsing_comparison_report_folder}/comparison_report-#{time}.txt"
 
-      # Get all SOAP services
-      soap_services = SoapService.all #where(:id => 1..10)
+      my_logger ||= Logger.new(report_file)
+      puts("Logging to file #{report_file}")
 
-      comparison_result = ''
+      # Get all SOAP services
+      soap_services = SoapService.where(:id => 1..20)
+
       problematic_services = []
+      unreachable_services = []
 
       soap_services.each do |soap_service|
-        if (!soap_service.service.archived?)
+        my_logger.info("\n*****************************************************************\n")
+        my_logger.info("Processing SOAP service id: #{soap_service.id}; parent service id: #{soap_service.service.id}; WSDL: #{soap_service.wsdl_location}.\n")
+        puts("Processing SOAP service id: #{soap_service.id}; parent service id: #{soap_service.service.id}; WSDL: #{soap_service.wsdl_location}.\n")
 
+        if (soap_service.service.archived?)
+          my_logger.info("Service archived - skipping.\n")
+        elsif
           wsdl_url = soap_service.wsdl_location
-          comparison_result += "\n\n*****************************************************************\nService id: #{soap_service.service.id}; WSDL: #{wsdl_url}.\n"
-
-          puts("Comparing WSDL parsers: processing service id #{soap_service.service.id}.\n")
 
           # Check is WSDL doc is reachable at all
           begin
@@ -39,8 +44,8 @@ namespace :biocatalogue do
               open(wsdl_url.strip(), :proxy => HTTP_PROXY, "User-Agent" => HTTP_USER_AGENT).read
             end
           rescue Exception => ex
-            comparison_result += "WSDL document does not seem to be reachable - skipping parsing.\n"
-            problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+            my_logger.info("WSDL document does not seem to be reachable - skipping parsing.\n")
+            unreachable_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
             next
           end
 
@@ -53,62 +58,61 @@ namespace :biocatalogue do
                 # Both parsers managed to parse the WSDL - compare the resulting hashes
 
                 problem = false
-
                 if service_info['name'] != service_info_old['name']
                   # They may differ but one may be nil and the other one '' - in this case we treat them as if they are the same
                   if !(service_info['name'].blank? && service_info_old['name'].blank?)
-                    comparison_result << "Name differs. New: #{service_info['name']}. Old: #{service_info_old['name']}.\n"
+                    my_logger.info("Name differs. New: #{service_info['name']}. Old: #{service_info_old['name']}.\n")
                     problem = true
                   end
                 end
                 if service_info['description'] != service_info_old['description']
                   if !(service_info['description'].blank? && service_info_old['description'].blank?)
-                    comparison_result << "Description differs. New: #{service_info['description']}. Old: #{service_info_old['description']}.\n"
+                    my_logger.info("Description differs. New: #{service_info['description']}. Old: #{service_info_old['description']}.\n")
                     problem = true
                   end
                 end
                 if service_info['namespace'] != service_info_old['namespace']
                   if !(service_info['namespace'].blank? && service_info_old['namespace'].blank?)
-                    comparison_result << "Namespace differs. New: #{service_info['namespace']}. Old: #{service_info_old['namespace']}.\n"
+                    my_logger.info("Namespace differs. New: #{service_info['namespace']}. Old: #{service_info_old['namespace']}.\n")
                     problem = true
                   end
                 end
                 if service_info['ports'].count != service_info_old['ports'].count
                   if !(service_info['ports'].blank? && service_info_old['ports'].blank?)
-                    comparison_result << "Number of ports differ. New: #{service_info['ports'].count}. Old: #{service_info_old['ports'].count}.\n"
+                    my_logger.info("Number of ports differ. New: #{service_info['ports'].count}. Old: #{service_info_old['ports'].count}.\n")
                     problem = true
                   end
                 end
                 if service_info['operations'].count != service_info_old['operations'].count
                   if !(service_info['operations'].blank? && service_info_old['operations'].blank?)
-                    comparison_result << "Number of operations differ. New: #{service_info['operations'].count}. Old: #{service_info_old['operations'].count}.\n"
+                    my_logger.info("Number of operations differ. New: #{service_info['operations'].count}. Old: #{service_info_old['operations'].count}.\n")
                     problem = true
                   end
                 end
 
                 problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url} if problem
               else
-                comparison_result << "New parser parsed. Old parser failed to parse with the following errors: #{error_messages_old}.\n"
+                my_logger.info("New parser parsed. Old parser failed to parse with the following errors: #{error_messages_old}.\n")
               end
             else
               if !service_info_old.blank?
-                comparison_result << "New parser failed to parse with the following errors: #{error_messages}. Old parser parsed.\n"
+                my_logger.info("New parser failed to parse with the following errors: #{error_messages}. Old parser parsed.\n")
                 problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
               else
-                comparison_result << "Both parsers failed to parse. New parser errors: #{error_messages}. Old parser errors: #{error_messages_old}.\n"
+                my_logger.info("Both parsers failed to parse. New parser errors: #{error_messages}. Old parser errors: #{error_messages_old}.\n")
                 problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
               end
             end
           rescue Exception => ex
-            comparison_result << "Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}.\n"
+            my_logger.info("Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}.\n")
             problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
           end
         end
       end
 
-      comparison_result = "Number of services that need looking into: #{problematic_services.count}.\n#{problematic_services}\n" + comparison_result if problematic_services.count > 0
-      File.open(report_file, 'w+') { |file| file.write(comparison_result) }
-      Rails.logger.info('WSDL aprsing comparison report written to' + report_file)
+      my_logger.info("Number of services that need looking into: #{problematic_services.count}.\n#{problematic_services}\n") if problematic_services.count > 0
+      my_logger.info("Number of services with unreachable WSDL documents: #{unreachable_services.count}.\n#{unreachable_services}\n") if unreachable_services.count > 0
+      puts('WSDL parsing comparison report written to ' + report_file)
     end
 
     desc "check soap service wsdls parse"
