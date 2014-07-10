@@ -8,6 +8,72 @@
 namespace :biocatalogue do
   namespace :wsdl_parser do
 
+    # A simple task that parses the WSDL URL (based on Taverna's wsdl-generic parser) passed as command line argument as rake biocatalogue:wsdl_parser:parse wsdl='http://blah.com?wsdl'
+    desc "Parse WSDL document using the new WSDL parsing utility based on Taverna's wsdl-generic. Pass WSDL URL as rake biocatalogue:wsdl_parser:parse wsdl='http://blah.com?wsdl'"
+    task :parse => :environment do
+      wsdl_url = ENV['wsdl']
+      puts("Parsing WSDL doc: #{wsdl_url}.")
+      if wsdl_url.blank?
+        puts('You have to specify WSDL URL as e.g. rake biocatalogue:wsdl_parser:parse wsdl=http://blah.com?wsdl')
+      else
+        # Check is WSDL doc is reachable at all
+        begin
+          timeout(10.seconds) do
+            open(wsdl_url.strip(), :proxy => HTTP_PROXY, "User-Agent" => HTTP_USER_AGENT).read
+          end
+        rescue Exception => ex
+          puts('WSDL document does not seem to be reachable - skipping parsing.')
+          exit(-1)
+        end
+
+        begin
+          service_info, error_messages = BioCatalogue::WsdlParser.parse_via_tavernas_wsdl_generic(wsdl_url)
+
+          if !service_info.blank?
+            puts("Successfully parsed - see the resulting hash below: \n #{service_info}")
+          else
+            puts("Parser failed to parse with the following errors: #{error_messages}.")
+          end
+        rescue Exception => ex
+          stacktrace = ex.backtrace.join("\n")
+          puts("Parsing caused exception: #{ex.message}. Stacktrace: #{stacktrace}\n")
+        end
+      end
+    end
+
+    # A simple task that parses the WSDL URL (based on the old PHP WSDLUtils parser) passed as command line argument as rake biocatalogue:wsdl_parser:parse_old wsdl='http://blah.com?wsdl'
+    desc "Parse WSDL document using the new WSDL parsing utility based on Taverna's wsdl-generic. Pass WSDL URL as rake biocatalogue:wsdl_parser:parse_old wsdl='http://blah.com?wsdl'"
+    task :parse_old => :environment do
+      wsdl_url = ENV['wsdl']
+      puts("Parsing WSDL doc: #{wsdl_url}.")
+      if wsdl_url.blank?
+        puts('You have to specify WSDL URL as e.g. rake biocatalogue:wsdl_parser:parsparse_olde wsdl=http://blah.com?wsdl')
+      else
+        # Check is WSDL doc is reachable at all
+        begin
+          timeout(10.seconds) do
+            open(wsdl_url.strip(), :proxy => HTTP_PROXY, "User-Agent" => HTTP_USER_AGENT).read
+          end
+        rescue Exception => ex
+          puts('WSDL document does not seem to be reachable - skipping parsing.')
+          exit(-1)
+        end
+
+        begin
+          service_info, error_messages = BioCatalogue::WsdlParser.parse(wsdl_url)
+
+          if !service_info.blank?
+            puts("Successfully parsed - see the resulting hash below: \n #{service_info}")
+          else
+            puts("Parser failed to parse with the following errors: #{error_messages}.")
+          end
+        rescue Exception => ex
+          stacktrace = ex.backtrace.join("\n")
+          puts("Parsing caused exception: #{ex.message}. Stacktrace: #{stacktrace}\n")
+        end
+      end
+    end
+
     desc "Compare the new WSDL parsing utility based on Taverna's wsdl-generic with the old PHP WSDLUtils."
     task :compare_wsdl_parsers => :environment do
 
@@ -36,7 +102,7 @@ namespace :biocatalogue do
         if (soap_service.service.archived?)
           my_logger.info("Service archived - skipping.\n")
         elsif
-          wsdl_url = soap_service.wsdl_location
+        wsdl_url = soap_service.wsdl_location
 
           # Check is WSDL doc is reachable at all
           begin
@@ -61,31 +127,31 @@ namespace :biocatalogue do
                 if service_info['name'] != service_info_old['name']
                   # They may differ but one may be nil and the other one '' - in this case we treat them as if they are the same
                   if !(service_info['name'].blank? && service_info_old['name'].blank?)
-                    my_logger.info("Name differs. New: #{service_info['name']}. Old: #{service_info_old['name']}.\n")
+                    my_logger.info("Name differs. New: #{service_info['name']}\n Old: #{service_info_old['name']}\n")
                     problem = true
                   end
                 end
                 if service_info['description'] != service_info_old['description']
                   if !(service_info['description'].blank? && service_info_old['description'].blank?)
-                    my_logger.info("Description differs. New: #{service_info['description']}. Old: #{service_info_old['description']}.\n")
+                    my_logger.info("Description differs. New: #{service_info['description']}\n Old: #{service_info_old['description']}\n")
                     problem = true
                   end
                 end
                 if service_info['namespace'] != service_info_old['namespace']
                   if !(service_info['namespace'].blank? && service_info_old['namespace'].blank?)
-                    my_logger.info("Namespace differs. New: #{service_info['namespace']}. Old: #{service_info_old['namespace']}.\n")
+                    my_logger.info("Namespace differs. New: #{service_info['namespace']}\n Old: #{service_info_old['namespace']}\n")
                     problem = true
                   end
                 end
                 if service_info['ports'].count != service_info_old['ports'].count
                   if !(service_info['ports'].blank? && service_info_old['ports'].blank?)
-                    my_logger.info("Number of ports differ. New: #{service_info['ports'].count}. Old: #{service_info_old['ports'].count}.\n")
+                    my_logger.info("Number of ports differ. New: #{service_info['ports'].count}\n Old: #{service_info_old['ports'].count}\n")
                     problem = true
                   end
                 end
                 if service_info['operations'].count != service_info_old['operations'].count
                   if !(service_info['operations'].blank? && service_info_old['operations'].blank?)
-                    my_logger.info("Number of operations differ. New: #{service_info['operations'].count}. Old: #{service_info_old['operations'].count}.\n")
+                    my_logger.info("Number of operations differ. New: #{service_info['operations'].count}\n Old: #{service_info_old['operations'].count}\n")
                     problem = true
                   end
                 end
@@ -104,7 +170,8 @@ namespace :biocatalogue do
               end
             end
           rescue Exception => ex
-            my_logger.info("Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}.\n")
+            stacktrace = ex.backtrace.join("\n")
+            my_logger.info("Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}. Stacktrace: #{stacktrace}.\n")
             problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
           end
         end
@@ -117,7 +184,7 @@ namespace :biocatalogue do
 
     desc "check soap service wsdls parse"
     task :check => :environment do
-      
+
       last_no  = ENV['last']
       first_no = ENV['first']
       all      = ENV['all']
@@ -128,7 +195,7 @@ namespace :biocatalogue do
       if first_no.to_i > 0
         services.concat(Service.all.last(first_no.to_i))
       end
-      
+
       if all
         services = Service.all
       end
@@ -140,13 +207,13 @@ namespace :biocatalogue do
       info = check(services)
       write_report(info)
     end
-    
+
     # use BioCatalogue wsdl parser to check
     # if registered wsdl still parse.
     # Can also be used to reveal dead wood...
     def check(services)
       count  = 1
-      failed = [] 
+      failed = []
       services.each do |service|
         service.service_version_instances_by_type('SoapService').each do |soap|
           begin
@@ -165,17 +232,17 @@ namespace :biocatalogue do
       end
       return [ count, failed ]
     end
-    
+
     # write summary report of the parsing
     def  write_report(details)
       count, failed = details
-      
+
       log = 'tmp/pids/wsdl_parse_check.log'
       $stdout.reopen(log, "w")
       $stdout.sync = true
       $stderr.reopen $stdout
       puts "Start Time : #{Time.now}"
-      
+
       puts "Summary Report"
       puts "================"
       puts "No of wsdls processed         : #{count}"
