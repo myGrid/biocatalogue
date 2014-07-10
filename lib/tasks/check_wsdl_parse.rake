@@ -23,7 +23,7 @@ namespace :biocatalogue do
       puts("Logging to file #{report_file}")
 
       # Get all SOAP services
-      soap_services = SoapService.where(:id => 1..20)
+      soap_services = SoapService.all #where(:id => 1..20)
 
       problematic_services = []
       unreachable_services = []
