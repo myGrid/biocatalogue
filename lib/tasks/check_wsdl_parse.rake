@@ -171,7 +171,7 @@ namespace :biocatalogue do
             end
           rescue Exception => ex
             stacktrace = ex.backtrace.join("\n")
-            my_logger.info("Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}. Stacktrace: #{stacktrace}.\n")
+            my_logger.info("Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}. Stacktrace: #{stacktrace}\n")
             problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
           end
         end
