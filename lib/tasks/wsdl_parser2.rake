@@ -7,7 +7,6 @@
 
 namespace :biocatalogue do
   namespace :wsdl_parser do
-
     # A simple task that parses the WSDL URL (based on Taverna's wsdl-generic parser) passed as command line argument as rake biocatalogue:wsdl_parser:parse wsdl='http://blah.com?wsdl'
     desc "Parse WSDL document using the new WSDL parsing utility based on Taverna's wsdl-generic. Pass WSDL URL as rake biocatalogue:wsdl_parser:parse_wsdlgeneric wsdl='http://blah.com?wsdl'"
     task :parse_wsdlgeneric => :environment do
@@ -76,7 +75,6 @@ namespace :biocatalogue do
 
     desc "Compare the new WSDL parsing utility based on Taverna's wsdl-generic with the old PHP WSDLUtils."
     task :compare_wsdl_parsers => :environment do
-
       wsdl_parsing_comparison_report_folder = Rails.root.join('data',"wsdl_parsing_comparison_reports-#{Rails.env}")
       unless Dir.exists?(wsdl_parsing_comparison_report_folder)
         Dir.mkdir(wsdl_parsing_comparison_report_folder)
@@ -184,7 +182,6 @@ namespace :biocatalogue do
 
     desc "Update SOAP services using the new WSDL parsing utility based on Taverna's wsdl-generic."
     task :update_soap_services => :environment do
-
       # Get all SOAP services, archived or not
       soap_services = SoapService.all #where(:id => 20..30)
 
@@ -250,7 +247,6 @@ namespace :biocatalogue do
 
     desc "Check SOAP service WSDLs parse - using PHP WSDLUtils parser."
     task :check => :environment do
-
       last_no  = ENV['last']
       first_no = ENV['first']
       all      = ENV['all']
