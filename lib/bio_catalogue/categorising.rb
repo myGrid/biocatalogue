@@ -118,9 +118,11 @@ module BioCatalogue
       sql = [ "SELECT annotations.annotatable_id AS id, annotations.annotatable_type AS type
               FROM annotations 
               INNER JOIN annotation_attributes ON annotations.attribute_id = annotation_attributes.id
+              INNER JOIN services ON annotations.annotatable_id = services.id
               WHERE annotation_attributes.name = 'category' 
                 AND annotations.annotatable_type = 'Service' 
                 AND annotations.value_type = 'Category'
+                AND services.archived_at IS NULL
                 AND annotations.value_id IN (?)",
               category_ids ]
       
