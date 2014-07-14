@@ -50,7 +50,7 @@ module ServicesHelper
   end
   
   def render_computational_type_details(details_hash)
-    return "" if details_hash.blank?
+    return ''.html_safe if details_hash.blank?
     return details_hash.to_s.html_safe if (!details_hash.is_a?(Hash) and !details_hash.is_a?(Array))
     
     #logger.info("computational type details class = #{details_hash.class.name}")
@@ -399,21 +399,23 @@ module ServicesHelper
     return html if entry_hash.blank?
 
     html << content_tag(:li) do
-      x = entry_hash['name'].nil? ? ''.html_safe : entry_hash['name'].html_safe
-      if entry_hash['description']
-        x << info_icon_with_tooltip(white_list(simple_format(entry_hash['description']))).html_safe
+      x = entry_hash['name'].blank? ? '' : entry_hash['name']
+      if !entry_hash['description'].blank?
+        x << info_icon_with_tooltip(white_list(simple_format(entry_hash['description'])))
       end
-      if entry_hash['type'] and !entry_hash['type'].blank?
-        x << content_tag(:span, "type: ", :class => "type_keyword").html_safe
-        if entry_hash['type'].is_a?(Array)
+      if !entry_hash['type'].blank?
+        x << content_tag(:span, 'type: ', :class => "type_keyword")
+        if entry_hash['type'].is_a?(Array) # it will always be an array or a simple variable - for hashes in original type this will be an array with just one element
           entry_hash['type'].each do |element|
-            x << render_computational_type_details_entries_new(element).html_safe
+            x << render_computational_type_details_entries_new(element)
           end
         #elsif entry_hash['type'].is_a?(Hash)
         #  x << render_computational_type_details_entries_new(entry_hash['type']).html_safe
         else
-          x << entry_hash['type'].blank? ? '' : entry_hash['type'].html_safe
+          x << entry_hash['type']
         end
+      else
+        x << ''
       end
       x.html_safe
     end
