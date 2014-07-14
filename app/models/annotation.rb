@@ -176,14 +176,13 @@ end
   
 protected
 
-  DESCRIPTION_ANNOTATION_ATTRIBUTE = AnnotationAttribute.find_by_name("description")
 
   def description_value_for_solr
-    return self.value_content if self.attribute == DESCRIPTION_ANNOTATION_ATTRIBUTE
+    return self.value_content if self.attribute == AnnotationAttribute.find_by_name("description")
   end
 
   def value_for_solr
-    return self.value_content unless self.attribute == DESCRIPTION_ANNOTATION_ATTRIBUTE
+    return self.value_content unless self.attribute == AnnotationAttribute.find_by_name("description")
   end
   
   def process_post_destroy_custom_logic
