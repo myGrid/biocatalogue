@@ -179,6 +179,9 @@ module BioCatalogue
                 # Fix the name of the top element of complex and array types
                 computational_type_details['name'] = input.getType()
               end
+              if input._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+                computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+              end
               inp['computational_type_details'] = computational_type_details
               operation['inputs'] << inp
               j += 1
@@ -196,6 +199,9 @@ module BioCatalogue
               if output._classname != 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
                 # Fix the name of the top element of complex and array types
                 computational_type_details['name'] = output.getType()
+              end
+              if output._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+                computational_type_details['type'] = computational_type_details['type'][0]['type']
               end
               out['computational_type_details'] = computational_type_details
 
@@ -263,13 +269,17 @@ module BioCatalogue
         # infinite recursion.
         if type_descriptor_class.isCyclic(type_descriptor)
           if !cached_types["#{type_descriptor.getQname().toString()}"].nil?
-            message_type_details['type'] = type_descriptor.getType
+            message_type_details['type'] = type_descriptor.getType()
             return message_type_details
           end
           cached_types["#{type_descriptor.getQname().toString()}"] = type_descriptor.getQname().toString()
         end
 
         if type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+
+          complex_type = {}
+          complex_type['name'] = type_descriptor.getType()
+
           elements = type_descriptor.getElements()
           parts = []
           if elements.size() > 1
@@ -281,7 +291,9 @@ module BioCatalogue
           elsif elements.size() == 1
             parts = [build_message_type_details(elements.get(0)), cached_types]
           end
-          message_type_details['type'] = parts
+          complex_type['type'] = parts
+
+          message_type_details['type'] = [complex_type]
         elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ArrayTypeDescriptor'
           type_descriptor.getElementType().setName(type_descriptor.getElementType().getType()) if type_descriptor.getElementType().getName().nil?
           message_type_details['type'] = [build_message_type_details(type_descriptor.getElementType(), cached_types)]

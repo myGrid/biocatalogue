@@ -367,5 +367,14 @@ namespace :biocatalogue do
       puts service_info
     end
 
+
+    def hash_diff(one, other)
+      (one.keys + other.keys).uniq.inject({}) do |memo, key|
+        unless one.key?(key) && other.key?(key) && one[key] == other[key]
+          memo[key] = [one.key?(key) ? one[key] : :_no_key, other.key?(key) ? other[key] : :_no_key]
+        end
+        memo
+      end
+    end
   end
 end
