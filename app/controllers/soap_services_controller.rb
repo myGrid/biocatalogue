@@ -165,7 +165,7 @@ class SoapServicesController < ApplicationController
         @wsdl_info, err_msgs, wsdl_file = BioCatalogue::WsdlParser.parse_via_tavernas_wsdl_generic(@soap_service.wsdl_location)
 
         # Check for a duplicate
-        @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["endpoint"])
+        @existing_service = SoapService.check_duplicate(wsdl_location, @wsdl_info["endpoint"]) unless @wsdl_info.blank?
         
         # Only continue if we have valid wsdl_info or if no duplicate was found
         unless @wsdl_info.blank?

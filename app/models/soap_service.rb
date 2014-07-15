@@ -699,8 +699,58 @@ class SoapService < ActiveRecord::Base
   def associated_service
     @associated_service ||= Service.find_by_id(associated_service_id)
   end
-  
-protected
+
+  # This builds the parts of the SOAP service
+  # (ie: it's operations and their inputs and outputs).
+  # This can then be saved transactionally.
+  def build_soap_objects(service_info)
+    soap_ops_built = [ ]
+
+    service_info["operations"].each do |op|
+
+      op_attributes = { :name => op["name"],
+                        :description => op["description"],
+                        :parameter_order => op["parameter_order"],
+                        :parent_port_type => op["parent_port_type"]}
+      inputs = op["inputs"]
+      outputs = op["outputs"]
+
+      soap_operation = soap_operations.build(op_attributes)
+
+      inputs.each do |input_attributes|
+        soap_operation.soap_inputs.build(input_attributes)
+      end
+
+      outputs.each do |output_attributes|
+        soap_operation.soap_outputs.build(output_attributes)
+      end
+
+      soap_ops_built << soap_operation
+
+    end
+
+    return soap_ops_built
+  end
+
+  # build the ports for this service
+  # A set of operations are bound to a port
+
+  def build_soap_service_ports(service_info, built_soap_ops)
+    if service_info["ports"].nil?
+      return []
+    end
+    built_ports = []
+    ports = service_info["ports"]
+    ports.each  do |port|
+      built_port =  soap_service_ports.build(port)
+      p_ops      = built_soap_ops.collect{|op|  op if op.parent_port_type == built_port.name}
+      built_port.soap_operations = p_ops.compact
+      built_ports << built_port
+    end
+    return built_ports
+  end
+
+  protected
   
   def connect?
     begin
@@ -727,58 +777,6 @@ protected
     end
     return false
   end
-  
-  
-  # This builds the parts of the SOAP service 
-  # (ie: it's operations and their inputs and outputs).
-  # This can then be saved transactionally.
-  def build_soap_objects(service_info)
-    soap_ops_built = [ ]
-    
-    service_info["operations"].each do |op|
-      
-      op_attributes = { :name => op["name"],
-                        :description => op["description"],
-                        :parameter_order => op["parameter_order"],
-                        :parent_port_type => op["parent_port_type"]}
-      inputs = op["inputs"]
-      outputs = op["outputs"]
-      
-      soap_operation = soap_operations.build(op_attributes)
-      
-      inputs.each do |input_attributes|
-        soap_operation.soap_inputs.build(input_attributes)
-      end
-      
-      outputs.each do |output_attributes|
-        soap_operation.soap_outputs.build(output_attributes)
-      end
-      
-      soap_ops_built << soap_operation
-      
-    end
-    
-    return soap_ops_built
-  end
-  
-  # build the ports for this service
-  # A set of operations are bound to a port
-  
-  def build_soap_service_ports(service_info, built_soap_ops)
-    if service_info["ports"].nil?
-      return []
-    end
-    built_ports = []
-    ports = service_info["ports"]
-    ports.each  do |port|
-      built_port =  soap_service_ports.build(port)
-      p_ops      = built_soap_ops.collect{|op|  op if op.parent_port_type == built_port.name}
-      built_port.soap_operations = p_ops.compact
-      built_ports << built_port
-    end
-    return built_ports
-  end
-
 
 private
 
