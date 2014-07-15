@@ -242,6 +242,8 @@ module BioCatalogue
     #               ...
     #             ]
     # }
+    # 'type' part of the returned hash is either simple type lik string, int, float, etc. or it is an array of
+    # one (for complex types) or more (for arrays of simple/complex/array types) hashes.
     def self.build_message_type_details(type_descriptor, cached_types = {})
       return {} if type_descriptor.nil?
 
