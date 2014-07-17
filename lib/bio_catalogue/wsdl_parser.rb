@@ -207,14 +207,20 @@ module BioCatalogue
               inp['name'] = input.getName()
               #inp['description'] = input.getDocumentation()
               inp['computational_type'] = input.getType()
-              computational_type_details = build_message_type_details(input)
-              if input._classname != 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+
+              if input._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+                # For simple types - do not show the name as it is already in inp['computational_type']
+                computational_type_details = {}
+              else
+                computational_type_details = build_message_type_details(input)
                 # Fix the name of the top element of complex and array types
                 computational_type_details['name'] = input.getType()
+                # For complex types - get rid of the top name as it is already in inp['name']
+                if input._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+                  computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                end
               end
-              if input._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
-                computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
-              end
+
               inp['computational_type_details'] = computational_type_details
               operation['inputs'] << inp
               j += 1
@@ -228,13 +234,18 @@ module BioCatalogue
               out['name'] = output.getName()
               #out['description'] = input.getDocumentation()
               out['computational_type'] = output.getType()
-              computational_type_details = build_message_type_details(output)
-              if output._classname != 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+
+              if output._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+                # For simple types - do not show the name as it is already in out['computational_type']
+                computational_type_details = {}
+              else
+                computational_type_details = build_message_type_details(output)
                 # Fix the name of the top element of complex and array types
                 computational_type_details['name'] = output.getType()
-              end
-              if output._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
-                computational_type_details['type'] = computational_type_details['type'][0]['type']
+                # For complex types - get rid of the top name as it is already in out['name']
+                if output._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+                  computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                end
               end
               out['computational_type_details'] = computational_type_details
 

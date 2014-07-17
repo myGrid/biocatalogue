@@ -194,7 +194,7 @@ namespace :biocatalogue do
     desc "Update SOAP services using the new WSDL parsing utility based on Taverna's wsdl-generic."
     task :update_soap_services => :environment do
       # Get all SOAP services, archived or not
-      soap_services = SoapService.all #where(:id => 20..30)
+      soap_services = SoapService.all #where(:id =>3020 .. 3020)#where(:id => 3362..3362)
 
       soap_service_update_report_folder = Rails.root.join('data',"soap_service_update_reports-#{Rails.env}")
       unless Dir.exists?(soap_service_update_report_folder)
