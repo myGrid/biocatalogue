@@ -11,6 +11,39 @@
 module BioCatalogue
   module WsdlParser
 
+    def self.parse(wsdl_url)
+      Rails.logger.info("Parsing WSDL document #{wsdl_url}.")
+
+      # Try wsdl-generic parser first
+      begin
+        Rails.logger.info('Trying wsdl-generic parser first.')
+        service_info, error_messages, wsdl_file_contents = parse_via_tavernas_wsdl_generic(wsdl_url)
+        return [service_info, error_messages, wsdl_file_contents] unless service_info.blank?
+      rescue Exception => ex
+        error_message = "Error while using wsdl-generic parser on #{wsdl_url}. Exception: #{ex.class.name} - #{ex.message}.\n"
+        error_stacktrace = ex.backtrace.join("\n")
+        Rails.logger.error(error_message)
+        Rails.logger.error(error_stacktrace)
+      end
+
+      begin
+        Rails.logger.info('Fallback to WSDLUtils parser.')
+        service_info2, error_messages2, wsdl_file_contents2 = parse_via_wsdlutils(wsdl_url)
+        return [service_info2, error_messages2, wsdl_file_contents2] unless service_info2.blank?
+      rescue Exception => ex2
+        # Nothing we can do
+        error_message = "Error while using WSDLUtils parser on #{wsdl_url}. Exception: #{ex2.class.name} - #{ex2.message}.\n"
+        error_stacktrace = ex2.backtrace.join("\n")
+        Rails.logger.error(error_message)
+        Rails.logger.error(error_stacktrace)
+
+        Rails.logger.error("Both WSDL parsers failed to parse #{wsdl_url}.")
+      end
+
+      return [service_info, error_messages, wsdl_file_contents] # return the results of the wsdl-generic parser
+
+    end
+
     # Parses a WSDL and returns back information that is useful for further processing.
     #
     # This method takes a URL to a WSDL file and returns back the following array:
@@ -69,7 +102,7 @@ module BioCatalogue
     #         { ... } 
     #       ] 
     #   }
-    def self.parse(wsdl_url)
+    def self.parse_via_wsdlutils(wsdl_url)
       Rails.logger.info('Using PHP WSDLUtils parser.')
       service_info, error_messages, wsdl_file_contents = BioCatalogue::WsdlUtils::ParserClient.parse(wsdl_url)
       # Forget about the legacy parser - it is even worse and wipes out all useful error messages from WSDLUtils
