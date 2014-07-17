@@ -91,6 +91,9 @@ namespace :biocatalogue do
       soap_services = SoapService.all #where(:id => 1..20)
 
       problematic_services = []
+      different_parsing_results_services = []
+      both_parsers_failed_services = []
+      new_parser_failed_old_worked_services = []
       unreachable_services = []
 
       soap_services.each do |soap_service|
@@ -155,28 +158,35 @@ namespace :biocatalogue do
                   end
                 end
 
-                problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url} if problem
+                if problem
+                  different_parsing_results_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+                else
+                  my_logger.info("Both parsers parsed and produced the same results.\n")
+                end
               else
                 my_logger.info("New parser parsed. Old parser failed to parse with the following errors: #{error_messages_old}.\n")
               end
             else
               if !service_info_old.blank?
                 my_logger.info("New parser failed to parse with the following errors: #{error_messages}. Old parser parsed.\n")
-                problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+                new_parser_failed_old_worked_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
               else
                 my_logger.info("Both parsers failed to parse. New parser errors: #{error_messages}. Old parser errors: #{error_messages_old}.\n")
-                problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+                both_parsers_failed_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
               end
             end
           rescue Exception => ex
             stacktrace = ex.backtrace.join("\n")
-            my_logger.info("Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}. Stacktrace: #{stacktrace}\n")
+            my_logger.info("Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}. Stacktrace: #{stacktrace}.\n")
             problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
           end
         end
       end
 
-      my_logger.info("Number of services that need looking into: #{problematic_services.count}.\n#{problematic_services}\n") if problematic_services.count > 0
+      my_logger.info("Number of services that need looking into: #{different_parsing_results_services.count + both_parsers_failed_services.count + new_parser_failed_old_worked_services.count}.\n")
+      my_logger.info("Different parsing results for services: #{different_parsing_results_service}\n\n") if different_parsing_results_services.count > 0
+      my_logger.info("New parser failed, old parser worked for services: #{new_parser_failed_old_worked_services}\n\n") if new_parser_failed_old_worked_services.count > 0
+      my_logger.info("Both parsers failed for services: #{both_parsers_failed_services}\n\n") if both_parsers_failed_services.count > 0
       my_logger.info("Number of services with unreachable WSDL documents: #{unreachable_services.count}.\n#{unreachable_services}\n") if unreachable_services.count > 0
       puts('WSDL parsing comparison report written to ' + report_file)
     end
