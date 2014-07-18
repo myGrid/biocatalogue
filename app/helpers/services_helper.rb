@@ -57,7 +57,13 @@ module ServicesHelper
 
     # When using old WSDLUtils WSDL parser, the computational details about message types were represented in a slightly different hash
     #return render_computational_type_details_entries([ details_hash['type'] ].flatten)
-    return render_computational_type_details_entries_new(details_hash)
+    begin
+      return render_computational_type_details_entries_new(details_hash)
+    rescue TypeError => err
+       # Try to render the hash the old way - probably it contains the data formatted in the old-style hash
+      # used before we switched to the new WSDL parser that somehow did not get updated after the switch
+       return render_computational_type_details_entries([ details_hash['type'] ].flatten)
+    end
 
   end
   
