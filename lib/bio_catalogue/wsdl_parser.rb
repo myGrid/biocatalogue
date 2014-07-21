@@ -147,7 +147,7 @@ module BioCatalogue
 
           # Parser will only return SOAP operations, others, such as
           # HTTP operations are disregarded.
-          operations = parsed_wsdl.getOperations()
+          #operations = parsed_wsdl.getOperations()
 
           service_info = {}
 
@@ -179,82 +179,83 @@ module BioCatalogue
             port['location'] = parsed_wsdl.getSOAPAddressLocationForPort(p)
 
             service_info['ports'] << port
-          end
 
-          # Populate service operations - list all operations for all ports of this service with
-          # all the details about the operations - inputs, outputs, computational types, order, etc.
-          i = 0
-          while i < operations.size() do
-            op = operations.get(i)
+            # Populate service operations - list all operations for this port of the service with
+            # all the details about the operations - inputs, outputs, computational types, order, etc.
+            operations = parsed_wsdl.getOperationsForPort(p.getName())
+            i = 0
+            while i < operations.size() do
+              op = operations.get(i)
 
-            operation = {}
-            operation['name'] = op.getName()
-            operation['description'] = parsed_wsdl.getOperationDocumentation(op.getName())
-            endpoint_locations = parsed_wsdl.getOperationEndpointLocations(op.getName())
-            operation['action'] = endpoint_locations.isEmpty() ? '' : endpoint_locations.get(0)
-            operation['operation_type'] = '' #?
-            operation['parameter_order'] = parsed_wsdl.getParameterOrder(op)
-            operation['parent_port_type'] = parsed_wsdl.getPortForOperation(op.getName()).getName() # the name of the port (not portType!) element that contains the binding that this operation belongs to
-            operation['inputs'] = []
-            operation['outputs'] = []
+              operation = {}
+              operation['name'] = op.getName()
+              operation['description'] = parsed_wsdl.getOperationDocumentation(op.getName())
+              endpoint_location = parsed_wsdl.getOperationEndpointLocation(op)
+              operation['action'] = endpoint_location.nil? ? '' : endpoint_location
+              operation['operation_type'] = '' #?
+              operation['parameter_order'] = parsed_wsdl.getParameterOrder(op)
+              operation['parent_port_type'] = p.getName() # the name of the port (not portType!) element that contains the binding that this operation belongs to
+              operation['inputs'] = []
+              operation['outputs'] = []
 
-            # Build hashes for inputs and outputs of this operation
-            inputs = parsed_wsdl.getOperationInputParameters(op.getName())
-            j = 0
-            while j < inputs.size() do
-              input = inputs.get(j)
-              inp = {}
-              inp['name'] = input.getName()
-              #inp['description'] = input.getDocumentation()
-              inp['computational_type'] = input.getType()
+              # Build hashes for inputs and outputs of this operation
+              inputs = parsed_wsdl.getOperationInputParameters(op.getName())
+              j = 0
+              while j < inputs.size() do
+                input = inputs.get(j)
+                inp = {}
+                inp['name'] = input.getName()
+                #inp['description'] = input.getDocumentation()
+                inp['computational_type'] = input.getType()
 
-              if input._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
-                # For simple types - do not show the name as it is already in inp['computational_type']
-                computational_type_details = {}
-              else
-                computational_type_details = build_message_type_details(input)
-                # Fix the name of the top element of complex and array types
-                computational_type_details['name'] = input.getType()
-                # For complex types - get rid of the top name as it is already in inp['name']
-                if input._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
-                  computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                if input._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+                  # For simple types - do not show the name as it is already in inp['computational_type']
+                  computational_type_details = {}
+                else
+                  computational_type_details = build_message_type_details(input)
+                  # Fix the name of the top element of complex and array types
+                  computational_type_details['name'] = input.getType()
+                  # For complex types - get rid of the top name as it is already in inp['name']
+                  if input._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+                    computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                  end
                 end
+
+                inp['computational_type_details'] = computational_type_details
+                operation['inputs'] << inp
+                j += 1
               end
 
-              inp['computational_type_details'] = computational_type_details
-              operation['inputs'] << inp
-              j += 1
-            end
+              outputs = parsed_wsdl.getOperationOutputParameters(op.getName())
+              j = 0
+              while j < outputs.size() do
+                output = outputs.get(j)
+                out = {}
+                out['name'] = output.getName()
+                #out['description'] = output.getDocumentation()
+                out['computational_type'] = output.getType()
 
-            outputs = parsed_wsdl.getOperationOutputParameters(op.getName())
-            j = 0
-            while j < outputs.size() do
-              output = outputs.get(j)
-              out = {}
-              out['name'] = output.getName()
-              #out['description'] = input.getDocumentation()
-              out['computational_type'] = output.getType()
-
-              if output._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
-                # For simple types - do not show the name as it is already in out['computational_type']
-                computational_type_details = {}
-              else
-                computational_type_details = build_message_type_details(output)
-                # Fix the name of the top element of complex and array types
-                computational_type_details['name'] = output.getType()
-                # For complex types - get rid of the top name as it is already in out['name']
-                if output._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
-                  computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                if output._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+                  # For simple types - do not show the name as it is already in out['computational_type']
+                  computational_type_details = {}
+                else
+                  computational_type_details = build_message_type_details(output)
+                  # Fix the name of the top element of complex and array types
+                  computational_type_details['name'] = output.getType()
+                  # For complex types - get rid of the top name as it is already in out['name']
+                  if output._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+                    computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                  end
                 end
+                out['computational_type_details'] = computational_type_details
+
+                operation['outputs'] << out
+                j += 1
               end
-              out['computational_type_details'] = computational_type_details
 
-              operation['outputs'] << out
-              j += 1
+              service_info['operations'] << operation
+              i += 1
             end
-
-            service_info['operations'] << operation
-            i += 1
           end
 
           # Set the location of the first port as the default endpoint - this is not
