@@ -392,6 +392,7 @@ module ServicesHelper
     html = ''.html_safe
 
     return html if computational_type_details_hash.blank?
+    return html if computational_type_details_hash['name'].blank? && computational_type_details_hash['type'].blank?
 
     html << content_tag(:ul) do
       render_computational_type_details_entry_new(computational_type_details_hash).html_safe

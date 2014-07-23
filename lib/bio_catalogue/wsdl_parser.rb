@@ -340,7 +340,13 @@ module BioCatalogue
 
           message_type_details['type'] = [complex_type]
         elsif type_descriptor._classname == 'net.sf.taverna.wsdl.parser.ArrayTypeDescriptor'
-          type_descriptor.getElementType().setName(type_descriptor.getElementType().getType()) if type_descriptor.getElementType().getName().nil?
+          if type_descriptor.getElementType().getName().nil?
+            if type_descriptor.getElementType().getType().nil?
+              type_descriptor.getElementType().setName('')
+            else
+              type_descriptor.getElementType().setName(type_descriptor.getElementType().getType())
+            end
+          end
           message_type_details['type'] = [build_message_type_details(type_descriptor.getElementType(), cached_types)]
         end
       end
