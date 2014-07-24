@@ -228,7 +228,7 @@ namespace :biocatalogue do
         end
 
         begin
-          service_info, error_messages, wsdl_file_contents = BioCatalogue::WsdlParser.parse(wsdl_url)
+          service_info, error_messages, wsdl_file_contents = BioCatalogue::WsdlParser::parse(wsdl_url)
 
           if !service_info.blank?
 
