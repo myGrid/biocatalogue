@@ -183,8 +183,10 @@ namespace :biocatalogue do
         end
       end
 
+      my_logger.info("\n*****************************************************************\n")
+      my_logger.info("Comparison report results:\n")
       my_logger.info("Number of services that need looking into: #{different_parsing_results_services.count + both_parsers_failed_services.count + new_parser_failed_old_worked_services.count}.\n")
-      my_logger.info("Different parsing results for services: #{different_parsing_results_service}\n\n") if different_parsing_results_services.count > 0
+      my_logger.info("Different parsing results for services: #{different_parsing_results_services}\n\n") if different_parsing_results_services.count > 0
       my_logger.info("New parser failed, old parser worked for services: #{new_parser_failed_old_worked_services}\n\n") if new_parser_failed_old_worked_services.count > 0
       my_logger.info("Both parsers failed for services: #{both_parsers_failed_services}\n\n") if both_parsers_failed_services.count > 0
       my_logger.info("Number of services with unreachable WSDL documents: #{unreachable_services.count}.\n#{unreachable_services}\n") if unreachable_services.count > 0
