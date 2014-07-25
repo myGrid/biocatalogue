@@ -113,7 +113,7 @@ namespace :biocatalogue do
             end
           rescue Exception => ex
             my_logger.info("WSDL document does not seem to be reachable - skipping parsing.\n")
-            unreachable_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+            unreachable_services << {:id => soap_service.service.id, :soap_service_id => soap_service.id, :wsdl => wsdl_url}
             next
           end
 
@@ -159,7 +159,7 @@ namespace :biocatalogue do
                 end
 
                 if problem
-                  different_parsing_results_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+                  different_parsing_results_services << {:id => soap_service.service.id, :soap_service_id => soap_service.id, :wsdl => wsdl_url}
                 else
                   my_logger.info("Both parsers parsed and produced the same results.\n")
                 end
@@ -169,16 +169,16 @@ namespace :biocatalogue do
             else
               if !service_info_old.blank?
                 my_logger.info("New parser failed to parse with the following errors: #{error_messages}. Old parser parsed.\n")
-                new_parser_failed_old_worked_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+                new_parser_failed_old_worked_services << {:id => soap_service.service.id, :soap_service_id => soap_service.id, :wsdl => wsdl_url}
               else
                 my_logger.info("Both parsers failed to parse. New parser errors: #{error_messages}. Old parser errors: #{error_messages_old}.\n")
-                both_parsers_failed_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+                both_parsers_failed_services << {:id => soap_service.service.id, :soap_service_id => soap_service.id, :wsdl => wsdl_url}
               end
             end
           rescue Exception => ex
             stacktrace = ex.backtrace.join("\n")
             my_logger.info("Parsing WSDL of SOAP service with id #{soap_service.service.id} caused exception: #{ex.message}. Stacktrace: #{stacktrace}.\n")
-            problematic_services << {:id => soap_service.service.id, :wsdl => wsdl_url}
+            problematic_services << {:id => soap_service.service.id, :soap_service_id => soap_service.id, :wsdl => wsdl_url}
           end
         end
       end
