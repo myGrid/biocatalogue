@@ -198,72 +198,92 @@ module BioCatalogue
               operation['inputs'] = []
               operation['outputs'] = []
 
-              # Build hashes for inputs and outputs of this operation
-              inputs = parsed_wsdl.getOperationInputParameters(op.getName())
-              j = 0
-              while j < inputs.size() do
-                input = inputs.get(j)
-                inp = {}
-                inp['name'] = input.getName()
-                #inp['description'] = input.getDocumentation()
-                inp['computational_type'] = input.getType()
+              # Build hashes for inputs and outputs of this operation.
+              # Put this code in try/catch block as getting computational type details
+              # can cause problems and we do not want the service not to be registered because of that.
+              begin
+                inputs = parsed_wsdl.getOperationInputParameters(op.getName())
+                j = 0
+                while j < inputs.size() do
+                  input = inputs.get(j)
+                  inp = {}
+                  inp['name'] = input.getName()
+                  #inp['description'] = input.getDocumentation()
+                  inp['computational_type'] = input.getType()
 
-                # Put this code in try/catch block as getting computational type details
-                # can cause problems and we do not want the service not to be registered because of that
-                begin
-                  if input._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
-                    # For simple types - do not show the name as it is already in inp['computational_type']
-                    computational_type_details = {}
-                  else
-                    computational_type_details = build_message_type_details(input)
-                    # Fix the name of the top element of complex and array types
-                    computational_type_details['name'] = input.getType()
-                    # For complex types - get rid of the top name as it is already in inp['name']
-                    if input._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
-                      computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                  # Put this code in try/catch block as getting computational type details
+                  # can cause problems and we do not want the service not to be registered because of that.
+                  begin
+                    if input._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+                      # For simple types - do not show the name as it is already in inp['computational_type']
+                      computational_type_details = {}
+                    else
+                      computational_type_details = build_message_type_details(input)
+                      # Fix the name of the top element of complex and array types
+                      computational_type_details['name'] = input.getType()
+                      # For complex types - get rid of the top name as it is already in inp['name']
+                      if input._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+                        computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                      end
                     end
+                  rescue Exception => ex
+                    computational_type_details = {}
+                  ensure
+                    inp['computational_type_details'] = computational_type_details
                   end
-                rescue Exception => ex
-                  computational_type_details = {}
-                ensure
-                  inp['computational_type_details'] = computational_type_details
+                  operation['inputs'] << inp
+                  j += 1
                 end
-                operation['inputs'] << inp
-                j += 1
+              rescue Exception => ex2
+                error_message = "Error while parsing inputs. Exception: #{ex2.class.name} - #{ex2.message}.\n"
+                error_stacktrace = ex2.backtrace.join("\n")
+                Rails.logger.error(error_message)
+                Rails.logger.error(error_stacktrace)
+              ensure
+                operation['inputs'] = [{'name' => "Please refer to this service's WSDL and schema documents to get details on inputs for this operation."}]
               end
 
-              outputs = parsed_wsdl.getOperationOutputParameters(op.getName())
-              j = 0
-              while j < outputs.size() do
-                output = outputs.get(j)
-                out = {}
-                out['name'] = output.getName()
-                #out['description'] = output.getDocumentation()
-                out['computational_type'] = output.getType()
+              begin
+                outputs = parsed_wsdl.getOperationOutputParameters(op.getName())
+                j = 0
+                while j < outputs.size() do
+                  output = outputs.get(j)
+                  out = {}
+                  out['name'] = output.getName()
+                  #out['description'] = output.getDocumentation()
+                  out['computational_type'] = output.getType()
 
-                # Put this code in try/catch block as getting computational type details
-                # can cause problems and we do not want the service not to be registered because of that
-                begin
-                  if output._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
-                    # For simple types - do not show the name as it is already in out['computational_type']
-                    computational_type_details = {}
-                  else
-                    computational_type_details = build_message_type_details(output)
-                    # Fix the name of the top element of complex and array types
-                    computational_type_details['name'] = output.getType()
-                    # For complex types - get rid of the top name as it is already in out['name']
-                    if output._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
-                      computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                  # Put this code in try/catch block as getting computational type details
+                  # can cause problems and we do not want the service not to be registered because of that
+                  begin
+                    if output._classname == 'net.sf.taverna.wsdl.parser.BaseTypeDescriptor'
+                      # For simple types - do not show the name as it is already in out['computational_type']
+                      computational_type_details = {}
+                    else
+                      computational_type_details = build_message_type_details(output)
+                      # Fix the name of the top element of complex and array types
+                      computational_type_details['name'] = output.getType()
+                      # For complex types - get rid of the top name as it is already in out['name']
+                      if output._classname == 'net.sf.taverna.wsdl.parser.ComplexTypeDescriptor'
+                        computational_type_details['type'] = computational_type_details['type'][0]['type'] unless computational_type_details['type'][0].nil?
+                      end
                     end
+                  rescue Exception => ex
+                    computational_type_details = {}
+                  ensure
+                    out['computational_type_details'] = computational_type_details
                   end
-                rescue Exception => ex
-                  computational_type_details = {}
-                ensure
-                  out['computational_type_details'] = computational_type_details
-                end
 
-                operation['outputs'] << out
-                j += 1
+                  operation['outputs'] << out
+                  j += 1
+                end
+              rescue Exception => ex2
+                error_message = "Error while parsing inputs. Exception: #{ex2.class.name} - #{ex2.message}.\n"
+                error_stacktrace = ex2.backtrace.join("\n")
+                Rails.logger.error(error_message)
+                Rails.logger.error(error_stacktrace)
+              ensure
+                operation['outputs'] = [{'name' => "Please refer to this service's WSDL and schema documents to get details on outputs for this operation."}]
               end
 
               service_info['operations'] << operation
