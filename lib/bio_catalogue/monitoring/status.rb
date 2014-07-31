@@ -122,6 +122,7 @@ module BioCatalogue
       def populate
         result_code = -1
         activated_service_tests = @service.service_tests.map{ |st| st if st.activated? }.compact
+        activated_service_tests.reject!{|service_test| service_test.test_type == 'TestScript'} unless ENABLE_TEST_SCRIPTS
         test_results = activated_service_tests.map{|st| st.latest_test_result if BioCatalogue::Monitoring::INTERNAL_TEST_TYPES.include?(st.test_type)}.compact
         
         unless test_results.empty?
@@ -174,12 +175,14 @@ module BioCatalogue
           msg +="<li> Could not access <b>#{t.service_test.test.property} </b>.</li>\n"
           #msg +="<li> Failing since: <b>#{t.service_test.failing_since.strftime("%A %B %d , %Y")} </b> .</li>\n"
         end
-        
+
+        if ENABLE_TEST_SCRIPTS
         test_scripts.each do |t|
           msg +="<li> Test Script: <b>#{t.service_test.test.name} </b> failed.</li>\n"
           #msg +="<li> Failing since: <b>#{t.service_test.failing_since.strftime("%A %B %d , %Y")} </b> .</li>\n"
         end
-        msg +="</ul></p>" 
+        end
+        msg +="</ul></p>"
         
         return msg
       end

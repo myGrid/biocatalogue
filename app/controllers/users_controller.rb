@@ -89,8 +89,9 @@ class UsersController < ApplicationController
       @users_services = @user.services.paginate(:page => @page,
                                                 :order => "created_at DESC")
 
-      @users_paged_annotated_services = Service.where(:id => @users_paged_annotated_services).paginate(:page => @page, :per_page => @per_page)
-      @users_paged_annotated_services_ids = @users_paged_annotated_services.map { |x| x.id }
+      @users_paged_annotated_services_ids = @user.annotated_service_ids.paginate(:page => @page, :per_page => @per_page)
+      @users_paged_annotated_services = BioCatalogue::Mapper.item_ids_to_model_objects(@users_paged_annotated_services_ids, "Service").paginate(:page => @page, :per_page => @per_page)
+
 
       @users_services_responsible_for = @user.other_services_responsible(@page, @per_page)
 

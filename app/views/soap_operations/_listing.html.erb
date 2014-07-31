@@ -59,9 +59,10 @@
                           <%= annotation_prepare_description(desc, {
                                   :do_strip_tags=>false,
                                   :truncate_length=>150,
+                                  :do_simple_format => false,
                                   :do_auto_link=>false,
                                   :is_markdownable=>false
-                          }) -%>
+                          })-%>
                         </div>
                     <% end %>
                 <% end %>
