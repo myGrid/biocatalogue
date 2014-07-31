@@ -50,12 +50,21 @@ module ServicesHelper
   end
   
   def render_computational_type_details(details_hash)
-    return "" if details_hash.blank?
+    return ''.html_safe if details_hash.blank?
     return details_hash.to_s.html_safe if (!details_hash.is_a?(Hash) and !details_hash.is_a?(Array))
     
-    logger.info("computational type details class = #{details_hash.class.name}")
-    
-    return render_computational_type_details_entries([ details_hash['type'] ].flatten)
+    #logger.info("computational type details class = #{details_hash.class.name}")
+
+    # When using old WSDLUtils WSDL parser, the computational details about message types were represented in a slightly different hash
+    #return render_computational_type_details_entries([ details_hash['type'] ].flatten)
+    begin
+      return render_computational_type_details_entries_new(details_hash)
+    rescue TypeError => err
+       # Try to render the hash the old way - probably it contains the data formatted in the old-style hash
+      # used before we switched to the new WSDL parser that somehow did not get updated after the switch
+       return render_computational_type_details_entries([ details_hash['type'] ].flatten)
+    end
+
   end
   
   # Only services that have an associated soaplab server
@@ -354,7 +363,7 @@ module ServicesHelper
     return html if entry.blank?
     
     html << content_tag(:li) do
-      x = entry['name'].html_safe
+      x = entry['name'].nil? ? ''.html_safe : entry['name'].html_safe
       if entry['documentation']
         x << info_icon_with_tooltip(white_list(simple_format(entry['documentation']))).html_safe
       end
@@ -365,6 +374,59 @@ module ServicesHelper
       x.html_safe
     end
     
+    return html.html_safe
+  end
+
+
+  # Renders a hash like:
+  # {
+  #   'name' => '...',
+  #   'type' => [
+  #               {'name' => '...',
+  #                'type' => [...]
+  #               },
+  #               ...
+  #             ]
+  # }
+  def render_computational_type_details_entries_new(computational_type_details_hash)
+    html = ''.html_safe
+
+    return html if computational_type_details_hash.blank?
+    return html if computational_type_details_hash['name'].blank? && computational_type_details_hash['type'].blank?
+
+    html << content_tag(:ul) do
+      render_computational_type_details_entry_new(computational_type_details_hash).html_safe
+    end
+
+    return html.html_safe
+  end
+
+  def render_computational_type_details_entry_new(entry_hash)
+    html = ''.html_safe
+    return html if entry_hash.blank?
+
+    html << content_tag(:li) do
+      x = entry_hash['name'].blank? ? '' : entry_hash['name']
+      if !entry_hash['description'].blank?
+        x << info_icon_with_tooltip(white_list(simple_format(entry_hash['description'])))
+      end
+      if !entry_hash['type'].blank?
+        x << content_tag(:span, 'type: ', :class => "type_keyword")
+        if entry_hash['type'].is_a?(Array) # it will always be an array or a simple variable - for hashes in original type this will be an array with just one element
+          entry_hash['type'].each do |element|
+            x << render_computational_type_details_entries_new(element)
+          end
+        #elsif entry_hash['type'].is_a?(Hash)
+        #  x << render_computational_type_details_entries_new(entry_hash['type']).html_safe
+        else
+          x << entry_hash['type']
+        end
+      else
+        x << ''
+      end
+      x.html_safe
+    end
+
     return html.html_safe
   end
   

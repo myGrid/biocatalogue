@@ -174,34 +174,73 @@ module BioCatalogue
         def parse
           message_data ={"parts" => [] }
           @message_element.elements.each(@message_type) do |message|
-            message_data["name"] = message.attributes["name"]
+            message_data["name"] = message.attributes['name']
             message.elements.each("parts/part") do |part|
               #part_data = {"types" => [] }
               part_data = {}
-              part_data["name"] = part.attributes["name"]
-              part.elements.each("type") do |type|
-                part_data["computational_type"] = type.attributes["name"]
-                # complex type
-                if type.has_elements?
-                  type_details = ''
-                  
-                  # when rexml/formatter package is not available like ruby 1.8.5 
-                  # use element.write method is used to 
-                  # convert element to its string equivalent
-                  if @use_formatters
-                    REXML::Formatters::Default.new().write(type, type_details)
-                  else
-                    type.write(type_details)
-                  end
-                  part_data["computational_type_details"]= Hash.from_xml(type_details)
-                end
-              end
+              part_data["name"] = part.attributes['name']
+              part_data["computational_type"] = part.elements()[1].attributes['name']
+              part_data["computational_type_details"] = build_computational_type_details_from_xml(part.elements()[1])
+
+              #part.elements.each("type") do |type|
+              #  #part_data["computational_type"] = type.attributes["name"]
+              #  ## complex type
+              #  #if type.has_elements?
+              #  #  type_details = ''
+              #  #
+              #  #  # when rexml/formatter package is not available like ruby 1.8.5
+              #  #  # use element.write method is used to
+              #  #  # convert element to its string equivalent
+              #  #  if @use_formatters
+              #  #    REXML::Formatters::Default.new().write(type, type_details)
+              #  #  else
+              #  #    type.write(type_details)
+              #  #  end
+              #  #  part_data["computational_type_details"]= Hash.from_xml(type_details)
+              #  #end
+              #end
               message_data["parts"] << part_data
             end  
           end
           return message_data
         end
-        
+
+        # An example XML <type> element being passed in
+        #<type name="runBlast">
+        #  <type name="in0">
+        #    <type name="string"/></type>
+        #  </type>
+        #</type>
+        def build_computational_type_details_from_xml(xml_type_element)
+          return {} if xml_type_element.blank?
+
+          result = {}
+          result['name'] = xml_type_element.attributes['name']
+          child_types = xml_type_element.elements()
+          if child_types.count == 0 # 0 child <type> elements
+            return {}
+          elsif child_types.count > 1
+            result['type'] = []
+            child_types.each do |child_type|
+              result['type'] << build_computational_type_details_from_xml(child_type)
+            end
+          else # child_types.count == 1
+            if child_types[1].elements().count == 0    # index 1 and not 0 gives the first element!!!
+              result['type'] = child_types[1].attributes['name']
+            else
+              result['type'] = [build_computational_type_details_from_xml(child_types[1])]
+            end
+          end
+          return result
+        end
+
+        def build_type(xml_element)
+          if !xml_element.has_elements?
+            return {}
+          end
+        end
+
+
         def parse_old
           message_data ={"parts" => [] }
           @message_element.elements.each(@message_type) do |message|

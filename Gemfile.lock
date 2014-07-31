@@ -189,6 +189,7 @@ GEM
     rdoc (3.12.2)
       json (~> 1.4)
     redcarpet (3.1.1)
+    rjb (1.4.9)
     rpx_now (0.7.1)
       json_pure
     rsolr (1.0.9)
@@ -288,6 +289,7 @@ DEPENDENCIES
   rdoc (~> 3.4)
   redbox!
   redcarpet
+  rjb (~> 1.4.9)
   rpx_now
   ruby-hmac
   rubyzip
