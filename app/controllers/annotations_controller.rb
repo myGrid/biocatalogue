@@ -110,8 +110,8 @@ class AnnotationsController < ApplicationController
         begin
           annotation_value = find_maturity(params[:annotation][:value])
         rescue
-          flash[:error] = "An error occured loading the maturity levels and actions for this service.
-                  <br/> Please ensure you have put the correct URL for the BioVeL Wiki Document and nothing else in the annotation box".html_safe
+          flash[:error] = "An error occurred loading the maturity levels and actions for this service.
+                  <br/> Please ensure you have put the correct URL for the service's BioVeL wiki page and nothing else in the annotation box.".html_safe
           annotation_value = nil
         end
       else
@@ -184,8 +184,8 @@ class AnnotationsController < ApplicationController
         begin
           add_maturity_level_annotation(params)
         rescue
-          @error_msg = "An error occured loading the maturity levels and actions for this service.
-                  <br/> Please ensure you have put the correct URL for the BioVeL Wiki Document and nothing else in the annotation box".html_safe
+          @error_msg = "An error occurred loading the maturity levels and actions for this service.
+                  <br/> Please ensure you have put the correct URL for service's the BioVeL wiki page and nothing else in the annotation box.".html_safe
         end
       else
         annotation = Annotation.new(params[:annotation])
