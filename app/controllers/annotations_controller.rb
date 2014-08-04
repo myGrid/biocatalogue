@@ -110,7 +110,7 @@ class AnnotationsController < ApplicationController
         begin
           annotation_value = find_maturity(params[:annotation][:value])
         rescue Exception => ex
-          flash[:error] = "An error occurred loading the maturity levels and actions for this service: #{ex.message}
+          flash[:error] = "An error occurred while updating the maturity level and actions for this service: #{ex.message}
                   <br/> Please ensure you have put the correct URL for the service's BioVeL wiki page and nothing else in the annotation box.".html_safe
           annotation_value = nil
         end
@@ -151,7 +151,7 @@ class AnnotationsController < ApplicationController
         document.gsub!("\n", "")
         match = /(Actionstoimprovetheservicedescription\">)+(.*?<\/div>)/.match(document)
         if match.nil? or match.captures.nil?
-          raise Exception.new("The link you provided does not point to the service's page in the BioVeL wiki.")
+          raise Exception.new("It appears the link you provided does not point to the service's page in the BioVeL wiki.")
         else
           string = match.captures.last
           string.gsub!("</div>", "")
@@ -185,8 +185,8 @@ class AnnotationsController < ApplicationController
       if defined?(BIOVEL_ENABLED) && BIOVEL_ENABLED && params[:partial] == 'maturity_url'
         begin
           add_maturity_level_annotation(params)
-        rescue
-          @error_msg = "An error occurred loading the maturity levels and actions for this service.
+        rescue Exception => ex
+          @error_msg =  "An error occurred while adding the maturity level and actions for this service: #{ex.message}
                   <br/> Please ensure you have put the correct URL for service's the BioVeL wiki page and nothing else in the annotation box.".html_safe
         end
       else
