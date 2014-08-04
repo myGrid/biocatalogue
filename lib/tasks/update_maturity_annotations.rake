@@ -5,7 +5,7 @@
 # See license.txt for details
 
 namespace :biocatalogue do
-  desc 'Update any BioVeL Maturity and Actions annotations if they have been changed in the wiki document'
+  desc 'Update any BioVeL Maturity and Actions annotations if they have been changed in the BioVeL wiki.'
   task :update_maturity_annotations => :environment do
     puts "\nUpdating maturity annotations for #{SITE_NAME} in #{Rails.env} mode.\n"
     BioCatalogue::Jobs::UpdateMaturityAnnotations.new.perform

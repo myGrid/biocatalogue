@@ -109,8 +109,8 @@ class AnnotationsController < ApplicationController
       if @annotation.attribute.name == 'maturity_url'
         begin
           annotation_value = find_maturity(params[:annotation][:value])
-        rescue
-          flash[:error] = "An error occurred loading the maturity levels and actions for this service.
+        rescue Exception => ex
+          flash[:error] = "An error occurred loading the maturity levels and actions for this service: #{ex.message}
                   <br/> Please ensure you have put the correct URL for the service's BioVeL wiki page and nothing else in the annotation box.".html_safe
           annotation_value = nil
         end
@@ -150,7 +150,9 @@ class AnnotationsController < ApplicationController
         document = document.read
         document.gsub!("\n", "")
         match = /(Actionstoimprovetheservicedescription\">)+(.*?<\/div>)/.match(document)
-        unless match.nil? or match.captures.nil?
+        if match.nil? or match.captures.nil?
+          raise Exception.new("The link you provided does not point to the service's page in the BioVeL wiki.")
+        else
           string = match.captures.last
           string.gsub!("</div>", "")
           string.strip!
