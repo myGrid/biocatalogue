@@ -228,6 +228,10 @@ module BioCatalogue
                     end
                   rescue Exception => ex
                     computational_type_details = {}
+                    error_message = "Error while parsing computational type details for inputs. Exception: #{ex.class.name} - #{ex.message}.\n"
+                    error_stacktrace = ex.backtrace.join("\n")
+                    Rails.logger.error(error_message)
+                    Rails.logger.error(error_stacktrace)
                   ensure
                     inp['computational_type_details'] = computational_type_details
                   end
@@ -239,7 +243,6 @@ module BioCatalogue
                 error_stacktrace = ex2.backtrace.join("\n")
                 Rails.logger.error(error_message)
                 Rails.logger.error(error_stacktrace)
-              ensure
                 operation['inputs'] = [{'name' => "Please refer to this service's WSDL and schema documents to get details on inputs for this operation."}]
               end
 
@@ -270,6 +273,10 @@ module BioCatalogue
                     end
                   rescue Exception => ex
                     computational_type_details = {}
+                    error_message = "Error while parsing computational type details for outputs. Exception: #{ex.class.name} - #{ex.message}.\n"
+                    error_stacktrace = ex.backtrace.join("\n")
+                    Rails.logger.error(error_message)
+                    Rails.logger.error(error_stacktrace)
                   ensure
                     out['computational_type_details'] = computational_type_details
                   end
@@ -282,7 +289,6 @@ module BioCatalogue
                 error_stacktrace = ex2.backtrace.join("\n")
                 Rails.logger.error(error_message)
                 Rails.logger.error(error_stacktrace)
-              ensure
                 operation['outputs'] = [{'name' => "Please refer to this service's WSDL and schema documents to get details on outputs for this operation."}]
               end
 
