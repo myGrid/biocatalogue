@@ -479,7 +479,9 @@ module ServicesHelper
     service_tests.reject!{|st| st.test_type == "TestScript"} if ENABLE_TEST_SCRIPTS == false
 
     if logged_in? 
-      return service_tests if (current_user.is_admin? || service_tests.first.service.all_responsibles.include?(current_user))
+      if !service_tests.first.nil? && !service_tests.first.service.nil?
+        return service_tests if (current_user.is_admin? || service_tests.first.service.all_responsibles.include?(current_user))
+      end
     end
     
     return service_tests.collect{ |st| st if st.enabled? }.compact
