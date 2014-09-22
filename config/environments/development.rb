@@ -31,4 +31,6 @@ BioCatalogue::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
+  # Add allowed HTML tags to the default allowed tags
+  config.action_view.sanitized_allowed_tags = 'fieldset', 'legend', 'table', 'th', 'td', 'tr', 'tbody'
 end

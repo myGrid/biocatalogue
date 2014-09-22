@@ -54,6 +54,7 @@ gem "dalli"
 gem 'redcarpet'
 gem "paperclip", "~> 4.1"
 gem 'rjb', '~> 1.4.9'
+gem 'maruku'
 
 group :test do
 # gem "webmock"

@@ -121,6 +121,7 @@ GEM
       treetop (~> 1.4.8)
     markaby (0.7.2)
       builder (>= 2.0.0)
+    maruku (0.7.2)
     mash (0.1.1)
     memcache-client (1.8.5)
     metaclass (0.0.1)
@@ -273,6 +274,7 @@ DEPENDENCIES
   libxml-ruby (= 2.6.0)
   mail
   markaby
+  maruku
   mash
   memcache-client
   mumboe-soap4r

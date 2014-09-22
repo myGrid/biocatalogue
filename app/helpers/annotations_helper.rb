@@ -272,7 +272,7 @@ module AnnotationsHelper
         :do_strip_tags => false,
         :truncate_length => nil,
         :do_auto_link => true,
-        :do_simple_format => true,
+        :do_simple_format => false,
         :do_white_list => true,
         :is_markdownable => true, # Does this annotation field supports Markdown markup? This is different from weather Markdown support is turned ON or OFF.
     }
@@ -290,9 +290,11 @@ module AnnotationsHelper
 
     desc = truncate(desc, :length => options[:truncate_length]) unless options[:truncate_length].nil?
 
-    if MARKDOWN_ENABLED && options[:is_markdownable]
-      desc = annotation_prepare_markdown_description(desc)
-    else
+    #if MARKDOWN_ENABLED && options[:is_markdownable]
+     # desc = annotation_prepare_markdown_description(desc)
+    #else
+      desc = Maruku.new(desc).to_html if MARKDOWN_ENABLED && options[:is_markdownable]
+
       desc = strip_tags(desc) if options[:do_strip_tags] # This will strip all tags
 
       desc = simple_format(desc) if options[:do_simple_format]
@@ -300,7 +302,7 @@ module AnnotationsHelper
       desc = (options[:do_white_list] ? white_list(desc) : html_escape(desc))  # only white-listed tags will remain
 
       desc = auto_link(desc, :link => :all, :href_options => { :target => '_blank', :rel => 'nofollow' }) if options[:do_auto_link]
-    end
+    #end
 
     return desc
   end

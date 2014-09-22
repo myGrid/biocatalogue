@@ -22,6 +22,9 @@ BioCatalogue::Application.configure do
 # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
   config.active_support.deprecation = :stderr
+
+  # Add allowed HTML tags to the default allowed tags
+  config.action_view.sanitized_allowed_tags = 'fieldset', 'legend', 'table', 'th', 'td', 'tr', 'tbody'
 end
 
 
