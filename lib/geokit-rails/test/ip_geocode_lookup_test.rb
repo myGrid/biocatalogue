@@ -25,7 +25,7 @@ end
 class IpGeocodeLookupTest < Test::Unit::TestCase #:nodoc: all
   
   def setup
-    @success = GeoKit::GeoLoc.new
+    @success = Geokit::GeoLoc.new
     @success.provider = "hostip"
     @success.lat = 41.7696
     @success.lng = -88.4588
@@ -34,7 +34,7 @@ class IpGeocodeLookupTest < Test::Unit::TestCase #:nodoc: all
     @success.country_code = "US"
     @success.success = true
     
-    @failure = GeoKit::GeoLoc.new
+    @failure = Geokit::GeoLoc.new
     @failure.provider = "hostip"
     @failure.city = "(Private Address)"
     @failure.success = false

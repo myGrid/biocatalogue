@@ -8,7 +8,7 @@ module BioCatalogue
   module Util
     
     # Attempts to lookup the geographical location of the URL provided.
-    # This uses the GeoKit plugin to do the geocoding.
+    # This uses the Geokit plugin to do the geocoding.
     # Returns a Gecode::GeoLoc object if successful, otherwise returnes nil.
     def self.url_location_lookup(url)
       begin
@@ -32,9 +32,9 @@ module BioCatalogue
       end
     end
     
-    # This method borrows code/principles from the GeoKit plugin.
+    # This method borrows code/principles from the Geokit plugin.
     def self.ip_geocode(ip)
-      geoloc = GeoKit::GeoLoc.new
+      geoloc = Geokit::GeoLoc.new
             
       return geoloc unless /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})?$/.match(ip)
       
@@ -54,7 +54,7 @@ module BioCatalogue
         return geoloc
       end
       
-      # Process the info into the GeoKit GeoLoc object...
+      # Process the info into the Geokit GeoLoc object...
       unless info.blank?
         yaml = YAML.load(info)
         geoloc.provider = 'hostip'
@@ -70,7 +70,7 @@ module BioCatalogue
     end
     
     def self.city_and_country_from_geoloc(geoloc)
-      return [ ] unless geoloc.is_a?(GeoKit::GeoLoc)
+      return [ ] unless geoloc.is_a?(Geokit::GeoLoc)
       return [ ] if geoloc.nil? or !geoloc.success
       
       city = nil
