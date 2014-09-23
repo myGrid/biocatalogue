@@ -51,7 +51,7 @@ gem 'prototype-rails'
 gem 'country-select'
 gem 'validates_email_format_of' # Replaces validates_email_veracity_of
 gem "dalli"
-gem 'redcarpet'
+#gem 'redcarpet'
 gem "paperclip", "~> 4.1"
 gem 'rjb', '~> 1.4.9'
 gem 'maruku'
