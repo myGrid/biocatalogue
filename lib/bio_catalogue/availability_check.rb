@@ -20,11 +20,11 @@ module BioCatalogue
           begin
             @document = LibXML::XML::Parser.string(response_string).parse
           rescue XML::Parser::ParseError => ex
-            Rails.logger.error( "parse error #{ex}")
+            Rails.logger.error("parse error #{ex}")
             @document = nil
           rescue Exception => ex
-            Rails.logger.error( "ERROR: there was a problem parsing response string:" )
-            Rails.logger.error( "#{ex}")
+            Rails.logger.error("ERROR: there was a problem parsing response string:")
+            Rails.logger.error("#{ex}")
             @document = nil
           end
         end
@@ -34,10 +34,10 @@ module BioCatalogue
       # in a soap envelope.
       def soap_fault?
         begin
-          ns_prefix.each  do |prefix|
-           if @document.find("/#{prefix}:Envelope").first
-             return true
-           end
+          ns_prefix.each do |prefix|
+            if @document.find("/#{prefix}:Envelope").first
+              return true
+            end
           end
           return false
         rescue Exception => ex
@@ -65,12 +65,12 @@ module BioCatalogue
       attr_accessor :fault
 
       def initialize(url)
-        @url    = url
-        @fault  = get_response
+        @url = url
+        @fault = get_response
       end
 
       def get_response(url = @url)
-        @response = %x[curl --insecure --max-time 20 --header "Content-Type: text/xml" --data '<?xml version="1.0"?> ' #{url}]
+        @response = %x[curl --insecure --max-time 20 --header "Content-Type: text/xml" --data '<?xml version="1.0"?> ' "#{url}"]
         unless @response.length == 0
           return @response
         end
@@ -82,7 +82,7 @@ module BioCatalogue
       attr_accessor :fault, :parser
 
       def initialize(url)
-        @fault  = SoapFault.new(url).fault
+        @fault = SoapFault.new(url).fault
         @parser = SoapResponseParser.new(@fault)
       end
 
@@ -90,7 +90,7 @@ module BioCatalogue
         begin
 
           return true if (@fault && @fault.split[0]== '<?xml')
-          return true if (@parser &&  @parser.soap_fault?)
+          return true if (@parser && @parser.soap_fault?)
           return false
         rescue Exception => ex
           Rails.logger.error(ex)
@@ -103,14 +103,14 @@ module BioCatalogue
       attr_accessor :response
 
       def initialize(url)
-        @url        = url
-        @response   = nil
-        @success    = ['200', '202', '204', '401'] # 401 is dubious, but not really failure either
-        @redirects  = ['300', '301', '302', '303', '307']
-        @not_allwd  = ['405']
-        @failure    = ['400', '403', '404', '410', '502', '503', '504']
-        @try_again  = ['500', '501', '405'] # Some servers break on HEAD requests
-        @method     = 'HEAD'
+        @url = url
+        @response = nil
+        @success = ['200', '202', '204', '401'] # 401 is dubious, but not really failure either
+        @redirects = ['300', '301', '302', '303', '307']
+        @not_allwd = ['405']
+        @failure = ['400', '403', '404', '410', '502', '503', '504']
+        @try_again = ['500', '501', '405'] # Some servers break on HEAD requests
+        @method = 'HEAD'
         @try_others = ['OPTIONS', 'GET']
         get_response
       end
@@ -118,35 +118,42 @@ module BioCatalogue
       def get_response(url = @url, method = @method)
         puts "Trying #{url} with #{method}."
         begin
-          @response =  %x[curl -I --insecure --max-time 10 -X #{method} #{url}]
+          @response = %x[curl -I --insecure --max-time 10 -X #{method} "#{url}"]
+          puts "Response received: #{@response}\n"
+          return @response
         rescue Exception => ex
-          Rails.logger.error("problem occurred while accessing #{url}")
+          Rails.logger.error("Problem occurred while accessing #{url}")
           Rails.logger.error(ex)
+          return nil
         end
       end
 
       def response_code
-        @response.split[1]
+        if @response.blank?
+          return nil
+        else
+          @response.split[1]
+        end
       end
 
       def success?
-        @success.include?(response_code)
+        !response_code.blank? && @success.include?(response_code)
       end
 
       def redirect?
-        @redirects.include?(response_code)
+        !response_code.blank? &&  @redirects.include?(response_code)
       end
 
       def failure?
-        @failure.include?(response_code)
+        response_code.blank? || @failure.include?(response_code)
       end
 
       def method_not_allowed?
-        @not_allwd.include?(response_code)
+        !response_code.blank? && @not_allwd.include?(response_code)
       end
 
       def try_again?
-        @response.blank? || @try_again.include?(response_code)
+        @response.blank? || @try_again.include?(response_code) || (@method != 'GET' && failure?)
       end
 
       def follow_redirect(level=3)
@@ -159,8 +166,7 @@ module BioCatalogue
 
       def try_again(methods = @try_others)
         return if methods.nil?
-
-        puts "Trying methods other than #{@method} for #{@url}."
+        puts "\nTrying methods other than #{@method} for URL #{@url}\n"
         methods.each do |method|
           @response = get_response(@url, method)
           return if success?
@@ -169,7 +175,7 @@ module BioCatalogue
 
       def redirect_location
         if @response.split.index("Location:")
-          uri = URI.parse(@response.split.fetch(@response.split.index("Location:") + 1 ))
+          uri = URI.parse(@response.split.fetch(@response.split.index("Location:") + 1))
           if uri.scheme == 'http' || uri.scheme == 'https'
             return uri
           end
@@ -195,13 +201,15 @@ module BioCatalogue
       def available?
         begin
           return true if success?
-          return false if failure?
+          if @method == 'GET' && failure? # Some servers return '404' on HEAD but work fine on 'GET' so definite failure is on GET+failure - for everything else we want to try again! !
+            return false
+          end
           follow_redirect if redirect?
           #try_again(allowed_methods) if method_not_allowed?
           try_again if try_again?
           return success?
         rescue Exception => ex
-          Rails.logger.error("problem occured while checking availability of a url")
+          Rails.logger.error("Problem occurred while checking availability of a URL #{@url}")
           Rails.logger.error(ex)
           return false
         end
@@ -209,5 +217,4 @@ module BioCatalogue
     end
   end
 end
-
 
