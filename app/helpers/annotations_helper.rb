@@ -252,19 +252,19 @@ module AnnotationsHelper
     end
   end
 
-  def annotation_prepare_markdown_description(desc)
-      renderer = Redcarpet::Render::HTML.new(hard_wrap: true, prettify: true, escape_html: true)
-      markdown = Redcarpet::Markdown.new(renderer, :autolink => true,
-                                         :tables => true,
-                                         :quote => true,
-                                         :lax_spacing => true,
-                                         :no_intra_emphasis => true,
-                                         :fenced_code_blocks => true,
-                                         :disable_indented_code_blocks => false,
-                                         :footnotes => true)
-
-      desc = markdown.render(desc).html_safe
-  end
+  #def annotation_prepare_markdown_description(desc)
+  #    renderer = Redcarpet::Render::HTML.new(hard_wrap: true, prettify: true, escape_html: true)
+  #    markdown = Redcarpet::Markdown.new(renderer, :autolink => true,
+  #                                       :tables => true,
+  #                                       :quote => true,
+  #                                       :lax_spacing => true,
+  #                                       :no_intra_emphasis => true,
+  #                                       :fenced_code_blocks => true,
+  #                                       :disable_indented_code_blocks => false,
+  #                                       :footnotes => true)
+  #
+  #    desc = markdown.render(desc).html_safe
+  #end
 
   def annotation_prepare_description(desc, options={})
 
