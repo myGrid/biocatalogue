@@ -18,6 +18,7 @@
       <div style="margin-top: 1em;">
         <b>How to cite this service:</b>
         <%= info_icon_with_tooltip("A publication that others ought to use when citing this service (this can be in a common citation format like Bibtex, MLA or APA, a DOI, a URL, etc.)") -%>
+        <%= render :partial => 'shared/markdown_notification'%>
       </div>
 
       <div class="box_annotations">
@@ -28,7 +29,7 @@
                     <div class="text">
                       <%= annotation_source_text(ann) -%>
                       <div>
-                        <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
+                        <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content), {:is_markdownable => true}) -%>
                       </div>
                       <%= render :partial => "annotations/common/default_modify_options",
                                  :locals => { :annotation => ann, :ann_type => "how to_cite info" } -%>

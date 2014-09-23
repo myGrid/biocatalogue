@@ -18,6 +18,7 @@
       <div style="margin-top: 1em;">
         <b>Example workflows using this service:</b>
         <%= info_icon_with_tooltip("Example workflows that utilize this service (e.g. a link to a workflow on myExperiment)") -%>
+        <%= render :partial => 'shared/markdown_notification'%>
       </div>
       <% if @latest_version_instance.class == SoapService %>
           <% rounded('#EEEEEE', '#EEEEEE', '100%') do %>
@@ -34,7 +35,7 @@
                     <div class="text">
                       <%= annotation_source_text(ann) -%>
                       <div>
-                        <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content)) -%>
+                        <%= annotation_prepare_description(CGI.escapeHTML(ann.value_content), {:is_markdownable => true}) -%>
                       </div>
                       <%= render :partial => "annotations/common/default_modify_options",
                                  :locals => { :annotation => ann, :ann_type => "workflow info" } -%>
