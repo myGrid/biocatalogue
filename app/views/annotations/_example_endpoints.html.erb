@@ -37,7 +37,7 @@
 						<div class="text">
 							<%= annotation_source_text(ann) -%>
 							<div>
-                              <%= annotation_prepare_description(ann.value_content, :is_markdownable => false) -%>
+                              <%= annotation_prepare_description(ann.value_content, {:is_markdownable => false}) -%>
 							</div>
 
               <% if show_modify_options %>
