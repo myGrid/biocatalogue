@@ -376,37 +376,45 @@ module BioCatalogue
       base_url = rest_method.associated_service_base_url.sub(/\/$/, '') # remove trailing '/' from base url
       resource_path = rest_method.rest_resource.path.sub(/^\/\?/, '?') # change "/?" to "?"
       resource_path.sub!(/^\/\&/, '&') # change "/&" to "&"
-            
-      required_params = []
-      rest_method.request_parameters.select { |p| p.param_style=="query" && p.required }.each do |p|
-        required_params << "#{p.name}={#{p.name}}"
+
+      #required_params = []
+      #rest_method.request_parameters.select { |p| p.param_style=="query" && p.required }.each do |p|
+      #  required_params << "#{p.name}={#{p.name}}"
+      #end
+      #
+      #required_params = required_params.join('&')
+      #required_params = '?' + required_params unless required_params.blank?
+
+      # Forget about required/optional query parameters - we want to see all of them regardless!!!
+      all_params = []
+      rest_method.request_parameters.select { |p| p.param_style=="query"}.each do |p|
+        all_params << "#{p.name}={#{p.name}}"
       end
-      
-      required_params = required_params.join('&')
-      required_params = '?' + required_params unless required_params.blank?
+      all_params = all_params.join('&')
+      all_params = '?' + all_params unless all_params.blank?
 
       url_template = (if base_url.include?('?') # base url has non configurable query params
-                        required_params.gsub!('?', '&')
+                        all_params.gsub!('?', '&')
                         resource_path.gsub!('?', '&')
                         
                         if resource_path == '/{parameters}' 
-                          "#{base_url}#{required_params}"
+                          "#{base_url}#{all_params}"
                         elsif resource_path.start_with?('/')
                           "Could not generate URL template"
                         else
-                          "#{base_url}#{resource_path}#{required_params}"
+                          "#{base_url}#{resource_path}#{all_params}"
                         end
                       else # base url does not have query params
                         if resource_path == '/{parameters}' 
-                          "#{base_url}#{required_params}"
+                          "#{base_url}#{all_params}"
                         elsif resource_path == '/{id}'
-                          "#{base_url}/{id}#{required_params}"
+                          "#{base_url}/{id}#{all_params}"
                         elsif resource_path.include?('?')
-                          "#{base_url + resource_path}#{required_params.gsub('?', '&')}"
+                          "#{base_url + resource_path}#{all_params.gsub('?', '&')}"
                         elsif resource_path.start_with?('&')
-                          "#{base_url + resource_path.sub('&', '?')}#{required_params.gsub('?', '&')}"
+                          "#{base_url + resource_path.sub('&', '?')}#{all_params.gsub('?', '&')}"
                         else
-                          "#{base_url + resource_path}#{required_params}"
+                          "#{base_url + resource_path}#{all_params}"
                         end
                       end)
 
