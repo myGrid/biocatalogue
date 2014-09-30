@@ -37,4 +37,6 @@
   <!-- Include meta tags “csrf-param” and “csrf-token” for cross-site request forgery protection -->
   <%= csrf_meta_tag %>
 
+  <%= analytics_init if ENABLE_GOOGLE_ANALYTICS %>
+
 </head>	

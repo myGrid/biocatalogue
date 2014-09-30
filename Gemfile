@@ -36,7 +36,7 @@ gem "seer"
 #Soap4r not supported on r1.9 so using a branch
 #gem "soap4r"
 gem 'mumboe-soap4r'
-gem "google_analytics"
+gem "google-analytics-rails"
 gem "oauth-plugin"
 gem "validates_existence"
 gem 'delayed_job_active_record'

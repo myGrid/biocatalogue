@@ -49,8 +49,9 @@ class ApplicationController < ActionController::Base
   before_filter :set_up_log_event_core_data
   after_filter :log_event
 
+  # Adding Google Analytic code is now handled differently. Below is the old code.
   # Do not add Google analytics unless specifically configured in config/initializers/biocat_local.rb
-  skip_after_filter :add_google_analytics_code unless ENABLE_GOOGLE_ANALYTICS
+  #skip_after_filter :add_google_analytics_code unless ENABLE_GOOGLE_ANALYTICS
 
   def login_required
     respond_to do |format|
