@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140228121452) do
+ActiveRecord::Schema.define(:version => 20141204160733) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -698,6 +698,257 @@ ActiveRecord::Schema.define(:version => 20140228121452) do
 
   add_index "users", ["display_name"], :name => "users_display_name_index"
   add_index "users", ["email"], :name => "users_email_index"
+
+  create_table "wms_contact_informations", :force => true do |t|
+    t.string   "contact_person"
+    t.string   "contact_organization"
+    t.string   "contact_position"
+    t.string   "address_type"
+    t.string   "address"
+    t.string   "city"
+    t.string   "state_or_province"
+    t.string   "post_code"
+    t.string   "country"
+    t.integer  "wms_service_node_id"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
+
+  add_index "wms_contact_informations", ["wms_service_node_id"], :name => "index_wms_contact_informations_on_wms_service_node_id"
+
+  create_table "wms_exception_formats", :force => true do |t|
+    t.string   "format"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "wms_exception_formats", ["wms_service_id"], :name => "index_wms_exception_formats_on_wms_service_id"
+
+  create_table "wms_getcapabilities_formats", :force => true do |t|
+    t.string   "format"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "wms_getcapabilities_formats", ["wms_service_id"], :name => "index_wms_getcapabilities_formats_on_wms_service_id_id"
+
+  create_table "wms_getcapabilities_get_onlineresources", :force => true do |t|
+    t.string   "xlink_href"
+    t.string   "xmlns_xlink"
+    t.string   "xlink_type"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "wms_getcapabilities_get_onlineresources", ["wms_service_id"], :name => "index_wms_getcapabilities_get_onlineresources_on_wms_service_id"
+
+  create_table "wms_getcapabilities_post_onlineresources", :force => true do |t|
+    t.string   "xlink_href"
+    t.string   "xmlns_xlink"
+    t.string   "xlink_type"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "wms_getcapabilities_post_onlineresources", ["wms_service_id"], :name => "index_wms_getcapabilities_post_onlineresources_on_wms_service_id"
+
+  create_table "wms_getmap_formats", :force => true do |t|
+    t.string   "format"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "wms_getmap_formats", ["wms_service_id"], :name => "index_wms_getmap_formats_on_wms_service_id"
+
+  create_table "wms_getmap_get_onlineresources", :force => true do |t|
+    t.string   "xlink_href"
+    t.string   "xmlns_xlink"
+    t.string   "xlink_type"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "wms_getmap_get_onlineresources", ["wms_service_id"], :name => "index_wms_getmap_get_onlineresources_on_wms_service_id"
+
+  create_table "wms_getmap_post_onlineresources", :force => true do |t|
+    t.string   "xlink_href"
+    t.string   "xmlns_xlink"
+    t.string   "xlink_type"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "wms_getmap_post_onlineresources", ["wms_service_id"], :name => "index_wms_getmap_post_onlineresources_on_wms_service_id"
+
+  create_table "wms_keywordlists", :force => true do |t|
+    t.string   "keyword"
+    t.integer  "wms_service_node_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "wms_layer_id"
+  end
+
+  add_index "wms_keywordlists", ["wms_service_node_id"], :name => "index_wms_keywordlists_on_wms_service_node_id"
+
+  create_table "wms_layer_boundingboxes", :force => true do |t|
+    t.string   "crs"
+    t.string   "minx"
+    t.string   "miny"
+    t.string   "maxx"
+    t.string   "maxy"
+    t.integer  "wms_layer_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "wms_layer_boundingboxes", ["wms_layer_id"], :name => "index_wms_layer_boundingboxes_on_wms_layer_id"
+
+  create_table "wms_layer_crs", :force => true do |t|
+    t.string   "crs"
+    t.integer  "wms_layer_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "wms_layer_crs", ["wms_layer_id"], :name => "index_wms_layer_crs_on_wms_layer_id"
+
+  create_table "wms_layers", :force => true do |t|
+    t.string   "name"
+    t.string   "title"
+    t.text     "abstract"
+    t.float    "west_bound_longitude"
+    t.float    "east_bound_longitude"
+    t.float    "south_bound_latitude"
+    t.float    "north_bound_latitude"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
+
+  add_index "wms_layers", ["wms_service_id"], :name => "index_wms_layers_on_wms_service_id"
+
+  create_table "wms_method_parameters", :force => true do |t|
+    t.integer  "wms_method_id"
+    t.integer  "wms_parameter_id"
+    t.string   "http_cycle"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+    t.integer  "submitter_id"
+    t.string   "submitter_type"
+  end
+
+  create_table "wms_method_representations", :force => true do |t|
+    t.integer  "wms_method_id"
+    t.integer  "wms_representation_id"
+    t.string   "http_cycle"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+    t.integer  "submitter_id"
+    t.string   "submitter_type"
+  end
+
+  create_table "wms_methods", :force => true do |t|
+    t.integer  "wms_resource_id"
+    t.string   "method_type"
+    t.text     "description"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.integer  "submitter_id"
+    t.string   "submitter_type"
+    t.string   "endpoint_name"
+    t.string   "documentation_url"
+    t.string   "group_name"
+    t.datetime "archived_at"
+  end
+
+  create_table "wms_online_resources", :force => true do |t|
+    t.string   "xmlns_link"
+    t.string   "xlink_type"
+    t.string   "xlink_href"
+    t.integer  "wms_service_node_id"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "wms_online_resources", ["wms_service_node_id"], :name => "index_wms_online_resources_on_wms_service_node_id"
+
+  create_table "wms_parameters", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.string   "param_style"
+    t.string   "computational_type"
+    t.string   "default_value"
+    t.boolean  "required"
+    t.boolean  "multiple"
+    t.boolean  "constrained"
+    t.text     "constrained_options"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "submitter_id"
+    t.string   "submitter_type"
+    t.boolean  "is_global"
+    t.datetime "archived_at"
+  end
+
+  create_table "wms_representations", :force => true do |t|
+    t.string   "content_type"
+    t.text     "description"
+    t.string   "http_status"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.integer  "submitter_id"
+    t.string   "submitter_type"
+    t.datetime "archived_at"
+  end
+
+  create_table "wms_resources", :force => true do |t|
+    t.integer  "wms_service_id"
+    t.string   "path"
+    t.text     "description"
+    t.integer  "parent_resource_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.integer  "submitter_id"
+    t.string   "submitter_type"
+    t.datetime "archived_at"
+  end
+
+  create_table "wms_service_nodes", :force => true do |t|
+    t.string   "name"
+    t.string   "title"
+    t.integer  "wms_service_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.string   "abstract"
+    t.string   "fees"
+    t.string   "access_constraints"
+    t.integer  "max_width"
+    t.integer  "max_height"
+  end
+
+  add_index "wms_service_nodes", ["wms_service_id"], :name => "index_wms_service_nodes_on_wms_service_id"
+
+  create_table "wms_service_parameters", :force => true do |t|
+    t.text     "xml_content"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "wms_services", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.string   "interface_doc_url"
+    t.string   "documentation_url"
+  end
 
   create_table "wsdl_files", :force => true do |t|
     t.string   "location"

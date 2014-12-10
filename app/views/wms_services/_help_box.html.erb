@@ -1,0 +1,37 @@
+<%
+
+# BioCatalogue: app/views/wms_services/_help_box.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<div class="box_info_standout" %>
+  <div style="margin-top:5px;">
+    <%= create_expand_collapse_link('hidden_resource_capture_help', 
+                                    :link_text => "What is an endpoint?",
+                                    :icon_float => "right",
+                                    :class => "collapsable_title") -%>
+  </div>
+  
+  <div id="hidden_resource_capture_help" style="display:none; font-size:90%;">
+    <p>
+      A WMS service has a collection of different endpoints that service consumers can access to get various data/functionality from the WMS resources of the WMS service.
+    
+      These endpoints are simple URLs to these WMS resources combined with an HTTP method/verb (i.e. GET, POST, PUT, DELETE, etc).
+    </p>
+    
+    <p>
+      Each endpoint belonging to this WMS service <b>must</b> be preceded by the base URL: <b><%=h base_endpoint %></b>
+    </p>
+
+    <p>
+      For more information on WMS services, please visit
+      <%= link_to "http://en.wikipedia.org/wiki/Representational_State_Transfer",
+                  "http://en.wikipedia.org/wiki/Representational_State_Transfer", 
+                  :target => "blank" -%>
+    </p>
+  </div>
+</div>

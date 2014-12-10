@@ -1,0 +1,62 @@
+<%
+
+# BioCatalogue: app/views/wms_services/new.html.erb
+#
+# Copyright (c) 2009, University of Manchester, The European Bioinformatics 
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<% t "New WMS Service" -%>
+
+<h1>New WSM Service</h1>
+
+<div style="width: 100%;">
+
+  <!--BASE_URL HELP BOX-->
+
+
+  <!--FORM-->
+  <%= form_for :wms_service, :url => { :action => :create } do |f| %>
+      <% if !@wms_service.nil? && !@wms_service.errors.nil? then %>
+          <% @wms_service.errors.full_messages.each do |err| %>
+              <%= err %>
+          <% end %>
+      <% end %>
+
+    <div style="width: 45%; float: left">
+      <!--STEP 1-->
+      <p class="step_text">
+        1. Specify the base URL of the WMS service:
+        <span class="required">*</span>
+      </p>
+
+      <p>
+        <%= text_field_tag "endpoint", params[:endpoint] || "http://",
+             :style => "width: 99%" -%>
+      </p>
+
+
+      <!--STEP 2-->
+      <p class="step_text">2. Provide more information on the WMS Service:</p>
+
+      <p class="high_linespaced">
+        What is the <b>official</b> or <b>common name</b> of this WMS service?
+        <span class="required">*</span>
+        <br/>
+        <%= text_field_tag "wms_service[name]", params[:wms_service] ?
+                h(params[:wms_service][:name]) : "", :style => "width: 99%;" %>
+
+        <%= render :partial => 'annotations/service_submission_fields' -%>
+      </p>
+      <!--SUBMIT-->
+      <p style="margin-top: 1.5em; text-align: center;">
+        <%= f.submit "Submit", :disable_with => "Submitting..." -%>
+      </p>
+
+    </div>
+
+  <% end %>
+  
+</div>

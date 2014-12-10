@@ -102,7 +102,7 @@ class ServicesController < ApplicationController
     if @latest_version_instance.is_a?(RestService)
       @grouped_rest_methods = @latest_version_instance.group_all_rest_methods_from_rest_resources
     end
-
+    @test = "kjhbkb"
     respond_to do |format|
       format.html # show.html.erb
       format.xml  # show.xml.builder
@@ -395,8 +395,8 @@ class ServicesController < ApplicationController
   end
 
   def bmb
-    # Get all SOAP and REST services that have not been archived
-    @services = (RestService.includes(:service).where("services.archived_at is NULL") + SoapService.includes(:service).where("services.archived_at is NULL")).sort_by { |s| s.created_at }
+    # Get all SOAP, REST and WMS services that have not been archived
+    @services = (RestService.includes(:service).where("services.archived_at is NULL") + SoapService.includes(:service).where("services.archived_at is NULL") + WmsService.includes(:service).where("services.archived_at is NULL")).sort_by { |s| s.created_at }
 
     respond_to do |format|
       format.xml
@@ -550,6 +550,10 @@ class ServicesController < ApplicationController
     end
 
     return true
+  end
+
+  def test
+     @asda="safdasdfd"
   end
 
 end

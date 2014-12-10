@@ -1,5 +1,145 @@
 BioCatalogue::Application.routes.draw do
 
+  get "wms_methods/update_resource_path"
+
+  get "services/test"
+
+  get "wms_methods/edit_resource_path_popup"
+
+  get "wms_methods/update_endpoint_name"
+
+  get "wms_methods/edit_endpoint_name_popup"
+
+  get "wms_methods/update"
+
+  get "wms_methods/edit_by_popup"
+
+  get "wms_methods/remove_endpoint_name"
+
+  get "wms_methods/inline_add_endpoint_name"
+
+  get "wms_methods/index"
+
+  get "wms_methods/filtered_index"
+
+  get "wms_methods/show"
+
+  get "wms_methods/inputs"
+
+  get "wms_methods/outputs"
+
+  get "wms_methods/annotations"
+
+  get "wms_methods/destroy"
+
+  get "wms_methods/edit_group_name_popup"
+
+  get "wms_methods/update_group_name"
+
+  get "wms_methods/group_name_auto_complete"
+
+  get "wms_methods/filters"
+
+  get "wms_methods/authorise"
+
+  get "wms_methods/parse_sort_params"
+
+  get "wms_methods/find_rest_method"
+
+  get "wms_methods/find_rest_methods"
+
+  get "wms_methods/destroy_unused_objects"
+
+  get "wms_parameters/show"
+
+  get "wms_parameters/annotations"
+
+  get "wms_parameters/update_default_value"
+
+  get "wms_parameters/edit_default_value_popup"
+
+  get "wms_parameters/remove_default_value"
+
+  get "wms_parameters/inline_add_default_value"
+
+  get "wms_parameters/update_constrained_options"
+
+  get "wms_parameters/edit_constrained_options_popup"
+
+  get "wms_parameters/remove_constrained_options"
+
+  get "wms_parameters/new_popup"
+
+  get "wms_parameters/add_new_parameters"
+
+  get "wms_parameters/localise_globalise_parameter"
+
+  get "wms_parameters/make_optional_or_mandatory"
+
+  get "wms_parameters/destroy"
+
+  get "wms_parameters/authorise"
+
+  get "wms_parameters/get_redirect_url"
+
+  get "wms_parameters/destroy_method_param_map"
+
+  get "wms_parameters/find_rest_parameter"
+
+  get "wms_parameters/find_rest_method"
+
+  get "wms_parameters/find_rest_methods"
+
+  get "wms_representations/show"
+
+  get "wms_representations/annotations"
+
+  get "wms_representations/new_popup"
+
+  get "wms_representations/add_new_representations"
+
+  get "wms_representations/destroy"
+
+  get "wms_representations/authorise"
+
+  get "wms_representations/find_rest_method"
+
+  get "wms_representations/find_rest_methods"
+
+  get "wms_representations/find_rest_representation"
+
+  get "wms_representations/get_redirect_url"
+
+  get "wms_representations/destroy_method_rep_map"
+
+  get "wms_resources/new_popup"
+
+  get "wms_resources/add_new_resources"
+
+  get "wms_resources/index"
+
+  get "wms_resources/show"
+
+  get "wms_resources/annotations"
+
+  get "wms_resources/methods"
+
+  get "wms_resources/parse_sort_params"
+
+  get "wms_resources/authorise"
+
+  get "wms_resources/find_wms_service"
+
+  get "wms_resources/find_wms_resource"
+=begin
+
+  get "wms_services/new"
+
+  get "wms_services/edit"
+
+=end
+ # get "wms_services/test"
+
   resources :oauth_clients
 
   match '/oauth/test_request' => 'oauth#test_request', :as => :test_request
@@ -21,6 +161,10 @@ BioCatalogue::Application.routes.draw do
   match '/api.:format' => 'api#show', :as => :api
   match '/lookup.:format' => 'lookup#show', :as => :lookup
   match '/lookup' => 'lookup#show', :as => :lookup
+=begin
+
+  match '/wms_services/test' => 'wms_services#test'
+=end
 
   resources :announcements
 
@@ -257,6 +401,15 @@ BioCatalogue::Application.routes.draw do
     collection do
       post :update_base_endpoint
       get :edit_base_endpoint_by_popup
+    end
+
+  end
+  
+ resources :wms_services do
+
+    collection do
+      get :methods
+      get :test
     end
 
   end
