@@ -183,7 +183,6 @@ xml.tag! "resources", :"xmlns"=>"http://biotoolsregistry.org",
   #      xml.tag! "credits" do
   #        xml.tag! "developer", ""
   #      end
-
       end
     end
   end

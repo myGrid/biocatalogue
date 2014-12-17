@@ -29,7 +29,9 @@
 							<%= annotation_source_text(ann) -%>
 							<div>
                               <%= annotation_prepare_description(ann.value_content,
-                                                                 :is_markdownable=> false) -%>
+                                                                 {
+                                                                         :is_markdownable=> false
+                                                                 }) -%>
 							</div>
 							<%= render :partial => "annotations/common/default_modify_options",
 												 :locals => { :annotation => ann, :ann_type => "format info" } -%>

@@ -110,7 +110,11 @@ if ENABLE_BOOKMARKING_WIDGET
 end
 
 # Set Google Analytics code
-Rubaidh::GoogleAnalytics.tracker_id = GOOGLE_ANALYTICS_TRACKER_ID if ENABLE_GOOGLE_ANALYTICS
+if ENABLE_GOOGLE_ANALYTICS
+  GA.tracker = GOOGLE_ANALYTICS_TRACKER_ID
+else
+  GA.tracker= '000-000'
+end
 
 # Set RPX API key (for OpenID, Twitter, Facebook, etc logins - see https://rpxnow.com/)
 if ENABLE_RPX
