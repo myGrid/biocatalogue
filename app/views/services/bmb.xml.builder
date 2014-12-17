@@ -16,7 +16,7 @@
 # <?xml>
 xml.instruct! :xml
 
-#services = @services[1..100]
+#services = @services[1..50]
 # <Tools>
 xml.tag! "resources", :"xmlns"=>"http://biotoolsregistry.org",
          :"xmlns:xsi"=>"http://www.w3.org/2001/XMLSchema-instance",
@@ -67,7 +67,7 @@ xml.tag! "resources", :"xmlns"=>"http://biotoolsregistry.org",
         xml.tag! "description", g_service.description ? truncate(service.description, length: 1000) : ""
 
         edam_topics.each do |topic|
-          xml.tag! "topic", topic[:uri]
+          xml.tag! "topic", topic[:name], :uri => topic[:uri]
         end
         tags = service.annotations.select { |ann| ann.value_type == "Tag" }.collect { |cat| cat.value.name }
         if tags.empty?
