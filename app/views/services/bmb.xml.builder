@@ -16,8 +16,14 @@
 # <?xml>
 xml.instruct! :xml
 
-#services = @services[1..50]
+#@services = @services[1..100]
 # <Tools>
+
+count_for = {}
+count_for['rest_services'] = 0
+count_for['soap_services'] = 0
+count_for['excluded'] = 0
+
 xml.tag! "resources", :"xmlns"=>"http://biotoolsregistry.org",
          :"xmlns:xsi"=>"http://www.w3.org/2001/XMLSchema-instance",
          :"xsi:schemaLocation"=>"http://biotoolsregistry.org biotools-beta08.xsd" do
@@ -39,29 +45,32 @@ xml.tag! "resources", :"xmlns"=>"http://biotoolsregistry.org",
 
     valid = !operations.empty? &&
         !edam_topics.empty? &&
-        !g_service.description.nil?
+        !g_service.description.nil? &&
+        !g_service.archived?
 
     if valid
       #xml.tag! "resource", :toolid => "#{1000 + index}" do
       xml.tag! "resource" do
         xml.tag! "name", "#{service.name}"
-        xml.tag! "homepage", "#{service_url(service)}"#{service.service_deployments.first.endpoint}
+        xml.tag! "homepage", "#{service.documentation_url}" #"#{service_url(service)}"#{service.service_deployments.first.endpoint}
         xml.tag! "version", g_service.latest_version.version
         #xml.tag! "collectionName", "#{SITE_BASE_HOST}"
         #xml.tag! "uses", ""
         #xml.tag! "softwareType", "Web Service", :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_9000051'
-        xml.tag! "resourceType", "Other"#, :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_9000051'
+        xml.tag! "resourceType", "ReTool (analysis)"#, :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_9000051'
         xml.tag! "interface" do
           if service.is_a?(RestService)
             xml.tag! "interfaceType", "REST API", :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_50000005'
-            xml.tag! "interfaceDocs", "http://www.restdoc.org/spec.html"
+#            xml.tag! "interfaceDocs", "http://www.restdoc.org/spec.html"
             #xml.tag! "interfaceSpecURL", ""
             #xml.tag! "specificationFormat", ""
+            count_for['rest_services'] += 1
           else
             xml.tag! "interfaceType", "SOAP WS",  :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_5000004'
-            xml.tag! "interfaceDocs", "http://www.w3.org/TR/soap/"
+#            xml.tag! "interfaceDocs", "http://www.w3.org/TR/soap/"
             #xml.tag! "interfaceSpecURL", ""
             #xml.tag! "specificationFormat", ""
+            count_for['soap_services'] += 1
           end
         end
         xml.tag! "description", g_service.description ? truncate(service.description, length: 1000) : ""
@@ -129,9 +138,9 @@ xml.tag! "resources", :"xmlns"=>"http://biotoolsregistry.org",
         end
 =end
 
-        xml.tag! "contact" do
+        xml.tag! "contactDetails" do
           if (submitter = g_service.submitter).class == Registry
-            xml.tag! "contactEmail", submitter.homepage
+            xml.tag! "contactURL", submitter.homepage
             xml.tag! "contactName", submitter.display_name
      #       xml.tag! "tel", ""
      #       xml.tag! "role", ""
@@ -184,6 +193,11 @@ xml.tag! "resources", :"xmlns"=>"http://biotoolsregistry.org",
   #        xml.tag! "developer", ""
   #      end
       end
+      else
+        count_for['excluded'] += 1
     end
-  end
 end
+xml.tag! "rest", "Eligible REST Services = #{count_for['rest_services']}/ #{RestService.all.count}"
+xml.tag! "soap", "Eligible SOAP Services = #{count_for['soap_services']}/ #{SoapService.all.count}"
+xml.tag! "exc", "Services Excluded = #{count_for['excluded']} / #{Service.all.count}"
+  end
