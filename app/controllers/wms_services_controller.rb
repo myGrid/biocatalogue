@@ -51,7 +51,7 @@ class WmsServicesController < ApplicationController
   def serviceNode(givenServiceNode)
     @onlineResources = []
     service = WmsServiceNode.new
-    service.wms_service_id = 9
+    service.wms_service_id = 10
     @output = "Services <br />"
     for i in 1..givenServiceNode.elements.size
       if !givenServiceNode.elements[i].has_elements? and !givenServiceNode.elements[i].name.eql?("OnlineResource")
@@ -247,22 +247,22 @@ class WmsServicesController < ApplicationController
 
       if @node == "Request"
         requestNode(givenCapabilityNode.elements[i])
-        @capability_formats.each { |element| element.wms_service_id = 9 }     # TO BE CHANGED <<<_--------------
+        @capability_formats.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
         @capability_formats.each { |element| element.save! }
 
-        @capability_get_resources.each { |element| element.wms_service_id = 9 }     # TO BE CHANGED <<<_--------------
+        @capability_get_resources.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
         @capability_get_resources.each { |element| element.save! }
 
-        @capability_post_resources.each { |element| element.wms_service_id = 9 }     # TO BE CHANGED <<<_--------------
+        @capability_post_resources.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
         @capability_post_resources.each { |element| element.save! }
 
-        @map_formats.each { |element| element.wms_service_id = 9 }     # TO BE CHANGED <<<_--------------
+        @map_formats.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
         @map_formats.each { |element| element.save! }
 
-        @map_get_resources.each { |element| element.wms_service_id = 9 }     # TO BE CHANGED <<<_--------------
+        @map_get_resources.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
         @map_get_resources.each { |element| element.save! }
 
-        @map_post_resources.each { |element| element.wms_service_id = 9 }     # TO BE CHANGED <<<_--------------
+        @map_post_resources.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
         @map_post_resources.each { |element| element.save! }
 
 
@@ -272,12 +272,13 @@ class WmsServicesController < ApplicationController
       if @node == "Exception"
         exceptionNode(givenCapabilityNode.elements[i])
 
-        @exception_formats.each { |element| element.wms_service_id = 9 }     # TO BE CHANGED <<<_--------------
+        @exception_formats.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
         @exception_formats.each { |element| element.save! }
       end
 
       if @node == "Layer"
-        layer = layerNode(givenCapabilityNode.elements[i])
+        layer = layerNode(givenCapabilityNode.elements[i], 10, nil)              # TO BE CHANGED <<<_--------------
+=begin
         layer.wms_service_id = 9     # TO BE CHANGED <<<_--------------
         layer.save!
         @crss.each { |element| element.wms_layer_id = layer.id }
@@ -290,6 +291,7 @@ class WmsServicesController < ApplicationController
           @keywordlist_layer.each { |element| element.wms_layer_id = layer.id }
           @keywordlist_layer.each { |element| element.save! }
         end
+=end
 
       end
     end
@@ -493,9 +495,10 @@ class WmsServicesController < ApplicationController
   end
 
   # analyze Layer node
-  def layerNode(givenNode)
-    @crss = []
-    @boundingboxes = []
+  def layerNode(givenNode, parentServiceNodeID, parentLayerNodeID)
+    crss = []
+    boundingboxes = []
+    layers = []
     layer = WmsLayer.new
     for i in 1..givenNode.elements.size
 
@@ -553,7 +556,7 @@ class WmsServicesController < ApplicationController
       if givenNode.elements[i].name == "CRS"
         crs = WmsLayerCrs.new
         crs.crs = givenNode.elements[i].text
-        @crss << crs
+        crss << crs
       end
 
       if givenNode.elements[i].name == "BoundingBox"
@@ -575,17 +578,17 @@ class WmsServicesController < ApplicationController
           boundingbox.maxy = givenNode.elements[i].attributes["maxy"]
         end
 
-        @boundingboxes << boundingbox
+        boundingboxes << boundingbox
       end
 
       if givenNode.elements[i].name == "KeywordList"
-        @keywordlist_layer = []
+        keywordlist_layer = []
         # go through every element
         for a in 1..givenNode.elements[i].elements.size
           keyword = WmsKeywordlist.new
           keyword.keyword = givenNode.elements[i].elements[a].text
           keyword.wms_service_node_id = nil
-          @keywordlist_layer << keyword
+          keywordlist_layer << keyword
         end
       end
 
@@ -594,9 +597,39 @@ class WmsServicesController < ApplicationController
 
 
       end
+
+      if givenNode.elements[i].name == "Layer"
+        layers << givenNode.elements[i];
+      end
+
+
+
+
+    end
+
+    layer.wms_service_id = parentServiceNodeID
+    layer.wms_layer_id = parentLayerNodeID
+    layer.save!
+    crss.each { |element| element.wms_layer_id = layer.id }
+    crss.each { |element| element.save! }
+    boundingboxes.each { |element| element.wms_layer_id = layer.id }
+    boundingboxes.each { |element|
+      element.save!
+    }
+    if !keywordlist_layer.nil?
+      keywordlist_layer.each { |element| element.wms_layer_id = layer.id }
+      keywordlist_layer.each { |element| element.save! }
+    end
+
+    if !layers.nil?
+      layers.each { |element| layerNode(element, nil, layer.id) }
     end
     return layer
   end
+
+
+
+
 
 
 
@@ -629,6 +662,7 @@ class WmsServicesController < ApplicationController
   # GET /wms_services/1
   # GET /wms_services/1.xml
   def show
+    @test = "b;ahkjdsklfj"
     respond_to do |format|
       format.html { disable_action }
       format.xml  # show.xml.builder

@@ -276,8 +276,99 @@ class ServicesController < ApplicationController
   end
 
   def service_endpoint
+
+    #@table = @table + "<tr>"
+    #@table = @table + "<td>" + "TEST" + "</td>"
+    #@table = @table + "<td>" + "DATA" + "</td>"
+    #@table = @table + "</tr>"
+    #@layer = WmsLayer.find_by_wms_service_id(params['id']).id
+
+
+    @script1 = "<script type='text/javascript'>
+    function changeImageFormat(a)
+    {
+
+        var img = document.getElementsByClassName(\"imagePart\");
+        for(var i = 0; i < img.length; i++) {
+          img[i].innerHTML = '&format=' + a.value;
+        }
+    }
+    </script>"
+
+    @script2 = "<script type='text/javascript'>
+    function changeBBox(a, id)
+    {
+
+      document.getElementById(id).innerHTML = a.options[a.selectedIndex].getAttribute('data-req');
+
+    }
+    </script>"
+
+
+
+
+
+    # create image formats dropdown list
+    @imageformats = "<select onChange=\"changeImageFormat(this)\">"
+    WmsGetmapFormat.where(wms_service_id: params[:id]).find_each do |layer|
+      @imageformats = @imageformats + "<option>" + layer.format + "</option>"
+    end
+    @imageformats = @imageformats + "</select><br /><br />"
+
+    # create table of layers
+    @colorBool = 0;
+    @counter = 0;
+    @baseURL = ServiceDeployment.find_by_service_id(params['id']).endpoint + "?service=WMS&request=GetMap"
+    @table = "<table style=\"width:100%\">"
+    WmsLayer.where(wms_service_id: params[:id]).find_each do |layer|
+      tableCreator(layer.id)
+    end
+    @table = @table + "</table>"
+
     respond_to do |format|
       format.html { render 'services/show'}
+    end
+  end
+
+  def tableCreator(layerID)
+
+
+    WmsLayer.where(wms_layer_id: layerID).find_each do |layer|
+      if @colorBool == 0
+        @table = @table + "<tr bgcolor=\"#E2EFCD\">"
+      else
+        @table = @table + "<tr>"
+      end
+
+      @table = @table + "<td height=\"30\">" + layer.name + "</td>"
+      @table = @table + "<td height=\"30\">" + layer.title + "</td>"
+
+      # create bounding boxes dropdown list
+      @bboxes = "<select onChange=\"changeBBox(this, " + @counter.to_s + ")\">"
+      @bboxes = @bboxes + "<option>{bounding boxes}</option>"
+      WmsLayerBoundingbox.where(wms_layer_id: layerID).find_each do |bbox|
+        data = "&bbox=" + bbox.miny + "," + bbox.minx + ","+ bbox.maxy + "," + bbox.maxx + "&srs=" + bbox.crs;
+        @bboxes = @bboxes + "<option data-req=\"" + data + "\">" + bbox.crs + " | " + bbox.minx + " | " + bbox.miny + " | " + bbox.maxx + " | " + bbox.maxy + "</option>"
+      end
+      @bboxes = @bboxes + "</select>"
+
+
+      @table = @table + "<td height=\"30\">" + @bboxes + "</td>"
+      @table = @table + "</tr>"
+
+      @template = "<b>" + @baseURL + "&layers=" + layer.name + "<span class=\"imagePart\">{format}</span><span id=\"" + @counter.to_s + "\">{Bounding Box}</span></b>"
+
+      if @colorBool == 0
+        @table = @table + "<tr bgcolor=\"#E2EFCD\"><td height=\"30\" colspan=\"3\">" + @template + "</td></tr>"
+        @colorBool = 1
+      else
+        @table = @table + "<tr><td height=\"30\" colspan=\"3\">" + @template + "</td></tr>"
+        @colorBool = 0
+      end
+      @counter = @counter + 1
+
+
+      tableCreator(layer.id)
     end
   end
 
