@@ -25,6 +25,7 @@
 		<% if show_header == true %>
 			<div style="margin-top: 1em;">
 			  <b>ELIXIR Description(s):</b>
+              <%= info_icon_with_tooltip("An ELIXIR Description must be a short (maximum of 2 sentences), succinct description containing no links describing the service. If you are unsure, this should be left blank.") -%>
               <%= render :partial => 'shared/markdown_notification'%>
 			</div>
 		<% end %>
