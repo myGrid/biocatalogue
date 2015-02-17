@@ -206,8 +206,9 @@ module BioCatalogue
         new_service_deployment.provider = provider 
         new_service_deployment.service = new_service
         new_service_deployment.submitter = actual_submitter
-                                                      
-        return new_service.save!
+        new_service.save!
+
+        return new_service_deployment
       end
       
     end

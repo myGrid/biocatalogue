@@ -1,11 +1,11 @@
 GIT
-  remote: git://github.com/SysMO-DB/redbox
+  remote: https://github.com/SysMO-DB/redbox
   revision: 494451d01aeeb70b186783d08b6b9aefcb537e98
   specs:
     redbox (1.0.4)
 
 GIT
-  remote: git://github.com/myGrid/annotations.git
+  remote: https://github.com/myGrid/annotations.git
   revision: d33e78993ee957fa12d71cbe9f03100dd9b0ad15
   specs:
     my_annotations (0.6.0)
@@ -115,6 +115,7 @@ GEM
     json (1.8.1)
     json_pure (1.8.1)
     jwt (1.0.0)
+    libv8 (3.16.14.7)
     libxml-ruby (2.6.0)
     mail (2.5.4)
       mime-types (~> 1.16)
@@ -190,6 +191,7 @@ GEM
     rake (10.3.2)
     rdoc (3.12.2)
       json (~> 1.4)
+    ref (1.0.5)
     rjb (1.4.9)
     rpx_now (0.7.1)
       json_pure
@@ -227,6 +229,9 @@ GEM
       sunspot (= 2.1.1)
     sunspot_solr (2.1.1)
     tabs_on_rails (2.2.0)
+    therubyracer (0.12.1)
+      libv8 (~> 3.16.14.0)
+      ref
     thin (1.6.2)
       daemons (>= 1.0.9)
       eventmachine (>= 1.0.0)
@@ -311,6 +316,7 @@ DEPENDENCIES
   sunspot_rails
   sunspot_solr
   tabs_on_rails
+  therubyracer
   thin
   twitter
   tzinfo

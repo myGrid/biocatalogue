@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141204160733) do
+ActiveRecord::Schema.define(:version => 20150212171757) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -819,6 +819,17 @@ ActiveRecord::Schema.define(:version => 20141204160733) do
 
   add_index "wms_layer_crs", ["wms_layer_id"], :name => "index_wms_layer_crs_on_wms_layer_id"
 
+  create_table "wms_layer_styles", :force => true do |t|
+    t.string   "name"
+    t.string   "title"
+    t.integer  "wms_layer_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.string   "abstract"
+  end
+
+  add_index "wms_layer_styles", ["wms_layer_id"], :name => "index_wms_layer_styles_on_wms_layer_id"
+
   create_table "wms_layers", :force => true do |t|
     t.string   "name"
     t.string   "title"
@@ -830,8 +841,10 @@ ActiveRecord::Schema.define(:version => 20141204160733) do
     t.integer  "wms_service_id"
     t.datetime "created_at",           :null => false
     t.datetime "updated_at",           :null => false
+    t.integer  "wms_layer_id"
   end
 
+  add_index "wms_layers", ["wms_layer_id"], :name => "index_wms_layers_on_wms_layer_id"
   add_index "wms_layers", ["wms_service_id"], :name => "index_wms_layers_on_wms_service_id"
 
   create_table "wms_method_parameters", :force => true do |t|
@@ -923,9 +936,10 @@ ActiveRecord::Schema.define(:version => 20141204160733) do
   create_table "wms_service_nodes", :force => true do |t|
     t.string   "name"
     t.string   "title"
+    t.string   "version",            :limit => 20
     t.integer  "wms_service_id"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.string   "abstract"
     t.string   "fees"
     t.string   "access_constraints"

@@ -5,7 +5,7 @@ ruby "1.9.3"
 gem "rails", "~>3.2.14"
 gem "rdoc", "~>3.4"
 gem "rake"
-
+gem "therubyracer"
 gem "mysql2"
 gem "mail"#, "2.5.3" # latest version won't send emails
 gem "rails_autolink"
@@ -43,7 +43,7 @@ gem 'delayed_job_active_record'
 gem 'markaby'
 #gem "validates_url_format_of"  # incompatible with Rails 3
 gem "acts_as_trashable"
-gem "my_annotations", :git => 'git://github.com/myGrid/annotations.git'
+gem "my_annotations", :git => 'https://github.com/myGrid/annotations.git'
 gem "will_paginate"
 gem "better_logging"
 gem "exception_notification", "<4.0.0", :require => 'exception_notifier'
@@ -62,7 +62,7 @@ group :test do
 end
 
 #Linked to SysMO Git repositories
-gem 'redbox', :git=>"git://github.com/SysMO-DB/redbox"
+gem 'redbox', :git=>"https://github.com/SysMO-DB/redbox"
 #gem 'redbox', :path => "vendor/gems/redbox"
 
 gem "white_list", :git=>"https://github.com/neubloc/white_list.git"

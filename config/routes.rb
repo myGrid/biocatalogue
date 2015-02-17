@@ -1,5 +1,11 @@
 BioCatalogue::Application.routes.draw do
 
+  #get "wms_service_layer/show"
+
+  get "wms_service_layer/layer"
+
+  get '/wms_service_layer/:id', to: 'wms_service_layer#show'
+
   get "wms_methods/update_resource_path"
 
   get "services/test"
