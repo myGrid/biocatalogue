@@ -115,7 +115,7 @@ class WmsService < ActiveRecord::Base
     begin
       transaction do
         self.save!
-        self.perform_post_submit(endpoint, actual_submitter)
+        @service = self.perform_post_submit(endpoint, actual_submitter)
       end
     rescue Exception => ex
       #ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
@@ -145,7 +145,7 @@ class WmsService < ActiveRecord::Base
       end
     end
 
-    return success
+    return [success, @service]
   end
 
   # =========================================

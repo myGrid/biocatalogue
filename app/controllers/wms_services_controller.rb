@@ -25,20 +25,37 @@ class WmsServicesController < ApplicationController
   def test
 
 
-    require 'net/http'
-    require "rexml/document"
+    #require 'net/http'
+    #require "rexml/document"
 
     # get the XML document
     #url = URI.parse('http://sampleserver1.arcgisonline.com/ArcGIS/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/WMSServer?service=WMS&request=GetCapabilities&version=1.3.0')
     #url = URI.parse('http://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?request=getCapabilities&service=wms&version=1.1.1')
     #url = URI.parse('http://geo.vliz.be/geoserver/ows?service=wms&version=1.3.0&request=GetCapabilities')
-    url = URI.parse('http://geoservices.brgm.fr/geologie?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities')
+    #url = URI.parse('http://geoservices.brgm.fr/geologie?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities')
+    #url = URI.parse(uri)
 
+    #req = Net::HTTP::Get.new(url.to_s)
+    #res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
+
+    request = params[:endpoint] + "?request=getCapabilities&service=wms&version=" + params[:version]
+
+    require 'net/http'
+
+    #url = URI.parse('http://sampleserver1.arcgisonline.com/ArcGIS/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/WMSServer?service=WMS&request=GetCapabilities&version=1.3.0')
+
+
+    #url = URI.parse('http://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?request=getCapabilities&service=wms&version=1.1.1')
+    url = URI.parse(request)
     req = Net::HTTP::Get.new(url.to_s)
     res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
 
+
+
     # create REXML object
     doc = REXML::Document.new res.body
+
+    @version = doc.root.attributes['version']
     service_element = doc.elements[1].elements[1]
     capability_element = doc.elements[1].elements[2]
 
@@ -51,7 +68,8 @@ class WmsServicesController < ApplicationController
   def serviceNode(givenServiceNode)
     @onlineResources = []
     service = WmsServiceNode.new
-    service.wms_service_id = 10
+    service.version = @version
+    service.wms_service_id = @service.service_id  # <<<--------------------------------------------
     @output = "Services <br />"
     for i in 1..givenServiceNode.elements.size
       if !givenServiceNode.elements[i].has_elements? and !givenServiceNode.elements[i].name.eql?("OnlineResource")
@@ -108,11 +126,18 @@ class WmsServicesController < ApplicationController
 
     # save everything
     service.save!
-    @keywordlist.each { |element| element.wms_service_node_id = service.id }
-    @keywordlist.each { |element| element.wms_layer_id = nil }
-    @keywordlist.each { |element| element.save! }
-    @onlineResources.each { |element| element.wms_service_node_id = service.id }
-    @onlineResources.each { |element| element.save! }
+    @keywordlist.each do |element|
+      element.wms_service_node_id = service.id
+      element.wms_layer_id = nil
+      element.save!
+    end
+    #@keywordlist.each { |element| element.wms_layer_id = nil }
+    #@keywordlist.each { |element| element.save! }
+    @onlineResources.each do |element|
+      element.wms_service_node_id = service.id
+      element.save!
+    end
+    #@onlineResources.each { |element| element.save! }
     @contact_information.wms_service_node_id = service.id;
     @contact_information.save!
   end
@@ -247,23 +272,44 @@ class WmsServicesController < ApplicationController
 
       if @node == "Request"
         requestNode(givenCapabilityNode.elements[i])
-        @capability_formats.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
-        @capability_formats.each { |element| element.save! }
+        @capability_formats.each do |element|
+          element.wms_service_id = @service.service_id             # TO BE CHANGED <<<_--------------
+          element.save!
+        end
 
-        @capability_get_resources.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
-        @capability_get_resources.each { |element| element.save! }
+        #@capability_formats.each { |element| element.save! }
 
-        @capability_post_resources.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
-        @capability_post_resources.each { |element| element.save! }
+        @capability_get_resources.each do |element|
+          element.wms_service_id = @service.service_id             # TO BE CHANGED <<<_--------------
+          element.save!
+        end
 
-        @map_formats.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
-        @map_formats.each { |element| element.save! }
 
-        @map_get_resources.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
-        @map_get_resources.each { |element| element.save! }
+        #@capability_get_resources.each { |element| element.save! }
 
-        @map_post_resources.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
-        @map_post_resources.each { |element| element.save! }
+        @capability_post_resources.each do |element|
+          element.wms_service_id = @service.service_id     # TO BE CHANGED <<<_--------------
+          element.save!
+        end
+        #@capability_post_resources.each { |element| element.save! }
+
+        @map_formats.each do |element|
+          element.wms_service_id = @service.service_id     # TO BE CHANGED <<<_--------------
+          element.save!
+        end
+
+
+        @map_get_resources.each do |element|
+          element.wms_service_id = @service.service_id      # TO BE CHANGED <<<_--------------
+          element.save!
+        end
+
+
+        @map_post_resources.each do |element|
+          element.wms_service_id = @service.service_id      # TO BE CHANGED <<<_--------------
+          element.save!
+        end
+
 
 
 
@@ -272,12 +318,15 @@ class WmsServicesController < ApplicationController
       if @node == "Exception"
         exceptionNode(givenCapabilityNode.elements[i])
 
-        @exception_formats.each { |element| element.wms_service_id = 10 }     # TO BE CHANGED <<<_--------------
-        @exception_formats.each { |element| element.save! }
+        @exception_formats.each do |element|
+          element.wms_service_id = @service.service_id      # TO BE CHANGED <<<_--------------
+          element.save!
+        end
+
       end
 
       if @node == "Layer"
-        layer = layerNode(givenCapabilityNode.elements[i], 10, nil)              # TO BE CHANGED <<<_--------------
+        layer = layerNode(givenCapabilityNode.elements[i], @service.service_id, nil)              # TO BE CHANGED <<<_--------------
 =begin
         layer.wms_service_id = 9     # TO BE CHANGED <<<_--------------
         layer.save!
@@ -499,6 +548,8 @@ class WmsServicesController < ApplicationController
     crss = []
     boundingboxes = []
     layers = []
+    keywordlist_layer = []
+    styles = []
     layer = WmsLayer.new
     for i in 1..givenNode.elements.size
 
@@ -582,7 +633,7 @@ class WmsServicesController < ApplicationController
       end
 
       if givenNode.elements[i].name == "KeywordList"
-        keywordlist_layer = []
+        #keywordlist_layer = []
         # go through every element
         for a in 1..givenNode.elements[i].elements.size
           keyword = WmsKeywordlist.new
@@ -594,7 +645,21 @@ class WmsServicesController < ApplicationController
 
 
       if givenNode.elements[i].name == "Style"
+        style = WmsLayerStyle.new
+        # go through every element
+        for a in 1..givenNode.elements[i].elements.size
 
+
+          if givenNode.elements[i].elements[a].name == "Name"
+            style.name = givenNode.elements[i].elements[a].text
+          elsif givenNode.elements[i].elements[a].name == "Title"
+            style.title = givenNode.elements[i].elements[a].text
+          elsif givenNode.elements[i].elements[a].name == "Abstract"
+            style.abstract = givenNode.elements[i].elements[a].text
+          end
+          styles << style
+
+        end
 
       end
 
@@ -610,15 +675,31 @@ class WmsServicesController < ApplicationController
     layer.wms_service_id = parentServiceNodeID
     layer.wms_layer_id = parentLayerNodeID
     layer.save!
-    crss.each { |element| element.wms_layer_id = layer.id }
-    crss.each { |element| element.save! }
-    boundingboxes.each { |element| element.wms_layer_id = layer.id }
-    boundingboxes.each { |element|
+    crss.each do |element|
+      element.wms_layer_id = layer.id
       element.save!
-    }
+    end
+
+    boundingboxes.each do |element|
+      element.wms_layer_id = layer.id
+      element.save!
+    end
+
+
     if !keywordlist_layer.nil?
-      keywordlist_layer.each { |element| element.wms_layer_id = layer.id }
-      keywordlist_layer.each { |element| element.save! }
+      keywordlist_layer.each do |element|
+        element.wms_layer_id = layer.id
+        element.save!
+      end
+
+    end
+
+    if !styles.nil?
+      styles.each do |element|
+        element.wms_layer_id = layer.id
+        element.save!
+      end
+
     end
 
     if !layers.nil?
@@ -778,17 +859,17 @@ class WmsServicesController < ApplicationController
 
 
 #-------------------------------------------------------------------- test
-          request = params[:endpoint] + "?request=getCapabilities&service=wms"
+          #request = params[:endpoint] + "?request=getCapabilities&service=wms&version=1.3.0"
 
-          require 'net/http'
+          #require 'net/http'
 
           #url = URI.parse('http://sampleserver1.arcgisonline.com/ArcGIS/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/WMSServer?service=WMS&request=GetCapabilities&version=1.3.0')
 
 
           #url = URI.parse('http://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?request=getCapabilities&service=wms&version=1.1.1')
-          url = URI.parse(request)
-          req = Net::HTTP::Get.new(url.to_s)
-          res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
+          #url = URI.parse(request)
+          #req = Net::HTTP::Get.new(url.to_s)
+          #@res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
 
 
           #object_hash = Hash.from_xml(res.body)
@@ -799,13 +880,17 @@ class WmsServicesController < ApplicationController
           #@title = xml_hash['Service']['Title']
           #@xml = "Name:   " + @name + "<br>" + "Title:   " + @title
 
+
 #-------------------------------------------------------------------------------
 
-          @wms_service_parameter = WmsServiceParameter.new
-          @wms_service_parameter.xml_content = res.body
+          #@wms_service_parameter = WmsServiceParameter.new
+          #@wms_service_parameter.xml_content = res.body
 
           respond_to do |format|
-            if @wms_service.submit_service(endpoint, current_user, params[:annotations].clone) and @wms_service_parameter.submit_parameters
+            results = @wms_service.submit_service(endpoint, current_user, params[:annotations].clone)
+             if results[0]
+              @service = results[1]
+              test
               success_msg = 'Service was successfully submitted.'.html_safe
               success_msg += "<br/>You may now add endpoints via the Endpoints tab.".html_safe
 
@@ -872,6 +957,7 @@ class WmsServicesController < ApplicationController
     else
       @service_deployment.endpoint = endpoint
       @service_deployment.save!
+
 
       flash[:notice] = "The base URL has been successfully changed"
 
@@ -978,7 +1064,7 @@ class WmsServicesController < ApplicationController
                                           :per_page => @per_page,
                                           :order => order)
   end
-  
+
 
 
   def edit
