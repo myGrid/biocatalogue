@@ -22,6 +22,19 @@ class CurationController < ApplicationController
   def show
     # show.html.erb
   end
+
+  def elixir_curation
+    @services = []
+    elixir_descriptions  = Annotation.with_attribute_name('elixir_description')
+    elixir_descriptions.each do |ed|
+      @services << ed.annotatable
+    end
+    @services.uniq!
+
+    respond_to do |format|
+      format.html
+    end
+  end
   
   def copy_annotations
     if request.post?

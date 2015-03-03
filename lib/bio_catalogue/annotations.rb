@@ -12,7 +12,8 @@ module BioCatalogue
     # List of annotation attributes that are considered "known" or important in the system
     KNOWN_ANNOTATION_ATTRIBUTES = { :services => [ "category", "tag", "description", "alternative_name", 
                                                    "example_data", "documentation_url", "cost", "license",
-                                                   "contact", "format", "example_endpoint", "data_schema" ].freeze,
+                                                   "contact", "format", "example_endpoint", "data_schema",
+                                                   "elixir_description" ].freeze,
                                     :providers => [ "display_name", "alternative_name", "website" ].freeze }.freeze
     
     # Returns back a list of the different metadata sources that are possible in the system
