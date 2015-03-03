@@ -255,7 +255,7 @@ module ServicesHelper
       when 'Tree Inference'
         return {:name => 'Phylogenetics', :uri => 'http://edamontology.org/topic_3293'}
       else
-        return {:name => topic, :uri => ''}
+        return {}
     end
   end
 
@@ -351,7 +351,7 @@ module ServicesHelper
       when 'Tree Inference'
         return {:name => 'Phylogenetic tree generation', :uri => 'http://edamontology.org/operation_0323'}
       else
-        return {:name => topic, :uri => ''}
+        return {}
     end
   end
 
