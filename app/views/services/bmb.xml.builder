@@ -22,15 +22,19 @@ xml.instruct! :xml
 # Use 'service annotation levels' to find best services:
 # https://www.biocatalogue.org/curation/reports/annotation_level?action=annotation_level&controller=curation&sort_by=ann_level&sort_order=desc
 
-service_ids = [2071, 2088, 2697, 3099, 3354, 2052, 3340, 3352, 2711, 2752, 2060, 3418, 3420,
-               2653, 2700, 2, 30, 31] #3718 (too new?)
+#service_ids = [2071, 2088, 2697, 3099, 3354, 2052, 3340, 3352, 2711, 2752, 2060, 3418, 3420,
+#               2653, 2700, 2, 30, 31] #3718 (too new?)
 #rejects: [3329, 3104, 2715, 2615, 2616, 1924, 2698, 2146]
-#
-services = []
-service_ids.each { |s_id| services << Service.find(s_id).service_version_instances }
-services.flatten!
+#services = (RestService.includes(:service).where("services.archived_at is NULL") + SoapService.includes(:service).where("services.archived_at is NULL")).sort_by { |s| s.created_at }
+#services.select!{|service| service_ids.include?(service.id)}
 
-# Debugging & statsistics
+#services = []
+#service_ids.each { |s_id| services << Service.find(s_id).service_version_instances }
+#service_ids.each { |s_id| services << Service.find(s_id).latest_version }
+#services.flatten!
+
+#services = @services
+#Debugging & statsistics
 count_for = {}
 count_for['rest_services'] = 0
 count_for['soap_services'] = 0
@@ -40,10 +44,12 @@ debug_mode = false
 
 xml.tag! "resources", :"xmlns" => "http://biotoolsregistry.org",
          :"xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance",
-         :"xsi:schemaLocation" => "http://biotoolsregistry.org biotools-beta08.xsd" do
+         :"xsi:schemaLocation" => "http://biotoolsregistry.org biotools-1.0.xsd" do
+
+
 
   #set services to @services for full list
-  services.each_with_index do |service, index|
+  @services.each_with_index do |service, index|
 
     # Generic service is meant by g_service. A service is either of the RestService class or the SoapService class.
     # g_service is the generic Service class common to both
@@ -60,7 +66,7 @@ xml.tag! "resources", :"xmlns" => "http://biotoolsregistry.org",
     operations.uniq!
 
     # For the homepage we'll be using the documentation URL
-    doc_link = service.preferred_documentation_url if service.has_documentation_url?
+    doc_link = (service.has_documentation_url? ? service.preferred_documentation_url : '')
     homepage = URI::extract(doc_link).first
 
    # Contact is a free text annotation and we need to extract JUST an email address or URL from it.
@@ -89,8 +95,6 @@ xml.tag! "resources", :"xmlns" => "http://biotoolsregistry.org",
     Or merely restate the title (see e.g. "SMART" for which the description is "SMART webservice"
 =end
 
-
-
     valid = !operations.empty? &&
         !edam_topics.empty? &&
         !g_service.preferred_description.nil? &&
@@ -98,18 +102,18 @@ xml.tag! "resources", :"xmlns" => "http://biotoolsregistry.org",
         !(contact_url.nil? && contact_email.nil?) &&
         !homepage.nil?
 
-
     if valid
       if !debug_mode
         #xml.tag! "resource", :toolid => "#{1000 + index}" do
         xml.tag! "resource" do
           xml.tag! "name", "#{service.name}"
           xml.tag! "homepage", homepage
+          #xml.tag! "mirror"
           #xml.tag! "version", g_service.latest_version.version
           #xml.tag! "collectionName", "#{SITE_BASE_HOST}"
           #xml.tag! "uses", ""
           #xml.tag! "softwareType", "Web Service", :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_9000051'
-          xml.tag! "resourceType", "Tool (analysis)" #, :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_9000051'
+          xml.tag! "resourceType", "Tool" #, :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_9000051'
           xml.tag! "interface" do
             if service.is_a?(RestService)
               xml.tag! "interfaceType", "REST API", :uri => 'http://www.ebi.ac.uk/swo/interface/SWO_50000005'
@@ -126,7 +130,9 @@ xml.tag! "resources", :"xmlns" => "http://biotoolsregistry.org",
             end
           end
           #xml.tag! "description", g_service.preferred_description
-          xml.tag! "description", g_service.preferred_description ? truncate(service.preferred_description, length: 1000) : ""
+          #xml.tag! "description", g_service.preferred_description ? truncate(service.preferred_description, length: 1000) : ""
+          xml.tag! "description", g_service.annotations_with_attribute('elixir_description')
+
 
           edam_topics.each do |topic|
             xml.tag! "topic", topic[:name], :uri => topic[:uri]
