@@ -97,7 +97,6 @@ xml.tag! "resources", :"xmlns" => "http://biotoolsregistry.org",
 
     valid = !operations.empty? &&
         !edam_topics.empty? &&
-        !g_service.preferred_description.nil? &&
         !g_service.archived? &&
         !(contact_url.nil? && contact_email.nil?) &&
         !homepage.nil?
@@ -131,7 +130,7 @@ xml.tag! "resources", :"xmlns" => "http://biotoolsregistry.org",
           end
           #xml.tag! "description", g_service.preferred_description
           #xml.tag! "description", g_service.preferred_description ? truncate(service.preferred_description, length: 1000) : ""
-          xml.tag! "description", g_service.annotations_with_attribute('elixir_description')
+          xml.tag! "description", service.annotations_with_attribute('elixir_description').first.value.text
 
 
           edam_topics.each do |topic|
