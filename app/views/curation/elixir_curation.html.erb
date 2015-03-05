@@ -15,8 +15,8 @@
   <% else %>
       <table class="biocat_table" style="margin: 0 auto; width: 100%">
         <th> Service Name</th>
-        <th> Has EDAM Operation?</th>
-        <th> Has EDAM Topic?</th>
+        <th> Has EDAM Operation?<br> e.g. <i>1. &lt;Operation&gt;(&lt;Category&gt;)</i></th>
+        <th> Has EDAM Topic?<br> e.g <i>1. &lt;Topic&gt;(&lt;Category&gt;)</i></th>
         <th> Is not Archived?</th>
         <th> Has Contact URL or E-Mail?</th>
         <th> Has Homepage?</th>
@@ -28,11 +28,12 @@
 
                # Map the Services Categories to EDAM Topics and EDAM Operations
                edam_topics = []
-               categories.each { |x| edam_topics << map_categories_to_edam_topics(x) }
+               categories.each { |x| edam_topics << [x, map_categories_to_edam_topics(x)] }
+               edam_topics.reject! { |c| c[1].empty? }
                edam_topics.uniq!
                operations = []
-               categories.each { |x| operations << map_categories_to_edam_operations(x) }
-               operations.reject! { |c| c.empty? }
+               categories.each { |x| operations << [x, map_categories_to_edam_operations(x)] }
+               operations.reject! { |c| c[1].empty? }
                operations.uniq!
 
                # For the homepage we'll be using the documentation URL
@@ -73,7 +74,7 @@
               <% else %>
                   <td style="background-color: darkseagreen">
                     <% operations.each_with_index do |op, i| %>
-                        <%= i+1 %>. <%= op[:name] %><br>
+                        <%= i+1 %>. <%= op[1][:name]%> (<i><%= op[0] %></i>)<br>
                     <% end %>
                   </td>
               <% end %>
@@ -83,7 +84,7 @@
               <% else %>
                   <td style="background-color: darkseagreen">
                     <% edam_topics.each_with_index do |topic, i| %>
-                        <%= i+1 %>. <%= topic[:name] %><br>
+                        <%= i+1 %>. <%= topic[1][:name]%> (<i><%= topic[0] %></i>)<br>
                     <% end %>
                   </td>
               <% end %>
