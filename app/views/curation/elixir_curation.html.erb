@@ -1,11 +1,10 @@
-
-<%= render :partial => 'header', :locals => { :sub => "- Reports - ELIXIR Curation " } %>
+<%= render :partial => 'header', :locals => {:sub => "- Reports - ELIXIR Curation "} %>
 
 <div class="box_info_standout center" style="margin: 1.5em auto; width: 700px;">
-  This is a list of all services that have been annotated with an ELIXIR Description but do
-  not meet the criteria to be included in the ELIXIR Registry Export. <br>
-  Those services with their service name highlighted in <span style="color:lightcoral">red</span> have not met the criteria and will not be included in the
-  <a href="/services/bmb.xml">service dump</a>
+  This is a list of all services that have been annotated with an ELIXIR Description.<br>
+  Those services with their service name highlighted in <span style="color:lightcoral">red</span> do
+  not meet the criteria to be included in the <a href="https://elixir-registry.cbs.dtu.dk/#/">ELIXIR Registry</a> and
+  so will be rejected from the <a href="/services/bmb.xml">Service Dump</a>.
 
 </div>
 
@@ -15,81 +14,102 @@
       <div class='none_text' style="text-align: center">No links flagged</div>
   <% else %>
       <table class="biocat_table" style="margin: 0 auto; width: 100%">
-        <th> Service Name </th>
-        <th> Has EDAM Operation  </th>
-        <th> Has EDAM Topic </th>
-        <th> Is not Archived </th>
-        <th> Contact URL </th>
-        <th> Contact Email </th>
-        <th> Homepage </th>
+        <th> Service Name</th>
+        <th> Has EDAM Operation?</th>
+        <th> Has EDAM Topic?</th>
+        <th> Is not Archived?</th>
+        <th> Has Contact URL or E-Mail?</th>
+        <th> Has Homepage?</th>
         <% invalid_count = 0 %>
         <% @services.each do |service| %>
             <%
-            g_service = service.service
-            categories = g_service.annotations.select { |ann| ann.value_type == "Category" }.collect { |cat| cat.value.name }
+               g_service = service.service
+               categories = g_service.annotations.select { |ann| ann.value_type == "Category" }.collect { |cat| cat.value.name }
 
-            # Map the Services Categories to EDAM Topics and EDAM Operations
-            edam_topics = []
-            categories.each { |x| edam_topics << map_categories_to_edam_topics(x) }
-            edam_topics.uniq!
-            operations = []
-            categories.each { |x| operations << map_categories_to_edam_operations(x) }
-            operations.reject! { |c| c.empty? }
-            operations.uniq!
+               # Map the Services Categories to EDAM Topics and EDAM Operations
+               edam_topics = []
+               categories.each { |x| edam_topics << map_categories_to_edam_topics(x) }
+               edam_topics.uniq!
+               operations = []
+               categories.each { |x| operations << map_categories_to_edam_operations(x) }
+               operations.reject! { |c| c.empty? }
+               operations.uniq!
 
-            # For the homepage we'll be using the documentation URL
-            doc_link = (service.has_documentation_url? ? service.preferred_documentation_url : '')
-            homepage = URI::extract(doc_link).first
+               # For the homepage we'll be using the documentation URL
+               doc_link = (service.has_documentation_url? ? service.preferred_documentation_url : '')
+               homepage = URI::extract(doc_link).first
 
-            # Contact is a free text annotation and we need to extract JUST an email address or URL from it.
-            # This takes the first. Splits by whitespace. Check each item for valid address.
-            # Could make it loop over all contact annotations if the first one has neither email or url
-            contact = g_service.list_of("contact").first
-            unless contact.nil?
-                contacts = contact.split(" ")
-                contacts.select! { |element| ValidatesEmailFormatOf::validate_email_format(element) == nil}
-                if !contacts.empty?
-                    contact_email = contacts.first
-                elsif contact =~ URI::regexp
-                    contact_url = URI::extract(contact).last
-                end
-            end
-
-
-            valid = !operations.empty? &&
-            !edam_topics.empty? &&
-            !g_service.preferred_description.nil? &&
-            !g_service.archived? &&
-            !(contact_url.nil? && contact_email.nil?) &&
-            !homepage.nil?
+               # Contact is a free text annotation and we need to extract JUST an email address or URL from it.
+               # This takes the first. Splits by whitespace. Check each item for valid address.
+               # Could make it loop over all contact annotations if the first one has neither email or url
+               contact = g_service.list_of("contact").first
+               unless contact.nil?
+                 contacts = contact.split(" ")
+                 contacts.select! { |element| ValidatesEmailFormatOf::validate_email_format(element) == nil }
+                 if !contacts.empty?
+                   contact_email = contacts.first
+                 elsif contact =~ URI::regexp
+                   contact_url = URI::extract(contact).last
+                 end
+               end
+               valid = !operations.empty? &&
+                       !edam_topics.empty? &&
+                               !g_service.preferred_description.nil? &&
+                                       !g_service.archived? &&
+                                               !(contact_url.nil? && contact_email.nil?) &&
+                                                       !homepage.nil?
 
             %>
-            <% if valid %>
+            <tr>
+              <% if valid %>
+                  <td style="background-color: darkseagreen"><%= link_to(g_service.name, g_service) %></td>
+              <% else %>
+                  <td style="background-color: lightcoral"><%= link_to(g_service.name, g_service) %></td>
+                  <% invalid_count += 1 %>
+              <% end %>
 
-                <tr>
-                  <td style="background-color: darkseagreen"><%=link_to(service.name, service)%></td>
-                  <% if operations.empty? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if edam_topics.empty? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if g_service.archived? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if contact_url.nil? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if contact_email.nil? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if homepage.nil? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                </tr>
-            <% else %>
-                <% invalid_count += 1 %>
-                <tr>
-                  <td style="background-color: lightcoral"><%=link_to(service.name, service)%></td>
-                  <% if operations.empty? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if edam_topics.empty? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if g_service.archived? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if contact_url.nil? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if contact_email.nil? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                  <% if homepage.nil? %><td style="background-color: lightcoral"/><% else %><td style="background-color: darkseagreen"/><% end %>
-                </tr>
-            <% end %>
+              <% if operations.empty? %>
+                  <td style="background-color: lightcoral"></td>
+              <% else %>
+                  <td style="background-color: darkseagreen">
+                    <% operations.each_with_index do |op, i| %>
+                        <%= i+1 %>. <%= op[:name] %><br>
+                    <% end %>
+                  </td>
+              <% end %>
+
+              <% if edam_topics.empty? %>
+                  <td style="background-color: lightcoral"></td>
+              <% else %>
+                  <td style="background-color: darkseagreen">
+                    <% edam_topics.each_with_index do |topic, i| %>
+                        <%= i+1 %>. <%= topic[:name] %><br>
+                    <% end %>
+                  </td>
+              <% end %>
+
+              <% if g_service.archived? %>
+                  <td style="background-color: lightcoral"><
+              <% else %>
+                  <td style="background-color: darkseagreen"></td>
+              <% end %>
+
+              <% if contact_url.nil? && contact_email.nil? %>
+                  <td style="background-color: lightcoral"></td>
+              <% else %>
+                  <td style="background-color: darkseagreen"><%= (contact_email || contact_url) %></td>
+              <% end %>
+
+              <% if homepage.nil? %>
+                  <td style="background-color: lightcoral"></td>
+              <% else %>
+                  <td style="background-color: darkseagreen"><%= homepage %></td>
+              <% end %>
+            </tr>
         <% end %>
       </table>
-      <br><hr>
+      <br>
+      <hr>
       Total Services with ELIXIR Description: <b><%= @services.count %></b><br>
       Number of Ineligble Services:<b> <%= invalid_count %></b>
   <% end %>
