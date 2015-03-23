@@ -1,5 +1,5 @@
 class WmsService < ActiveRecord::Base
-  attr_accessible :created_at, :description, :documentation_url, :id, :interface_doc_url, :name, :updated_at
+  attr_accessible :created_at, :description, :documentation_url, :id, :interface_doc_url, :name, :updated_at, :hash_value
 
   if ENABLE_CACHE_MONEY
     is_cached :repository => $cache

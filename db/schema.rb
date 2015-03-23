@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150212171757) do
+ActiveRecord::Schema.define(:version => 20150306230254) do
 
   create_table "activity_logs", :force => true do |t|
     t.string   "action",                 :limit => 60
@@ -945,6 +945,8 @@ ActiveRecord::Schema.define(:version => 20150212171757) do
     t.string   "access_constraints"
     t.integer  "max_width"
     t.integer  "max_height"
+    t.integer  "layer_count"
+    t.string   "hash_value"
   end
 
   add_index "wms_service_nodes", ["wms_service_id"], :name => "index_wms_service_nodes_on_wms_service_id"
@@ -962,6 +964,7 @@ ActiveRecord::Schema.define(:version => 20150212171757) do
     t.datetime "updated_at",        :null => false
     t.string   "interface_doc_url"
     t.string   "documentation_url"
+    t.string   "hash_value"
   end
 
   create_table "wsdl_files", :force => true do |t|

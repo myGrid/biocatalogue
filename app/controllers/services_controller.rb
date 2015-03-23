@@ -87,6 +87,10 @@ class ServicesController < ApplicationController
     @latest_version = @service.latest_version
     @latest_version_instance = @latest_version.service_versionified
     @latest_deployment = @service.latest_deployment
+    @wms_layer_count = WmsServiceNode.find_by_wms_service_id(@service.id)
+    if !@wms_layer_count.nil?
+      @wms_layer_count = @wms_layer_count.layer_count
+    end
 
     @all_service_version_instances = @service.service_version_instances
     @all_service_types = @service.service_types
@@ -156,6 +160,13 @@ class ServicesController < ApplicationController
   def destroy
     respond_to do |format|
       if @service.destroy
+
+        # check if it is a wms service
+        if !WmsServiceNode.find_by_wms_service_id(params[:id]).nil?
+          # delete
+          delete_wms_service(params[:id])
+        end
+
         flash[:notice] = "Service '#{@service.name}' has been deleted"
         format.html { redirect_to services_url }
         format.xml  { head :ok }
@@ -165,6 +176,112 @@ class ServicesController < ApplicationController
       end
     end
   end
+
+
+
+
+
+  def delete_wms_service(id)
+
+    # delete keywords
+    WmsKeywordlist.where(wms_service_node_id: id).find_each do |keyword|
+      keyword.delete
+    end
+
+    # delete contact information
+    WmsContactInformation.where(wms_service_node_id: id).find_each do |contactinfo|
+      contactinfo.delete
+    end
+
+    # delete exception formats
+    WmsExceptionFormat.where(wms_service_id: id).find_each do |exception|
+      exception.delete
+    end
+
+    # delete getcapabiliteis_formats
+    WmsGetcapabilitiesFormat.where(wms_service_id: id).find_each do |format|
+      format.delete
+    end
+
+    # delete get_online_resources
+    WmsGetcapabilitiesGetOnlineresource.where(wms_service_id: id).find_each do |geton|
+      geton.delete
+    end
+
+    # delete post_online_resources
+    WmsGetcapabilitiesPostOnlineresource.where(wms_service_id: id).find_each do |poston|
+      poston.delete
+    end
+
+    # delete online_resources
+    WmsOnlineResource.where(wms_service_node_id: id).find_each do |resource|
+      resource.delete
+    end
+
+    # delete getmap_formats
+    WmsGetmapFormat.where(wms_service_id: id).find_each do |getmapformat|
+      getmapformat.delete
+    end
+
+    # delete getmap_get_online
+    WmsGetmapGetOnlineresource.where(wms_service_id: id).find_each do |getonline|
+      getonline.delete
+    end
+
+    # delete getmap_post_online
+    WmsGetmapPostOnlineresource.where(wms_service_id: id).find_each do |postonline|
+      postonline.delete
+    end
+
+    # find associated layers and delete
+    WmsLayer.where(wms_service_id: id).find_each do |layer|
+      delete_layer(layer)
+    end
+
+    # delete service itself
+    WmsServiceNode.where(wms_service_id: id).find_each do |servicenode|
+      servicenode.delete
+    end
+
+  end
+
+  def delete_layer(layer)
+
+    # delete keywords
+    WmsKeywordlist.where(wms_layer_id: layer.id).find_each do |keyword|
+      keyword.delete
+    end
+
+    # delete boundingboxes
+    WmsLayerBoundingbox.where(wms_layer_id: layer.id).find_each do |bbox|
+      bbox.delete
+    end
+
+    # delete crs
+    WmsLayerCrs.where(wms_layer_id: layer.id).find_each do |crs|
+      crs.delete
+    end
+
+    # delete styles
+    WmsLayerStyle.where(wms_layer_id: layer.id).find_each do |style|
+      style.delete
+    end
+
+    # find child layers and
+    # recursively call this method
+    WmsLayer.where(wms_layer_id: layer.id).find_each do |childlayer|
+      delete_layer(childlayer)
+    end
+
+    # delete layer itself
+    layer.delete
+
+  end
+
+
+
+
+
 
   def categorise
     categories = [ ]
@@ -277,79 +394,55 @@ class ServicesController < ApplicationController
 
   def service_endpoint
 
-    #@table = @table + "<tr>"
-    #@table = @table + "<td>" + "TEST" + "</td>"
-    #@table = @table + "<td>" + "DATA" + "</td>"
-    #@table = @table + "</tr>"
-    #@layer = WmsLayer.find_by_wms_service_id(params['id']).id
+    # get service node, if wms
+    servicenode = WmsServiceNode.find_by_wms_service_id(params[:id])
+    @table = ""
+    if !servicenode.nil?
+      # get access constraints
+      if !servicenode.access_constraints.nil? and !servicenode.access_constraints.eql?("")
+        @table = @table + "<b>Access constraints for this service :</b><br />" + servicenode.access_constraints.to_s + "<br /><br />"
+      end
 
-=begin
+      # get fee information
+      if !servicenode.fees.nil? and !servicenode.fees.eql?("")
+        @table = @table + "<b>Fees :</b><br />" + servicenode.fees.to_s + "<br /><br />"
+      end
 
-    @script1 = "<script type='text/javascript'>
-    function changeImageFormat(a)
-    {
+      # get contact information
+      contact = WmsContactInformation.find_by_wms_service_node_id(servicenode.id)
+      if !contact.nil?
+        if !contact.contact_person.nil? and !contact.contact_person.eql?("")
+          @table = @table + "<b>Contact person :</b><br /><br />" + contact.contact_person.to_s + "<br /><br />"
+        end
 
-        var img = document.getElementsByClassName(\"imagePart\");
-        for(var i = 0; i < img.length; i++) {
-          img[i].innerHTML = '<br />&format=' + a.value;
-        }
-    }
-    </script>"
+        if !contact.contact_organization.nil? and !contact.contact_organization.eql?("")
+          @table = @table + "<b>Contact organization :</b><br /><br />" + contact.contact_organization.to_s + "<br /><br />"
+        end
 
-    @script2 = "<script type='text/javascript'>
-    function changeStyle(a, id)
-    {
+        if !contact.contact_position.nil? and !contact.contact_position.eql?("")
+          @table = @table + "<b>Contact position :</b><br /><br />" + contact.contact_position.to_s + "<br /><br />"
+        end
 
-      document.getElementById(id).innerHTML = a.options[a.selectedIndex].getAttribute('data-req');
+        if !contact.address_type.nil? and !contact.address_type.eql?("")
+          @table = @table + "<b>Address type :</b><br /><br />" + contact.address_type.to_s + "<br /><br />"
+        end
 
-    }
-    </script>"
+        if !contact.address.nil? and !contact.address.eql?("")
+          @table = @table + "<b>Address :</b><br /><br />" + contact.address.to_s + ", " + contact.city.to_s + ", " + contact.state_or_province.to_s + ", " + contact.post_code.to_s + ", " + contact.country.to_s +  "<br /><br />"
+        end
 
-    @script3 = "<script type='text/javascript'>
-    function changeBBox(a, id)
-    {
-
-      document.getElementById(id).innerHTML = a.options[a.selectedIndex].getAttribute('data-req');
-
-    }
-    </script>"
-
+      end
 
 
 
-
-    # create image formats dropdown list
-    @imageformats = "<select onChange=\"changeImageFormat(this)\">"
-    WmsGetmapFormat.where(wms_service_id: params['id']).find_each do |layer|
-      @imageformats = @imageformats + "<option>" + layer.format + "</option>"
     end
-    @imageformats = @imageformats + "</select><br /><br />"
-
-    # create table of layers
-    @colorBool = 0;
-    @counter = 0;
-
-    #@version = WmsServiceNode.find_by_wms_service_id(params['id']).version
-    srvc = WmsServiceNode.find_by_wms_service_id(params['id'])
-    if !srvc.nil?
-      @version = srvc.version
-      @maxHeight = srvc.max_height
-      @maxWidth = srvc.max_width
-    end
-
-
-
-    #@baseURL = ServiceDeployment.find_by_service_id(params[:id]).endpoint + "?service=WMS&request=GetMap&version=" + @version
-    @baseURL = ServiceDeployment.find_by_service_id(params[:id])
-    if !@baseURL.nil? and !@version.nil?
-      @baseURL = @baseURL.endpoint + "?service=WMS&request=GetMap&version=" + @version
-    end
-=end
-    @table = "<table style=\"width:100%\"><tr>
+    # build a table of layers
+    @table = @table + "<table style=\"width:100%\"><tr>
               <th style=\"padding: 5px;text-align: left;\"><b>Layer name</b></th>
               <th style=\"padding: 5px;text-align: left;\"><b>Layer title</b></th>
               </tr>"
     WmsLayer.where(wms_service_id: params[:id]).find_each do |layer|
+      # call table creator mehtod for each layer
       tableCreator(layer.id)
     end
     @table = @table + "</table>"
@@ -373,69 +466,9 @@ class ServicesController < ApplicationController
 
       @table = @table + "<td height=\"30\" style=\"padding: 5px;text-align: left;\"><a href=\"/wms_service_layer/" + layer.id.to_s +  "\">" + layer.name + "</a></td>"
       @table = @table + "<td height=\"30\" style=\"padding: 5px;text-align: left;\">" + layer.title + "</td>"
-
-=begin
-      # create styles dropdown list
-      @styleformats = "<select onChange=\"changeStyle(this, " + @counter.to_s + ")\">"
-      @styleformats = @styleformats + "<option>{Styles}</option>"
-      WmsLayerStyle.where(wms_layer_id: layer.id).find_each do |sty|
-        data = sty.name.to_s
-        @styleformats = @styleformats + "<option data-req=\"" + data + "\">" +  sty.name.to_s + "  :  " + sty.title.to_s + "</option>"
-      end
-      @styleformats = @styleformats + "</select>"
-
-
-
-
-      # create bounding boxes dropdown list
-      @bboxes = "<select onChange=\"changeBBox(this, " + (@counter+1).to_s + ")\">"
-      @bboxes = @bboxes + "<option>{bounding boxes}</option>"
-      WmsLayerBoundingbox.where(wms_layer_id: layer.id).find_each do |bbox|
-        if @version == "1.3.0"
-          data = "<br />&bbox=" + bbox.minx + "," + bbox.miny + ","+ bbox.maxx + "," + bbox.maxy + "&crs=" + bbox.crs;
-        else
-          data = "<br />&bbox=" + bbox.minx + "," + bbox.miny + ","+ bbox.maxx + "," + bbox.maxy + "&srs=" + bbox.crs;
-        end
-
-        @bboxes = @bboxes + "<option data-req=\"" + data + "\">" + bbox.crs + " | " + bbox.minx + " | " + bbox.miny + " | " + bbox.maxx + " | " + bbox.maxy + "</option>"
-      end
-      @bboxes = @bboxes + "</select>"
-=end
-
-
-
       @table = @table + "</tr>"
 
-=begin
-      @template = "<b>" + @baseURL + "&layers=" + layer.name +
-          "<span class=\"imagePart\"><br />{format}</span><br />&styles=<span id=\"" + @counter.to_s +
-          "\"></span><span id=\"" + (@counter+1).to_s +
-          "\"><br />{Bounding Boxes}</span><span><br />&height=" + @maxHeight.to_s +
-          "</span><span><br />&width=" + @maxWidth.to_s + "</span></b>"
-=end
-      #@template.squeeze(" ").strip
-      #@template.strip!
-=begin
-      if @colorBool == 0
-        @table = @table + "<tr bgcolor=\"#E2EFCD\"><td height=\"30\" colspan=\"3\">" + @bboxes.to_s + "</td></tr>"
-      else
-        @table = @table + "<tr><td height=\"30\" colspan=\"3\">" + @bboxes.to_s + "</td></tr>"
-      end
-=end
-
-=begin
-      if @colorBool == 0
-        @table = @table + "<tr bgcolor=\"#E2EFCD\"><td height=\"30\" colspan=\"3\">" + @template.to_s + "</td></tr>"
-        @colorBool = 1
-      else
-        @table = @table + "<tr><td height=\"30\" colspan=\"3\">" + @template.to_s + "</td></tr>"
-        @colorBool = 0
-      end
-=end
-      #@counter = @counter + 2
-
-
-
+      # recursive call
       tableCreator(layer.id)
     end
   end

@@ -1,23 +1,10 @@
 class WmsServiceLayerController < ApplicationController
   def show
+
+    # get the layer
     @layer = WmsLayer.find_by_id(params[:id ])
 
-
-=begin
-    @bboxes = "<select>"
-    @bboxes = @bboxes + "<option>{bounding boxes}</option>"
-    WmsLayerBoundingbox.where(wms_layer_id: layer.id).find_each do |bbox|
-      if @version == "1.3.0"
-        data = "<br />&bbox=" + bbox.minx + "," + bbox.miny + ","+ bbox.maxx + "," + bbox.maxy + "&crs=" + bbox.crs;
-      else
-        data = "<br />&bbox=" + bbox.minx + "," + bbox.miny + ","+ bbox.maxx + "," + bbox.maxy + "&srs=" + bbox.crs;
-      end
-
-      @bboxes = @bboxes + "<option data-req=\"" + data + "\">" + bbox.crs + " | " + bbox.minx + " | " + bbox.miny + " | " + bbox.maxx + " | " + bbox.maxy + "</option>"
-    end
-    @bboxes = @bboxes + "</select>"
-=end
-
+    # JavaScript for changing template parameters interactively
     @script1 = "<script type='text/javascript'>
     function change(a, id)
     {
@@ -27,6 +14,7 @@ class WmsServiceLayerController < ApplicationController
     }
     </script>"
 
+    # initialize variables
     @bbparams = []
     @bbreadable = []
     @bbcrs = []
@@ -38,8 +26,11 @@ class WmsServiceLayerController < ApplicationController
     @max_width
     @imageformats
 
+    # get layer parameters
     layer(params[:id])
-    @template = "<br /><b>" + @base + "?Service=wms&Request=GetMap&Version=" + @version +
+
+    # generated template
+    @template = "<br /><b>" + @base.to_s + "?Service=wms&Request=GetMap&Version=" + @version.to_s +
                 "<br />&layers=" + @layer.name +
                 "<br />&format=<span id=\"1\">{OUTPUT FORMAT}</span>" +
                 "<br />&styles=<span id=\"2\">{STYLES}</span>"
@@ -52,13 +43,6 @@ class WmsServiceLayerController < ApplicationController
 
     @template = @template + "<br />&height=" + @max_height.to_s + "<br />&width=" + @max_width.to_s
 
-=begin
-    @template = "<b>" + @baseURL + "&layers=" + layer.name +
-        "<span class=\"imagePart\"><br />{format}</span><br />&styles=<span id=\"" + @counter.to_s +
-        "\"></span><span id=\"" + (@counter+1).to_s +
-        "\"><br />{Bounding Boxes}</span><span><br />&height=" + @maxHeight.to_s +
-        "</span><span><br />&width=" + @maxWidth.to_s + "</span></b>"
-=end
 
 
     # create image formats dropdown list
@@ -88,6 +72,7 @@ class WmsServiceLayerController < ApplicationController
 
     @template = @template + "</b><br />"
 
+    # put everything in a single output string
     @output = @script1 + "<br />Select output format:<br />" + @imageformats +
               "<br />Select CRS and Bounding Boxes values:<br />" + @bboxes +
               "<br />Select output style(if any):<br />" + @sty +
@@ -95,6 +80,7 @@ class WmsServiceLayerController < ApplicationController
 
   end
 
+  # method for collecting all the specific layer information
   def layer(layerID)
 
     # get bounding boxes
@@ -122,11 +108,17 @@ class WmsServiceLayerController < ApplicationController
         @formats << format.format
       end
 
-      @base = ServiceDeployment.find_by_service_id(layer.wms_service_id).endpoint
+      @base = ServiceDeployment.find_by_service_id(layer.wms_service_id)
+      if !@base.nil?
+        @base = @base.endpoint
+      end
       service = WmsServiceNode.find_by_wms_service_id(layer.wms_service_id)
-      @version = service.version
-      @max_height = service.max_height
-      @max_width = service.max_width
+      if !service.nil?
+        @version = service.version.to_s
+        @max_height = service.max_height.to_s
+        @max_width = service.max_width.to_s
+      end
+
     end
 
 

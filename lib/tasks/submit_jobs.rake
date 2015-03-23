@@ -15,8 +15,8 @@ namespace :biocatalogue do
     desc 'update the list of urls to be monitored'
     task :update_urls_to_monitor => :environment do
       Delayed::Job.enqueue(BioCatalogue::Jobs::UpdateUrlsToMonitor.new)
-    end 
-    
+    end
+
     desc 'check the availability status of a url'
     task :check_url_status => :environment do
       Delayed::Job.enqueue(BioCatalogue::Jobs::CheckUrlStatus.new)

@@ -1,5 +1,4 @@
 
-
 <%= tabs_tag(:builder => MenuTabBuilder, :namespace => :service) do |tab| %>
     <%= tab.overview      'Overview', service_path(@service) %>
     <% tab_name = @latest_version_instance.class.to_s %>
@@ -8,6 +7,8 @@
         <% endpoint_count = @latest_version_instance.rest_methods.size     %>
     <% elsif @latest_version_instance.respond_to?('soap_operations') %>
         <% endpoint_count = @latest_version_instance.soap_operations.size   %>
+    <% else  %>
+        <% endpoint_count = @wms_layer_count   %>
     <% end %>
     <%= tab.service_endpoint tab_name.titleize.pluralize + " (#{endpoint_count})", service_endpoint_service_path(@service) %>
     <%= tab.examples 'Examples', examples_service_path(@service) %>
