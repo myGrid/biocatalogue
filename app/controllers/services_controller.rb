@@ -394,16 +394,9 @@ class ServicesController < ApplicationController
     end
   end
 
+  include CurationHelper
   def bmb
-    # Get all SOAP and REST services that have not been archived
-    @services = []
-    elixir_descriptions  = Annotation.with_attribute_name('elixir_description')
-    elixir_descriptions.each do |ed|
-      @services << ed.annotatable
-    end
-    @services.uniq!
-    #@services = (RestService.includes(:service).where("services.archived_at is NULL") + SoapService.includes(:service).where("services.archived_at is NULL")).sort_by { |s| s.created_at }
-
+    @services = elixir_service_check
     respond_to do |format|
       format.xml
     end

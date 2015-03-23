@@ -22,89 +22,51 @@
         <th> Has Homepage?</th>
         <% invalid_count = 0 %>
         <% @services.each do |service| %>
-            <%
-               g_service = service.service
-               categories = g_service.annotations.select { |ann| ann.value_type == "Category" }.collect { |cat| cat.value.name }
-
-               # Map the Services Categories to EDAM Topics and EDAM Operations
-               edam_topics = []
-               categories.each { |x| edam_topics << [x, map_categories_to_edam_topics(x)] }
-               edam_topics.reject! { |c| c[1].empty? }
-               edam_topics.uniq!
-               operations = []
-               categories.each { |x| operations << [x, map_categories_to_edam_operations(x)] }
-               operations.reject! { |c| c[1].empty? }
-               operations.uniq!
-
-               # For the homepage we'll be using the documentation URL
-               doc_link = (service.has_documentation_url? ? service.preferred_documentation_url : '')
-               homepage = URI::extract(doc_link).first
-
-               # Contact is a free text annotation and we need to extract JUST an email address or URL from it.
-               # This takes the first. Splits by whitespace. Check each item for valid address.
-               # Could make it loop over all contact annotations if the first one has neither email or url
-               contact = g_service.list_of("contact").first
-               unless contact.nil?
-                 contacts = contact.split(" ")
-                 contacts.select! { |element| ValidatesEmailFormatOf::validate_email_format(element) == nil }
-                 if !contacts.empty?
-                   contact_email = contacts.first
-                 elsif contact =~ URI::regexp
-                   contact_url = URI::extract(contact).last
-                 end
-               end
-               valid = !operations.empty? &&
-                       !edam_topics.empty? &&
-                               !g_service.preferred_description.nil? &&
-                                       !g_service.archived? &&
-                                               !(contact_url.nil? && contact_email.nil?) &&
-                                                       !homepage.nil?
-
-            %>
             <tr>
-              <% if valid %>
-                  <td style="background-color: darkseagreen"><%= link_to(g_service.name, g_service) %></td>
+
+              <% if service[:valid] %>
+                  <td style="background-color: darkseagreen"><%= link_to(service[:g_service].name, service[:g_service]) %></td>
               <% else %>
-                  <td style="background-color: lightcoral"><%= link_to(g_service.name, g_service) %></td>
+                  <td style="background-color: lightcoral"><%= link_to(service[:g_service].name, service[:g_service]) %></td>
                   <% invalid_count += 1 %>
               <% end %>
 
-              <% if operations.empty? %>
+              <% if service[:edam_operations].empty? %>
                   <td style="background-color: lightcoral"></td>
               <% else %>
                   <td style="background-color: darkseagreen">
-                    <% operations.each_with_index do |op, i| %>
+                    <% service[:edam_operations].each_with_index do |op, i| %>
                         <%= i+1 %>. <%= op[1][:name]%> (<i><%= op[0] %></i>)<br>
                     <% end %>
                   </td>
               <% end %>
 
-              <% if edam_topics.empty? %>
+              <% if service[:edam_topics].empty? %>
                   <td style="background-color: lightcoral"></td>
               <% else %>
                   <td style="background-color: darkseagreen">
-                    <% edam_topics.each_with_index do |topic, i| %>
+                    <% service[:edam_topics].each_with_index do |topic, i| %>
                         <%= i+1 %>. <%= topic[1][:name]%> (<i><%= topic[0] %></i>)<br>
                     <% end %>
                   </td>
               <% end %>
 
-              <% if g_service.archived? %>
+              <% if service[:g_service].archived? %>
                   <td style="background-color: lightcoral"><
               <% else %>
                   <td style="background-color: darkseagreen"></td>
               <% end %>
 
-              <% if contact_url.nil? && contact_email.nil? %>
+              <% if service[:contact_url].nil? && service[:contact_email].nil? %>
                   <td style="background-color: lightcoral"></td>
               <% else %>
-                  <td style="background-color: darkseagreen"><%= (contact_email || contact_url) %></td>
+                  <td style="background-color: darkseagreen"><%= (service[:contact_email] || service[:contact_url]) %></td>
               <% end %>
 
-              <% if homepage.nil? %>
+              <% if service[:homepage].nil? %>
                   <td style="background-color: lightcoral"></td>
               <% else %>
-                  <td style="background-color: darkseagreen"><%= homepage %></td>
+                  <td style="background-color: darkseagreen"><%= service[:homepage] %></td>
               <% end %>
             </tr>
         <% end %>

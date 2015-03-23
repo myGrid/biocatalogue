@@ -24,13 +24,7 @@ class CurationController < ApplicationController
   end
 
   def elixir_curation
-    @services = []
-    elixir_descriptions  = Annotation.with_attribute_name('elixir_description')
-    elixir_descriptions.each do |ed|
-      @services << ed.annotatable
-    end
-    @services.uniq!
-
+    @services = elixir_service_check
     respond_to do |format|
       format.html
     end
