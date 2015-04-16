@@ -393,7 +393,7 @@ module ApplicationHelper
     last_checked_text = if status.last_checked.blank?
       ""
     else
-      "<br/><span style='color:#666'>" + (small ? "Checked: " : "Last checked: ") + "#{distance_of_time_in_words_to_now(status.last_checked)} ago</span>"
+      "<br/><span style='color:#666'>" + (small ? "Checked: " : "Last checked: ") + ((status.last_checked >= (DateTime.now - 1.day)) ? "today " : "") + "#{distance_of_time_in_words_to_now(status.last_checked)} ago</span>"
     end
     
     
