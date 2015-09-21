@@ -169,7 +169,7 @@ class WmsServicesController < ApplicationController
           # of getCapabilities XML
           require 'digest'
           @hash = Digest::SHA1.hexdigest(res.body)
-          @wms_service.hash_value = @hash
+          @wms_service[:hash_value] = @hash
 
           respond_to do |format|
             results = @wms_service.submit_service(endpoint, current_user, params[:annotations].clone)

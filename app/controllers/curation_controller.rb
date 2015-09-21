@@ -22,6 +22,13 @@ class CurationController < ApplicationController
   def show
     # show.html.erb
   end
+
+  def elixir_curation
+    @services = elixir_service_check
+    respond_to do |format|
+      format.html
+    end
+  end
   
   def copy_annotations
     if request.post?

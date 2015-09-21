@@ -91,6 +91,12 @@
                  :locals => { :annotatable => @latest_version_instance } -%>
     </div>
 
+    <div class="property">
+      <%= render :partial => "annotations/elixir_description",
+                 :locals => { :annotatable => @latest_version_instance } -%>
+    </div>
+
+
     <% if !@soaplab_service.nil? or is_soaplab_service?(@service) %>
         <div class="property">
           <%= render :partial => 'soap_services/description_from_soaplab',

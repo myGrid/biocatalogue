@@ -1,0 +1,79 @@
+<%= render :partial => 'header', :locals => {:sub => "- Reports - ELIXIR Curation "} %>
+
+<div class="box_info_standout center" style="margin: 1.5em auto; width: 700px;">
+  This is a list of all services that have been annotated with an ELIXIR Description.<br>
+  Those services with their service name highlighted in <span style="color:lightcoral">red</span> do
+  not meet the criteria to be included in the <a href="https://elixir-registry.cbs.dtu.dk/#/">ELIXIR Registry</a> and
+  so will be rejected from the <a href="/services/bmb.xml">Service Dump</a>.
+
+</div>
+
+
+<div style="margin: 0 auto; width: 100%">
+  <% if @services.empty? %>
+      <div class='none_text' style="text-align: center">No links flagged</div>
+  <% else %>
+      <table class="biocat_table" style="margin: 0 auto; width: 100%">
+        <th> Service Name</th>
+        <th> Has EDAM Operation?<br> e.g. <i>1. &lt;Operation&gt;(&lt;Category&gt;)</i></th>
+        <th> Has EDAM Topic?<br> e.g <i>1. &lt;Topic&gt;(&lt;Category&gt;)</i></th>
+        <th> Is not Archived?</th>
+        <th> Has Contact URL or E-Mail?</th>
+        <th> Has Homepage?</th>
+        <% invalid_count = 0 %>
+        <% @services.each do |service| %>
+            <tr>
+
+              <% if service[:valid] %>
+                  <td style="background-color: darkseagreen"><%= link_to(service[:g_service].name, service[:g_service]) %></td>
+              <% else %>
+                  <td style="background-color: lightcoral"><%= link_to(service[:g_service].name, service[:g_service]) %></td>
+                  <% invalid_count += 1 %>
+              <% end %>
+
+              <% if service[:edam_operations].empty? %>
+                  <td style="background-color: lightcoral"></td>
+              <% else %>
+                  <td style="background-color: darkseagreen">
+                    <% service[:edam_operations].each_with_index do |op, i| %>
+                        <%= i+1 %>. <%= op[1][:name]%> (<i><%= op[0] %></i>)<br>
+                    <% end %>
+                  </td>
+              <% end %>
+
+              <% if service[:edam_topics].empty? %>
+                  <td style="background-color: lightcoral"></td>
+              <% else %>
+                  <td style="background-color: darkseagreen">
+                    <% service[:edam_topics].each_with_index do |topic, i| %>
+                        <%= i+1 %>. <%= topic[1][:name]%> (<i><%= topic[0] %></i>)<br>
+                    <% end %>
+                  </td>
+              <% end %>
+
+              <% if service[:g_service].archived? %>
+                  <td style="background-color: lightcoral"><
+              <% else %>
+                  <td style="background-color: darkseagreen"></td>
+              <% end %>
+
+              <% if service[:contact_url].nil? && service[:contact_email].nil? %>
+                  <td style="background-color: lightcoral"></td>
+              <% else %>
+                  <td style="background-color: darkseagreen"><%= (service[:contact_email] || service[:contact_url]) %></td>
+              <% end %>
+
+              <% if service[:homepage].nil? %>
+                  <td style="background-color: lightcoral"></td>
+              <% else %>
+                  <td style="background-color: darkseagreen"><%= service[:homepage] %></td>
+              <% end %>
+            </tr>
+        <% end %>
+      </table>
+      <br>
+      <hr>
+      Total Services with ELIXIR Description: <b><%= @services.count %></b><br>
+      Number of Ineligble Services:<b> <%= invalid_count %></b>
+  <% end %>
+</div>

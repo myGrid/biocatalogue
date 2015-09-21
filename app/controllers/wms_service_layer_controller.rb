@@ -66,7 +66,7 @@ class WmsServiceLayerController < ApplicationController
     @bboxes = "<select onChange=\"change(this, 3)\">"
     @bboxes = @bboxes + "<option>Please select</option>"
     for i in 0..@bbparams.size-1
-      @bboxes = @bboxes + "<option data-req=\"" + @bbcrs[i] + @bbparams[i] + "\">" + @bbcrs[i] + " | " + @bbreadable[i] + "</option>"
+      @bboxes = @bboxes.to_s + "<option data-req=\"" + @bbcrs[i].to_s + '' + @bbparams[i].to_s + "\">" + @bbcrs[i].to_s + " | " + @bbreadable[i].to_s + "</option>"
     end
     @bboxes = @bboxes + "</select>"
 
@@ -93,9 +93,11 @@ class WmsServiceLayerController < ApplicationController
     end
 
     # get layer styles
+=begin
     WmsLayerStyle.where(wms_layer_id: layerID).find_each do |style|
        @styles << style.name
     end
+=end
 
 
     layer = WmsLayer.find_by_id(layerID)
@@ -114,9 +116,9 @@ class WmsServiceLayerController < ApplicationController
       end
       service = WmsServiceNode.find_by_wms_service_id(layer.wms_service_id)
       if !service.nil?
-        @version = service.version.to_s
-        @max_height = service.max_height.to_s
-        @max_width = service.max_width.to_s
+        @version = service[:version].to_s
+        @max_height = service[:max_height].to_s
+        @max_width = service[:max_width].to_s
       end
 
     end

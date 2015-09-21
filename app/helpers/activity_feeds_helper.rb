@@ -175,23 +175,23 @@ module ActivityFeedsHelper
                 
                 output << (link || display_name(subject))
                 
-                if style == :detailed
-                  output << " - "
-                  output << content_tag(:div, :class => "box_annotations", :style => "margin-top: 0.1em;") do
-                    rounded_html(annotation_text_item_background_color, "#333", "99%") do
-                      x = '<div class="text">'
-                      x << annotation_prepare_description(value_to_display, {:do_strip_tags => true,
-                                                                                               :truncate_length=>100,
-                                                                                               :do_auto_link => false,
-                                                                                               :do_simple_format => false,
-                                                                                               :do_white_list => true,
-                                                                                               :is_markdownable => true
-                      })
-                      x << '</div>'
-                      x
-                    end
-                  end
-                end
+                #if style == :detailed
+                #  output << " - "
+                #  output << content_tag(:div, :class => "box_annotations", :style => "margin-top: 0.1em;") do
+                #    rounded_html(annotation_text_item_background_color, "#333", "99%") do
+                #      x = '<div class="text">'
+                #      x << annotation_prepare_description(value_to_display, {:do_strip_tags => true,
+                #                                                                               :truncate_length=>100,
+                #                                                                               :do_auto_link => false,
+                #                                                                               :do_simple_format => false,
+                #                                                                               :do_white_list => true,
+                #                                                                               :is_markdownable => true
+                #      })
+                #      x << '</div>'
+                #      x
+                #    end
+                #  end
+                #end
               end
               
           end

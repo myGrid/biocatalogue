@@ -1,0 +1,70 @@
+<%
+
+# BioCatalogue: app/views/annotations/_descriptions.html.erb
+#
+# Copyright (c) 2008-2011, University of Manchester, The European Bioinformatics
+# Institute (EMBL-EBI) and the University of Southampton.
+# See license.txt for details
+
+%>
+
+<%
+	attribute_name = "elixir_description"
+	main_div_id = "descriptions_#{rand(10000000)}"
+
+	# Set defaults for optional parameters to this partial...
+	show_header = true unless local_assigns.has_key?(:show_header)
+	truncate_desc = false unless local_assigns.has_key?(:truncate_desc)
+	auto_link_desc = true unless local_assigns.has_key?(:auto_link_desc)
+	show_modify_options = true unless local_assigns.has_key?(:show_modify_options)
+	show_add_box = true unless local_assigns.has_key?(:show_add_box)
+%>
+
+<% unless annotatable.nil? %>
+	<div id="<%= main_div_id -%>" class="annotations_container">
+		<% if show_header == true %>
+			<div style="margin-top: 1em;">
+			  <b>ELIXIR Description(s):</b>
+              <%= info_icon_with_tooltip("An ELIXIR Description must be a short (maximum of 2 sentences), succinct description of the Webservice. It should no contain links or be overly technical. If you are unsure, this should be left blank.") -%>
+              <%= render :partial => 'shared/markdown_notification'%>
+			</div>
+		<% end %>
+
+      <div class="box_annotations">
+        <% elixir_description = annotatable.annotations_with_attribute(attribute_name, true).sort {|a,b| a.updated_at <=> b.updated_at} %>
+        <% unless elixir_description.empty? %>
+            <% elixir_description.each do |ann| %>
+                <% rounded(annotation_text_item_background_color, "#333", "100%") do %>
+                    <div class="text">
+                      <%= annotation_source_text(ann) -%>
+                      <div class="annotation_display">
+                        <%= annotation_prepare_description(ann.value_content, {:is_markdownable => true}) -%>
+                      </div>
+                      <%= render :partial => "annotations/common/default_modify_options",
+                                 :locals => { :annotation => ann, :ann_type => "elixir_description" } -%>
+                    </div>
+                <% end %>
+            <% end %>
+        <% else %>
+            <span class="none_text">No info yet</span>
+        <% end %>
+      </div>
+
+		<% if show_add_box %>
+			<% if logged_in? %>
+
+				<%= render :partial => "annotations/common/default_add_box",
+									 :locals => { :partial_from => "elixir_description",
+																:annotatable => annotatable,
+																:attribute_name => attribute_name,
+																:text_area_default_text => "Write an elixir description...",
+																:main_div_id => main_div_id } -%>
+
+			<% else %>
+				<div class="login_link_box">
+					<small><%= link_to("Login to add an elixir description", login_path) -%></small>
+				</div>
+			<% end %>
+		<% end %>
+	</div>
+<% end %>

@@ -19,7 +19,7 @@ class ServicesController < ApplicationController
 
   before_filter :find_services, :only => [ :index, :filtered_index ]
 
-  before_filter :find_service, :only => [ :show, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples, :service_endpoint, :example_data, :example_scripts, :example_workflows ]
+  before_filter :find_service, :only => [ :show, :service_endpoint, :edit, :update, :destroy, :categorise, :summary, :annotations, :deployments, :variants, :monitoring, :check_updates, :archive, :unarchive, :activity, :favourite, :unfavourite, :examples, :example_data, :example_scripts, :example_workflows ]
 
   before_filter :find_favourite, :only => [ :favourite, :unfavourite ]
 
@@ -86,10 +86,10 @@ class ServicesController < ApplicationController
   def show
     @latest_version = @service.latest_version
     @latest_version_instance = @latest_version.service_versionified
-    @latest_deployment = @service.latest_deployment
-    @wms_layer_count = WmsServiceNode.find_by_wms_service_id(@service.id)
+    @latest_deployment = @service[:latest_deployment]
+    @wms_layer_count = WmsServiceNode.find_by_wms_service_id(@service[:id])
     if !@wms_layer_count.nil?
-      @wms_layer_count = @wms_layer_count.layer_count
+      @wms_layer_count = @wms_layer_count[:layer_count]
     end
 
     @all_service_version_instances = @service.service_version_instances
@@ -199,7 +199,7 @@ class ServicesController < ApplicationController
     end
 
     # delete getcapabiliteis_formats
-    WmsGetcapabilitiesFormat.where(wms_service_id: id).find_each do |format|
+    WmsGetcapabilitiesFormat.where(wms_service_id_id: id).find_each do |format|
       format.delete
     end
 
@@ -246,11 +246,13 @@ class ServicesController < ApplicationController
   end
 
   def delete_layer(layer)
+=begin
 
     # delete keywords
-    WmsKeywordlist.where(wms_layer_id: layer.id).find_each do |keyword|
+    WmsLayer.where(wms_layer_id: layer.id).find_each do |keyword|
       keyword.delete
     end
+=end
 
     # delete boundingboxes
     WmsLayerBoundingbox.where(wms_layer_id: layer.id).find_each do |bbox|
@@ -263,9 +265,11 @@ class ServicesController < ApplicationController
     end
 
     # delete styles
+=begin
     WmsLayerStyle.where(wms_layer_id: layer.id).find_each do |style|
       style.delete
     end
+=end
 
     # find child layers and
     # recursively call this method
@@ -399,36 +403,35 @@ class ServicesController < ApplicationController
     @table = ""
     if !servicenode.nil?
       # get access constraints
-      if !servicenode.access_constraints.nil? and !servicenode.access_constraints.eql?("")
-        @table = @table + "<b>Access constraints for this service :</b><br />" + servicenode.access_constraints.to_s + "<br /><br />"
+      if !servicenode[:access_constraints].nil? and !servicenode[:access_constraints].eql?("")
+        @table = @table + "<b>Access constraints for this service :</b><br />" + servicenode[:access_constraints].to_s + "<br /><br />"
       end
-
       # get fee information
-      if !servicenode.fees.nil? and !servicenode.fees.eql?("")
-        @table = @table + "<b>Fees :</b><br />" + servicenode.fees.to_s + "<br /><br />"
+      if !servicenode[:fees].nil? and !servicenode[:fees].eql?("")
+        @table = @table + "<b>Fees :</b><br />" + servicenode[:fees].to_s + "<br /><br />"
       end
 
       # get contact information
       contact = WmsContactInformation.find_by_wms_service_node_id(servicenode.id)
       if !contact.nil?
-        if !contact.contact_person.nil? and !contact.contact_person.eql?("")
-          @table = @table + "<b>Contact person :</b><br /><br />" + contact.contact_person.to_s + "<br /><br />"
+        if !contact[:contact_person].nil? and !contact[:contact_person].eql?("")
+          @table = @table + "<b>Contact person :</b><br /><br />" + contact[:contact_person].to_s + "<br /><br />"
         end
 
-        if !contact.contact_organization.nil? and !contact.contact_organization.eql?("")
-          @table = @table + "<b>Contact organization :</b><br /><br />" + contact.contact_organization.to_s + "<br /><br />"
+        if !contact[:contact_organization].nil? and !contact[:contact_organization].eql?("")
+          @table = @table + "<b>Contact organization :</b><br /><br />" + contact[:contact_organization].to_s + "<br /><br />"
         end
 
-        if !contact.contact_position.nil? and !contact.contact_position.eql?("")
-          @table = @table + "<b>Contact position :</b><br /><br />" + contact.contact_position.to_s + "<br /><br />"
+        if !contact[:contact_position].nil? and !contact[:contact_position].eql?("")
+          @table = @table + "<b>Contact position :</b><br /><br />" + contact[:contact_position].to_s + "<br /><br />"
         end
 
-        if !contact.address_type.nil? and !contact.address_type.eql?("")
-          @table = @table + "<b>Address type :</b><br /><br />" + contact.address_type.to_s + "<br /><br />"
+        if !contact[:address_type].nil? and !contact[:address_type].eql?("")
+          @table = @table + "<b>Address type :</b><br /><br />" + contact[:address_type].to_s + "<br /><br />"
         end
 
-        if !contact.address.nil? and !contact.address.eql?("")
-          @table = @table + "<b>Address :</b><br /><br />" + contact.address.to_s + ", " + contact.city.to_s + ", " + contact.state_or_province.to_s + ", " + contact.post_code.to_s + ", " + contact.country.to_s +  "<br /><br />"
+        if !contact[:address].nil? and !contact[:address].eql?("")
+          @table = @table + "<b>Address :</b><br /><br />" + contact[:address].to_s + ", " + contact[:city].to_s + ", " + contact[:state_or_province].to_s + ", " + contact[:post_code].to_s + ", " + contact[:country].to_s +  "<br /><br />"
         end
 
       end
@@ -455,7 +458,7 @@ class ServicesController < ApplicationController
   def tableCreator(layerID)
 
 
-    WmsLayer.where(wms_layer_id: layerID).find_each do |layer|
+    WmsLayer.where(id: layerID).find_each do |layer|
       if @colorBool == 0
         @table = @table + "<tr bgcolor=\"#E2EFCD\">"
         @colorBool = 1
@@ -469,7 +472,7 @@ class ServicesController < ApplicationController
       @table = @table + "</tr>"
 
       # recursive call
-      tableCreator(layer.id)
+      #tableCreator(layer.id)
     end
   end
 
@@ -586,10 +589,11 @@ class ServicesController < ApplicationController
     end
   end
 
+  include CurationHelper
   def bmb
     # Get all SOAP, REST and WMS services that have not been archived
     @services = (RestService.includes(:service).where("services.archived_at is NULL") + SoapService.includes(:service).where("services.archived_at is NULL") + WmsService.includes(:service).where("services.archived_at is NULL")).sort_by { |s| s.created_at }
-
+    @services = elixir_service_check
     respond_to do |format|
       format.xml
     end

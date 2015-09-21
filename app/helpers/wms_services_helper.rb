@@ -36,9 +36,9 @@ module WmsServicesHelper
   def serviceNode(givenServiceNode)
     @onlineResources = []
     service = WmsServiceNode.new
-    service.layer_count = @layer_count
-    service.version = @version
-    service.wms_service_id = @service.service_id
+    service[:layer_count] = @layer_count
+    service[:version] = @version
+    service[:wms_service_id] = @service.service_id
     @output = "Services <br />"
 
     # go through every child node
@@ -68,17 +68,17 @@ module WmsServicesHelper
 
         # assign abstract
         if @node == "Abstract"
-          service.abstract = @text
+          service.abstract = @text[0...100]
         end
 
         # assign service fees
         if @node == "Fees"
-          service.fees = @text
+          service.fees = @text[0...100]
         end
 
         # assign access contraints of the service
         if @node == "AccessConstraints"
-          service.access_constraints = @text
+          service.access_constraints = @text[0...100]
         end
 
         # assign maximum width value
@@ -181,35 +181,35 @@ module WmsServicesHelper
         # find necessary information and add them to
         # appropriate fields of the model
         if @node == "ContactPerson"
-          @contact_information.contact_person = @text
+          @contact_information[:contact_person] = @text
         end
 
         if @node == "ContactOrganization"
-          @contact_information.contact_organization = @text
+          @contact_information[:contact_organization] = @text
         end
         if @node == "ContactPosition"
-          @contact_information.contact_position = @text
+          @contact_information[:contact_position] = @text
         end
         if @node == "AddressType"
-          @contact_information.address_type = @text
+          @contact_information[:address_type]= @text
         end
         if @node == "Address"
-          @contact_information.address = @text
+          @contact_information[:address] = @text
         end
         if @node == "City"
-          @contact_information.city = @text
+          @contact_information[:city] = @text
         end
 
         if @node == "StateOrProvince"
-          @contact_information.state_or_province = @text
+          @contact_information[:state_or_province]= @text
         end
 
         if @node == "PostCode"
-          @contact_information.post_code = @text
+          @contact_information[:post_code] = @text
         end
 
         if @node == "Country"
-          @contact_information.country = @text
+          @contact_information[:country] = @text
         end
 
       else
@@ -225,36 +225,36 @@ module WmsServicesHelper
           # find necessary information and add them to
           # appropriate fields of the model
           if @node == "ContactPerson"
-            @contact_information.contact_person = @text
+            @contact_information[:contact_person] = @text
           end
 
           if @node == "ContactOrganization"
-            @contact_information.contact_organization = @text
+            @contact_information[:contact_organization] = @text
           end
 
           if @node == "ContactPosition"
-            @contact_information.contact_position = @text
+            @contact_information[:contact_position] = @text
           end
           if @node == "AddressType"
-            @contact_information.address_type = @text
+            @contact_information[:address_type] = @text
           end
           if @node == "Address"
-            @contact_information.address = @text
+            @contact_information[:address] = @text
           end
           if @node == "City"
-            @contact_information.city = @text
+            @contact_information[:city] = @text
           end
 
           if @node == "StateOrProvince"
-            @contact_information.state_or_province = @text
+            @contact_information[:state_or_province] = @text
           end
 
           if @node == "PostCode"
-            @contact_information.post_code = @text
+            @contact_information[:post_code] = @text
           end
 
           if @node == "Country"
-            @contact_information.country = @text
+            @contact_information[:country] = @text
           end
         end
       end
@@ -268,6 +268,7 @@ module WmsServicesHelper
   # method for parsing <Capability>
   def capabilityNode(givenCapabilityNode)
     # variable for counting layers
+    puts givenCapabilityNode
     @layer_count = 0
     # go through every child node
     for i in 1..givenCapabilityNode.elements.size
@@ -281,7 +282,7 @@ module WmsServicesHelper
 
         # save models
         @capability_formats.each do |element|
-          element.wms_service_id = @service.service_id
+          element[:wms_service_id] = @service.service_id
           element.save!
         end
 
@@ -664,6 +665,8 @@ module WmsServicesHelper
 
 
       # parse Style
+
+=begin
       if givenNode.elements[i].name == "Style"
         style = WmsLayerStyle.new
         # go through every element
@@ -682,6 +685,7 @@ module WmsServicesHelper
         end
 
       end
+=end
 
       # store inner layers in array to parse later
       if givenNode.elements[i].name == "Layer"
@@ -694,8 +698,8 @@ module WmsServicesHelper
     end
 
     # save layer
-    layer.wms_service_id = parentServiceNodeID
-    layer.wms_layer_id = parentLayerNodeID
+    layer[:wms_service_id] = parentServiceNodeID
+    layer[:wms_layer_id]= parentLayerNodeID
     layer.save!
 
     # save crs
