@@ -25,6 +25,7 @@ class WmsServiceLayerController < ApplicationController
     @max_height
     @max_width
     @imageformats
+    @version = '1.3.0' #TODO: Set version correctly
 
     # get layer parameters
     layer(params[:id])
@@ -101,8 +102,10 @@ class WmsServiceLayerController < ApplicationController
 
 
     layer = WmsLayer.find_by_id(layerID)
-    if layer.wms_service_id.nil? or layer.wms_service_id == ""
+    puts "\n\n\n\ #{layer.inspect} === #{layer.wms_service_id}"
+    if layer.wms_service_id.nil? or layer.wms_service_id == ''
       # call parent layer node
+      puts layer.wms_layer_id
       layer(layer.wms_layer_id)
     else
       # no layer node above this one

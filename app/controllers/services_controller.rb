@@ -412,6 +412,7 @@ class ServicesController < ApplicationController
       end
 
       # get contact information
+      puts servicenode.id
       contact = WmsContactInformation.find_by_wms_service_node_id(servicenode.id)
       if !contact.nil?
         if !contact[:contact_person].nil? and !contact[:contact_person].eql?("")
@@ -446,7 +447,7 @@ class ServicesController < ApplicationController
               </tr>"
     WmsLayer.where(wms_service_id: params[:id]).find_each do |layer|
       # call table creator mehtod for each layer
-      tableCreator(layer.id)
+      tableCreator(layer)
     end
     @table = @table + "</table>"
 
@@ -455,25 +456,21 @@ class ServicesController < ApplicationController
     end
   end
 
-  def tableCreator(layerID)
-
-
-    WmsLayer.where(id: layerID).find_each do |layer|
+  def tableCreator(layer)
       if @colorBool == 0
-        @table = @table + "<tr bgcolor=\"#E2EFCD\">"
+        @table += "<tr bgcolor=\"#E2EFCD\">"
         @colorBool = 1
       else
-        @table = @table + "<tr>"
+        @table += "<tr>"
         @colorBool = 0
       end
 
-      @table = @table + "<td height=\"30\" style=\"padding: 5px;text-align: left;\"><a href=\"/wms_service_layer/" + layer.id.to_s +  "\">" + layer.name + "</a></td>"
-      @table = @table + "<td height=\"30\" style=\"padding: 5px;text-align: left;\">" + layer.title + "</td>"
-      @table = @table + "</tr>"
+      @table += "<td height=\"30\" style=\"padding: 5px;text-align: left;\"><a href=\"/wms_service_layer/#{layer.id}\">#{layer.name }</a></td>"
+      @table += "<td height=\"30\" style=\"padding: 5px;text-align: left;\">#{layer.title}</td>"
+      @table += "</tr>"
 
       # recursive call
       #tableCreator(layer.id)
-    end
   end
 
 
