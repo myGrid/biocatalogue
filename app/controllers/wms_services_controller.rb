@@ -153,7 +153,6 @@ class WmsServicesController < ApplicationController
 
           # build GetCapabilities request
           request = params[:endpoint] + "?request=getCapabilities&service=wms&version=" + params[:version]
-
           require 'net/http'
 
           #url = URI.parse('http://sampleserver1.arcgisonline.com/ArcGIS/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/WMSServer?service=WMS&request=GetCapabilities&version=1.3.0')
