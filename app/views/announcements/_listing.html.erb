@@ -27,7 +27,10 @@
 				<div class="box_annotations" style="margin-top: 1em;">
 					<% rounded(annotation_text_item_background_color, "#333", "100%") do %>
 						<div class="text">
-							<%= annotation_prepare_description(announcement.body, true, 500, false) -%>
+ <%= annotation_prepare_description(announcement.body, {
+:do_strip_tags => true, :truncate_length => 500, :do_autolink => false, :is_markdownable => false }
+).html_safe -%>
+
 						</div>
 					<% end %>
 				</div>
