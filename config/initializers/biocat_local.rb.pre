@@ -147,7 +147,7 @@ SEARCH_PERFORM_POST_SOLR_MAPPINGS = false
 
 # The message to display at the very top of the page.
 # Use this for extra special messages like very important announcements and maintenance notices.
-HEADER_MESSAGE = ""
+#HEADER_MESSAGE = 'BioCatalogue is not an actively developed project and is closed for new service registrations. Please register your service at https://bio.tools.'
 
 
 # The list of email addresses that ALL status change emails should be sent to.
