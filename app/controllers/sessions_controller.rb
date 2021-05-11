@@ -5,7 +5,8 @@
 # See license.txt for details.
 
 class SessionsController < ApplicationController
-  
+
+  before_filter :disable_login_and_registration, :only => [ :new, :create ]
   before_filter :disable_action_for_api
   
   skip_before_filter :verify_authenticity_token, :only => [ :rpx_token ]
@@ -69,6 +70,13 @@ class SessionsController < ApplicationController
   end
   
   protected
+
+  def disable_login_and_registration
+    if defined? DISABLE_LOGIN && DISABLE_LOGIN
+      flash[:error] = "Login/registration is disabled.".html_safe
+      redirect_to_back_or_home
+    end
+  end
   
   def finish_login(user, additional_message ='')
     session[:user_id] = user.id

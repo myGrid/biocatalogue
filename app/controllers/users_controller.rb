@@ -6,6 +6,7 @@
 
 class UsersController < ApplicationController
 
+  before_filter :disable_login_and_registration, :only => [ :new, :create ]
   before_filter :disable_action, :only => [:destroy]
   before_filter :disable_action_for_api, :except => [:index, :show, :annotations_by, :services, :filters, :filtered_index,
                                                      :saved_searches, :whoami, :favourites, :services_responsible]
@@ -561,4 +562,12 @@ class UsersController < ApplicationController
     end
   end
 
+  private
+
+  def disable_login_and_registration
+    if defined? DISABLE_LOGIN && DISABLE_LOGIN
+      flash[:error] = "Login/registration is disabled.".html_safe
+      redirect_to_back_or_home
+    end
+  end
 end

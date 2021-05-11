@@ -9,35 +9,39 @@
 %>
 
 <div id="login_links">
-	<div class="inner">
-		<% if logged_in? -%>
-			Welcome <b><%= display_name(current_user) -%></b>
-      <span><%= user_role_badge(current_user.roles, "margin-left: 0.3em; vertical-align: baseline;") %></span>
-			
-			<span class="sep">|</span>
-			<%= link_to "My Profile", current_user, :id => "user_profile_link", :class => "" -%>
-			
-			<span class="sep">|</span>
-			<%= link_to "My Favourites", favourites_user_path(current_user) -%>
+  <% if defined? DISABLE_LOGIN && DISABLE_LOGIN %>
+    <div style="height: 24px"></div>
+  <% else %>
+    <div class="inner">
+      <% if logged_in? -%>
+        Welcome <b><%= display_name(current_user) -%></b>
+        <span><%= user_role_badge(current_user.roles, "margin-left: 0.3em; vertical-align: baseline;") %></span>
 
-			<!--<span class="sep">|</span>-->
-			<% #link_to "OAuth Applications", oauth_clients_path -%>
-			
-			<!--<span class="sep">|</span>-->
-			<% #link_to "Responsibility Requests", responsibility_requests_path -%>
-      
-			<% if current_user.is_curator? %>
-			  <span class="sep">|</span>
-        <%= link_to "Curation Dashboard", curation_path -%>
-			<% end %>
-			
-      <span class="sep">|</span>
-			<%= link_to 'Sign out', logout_path, :id => "logout_link", :class => "red_arrow", :method => :delete, :confirm => 'Are you sure you want to sign out?' -%>
-		<% else -%>
-			<%= link_to 'Sign up', signup_path, :id => "signup_link", :class => "signup" -%>
-			
-			<span class="sep">|</span>
-			<%= link_to 'Sign in', login_path, :id => "login_link", :class => "login", :onclick => "showLoginBox(this, 'login_box'); return false;" -%>
-		<% end %>
-	</div>
+        <span class="sep">|</span>
+        <%= link_to "My Profile", current_user, :id => "user_profile_link", :class => "" -%>
+
+        <span class="sep">|</span>
+        <%= link_to "My Favourites", favourites_user_path(current_user) -%>
+
+        <!--<span class="sep">|</span>-->
+        <% #link_to "OAuth Applications", oauth_clients_path -%>
+
+        <!--<span class="sep">|</span>-->
+        <% #link_to "Responsibility Requests", responsibility_requests_path -%>
+
+        <% if current_user.is_curator? %>
+          <span class="sep">|</span>
+          <%= link_to "Curation Dashboard", curation_path -%>
+        <% end %>
+
+        <span class="sep">|</span>
+        <%= link_to 'Sign out', logout_path, :id => "logout_link", :class => "red_arrow", :method => :delete, :confirm => 'Are you sure you want to sign out?' -%>
+      <% else -%>
+        <%= link_to 'Sign up', signup_path, :id => "signup_link", :class => "signup" -%>
+
+        <span class="sep">|</span>
+        <%= link_to 'Sign in', login_path, :id => "login_link", :class => "login", :onclick => "showLoginBox(this, 'login_box'); return false;" -%>
+      <% end %>
+    </div>
+  <% end %>
 </div>

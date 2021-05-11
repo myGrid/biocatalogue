@@ -176,3 +176,5 @@ ANNOTATION_ATTRIBUTE_DEFAULT_IDENTIFIER_TEMPLATE = "http://biocatalogue.org/attr
 
 # ====================================================
 
+# Disable new user login and registration
+#DISABLE_LOGIN = true
